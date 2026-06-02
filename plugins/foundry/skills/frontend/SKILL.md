@@ -130,6 +130,20 @@ If the user has already answered some of these in conversation, don't re-ask —
 
 ---
 
+## The value handler (inside FOUNDRY)
+
+This skill *designs*; within the FOUNDRY conveyor it is **staffed by the `handler-vanilla-js`
+value-handler** (`${CLAUDE_PLUGIN_ROOT}/agents/handler-vanilla-js.md`) — the DESIGN station's
+native hand. That handler implements these designs **test-first** under the five-level test
+contract (vanilla DOM + `@testing-library/dom`, 100% line+branch floor), emits the `@front-end`
+INTENT markers above, holds the one-way binding / accessibility / privacy non-negotiables, and
+runs `resources/agents/design-critic.md` against `resources/agents/definition-of-good.md` as its
+self-critique before presenting. (It is `handler-vanilla-js`, not `handler-react` — this design
+system is framework-free by mandate.) Working outside FOUNDRY, you apply the same discipline
+yourself; the handler is simply where that discipline is codified for the pipeline.
+
+---
+
 ## Roadmap & scope
 
 This skill's v1 is the design system itself: philosophy, the marker protocol, the element registry + `-help`, the elicitation flow, and the starter elements. Deferred (and tracked) work lives in `resources/ROADMAP.md`: large datasets & virtualization, large graph-canvases (connected objects on a huge background), the serverless device-swap / distributed-documents research, and full automation of adversarial sub-agent spawning. Read it before promising anything in those areas.

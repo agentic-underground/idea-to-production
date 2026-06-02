@@ -418,6 +418,7 @@ in `${CLAUDE_PLUGIN_ROOT}/agents/handler-{stack}.md`.
 | JS-AGENT | JavaScript/TypeScript + jest/vitest | Frontend or Node work |
 | CSS-AGENT | CSS/SCSS + accessibility | Styling and layout |
 | REACT-AGENT | React + React Testing Library | Component work |
+| VANILLA-JS-AGENT | Vanilla JS + DOM + @testing-library/dom | Vanilla-JS / `frontend` design-system work |
 | FASTAPI-AGENT | FastAPI + httpx + pytest | Python API work |
 | PLAYWRIGHT-AGENT | Playwright (npx playwright test) | E2E story tests |
 

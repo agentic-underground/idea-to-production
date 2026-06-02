@@ -14,7 +14,7 @@ cannot silently age out).
 | **Test code authoring** — failing tests, coverage chasing | **haiku** | high-volume, low-judgement, repetitive | `ds-step-3-tests`, `coverage-loop-agent` |
 | **Everything else** — planning, implementation, sync, commit, orchestration | **sonnet** | the capable default | orchestrators, `ds-step-{0,4,5,6,7,8,9}`, `flaky-test-fixer` |
 
-**Value handlers** (`handler-{python,js,react,fastapi,css,playwright}`) carry `model: inherit`
+**Value handlers** (`handler-{python,js,react,fastapi,css,playwright,vanilla-js}`) carry `model: inherit`
 and are spawned with the tier appropriate to the **phase** they are staffing:
 - TEST phase → **haiku** (test code is high-volume)
 - IMPLEMENT phase → **sonnet** (implementation)

@@ -120,6 +120,7 @@ cross-links `value-station-handoff` rather than swallowing it.
 | `foundry-handler-fastapi` | inherit | `agents/handler-fastapi.md` | move; fix philosophy ref | ☑ |
 | `foundry-handler-css` | inherit | `agents/handler-css.md` | move; fix philosophy ref | ☑ |
 | `foundry-handler-playwright` | inherit | `agents/handler-playwright.md` | move | ☑ |
+| *(new)* `handler-vanilla-js` | inherit | `agents/handler-vanilla-js.md` | **NEW** — native handler of the `frontend` design system; re-staffs DESIGN (6b) from `handler-react`→`handler-vanilla-js` (framework-free by mandate) | ☑ |
 | `foundry-daily-inspector` | opus-4-7 | `agents/inspector.md` | move; retarget audit root | ☑ |
 | `coverage-loop-agent` | haiku-4-5 | `agents/coverage-loop-agent.md` | move; fix code-quality ref | ☑ |
 | `flaky-test-fixer` | sonnet-4-6 | `agents/flaky-test-fixer.md` | move | ☑ |

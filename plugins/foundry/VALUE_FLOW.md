@@ -89,7 +89,7 @@ A station with no handler is a defect FOUNDER reports. A gate without a check is
 | 4 | **FEATURE** | behaviour as Gherkin | `lifecycle-states` | ds-step-2-feature-docs | ≥3 scenarios/EARS (happy/unhappy/abuse); BDD-REVIEWER PASS |
 | 5 | **TEST** | failing tests = solution coordinates | `lifecycle-states` | ds-step-3-tests, ds-step-4-first-test-run | genuinely RED; gap map complete |
 | 6 | **IMPLEMENT** | minimal code to green | `lifecycle-states`, `code-quality` | ds-step-5/6, handler-* | all gap-map tests green; 100% coverage floor |
-| 6b| **DESIGN** *(cross-cuts IMPLEMENT)* | usable, accessible surfaces | `frontend` | handler-react, handler-css | INTENT-marked; a11y + privacy held |
+| 6b| **DESIGN** *(cross-cuts IMPLEMENT)* | usable, accessible surfaces | `frontend` | handler-vanilla-js, handler-css | INTENT-marked; a11y + privacy held |
 | 7 | **STORY** | proof through the real interface | `lifecycle-states` | ds-step-story-tests, handler-playwright | STORY_PROVEN; perf-delta gate passed |
 | 8 | **DELIVERY** | shipped + traceable | `lifecycle-states` | ds-step-7/8/9 | synced; commit narrative; roadmap COMPLETE |
 
@@ -123,9 +123,11 @@ they do not improvise gates.
 A **value-handler** is the agent that owns a station's work. Handlers carry **only their
 station's references** (token efficiency, §6). The house's handlers:
 
-- **Stack handlers** — `handler-{python,js,react,fastapi,css,playwright}`: author tests
+- **Stack handlers** — `handler-{python,js,react,fastapi,css,playwright,vanilla-js}`: author tests
   (TEST), implement (IMPLEMENT), and prove stories (STORY) in their stack. They carry the
   implementation covenant and the project's SUBJECT_MATTER_UNDERSTANDING, nothing more.
+  `handler-vanilla-js` is the native handler of the `frontend` design system (DESIGN);
+  `handler-react` staffs React-stack IMPLEMENT work, not the vanilla-JS design system.
 - **`handler-architect`** — selects the architectural pattern when a non-trivial decision
   arises; writes the ADR; carries the SOLID covenant.
 - **`reviewer`** — the adversarial gate-keeper, parametrised by role (EARS, SMU, BDD,
@@ -246,7 +248,7 @@ reviewer (panel)                   — gates every transition (PASS / NEEDS_REVI
 | FEATURE | `lifecycle-states` | ds-step-2-feature-docs | specs/bdd-gherkin |
 | TEST | `lifecycle-states` | ds-step-3-tests, ds-step-4-first-test-run | testing/test-policy |
 | IMPLEMENT | `lifecycle-states`, `code-quality` | ds-step-5, ds-step-6, handler-* | architecture/*, pillars/implementation-covenant |
-| DESIGN | `frontend` | handler-react, handler-css | frontend resources |
+| DESIGN | `frontend` | handler-vanilla-js, handler-css | frontend resources |
 | STORY | `lifecycle-states` | ds-step-story-tests, handler-playwright | testing/test-policy (perf-delta) |
 | DELIVERY | `lifecycle-states` | ds-step-7/8/9 | protocols/commit-message, protocols/definition-of-done |
 | GOVERNANCE | `code-quality`, `reviewer-gate` | reviewer, inspector, coverage-loop-agent, flaky-test-fixer | all pillars, testing/* |
