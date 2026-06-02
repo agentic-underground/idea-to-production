@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "foundry",
+  "displayName": "FOUNDRY — Value-Flow Production System",
+  "version": "1.1.0",
+  "description": "FOUNDRY — the value-flow software production system. A cohesive plugin that carries value from IDEA to PRODUCTION across disciplined value-stations staffed by role-tuned agents, governed by three pillars (knowledge parity, quality-first with a performance-delta gate, waste elimination) and an overarching token-efficiency constraint. Emits markdown as its value artefact; uses the sentinel (SECURITY) and pressroom (PUBLISHING) companion plugins automatically when they are installed, and degrades cleanly when they are not. Read VALUE_FLOW.md for the system; knowledge/ for canonical facts.",
+  "author": {
+    "name": "whatbirdisthat",
+    "email": "95787+whatbirdisthat@users.noreply.github.com",
+    "url": "https://github.com/whatbirdisthat"
+  },
+  "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/foundry",
+  "repository": "https://github.com/whatbirdisthat/idea-to-production",
+  "license": "MIT OR Apache-2.0",
+  "category": "workflow",
+  "defaultEnabled": true,
+  "keywords": [
+    "sdlc",
+    "tdd",
+    "bdd",
+    "ears",
+    "orchestration",
+    "code-quality",
+    "value-flow",
+    "agents",
+    "vertical-slice",
+    "test-first"
+  ],
+  "metadata": {
+    "companions": {
+      "security": "sentinel",
+      "publishing": "pressroom"
+    },
+    "note": "agents/, skills/, commands/, and hooks/hooks.json are auto-discovered from the plugin root. The conceptual map is in VALUE_FLOW.md §10; migration provenance is in docs/MIGRATION.md."
+  }
+}
