@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "pressroom",
+  "displayName": "PRESSROOM — Publishing & Documentation",
+  "version": "1.0.0",
+  "description": "Turns project artefacts and markdown into publication-grade output. PRESSROOM mines git history, docs, and code for narrative signal and writes articles (origin stories, deep dives, retrospectives, release notes); composes standalone diagrams (Graphviz/Mermaid) that respect A4-portrait legibility rules; and typesets print-quality PDFs with embedded figures. Use it directly on any project, or as the PUBLISHING companion the foundry plugin hands off to when richer-than-markdown output is wanted. Self-improving: every piece of diagram feedback is woven back into the charting matrix so the same composition error never recurs.",
+  "author": {
+    "name": "whatbirdisthat",
+    "email": "95787+whatbirdisthat@users.noreply.github.com",
+    "url": "https://github.com/whatbirdisthat"
+  },
+  "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/pressroom",
+  "repository": "https://github.com/whatbirdisthat/idea-to-production",
+  "license": "MIT OR Apache-2.0",
+  "category": "documentation",
+  "defaultEnabled": true,
+  "keywords": [
+    "documentation",
+    "publishing",
+    "writing",
+    "pdf",
+    "latex",
+    "graphviz",
+    "mermaid",
+    "diagrams",
+    "release-notes",
+    "technical-writing"
+  ],
+  "metadata": {
+    "note": "skills/ and commands/ are auto-discovered from the plugin root. /publish is the single front door; writer and rich-pdf-with-diagrams reference each other within this plugin via ${CLAUDE_PLUGIN_ROOT}."
+  }
+}

@@ -1,0 +1,57 @@
+digraph SystemStack {
+  rankdir=TB;
+  bgcolor="transparent";
+  splines=ortho;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=11, margin="0.2,0.12"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444"];
+
+  subgraph cluster_browser {
+    label="BROWSER (vanilla JS SPA, no framework, ~8.4k LOC)";
+    fontname="Helvetica-Bold"; fontsize=11; style="rounded,dashed"; color="#1f6feb"; bgcolor="#eef4ff";
+    spa_store [label="store.js\n(single source of state)", fillcolor="#cfe1ff", color="#1f6feb"];
+    spa_dispatch [label="dispatch.js\n(one-way data flow)", fillcolor="#cfe1ff", color="#1f6feb"];
+    spa_panels [label="panels/  (8 panels)\nDashboard · Matrix · Volunteers ·\nBalance · Rounds · Lineup ·\nTeam Splits · Settings · Data Mgmt", fillcolor="#cfe1ff", color="#1f6feb"];
+    spa_tests [label="tests/  (173 Playwright tests)", fillcolor="#cfe1ff", color="#1f6feb"];
+  }
+
+  subgraph cluster_server {
+    label="FLASK SERVER (optional in static deployments)";
+    fontname="Helvetica-Bold"; fontsize=11; style="rounded,dashed"; color="#cf222e"; bgcolor="#fff0ee";
+    api_roster [label="/api/roster-data\nGET · PUT", fillcolor="#ffd1cc", color="#cf222e"];
+    api_realloc [label="/api/reallocate\nPOST → scheduler", fillcolor="#ffd1cc", color="#cf222e"];
+    api_master [label="/api/master-data\nCRUD (jumpers, jobs,\nrounds, splits, players)", fillcolor="#ffd1cc", color="#cf222e"];
+  }
+
+  subgraph cluster_domain {
+    label="FOOTYMANAGER  (Python · Hexagonal · 1,060 tests · 100% branch coverage)";
+    fontname="Helvetica-Bold"; fontsize=11; style="rounded,dashed"; color="#1a7f37"; bgcolor="#ecffe8";
+    domain [label="domain/\nscheduler · constraints · fairness math", fillcolor="#b6f5b6", color="#1a7f37"];
+    application [label="application/\nuse cases · orchestration", fillcolor="#caf5c0", color="#1a7f37"];
+    adapters [label="adapters/\ncsv · state · cli · reporting", fillcolor="#daf5d0", color="#1a7f37"];
+    reporting [label="reporting/\nexporters: json · html · text", fillcolor="#daf5d0", color="#1a7f37"];
+  }
+
+  subgraph cluster_storage {
+    label="STORAGE";
+    fontname="Helvetica-Bold"; fontsize=11; style="rounded,dashed"; color="#8250df"; bgcolor="#f4ecff";
+    snapshot [label="roster-data.json\n(atomic os.replace)", fillcolor="#e0cffc", color="#8250df"];
+    csv [label="data/*.csv\n(master data)", fillcolor="#e0cffc", color="#8250df"];
+    idb [label="IndexedDB\n(planned, browser-first)", fillcolor="#e0cffc", color="#8250df", style="rounded,filled,dashed"];
+  }
+
+  spa_dispatch -> api_roster [label="snapshot read/write"];
+  spa_dispatch -> api_realloc [label="run scheduler"];
+  spa_dispatch -> api_master [label="CRUD"];
+  spa_dispatch -> idb [label="(planned)", style=dashed];
+
+  api_roster -> application;
+  api_realloc -> application;
+  api_master -> adapters;
+
+  application -> domain;
+  application -> adapters;
+  adapters -> snapshot;
+  adapters -> csv;
+  reporting -> adapters;
+  application -> reporting;
+}
