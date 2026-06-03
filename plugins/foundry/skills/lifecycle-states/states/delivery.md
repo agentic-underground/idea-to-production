@@ -36,11 +36,14 @@ Delivery state governs the quality of the release transaction. A technically cor
 
 ## Exit Criteria for Commit/Push (step-9 complete) — All must be true
 
+- [ ] Adversarial review (`/foundry:pr-review`) returned **PASS** for the change
 - [ ] Changes staged interactively (`git add -p` — no surprise files committed)
 - [ ] Commit created with reviewed message
-- [ ] Push succeeded
+- [ ] Delivered per **merge governance** ([`../../../knowledge/protocols/merge-governance.md`](../../../knowledge/protocols/merge-governance.md)):
+      `pr-approval` → branch pushed + PR opened for the human to merge (item held AWAITING MERGE);
+      `direct-merge` → merged to `main` and pushed
 - [ ] Commit hash captured
-- [ ] Roadmap entry STATUS updated to COMPLETE with completion date
+- [ ] Roadmap entry STATUS updated (COMPLETE, or AWAITING MERGE under pr-approval until merged)
 - [ ] Plan file completion section populated with commit hash and date
 - [ ] If IDEA_COST.jsonl in use: record appended
 

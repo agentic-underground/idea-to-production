@@ -81,6 +81,20 @@ Run these, in order, every time you are invoked fresh:
 
 4. **Report the discovered topology** before doing anything else — see §6 `READOUT`.
 
+5. **Establish merge governance — ask up-front.** Read `.foundry/governance.md` if present. If the
+   project has not chosen a mode, **ask the user** which they want, and explain the trade-off
+   ([`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md)):
+   - **`pr-approval`** (default, safe) — FOUNDRY builds, the adversarial review runs, and on PASS it
+     **pushes a branch and opens a PR for the human to merge**. Right for shared/production repos, or
+     whenever the owner wants to see and approve the work.
+   - **`direct-merge`** (autonomy) — the always-on adversarial review still gates, but on PASS
+     **FOUNDRY merges to `main` and pushes** itself. Right where the owner has granted autonomy.
+
+   Record the choice in `.foundry/governance.md` (`**Merge mode:** pr-approval|direct-merge`); absent
+   ⇒ default `pr-approval`. Tell the user they can switch any time ("require PR approvals" /
+   "give FOUNDRY merge autonomy"). **The adversarial review gate is always-on in both modes** —
+   the mode only decides who merges after a PASS.
+
 > If `foundry` or `frontend` is absent entirely, say so plainly, name the missing
 > capability, and point the user at `skill-creator` to author it (or at the `foundry`
 > plugin shipped alongside this agent). You do not fake a build system.
@@ -230,6 +244,7 @@ stations → handlers:
   VALIDATE→marketer  SPEC→roadmapper  DESIGN→frontend  SLICE→builder
   HARDEN→reviewer+security-auditor  SHIP→founder  LEARN→marketer
 unstaffed stations: [...]      ← defects, if any
+merge governance: <pr-approval | direct-merge>   (adversarial review: always-on)
 current project station: <where the project sits now>
 next gate: <what must be true to advance, and who holds it>
 ```

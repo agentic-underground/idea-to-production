@@ -108,10 +108,20 @@ security CRITICAL.
 
 If `--post` and `gh`/`$GH_TOKEN` are available, post the verdict + findings summary as a PR comment.
 
-## 6. Gate behaviour
+## 6. Gate behaviour & merge governance
 
-PR-REVIEW **reports**; it does not merge. A caller (a human, or an explicit auto-merge step) decides
-what to do with the verdict. This keeps the reviewer honest and the merge decision accountable.
+PR-REVIEW **reports**; it does not merge. What happens after a **PASS** is decided by the project's
+**merge-governance mode** ([`../../knowledge/protocols/merge-governance.md`](../../knowledge/protocols/merge-governance.md)),
+read from `.foundry/governance.md` (absent ⇒ default `pr-approval`):
+
+- **`pr-approval`** (default): push the branch, open a PR whose body carries this verdict + findings,
+  then **stop** — the human merges. The agent never self-merges.
+- **`direct-merge`** (autonomy): on PASS, the delivery step merges to `main` and pushes; the verdict
+  is recorded in the commit trail / `PR_REVIEW.md`.
+
+In **both** modes a non-PASS verdict (`NEEDS_REVISION`/`BLOCK`) halts the merge and loops back to
+revision — autonomy means "merge on PASS", never "merge regardless." Keeping the verdict separate
+from the merge keeps the reviewer honest and the merge decision accountable.
 
 ---
 

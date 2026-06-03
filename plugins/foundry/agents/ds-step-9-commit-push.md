@@ -34,12 +34,21 @@ Before beginning:
 1. Run `git status` — confirm only expected files are modified.
 2. Run `git add -p` — stage changes interactively, review every hunk.
 3. Run `git commit` with the message from step-8 handoff.
-4. Run `git push origin <branch>`.
-5. Capture the commit hash from the push output.
-6. Update roadmap entry: change `STATUS: IN PROGRESS` → `STATUS: COMPLETE`, add completion date.
-7. Update plan file: mark checklist complete, add "Completed" section with commit hash and date.
-8. If `IDEA_COST.jsonl` is in use (FOUNDRY context), append the cost record per `references/idea-cost-schema.md`.
-9. If a `CHANGELOG.md` exists in the project, add an entry.
+4. **Confirm the adversarial review passed.** `/foundry:pr-review` must have returned **PASS** for
+   this change (see [`../skills/pr-review/SKILL.md`](../skills/pr-review/SKILL.md)). A
+   `NEEDS_REVISION`/`BLOCK` verdict halts delivery — loop back to revision; do not proceed.
+5. **Branch on merge governance** — read `.foundry/governance.md` (absent ⇒ default `pr-approval`;
+   see [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md)):
+   - **`pr-approval`**: `git push` the feature branch and **open a PR** whose body carries the
+     review verdict + findings. **Stop here — the human merges and closes.** Do not merge to `main`.
+   - **`direct-merge`**: merge the branch to `main` and `git push` (the granted-autonomy path).
+6. Capture the commit hash from the push/merge output.
+7. Update roadmap entry: change `STATUS: IN PROGRESS` → `STATUS: COMPLETE`, add completion date.
+   (In `pr-approval` mode, hold the item at `STATUS: AWAITING MERGE` until the human merges the PR,
+   then flip to `COMPLETE`.)
+8. Update plan file: mark checklist complete, add "Completed" section with commit hash and date.
+9. If `IDEA_COST.jsonl` is in use (FOUNDRY context), append the cost record per `references/idea-cost-schema.md`.
+10. If a `CHANGELOG.md` exists in the project, add an entry.
 
 ## Required Output
 
