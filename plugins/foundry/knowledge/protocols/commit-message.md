@@ -181,14 +181,14 @@ Payload: the first line of the approved commit message (≤72 chars).
 
 ---
 
-## 10. Config-repo Commit Type Prefixes (author / `~/.claude` repo only — NOT for plugin users)
+## 10. Config-repo Commit Type Prefixes (marketplace-source maintainers only — NOT for plugin users)
 
-> **Scope note:** This section applies **only** to the maintainer's private Claude config repository
-> (`~/.claude`), where this tooling was originally developed. Projects that merely *use* the FOUNDRY
-> plugin do not need it — use ordinary Conventional Commits. Retained for the marketplace maintainer.
+> **Scope note:** This section applies **only** when committing to the **marketplace source
+> repository** itself (the repo that ships these plugins). Projects that merely *use* the FOUNDRY
+> plugin do not need it — use ordinary Conventional Commits. Retained for marketplace maintainers.
 
-When committing changes to that config repo itself, use these type prefixes instead of CC types —
-they describe the artefact class being changed:
+When committing changes to the marketplace source repo itself, use these type prefixes instead of
+CC types — they describe the artefact class being changed:
 
 | Prefix | When to use |
 |--------|-------------|
@@ -199,7 +199,7 @@ they describe the artefact class being changed:
 | `utility` | Adding or modifying utility scripts (`.py`, `.sh`) |
 | `docs` | Changing `CLAUDE.md`, `README.md`, or reference documents |
 
-Format: `git -C ~/.claude commit -m "docs(commit-standard): consolidate commit message guidelines"`
+Format: `git commit -m "docs(commit-standard): consolidate commit message guidelines"`
 
 Do not batch unrelated changes into a single commit.
 

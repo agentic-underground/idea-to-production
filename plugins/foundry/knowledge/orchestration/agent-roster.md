@@ -293,7 +293,7 @@ See `agents/builder-lead.md` for the full agent definition.
 See [`../../agents/inspector.md`](../../agents/inspector.md) for the full agent definition.
 
 **Role:** FOUNDRY plugin health and improvement auditor
-**Spawned:** **User-initiated only** — "inspect FOUNDRY" / "inspect FORGE" / "run the inspector". Never scheduled automatically.
+**Spawned:** **User-initiated only** — "inspect FOUNDRY" / "run the inspector". Never scheduled automatically.
 **Scope:** The FOUNDRY plugin (`${CLAUDE_PLUGIN_ROOT}`) — skills, agents, knowledge, commands, hooks — and companion plugins if present.
 
 ---

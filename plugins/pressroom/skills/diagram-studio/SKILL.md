@@ -55,6 +55,12 @@ cleanly via `rankdir`/clusters). Use **Mermaid** when the diagram will live as a
 ```` ```mermaid ```` block inside markdown that a renderer (GitHub, docs site) draws itself — in
 that case emit the Mermaid source, not a rendered file.
 
+> **Both renderers are optional external CLIs** — `dot` (Graphviz) and `mmdc` (mermaid-cli) — and
+> may be absent on a given machine. `/pressroom:check` reports which are present; install guidance
+> is in [`PREREQUISITES/30-pressroom.md`](../../../../PREREQUISITES/30-pressroom.md). When the diagram
+> targets a **Typst** PDF and Graphviz is unavailable, prefer **SVG** output (`dot -Tsvg`) — or author
+> the figure in **Typst-native** drawing (`cetz`) — since Typst embeds SVG directly; LaTeX wants PDF.
+
 ---
 
 ## Workflow

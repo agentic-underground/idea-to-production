@@ -76,7 +76,7 @@ When all tests are green, re-read the EARS spec and the `.feature` file.
 Confirm the implementation satisfies the spirit of the requirements, not just the letter
 of the tests. A test can pass and the feature can still be wrong.
 
-## 7. FORGE Conventions
+## 7. Workspace Conventions
 
 - Shell scripts: `set -euo pipefail`; timestamped logging to `cache/*.log`; idempotent; clean exit on error.
 - Python: uv-first; no bare `except`; type hints on public signatures; AAA test pattern.

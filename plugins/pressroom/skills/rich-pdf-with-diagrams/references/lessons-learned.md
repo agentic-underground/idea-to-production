@@ -65,7 +65,7 @@ with the annotations placed in a right-side column anchored by
 - Pattern 1 (Multi-phase TB stack) annotated with "side annotations
   via rank=same" trick.
 
-**Diagram(s) fixed:** `04-forge-map.dot`, `02-maturity-ladder.dot`.
+**Diagram(s) fixed:** `04-system-map.dot`, `02-maturity-ladder.dot`.
 
 **Article:** `FootyManager/doc/articles/may-21/`.
 

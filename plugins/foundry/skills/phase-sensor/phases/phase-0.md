@@ -1,5 +1,5 @@
-NAME: forge-plan
-INSTALLS_SKILL: forge-plan
+NAME: foundry-plan
+INSTALLS_SKILL: foundry-plan
 PREREQUISITES:
 - ROADMAP.md has at least one feature with STATUS: IN PROGRESS
 - No plan file exists at the path in "Development Plan Reference"
@@ -10,15 +10,15 @@ QUALITY_GATE:
 
 ---SKILL---
 ---
-name: forge-plan
+name: foundry-plan
 description: >
-  Write the DEV_SYSTEM Step 0 (Plan) document for an in-progress Forge feature.
+  Write the DEV_SYSTEM Step 0 (Plan) document for an in-progress FOUNDRY feature.
   Auto-installed by phase-sensor when the plan file is absent.
 ---
 
-# FORGE-PLAN
+# FOUNDRY-PLAN
 
-You are writing the DEV_SYSTEM **Step 0 — Write the Plan** document for a Forge
+You are writing the DEV_SYSTEM **Step 0 — Write the Plan** document for a FOUNDRY
 feature. This is the single source of truth for the entire implementation.
 
 ## Steps
@@ -70,4 +70,4 @@ feature. This is the single source of truth for the entire implementation.
 3. Commit: `docs: write plan for feature [N] — step 0`
 
 4. The phase sensor will detect the plan file on the next ROADMAP.md edit and install
-   `forge-ears` to guide Step 1.
+   `foundry-ears` to guide Step 1.

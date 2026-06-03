@@ -2,7 +2,7 @@
 # DEV_SYSTEM Phase Sensor for FOUNDRY.
 # Detects the current development phase of each IN PROGRESS ROADMAP feature
 # by inspecting artifact presence, then advises the skill for that phase.
-# Operates on the PROJECT the plugin is installed into — never on ~/.claude.
+# Operates on the PROJECT the plugin is installed into — never outside that project.
 # EARS: 009-013  Feature: [2] DEV_SYSTEM Phase Sensor
 set -euo pipefail
 

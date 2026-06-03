@@ -1,5 +1,5 @@
-NAME: forge-feature
-INSTALLS_SKILL: forge-feature
+NAME: foundry-feature
+INSTALLS_SKILL: foundry-feature
 PREREQUISITES:
 - EARS IDs exist in doc/SPECIFICATION.ears.md
 - doc/features/ directory exists
@@ -11,15 +11,15 @@ QUALITY_GATE:
 
 ---SKILL---
 ---
-name: forge-feature
+name: foundry-feature
 description: >
-  Write Gherkin .feature files for an in-progress Forge feature.
+  Write Gherkin .feature files for an in-progress FOUNDRY feature.
   Auto-installed by phase-sensor when no .feature file exists.
 ---
 
-# FORGE-FEATURE
+# FOUNDRY-FEATURE
 
-You are writing the DEV_SYSTEM **Step 2 — Feature Documentation** for a Forge feature.
+You are writing the DEV_SYSTEM **Step 2 — Feature Documentation** for a FOUNDRY feature.
 
 ## Steps
 
@@ -27,7 +27,7 @@ You are writing the DEV_SYSTEM **Step 2 — Feature Documentation** for a Forge 
    `doc/SPECIFICATION.ears.md`.
 
 2. Create or update a `.feature` file in `doc/features/`. Name it after the feature
-   (e.g. `forge-sync.feature`, `phase-sensor.feature`).
+   (e.g. `auth-login.feature`, `phase-sensor.feature`).
 
 3. Write Gherkin scenarios covering all three paths:
 
@@ -62,4 +62,4 @@ You are writing the DEV_SYSTEM **Step 2 — Feature Documentation** for a Forge 
 
 5. Commit: `docs: add feature scenarios for feature [N] — step 2`
 
-6. The phase sensor will detect the `.feature` file and install `forge-test` for Step 3.
+6. The phase sensor will detect the `.feature` file and install `foundry-test` for Step 3.

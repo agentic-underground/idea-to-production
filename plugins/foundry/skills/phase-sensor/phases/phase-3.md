@@ -1,5 +1,5 @@
-NAME: forge-test
-INSTALLS_SKILL: forge-test
+NAME: foundry-test
+INSTALLS_SKILL: foundry-test
 PREREQUISITES:
 - .feature file(s) exist in doc/features/
 - No test file exists in tests/ for this feature
@@ -11,15 +11,15 @@ QUALITY_GATE:
 
 ---SKILL---
 ---
-name: forge-test
+name: foundry-test
 description: >
-  Write bats tests for an in-progress Forge feature.
+  Write bats tests for an in-progress FOUNDRY feature.
   Auto-installed by phase-sensor when .feature files exist but no tests do.
 ---
 
-# FORGE-TEST
+# FOUNDRY-TEST
 
-You are writing the DEV_SYSTEM **Step 3 — Test Code** for a Forge feature.
+You are writing the DEV_SYSTEM **Step 3 — Test Code** for a FOUNDRY feature.
 
 ## Steps
 
@@ -35,7 +35,7 @@ You are writing the DEV_SYSTEM **Step 3 — Test Code** for a Forge feature.
    # EARS: NNN, NNN, NNN
    # Runner: bats-core — bats tests/test-<name>.bats
 
-   load helpers/git-fixture   # or forge-fixture as appropriate
+   load helpers/git-fixture   # or a project-specific fixture as appropriate
 
    SCRIPT="$BATS_TEST_DIRNAME/../<path-to-script>"
 
@@ -67,4 +67,4 @@ You are writing the DEV_SYSTEM **Step 3 — Test Code** for a Forge feature.
    `bats tests/test-<name>.bats`
    If any test passes unexpectedly, investigate before proceeding.
 
-8. The phase sensor will detect the test file and install `forge-implement` for Step 5.
+8. The phase sensor will detect the test file and install `foundry-implement` for Step 5.

@@ -712,7 +712,7 @@ when you observe any of the following:
 
 - After any session where a user corrects a ROADMAPPER behaviour
 - After every 5th roadmap session (track mentally within session)
-- When the inspector surfaces a ROADMAPPER finding in `FORGE_INSPECTION_REPORT.md`
+- When the inspector surfaces a ROADMAPPER finding in `FOUNDRY_INSPECTION_REPORT.md`
 
 ### 12.2 Self-improvement steps
 

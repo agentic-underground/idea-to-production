@@ -1,5 +1,8 @@
 # The Forge — EARS Specification
 
+> **Historical worked example — provenance archive.** Not part of the marketplace runtime;
+> retained to illustrate the EARS station. See [`../docs/HISTORY.md`](../docs/HISTORY.md).
+
 > Format: Easy Approach to Requirements Syntax (EARS)
 > Last updated: 2026-05-17
 

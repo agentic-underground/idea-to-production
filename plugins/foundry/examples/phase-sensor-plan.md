@@ -25,11 +25,11 @@ File: `doc/features/phase-sensor.feature`
 
 | Scenario | Path | EARS IDs |
 |----------|------|----------|
-| Phase 0 — plan missing → install forge-plan | Happy | 009,010,011 |
-| Phase 1 — EARS missing → install forge-ears | Happy | 009,010,011 |
-| Phase 2 — .feature missing → install forge-feature | Happy | 009,010,011 |
-| Phase 3 — tests missing → install forge-test | Happy | 009,010,011 |
-| Phase 5 — impl missing → install forge-implement | Happy | 009,010,011 |
+| Phase 0 — plan missing → install foundry-plan | Happy | 009,010,011 |
+| Phase 1 — EARS missing → install foundry-ears | Happy | 009,010,011 |
+| Phase 2 — .feature missing → install foundry-feature | Happy | 009,010,011 |
+| Phase 3 — tests missing → install foundry-test | Happy | 009,010,011 |
+| Phase 5 — impl missing → install foundry-implement | Happy | 009,010,011 |
 | Phase transition logging | Happy | 012 |
 | Unsatisfied prerequisite → prompt user | Unhappy | 013 |
 | No IN PROGRESS features → exit 0 | Abuse | 013 |
@@ -86,11 +86,11 @@ The sensor is fully idempotent:
 |------|--------|-----------|
 | `skills/phase-sensor/SKILL.md` | CREATE | Skill invocable as `/phase-sensor` |
 | `skills/phase-sensor/scripts/check-phase.sh` | CREATE | Core detection + install logic |
-| `skills/phase-sensor/phases/phase-0.md` | CREATE | Plan phase definition + forge-plan SKILL.md |
-| `skills/phase-sensor/phases/phase-1.md` | CREATE | EARS phase definition + forge-ears SKILL.md |
-| `skills/phase-sensor/phases/phase-2.md` | CREATE | Feature phase definition + forge-feature SKILL.md |
-| `skills/phase-sensor/phases/phase-3.md` | CREATE | Test phase definition + forge-test SKILL.md |
-| `skills/phase-sensor/phases/phase-5.md` | CREATE | Implement phase definition + forge-implement SKILL.md |
+| `skills/phase-sensor/phases/phase-0.md` | CREATE | Plan phase definition + foundry-plan SKILL.md |
+| `skills/phase-sensor/phases/phase-1.md` | CREATE | EARS phase definition + foundry-ears SKILL.md |
+| `skills/phase-sensor/phases/phase-2.md` | CREATE | Feature phase definition + foundry-feature SKILL.md |
+| `skills/phase-sensor/phases/phase-3.md` | CREATE | Test phase definition + foundry-test SKILL.md |
+| `skills/phase-sensor/phases/phase-5.md` | CREATE | Implement phase definition + foundry-implement SKILL.md |
 | `settings.json` | MODIFY | Add PostToolUse hook on Edit/Write |
 | `tests/test-phase-sensor.bats` | CREATE | bats tests for all 8 scenarios |
 | `ROADMAP.md` | MODIFY | Status → COMPLETE on finish |
@@ -101,9 +101,9 @@ The sensor is fully idempotent:
 
 - **Runner**: bats-core (same as Feature [1])
 - **Test file**: `tests/test-phase-sensor.bats`
-- **Helper**: `tests/helpers/forge-fixture.bash` — extends `git-fixture.bash` with
-  Forge-specific scaffolding (ROADMAP.md with controlled feature states, EARS spec stubs)
-- **Approach**: Each test seeds a Forge clone in a temp dir with specific artifact
+- **Helper**: `tests/helpers/phase-fixture.bash` — extends `git-fixture.bash` with
+  phase-sensor scaffolding (ROADMAP.md with controlled feature states, EARS spec stubs)
+- **Approach**: Each test seeds a project clone in a temp dir with specific artifact
   combinations, runs `check-phase.sh`, and asserts: exit code, log content, which
   skills were installed (or not), and repository cleanliness.
 

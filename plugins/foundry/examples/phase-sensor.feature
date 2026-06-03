@@ -1,3 +1,5 @@
+# Historical worked example — provenance archive. Not part of the marketplace runtime;
+# retained to illustrate the FEATURE (BDD) station. See ../docs/HISTORY.md.
 @EARS-009 @EARS-010 @EARS-011 @EARS-012 @EARS-013
 Feature: DEV_SYSTEM Phase Sensor
   The phase sensor detects the current DEV_SYSTEM step for an in-progress Forge

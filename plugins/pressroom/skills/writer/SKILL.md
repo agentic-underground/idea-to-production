@@ -28,7 +28,7 @@ Each source answers a different question — read all that exist.
 | Priority | Source | What to extract |
 |----------|--------|----------------|
 | 1 | `git log --format="%H %ai %s" --all` | Full commit timeline — dates, subjects, turning-point commits |
-| 2 | `~/.claude/memory/` (if present) | User context, project memories, feedback — informs voice and what matters |
+| 2 | Claude user memory (if present) | User context, project memories, feedback — informs voice and what matters |
 | 3 | `ROADMAP.md` / `doc/ROADMAP.md` | Features, EARS specs, user stories, acceptance criteria |
 | 4 | `README.md` | Project philosophy, architecture, design decisions |
 | 5 | `CLAUDE.md` | Operational intent, communication protocols, production definitions |
@@ -425,7 +425,7 @@ previous paragraph raised, or asks a question the next paragraph will answer.
 
 ---
 
-## FORGE Family Integration
+## FOUNDRY Family Integration
 
 | When to use WRITER | When to use instead |
 |--------------------|-------------------|
@@ -434,5 +434,5 @@ previous paragraph raised, or asks a question the next paragraph will answer.
 | Project retrospectives | IDEATOR — for turning a retrospective finding into a new feature |
 | Documentation for external readers | CLAUDE.md / README.md — for internal operational docs |
 
-WRITER is a consumer of FORGE artefacts (git history, roadmap, memory), not a producer.
+WRITER is a consumer of FOUNDRY artefacts (git history, roadmap, memory), not a producer.
 It reads and synthesises; it does not plan, specify, or implement.

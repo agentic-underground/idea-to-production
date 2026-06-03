@@ -52,7 +52,7 @@ These look alike and are constantly confused. They are different things:
 | **`founder`** | The **COO orchestrator agent** ([`../agents/founder.md`](../agents/founder.md)) — turns an idea into a value-stationed path and staffs the line. A *founder* operates the *foundry*. | An agent inside foundry. |
 | **`founder-method`** | The **skill** holding the station model, discovery protocol, and test contract that `founder` follows. | A skill inside foundry. |
 | **`builder` / `builder-lead`** | The orchestration **skill** (`builder`) and the **cycle-planner agent** (`builder-lead`) one altitude below `founder`. | Skill + agent inside foundry. |
-| **FORGE** | **NOT part of this marketplace.** It is the author's *private* `~/.claude` development environment ("production facility") where these plugins were originally built. | External. Any in-plugin reference to "the FORGE" was drift and has been removed. |
+| **FORGE** | The historical origin environment where these plugins were first built — **not part of this marketplace** and not referenced by any runtime surface. Its story is archived in [`../docs/HISTORY.md`](../docs/HISTORY.md). | External / historical. |
 | **`forge`** (lowercase, in the rust references) | The shipped **worked-example project** (a Rust/WASM + Vercel app) used to illustrate `rust-webapp-rollout`. | A sample project name, not a system. |
 
 **Rule of thumb:** if a document inside a plugin says "the FORGE" as if it were *this* system, that

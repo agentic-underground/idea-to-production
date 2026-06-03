@@ -61,7 +61,7 @@ Run these, in order, every time you are invoked fresh:
 
    | Level | Scope | Owner station |
    |---|---|---|
-   | **unit** | one function/type in isolation | FORGE-CORE station |
+   | **unit** | one function/type in isolation | CORE station |
    | **module** | one crate's public surface | MODULE station |
    | **boundary** | the seam between two crates / a serialised contract | BOUNDARY station |
    | **system** | the assembled app, one platform, end-to-end | SYSTEM station |
@@ -95,7 +95,7 @@ You think in **value-stations** and **value-handlers**.
   **input contract** (what must arrive), a **handler** (who works it), an **exit gate**
   (what must be true to leave), and an **artifact** (what it produces for the next station).
 - A **value-handler** is the agent that owns a station. Handlers already in this house:
-  - `builder` — implements the slice (FORGE-CORE / MODULE work).
+  - `builder` — implements the slice (CORE / MODULE work).
   - `reviewer` — adversarial correctness/consistency review (gate-keeper).
   - `security-auditor` — input/supply-chain/availability hardening (gate-keeper).
   - `marketer` — keeps positioning cohesive with what the slice actually does.

@@ -1,5 +1,5 @@
-NAME: forge-ears
-INSTALLS_SKILL: forge-ears
+NAME: foundry-ears
+INSTALLS_SKILL: foundry-ears
 PREREQUISITES:
 - Plan file exists and is non-empty
 - doc/SPECIFICATION.ears.md exists
@@ -12,15 +12,15 @@ QUALITY_GATE:
 
 ---SKILL---
 ---
-name: forge-ears
+name: foundry-ears
 description: >
-  Write EARS specifications for an in-progress Forge feature.
+  Write EARS specifications for an in-progress FOUNDRY feature.
   Auto-installed by phase-sensor when EARS IDs are absent from SPECIFICATION.ears.md.
 ---
 
-# FORGE-EARS
+# FOUNDRY-EARS
 
-You are writing the DEV_SYSTEM **Step 1 — EARS Specification** for a Forge feature.
+You are writing the DEV_SYSTEM **Step 1 — EARS Specification** for a FOUNDRY feature.
 
 ## Steps
 
@@ -50,4 +50,4 @@ You are writing the DEV_SYSTEM **Step 1 — EARS Specification** for a Forge fea
 
 6. Commit: `docs: add EARS specification for feature [N] — step 1`
 
-7. The phase sensor will detect the new EARS IDs and install `forge-feature` for Step 2.
+7. The phase sensor will detect the new EARS IDs and install `foundry-feature` for Step 2.

@@ -1,0 +1,18 @@
+# ansible/uv.yml — Python tools via `uv tool install` (assumes uv present; see core-bootstrap.yml).
+# `uv tool install` is idempotent (re-running reports "already installed").
+---
+- name: uv-installed Python tools
+  ansible.builtin.command: "uv tool install {{ item }}"
+  register: uvt
+  changed_when: "'Installed' in uvt.stdout"
+  failed_when: uvt.rc != 0 and 'already installed' not in (uvt.stdout + uvt.stderr)
+  loop:
+    - pip-audit        # sentinel SCA (Python)
+    - debugpy          # foundry Python debugger
+    - pyright          # foundry Python LSP (alternative to npm install)
+    - ruff             # foundry Python lint/diagnostics
+    - semgrep          # sentinel SAST CLI (the MCP bundles its own; this is the standalone)
+  tags: [foundry, sentinel, lsp]
+
+# The Semgrep MCP server itself is launched ephemerally via `uvx semgrep-mcp` (no install needed),
+# but ensuring uv is present (core-bootstrap.yml) is the only requirement.

@@ -53,6 +53,19 @@ then:
 
 ---
 
+## Optional 4th lens — SAST via the Semgrep MCP
+
+SENTINEL ships a `semgrep` MCP server ([`../../.mcp.json`](../../.mcp.json), package `semgrep-mcp`,
+run via `uvx`; approve it once with `claude mcp list`). When present it adds a **static application
+security testing (SAST)** lens through the `mcp__semgrep__*` tools — code-level vulnerability
+patterns (injection, unsafe deserialisation, path traversal, weak crypto, taint flows) that the
+SCA / secret / PII lenses do not cover. Scan the changed source, fold findings into the **Supply
+Chain / Code** section, and apply the same severity → verdict rule. It is **optional and additive**:
+if the server is not approved or `uvx` is unavailable, the gate runs its three core lenses and
+records SAST as a coverage gap (no silent PASS).
+
+---
+
 ## The verdict rule
 
 | Verdict | Condition | Meaning for the line |

@@ -1,5 +1,9 @@
 # FOUNDRY Migration — traceability matrix (living record)
 
+> **Provenance archive.** This document is part of the FOUNDRY provenance archive (allowlisted by
+> the inspector). It deliberately references the historical `~/.claude` origin environment to record
+> where each artefact came from; those references are history, not runtime coupling.
+
 This file is the **anti-idea-drift contract**. It records, for every FORGE CODE artefact,
 where it went and why; the provenance of every merged-away duplicate; and the canonical
 path-rewrite map. It is updated as each migration step lands. Status legend:
