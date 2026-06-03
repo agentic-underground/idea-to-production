@@ -44,6 +44,13 @@ Add the marketplace, then install whichever plugins you want:
 Each plugin works on its own — `sentinel` and `pressroom` are useful on any repository, not just
 foundry projects.
 
+## Concepts & glossary
+
+New here? [`plugins/foundry/knowledge/glossary.md`](plugins/foundry/knowledge/glossary.md) names every
+concept, plugin, agent, skill, and command, draws the conceptual-domain tree, and settles the
+**foundry vs forge vs founder** question. The system itself is described in
+[`plugins/foundry/VALUE_FLOW.md`](plugins/foundry/VALUE_FLOW.md).
+
 ## License
 
 Dual-licensed under **MIT OR Apache-2.0**. See [LICENSE](LICENSE).

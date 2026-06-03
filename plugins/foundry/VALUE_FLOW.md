@@ -275,5 +275,7 @@ reviewer (panel)                   — gates every transition (PASS / NEEDS_REVI
 | SECURITY *(companion)* | `sentinel` plugin: `pii-audit`, `secret-scan`, `dependency-audit` (via `/security-gate`) | (parallel audit sub-agents) | — |
 | SENSOR (infra) | `phase-sensor` | (hook) | per-phase notes |
 
-The `knowledge/README.md` index says which doc answers which question. Start there when you
-need a canonical fact; start *here* when you need to understand the system.
+The [`knowledge/README.md`](knowledge/README.md) index says which doc answers which question, and
+[`knowledge/glossary.md`](knowledge/glossary.md) names every concept/plugin/agent/skill (including
+the **foundry vs forge vs founder** distinction) and draws the conceptual-domain tree. Start at the
+index for a canonical fact, the glossary for a name, and *here* to understand the system.
