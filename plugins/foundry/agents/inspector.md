@@ -112,7 +112,10 @@ Record every finding — do not suppress minor issues. A SUGGESTION is still a f
 - **Freshness**: References to tools/models/approaches that are outdated or superseded?
 - **Portability**: **No machine-specific coupling** — flag any hard-coded home or config
   directory (e.g. an absolute `~/.claude/`-style path) or assumption about where the plugin
-  is installed as a drift defect.
+  is installed as a drift defect. **Also flag load-bearing relative links that escape the plugin
+  root** (e.g. `../../../../PREREQUISITES/…` or `../../../../.claude-plugin/…`): they resolve only
+  in the marketplace source tree and dangle for a standalone-installed plugin. Such references must
+  be non-load-bearing (source-tree-only prose) with an in-plugin fallback (e.g. `requirements.tsv`).
 
 ### For agent definition files, evaluate:
 

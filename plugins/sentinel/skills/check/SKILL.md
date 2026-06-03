@@ -37,8 +37,9 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 ## Interpreting the result
 
 A `✗` is never a hard failure — SENTINEL's three core lenses also run on pattern-matching alone and
-**report the gap** rather than passing silently. Each `✗` prints its install hint; full rationale +
-Ansible fragments are in [`PREREQUISITES/20-sentinel.md`](../../../../PREREQUISITES/20-sentinel.md)
-and [`40-mcp.md`](../../../../PREREQUISITES/40-mcp.md) (Semgrep MCP).
+**report the gap** rather than passing silently. Each `✗` prints its install hint (the local source
+of truth is this skill's `requirements.tsv`); fuller rationale + Ansible fragments are in the
+marketplace `PREREQUISITES/` folder (`20-sentinel.md`, `40-mcp.md` for the Semgrep MCP) when run
+from the marketplace source tree.
 
 > [`requirements.tsv`](requirements.tsv) is the single source of truth — it is what this check runs.

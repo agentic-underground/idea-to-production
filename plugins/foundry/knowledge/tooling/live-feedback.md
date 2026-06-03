@@ -15,8 +15,10 @@
 
 FOUNDRY ships a `playwright` MCP server ([`../../.mcp.json`](../../.mcp.json), package
 `@playwright/mcp`). Web value-handlers are granted the `mcp__playwright__*` tools. The server
-manages its own browser; first use downloads it. `.mcp.json` servers require a **one-time
-approval** in the session (`claude mcp list` shows them as ⏸ pending until approved).
+manages its own browser; first use downloads it. Under **default permissions**, `.mcp.json` servers
+require a **one-time approval** in the session (`claude mcp list` shows them as ⏸ pending until
+approved) — this is the safety default, not an absolute guarantee (a permissive permission mode or
+pre-approval changes it). See [`PREREQUISITES/40-mcp.md`] in the marketplace source for details.
 
 **The dividing line — MCP for feedback, the CLI runner for the contract:**
 
