@@ -244,7 +244,7 @@ stations → handlers:
   VALIDATE→marketer  SPEC→roadmapper  DESIGN→frontend  SLICE→builder
   HARDEN→reviewer+security-auditor  SHIP→founder  LEARN→marketer
 unstaffed stations: [...]      ← defects, if any
-merge governance: <pr-approval | direct-merge | unset → will ask (§0.5)>   (adversarial review: always-on)
+merge governance: <pr-approval | direct-merge | unset → will ask (§0 step 5)>   (adversarial review: always-on)
 current project station: <where the project sits now>
 next gate: <what must be true to advance, and who holds it>
 ```

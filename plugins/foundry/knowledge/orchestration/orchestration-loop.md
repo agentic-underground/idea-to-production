@@ -99,9 +99,14 @@ loop_state:
       - Wait for resolution before retrying
 4. After step-9:
    - Perform global DoD audit against all universal gates.
-   - If all gates pass: set dod_status = satisfied → mark item COMPLETE.
+   - If all gates pass, branch on merge governance ([`../protocols/merge-governance.md`](../protocols/merge-governance.md)):
+     - **`direct-merge`** (sentinel `DELIVERY_COMPLETE`): set dod_status = satisfied → mark item COMPLETE.
+     - **`pr-approval`** (sentinel `AWAITING_MERGE`): the work is DoD-satisfied but **not on `main`** — hold
+       the item at `STATUS: AWAITING MERGE` (a terminal-pending state; the loop takes no further phase
+       action), and mark COMPLETE only when the human's merge produces `DELIVERY_COMPLETE`.
    - If any gate fails: increment iteration, reset owning stage to pending, route there.
-5. Stop only when dod_status = satisfied AND critical_findings_open = 0.
+5. Stop only when dod_status = satisfied AND critical_findings_open = 0 (under `pr-approval`, the item
+   stops the active loop at AWAITING MERGE; final COMPLETE is recorded on human merge).
 ```
 
 ---
@@ -120,7 +125,7 @@ loop_state:
 | step-story-tests | `ds-step-story-tests` | `GREEN_RUN_COMPLETE` | `STORY_PROVEN` |
 | step-7-sync | `ds-step-7-sync` | `STORY_PROVEN` | `SYNC_COMPLETE` |
 | step-8-commit-message | `ds-step-8-commit-message` | `SYNC_COMPLETE` | `COMMIT_MSG_READY` |
-| step-9-commit-push | `ds-step-9-commit-push` | `COMMIT_MSG_READY` | `DELIVERY_COMPLETE` |
+| step-9-commit-push | `ds-step-9-commit-push` | `COMMIT_MSG_READY` | `DELIVERY_COMPLETE` (direct-merge) / `AWAITING_MERGE` (pr-approval) |
 
 > **Story step enforcement:** `ds-step-7-sync` MUST validate that `STORY_PROVEN`
 > is present in its incoming sentinel chain. If absent, the orchestrator returns
