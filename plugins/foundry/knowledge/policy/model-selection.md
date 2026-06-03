@@ -11,7 +11,7 @@ cannot silently age out).
 |---|---|---|---|
 | **Spec & narrative** — EARS, Gherkin feature docs, story tests, ADRs | **opus** | high-judgement synthesis; an error here propagates downstream | `ds-step-1-ears`, `ds-step-2-feature-docs`, `ds-step-story-tests`, `handler-architect` |
 | **Review** — every reviewer role + the inspector | **opus** | a false PASS costs more in rework than the opus tokens saved | `reviewer`, `inspector` |
-| **Test code authoring** — failing tests, coverage chasing | **haiku** | high-volume, low-judgement, repetitive | `ds-step-3-tests`, `coverage-loop-agent` |
+| **Test code authoring** — failing tests (coordinates), pinning unpinned behaviour for density | **haiku** | high-volume, low-judgement, repetitive | `ds-step-3-tests`, `coverage-loop-agent` |
 | **Everything else** — planning, implementation, sync, commit, orchestration | **sonnet** | the capable default | orchestrators, `ds-step-{0,4,5,6,7,8,9}`, `flaky-test-fixer` |
 
 **Value handlers** (`handler-{python,js,react,fastapi,css,playwright,vanilla-js,rust,rust-webapp}`) carry `model: inherit`

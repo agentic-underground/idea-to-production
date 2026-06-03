@@ -8,14 +8,19 @@ description: >
   test coverage, coverage gaps, coverage loops, or says things like "is this
   clean?", "how good is this code?", "review my architecture", "find smells",
   "improve my tests", or "chase coverage". Also triggers the /coverage-loop
-  slash command for automated coverage-gap remediation.
+  slash command, which finds behaviour not yet pinned by a test and adds the
+  missing coordinates (100% coverage is the floor that results, not the target).
 ---
 
 # Code Quality Skill
 
-A comprehensive code quality analyser and coverage-chasing orchestrator.
+A comprehensive code quality analyser and behaviour-pinning orchestrator.
 Covers the full spectrum from micro-cleanliness to macro-architecture,
-anchored in the principle that **100% coverage is the floor, not the goal**.
+anchored in the principle that **100% coverage is the floor, not the goal** —
+a unit test is a *coordinate* that pins the working solution in logical space;
+the real target is **coverage density** (happy / unhappy / abuse paths per
+behaviour are table-stakes), and full coverage falls out of pinning every
+behaviour. See [`${CLAUDE_PLUGIN_ROOT}/knowledge/testing/test-policy.md`](../../knowledge/testing/test-policy.md).
 
 ---
 
@@ -26,7 +31,7 @@ This skill has two primary modes. Identify which one the user wants:
 | Mode | Trigger | What happens |
 |---|---|---|
 | **Analysis** | "review my code", "find smells", "is this SOLID?" | Full quality analysis across all dimensions → report |
-| **Coverage Loop** | `/coverage-loop`, "chase coverage", "fill gaps" | Automated loop: find gaps → write tests → repeat |
+| **Coverage Loop** | `/coverage-loop`, "chase coverage", "fill gaps" | Automated loop: find unpinned behaviour → add the missing coordinate(s) → repeat (coverage rises as a consequence) |
 
 ---
 
@@ -48,12 +53,15 @@ Before analysing, orient yourself:
 
 Before applying any quality lens, establish the coverage baseline.
 
-> **THE FORGE MANDATE: 100% coverage is not a goal. It is the definition of done.**
+> **THE FOUNDRY MANDATE: 100% coverage is the floor, not a goal. It is the definition of done.**
 > A feature is not complete. A bug is not fixed. A refactor is not finished.
-> Code is not shipped — until every line is covered by a test.
-> Any uncovered line is a known unknown: behaviour that may be wrong and cannot
-> be detected by the test suite. Ship known unknowns and you are not shipping
-> software — you are shipping optimism.
+> Code is not shipped — until every behaviour is *pinned* by a test (a coordinate
+> locating the correct implementation). An uncovered line is an *unpinned*
+> behaviour: a known unknown that may be wrong and cannot be detected by the suite.
+> Ship known unknowns and you are not shipping software — you are shipping optimism.
+> Coverage is what results from pinning every behaviour; the variable you actually
+> work is **coverage density** — happy, unhappy, and abuse paths per behaviour are
+> table-stakes, not extras.
 
 The only legitimate path to less-than-100% is **explicit exclusion** via
 `# pragma: no cover` (Python), `/* istanbul ignore next */` (JS), or the
@@ -162,10 +170,13 @@ Have you thought about...
 
 ## Mode 2: Coverage Loop (`/coverage-loop`)
 
-> **Goal:** Systematically find the file with the worst coverage, attempt to
-> increase it by writing tests, and loop until done or the user stops.
+> **Purpose:** Systematically find the behaviour least pinned by tests (the file
+> with the most unpinned lines), add the missing coordinate(s) that locate its
+> correct implementation, and loop until every behaviour is pinned or the user
+> stops. Rising coverage is the *consequence* of pinning behaviour, not the aim;
+> the aim is density — every behaviour exercised on happy, unhappy, and abuse paths.
 
-See `${CLAUDE_PLUGIN_ROOT}/agents/coverage-loop-agent.md` for the full loop agent definition.
+See [`${CLAUDE_PLUGIN_ROOT}/agents/coverage-loop-agent.md`](../../agents/coverage-loop-agent.md) for the full loop agent definition.
 
 ### Quick summary of the loop:
 
@@ -185,7 +196,7 @@ LOOP:
   9. Ask: "Loop until done?" or "Stop here?"
 ```
 
-To start the loop, load `${CLAUDE_PLUGIN_ROOT}/agents/coverage-loop-agent.md` and delegate to it.
+To start the loop, load [`${CLAUDE_PLUGIN_ROOT}/agents/coverage-loop-agent.md`](../../agents/coverage-loop-agent.md) and delegate to it.
 
 ---
 
@@ -211,14 +222,14 @@ found in this session. Generic suggestions are not permitted.
 
 Load these as needed — do not load all at once:
 
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/clean-code.md` — Uncle Bob's Clean Code principles
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid.md` — SOLID with OOP examples
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/dry-yagni.md` — DRY, YAGNI, KISS
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/clean-architecture.md` — Layers, dependency rule, boundaries
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/hexagonal.md` — Ports & Adapters pattern
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/ddd.md` — DDD tactical and strategic patterns
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/specs/bdd-gherkin.md` — TDD/BDD disciplines and red-green-refactor
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/twelve-factor.md` — 12-Factor App checklist
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/pragmatic.md` — Pragmatic Programmer principles
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/testing/coverage-commands.md` — How to run coverage for each stack
-- `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/untestable-patterns.md` — Known untestable patterns and fixes
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/clean-code.md`](../../knowledge/architecture/clean-code.md) — Uncle Bob's Clean Code principles
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid.md`](../../knowledge/architecture/solid.md) — SOLID with OOP examples
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/dry-yagni.md`](../../knowledge/architecture/dry-yagni.md) — DRY, YAGNI, KISS
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/clean-architecture.md`](../../knowledge/architecture/clean-architecture.md) — Layers, dependency rule, boundaries
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/hexagonal.md`](../../knowledge/architecture/hexagonal.md) — Ports & Adapters pattern
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/ddd.md`](../../knowledge/architecture/ddd.md) — DDD tactical and strategic patterns
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/specs/bdd-gherkin.md`](../../knowledge/specs/bdd-gherkin.md) — TDD/BDD disciplines and red-green-refactor
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/twelve-factor.md`](../../knowledge/architecture/twelve-factor.md) — 12-Factor App checklist
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/pragmatic.md`](../../knowledge/architecture/pragmatic.md) — Pragmatic Programmer principles
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/testing/coverage-commands.md`](../../knowledge/testing/coverage-commands.md) — How to run coverage for each stack
+- [`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/untestable-patterns.md`](../../knowledge/architecture/untestable-patterns.md) — Known untestable patterns and fixes

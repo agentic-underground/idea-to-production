@@ -16,7 +16,7 @@ pytest --cov=src --cov-report=xml --cov-report=term-missing tests/
 # Output: coverage.xml (in project root)
 # Also useful: htmlcov/index.html (human-readable)
 
-# THE FORGE MANDATE: enforce 100% (fail CI if any line is uncovered)
+# THE FOUNDRY MANDATE: enforce 100% (fail CI if any line is uncovered)
 pytest --cov=src --cov-fail-under=100 tests/
 
 # Legacy threshold (do not use — 90% means 10% of your code is unverified)

@@ -18,12 +18,12 @@ The `code-quality` skill gives Claude Code two capabilities:
 Clean Code · SOLID · DRY/YAGNI/KISS · Clean Architecture · Hexagonal Architecture ·
 Domain-Driven Design · TDD/BDD · 12-Factor App · Pragmatic Programming
 
-**2. Coverage Loop** (`/coverage-loop`) — Automated test-writing loop that:
-- Finds the file with the worst coverage
-- Writes tests to fill the gap
-- Reports when a gap cannot be filled (and why)
+**2. Coverage Loop** (`/coverage-loop`) — Automated behaviour-pinning loop that:
+- Finds the behaviour least pinned by tests (most unpinned lines)
+- Adds the coordinate(s) that pin it
+- Reports when a behaviour cannot be pinned without a structural change (and why)
 - Offers a refactoring plan for structural gaps
-- Loops until 100% coverage or the user stops
+- Loops until every behaviour is pinned (100% coverage is the floor that results) or the user stops
 - Writes a disaster-recovery log to `IN_PROGRESS.md`
 
 ---
@@ -99,8 +99,8 @@ but not shared with your team via the repository.
 mkdir -p ~/.claude/skills
 mkdir -p ~/.claude/agents
 
-cp -r /path/to/code-quality ${CLAUDE_PLUGIN_ROOT}/skills/code-quality
-# coverage-loop-agent.md is already at ${CLAUDE_PLUGIN_ROOT}/agents/ in the FORGE install
+cp -r /path/to/code-quality ~/.claude/skills/code-quality
+# coverage-loop-agent.md ships alongside it in the foundry plugin's agents/ directory
 ```
 
 No git commit needed — this is your personal configuration.
@@ -170,7 +170,7 @@ You should see `coverage-loop-agent` in the Library tab.
 
 **Or naturally:**
 ```
-> Chase coverage until we hit 100%
+> Pin every behaviour the tests are missing
 > Fill the coverage gaps
 > Run the coverage loop
 ```

@@ -23,6 +23,27 @@ changes.
 
 ---
 
+## Coverage is the floor; density is the variable
+
+100% line+branch coverage is the **floor** — the consequence of pinning every
+behaviour, never a target to "chase." The thing you actually work is **coverage
+density**: how many distinct behavioural axes each unit is pinned along.
+
+> **THE ONLY WAY:** For every behaviour, the **happy / unhappy / abuse** triad is
+> **table-stakes**, not extras. Happy = correct input → expected output. Unhappy =
+> missing/invalid input → graceful, asserted failure. Abuse = boundary values,
+> malformed/hostile input, resistance. A unit that is 100% covered by happy-path
+> tests alone is *under-pinned* — it has high coverage and low density, and the gate
+> has been satisfied without the solution being located.
+
+Density is why a test is a **coordinate** (§Coordinates in practice): each axis
+(empty, max, unicode, the error branch, the abuse case) narrows the region until
+exactly one implementation satisfies all of them. Chasing the coverage *number*
+optimises the wrong quantity; pinning every behaviour along every axis yields 100%
+as a side-effect and locates the working solution as the point.
+
+---
+
 ## Coordinates in practice — how to place a unit test
 
 A failing unit test is a **coordinate in multidimensional logical space** (VALUE_FLOW §7): an

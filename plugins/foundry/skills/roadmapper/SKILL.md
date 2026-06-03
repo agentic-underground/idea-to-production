@@ -172,7 +172,7 @@ is the shared record of intent; a local-only edit is invisible to other agents a
 
 #### Commit message format for roadmap-only changes
 
-Use the FORGE commit format (from `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/commit-message.md`)
+Use the FOUNDRY commit format (from `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/commit-message.md`)
 adapted for a documentation-only change. The TESTING line is omitted when no code changes.
 
 **Adding a new entry:**
@@ -332,8 +332,8 @@ Feature: User password reset
 - **Validate tests against the spec**: before running, re-read the EARS statements and `.feature` file and confirm each test is asserting the correct expectation under the correct condition. Fix any mismatches *now*, before running.
 - Do not write implementation code yet. Tests must be red (failing) at this point because the feature does not exist.
 - **UI features:** For every UI element in the "Human Interface Test Plan", write a Playwright test skeleton that exercises the full gesture path listed there. These tests will be RED because the DOM elements do not yet exist — that is correct. They define what the implementation must produce.
-- **THE FORGE COVERAGE MANDATE:** Every line of production code you are about to write in Step 5 must be reachable by a test written in Step 3. This means: for every branch, every error path, every guard clause, every exception handler — write a test that hits it. A test suite that covers only happy paths is incomplete. The test must exist *before* the code. If you cannot see how to test a path, redesign the code so it can be tested — do not skip the test.
-- **THE FORGE FLAKY TEST BAN:** A test is flaky when it sometimes passes and sometimes fails without any code change. Flaky tests are **forbidden**. They are worse than no test: they erode trust in the suite and mask real failures. When writing tests:
+- **THE FOUNDRY DENSITY MANDATE:** Every behaviour you are about to implement in Step 5 must be *pinned* by a coordinate written in Step 3 — a test that locates the correct implementation. For every branch, every error path, every guard clause, every exception handler, write a test that hits it; for every behaviour, the happy / unhappy / abuse triad is table-stakes. A suite that covers only happy paths has high coverage and low density — it is under-pinned, not done. The test must exist *before* the code (it is the location, not a description). If you cannot see how to pin a path, redesign the code so it can be — do not skip the coordinate. 100% coverage is the floor that results, never the target.
+- **THE FOUNDRY FLAKY TEST BAN:** A test is flaky when it sometimes passes and sometimes fails without any code change. Flaky tests are **forbidden**. They are worse than no test: they erode trust in the suite and mask real failures. When writing tests:
   - **Never use arbitrary timeouts** (`waitForTimeout`, `sleep`, `time.sleep`, `setTimeout` in test code). Replace every timing hack with a deterministic assertion — poll for the specific DOM state, API response, or condition you actually care about.
   - **Never use `retries` to paper over flakiness.** Retries are permitted only as a temporary diagnostic measure while tracking down the root cause, never as a permanent solution.
   - If a test is flaky, treat it as a bug with the same priority as a production defect. Fix the root cause (usually: replace timing hack with proper wait, or fix a race in the production code).
@@ -369,12 +369,12 @@ Feature: User password reset
 - For each failure: diagnose, fix the implementation, re-run. Never fix a test to make it pass unless the test itself is in error (see step 5 rule above).
 - Check for regressions: no previously-passing test should now fail.
 - When all tests are green, do a final read-through of the implementation against the EARS spec and `.feature` file. Confirm the spirit of the requirement is met, not just the letter of the tests.
-- **THE FORGE COVERAGE MANDATE — HARD GATE:** Run coverage and confirm **100%** before proceeding to Step 7. This is not optional. This is not aspirational. This is the definition of done.
-  - Every uncovered line is a defect: behaviour that exists but cannot be verified.
+- **THE FOUNDRY COVERAGE FLOOR — HARD GATE:** Run coverage and confirm **100%** before proceeding to Step 7. 100% is the floor (the consequence of pinning every behaviour), not a goal; it is the definition of done. This is not optional. This is not aspirational.
+  - Every uncovered line is a defect: an *unpinned* behaviour that exists but cannot be verified.
   - If coverage is below 100%: identify every uncovered line, write the missing test, re-run. Do not proceed until the number is 100.
   - The only valid alternative to a test is an explicit `# pragma: no cover` annotation with a written justification in the same comment (e.g. dead code, OS-specific branch, intentionally untestable platform shim). Silent exclusions are forbidden.
   - If you shipped a feature and coverage was not 100%, go back and fix it — the feature is not done.
-- **THE FORGE FLAKY TEST BAN — SECOND CHECK:** After driving to green, run the full suite **three times in succession** without `--retries`. If any test fails in any run that passed in another, it is flaky. Fix it before proceeding. A suite that is green-once is not done; a suite that is green-three-times-in-a-row is done.
+- **THE FOUNDRY FLAKY TEST BAN — SECOND CHECK:** After driving to green, run the full suite **three times in succession** without `--retries`. If any test fails in any run that passed in another, it is flaky. Fix it before proceeding. A suite that is green-once is not done; a suite that is green-three-times-in-a-row is done.
 
 ---
 
