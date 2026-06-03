@@ -46,7 +46,7 @@ checks *your credentials*, `dependency-audit` checks *the code you didn't write 
 
 ## Ecosystem detection
 
-Detect by manifest/lockfile presence (see `references/ECOSYSTEMS.md` for the full table):
+Detect by manifest/lockfile presence (see [`references/ECOSYSTEMS.md`](references/ECOSYSTEMS.md) for the full table):
 
 | Ecosystem | Manifest | Lockfile | Native advisory tool |
 |---|---|---|---|
@@ -103,7 +103,7 @@ full vuln coverage when only static checks ran).
 
 ## Self-improvement covenant
 
-- Every new ecosystem → add it to `references/ECOSYSTEMS.md`.
+- Every new ecosystem → add it to [`references/ECOSYSTEMS.md`](references/ECOSYSTEMS.md).
 - Every new advisory source or better native tool → record the command and JSON shape.
 - Every false positive (e.g. an intentionally-pinned old package) → note the allowlist pattern.
 
@@ -111,4 +111,4 @@ full vuln coverage when only static checks ran).
 
 | Document | Purpose |
 |---|---|
-| `references/ECOSYSTEMS.md` | Per-ecosystem manifests, lockfiles, advisory commands, JSON parsing notes |
+| [`references/ECOSYSTEMS.md`](references/ECOSYSTEMS.md) | Per-ecosystem manifests, lockfiles, advisory commands, JSON parsing notes |

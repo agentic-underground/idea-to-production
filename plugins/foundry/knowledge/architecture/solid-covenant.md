@@ -69,8 +69,8 @@ approval before any change is applied.
 
 - **System:** FOUNDRY plugin — the value-flow production system
 - **Covenant version:** 1.2 (adds the prime law — *halve the distance to perfection*)
-- **Canonical home:** `knowledge/architecture/solid-covenant.md`
-- **See also:** `architecture/solid.md` (the SOLID *principles* reference for code)
+- **Canonical home:** [`knowledge/architecture/solid-covenant.md`](solid-covenant.md)
+- **See also:** [`architecture/solid.md`](solid.md) (the SOLID *principles* reference for code), and the marketplace [`glossary.md`](../glossary.md)
 
 <!-- END SOLID REPLICATION FRAGMENT -->
 ---

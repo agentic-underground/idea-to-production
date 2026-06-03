@@ -120,4 +120,4 @@ class cannot pass again.
 ## References
 
 The gate carries no detection logic of its own — it composes the three sub-skills. See:
-`../pii-audit/SKILL.md`, `../secret-scan/SKILL.md`, `../dependency-audit/SKILL.md`.
+[`../pii-audit/SKILL.md`](../pii-audit/SKILL.md), [`../secret-scan/SKILL.md`](../secret-scan/SKILL.md), [`../dependency-audit/SKILL.md`](../dependency-audit/SKILL.md).

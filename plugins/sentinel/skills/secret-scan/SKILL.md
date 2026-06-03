@@ -49,7 +49,7 @@ the same repo, deliberately kept separate so neither dilutes the other.
 ## Detection strategy — two complementary methods
 
 1. **Known-pattern matching** — regex families for well-known token shapes (see
-   `references/SECRET-PATTERNS.md`). High precision, low false-positive: a string matching
+   [`references/SECRET-PATTERNS.md`](references/SECRET-PATTERNS.md)). High precision, low false-positive: a string matching
    `gh[ps]_[A-Za-z0-9]{36}` is almost certainly a GitHub token.
 2. **High-entropy heuristic** — flag string literals assigned to suspicious key names
    (`secret`, `token`, `key`, `password`, `passwd`, `auth`, `credential`) whose value has high
@@ -87,7 +87,7 @@ re-leak into the report (which is itself committed).
   remediation, appendix of files scanned).
 - **Via `/security-gate`:** return the findings section for consolidation into `SECURITY-REPORT.md`.
 
-Remediation guidance lives in the pii-audit skill's `references/REMEDIATION.md` (rotate → purge
+Remediation guidance lives in the pii-audit skill's [`references/REMEDIATION.md`](references/REMEDIATION.md) (rotate → purge
 history → move to a secrets manager / env var → add to `.gitignore`); secret-scan reuses it
 rather than restating.
 
@@ -121,7 +121,7 @@ tests/fixtures/fake-keys.json
 
 ## Self-improvement covenant
 
-- Every token family that slips through → add a regex to `references/SECRET-PATTERNS.md`.
+- Every token family that slips through → add a regex to [`references/SECRET-PATTERNS.md`](references/SECRET-PATTERNS.md).
 - Every false positive → add a narrow allowlist entry and note the shape.
 - Every new provider/key format → document its prefix and length.
 
@@ -131,5 +131,5 @@ This skill compounds: the next scan starts from a stricter baseline than the las
 
 | Document | Purpose |
 |---|---|
-| `references/SECRET-PATTERNS.md` | Regex families per provider, entropy thresholds, allowlist |
-| `../pii-audit/references/REMEDIATION.md` | How to remediate a leaked secret (rotate, purge, vault) |
+| [`references/SECRET-PATTERNS.md`](references/SECRET-PATTERNS.md) | Regex families per provider, entropy thresholds, allowlist |
+| [`../pii-audit/references/REMEDIATION.md`](../pii-audit/references/REMEDIATION.md) | How to remediate a leaked secret (rotate, purge, vault) |
