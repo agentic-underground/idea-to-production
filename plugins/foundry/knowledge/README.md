@@ -31,6 +31,7 @@ restate them. If a fact lives here, there is exactly one copy of it.
 | Human-readable intent handoff between agents | [`protocols/handoff-schema.md`](protocols/handoff-schema.md) |
 | Commit message structure (WHY/WHAT/TESTING/ROADMAP) | [`protocols/commit-message.md`](protocols/commit-message.md) |
 | The Definition-of-Done template | [`protocols/definition-of-done.md`](protocols/definition-of-done.md) |
+| Who merges a passing change (PR-approval vs direct-merge autonomy; always-on review) | [`protocols/merge-governance.md`](protocols/merge-governance.md) |
 | The per-item lifecycle loop + routing | [`orchestration/orchestration-loop.md`](orchestration/orchestration-loop.md) |
 | Priority → tier → token-budget mapping | [`orchestration/tier-assignment.md`](orchestration/tier-assignment.md) |
 | All agent roles, capabilities, spawn conditions | [`orchestration/agent-roster.md`](orchestration/agent-roster.md) |

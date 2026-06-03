@@ -158,12 +158,28 @@ Emitted by `ds-step-8-commit-message` after commit message passes reviewer.
 SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{commit_hash}
 ```
 
-Status is `COMPLETE` when the commit has been pushed and the roadmap entry
-updated. Payload: short commit hash (7 chars).
-Emitted by `ds-step-9-commit-push` after push confirmed. This is the true
-end-of-life sentinel — FOUNDRY's IDEA_COST.jsonl record is written only when
-both `STORY_PROVEN` (Phase 5) and `DELIVERY_COMPLETE` (this step) are present
-in the chain.
+Status is `COMPLETE` when the change is **on `main`** and the roadmap entry updated.
+Payload: short commit hash (7 chars). This is the true end-of-life sentinel — FOUNDRY's
+IDEA_COST.jsonl record is written only when both `STORY_PROVEN` (Phase 5) and
+`DELIVERY_COMPLETE` (this step) are present in the chain.
+
+**Mode-aware** (per [`merge-governance.md`](merge-governance.md)): emitted by `ds-step-9-commit-push`
+only when the change actually reaches `main` — immediately under `direct-merge` (it merges + pushes),
+or **deferred until the human merges the PR** under `pr-approval` (where `AWAITING_MERGE` is emitted
+first — see below).
+
+### AWAITING_MERGE
+
+```
+SENTINEL::AWAITING_MERGE::ROADMAP-{N}::AWAITING_MERGE::{pr_url_or_branch}
+```
+
+Emitted by `ds-step-9-commit-push` under **`pr-approval`** governance when the change is built,
+has **PASSed** the adversarial review (`/foundry:pr-review`), and its **PR is open** but not yet
+merged. Payload: PR URL (or branch name). It is a **terminal-pending** signal: the item rests at
+roadmap `STATUS: AWAITING MERGE`, the loop takes no further phase action, and it is **superseded by
+`DELIVERY_COMPLETE`** once the human merges. It does **not** trigger IDEA_COST recording (the change
+is not yet on `main`).
 
 ---
 
@@ -270,3 +286,22 @@ before doing any work.
 Sentinels are passed as context strings, not stored in files.
 For audit purposes, FOUNDRY appends the full sentinel chain for each item
 to `doc/FOUNDRY_PLAN.md` under `## Sentinel Audit Log` after completion.
+
+---
+
+## Adding a new sentinel or roadmap status — propagation checklist
+
+A new pipeline token must be **registered in every contract that defines or consumes it**, not just
+the agent that emits it (the recurring drift: emitter updated, contracts not). When you add one,
+update all that apply in the same change:
+
+- [ ] **This registry** (`context-sentinel.md`) — grammar, status, payload, ordering/supersession.
+- [ ] **`orchestration/orchestration-loop.md`** — Stage Routing Table output column + terminal-state logic.
+- [ ] **`roadmapper/SKILL.md`** — the `STATUS:` enum + a one-line definition (for a new roadmap status).
+- [ ] **The emitting agent** (`agents/ds-step-*.md`) — emission + handoff schema.
+- [ ] **`lifecycle-states/states/*.md`** — exit criteria, if the token gates a state transition.
+- [ ] **`protocols/definition-of-done.md`** — the §Step-N done criteria AND the §Orchestrator Exit
+      Condition sentinel-chain rule (a prose-duplicate of the closure contract — easy to miss).
+- [ ] **`roadmapper/SKILL.md`** — both the entry-schema `STATUS:` enum *and* the §STEP-N delivery
+      procedure (a second, procedural copy of the flow).
+- [ ] **`glossary.md`** — if the token introduces a new user-facing term.

@@ -142,7 +142,8 @@ git commit          # Paste the commit message from Step 8
 git push origin <branch>
 ```
 
-After pushing:
-1. Update the roadmap entry: `STATUS: IN PROGRESS` → `STATUS: COMPLETE` + completion date
+After pushing (per merge governance — [`../../../knowledge/protocols/merge-governance.md`](../../../knowledge/protocols/merge-governance.md)):
+1. Update the roadmap entry: under **direct-merge** `STATUS: IN PROGRESS` → `STATUS: COMPLETE` +
+   completion date; under **pr-approval** → `STATUS: AWAITING MERGE` (→ COMPLETE on human merge)
 2. Update `doc/[SLUG]_PLAN.md`: mark checklist complete, add commit hash and date
 3. If a `CHANGELOG.md` exists, add an entry

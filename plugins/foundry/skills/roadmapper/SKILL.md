@@ -90,9 +90,15 @@ Each roadmap entry has the following structure:
 
 ```markdown
 ## [N] TITLE
-> STATUS: PENDING | IN PROGRESS | COMPLETE | DEFERRED
+> STATUS: PENDING | IN PROGRESS | AWAITING MERGE | COMPLETE | DEFERRED
 > ADDED: YYYY-MM-DD
 > PRIORITY: HIGH | MEDIUM | LOW
+
+> **`AWAITING MERGE`** — used only under `pr-approval` merge governance
+> ([`../../knowledge/protocols/merge-governance.md`](../../knowledge/protocols/merge-governance.md)):
+> the change is built, has **PASSed** the adversarial review, and its PR is open for a human to
+> merge. It is *not* `IN PROGRESS` (so the phase-sensor takes no further phase action) and *not yet*
+> `COMPLETE` (it isn't on `main`); it flips to `COMPLETE` when the human merges the PR.
 
 **Brief Description**
 One to three sentences. Plain language. What the feature does and why it matters.
@@ -414,7 +420,10 @@ git push origin <branch>
 
 After pushing:
 
-1. Update the roadmap entry: change `STATUS: IN PROGRESS` → `STATUS: COMPLETE` and add a completion date.
+1. Update the roadmap entry per **merge governance** ([`../../knowledge/protocols/merge-governance.md`](../../knowledge/protocols/merge-governance.md)):
+   under **direct-merge** (merged to `main`) → `STATUS: IN PROGRESS` → `STATUS: COMPLETE` + completion date;
+   under **pr-approval** (branch pushed, PR opened) → `STATUS: IN PROGRESS` → `STATUS: AWAITING MERGE`,
+   flipping to `COMPLETE` only once the human merges the PR.
 2. Update `doc/[FEATURE_TITLE]_PLAN.md`: mark the checklist complete, add a "Completed" section with the commit hash and date.
 3. If the project uses a changelog (`CHANGELOG.md`), add an entry.
 
