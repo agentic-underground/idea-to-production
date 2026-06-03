@@ -1,0 +1,85 @@
+# ── DESTINATION: each crates/*/Cargo.toml ────────────────────────────────────
+# GOVERNING DOC: knowledge/01-architecture-blueprint.md §4 (dioxus feature discipline)
+# This file holds the four per-crate manifests. Copy the relevant section into the
+# matching crates/<name>/Cargo.toml. The one-way dependency LAW is encoded in the
+# [dependencies] of each: core depends on nothing in-workspace; ui -> core; web ->
+# ui; server -> core. NEVER add a reverse edge.
+#
+# The dioxus feature split is critical (see 01 §4 / 06 A2):
+#   - workspace dep declares authoring features only (macro/html/signals/hooks)
+#   - ui  uses `dioxus = { workspace = true }`           (authoring only)
+#   - web uses `features = ["web", "launch"]`            (renderer + launch)
+#   - mobile uses `features = ["mobile", "launch"]`      (renderer + launch)
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+# ===== crates/core/Cargo.toml =================================================
+# The pure domain. Depends on nothing in-workspace. serde for (de)serialisation,
+# thiserror for typed errors, proptest (dev) for invariant coordinates.
+[package]
+name = "{{crate_prefix}}-core"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+proptest = "1"
+
+
+# ===== crates/server/Cargo.toml ===============================================
+# HTTP-agnostic glue. server -> core only.
+[package]
+name = "{{crate_prefix}}-server"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+{{crate_prefix}}-core = { path = "../core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+
+# ===== crates/ui/Cargo.toml ===================================================
+# Shared Dioxus components. ui -> core. Authoring features ONLY (no renderer).
+[package]
+name = "{{crate_prefix}}-ui"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+dioxus = { workspace = true }
+{{crate_prefix}}-core = { path = "../core" }
+
+
+# ===== crates/web/Cargo.toml ==================================================
+# The WASM entry point. web -> ui. Adds the `web` renderer + `launch`.
+[package]
+name = "{{crate_prefix}}-web"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+dioxus = { workspace = true, features = ["web", "launch"] }
+{{crate_prefix}}-ui = { path = "../ui" }
+
+
+# ===== crates/mobile/Cargo.toml (OPTIONAL extension) ==========================
+# The native entry point (iOS/Android). mobile -> ui. Adds the `mobile` renderer
+# + `launch`. Shares the EXACT same `App` as web. Out of scope for web+API builds,
+# but keeping the crate present is why the GTK/WebKit/xdo libs are needed (03 §5).
+[package]
+name = "{{crate_prefix}}-mobile"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+dioxus = { workspace = true, features = ["mobile", "launch"] }
+{{crate_prefix}}-ui = { path = "../ui" }

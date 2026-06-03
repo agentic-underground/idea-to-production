@@ -1,0 +1,66 @@
+# ── DESTINATION: Cargo.toml (repo root) ──────────────────────────────────────
+# GOVERNING DOC: knowledge/01-architecture-blueprint.md §3 + 04 §2
+# THE HYBRID MANIFEST: this file is BOTH a [workspace] AND a [package]. The
+# package half owns the Vercel serverless function as a [[bin]] — the layout the
+# official @vercel/rust runtime auto-detects. There is NO separate api/Cargo.toml.
+# Dependency arrows point one way only: core <- ui <- {web, mobile}; server -> core.
+# ─────────────────────────────────────────────────────────────────────────────
+[workspace]
+resolver = "2"
+members = [
+    "crates/core",
+    "crates/ui",
+    "crates/web",
+    "crates/server",
+    "crates/mobile",
+    "xtask",
+]
+
+# The package half: owns the Vercel serverless function as a `[[bin]]`. This is
+# the layout Vercel's official Rust runtime auto-detects (root Cargo.toml +
+# `[[bin]]` -> api/*.rs). It replaces the deprecated community `vercel-rust`
+# builder. The bin still builds under `cargo {clippy,test} --workspace`, keeping
+# it on the CI gate.
+[package]
+name = "{{project}}"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[[bin]]
+name = "{{fn_name}}"
+path = "api/{{fn_name}}.rs"
+
+[dependencies]
+vercel_runtime = "2"
+tokio = { version = "1", features = ["macros"] }
+serde_json = { workspace = true, features = ["raw_value"] }
+{{crate_prefix}}-server = { path = "crates/server" }
+
+# Centralise versions here so every crate stays in lockstep. Bumping Dioxus is a
+# one-line change. This is also where an adversarial review agent looks first.
+[workspace.dependencies]
+# Renderer-agnostic authoring features only (the component macros, RSX, signals,
+# and hooks). Each platform crate opts into its own renderer (`web`/`mobile`) and
+# `launch` on top of these. `default-features = false` keeps `devtools`/`logger`
+# and any renderer out of the shared baseline.
+dioxus = { version = "0.7", default-features = false, features = ["macro", "html", "signals", "hooks"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+authors = ["{{project}}"]
+repository = "https://github.com/YOUR_USERNAME/{{project}}"
+
+# Optimise WASM output for size in release. wasm bundle size is a real UX cost
+# in the browser, so this is not premature optimisation.
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

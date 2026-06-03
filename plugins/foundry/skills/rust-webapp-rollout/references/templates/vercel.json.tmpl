@@ -1,0 +1,15 @@
+// ── DESTINATION: vercel.json (repo root, next to the hybrid Cargo.toml) ───────
+// GOVERNING DOC: knowledge/04-vercel-rust-runtime.md §4
+// Configures ONLY the web build + output dir. There is NO "functions" block:
+// the official @vercel/rust runtime detects the function from the root
+// Cargo.toml [[bin]]. `--package {{crate_prefix}}-web` is mandatory (dx can't
+// infer the crate in a multi-binary workspace). The copy uses no `|| true` so it
+// fails loudly rather than shipping a blank site.
+//
+// NOTE: strip these `//` comments before use — vercel.json is strict JSON.
+// ──────────────────────────────────────────────────────────────────────────────
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "mkdir -p public && dx bundle --platform web --package {{crate_prefix}}-web --release && cp -r target/dx/{{crate_prefix}}-web/release/web/public/* public/",
+  "outputDirectory": "public"
+}

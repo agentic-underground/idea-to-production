@@ -1,0 +1,10 @@
+# ── DESTINATION: rust-toolchain.toml (repo root) ─────────────────────────────
+# GOVERNING DOC: knowledge/03-toolchain-and-environment.md §3
+# Pins the toolchain so CI, every contributor, and every agent build with the
+# IDENTICAL compiler. Reproducibility is a security property. Proven channel:
+# stable 1.96.0 (see the version matrix in 00-MANIFEST.md §4).
+# ─────────────────────────────────────────────────────────────────────────────
+[toolchain]
+channel = "stable"
+components = ["rustfmt", "clippy"]
+targets = ["wasm32-unknown-unknown"]

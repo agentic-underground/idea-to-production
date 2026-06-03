@@ -1,0 +1,121 @@
+// ── DESTINATION: crates/ui/src/<component>.rs  (+ pub use in crates/ui/src/lib.rs) ──
+// GOVERNING DOC: knowledge/01 §4 (dioxus feature discipline)
+// A shared Dioxus RSX component. Written ONCE here, rendered on every platform
+// (web + mobile both mount it). It SURFACES core validation directly in the UI —
+// it does not re-implement validation. All decidable logic stays in the core.
+//
+// crates/ui/src/lib.rs should compose the top-level `App` from components like
+// this one and `pub use` them. Example lib.rs at the bottom of this file.
+//
+// REQUIREMENT (01 §4): crates/ui/Cargo.toml uses `dioxus = { workspace = true }`
+// (authoring features only). The shared workspace dep provides rsx!/#[component]/
+// use_signal/use_memo. The renderer is added by the web/mobile crates, not here.
+// ──────────────────────────────────────────────────────────────────────────────
+
+use dioxus::prelude::*;
+use {{crate_prefix}}_core::{Greeting, MAX_NAME_LEN};
+
+const COLOR_SURFACE: &str = "#12180f";
+const COLOR_TEXT: &str = "#c8d4b0";
+const COLOR_ACCENT: &str = "#7dba6f";
+const COLOR_BORDER: &str = "#1e2a18";
+const COLOR_ERROR: &str = "#c97b6a";
+const FONT_STACK: &str = "system-ui, 'Segoe UI', sans-serif";
+
+/// Typographic greeting card with live name input. Displays the current name and
+/// renders `{{crate_prefix}}_core::Greeting` validation feedback beneath it — so
+/// the UI and the API agree on validity by construction (same core).
+#[component]
+pub fn GreetingLabel() -> Element {
+    let mut name = use_signal(|| "World".to_string());
+    let result = use_memo(move || Greeting::new(&name()));
+
+    rsx! {
+        div {
+            style: "font-family:{FONT_STACK}; display:flex; flex-direction:column; gap:1.5rem;",
+
+            div {
+                style: "background:{COLOR_SURFACE}; border:1px solid {COLOR_BORDER}; border-radius:12px; padding:2rem 2.5rem; display:flex; flex-direction:column; gap:0.25rem;",
+
+                span {
+                    style: "font-size:1rem; font-weight:300; letter-spacing:0.18em; text-transform:uppercase; color:{COLOR_ACCENT}; opacity:0.85;",
+                    "Hello"
+                }
+
+                span {
+                    style: "font-size:2.75rem; font-weight:700; letter-spacing:-0.02em; color:{COLOR_TEXT}; line-height:1.1;",
+                    "{name}"
+                }
+
+                div {
+                    style: "margin-top:1rem; min-height:1.25rem;",
+                    match result() {
+                        Ok(g) => rsx! {
+                            span {
+                                style: "font-size:0.875rem; color:{COLOR_ACCENT}; font-style:italic;",
+                                "{g.message()}"
+                            }
+                        },
+                        Err(err) => rsx! {
+                            span {
+                                style: "font-size:0.875rem; color:{COLOR_ERROR};",
+                                "⚠ {err}"
+                            }
+                        },
+                    }
+                }
+            }
+
+            div {
+                style: "display:flex; flex-direction:column; gap:0.5rem;",
+                label {
+                    style: "font-size:0.8rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:{COLOR_TEXT}; opacity:0.6;",
+                    "Greet who?"
+                }
+                input {
+                    style: "background:{COLOR_SURFACE}; border:1px solid {COLOR_BORDER}; border-radius:8px; padding:0.6rem 0.9rem; font-size:1rem; color:{COLOR_TEXT}; font-family:{FONT_STACK}; outline:none; width:100%; box-sizing:border-box;",
+                    value: "{name}",
+                    // Mirror the core's limit in the UI without duplicating the magic number.
+                    maxlength: MAX_NAME_LEN,
+                    oninput: move |e| name.set(e.value()),
+                }
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    // UI components carry no decidable logic, so coordinates here just re-assert
+    // the core contract the component relies on, plus a well-typedness check.
+    use {{crate_prefix}}_core::{Greeting, GreetingError};
+
+    #[test]
+    fn greeting_ok_for_world() {
+        let g = Greeting::new("World").expect("valid name");
+        assert!(g.message().contains("World"));
+    }
+
+    #[test]
+    fn greeting_err_for_empty() {
+        assert_eq!(Greeting::new(""), Err(GreetingError::EmptyName));
+    }
+
+    #[test]
+    fn greeting_label_is_well_typed() {
+        let _ = std::hint::black_box(super::GreetingLabel);
+    }
+}
+
+// ── Example crates/ui/src/lib.rs ─────────────────────────────────────────────
+// mod greeting;
+// pub use greeting::GreetingLabel;
+//
+// use dioxus::prelude::*;
+//
+// /// The shared top-level app, mounted verbatim by both web and mobile shells.
+// #[component]
+// pub fn App() -> Element {
+//     rsx! { GreetingLabel {} }
+// }
+// ──────────────────────────────────────────────────────────────────────────────

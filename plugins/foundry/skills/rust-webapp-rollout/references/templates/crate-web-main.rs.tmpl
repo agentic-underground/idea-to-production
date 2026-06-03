@@ -1,0 +1,15 @@
+// ── DESTINATION: crates/web/src/main.rs ──────────────────────────────────────
+// GOVERNING DOC: knowledge/01-architecture-blueprint.md
+// The web (WASM) entry point. Its ENTIRE job is to launch the shared `App` from
+// {{crate_prefix}}-ui. A thin shell carries no decidable logic — everything
+// interesting lives in core/ui. Compiles to WASM via `dx serve` / `dx bundle`.
+//
+// (The optional native mobile shell, crates/mobile/src/main.rs, is identical.)
+// ──────────────────────────────────────────────────────────────────────────────
+
+use {{crate_prefix}}_ui::App;
+
+fn main() {
+    // Routes panics to the browser console with a readable stack trace in dev.
+    dioxus::launch(App);
+}
