@@ -17,7 +17,8 @@ performance-instrumented **test contract**. Read [`VALUE_FLOW.md`](VALUE_FLOW.md
 | [`knowledge/`](knowledge/) | The define-once canon (pillars, architecture, specs, testing, protocols, orchestration, policy). Index: [`knowledge/README.md`](knowledge/README.md). |
 | [`commands/`](commands/) | `/foundry`, `/inspect`, `/coverage-loop`, `/phase-sensor`, `/rust-webapp-rollout`. |
 | [`hooks/hooks.json`](hooks/hooks.json) | A PostToolUse hook that runs the `phase-sensor` so the dev-system self-applies. |
-| [`docs/`](docs/) | [`MIGRATION.md`](docs/MIGRATION.md) (provenance) + [`DEPRECATED.md`](docs/DEPRECATED.md). |
+| [`examples/`](examples/) | Worked dev-system artefacts (real EARS → Gherkin → plan). Index: [`examples/README.md`](examples/README.md). |
+| [`docs/`](docs/) | [`MIGRATION.md`](docs/MIGRATION.md) (provenance) + [`DEPRECATED.md`](docs/DEPRECATED.md) + [`HISTORY.md`](docs/HISTORY.md) (origin story). |
 
 ## The orchestration hierarchy (three altitudes, one chain of command)
 

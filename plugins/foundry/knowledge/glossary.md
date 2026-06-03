@@ -122,3 +122,5 @@ audits for exactly this (`../agents/inspector.md`).
 - A canonical fact → [`README.md`](README.md) (the "which doc answers which question" index)
 - Who staffs what → [`orchestration/agent-roster.md`](orchestration/agent-roster.md) +
   the `builder` VALUE_HANDLER_POOL.
+- Worked examples of the dev system → [`../examples/README.md`](../examples/README.md)
+- How the system came to be → [`../docs/HISTORY.md`](../docs/HISTORY.md)
