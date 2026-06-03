@@ -49,6 +49,30 @@ never "merge regardless."
 
 ---
 
+## PR base — target `main`; stacked PRs are opt-in
+
+Under `pr-approval`, **every PR targets `main` by default** — one branch, one PR, one reviewed change
+a human merges into trunk. This keeps the merge graph legible and sidesteps the stacked-PR trap below.
+
+**Stacked PRs** (PR *B* based on PR *A*'s branch instead of `main`) are a deliberate strategy for a
+planned sequence of dependent changes — **never a default**. Use them only when the work genuinely
+calls for it (e.g. one large feature split into dependent, separately-reviewable slices), and **only
+after surfacing the plan to the user and getting explicit approval**. If you are about to base a
+branch on anything other than `main`, **stop and ask first**.
+
+> **Stacked-PR retargeting guard — THE ONLY WAY.** When a stacked strategy *is* approved, a PR based
+> on another feature branch **must be retargeted to `main` (or the next still-open base) the moment
+> its base PR merges**, and the stack merged **base → tip in order**. A stacked PR left pointing at an
+> already-merged base will merge into that dead branch instead of `main`, **silently stranding its
+> work off trunk** — a real, observed failure mode (a reviewed-and-approved feature once landed on a
+> merged branch, not `main`, exactly this way). When a base PR merges:
+> 1. Retarget each dependent PR's base to `main`: `gh pr edit <n> --base main` (top of the stack down).
+> 2. Re-confirm the dependent PR's diff is now **only its own commits**, not the base's.
+> 3. Merge in order, and **verify each landed on `main`** (e.g. `git cat-file -e main:<a-changed-file>`),
+>    not on a feature branch.
+
+---
+
 ## How the mode is set, stored, and changed
 
 - **Asked up-front.** On first setup of a project's production line, **FOUNDER asks the user which

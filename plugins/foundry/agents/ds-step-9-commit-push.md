@@ -40,8 +40,10 @@ Before beginning:
    verdict halts delivery — loop back to revision; do not proceed.
 5. **Branch on merge governance** — read `.foundry/governance.md` (absent ⇒ default `pr-approval`;
    see [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md)):
-   - **`pr-approval`**: `git push` the feature branch and **open a PR** whose body carries the
-     review verdict + findings. **Stop here — the human merges and closes.** Do not merge to `main`.
+   - **`pr-approval`**: `git push` the feature branch and **open a PR targeting `main`** (stacked PRs
+     are opt-in and need prior user approval — see the PR-base policy in `merge-governance.md`) whose
+     body carries the review verdict + findings. **Stop here — the human merges and closes.** Do not
+     merge to `main`.
    - **`direct-merge`**: merge the branch to `main` and `git push` (the granted-autonomy path).
 6. Capture the commit hash from the push/merge output.
 7. Update roadmap entry: change `STATUS: IN PROGRESS` → `STATUS: COMPLETE`, add completion date.
