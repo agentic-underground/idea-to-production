@@ -41,6 +41,20 @@ Production Readiness is the last gate before an item is declared COMPLETE. It is
 - [ ] Roadmap STATUS: COMPLETE with date
 - [ ] Plan file: checklist complete with commit hash
 
+### Deploy & Verify Readiness (for items that ship to a runtime)
+For any item that deploys to a runtime (web app, API, service) — pure libraries are exempt and
+end at DELIVERY. These are the DEPLOY and VERIFY station exit certificates (VALUE_FLOW §4):
+- [ ] Gate was green **before** build; build succeeded **before** deploy (no station skipped)
+- [ ] Artefact deployed; a live URL/endpoint exists
+- [ ] **The verification matrix passes against the DEPLOYED artefact, not localhost** — the fixed
+      `request → expected response` checklist run through the real interface in production
+- [ ] Preview vs production handled correctly (auth-protected previews tested appropriately; the
+      public production alias verified)
+
+> The concrete verification matrix is stack-specific and lives with the owning stack skill
+> (e.g. `skills/rust-webapp-rollout/` for Rust/WASM/Vercel). "It works on my machine" is not an
+> exit certificate.
+
 ### Reviewer Gate Compliance
 - [ ] Every generated/materially updated document reviewed
 - [ ] All reviewer NEEDS_REVISION findings resolved or explicitly dispositioned

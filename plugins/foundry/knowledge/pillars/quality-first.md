@@ -41,7 +41,37 @@ role on the `reviewer` panel. A significant regression at any instrumented layer
 the same way a failing assertion does. The perf budget and baseline source are declared per
 project in its QA definition.
 
+## The gate is the certifying station — never weaken it
+
+> **GUARDRAIL — the single most important process rule:** **Never weaken a gate to make the line
+> go green.** Not an `#[allow(...)]`/`# noqa` to silence a linter, not an `#[ignore]`/`skip` on a
+> failing test, not dropping a `-D warnings`-class strictness. The gate is the station that
+> *certifies* freight; a weakened gate certifies broken freight. **Fix the code, never the gate.**
+
+A gate is a *station*, not an afterthought: freight may not advance without its exit certificate.
+This is why the assurance chain above is mechanical rather than aspirational.
+
+## Verify against the deployed artefact, not localhost
+
+> **IMPORTANT — THE ONLY WAY:** A slice is "done" only when its behaviour is verified against the
+> **deployed** artefact, through the real interface — not against a local dev server. The line gains
+> two terminal stations, **DEPLOY** and **VERIFY**, and VERIFY runs a fixed verification matrix
+> against production (`skills/lifecycle-states/states/production-readiness.md`; concrete example in
+> `skills/rust-webapp-rollout/`). "It works on my machine" is not an exit certificate.
+
+## The adversarial roles
+
+Quality is also *defended*, not just measured. Beyond the `reviewer` panel, two adversarial stances
+carry every risky slice: a **reviewer** whose job is to *find reasons not to merge* (and who
+**actually runs the gate**, never trusting a claim), and a **security-auditor** who assumes
+**inputs are hostile and dependencies guilty until proven innocent** — a reachable panic in a
+request path is an availability **BLOCKER**. When the `sentinel` plugin is installed, its
+`/security-gate` is that auditor made mechanical.
+
 ## Why first-class
 Tying back to Pillar 3 (`pillars/waste-elimination.md`): **a bug found in development is far
 less wasteful than a bug found in production.** Every gate here is an early, cheap place to
-catch a defect before it becomes an expensive one. More (early) testing is *less* waste.
+catch a defect before it becomes an expensive one. More (early) testing is *less* waste. The
+determinism that makes a gate's verdict trustworthy is its own pillar-facet
+(`pillars/determinism-and-pinning.md`): a gate can only certify if the same input yields the same
+output.

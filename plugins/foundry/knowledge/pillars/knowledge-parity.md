@@ -35,6 +35,23 @@ conforms to it, not the other way around. A genuine spec gap found downstream is
 back up the line (DISCUSS mode) and re-authorized — never patched in place to make code easier.
 See `specs/ears.md` and `protocols/definition-of-done.md`.
 
+## Parity before deploy — ask, don't assume, the environment
+
+Knowledge parity is not only about the *spec*; it extends to the **environment and prerequisites**
+the work needs to reach production. Before a deploy station can run, the agent must reach parity with
+the user on what only the user can provide — accounts, interactive auth, and permission-gated
+capabilities — rather than discovering the gap mid-deploy.
+
+> **WORKED EXAMPLE:** The `rust-webapp-rollout` skill reaches deploy-parity *before* building by
+> asking the user, up front, to confirm: a platform account; the CLI installed and authenticated
+> (interactive — user only); the project linked; the permission-gated runtime capability enabled;
+> and the preview-vs-production policy. Each answer is written back so it is never asked twice. A
+> deploy that *discovers* a missing prerequisite at the deploy station has already failed parity.
+
+> **GUARDRAIL:** Interactive, account-bound steps (logins, linking) are the **user's** to run —
+> surface them (e.g. via the `! <command>` form) rather than attempting them blind. Production never
+> improvises around a missing credential or capability.
+
 ## How parity is carried
 | Mechanism | Carries |
 |---|---|

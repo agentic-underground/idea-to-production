@@ -18,6 +18,7 @@ governing intuition:
 | **5. Inventory** | half-finished work; large un-merged batches; stale specs | one vertical slice at a time; just-in-time specification; spec freeze |
 | **6. Motion / rework** | tests modified to pass; refactoring unrelated code; re-litigating frozen specs | tests are the contract (implementation covenant §5); surgical changes (§3) |
 | **7. Defects** | bugs reaching production; regressions; flaky tests | the full assurance chain + perf-delta gate (Pillar 2); 100% coverage floor; flaky-test ban |
+| **8. Rediscovery** | re-diagnosing a problem already solved; "it worked yesterday"; drifting versions | **determinism & pinning** (`pillars/determinism-and-pinning.md`): a proven version matrix + zero-drift templates + a **guardrails ledger** (`protocols/guardrails-ledger.md`) so a bug is paid for exactly once |
 
 ## The economics
 A defect's cost grows by orders of magnitude with each station it survives:

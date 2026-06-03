@@ -92,6 +92,13 @@ A station with no handler is a defect FOUNDER reports. A gate without a check is
 | 6b| **DESIGN** *(cross-cuts IMPLEMENT)* | usable, accessible surfaces | `frontend` | handler-vanilla-js, handler-css | INTENT-marked; a11y + privacy held |
 | 7 | **STORY** | proof through the real interface | `lifecycle-states` | ds-step-story-tests, handler-playwright | STORY_PROVEN; perf-delta gate passed |
 | 8 | **DELIVERY** | shipped + traceable | `lifecycle-states` | ds-step-7/8/9 | synced; commit narrative; roadmap COMPLETE |
+| 9 | **DEPLOY** *(where the product deploys)* | a live artefact | `lifecycle-states` (stack skill, e.g. `rust-webapp-rollout`) | stack handler | built + deployed; live URL/endpoint exists |
+| 10| **VERIFY** *(where the product deploys)* | proof in production | `lifecycle-states`, stack skill | stack handler | the verification matrix passes against the **deployed** artefact (not localhost) |
+
+> **GUARDRAIL:** A station's **exit certificate is mandatory** — freight may not advance without it.
+> Do not BUILD/DEPLOY before the gate is green; do not call a slice done before VERIFY passes against
+> the *deployed* artefact. Skipping a station is how silent breakage reaches production. (DEPLOY and
+> VERIFY apply to any item that ships to a runtime; for pure libraries the line ends at DELIVERY.)
 
 **Cross-cutting stations** are available to the whole line, not a single position. One is
 built into foundry; two are **companion plugins** that foundry uses *if installed* and degrades
@@ -123,11 +130,13 @@ they do not improvise gates.
 A **value-handler** is the agent that owns a station's work. Handlers carry **only their
 station's references** (token efficiency, §6). The house's handlers:
 
-- **Stack handlers** — `handler-{python,js,react,fastapi,css,playwright,vanilla-js}`: author tests
-  (TEST), implement (IMPLEMENT), and prove stories (STORY) in their stack. They carry the
-  implementation covenant and the project's SUBJECT_MATTER_UNDERSTANDING, nothing more.
+- **Stack handlers** — `handler-{python,js,react,fastapi,css,playwright,vanilla-js,rust,rust-webapp}`:
+  author tests (TEST), implement (IMPLEMENT), and prove stories (STORY) in their stack. They carry
+  the implementation covenant and the project's SUBJECT_MATTER_UNDERSTANDING, nothing more.
   `handler-vanilla-js` is the native handler of the `frontend` design system (DESIGN);
   `handler-react` staffs React-stack IMPLEMENT work, not the vanilla-JS design system.
+  `handler-rust` staffs general Rust; `handler-rust-webapp` staffs the full Rust/WASM + Vercel
+  one-shot rollout (governed by the `rust-webapp-rollout` skill).
 - **`handler-architect`** — selects the architectural pattern when a non-trivial decision
   arises; writes the ADR; carries the SOLID covenant.
 - **`reviewer`** — the adversarial gate-keeper, parametrised by role (EARS, SMU, BDD,
@@ -185,11 +194,21 @@ just-in-time specification, reviewer gates, and token budgets all serve this pil
 This reframes how work decomposes, and is why the line is maximally parallel:
 1. **Extract pure logic first** — pull the decidable core out of DOM/IO/render/network into
    small, dependency-light modules. A coordinate can only be placed in a pure space.
-2. **Express every requirement as failing coordinates** whose input/output pairs locate the
-   correct code. Each edge case is another axis narrowing the region to one implementation.
-   A bug fix gets a coordinate that *is* the bug's negation.
-3. **Keep the wiring thin** — DOM/IO layers wire the proven cores; they carry no decidable
+   (See `knowledge/architecture/pure-core.md`.)
+2. **Place the coordinate before the implementation** — write it, run it, confirm it fails for the
+   *right reason*, then make it pass. A test written after the code is a description; one written
+   before is a *location*.
+3. **Express every requirement as failing coordinates** whose input/output pairs locate the
+   correct code. **One axis per edge case** (empty, max, boundary, unicode) narrows the region to
+   one implementation; a bug fix gets a coordinate that *is* the bug's negation; an invariant gets a
+   property test; **parse-don't-validate** and **typed errors (never strings)** keep coordinates
+   precise. (Mechanics in `knowledge/testing/test-policy.md` §Coordinates in practice.)
+4. **Keep the wiring thin** — DOM/IO layers wire the proven cores; they carry no decidable
    logic and are validated at the story/system level.
+
+The consequential rules above are tagged with the **certainty markers**
+(`knowledge/protocols/certainty-markers.md`) wherever they appear in skills and handlers, so the
+reasoning travels with each rule.
 
 Because each coordinate references only its pure module, the failing-test set is a
 **maximally parallel work graph**: independent handlers solve disjoint coordinates with no

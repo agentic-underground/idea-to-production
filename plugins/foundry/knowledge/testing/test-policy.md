@@ -23,6 +23,42 @@ changes.
 
 ---
 
+## Coordinates in practice — how to place a unit test
+
+A failing unit test is a **coordinate in multidimensional logical space** (VALUE_FLOW §7): an
+`input → expected output` assertion against a *pure* function that pins one point — or a
+tightly-constrained region — in the space of all possible implementations. You navigate from SPEC
+to PRODUCT by turning each coordinate green. These are the mechanical habits that make coordinates
+*locate* the solution rather than merely *describe* it:
+
+1. **Extract the pure core first.** If logic is tangled with DOM/IO/network, pull the decidable part
+   into a pure function (see `architecture/pure-core.md`). A coordinate can only be placed in a pure
+   space — side effects blur the location.
+2. **Place the coordinate before the implementation.** Write it, run it, and confirm it **fails for
+   the right reason** before making it pass. A test written after the code is a *description*; a test
+   written before is a *location*.
+3. **One axis per edge case.** Empty, whitespace-only, exactly-at-max, over-max, unicode, the
+   boundary value exactly at the limit — one coordinate each. Together they narrow the region until
+   exactly one implementation satisfies all of them.
+4. **A bug fix gets a negation coordinate.** Its test is an input that must *not* yield the corrupt
+   output. The coordinate *is* the bug's negation.
+5. **Invariants get a property test.** "Never panics for any input", "valid input always
+   round-trips" are properties, not examples — pin them with `proptest`/`fast-check`/`hypothesis`,
+   not a handful of cases.
+6. **Parse, don't validate.** Make construction fallible (`Thing::new(..) -> Result<Thing, Err>`);
+   once the type is held, its invariants are guaranteed and no downstream code re-checks them. The
+   coordinate that pins construction pins the whole system.
+7. **Typed errors, never strings.** A coordinate can assert `Err(TooLong { max: 64, got: 65 })`
+   exactly; a `String`/free-text error cannot be matched precisely, so the coordinate is blurry and
+   refactors silently change the message without failing a test.
+
+> **WORKED EXAMPLE:** `rust-webapp-rollout`'s `forge-core` pins `Greeting::new` with one coordinate
+> per edge (`""`/`"   "` → `EmptyName`; 65 chars → `TooLong{max:64,got:65}`; exactly 64 → `Ok`;
+> `"  Ada  "` → trims) plus two `proptest` invariants (every valid name appears in its message;
+> construction never panics for any string). Together they leave exactly one correct implementation.
+
+---
+
 ## The Test Pyramid
 
 ```
