@@ -1,0 +1,7 @@
+# ── DESTINATION: rustfmt.toml (repo root) ────────────────────────────────────
+# GOVERNING DOC: knowledge/07-quality-gate-and-process.md §1
+# Formatting is enforced by `cargo fmt --all -- --check` in the gate. Keep this
+# minimal / default so `cargo fmt --all` and CI never disagree. Add style options
+# only if the whole team (and every agent) will run the same rustfmt version.
+# ─────────────────────────────────────────────────────────────────────────────
+# (Defaults. The gate runs `cargo fmt --all -- --check`.)
