@@ -421,6 +421,8 @@ in `${CLAUDE_PLUGIN_ROOT}/agents/handler-{stack}.md`.
 | VANILLA-JS-AGENT | Vanilla JS + DOM + @testing-library/dom | Vanilla-JS / `frontend` design-system work |
 | FASTAPI-AGENT | FastAPI + httpx + pytest | Python API work |
 | PLAYWRIGHT-AGENT | Playwright (npx playwright test) | E2E story tests |
+| RUST-AGENT | Rust + thiserror + proptest + clippy -D warnings | Rust libraries, CLIs, services, domain cores |
+| RUST-WEBAPP-AGENT | Rust/WASM (Dioxus) + Vercel official Rust runtime | Full Rust web app + serverless API one-shot rollout (via the `rust-webapp-rollout` skill) |
 
 When the LEAD ENGINEER identifies a stack not in the pool above, note it in
 `doc/FOUNDRY_PLAN.md` under `## VALUE_HANDLER_POOL Required` with a description
