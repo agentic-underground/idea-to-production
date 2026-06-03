@@ -21,7 +21,8 @@ Pipeline:
 3. **Render to target:**
    - `markdown` → deliver the `.md` (with embedded SVG figures if any).
    - `pdf` → defer to **rich-pdf-with-diagrams**: typeset the article with embedded figures via
-     `scripts/build-pdf.sh` (three pdflatex passes), output `doc/articles/<slug>.pdf`.
+     `scripts/build-pdf.sh [--engine=auto|typst|latex]` (dual-engine — Typst single-pass, or LaTeX
+     three-pass), output `doc/articles/<slug>.pdf`.
    - `diagrams` → deliver the figures only.
 4. **Commit** — follow `skills/writer/references/commit-format.md` (article commits only).
 

@@ -1,5 +1,8 @@
 # Deprecated / Sunset
 
+> **Provenance archive.** Part of the FOUNDRY provenance archive (allowlisted by the inspector).
+> References to the historical `~/.claude` origin environment are history, not runtime coupling.
+
 This records FORGE-CODE artefacts retired during the FOUNDRY consolidation, and where any
 philosophy worth keeping was harvested to. Sunsetting is itself waste elimination — dead
 machinery left running is inventory waste.

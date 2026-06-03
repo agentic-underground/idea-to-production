@@ -17,8 +17,8 @@ metadata:
   type: producer
   output: pdf
   inputs: rich-text article (markdown), diagram specifications, repository context
-  preferred-engine: pdflatex / lualatex
-  preferred-diagrammer: Graphviz (dot) with vector PDF output
+  engines: [typst, pdflatex/lualatex]   # dual-engine — both first-class, selectable per article
+  preferred-diagrammer: Graphviz (dot) — vector PDF for LaTeX, vector SVG for Typst
 model: inherit
 ---
 
@@ -103,12 +103,20 @@ For each diagram:
 
 ### Phase C — Typeset
 
-For the LaTeX document:
+PRESSROOM is **dual-engine** — Typst and LaTeX are both first-class. Pick per article:
 
-1. Use the preamble in `references/latex-template.md` (geometry, fonts,
-   colours, tables, code listings).
-2. For each figure: `\clearpage` **before** every full-page figure (one
-   that occupies > 50% of textheight), then:
+- **Typst** (`references/typst-template.md`) — fast, single-pass, no TeX install; the default when
+  `typst` is present and full TeX Live is not. Diagrams embed best as **SVG**.
+- **LaTeX** (`references/latex-template.md`) — maximum typographic control / existing `.tex` flows.
+  Diagrams embed best as **PDF**. Requires a TeX distribution.
+
+Run the builder, which auto-selects (or force one): `bash scripts/build-pdf.sh [--engine=auto|typst|latex]`.
+
+**LaTeX path:**
+
+1. Use the preamble in `references/latex-template.md` (geometry, fonts, colours, tables, code).
+2. For each figure: `\clearpage` **before** every full-page figure (one that occupies > 50% of
+   textheight), then:
    ```latex
    \begin{figure}[t]
      \centering
@@ -117,9 +125,18 @@ For the LaTeX document:
    \end{figure}
    \clearpage
    ```
-3. Run `pdflatex` **three times** (for TOC + cross-references).
-4. Visually verify the output: scan every figure for the failure modes in
-   `references/charting-matrix.md` §6 (the failure catalogue).
+3. Run `pdflatex` **three times** (for TOC + cross-references) — `build-pdf.sh --engine=latex` does this.
+
+**Typst path:**
+
+1. Use the preamble in `references/typst-template.md` (page geometry, fonts, colours, figure helper).
+2. For each figure, use the `fullpage-figure` helper (it enforces the same `keepaspectratio` +
+   page-break discipline as the LaTeX path), pointing at `diagrams/NN-name.svg`.
+3. Compile once: `typst compile article.typ` — `build-pdf.sh --engine=typst` does this.
+
+4. **Either engine:** visually verify the output — scan every figure for the failure modes in
+   `references/charting-matrix.md` §6 (the failure catalogue). The composition rules are
+   engine-independent.
 
 ---
 
@@ -172,8 +189,9 @@ short and prescriptive.
   types (vertical chain, multi-phase cluster, fan-out, staggered ladder,
   message-bus flow, tabular timeline).
 - `references/latex-template.md` — the LaTeX preamble (geometry, fonts,
-  colours, tables, code listings, custom environments) used for every
-  rich-PDF article.
+  colours, tables, code listings, custom environments) for the LaTeX engine.
+- `references/typst-template.md` — the equivalent Typst preamble (page setup,
+  fonts, colours, the `fullpage-figure` helper) for the Typst engine.
 - `references/self-improvement.md` — the protocol for absorbing feedback
   and amending this skill.
 - `references/lessons-learned.md` — the running log of generalised

@@ -46,7 +46,7 @@ exercise?*
 
 Rewrite the feedback as a one-sentence rule. The rule must:
 
-- Strip the specific diagram (no "the FORGE map" or "figure 3").
+- Strip the specific diagram (no "the system map" or "figure 3").
 - Keep the underlying principle (about composition, orientation,
   density, padding, etc.).
 - Be **actionable** — a future diagrammer should be able to apply it
@@ -56,7 +56,7 @@ Example:
 
 | Feedback (raw) | Generalised rule |
 |----------------|------------------|
-| "The FORGE map should have a vertical panel of skills on the left and agents on the right" | When a central node has multiple categorical groupings, arrange each group as a vertical panel; pick orientations (left/middle/right) that match semantic primacy |
+| "The system map should have a vertical panel of skills on the left and agents on the right" | When a central node has multiple categorical groupings, arrange each group as a vertical panel; pick orientations (left/middle/right) that match semantic primacy |
 | "Figure 8 disappears off the bottom" | Every full-page figure must be sized by both `width` and `height` with `keepaspectratio`, and wrapped in `\clearpage` before AND after |
 | "The pipeline is too tiny on the page" | Linear pipelines of >4 steps must be grouped into named phases with clusters, stacked vertically, with at most 4 boxes across any cluster |
 
@@ -133,7 +133,7 @@ WHAT:
 - 📝 references/graphviz-patterns.md: [what changed, if anything]
 - 📝 references/lessons-learned.md: appended lesson NNNN
 
-ROADMAP: n/a (FORGE self-improvement)
+ROADMAP: n/a (PRESSROOM self-improvement)
 ```
 
 ---

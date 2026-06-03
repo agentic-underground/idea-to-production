@@ -28,7 +28,7 @@ Each source answers a different question — read all that exist.
 | Priority | Source | What to extract |
 |----------|--------|----------------|
 | 1 | `git log --format="%H %ai %s" --all` | Full commit timeline — dates, subjects, turning-point commits |
-| 2 | `~/.claude/memory/` (if present) | User context, project memories, feedback — informs voice and what matters |
+| 2 | Claude user memory (if present) | User context, project memories, feedback — informs voice and what matters |
 | 3 | `ROADMAP.md` / `doc/ROADMAP.md` | Features, EARS specs, user stories, acceptance criteria |
 | 4 | `README.md` | Project philosophy, architecture, design decisions |
 | 5 | `CLAUDE.md` | Operational intent, communication protocols, production definitions |
@@ -309,7 +309,8 @@ Workflow when WRITER must hand off to it:
 4. Write the LaTeX source at `doc/articles/<date>/<slug>/build/<slug>.tex`
    using the preamble in `references/latex-template.md`.
 5. Run `bash ${CLAUDE_PLUGIN_ROOT}/skills/rich-pdf-with-diagrams/scripts/build-pdf.sh`
-   to render diagrams and compile the article (three pdflatex passes).
+   to render diagrams and compile the article (dual-engine: LaTeX three-pass for a `.tex` source,
+   or Typst single-pass for a `.typ` source — auto-detected).
 6. Copy the final PDF up to `doc/articles/<date>/<slug>.pdf`.
 7. After delivery, if the user provides diagram feedback, follow the
    self-improvement protocol in
@@ -425,7 +426,7 @@ previous paragraph raised, or asks a question the next paragraph will answer.
 
 ---
 
-## FORGE Family Integration
+## FOUNDRY Family Integration
 
 | When to use WRITER | When to use instead |
 |--------------------|-------------------|
@@ -434,5 +435,5 @@ previous paragraph raised, or asks a question the next paragraph will answer.
 | Project retrospectives | IDEATOR — for turning a retrospective finding into a new feature |
 | Documentation for external readers | CLAUDE.md / README.md — for internal operational docs |
 
-WRITER is a consumer of FORGE artefacts (git history, roadmap, memory), not a producer.
+WRITER is a consumer of FOUNDRY artefacts (git history, roadmap, memory), not a producer.
 It reads and synthesises; it does not plan, specify, or implement.

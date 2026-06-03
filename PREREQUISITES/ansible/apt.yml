@@ -1,0 +1,55 @@
+# ansible/apt.yml — system packages for the idea-to-production marketplace (Debian/Ubuntu).
+# Include from a play:  - import_tasks: apt.yml   (or paste into a role's tasks/).
+# Idempotent. Tagged by plugin so you can run subsets:  --tags pressroom,sentinel
+---
+- name: Core CLI tooling
+  become: true
+  ansible.builtin.apt:
+    name:
+      - git
+      - jq
+      - ripgrep
+      - curl
+      - poppler-utils      # pdfinfo (pressroom verification)
+    state: present
+    update_cache: true
+  tags: [core]
+
+- name: FOUNDRY — debuggers
+  become: true
+  ansible.builtin.apt:
+    name:
+      - lldb              # gives rust-lldb
+      - gdb
+    state: present
+  tags: [foundry, debuggers]
+
+- name: PRESSROOM — typesetting, diagrams, DTP/conversion
+  become: true
+  ansible.builtin.apt:
+    name:
+      - texlive-latex-recommended      # LaTeX engine (Typst is installed via cargo)
+      - texlive-latex-extra
+      - texlive-fonts-recommended
+      - texlive-luatex                 # lualatex (optional)
+      - graphviz                       # dot
+      - pandoc
+      - ghostscript                    # gs
+      - libreoffice                    # soffice docx/odt/pptx <-> pdf
+      - librsvg2-bin                   # rsvg-convert
+      - qpdf
+      - imagemagick                    # magick
+      - fonts-texgyre                  # Libertinus/TeX Gyre look for Typst
+    state: present
+  tags: [pressroom]
+
+- name: Developer ergonomics (optional quality-of-life)
+  become: true
+  ansible.builtin.apt:
+    name:
+      - fd-find
+      - bat
+      - fzf
+      - git-delta
+    state: present
+  tags: [ergonomics, optional]

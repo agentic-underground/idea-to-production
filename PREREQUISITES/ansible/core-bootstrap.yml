@@ -1,0 +1,36 @@
+# ansible/core-bootstrap.yml — install the language runtimes / package managers the other
+# fragments assume (Volta for node, rustup for cargo, uv for Python). Run this FIRST.
+# These are per-user installers; run as the target user (not root) unless noted.
+---
+- name: rustup (Rust toolchain) — installs cargo, rustc, rustup
+  ansible.builtin.shell: |
+    set -euo pipefail
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+  args:
+    creates: "{{ ansible_env.HOME }}/.cargo/bin/cargo"
+  tags: [core, rust]
+
+- name: uv (fast Python + ephemeral tool runner) — installs uv and uvx
+  ansible.builtin.shell: |
+    set -euo pipefail
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+  args:
+    creates: "{{ ansible_env.HOME }}/.local/bin/uv"
+  tags: [core, python]
+
+- name: Volta (node toolchain manager)
+  ansible.builtin.shell: |
+    set -euo pipefail
+    curl https://get.volta.sh | bash
+  args:
+    creates: "{{ ansible_env.HOME }}/.volta/bin/volta"
+  tags: [core, node]
+
+- name: Pin a Node LTS via Volta
+  ansible.builtin.command: "{{ ansible_env.HOME }}/.volta/bin/volta install node@24"
+  register: voltanode
+  changed_when: "'installed' in voltanode.stderr | lower or 'installed' in voltanode.stdout | lower"
+  tags: [core, node]
+
+# PATH: ensure ~/.cargo/bin, ~/.local/bin, and ~/.volta/bin are on PATH for the target user
+# (add to ~/.profile / ~/.bashrc via a lineinfile task in your role).

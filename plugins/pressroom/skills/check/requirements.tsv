@@ -1,0 +1,18 @@
+# name	probe-command	tier	install-hint
+# Canonical dependency manifest for PRESSROOM. TAB-separated. See PREREQUISITES/30-pressroom.md.
+# Dual-engine: at least ONE of typst / pdflatex is needed to produce a PDF.
+git	command -v git	required	apt install git
+bash	command -v bash	required	preinstalled
+typst	command -v typst	recommended	cargo install typst-cli  (default engine)
+pdflatex	command -v pdflatex	recommended	apt install texlive-latex-recommended texlive-latex-extra
+pdfinfo	command -v pdfinfo	recommended	apt install poppler-utils  (build verification)
+dot	command -v dot	recommended	apt install graphviz
+pandoc	command -v pandoc	recommended	apt install pandoc
+gs	command -v gs	recommended	apt install ghostscript
+lualatex	command -v lualatex	optional	apt install texlive-luatex
+mmdc	command -v mmdc	optional	npm i -g @mermaid-js/mermaid-cli
+soffice	command -v soffice || command -v libreoffice	optional	apt install libreoffice
+rsvg-convert	command -v rsvg-convert	optional	apt install librsvg2-bin
+qpdf	command -v qpdf	optional	apt install qpdf
+inkscape	command -v inkscape	optional	apt install inkscape
+magick	command -v magick || command -v convert	optional	apt install imagemagick

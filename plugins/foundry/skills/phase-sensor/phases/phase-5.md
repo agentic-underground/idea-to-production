@@ -1,5 +1,5 @@
-NAME: forge-implement
-INSTALLS_SKILL: forge-implement
+NAME: foundry-implement
+INSTALLS_SKILL: foundry-implement
 PREREQUISITES:
 - Test file(s) exist in tests/
 - Tests are confirmed red (feature not implemented)
@@ -11,15 +11,15 @@ QUALITY_GATE:
 
 ---SKILL---
 ---
-name: forge-implement
+name: foundry-implement
 description: >
-  Implement a Forge feature to make failing tests pass.
+  Implement a FOUNDRY feature to make failing tests pass.
   Auto-installed by phase-sensor when test files exist but no implementation does.
 ---
 
-# FORGE-IMPLEMENT
+# FOUNDRY-IMPLEMENT
 
-You are writing the DEV_SYSTEM **Step 5 — Implementation** for a Forge feature.
+You are writing the DEV_SYSTEM **Step 5 — Implementation** for a FOUNDRY feature.
 
 ## Operating covenant
 

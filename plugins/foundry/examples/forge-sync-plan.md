@@ -1,5 +1,8 @@
 # FORGE AUTO-SYNC WITH CONFLICT RESOLUTION — Implementation Plan
 
+> **Historical worked example — provenance archive.** Not part of the marketplace runtime;
+> retained to illustrate the PLAN station. See [`../docs/HISTORY.md`](../docs/HISTORY.md).
+
 > Feature: [1] Forge Auto-Sync with Conflict Resolution
 > Roadmap entry: ROADMAP.md §[1]
 > Date: 2026-05-17

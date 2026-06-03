@@ -4,11 +4,11 @@ Real, production-proven artefacts that show the FOUNDRY development system appli
 **EARS spec → Gherkin features → implementation plan**. They are teaching exemplars — copy the
 *shape*, not the contents.
 
-> **Provenance:** These were produced while building the FOUNDRY tooling itself (the author's
-> private `~/.claude` "FORGE" config repo — its auto-sync and phase-sensor features). They reference
-> that `~/.claude` infrastructure **illustratively**; they are *examples of the method*, not
-> operational instructions for this plugin. Treat the domain (a git-sync'd config repo) as the
-> sample problem and study how each station's artefact is written.
+> **Provenance:** These are **historical worked examples**, produced while the FOUNDRY tooling was
+> first being built (its origin story is archived in [`../docs/HISTORY.md`](../docs/HISTORY.md)).
+> The sample domain happens to be a git-synchronised config repo, so some artefacts mention that
+> setting **illustratively** — they are *examples of the method*, not operational instructions for
+> this plugin. Treat the domain as the sample problem and study how each station's artefact is written.
 
 | File | Station it exemplifies | Shows |
 |---|---|---|

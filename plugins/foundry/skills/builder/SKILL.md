@@ -11,7 +11,7 @@ description: >
   Trigger when the user says: "run the foundry", "process the roadmap",
   "orchestrate the roadmap", "ship the backlog", "build everything", "start
   FOUNDRY", "run a foundry cycle", "what would this cost?", "estimate the
-  backlog", or "inspect FORGE".
+  backlog", or "inspect FOUNDRY".
 ---
 
 # FOUNDRY
@@ -56,7 +56,7 @@ completion in `IDEA_COST.jsonl` so the system gets smarter with every cycle.
 | "ship the backlog" / "build everything" / "start FOUNDRY" | → §3 ROADMAP INGESTION |
 | "run a foundry cycle" / "full send" | → §3 ROADMAP INGESTION |
 | "what would this cost?" / "estimate the backlog" | → §4.3 TOKEN ESTIMATION only |
-| "inspect FORGE" / "run the inspector" | → §13 INSPECTION PROTOCOL |
+| "inspect FOUNDRY" / "run the inspector" | → §13 INSPECTION PROTOCOL |
 | "add to FOUNDRY" / "update FOUNDRY knowledge" | → §14 SELF-IMPROVEMENT |
 | "what tier is [item]?" / "reprioritise" | → §4 TIER ASSIGNMENT only |
 
@@ -532,7 +532,7 @@ data to improve estimates. See §14 (self-improvement).
 
 ## 13. INSPECTION PROTOCOL
 
-Inspection is **user-initiated only**. Say "inspect FOUNDRY" / "inspect FORGE" / "run the
+Inspection is **user-initiated only**. Say "inspect FOUNDRY" / "run the
 inspector" to trigger. There is no scheduled or automatic invocation.
 
 ### 13.1 What the inspector does
@@ -543,8 +543,8 @@ See [`agents/inspector.md`](../../agents/inspector.md) for full behaviour. In su
    commands, hooks, manifests — and the companion plugins (`sentinel`/`pressroom`) if present.
 2. Builds a fresh critical-analysis persona (domain expert + SOLID auditor).
 3. Analyses each document against: clarity, accuracy, SOLID compliance, coverage **density**,
-   outdated patterns, and **portability** (zero `~/.claude/` / machine-specific coupling).
-4. Produces `FOUNDRY_INSPECTION_REPORT.md` in the **current project** (never `~/.claude/`) with
+   outdated patterns, and **portability** (zero machine-specific home/config-dir coupling).
+4. Produces `FOUNDRY_INSPECTION_REPORT.md` in the **current project** (never outside it) with
    severity-ranked findings.
 5. Surfaces CRITICAL findings to the user; captures WARNING/SUGGESTION in the report.
 
@@ -571,7 +571,7 @@ roadmap cycle, or when the daily inspector surfaces proposals:
    git add <files>
    git commit -m "skill: <description of improvement>"
    ```
-   (Never modify or push the user's `~/.claude/`; improvements land in the plugin's source repo.)
+   (Never modify or push any repo that is not the marketplace source; improvements land in the plugin's source repo.)
 6. The SOLID compliance check from IDEATOR §8.3 applies to all improvements.
 
 ---
