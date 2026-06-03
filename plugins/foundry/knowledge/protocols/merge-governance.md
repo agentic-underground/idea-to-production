@@ -65,11 +65,16 @@ branch on anything other than `main`, **stop and ask first**.
 > its base PR merges**, and the stack merged **base → tip in order**. A stacked PR left pointing at an
 > already-merged base will merge into that dead branch instead of `main`, **silently stranding its
 > work off trunk** — a real, observed failure mode (a reviewed-and-approved feature once landed on a
-> merged branch, not `main`, exactly this way). When a base PR merges:
-> 1. Retarget each dependent PR's base to `main`: `gh pr edit <n> --base main` (top of the stack down).
-> 2. Re-confirm the dependent PR's diff is now **only its own commits**, not the base's.
-> 3. Merge in order, and **verify each landed on `main`** (e.g. `git cat-file -e main:<a-changed-file>`),
->    not on a feature branch.
+> merged branch, not `main`, exactly this way). Merge a stack **bottom-up (base → tip)**; each time
+> the current bottom PR merges:
+> 1. Retarget the PR(s) **directly stacked on the just-merged branch** to their next still-open base
+>    — which is `main` if nothing remains between them and `main`, otherwise the next open PR's branch:
+>    `gh pr edit <n> --base <main|next-open-base>`. (For a stack A←B←C: when A merges, retarget B to
+>    `main`; C stays based on B until B merges, then C retargets to `main`. Never point a PR at `main`
+>    while an open PR sits between it and `main`.)
+> 2. Re-confirm that PR's diff is now **only its own commits**, not its base's.
+> 3. After it merges, **verify it landed on `main`** (e.g. `git cat-file -e main:<a-changed-file>`),
+>    not on a feature branch — then proceed to the next PR up the stack.
 
 ---
 
