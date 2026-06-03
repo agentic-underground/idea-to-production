@@ -121,6 +121,8 @@ cross-links `value-station-handoff` rather than swallowing it.
 | `foundry-handler-css` | inherit | `agents/handler-css.md` | move; fix philosophy ref | ☑ |
 | `foundry-handler-playwright` | inherit | `agents/handler-playwright.md` | move | ☑ |
 | *(new)* `handler-vanilla-js` | inherit | `agents/handler-vanilla-js.md` | **NEW** — native handler of the `frontend` design system; re-staffs DESIGN (6b) from `handler-react`→`handler-vanilla-js` (framework-free by mandate) | ☑ |
+| *(new)* `handler-rust` | inherit | `agents/handler-rust.md` | **NEW** — general Rust value-handler (see §I) | ☑ |
+| *(new)* `handler-rust-webapp` | inherit | `agents/handler-rust-webapp.md` | **NEW** — RUST_WEBAPP_API one-shot handler; governed by `skills/rust-webapp-rollout/` (see §I) | ☑ |
 | `foundry-daily-inspector` | opus-4-7 | `agents/inspector.md` | move; retarget audit root | ☑ |
 | `coverage-loop-agent` | haiku-4-5 | `agents/coverage-loop-agent.md` | move; fix code-quality ref | ☑ |
 | `flaky-test-fixer` | sonnet-4-6 | `agents/flaky-test-fixer.md` | move | ☑ |
@@ -206,3 +208,34 @@ the path-rewrite map); the files moved verbatim. Cross-plugin path repairs done 
 - `pressroom`: `writer`'s former reference to foundry's
   `knowledge/protocols/commit-message.md` was replaced with a self-contained
   `skills/writer/references/commit-format.md` so pressroom never assumes foundry is installed.
+
+---
+
+## I · RUST_WEBAPP_API knowledge incorporated (2026-06)
+
+**Source.** A hard-won knowledge package (`incoming-knowledge/knowledge/` — distilled from the
+shipped `forge` Rust/WASM + Vercel project: a production spec for building a full-Rust vertical
+slice first-time-every-time). The raw folder is **kept as-is** as a provenance archive; the plugin
+received its own incorporated copies so `${CLAUDE_PLUGIN_ROOT}` resolves at runtime.
+
+| Incorporated as | From | Notes |
+|---|---|---|
+| `skills/rust-webapp-rollout/` + `references/` (00–08 + README) + `references/templates/` (16 zero-drift templates) | `incoming-knowledge/knowledge/**` | Copied **verbatim** (intact cross-links + version matrix). The one-shot rollout capability. |
+| `agents/handler-rust.md` | manifest §2 prime directives + quality-gate | General Rust value-handler. |
+| `agents/handler-rust-webapp.md` | architecture blueprint + deploy playbook + guardrails | RUST_WEBAPP_API handler; defers to the rollout skill. |
+| `knowledge/protocols/certainty-markers.md` | the `THE ONLY WAY`/`GUARDRAIL`/`ANTI-PATTERN`/`WORKED EXAMPLE` markers | NEW marketplace-wide articulation standard. |
+| `knowledge/protocols/guardrails-ledger.md` | `06-guardrails-and-antipatterns.md` pattern | NEW symptom→cause→fix ledger + FORBIDDEN-list convention. |
+| `knowledge/pillars/determinism-and-pinning.md` | the proven version matrix + zero-drift templates | NEW pillar-facet (waste #8: rediscovery). |
+| `knowledge/architecture/pure-core.md` | the one-way dependency LAW | NEW crisp articulation of the pure-core geometry. |
+
+**Elevations (retrofit) of existing docs:** `testing/test-policy.md` (§Coordinates in practice),
+`VALUE_FLOW.md` §4 (added **DEPLOY** + **VERIFY** stations + exit-certificate guardrail) and §7
+(mechanical coordinate rules + certainty-marker cross-link), `pillars/quality-first.md` (never
+weaken the gate; verify against the deployed artefact; adversarial roles), `pillars/knowledge-parity.md`
+(parity-before-deploy), `pillars/waste-elimination.md` (waste #8 rediscovery),
+`lifecycle-states/states/production-readiness.md` (DEPLOY/VERIFY exit certificates),
+`architecture/solid-covenant.md` (v1.2 — the *halve the distance to perfection* prime law, applied
+marketplace-wide across all three plugins' READMEs).
+
+**New handler registrations:** `VALUE_FLOW.md §5`, `knowledge/policy/model-selection.md`,
+`skills/builder/SKILL.md` VALUE_HANDLER_POOL.
