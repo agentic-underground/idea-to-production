@@ -16,5 +16,7 @@ Run an adversarial pull-request review. Follow the [`pr-review` skill](../skills
 4. Synthesise one verdict (BLOCK > NEEDS_REVISION > PASS, max-severity rule) and write `PR_REVIEW.md`.
 5. Present the verdict, the findings table, and explicitly what was **not** reviewed.
 
-This command reports a verdict; it does not merge. Pass `--post` to also comment on the PR (needs
-`gh` or `$GH_TOKEN`).
+This command reports a verdict; what happens after a PASS is decided by the project's merge-governance
+mode ([`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md)) — it
+does not merge here. Pass `--post` to also comment the verdict on the PR via `gh pr comment` (needs
+`gh`).

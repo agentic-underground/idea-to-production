@@ -88,11 +88,12 @@ Deduplicate overlapping findings, then apply the **same verdict rule FOUNDRY use
 | Verdict | Condition |
 |---|---|
 | **BLOCK** | ≥1 surviving **CRITICAL** finding (correctness bug, security hole, guaranteed regression). |
-| **NEEDS_REVISION** | No CRITICAL, but ≥1 **HIGH** or unresolved **MEDIUM**. |
-| **PASS** | Only **LOW / SUGGESTION** findings, each documented. |
+| **NEEDS_REVISION** | No CRITICAL, but ≥1 **HIGH**, or ≥1 **MEDIUM** left **unresolved**. |
+| **PASS** | Only **LOW / SUGGESTION** findings — plus any **MEDIUM** that was explicitly **resolved or accepted with a recorded rationale**. Each finding documented. |
 
-The verdict is the **max severity across all roles** — a clean architecture lens does not offset a
-security CRITICAL.
+The verdict is the **highest *unresolved* severity across all roles** — a clean architecture lens
+does not offset an unresolved security CRITICAL, and a MEDIUM gates only until it is fixed or
+explicitly accepted-with-rationale (record the disposition in the report).
 
 ## 5. Emit `PR_REVIEW.md`
 
@@ -106,7 +107,10 @@ security CRITICAL.
 ## What was NOT reviewed      (roles skipped, files excluded, metadata/CI unavailable — and why)
 ```
 
-If `--post` and `gh`/`$GH_TOKEN` are available, post the verdict + findings summary as a PR comment.
+If `--post` is given and `gh` is available, **the orchestrator** (not the gather-diff script) posts
+the verdict + findings as a PR comment: `gh pr comment <PR#> --body-file PR_REVIEW.md`. The script
+only assembles the packet; posting is an explicit, separate action so a review can never silently
+mutate a PR.
 
 ## 6. Gate behaviour & merge governance
 

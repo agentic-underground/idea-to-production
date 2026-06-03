@@ -90,9 +90,15 @@ Each roadmap entry has the following structure:
 
 ```markdown
 ## [N] TITLE
-> STATUS: PENDING | IN PROGRESS | COMPLETE | DEFERRED
+> STATUS: PENDING | IN PROGRESS | AWAITING MERGE | COMPLETE | DEFERRED
 > ADDED: YYYY-MM-DD
 > PRIORITY: HIGH | MEDIUM | LOW
+
+> **`AWAITING MERGE`** — used only under `pr-approval` merge governance
+> ([`../../knowledge/protocols/merge-governance.md`](../../knowledge/protocols/merge-governance.md)):
+> the change is built, has **PASSed** the adversarial review, and its PR is open for a human to
+> merge. It is *not* `IN PROGRESS` (so the phase-sensor takes no further phase action) and *not yet*
+> `COMPLETE` (it isn't on `main`); it flips to `COMPLETE` when the human merges the PR.
 
 **Brief Description**
 One to three sentences. Plain language. What the feature does and why it matters.

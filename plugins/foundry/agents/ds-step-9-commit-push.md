@@ -34,9 +34,10 @@ Before beginning:
 1. Run `git status` — confirm only expected files are modified.
 2. Run `git add -p` — stage changes interactively, review every hunk.
 3. Run `git commit` with the message from step-8 handoff.
-4. **Confirm the adversarial review passed.** `/foundry:pr-review` must have returned **PASS** for
-   this change (see [`../skills/pr-review/SKILL.md`](../skills/pr-review/SKILL.md)). A
-   `NEEDS_REVISION`/`BLOCK` verdict halts delivery — loop back to revision; do not proceed.
+4. **Run the always-on adversarial gate.** Invoke `/foundry:pr-review` for this change (if it has
+   not already been run and recorded for this exact diff) and require a **PASS**
+   (see [`../skills/pr-review/SKILL.md`](../skills/pr-review/SKILL.md)). A `NEEDS_REVISION`/`BLOCK`
+   verdict halts delivery — loop back to revision; do not proceed.
 5. **Branch on merge governance** — read `.foundry/governance.md` (absent ⇒ default `pr-approval`;
    see [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md)):
    - **`pr-approval`**: `git push` the feature branch and **open a PR** whose body carries the
@@ -52,12 +53,16 @@ Before beginning:
 
 ## Required Output
 
+(Mode-aware — read `.foundry/governance.md`; see [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md).)
+
 - Commit hash and push confirmation
-- Updated roadmap entry (STATUS: COMPLETE)
+- **`direct-merge`:** merged to `main`; roadmap entry **STATUS: COMPLETE**
+  **`pr-approval`:** branch pushed + **PR opened** (URL); roadmap entry **STATUS: AWAITING MERGE**
+  (flips to COMPLETE only once the human merges the PR)
 - Updated plan completion section (date, hash)
-- Optional: IDEA_COST.jsonl record appended
+- Optional: IDEA_COST.jsonl record appended (**only after the change is on `main`** — see Sentinel Emission)
 - Optional: CHANGELOG.md entry added
-- Completion report document listing all closure actions taken
+- Completion report document listing all closure actions taken (and, in `pr-approval`, the open PR)
 
 ## Reviewer Rule
 
@@ -65,12 +70,19 @@ Send completion report document to `reviewer` for final audit. This is the final
 
 ## Sentinel Emission
 
-On successful push and closure:
-```
-SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{commit_hash}
-```
+`DELIVERY_COMPLETE` means **the change is on `main`** — it must not fire for an unmerged change.
 
-Payload: short commit hash (first 7 chars).
+- **`direct-merge`** (merged + pushed): emit, on success —
+  ```
+  SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{commit_hash}
+  ```
+- **`pr-approval`** (branch pushed, PR opened, NOT yet merged): emit instead —
+  ```
+  SENTINEL::AWAITING_MERGE::ROADMAP-{N}::AWAITING_MERGE::{pr_url_or_branch}
+  ```
+  and emit `DELIVERY_COMPLETE::COMPLETE` only once the human's merge is confirmed.
+
+Payload: short commit hash (first 7 chars), or the PR URL/branch for `AWAITING_MERGE`.
 
 **This step does NOT emit `STORY_PROVEN`.** That sentinel is owned exclusively by
 `ds-step-story-tests` (Phase 5 — story tests). `ds-step-9` cannot know the
@@ -91,9 +103,10 @@ handoff:
   from_stage: step-9-commit-push
   to_stage: orchestrator-dod-audit
   objective: "Delivery complete; orchestrator to perform global DoD audit"
+  merge_mode: "pr-approval | direct-merge"   # from .foundry/governance.md
   artifacts:
     - path: "ROADMAP.md"
-      purpose: "Updated with COMPLETE status and completion date"
+      purpose: "STATUS=COMPLETE (direct-merge) or STATUS=AWAITING MERGE + PR url (pr-approval)"
       version: "updated"
     - path: "doc/[FEATURE_SLUG]_PLAN.md"
       purpose: "Checklist complete, commit hash recorded"
@@ -101,8 +114,9 @@ handoff:
   unresolved_risks: []
   quality_gates_passed:
     - "Commit created: {hash}"
-    - "Push confirmed"
-    - "Roadmap STATUS: COMPLETE"
+    - "adversarial review (/foundry:pr-review): PASS"
+    - "direct-merge: merged to main + pushed  |  pr-approval: branch pushed + PR opened: {pr_url}"
+    - "Roadmap STATUS: COMPLETE (direct-merge) | AWAITING MERGE (pr-approval, until human merges)"
     - "Plan checklist: all steps ticked"
     - "Reviewer: PASS"
   reviewer_status:
