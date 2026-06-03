@@ -300,4 +300,8 @@ update all that apply in the same change:
 - [ ] **`roadmapper/SKILL.md`** — the `STATUS:` enum + a one-line definition (for a new roadmap status).
 - [ ] **The emitting agent** (`agents/ds-step-*.md`) — emission + handoff schema.
 - [ ] **`lifecycle-states/states/*.md`** — exit criteria, if the token gates a state transition.
+- [ ] **`protocols/definition-of-done.md`** — the §Step-N done criteria AND the §Orchestrator Exit
+      Condition sentinel-chain rule (a prose-duplicate of the closure contract — easy to miss).
+- [ ] **`roadmapper/SKILL.md`** — both the entry-schema `STATUS:` enum *and* the §STEP-N delivery
+      procedure (a second, procedural copy of the flow).
 - [ ] **`glossary.md`** — if the token introduces a new user-facing term.

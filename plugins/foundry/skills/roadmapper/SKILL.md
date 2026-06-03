@@ -420,7 +420,10 @@ git push origin <branch>
 
 After pushing:
 
-1. Update the roadmap entry: change `STATUS: IN PROGRESS` → `STATUS: COMPLETE` and add a completion date.
+1. Update the roadmap entry per **merge governance** ([`../../knowledge/protocols/merge-governance.md`](../../knowledge/protocols/merge-governance.md)):
+   under **direct-merge** (merged to `main`) → `STATUS: IN PROGRESS` → `STATUS: COMPLETE` + completion date;
+   under **pr-approval** (branch pushed, PR opened) → `STATUS: IN PROGRESS` → `STATUS: AWAITING MERGE`,
+   flipping to `COMPLETE` only once the human merges the PR.
 2. Update `doc/[FEATURE_TITLE]_PLAN.md`: mark the checklist complete, add a "Completed" section with the commit hash and date.
 3. If the project uses a changelog (`CHANGELOG.md`), add an entry.
 

@@ -187,8 +187,11 @@ The target value is not "code exists". The target value is:
 - Reviewer: PASS
 
 ### Step 9 — Commit And Push
+- Adversarial review (`/foundry:pr-review`) returned PASS
 - Changes committed and pushed
-- Roadmap STATUS: COMPLETE with date
+- Delivered per merge governance ([`merge-governance.md`](merge-governance.md)):
+  **direct-merge** → merged to `main`, roadmap STATUS: COMPLETE with date;
+  **pr-approval** → branch pushed + PR opened, roadmap STATUS: AWAITING MERGE (→ COMPLETE on human merge)
 - Plan file completion section populated with commit hash and date
 
 ## Orchestrator Exit Condition
@@ -201,10 +204,13 @@ An IDEATOR item is done ONLY when:
   explicitly in `doc/spec/` labelled SPECIFICATION ONLY.
 - At least one unmocked full-stack story test passes per feature.
 - Every latency-sensitive path has a passing performance assertion.
-- **Both `STORY_PROVEN` (Phase 5) AND `DELIVERY_COMPLETE` (Phase 6) are present
-  in the sentinel chain.** STORY_PROVEN without DELIVERY_COMPLETE means the
-  push failed; DELIVERY_COMPLETE without STORY_PROVEN means the pipeline
-  shipped without E2E evidence — both are integrity violations.
+- **`STORY_PROVEN` (Phase 5) is present**, and the delivery sentinel matches the merge-governance
+  mode ([`merge-governance.md`](merge-governance.md)): under **direct-merge**, `DELIVERY_COMPLETE`
+  is present (the change is on `main`); under **pr-approval**, the item legitimately rests at
+  `AWAITING_MERGE` (PR open, review PASSed) with `DELIVERY_COMPLETE` following only on the human
+  merge. `STORY_PROVEN` absent is an integrity violation (shipped without E2E evidence);
+  `DELIVERY_COMPLETE` *without* a preceding `STORY_PROVEN` is likewise a violation. An item at
+  `AWAITING_MERGE` is **DoD-satisfied but not yet on `main`** — final closure is the merge.
 - Reviewer gate has zero unresolved CRITICAL findings.
 - Orchestrator marks the item COMPLETE in loop state.
 
