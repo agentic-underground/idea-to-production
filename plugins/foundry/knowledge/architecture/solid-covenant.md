@@ -12,6 +12,26 @@ project's document ecosystem alive, honest, and continuously improving. It is th
 expression of waste elimination (`pillars/waste-elimination.md`): a document that notices and
 removes its own drift never accumulates it.
 
+### The prime law of the covenant — halve the distance to perfection
+
+> **Every component of the idea-to-production marketplace — every plugin, skill, agent, command,
+> and knowledge doc — continuously asks how it can improve, and each iteration must at least HALVE
+> the remaining distance to perfection.**
+
+Perfection is asymptotic; the obligation is the *rate of approach*. Concretely, each pass should:
+- **Eliminate waste aggressively** — find and remove the single largest source of rework,
+  ambiguity, or drift remaining (`pillars/waste-elimination.md`, incl. *rediscovery*).
+- **Hold quality first, absolutely** — never weaken a gate to make progress; raise the floor
+  instead (`pillars/quality-first.md`).
+- **Deepen knowledge-parity** — convert every recurring question into a written answer so it is
+  never asked twice (`pillars/knowledge-parity.md`).
+- **Fix upstream, once** — a gap that recurs is not an instance to patch but a process to repair at
+  its source (a guardrail, a template, a sharper rule), so no future build pays for it again
+  (`protocols/guardrails-ledger.md`).
+
+A component that is not measurably closer to flawless than its previous version has not honoured
+the covenant. The `inspector` agent audits the system against exactly this law.
+
 ### What this means for this document
 
 1. **Single Responsibility**: This document does one thing. If it is trying to
@@ -48,7 +68,7 @@ approval before any change is applied.
 ### Lineage
 
 - **System:** FOUNDRY plugin — the value-flow production system
-- **Covenant version:** 1.1
+- **Covenant version:** 1.2 (adds the prime law — *halve the distance to perfection*)
 - **Canonical home:** `knowledge/architecture/solid-covenant.md`
 - **See also:** `architecture/solid.md` (the SOLID *principles* reference for code)
 

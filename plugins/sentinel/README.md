@@ -56,6 +56,14 @@ returns a false PASS.
 See [ROADMAP.md](ROADMAP.md) for planned capabilities (license compliance, SBOM, CI recipes, IaC
 scanning).
 
+## ♻️ Self-improvement covenant — halve the distance to perfection
+
+Every component of SENTINEL carries the SOLID self-improvement covenant: each iteration must **at
+least halve the remaining distance to perfection** — every missed pattern becomes a rule, every
+false positive a narrow exclusion, every new failure mode a guardrail — so the next scan starts
+stricter than the last and recurring gaps are fixed *upstream, once*. This is the shared discipline
+of the idea-to-production marketplace.
+
 ## License
 
 Dual-licensed under **MIT OR Apache-2.0**.

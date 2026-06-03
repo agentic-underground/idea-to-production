@@ -56,6 +56,13 @@ whether it lands in a README or on a printed A4 page.
 See [ROADMAP.md](ROADMAP.md) for planned capabilities (slide decks, multi-format export,
 citations, web publishing).
 
+## ♻️ Self-improvement covenant — halve the distance to perfection
+
+Every component of PRESSROOM carries the SOLID self-improvement covenant: each iteration must **at
+least halve the remaining distance to perfection** — every piece of diagram feedback is generalised
+into the shared charting-matrix so the same composition error never recurs, and recurring gaps are
+fixed *upstream, once*. This is the shared discipline of the idea-to-production marketplace.
+
 ## License
 
 Dual-licensed under **MIT OR Apache-2.0**.
