@@ -5,8 +5,9 @@
 > servers (semantic navigation/diagnostics). One copy; handlers link here.
 >
 > Reachability of every tool named here is verified by `/foundry:check`
-> ([`../../skills/check/SKILL.md`](../../skills/check/SKILL.md)); install guidance lives in the
-> marketplace [`PREREQUISITES/`](../../../../PREREQUISITES/) folder.
+> ([`../../skills/check/SKILL.md`](../../skills/check/SKILL.md)); the per-plugin
+> `skills/check/requirements.tsv` carries the install hints. Richer install prose lives in the
+> marketplace `PREREQUISITES/` folder when foundry is run from the marketplace source tree.
 
 ---
 
@@ -55,7 +56,7 @@ output, form the fix, then re-run the test to confirm green.
 ## 3. LSP — semantic navigation & diagnostics
 
 Claude Code attaches **language servers** declared as `lspServers` in the marketplace manifest
-([`../../../../.claude-plugin/marketplace.json`](../../../../.claude-plugin/marketplace.json)),
+(`.claude-plugin/marketplace.json`, foundry entry),
 giving agents real go-to-definition, hover types, and **live diagnostics** instead of grep-only
 navigation. FOUNDRY wires (all `strict: false`, so a missing binary degrades gracefully):
 

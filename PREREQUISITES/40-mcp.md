@@ -16,9 +16,14 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
   the wildcard `mcp__<server>__*`.
 - A subagent inherits the project/user MCP servers; to grant the tools to a restricted handler, add
   the `mcp__…__*` name to its `tools:` list (FOUNDRY's web handlers do this for `playwright`).
-- `.mcp.json` servers are **approval-gated**: on first session `claude mcp list` shows them as
-  `⏸ Pending approval`. Approve once, then they health-check and connect. This is a safety feature,
-  not a bug — it means shipping the config does not silently auto-run a subprocess.
+- `.mcp.json` servers are **approval-gated under default permissions**: on first session
+  `claude mcp list` shows them as `⏸ Pending approval`, and Claude Code does not connect to (run) a
+  plugin/project MCP server until you approve it. Treat this as the safety default, not an absolute
+  guarantee — a permissive permission mode or pre-approval changes it.
+- **Pin for provisioning.** The shipped configs use the upstream-documented unpinned launch
+  (`@playwright/mcp@latest`, `uvx semgrep-mcp`) for zero-config first use. For reproducible or
+  hardened machines, pin a version (e.g. `@playwright/mcp@<ver>`, `uvx --from semgrep-mcp==<ver>
+  semgrep-mcp`) so a fetched server can't change underneath you.
 - Manual fallback (no plugin): `claude mcp add playwright -- npx -y @playwright/mcp@latest`.
 
 ## Shipped by the marketplace

@@ -309,7 +309,8 @@ Workflow when WRITER must hand off to it:
 4. Write the LaTeX source at `doc/articles/<date>/<slug>/build/<slug>.tex`
    using the preamble in `references/latex-template.md`.
 5. Run `bash ${CLAUDE_PLUGIN_ROOT}/skills/rich-pdf-with-diagrams/scripts/build-pdf.sh`
-   to render diagrams and compile the article (three pdflatex passes).
+   to render diagrams and compile the article (dual-engine: LaTeX three-pass for a `.tex` source,
+   or Typst single-pass for a `.typ` source — auto-detected).
 6. Copy the final PDF up to `doc/articles/<date>/<slug>.pdf`.
 7. After delivery, if the user provides diagram feedback, follow the
    self-improvement protocol in

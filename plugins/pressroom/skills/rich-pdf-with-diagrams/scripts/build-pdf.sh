@@ -29,11 +29,16 @@ for arg in "$@"; do
 done
 
 have() { command -v "$1" >/dev/null 2>&1; }
+shopt -s nullglob   # an unmatched glob expands to nothing, not to the literal pattern
 
 # Resolve engine ---------------------------------------------------------------
 if [ "$engine" = "auto" ]; then
-  if compgen -G "*.typ" >/dev/null;   then engine="typst"
-  elif compgen -G "*.tex" >/dev/null; then engine="latex"
+  if [ -n "$article_name" ] && [ -f "${article_name}.tex" ] && [ ! -f "${article_name}.typ" ]; then
+    engine="latex"                       # explicit name with only a .tex → honour the old contract
+  elif [ -n "$article_name" ] && [ -f "${article_name}.typ" ]; then
+    engine="typst"
+  elif compgen -G "*.typ" >/dev/null;   then engine="typst"
+  elif compgen -G "*.tex" >/dev/null;   then engine="latex"
   else echo "No *.typ or *.tex source found in $(pwd)."; exit 1
   fi
 fi
@@ -43,7 +48,9 @@ ext="tex"; [ "$engine" = "typst" ] && ext="typ"
 # Discover article name if not supplied ---------------------------------------
 if [ -z "$article_name" ]; then
   src_files=( *."$ext" )
-  if [ "${#src_files[@]}" -ne 1 ]; then
+  if [ "${#src_files[@]}" -eq 0 ]; then
+    echo "No .$ext source found for engine=${engine} in $(pwd)."; exit 1
+  elif [ "${#src_files[@]}" -ne 1 ]; then
     echo "Found ${#src_files[@]} .$ext files; please pass the article name explicitly."
     exit 1
   fi

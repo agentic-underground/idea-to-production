@@ -21,20 +21,29 @@ missing on this machine.
 
 ## How to run
 
-1. **Detect which plugins are installed** in this marketplace/session — foundry is always present;
-   include sentinel and/or pressroom if their plugin directories exist alongside foundry.
+1. **Detect which plugins are installed — by capability, not by filesystem location.** foundry is
+   always present; treat sentinel / pressroom as available only if their `/sentinel:check` /
+   `/pressroom:check` commands resolve in this session. Never assume a sibling plugin's path on disk
+   (plugins install independently; foundry references companions *by capability* — the same rule the
+   inspector enforces).
 
-2. **Run each installed plugin's check** to capture live status (advisory):
-   ```bash
-   bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh
-   # if sentinel present:  bash <sentinel>/skills/check/scripts/check.sh
-   # if pressroom present: bash <pressroom>/skills/check/scripts/check.sh
+2. **Run each installed plugin's check** to capture live status (advisory), each through **its own
+   command surface** — never a cross-plugin filesystem path:
    ```
+   /foundry:check
+   /sentinel:check      # only if sentinel is installed
+   /pressroom:check     # only if pressroom is installed
+   ```
+   (foundry's own probe is equivalently `bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh`.)
 
-3. **Assemble `PREREQUISITES.md`** in the **current project root** with these sections, drawing the
-   canonical prose from the marketplace [`PREREQUISITES/`](../../../../PREREQUISITES/) folder
-   (`00-core.md`, `10-foundry.md`, and `20-sentinel.md`/`30-pressroom.md` for whichever companions
-   are installed, plus `40-mcp.md` and `45-lsp.md`):
+3. **Assemble `PREREQUISITES.md`** in the **current project root**. When foundry is run from the
+   marketplace **source tree**, draw the canonical prose from the marketplace `PREREQUISITES/` folder
+   (`00-core.md`, `10-foundry.md`, `20-sentinel.md`/`30-pressroom.md` for installed companions,
+   `40-mcp.md`, `45-lsp.md`). **If that folder is not reachable** (foundry was installed standalone,
+   so there is no marketplace root above `${CLAUDE_PLUGIN_ROOT}`), **degrade gracefully**: build the
+   document from each installed plugin's own `skills/check/requirements.tsv` (tool · tier ·
+   install-hint) plus `${CLAUDE_PLUGIN_ROOT}/knowledge/tooling/live-feedback.md`, and note that the
+   richer marketplace prose lives in the source repo. Sections:
 
    ```markdown
    # PREREQUISITES — <project name>

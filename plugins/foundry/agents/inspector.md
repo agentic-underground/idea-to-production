@@ -161,7 +161,10 @@ After reading all files individually, check cross-system consistency (all paths 
    never by a cross-plugin `${CLAUDE_PLUGIN_ROOT}` path.
 7. **Portability sweep**: zero machine-specific home/config-dir couplings anywhere outside the
    **provenance archive**, which is allowlisted: `docs/HISTORY.md`, `docs/MIGRATION.md`,
-   `docs/DEPRECATED.md`, and the entire `examples/` directory (historical worked examples).
+   `docs/DEPRECATED.md`, the entire `examples/` directory (historical worked examples), **and any
+   file dispositioned as legacy** — one carrying an explicit `LEGACY`/deprecated banner or cataloged
+   in `docs/DEPRECATED.md` (e.g. `skills/code-quality/DEPLOYMENT.md`). The disposition criterion is
+   the banner/catalog membership, not the path.
    The lowercase `forge` rust **sample-project** name (`forge-core`, `{{crate_prefix}}=forge`,
    etc.) in `rust-webapp-rollout` is also allowed — it is a sample project, not FORGE-the-system.
 
