@@ -28,7 +28,7 @@ Each source answers a different question — read all that exist.
 | Priority | Source | What to extract |
 |----------|--------|----------------|
 | 1 | `git log --format="%H %ai %s" --all` | Full commit timeline — dates, subjects, turning-point commits |
-| 2 | `~/.claude/memory/` (if FORGE project) | User context, project memories, feedback — informs voice and what matters |
+| 2 | `~/.claude/memory/` (if present) | User context, project memories, feedback — informs voice and what matters |
 | 3 | `ROADMAP.md` / `doc/ROADMAP.md` | Features, EARS specs, user stories, acceptance criteria |
 | 4 | `README.md` | Project philosophy, architecture, design decisions |
 | 5 | `CLAUDE.md` | Operational intent, communication protocols, production definitions |
@@ -302,7 +302,7 @@ feedback so the same composition error never recurs.
 Workflow when WRITER must hand off to it:
 
 1. Confirm the markdown article exists at `doc/articles/<date>/<slug>.md`.
-2. Read `${CLAUDE_PLUGIN_ROOT}/skills/rich-pdf-with-diagrams/SKILL.md` and the four
+2. Read [`${CLAUDE_PLUGIN_ROOT}/skills/rich-pdf-with-diagrams/SKILL.md`](../../skills/rich-pdf-with-diagrams/SKILL.md) and the four
    references it points to (especially `lessons-learned.md`).
 3. Compose diagrams under `doc/articles/<date>/<slug>/build/diagrams/`
    following the patterns in `references/graphviz-patterns.md`.
@@ -313,7 +313,7 @@ Workflow when WRITER must hand off to it:
 6. Copy the final PDF up to `doc/articles/<date>/<slug>.pdf`.
 7. After delivery, if the user provides diagram feedback, follow the
    self-improvement protocol in
-   `${CLAUDE_PLUGIN_ROOT}/skills/rich-pdf-with-diagrams/references/self-improvement.md`
+   [`${CLAUDE_PLUGIN_ROOT}/skills/rich-pdf-with-diagrams/references/self-improvement.md`](../../skills/rich-pdf-with-diagrams/references/self-improvement.md)
    **before** producing a revision.
 
 ### Commit and Push After Every Article Write
@@ -323,7 +323,7 @@ immediately after the file is saved.** Articles are deliverables; a local-only f
 not accessible to other agents, collaborators, or publication pipelines.
 
 Use the article commit format from
-`${CLAUDE_PLUGIN_ROOT}/skills/writer/references/commit-format.md`.
+[`${CLAUDE_PLUGIN_ROOT}/skills/writer/references/commit-format.md`](../../skills/writer/references/commit-format.md).
 The TESTING line is omitted — articles have no test suite.
 
 **New article:**

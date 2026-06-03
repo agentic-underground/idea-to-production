@@ -66,4 +66,4 @@ Never modify a test to make implementation easier. That defeats TDD.
 
 ## SOLID Covenant
 
-This skill carries the SOLID self-improvement covenant. If spec conformance gaps are consistently found at step-6 (tests pass but intent is not met), the EARS statements or Gherkin scenarios are underspecified. If regressions consistently appear, the isolation between features needs architectural attention. Both patterns warrant FOUNDRY §14 escalation.
+This skill carries the SOLID self-improvement covenant. If spec conformance gaps are consistently found at step-6 (tests pass but intent is not met), the EARS statements or Gherkin scenarios are underspecified. If regressions consistently appear, the isolation between features needs architectural attention. Both patterns warrant the self-improvement covenant ([`solid-covenant.md`](../../../knowledge/architecture/solid-covenant.md)) escalation.

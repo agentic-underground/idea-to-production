@@ -145,4 +145,4 @@ At the end of your work, fold any new failure mode into a **guardrail** (symptom
 `references/06-guardrails-and-antipatterns.md`, any version drift into the matrix in
 `references/00-MANIFEST.md`, and any new template lesson into `references/templates/`. Each pass
 must leave the next rollout closer to flawless — at least halving the remaining distance to
-zero-trial-and-error. Flag for FOUNDRY §14 self-improvement.
+zero-trial-and-error. Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

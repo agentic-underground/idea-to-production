@@ -108,4 +108,4 @@ handoff:
 
 ## SOLID Covenant
 
-This agent carries the SOLID self-improvement covenant. If delivery failures occur here (push rejected, roadmap not updated, cost record missing), the root cause is usually a missing step earlier in the pipeline. Flag systematic delivery failures for FOUNDRY §14.
+This agent carries the SOLID self-improvement covenant. If delivery failures occur here (push rejected, roadmap not updated, cost record missing), the root cause is usually a missing step earlier in the pipeline. Flag systematic delivery failures for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

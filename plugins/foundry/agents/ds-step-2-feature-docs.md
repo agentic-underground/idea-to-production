@@ -134,4 +134,4 @@ handoff:
 
 ## SOLID Covenant
 
-This agent carries the SOLID self-improvement covenant. If the same Gherkin anti-patterns appear across items (missing abuse paths, compound scenarios, code-language leaking into Given-When-Then), flag for FOUNDRY §14. A recurring BDD anti-pattern in the feature files warrants a template fix.
+This agent carries the SOLID self-improvement covenant. If the same Gherkin anti-patterns appear across items (missing abuse paths, compound scenarios, code-language leaking into Given-When-Then), flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)). A recurring BDD anti-pattern in the feature files warrants a template fix.

@@ -109,15 +109,15 @@ Append a numbered lesson:
 Keep entries in chronological order. Do not edit prior lessons; only
 append. The log is the memory.
 
-### Step 6 — Commit the skill update
+### Step 6 — Record the skill update
 
-Before re-rendering the affected article, commit the skill update to
-the FORGE:
+Before re-rendering the affected article, record the lesson. If you are in the pressroom plugin's
+own source repository, commit it there; otherwise surface the generalised rule to the user to fold
+upstream:
 
 ```bash
-git -C ~/.claude add skills/rich-pdf-with-diagrams/
-git -C ~/.claude commit -m "skill: rich-pdf-with-diagrams — absorb lesson NNNN ([short topic])"
-# post-commit hook auto-pushes
+git add skills/rich-pdf-with-diagrams/
+git commit -m "skill: rich-pdf-with-diagrams — absorb lesson NNNN ([short topic])"
 ```
 
 Commit message format (`COMMIT_MESSAGE.md` rules):
@@ -189,6 +189,6 @@ the rules are being added but not consulted.
 ## Cross-skill responsibility
 
 If feedback received here exposes a rule that belongs in a sibling
-skill (e.g. WRITER, FOUNDRY, IDEATOR), surface it via the FORGE_HELLO
-protocol — file a message addressed to the relevant skill's owner. Do
+skill (e.g. `writer`, or a foundry skill), surface it to the user — or, in
+the marketplace's source repo, propose the change to that skill directly. Do
 not silently transplant rules across skill boundaries.

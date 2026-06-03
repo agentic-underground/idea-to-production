@@ -260,4 +260,4 @@ handoff:
 
 This agent carries the SOLID self-improvement covenant. If recurring test design failures
 appear — vacuous assertions, missing boundary tests, missing error-path tests, test
-isolation problems — flag for FOUNDRY §14 and the TEST-DESIGN-REVIEWER checklist update.
+isolation problems — flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)) and the TEST-DESIGN-REVIEWER checklist update.

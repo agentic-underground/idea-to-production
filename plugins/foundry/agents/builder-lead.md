@@ -258,7 +258,7 @@ After cycle completion, compute accuracy and report in the tier summary.
 
 ## Self-Improvement Obligations
 
-At the end of the deep dive, flag for FOUNDRY §14:
+At the end of the deep dive, flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)):
 
 - Any VALUE_HANDLER that was needed but doesn't exist (new agent required)
 - Any recurring pattern in IDEA_COST history (e.g., SECURITY-REVIEWER always
@@ -276,4 +276,4 @@ Record flags in `doc/FOUNDRY_PLAN.md` under `## Self-Improvement Flags`.
 This agent carries the SOLID self-improvement covenant. Every output — the
 FOUNDRY plan, the SMU, the shared infrastructure map — is a living document.
 At the end of each cycle, review your plan against actuals from IDEA_COST.jsonl
-and propose improvements via FOUNDRY §14.
+and propose improvements via the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

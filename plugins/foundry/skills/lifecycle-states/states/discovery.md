@@ -42,4 +42,4 @@ This state skill is called before the FOUNDRY PHASE_POOL begins processing an it
 
 ## SOLID Covenant
 
-This skill carries the SOLID self-improvement covenant. If items consistently fail Discovery exit criteria in the same way (e.g., actors always underspecified, success metrics always vague), the IDEATOR question bank needs enrichment. Flag for FOUNDRY §14.
+This skill carries the SOLID self-improvement covenant. If items consistently fail Discovery exit criteria in the same way (e.g., actors always underspecified, success metrics always vague), the IDEATOR question bank needs enrichment. Flag for the self-improvement covenant ([`solid-covenant.md`](../../../knowledge/architecture/solid-covenant.md)).

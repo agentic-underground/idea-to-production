@@ -1,26 +1,26 @@
 # COMMIT_MESSAGE — Commit Message Standard
 
-> **Single source of truth** for all FORGE commit message rules.
+> **Single source of truth** for all FOUNDRY commit message rules.
 > Every agent, skill, and instruction that previously defined commit message format now points here.
 
 ---
 
 ## 1. Purpose & Scope
 
-This file governs how commit messages are written across all FORGE-driven projects.
+This file governs how commit messages are written across all FOUNDRY-driven projects.
 It is read by:
 
 - `agents/ds-step-8-commit-message.md` — the agent that produces the commit message
 - `skills/roadmapper/SKILL.md` — step 8 of the development system
 - `skills/ideator/references/dev-system.md` — step 8 reference for ideator-driven projects
-- `CLAUDE.md` — forge-internal commit hygiene
+- `CLAUDE.md` — config-repo commit hygiene (author only)
 
 Any file that previously contained an inline commit message template instead carries a
 single pointer to this file. Update this file to change the standard everywhere at once.
 
 ---
 
-## 2. The FORGE Commit Format
+## 2. The FOUNDRY Commit Format
 
 Every project commit MUST follow this structure:
 
@@ -70,7 +70,7 @@ ROADMAP: closes #7
 
 ## 3. Summary Line — Conventional Commits Integration
 
-The first line of every FORGE commit MUST combine:
+The first line of every FOUNDRY commit MUST combine:
 
 ```
 [emoji] type(scope): short imperative summary
@@ -181,10 +181,14 @@ Payload: the first line of the approved commit message (≤72 chars).
 
 ---
 
-## 10. FORGE Commit Type Prefixes (Forge-internal commits only)
+## 10. Config-repo Commit Type Prefixes (author / `~/.claude` repo only — NOT for plugin users)
 
-When committing changes to the FORGE tooling itself (`~/.claude`), use these type prefixes
-instead of CC types — they describe the FORGE artefact class being changed:
+> **Scope note:** This section applies **only** to the maintainer's private Claude config repository
+> (`~/.claude`), where this tooling was originally developed. Projects that merely *use* the FOUNDRY
+> plugin do not need it — use ordinary Conventional Commits. Retained for the marketplace maintainer.
+
+When committing changes to that config repo itself, use these type prefixes instead of CC types —
+they describe the artefact class being changed:
 
 | Prefix | When to use |
 |--------|-------------|
@@ -349,6 +353,6 @@ Refs: #123
 - **Communicate the nature of changes** to teammates, the public, and other stakeholders.
 - **Trigger build and publish processes** — CI pipelines can key off commit type.
 - **Make it easier for people to contribute** — a structured commit history is navigable and auditable.
-- **Trace requirements** — the FORGE WHY/WHAT/TESTING/ROADMAP body extends CC's body/footer model with EARS and test traceability.
+- **Trace requirements** — the FOUNDRY WHY/WHAT/TESTING/ROADMAP body extends CC's body/footer model with EARS and test traceability.
 
 ---

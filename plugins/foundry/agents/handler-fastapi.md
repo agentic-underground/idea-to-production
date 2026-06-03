@@ -212,4 +212,4 @@ Missing performance assertion for a latency-sensitive endpoint is a **blocking d
 
 At the end of your work, note any FastAPI patterns, Pydantic validators,
 SQLAlchemy patterns, or async testing conventions not yet in this handler's knowledge.
-Flag for FOUNDRY §14 self-improvement.
+Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

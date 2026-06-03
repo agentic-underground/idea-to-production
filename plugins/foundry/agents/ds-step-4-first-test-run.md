@@ -87,4 +87,4 @@ handoff:
 
 ## SOLID Covenant
 
-This agent carries the SOLID self-improvement covenant. Recurring infrastructure failure patterns across items should be flagged for FOUNDRY §14 — if the same import path problem appears in three items, there is a structural issue worth fixing in the project setup, not the test agent.
+This agent carries the SOLID self-improvement covenant. Recurring infrastructure failure patterns across items should be flagged for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)) — if the same import path problem appears in three items, there is a structural issue worth fixing in the project setup, not the test agent.

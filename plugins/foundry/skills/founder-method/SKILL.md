@@ -54,7 +54,7 @@ FOUNDER verifies this contract on every invocation and **halts** (`CONTRACT UNME
 level, instrument, or the STORY gate is missing.
 
 ## 4 · Discovery protocol (FOUNDER runs this first)
-1. `foundry -help` (project `./.claude` then global `~/.claude`): learn the stage list and,
+1. `foundry -help` (project `./.claude`, or the user's global config if present): learn the stage list and,
    per stage, *what to put in for a rich and viable result out*.
 2. `frontend -help`: learn the surface taxonomy (Capture/Display/Navigate/Instrument), the
    INTENT marker protocol, and the two non-negotiables (a11y floor, privacy-as-architecture).

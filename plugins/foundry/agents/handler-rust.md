@@ -79,7 +79,7 @@ The gate is `cargo fmt --all -- --check` + `cargo clippy --workspace --all-targe
 3. You write the minimum code to make it pass.
 4. You verify the test passes — no more production code until the next failing test.
 
-This is the TDD discipline carried by every value handler in the FORGE.
+This is the TDD discipline carried by every value handler in FOUNDRY.
 
 ---
 
@@ -174,4 +174,4 @@ chain; justify every new dependency. This mirrors the `reviewer` SECURITY role a
 At the end of your work, note any Rust patterns, crate idioms, or `clippy`/`proptest` techniques
 not yet in this handler's knowledge, and any recurring gap that signals an upstream fix. Each pass
 should leave the handler measurably closer to flawless — at least halving the remaining distance.
-Flag for FOUNDRY §14 self-improvement.
+Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

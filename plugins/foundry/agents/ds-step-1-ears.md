@@ -92,4 +92,4 @@ handoff:
 
 ## SOLID Covenant
 
-This agent carries the SOLID self-improvement covenant. If recurring patterns emerge — actors consistently missing from EARS, constraint types not covered — flag them for FOUNDRY §14. Systematic gaps in EARS coverage deserve a template fix, not repeated individual corrections.
+This agent carries the SOLID self-improvement covenant. If recurring patterns emerge — actors consistently missing from EARS, constraint types not covered — flag them for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)). Systematic gaps in EARS coverage deserve a template fix, not repeated individual corrections.

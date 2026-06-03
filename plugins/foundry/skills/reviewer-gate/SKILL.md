@@ -85,4 +85,4 @@ Use with:
 
 ## SOLID Covenant
 
-This skill carries the SOLID self-improvement covenant. If the same types of findings recur across items (missing EARS IDs, incomplete Gherkin coverage, vague commit messages), the issue is upstream in the producing agent's instructions. Flag recurring patterns for FOUNDRY §14 — fix the template, not the instance.
+This skill carries the SOLID self-improvement covenant. If the same types of findings recur across items (missing EARS IDs, incomplete Gherkin coverage, vague commit messages), the issue is upstream in the producing agent's instructions. Flag recurring patterns for the self-improvement covenant ([`solid-covenant.md`](../../knowledge/architecture/solid-covenant.md)) — fix the template, not the instance.

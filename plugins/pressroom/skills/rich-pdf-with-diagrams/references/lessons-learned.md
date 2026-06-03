@@ -528,4 +528,4 @@ effective magnification.
   The patterns in `graphviz-patterns.md` carry tested defaults; copy
   them, don't fight them.
 - **When two rules conflict, surface the conflict.** Do not silently
-  pick one. File a FORGE_HELLO message or surface it to the user.
+  pick one. Surface it to the user (or, in the source repo, resolve it explicitly).

@@ -2,12 +2,12 @@
 name: builder
 description: >
   FOUNDRY — Technical Tooling for Software Evolution. The production orchestrator
-  for the FORGE system. Ingests a complete ROADMAP.md, tiers all items by
+  for this production system. Ingests a complete ROADMAP.md, tiers all items by
   PRIORITY_STATUS against a token budget, decomposes the full backlog into
   parallelised expert subagents (PHASE_POOL + VALUE_HANDLER_POOL), drives every
   item through the full DEV_SYSTEM pipeline (EARS → FEATURE → TEST → IMPLEMENT →
-  STORY), and records every completion in IDEA_COST.jsonl. The FORGE is a
-  production facility; FOUNDRY is its engine.
+  STORY), and records every completion in IDEA_COST.jsonl. FOUNDRY is the engine
+  of the idea-to-production conveyor.
   Trigger when the user says: "run the foundry", "process the roadmap",
   "orchestrate the roadmap", "ship the backlog", "build everything", "start
   FOUNDRY", "run a foundry cycle", "what would this cost?", "estimate the
@@ -18,7 +18,7 @@ description: >
 
 > *Technical Tooling for Software Evolution*
 
-FOUNDRY is the production orchestrator of the FORGE system. It takes a fully
+FOUNDRY is the production orchestrator of the idea-to-production conveyor. It takes a fully
 populated `ROADMAP.md`, tiers all pending items by token budget and priority,
 decomposes the work into parallelised specialist subagents, drives every item
 through the complete DEV_SYSTEM pipeline, and records the cost of every
@@ -532,56 +532,25 @@ data to improve estimates. See §14 (self-improvement).
 
 ## 13. INSPECTION PROTOCOL
 
-Inspection is **user-initiated only**. Say "inspect FORGE" or "run the inspector"
-to trigger. There is no scheduled or automatic invocation.
+Inspection is **user-initiated only**. Say "inspect FOUNDRY" / "inspect FORGE" / "run the
+inspector" to trigger. There is no scheduled or automatic invocation.
 
-### 13.1 Lock acquisition (mutual exclusion)
+### 13.1 What the inspector does
 
-Before running, the inspector must acquire a git-backed lock to prevent two
-Claude instances from running concurrently:
+See [`agents/inspector.md`](../../agents/inspector.md) for full behaviour. In summary:
 
-```
-1. git -C ~/.claude pull --rebase
-2. Check whether FORGE-INSPECTION.lock exists in the repo.
-   If yes → abort: print "Inspection already running (lock held by [handle]).
-   Pull ~/.claude when it completes to see the report."
-3. Write FORGE-INSPECTION.lock with:
-     handle: @<your-handle>
-     instance: <machine name>
-     acquired: <ISO8601 timestamp>
-4. git -C ~/.claude add FORGE-INSPECTION.lock
-   git -C ~/.claude commit -m "lock: acquire FORGE inspection lock"
-   git -C ~/.claude push origin main
-5. If push is rejected (non-fast-forward):
-   git -C ~/.claude pull --rebase
-   If FORGE-INSPECTION.lock now exists (another Claude won) → abort.
-   If no conflict → retry push once. If rejected again → abort.
-6. Lock is yours. Proceed with inspection.
-```
+1. Reads the installed FOUNDRY plugin (`${CLAUDE_PLUGIN_ROOT}`) — skills, agents, knowledge,
+   commands, hooks, manifests — and the companion plugins (`sentinel`/`pressroom`) if present.
+2. Builds a fresh critical-analysis persona (domain expert + SOLID auditor).
+3. Analyses each document against: clarity, accuracy, SOLID compliance, coverage **density**,
+   outdated patterns, and **portability** (zero `~/.claude/` / machine-specific coupling).
+4. Produces `FOUNDRY_INSPECTION_REPORT.md` in the **current project** (never `~/.claude/`) with
+   severity-ranked findings.
+5. Surfaces CRITICAL findings to the user; captures WARNING/SUGGESTION in the report.
 
-### 13.2 What the inspector does
-
-See `agents/inspector.md` for full behaviour. In summary:
-
-1. Reads all FORGE content: skills, agents, references, settings
-2. Builds a fresh critical-analysis persona (domain expert + SOLID auditor)
-3. Analyses each document against: clarity, accuracy, SOLID compliance,
-   coverage of edge cases, outdated patterns
-4. Produces `~/.claude/FORGE_INSPECTION_REPORT.md` with severity-ranked findings
-5. Appends a one-line summary to `~/.claude/inspection-log.jsonl`
-6. Applies direct fixes for CRITICAL/HIGH findings where unambiguous
-
-### 13.3 Lock release
-
-After the inspection completes (report written, fixes applied):
-
-```
-git -C ~/.claude rm FORGE-INSPECTION.lock
-git -C ~/.claude add -A                   # stage report fixes
-git -C ~/.claude commit -m "lock: release FORGE inspection lock + [N] fixes"
-git -C ~/.claude push origin main
-git -C ~/.claude pull --rebase            # expect up to date or upstream changes
-```
+> **Note:** there is **no git lock** — a plugin install is read-only, not a shared mutable repo,
+> so there is nothing to lock or push. The inspector mutates files only when run inside the
+> marketplace's own source repository, and never commits/pushes unless the user asks.
 
 ---
 
@@ -594,13 +563,15 @@ roadmap cycle, or when the daily inspector surfaces proposals:
    Which stages caused the most review cycles? Which stacks were slowest?
 2. **LEAD ENGINEER proposes improvements** to agent compositions, tier logic,
    reviewer checklists, or VALUE_HANDLER_POOL entries.
-3. **Inspector proposals** are collated from `FORGE_INSPECTION_REPORT.md`.
+3. **Inspector proposals** are collated from `FOUNDRY_INSPECTION_REPORT.md`.
 4. Present proposed changes to the user for approval.
-5. On approval, apply via standard FORGE commit process:
+5. On approval, apply the change in the marketplace's source repository and commit it with the
+   standard format ([`commit-message.md`](../../knowledge/protocols/commit-message.md)):
    ```bash
-   git -C ~/.claude add <files>
-   git -C ~/.claude commit -m "skill: <description of improvement>"
+   git add <files>
+   git commit -m "skill: <description of improvement>"
    ```
+   (Never modify or push the user's `~/.claude/`; improvements land in the plugin's source repo.)
 6. The SOLID compliance check from IDEATOR §8.3 applies to all improvements.
 
 ---
@@ -681,12 +652,12 @@ bug. IDEA_COST.jsonl is written only when both are present in the chain.
 ---
 
 <!-- SOLID REPLICATION FRAGMENT v1.0 -->
-<!-- This skill is part of the FORGE production facility. -->
+<!-- This skill is part of the idea-to-production marketplace. -->
 <!-- All documents, agents, and artefacts it produces carry the covenant below. -->
 
 ## ♻️ SOLID Self-Improvement Covenant
 
-This document is part of the **FOUNDRY** skill in the FORGE production facility.
+This document is part of the **FOUNDRY** skill in the idea-to-production marketplace.
 All artefacts produced by FOUNDRY — plans, specs, feature files, test files,
 cost records, and inspection reports — carry this covenant.
 
@@ -696,4 +667,4 @@ cost records, and inspection reports — carry this covenant.
 4. **Interface Segregation** — Agents receive only the context they need via sentinels.
 5. **Dependency Inversion** — The pipeline depends on phase abstractions, not on specific implementations.
 
-*Skill: FOUNDRY v1.0 — FORGE production facility*
+*Skill: FOUNDRY v1.0 — idea-to-production marketplace*

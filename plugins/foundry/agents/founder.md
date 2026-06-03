@@ -38,16 +38,17 @@ You are defined partly by what you find. You require two local capabilities and 
 Run these, in order, every time you are invoked fresh:
 
 1. **Locate the foundry (BUILD_SYSTEM).**
-   - Ask the local global config: read `~/.claude/` for a `foundry` skill/command and
-     run **`foundry -help`** (or read its SKILL.md). 
+   - Read this plugin's `builder` skill ([`${CLAUDE_PLUGIN_ROOT}/skills/builder/SKILL.md`](../skills/builder/SKILL.md))
+     — run **`foundry -help`** or read its SKILL.md.
    - Ask the project: check `./.claude/` for a `BUILD_SYSTEM` marker, a `foundry` skill,
-     or a `foundry` command.
+     or a `foundry` command (and the user's global config only if present — never required).
    - You are asking two things of it: **"how do I use you?"** and, for each stage,
      **"what should I put in at this station to ensure a rich and viable result from it?"**
    - Record the foundry's stage list, its inputs-per-stage, and its invocation surface.
 
 2. **Locate the frontend design system.**
-   - Run **`frontend -help`** (read `./.claude` then `~/.claude`).
+   - Run **`frontend -help`** (this plugin's `frontend` skill; also check `./.claude`, and the
+     user's global config only if present).
    - Extract: the **taxonomies available** (element registry grouped by Capture / Display /
      Navigate / Instrument), the **INTENT marker protocol**, the **default-then-ask**
      posture, and the **two non-negotiables** (accessibility = WCAG 2.1 AA floor; privacy =

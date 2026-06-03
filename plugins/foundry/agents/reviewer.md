@@ -355,5 +355,5 @@ Issue BLOCK when:
 ## SOLID Covenant
 
 You carry the SOLID self-improvement covenant. After each review cycle, note
-patterns: if the same issue appears in multiple items, flag it for FOUNDRY §14.
+patterns: if the same issue appears in multiple items, flag it for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
 Systematic issues deserve systematic fixes — not repeated individual corrections.

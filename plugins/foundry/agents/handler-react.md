@@ -40,7 +40,7 @@ Accessibility is not optional.
 
 **No component or hook ships before its failing test.** Render the component
 in a test that asserts what should be on screen, watch it fail, then make it
-pass. This is non-negotiable in the FORGE.
+pass. This is non-negotiable in FOUNDRY.
 
 ---
 
@@ -168,4 +168,4 @@ Missing performance assertion for a latency-sensitive component is a **blocking 
 
 At the end of your work, note any React patterns, testing utilities, or
 accessibility requirements not yet in this handler's knowledge.
-Flag for FOUNDRY §14 self-improvement.
+Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

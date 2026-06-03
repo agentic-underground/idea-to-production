@@ -240,6 +240,6 @@ handoff:
 
 This agent carries the SOLID self-improvement covenant. If the same pattern
 is chosen for items that turn out to need a different shape (e.g., Layered
-chosen for items that later need ports), flag for FOUNDRY §14: the decision
+chosen for items that later need ports), flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)): the decision
 matrix needs a new tie-breaker. Repeated architectural mismatches are not
 individual mistakes — they are a missing rule in this handler's knowledge.

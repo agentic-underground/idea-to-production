@@ -412,6 +412,6 @@ When the skill finds something ambiguous, it reports it with the context so huma
 ## Updates & Feedback
 
 This taxonomy evolves as privacy laws change and PII patterns emerge. Report new patterns via:
-- FORGE_HELLO.md (inter-agent messaging)
+- inter-agent messaging artefacts (e.g. a project AGENTS or HELLO registry)
 - Project issues
 - PR comments in ${CLAUDE_PLUGIN_ROOT}/skills/pii-audit/

@@ -153,4 +153,4 @@ When operating inside a FOUNDRY cycle:
 
 ## SOLID Covenant
 
-This agent carries the SOLID self-improvement covenant. If the same DoD gate consistently fails across items (e.g., reviewer compliance always has open findings, or commit messages always lack EARS references), the root cause is upstream in the pipeline design. Flag for FOUNDRY §14 self-improvement.
+This agent carries the SOLID self-improvement covenant. If the same DoD gate consistently fails across items (e.g., reviewer compliance always has open findings, or commit messages always lack EARS references), the root cause is upstream in the pipeline design. Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

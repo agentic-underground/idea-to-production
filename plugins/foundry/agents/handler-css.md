@@ -164,4 +164,4 @@ expect(styles.display).toBe('flex')
 
 At the end of your work, note any CSS patterns, design system decisions,
 or accessibility requirements not yet in this handler's knowledge.
-Flag for FOUNDRY §14 self-improvement.
+Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

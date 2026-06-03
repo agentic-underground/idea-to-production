@@ -135,7 +135,7 @@ Creates `PII-REPORT.md` with:
 ### Phase 2: PII Definition Briefing
 
 All agents receive:
-- Comprehensive PII definition (see `references/PII-DEFINITION.md`)
+- Comprehensive PII definition (see [`references/PII-DEFINITION.md`](references/PII-DEFINITION.md))
 - Project-specific context (language, framework)
 - Output format requirements
 - Risk classification rules
@@ -191,11 +191,11 @@ Each finding is classified by **risk level**:
 
 | Document | Purpose |
 |----------|---------|
-| `references/PII-DEFINITION.md` | Detailed PII taxonomy with examples |
-| `references/AUDIT-SCOPE.md` | Directories and file types scanned per mode |
-| `references/AGENT-INSTRUCTIONS.md` | Per-agent scan instructions and techniques |
-| `references/REMEDIATION.md` | How to fix common PII exposure issues |
-| `references/COMPLIANCE-NOTES.md` | GDPR, CCPA, and other privacy regulations |
+| [`references/PII-DEFINITION.md`](references/PII-DEFINITION.md) | Detailed PII taxonomy with examples |
+| [`references/AUDIT-SCOPE.md`](references/AUDIT-SCOPE.md) | Directories and file types scanned per mode |
+| [`references/AGENT-INSTRUCTIONS.md`](references/AGENT-INSTRUCTIONS.md) | Per-agent scan instructions and techniques |
+| [`references/REMEDIATION.md`](references/REMEDIATION.md) | How to fix common PII exposure issues |
+| [`references/COMPLIANCE-NOTES.md`](references/COMPLIANCE-NOTES.md) | GDPR, CCPA, and other privacy regulations |
 
 ---
 
@@ -300,13 +300,13 @@ This skill carries the **self-improvement covenant**:
 - Every remediation technique → documented in `REMEDIATION.md`
 - Every user finding → folded back into skill definition
 
-Submit feedback at the skill repo or via FORGE_HELLO.md messages.
+Submit feedback by opening an issue on the marketplace repository, or surface it to the user.
 
 ---
 
 ## Further Reading
 
-- `references/PII-DEFINITION.md` — Comprehensive taxonomy of what counts as PII
-- `references/AGENT-INSTRUCTIONS.md` — Detailed parallel agent scan methodology
-- `references/COMPLIANCE-NOTES.md` — GDPR, CCPA, privacy law implications
-- `references/REMEDIATION.md` — Fix strategies for common exposures
+- [`references/PII-DEFINITION.md`](references/PII-DEFINITION.md) — Comprehensive taxonomy of what counts as PII
+- [`references/AGENT-INSTRUCTIONS.md`](references/AGENT-INSTRUCTIONS.md) — Detailed parallel agent scan methodology
+- [`references/COMPLIANCE-NOTES.md`](references/COMPLIANCE-NOTES.md) — GDPR, CCPA, privacy law implications
+- [`references/REMEDIATION.md`](references/REMEDIATION.md) — Fix strategies for common exposures

@@ -59,7 +59,7 @@ surface is keyboard-operable and WCAG 2.1 AA clean before it is considered done.
 4. You verify the test passes — no more production code until the next failing
    test.
 
-This is the TDD discipline carried by every value handler in the FORGE.
+This is the TDD discipline carried by every value handler in FOUNDRY.
 
 ---
 
@@ -275,4 +275,4 @@ Missing performance assertion for a latency-sensitive path is a **blocking defec
 At the end of your work, note any vanilla-JS patterns, DOM utilities, testing
 helpers, or accessibility requirements not yet in this handler's knowledge — and
 any `@front-end` element worth promoting into the `frontend` skill's registry.
-Flag for FOUNDRY §14 self-improvement.
+Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

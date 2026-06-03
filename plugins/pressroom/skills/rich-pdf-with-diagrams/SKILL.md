@@ -205,12 +205,12 @@ When the user provides feedback on a diagram:
    **Charting-matrix rule affected:** [#N, new, or [pattern name]]
    **Diagram(s) fixed in this round:** [list]
    ```
-5. **Commit the skill update** to the FORGE *before* re-rendering the
-   affected article:
+5. **Record the lesson** *before* re-rendering the affected article. If you are working in the
+   pressroom plugin's own source repository, commit the update there; otherwise surface the
+   generalised rule to the user so it can be folded upstream:
    ```bash
-   git -C ~/.claude add skills/rich-pdf-with-diagrams/
-   git -C ~/.claude commit -m "skill: rich-pdf-with-diagrams — absorb feedback (lesson NNNN)"
-   # post-commit hook auto-pushes
+   git add skills/rich-pdf-with-diagrams/
+   git commit -m "skill: rich-pdf-with-diagrams — absorb feedback (lesson NNNN)"
    ```
 6. **Re-render** the article applying the new rule. The next diagram
    produced by anyone using this skill will inherit the lesson.
@@ -222,7 +222,7 @@ maintaining it, the skill will degrade. With it, the skill compounds.
 
 ## 7. HOW WRITER CALLS THIS SKILL
 
-WRITER (`${CLAUDE_PLUGIN_ROOT}/skills/writer/SKILL.md`) reaches the point where the
+WRITER ([`${CLAUDE_PLUGIN_ROOT}/skills/writer/SKILL.md`](../../skills/writer/SKILL.md)) reaches the point where the
 markdown article exists and the user has asked for a PDF. At that point
 WRITER should:
 

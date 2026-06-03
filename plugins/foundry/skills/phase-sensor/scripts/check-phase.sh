@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
-# DEV_SYSTEM Phase Sensor for The Forge.
+# DEV_SYSTEM Phase Sensor for FOUNDRY.
 # Detects the current development phase of each IN PROGRESS ROADMAP feature
-# by inspecting artifact presence, then installs the skill for that phase.
+# by inspecting artifact presence, then advises the skill for that phase.
+# Operates on the PROJECT the plugin is installed into — never on ~/.claude.
 # EARS: 009-013  Feature: [2] DEV_SYSTEM Phase Sensor
 set -euo pipefail
 
-FORGE="${HOME}/.claude"
-LOG="${FORGE}/cache/phase-sensor.log"
-ROADMAP="${FORGE}/ROADMAP.md"
-SPEC="${FORGE}/doc/SPECIFICATION.ears.md"
-FEATURES_DIR="${FORGE}/doc/features"
-TESTS_DIR="${FORGE}/tests"
-PHASES_DIR="${FORGE}/skills/phase-sensor/phases"
+# Project root (Claude Code sets CLAUDE_PROJECT_DIR for hooks); the plugin root for phase defs.
+PROJECT="${CLAUDE_PROJECT_DIR:-$PWD}"
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$PROJECT}"
+LOG="${PROJECT}/.claude/cache/phase-sensor.log"
+ROADMAP="${PROJECT}/ROADMAP.md"
+SPEC="${PROJECT}/doc/SPECIFICATION.ears.md"
+FEATURES_DIR="${PROJECT}/doc/features"
+TESTS_DIR="${PROJECT}/tests"
+PHASES_DIR="${PLUGIN}/skills/phase-sensor/phases"
 
-mkdir -p "${FORGE}/cache"
+mkdir -p "${PROJECT}/.claude/cache"
 
 log() { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >> "$LOG"; }
 
@@ -63,8 +66,8 @@ while IFS= read -r header; do
 
     # Phase 0 complete → plan file exists and is non-empty
     if [ -n "$plan_ref" ] \
-        && [ -f "${FORGE}/${plan_ref}" ] \
-        && [ -s "${FORGE}/${plan_ref}" ]; then
+        && [ -f "${PROJECT}/${plan_ref}" ] \
+        && [ -s "${PROJECT}/${plan_ref}" ]; then
         phase=1
         log "  [${feature_num}] ✓ Phase 0 done: plan at ${plan_ref}"
     fi
@@ -110,7 +113,7 @@ while IFS= read -r header; do
         continue
     fi
 
-    skill_md="${FORGE}/skills/${skill_name}/SKILL.md"
+    skill_md="${PROJECT}/.claude/skills/${skill_name}/SKILL.md"
 
     # EARS-013 / idempotency: skill already present → skip without committing
     if [ -f "$skill_md" ]; then
@@ -119,7 +122,7 @@ while IFS= read -r header; do
     fi
 
     # Extract the embedded SKILL.md (everything after the ---SKILL--- marker)
-    mkdir -p "${FORGE}/skills/${skill_name}"
+    mkdir -p "${PROJECT}/.claude/skills/${skill_name}"
     awk '/^---SKILL---/{found=1; next} found{print}' "$phase_def" > "$skill_md"
 
     if [ ! -s "$skill_md" ]; then
@@ -129,16 +132,12 @@ while IFS= read -r header; do
         continue
     fi
 
-    # EARS-012: record transition
-    log "  [${feature_num}] TRANSITION → phase ${phase}: installing '${skill_name}'"
+    # EARS-012: record transition. The skill is installed into the PROJECT's local
+    # .claude/skills/. A PostToolUse hook must NEVER auto-commit the user's repository —
+    # advise the transition and let the user (or the orchestrator) commit deliberately.
+    log "  [${feature_num}] TRANSITION → phase ${phase}: installed '${skill_name}' to .claude/skills/"
 
-    # Commit the installed skill to The Forge
-    cd "$FORGE"
-    git add "skills/${skill_name}/"
-    git commit -m "skill: install ${skill_name} for phase ${phase} (feature [${feature_num}])" --quiet
-
-    log "  [${feature_num}] ✓ '${skill_name}' installed and committed"
-    printf '[phase-sensor] Feature [%s] phase %s: installed "%s"\n' \
+    printf '[phase-sensor] Feature [%s] advanced to phase %s — installed "%s" into .claude/skills/. Review and commit when ready.\n' \
         "$feature_num" "$phase" "$skill_name"
 
 done < <(awk '

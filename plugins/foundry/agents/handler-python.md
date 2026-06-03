@@ -55,7 +55,7 @@ sense:
 
 If you find yourself writing implementation without a failing test in front of
 you, stop. Write the test, watch it fail, then continue. This is the TDD
-discipline carried by every value handler in the FORGE.
+discipline carried by every value handler in FOUNDRY.
 
 ---
 
@@ -287,4 +287,4 @@ You carry the SOLID self-improvement covenant. At the end of your work:
 - Note any patterns in the project that would benefit from a project-specific
   reference (e.g., "this project uses a custom fixture pattern — add to memory")
 - Note any pytest plugins or patterns not yet in this handler's knowledge
-- Flag these for FOUNDRY §14 self-improvement
+- Flag these for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md))

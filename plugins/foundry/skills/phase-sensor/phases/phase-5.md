@@ -49,6 +49,6 @@ Key invariants from the covenant that directly govern this phase:
 ## After implementation — deliver (Steps 7–9)
 
 Per `PRINCIPLE_PHILOSOPHY.md §6 — After green, deliver`:
-- **Step 7**: `git -C ~/.claude fetch origin && git -C ~/.claude rebase origin/main`; re-run tests.
+- **Step 7**: `git fetch origin && git rebase origin/main`; re-run tests.
 - **Step 8**: Write the commit message per `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/commit-message.md`
-- **Step 9**: `git -C ~/.claude push origin main`; update ROADMAP.md STATUS → COMPLETE.
+- **Step 9**: `git push origin main`; update ROADMAP.md STATUS → COMPLETE.

@@ -127,7 +127,7 @@ whole deploy model in `04` and `05`.
 
 | Term | Meaning |
 |---|---|
-| **Value handler** | A FORGE production asset (here, a Claude Code plugin/skill) that turns a class of IDEA into PRODUCT. This package is the foundation of the `RUST_WEBAPP_API` one. |
+| **Value handler** | A FOUNDRY production asset (here, a Claude Code plugin/skill) that turns a class of IDEA into PRODUCT. This package is the foundation of the `RUST_WEBAPP_API` one. |
 | **Station** | A fixed stage in the IDEA → PRODUCTION line. Value is certified at each before moving on. See `02`. |
 | **Carriage of value** | The disciplined movement of a solution from station to station; nothing skips a station. |
 | **Coordinate** | A failing unit test: an `input → expected output` assertion that pins the solution's location in logical space. |

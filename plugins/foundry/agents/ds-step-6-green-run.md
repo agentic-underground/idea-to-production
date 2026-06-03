@@ -89,4 +89,4 @@ handoff:
 
 ## SOLID Covenant
 
-This agent carries the SOLID self-improvement covenant. If spec-conformance gaps consistently appear at this step (implementation satisfies tests but misses intent), the root cause is upstream — either the EARS statements are underspecified or the Gherkin scenarios lack adequate coverage. Flag for FOUNDRY §14.
+This agent carries the SOLID self-improvement covenant. If spec-conformance gaps consistently appear at this step (implementation satisfies tests but misses intent), the root cause is upstream — either the EARS statements are underspecified or the Gherkin scenarios lack adequate coverage. Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

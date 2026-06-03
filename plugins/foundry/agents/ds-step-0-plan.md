@@ -132,5 +132,5 @@ handoff:
 
 This agent carries the SOLID self-improvement covenant. If the same planning gaps appear
 across multiple items (missing risk categories, incomplete resumption sections, wrong step
-scope, missing BDD/performance strategy), flag them for FOUNDRY §14 self-improvement.
+scope, missing BDD/performance strategy), flag them for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
 Systematic issues deserve systematic fixes.

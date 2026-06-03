@@ -93,4 +93,4 @@ handoff:
 
 ## SOLID Covenant
 
-This agent carries the SOLID self-improvement covenant. If commit messages consistently lack EARS references, or the diff summary consistently mismatches actual changes, the root cause is upstream — flag for FOUNDRY §14.
+This agent carries the SOLID self-improvement covenant. If commit messages consistently lack EARS references, or the diff summary consistently mismatches actual changes, the root cause is upstream — flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).

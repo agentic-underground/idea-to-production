@@ -288,10 +288,25 @@ See `agents/builder-lead.md` for the full agent definition.
 
 ---
 
-## DAILY INSPECTOR Agent
+## INSPECTOR Agent
 
-See `agents/inspector.md` for the full agent definition.
+See [`../../agents/inspector.md`](../../agents/inspector.md) for the full agent definition.
 
-**Role:** FORGE system health and improvement auditor
-**Spawned:** Daily via CronCreate; or manually on "inspect FORGE"
-**Scope:** All content in `~/.claude/` — skills, agents, references, settings
+**Role:** FOUNDRY plugin health and improvement auditor
+**Spawned:** **User-initiated only** — "inspect FOUNDRY" / "inspect FORGE" / "run the inspector". Never scheduled automatically.
+**Scope:** The FOUNDRY plugin (`${CLAUDE_PLUGIN_ROOT}`) — skills, agents, knowledge, commands, hooks — and companion plugins if present.
+
+---
+
+## VALUE_HANDLER Agents (the stack pool)
+
+The TEST/IMPLEMENT/STORY phase agents spawn the appropriate **value-handler** for the project's
+stack. The canonical, extensible list is the VALUE_HANDLER_POOL in
+[`../../skills/builder/SKILL.md`](../../skills/builder/SKILL.md) (and the stack-handler set in
+`VALUE_FLOW.md §5`). Current handlers:
+
+`handler-architect`, `handler-python`, `handler-fastapi`, `handler-js`, `handler-vanilla-js`
+(native handler of the `frontend` DESIGN system), `handler-react`, `handler-css`,
+`handler-playwright`, `handler-rust`, and `handler-rust-webapp` (the RUST_WEBAPP_API one-shot,
+governed by the `rust-webapp-rollout` skill). Each carries `model: inherit` and is spawned at the
+phase tier per [`../policy/model-selection.md`](../policy/model-selection.md).

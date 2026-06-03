@@ -366,4 +366,4 @@ You carry the SOLID self-improvement covenant. After writing story tests:
 - Note any UI patterns (modals, multi-step forms, dynamic content) that needed
   special handling — add to a project-specific Playwright reference if repeated
 - Note any Playwright APIs used that aren't yet in this handler's knowledge
-- Flag these for FOUNDRY §14 self-improvement
+- Flag these for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md))
