@@ -114,7 +114,7 @@ One JSON object per line. Append-only — **never mutate existing records**.
 | `tokens_in` | int | Input tokens consumed across all agents for this item |
 | `tokens_out` | int | Output tokens produced across all agents for this item |
 | `tokens_total` | int | Sum of in + out |
-| `estimated_tokens` | int | Pre-cycle estimate from FOUNDRY §4.3 |
+| `estimated_tokens` | int | Pre-cycle estimate from the priority→tier heuristic ([`tier-assignment.md`](tier-assignment.md)) |
 | `estimation_accuracy_pct` | float | `(1 - abs(actual - estimated) / estimated) * 100` |
 
 ### Time accounting

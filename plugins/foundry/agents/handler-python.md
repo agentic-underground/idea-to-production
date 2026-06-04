@@ -66,7 +66,7 @@ discipline carried by every value handler in FOUNDRY.
 ## Spawning Model Policy
 
 This handler's frontmatter is `model: inherit` — the spawning phase agent
-chooses the model per FOUNDRY §15.5:
+chooses the model per the model-selection policy ([`../knowledge/policy/model-selection.md`](../knowledge/policy/model-selection.md)):
 
 | Spawning agent | Phase | Model to spawn this handler with |
 |---|---|---|

@@ -92,18 +92,10 @@ git commit -m "feat: add code-quality skill and coverage-loop-agent"
 
 ### Option B: Personal (available in all your projects)
 
-Install in your home directory. The skill is available everywhere,
-but not shared with your team via the repository.
-
-```bash
-mkdir -p ~/.claude/skills
-mkdir -p ~/.claude/agents
-
-cp -r /path/to/code-quality ~/.claude/skills/code-quality
-# coverage-loop-agent.md ships alongside it in the foundry plugin's agents/ directory
-```
-
-No git commit needed — this is your personal configuration.
+**Obsolete — no longer applies.** The standalone manual-copy install (into a personal config
+directory) has been superseded: `code-quality` ships **inside the foundry plugin**. To use it
+everywhere, install/enable the **foundry** plugin from the marketplace — there is nothing to copy by
+hand. (Retained here only to record that this path is gone.)
 
 ---
 

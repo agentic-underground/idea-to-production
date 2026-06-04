@@ -88,12 +88,15 @@ audits for exactly this (`../agents/inspector.md`).
 - **builder** (orchestrator) · **founder-method** · **vertical-slice** · **value-station-handoff** ·
   **development-system-core** · **lifecycle-states** · **ideator** (IDEA) · **roadmapper** (ROADMAP) ·
   **frontend** (DESIGN) · **code-quality** · **reviewer-gate** · **handoff-protocol** ·
-  **phase-sensor** (infra; PostToolUse hook) · **rust-webapp-rollout** (Rust/WASM/Vercel one-shot).
+  **phase-sensor** (infra; PostToolUse hook) · **rust-webapp-rollout** (Rust/WASM/Vercel one-shot) ·
+  **pr-review** (adversarial PR/diff review → one verdict) · **prerequisites** (emit PREREQUISITES.md) ·
+  **check** (verify tool dependencies). The companions add **check** too (sentinel, pressroom).
 
 ### Commands
-- foundry: **/foundry** · **/inspect** · **/coverage-loop** · **/phase-sensor** · **/rust-webapp-rollout**
-- sentinel: **/security-gate** · **/pii-audit** · **/secret-scan** · **/dependency-audit**
-- pressroom: **/publish**
+- foundry: **/foundry** · **/inspect** · **/coverage-loop** · **/phase-sensor** · **/rust-webapp-rollout** ·
+  **/foundry:pr-review** · **/foundry:check** · **/foundry:prerequisites**
+- sentinel: **/security-gate** · **/pii-audit** · **/secret-scan** · **/dependency-audit** · **/sentinel:check**
+- pressroom: **/publish** · **/pressroom:check**
 
 ### Core concepts
 - **Value-station** — a stage on the conveyor with an entry, a transformation, and a mandatory
@@ -109,6 +112,19 @@ audits for exactly this (`../agents/inspector.md`).
   ([`protocols/certainty-markers.md`](protocols/certainty-markers.md)).
 - **Graceful enhancement** — foundry uses sentinel/pressroom *by capability if installed*, else
   degrades to markdown.
+- **Adversarial PR review** — `/foundry:pr-review` fans the `reviewer` agent across adversarial
+  roles (each tries to *refute* the change) → one verdict `PASS | NEEDS_REVISION | BLOCK`
+  ([`../skills/pr-review/SKILL.md`](../skills/pr-review/SKILL.md)).
+- **Merge governance** — who merges a *passing* change: **`pr-approval`** (push branch, open PR,
+  human merges) or **`direct-merge`** (agent merges on PASS). The adversarial review is always-on in
+  both; only the merge hand differs. Stored in `.foundry/governance.md`; default `pr-approval`
+  ([`protocols/merge-governance.md`](protocols/merge-governance.md)).
+- **AWAITING MERGE** — a roadmap status / `AWAITING_MERGE` sentinel: under `pr-approval` the item is
+  built and review-PASSed with its PR open, but not yet on `main` — terminal-pending, flips to
+  `COMPLETE` on the human merge.
+- **Live feedback (Playwright MCP)** — the `mcp__playwright__*` tools for exploratory browser
+  feedback during dev; complements, never replaces, the committed test contract
+  ([`tooling/live-feedback.md`](tooling/live-feedback.md)).
 
 ### Artefacts
 - **FOUNDRY_PLAN.md** (cycle plan) · **IDEA_COST.jsonl** (cost ledger) · **SUBJECT_MATTER_UNDERSTANDING.md**

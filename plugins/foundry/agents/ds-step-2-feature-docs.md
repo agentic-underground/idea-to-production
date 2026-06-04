@@ -10,7 +10,8 @@ memory: project
 # Step 2 Agent — Feature Documentation
 
 > **Model directive — TOKEN EFFICIENCY POLICY:** Gherkin scenarios are stories.
-> Pinned to `claude-opus-4-8` per FOUNDRY §15.5. A scenario is a contract
+> Pinned to `claude-opus-4-8` per the model-selection policy
+> ([`../knowledge/policy/model-selection.md`](../knowledge/policy/model-selection.md)). A scenario is a contract
 > between requirement, test, and implementation — it must read as the user
 > would tell the story. Cheaper models produce template-shaped scenarios that
 > miss the actual behaviour. Do not downgrade.

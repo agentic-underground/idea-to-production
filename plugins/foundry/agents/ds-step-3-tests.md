@@ -10,7 +10,8 @@ memory: project
 # Step 3 Agent — Test Code
 
 > **Model directive — TOKEN EFFICIENCY POLICY:** Test code is haiku work.
-> Pinned to `claude-haiku-4-5` per FOUNDRY §15.5. Test authoring is
+> Pinned to `claude-haiku-4-5` per the model-selection policy
+> ([`../knowledge/policy/model-selection.md`](../knowledge/policy/model-selection.md)). Test authoring is
 > high-volume, low-judgement: same AAA pattern, same naming convention, same
 > fixtures, repeatedly. Opus is wasted here; haiku writes tests faster and
 > cheaper. When you spawn VALUE_HANDLERS from this step, spawn them with

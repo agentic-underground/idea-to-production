@@ -15,7 +15,10 @@ cannot silently age out).
 | **Everything else** — planning, implementation, sync, commit, orchestration | **sonnet** | the capable default | orchestrators, `ds-step-{0,4,5,6,7,8,9}`, `flaky-test-fixer` |
 
 **Value handlers** (`handler-{python,js,react,fastapi,css,playwright,vanilla-js,rust,rust-webapp}`) carry `model: inherit`
-and are spawned with the tier appropriate to the **phase** they are staffing:
+and are spawned with the tier appropriate to the **phase** they are staffing.
+(Exception: `handler-architect` is **not** a `model: inherit` handler — it is opus-pinned, per the
+Spec & narrative row above, because pattern/architecture decisions are high-judgement.)
+The `inherit` handlers resolve per phase:
 - TEST phase → **haiku** (test code is high-volume)
 - IMPLEMENT phase → **sonnet** (implementation)
 - STORY phase → **opus** (narrative proof)

@@ -310,3 +310,21 @@ stack. The canonical, extensible list is the VALUE_HANDLER_POOL in
 `handler-playwright`, `handler-rust`, and `handler-rust-webapp` (the RUST_WEBAPP_API one-shot,
 governed by the `rust-webapp-rollout` skill). Each carries `model: inherit` and is spawned at the
 phase tier per [`../policy/model-selection.md`](../policy/model-selection.md).
+
+---
+
+## Command-driven skills (not agents, but they orchestrate agents)
+
+These are invoked by command, not spawned as pipeline agents — but they belong in the roster because
+one of them drives the `reviewer` agent:
+
+- **`pr-review`** ([`../../skills/pr-review/SKILL.md`](../../skills/pr-review/SKILL.md)) — the
+  adversarial merge gate. **Fans out the `reviewer` agent in up to six adversarial roles**
+  (correctness, security, regression, architecture, performance, docs), each prompted to *refute*
+  the change, then synthesises one verdict (`PASS | NEEDS_REVISION | BLOCK`). Composes
+  `/security-gate` when SENTINEL is present. Outcome routing is the project's **merge governance**
+  ([`../protocols/merge-governance.md`](../protocols/merge-governance.md)).
+- **`check`** ([`../../skills/check/SKILL.md`](../../skills/check/SKILL.md)) — diagnostic; verifies
+  the plugin's external tool dependencies (`requirements.tsv`). Mirrored in sentinel and pressroom.
+- **`prerequisites`** ([`../../skills/prerequisites/SKILL.md`](../../skills/prerequisites/SKILL.md)) —
+  emits a project-local `PREREQUISITES.md` from the installed plugins' manifests.

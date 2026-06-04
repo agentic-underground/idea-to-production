@@ -16,7 +16,8 @@ memory: project
 # Coverage Loop Agent
 
 > **Model directive — TOKEN EFFICIENCY POLICY:** Coverage tests are test code.
-> Pinned to `claude-haiku-4-5` per FOUNDRY §15.5. The loop is
+> Pinned to `claude-haiku-4-5` per the model-selection policy
+> ([`../knowledge/policy/model-selection.md`](../knowledge/policy/model-selection.md)). The loop is
 > high-volume repetition — same AAA pattern, same fixtures, same assertion
 > shape, repeatedly. Haiku writes coverage tests faster and cheaper than opus
 > or sonnet without quality loss for this work class.
