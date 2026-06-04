@@ -13,7 +13,7 @@ metadata:
   type: scanner
   lens: credentials
   output: findings (markdown) → SECRET-FINDINGS.md or security-gate report
-model: claude-haiku-4-5-20251001
+model: claude-haiku-4-5
 ---
 
 # SECRET-SCAN

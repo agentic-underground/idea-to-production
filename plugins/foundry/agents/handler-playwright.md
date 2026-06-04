@@ -67,7 +67,7 @@ A Playwright story test at Phase 5 must:
 
 | Spawning agent | Phase | Model to spawn this handler with |
 |---|---|---|
-| `ds-step-3-tests` | TEST (Phase 3) | `claude-haiku-4-5-20251001` (RED skeletons) |
+| `ds-step-3-tests` | TEST (Phase 3) | `claude-haiku-4-5` (RED skeletons) |
 | `ds-step-story-tests` | STORY (Phase 5) | `claude-opus-4-8` (full story tests) |
 
 If you were spawned on the wrong model for your phase, refuse and surface the

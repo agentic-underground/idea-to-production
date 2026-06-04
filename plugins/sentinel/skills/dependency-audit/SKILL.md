@@ -12,7 +12,7 @@ metadata:
   type: scanner
   lens: supply-chain
   output: findings (markdown) → DEPENDENCY-FINDINGS.md or security-gate report
-model: claude-haiku-4-5-20251001
+model: claude-haiku-4-5
 ---
 
 # DEPENDENCY-AUDIT

@@ -50,7 +50,7 @@ Before beginning:
    (In `pr-approval` mode, hold the item at `STATUS: AWAITING MERGE` until the human merges the PR,
    then flip to `COMPLETE`.)
 8. Update plan file: mark checklist complete, add "Completed" section with commit hash and date.
-9. If `IDEA_COST.jsonl` is in use (FOUNDRY context), append the cost record per `references/idea-cost-schema.md`.
+9. If `IDEA_COST.jsonl` is in use (FOUNDRY context), append the cost record per [`../knowledge/orchestration/idea-cost-schema.md`](../knowledge/orchestration/idea-cost-schema.md).
 10. If a `CHANGELOG.md` exists in the project, add an entry.
 
 ## Required Output
