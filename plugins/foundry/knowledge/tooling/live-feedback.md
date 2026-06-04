@@ -18,7 +18,7 @@ FOUNDRY ships a `playwright` MCP server ([`../../.mcp.json`](../../.mcp.json), p
 manages its own browser; first use downloads it. Under **default permissions**, `.mcp.json` servers
 require a **one-time approval** in the session (`claude mcp list` shows them as ⏸ pending until
 approved) — this is the safety default, not an absolute guarantee (a permissive permission mode or
-pre-approval changes it). See [`PREREQUISITES/40-mcp.md`] in the marketplace source for details.
+pre-approval changes it). Fuller detail is in the marketplace source's `PREREQUISITES/40-mcp.md`.
 
 **The dividing line — MCP for feedback, the CLI runner for the contract:**
 
@@ -60,7 +60,8 @@ output, form the fix, then re-run the test to confirm green.
 Claude Code attaches **language servers** declared as `lspServers` in the marketplace manifest
 (`.claude-plugin/marketplace.json`, foundry entry),
 giving agents real go-to-definition, hover types, and **live diagnostics** instead of grep-only
-navigation. FOUNDRY wires (all `strict: false`, so a missing binary degrades gracefully):
+navigation. The **foundry plugin entry** carries `strict: false` (set once at the plugin-entry level
+in `marketplace.json`, not per server), so a missing LSP binary degrades gracefully. FOUNDRY wires:
 
 | Language | Server | Binary | Install |
 |---|---|---|---|

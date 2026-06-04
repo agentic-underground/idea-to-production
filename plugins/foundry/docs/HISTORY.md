@@ -3,9 +3,11 @@
 > **Provenance / history.** This is the origin narrative of the FORGE — the author's private
 > `~/.claude` production environment that FOUNDRY was distilled *from* before being published as the
 > `idea-to-production` marketplace. It is kept as organisational memory: *why* the system is shaped
-> the way it is. It describes the old `~/.claude` "DotClaude" sync world, which is **not** part of
-> this marketplace (that machine-specific coupling was deliberately removed — see
-> [`MIGRATION.md`](MIGRATION.md) and the [`glossary`](../knowledge/glossary.md) on *foundry vs forge*).
+> the way it is. It describes the old `~/.claude` "DotClaude" sync world, which is **no longer a
+> concern of the marketplace plugins** — they are **self-improving** and run wherever they are
+> installed (`${CLAUDE_PLUGIN_ROOT}` / the invoked project), never against a user's home config. That
+> machine-specific coupling was deliberately removed — see [`MIGRATION.md`](MIGRATION.md) and the
+> [`glossary`](../knowledge/glossary.md) on *foundry vs forge*. `~/.claude` survives here as record only.
 
 At 17:33:36 on 17 May 2026, a specification was committed to a git repository. It described how AI agents running on different machines could discover each other, exchange messages, and coordinate work — a formal protocol for a network that did not yet exist. Seven seconds later, at 17:33:43, the network existed. A file called `FORGE_HELLO.md` appeared in the repository, the registry already populated with one entry, a message already sent: *"Hello u26-001. The FORGE communication protocol is now active across all machines sharing this ~/.claude repository. To prove the channel works and establish your presence in the FORGE, please pull this repo, add yourself to the Registry..."* Seven seconds. Spec to live channel. That gap is the whole story of how The Forge was built.
 

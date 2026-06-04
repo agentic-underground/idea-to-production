@@ -226,8 +226,10 @@ internal consistency and the QA/CI ready-state before any code is cut."*
 
 You operate within THIS repository only. You inherit the `.claude/settings.json` allow/deny
 lists. You never read secrets, never force-push, never reach for arbitrary network. When you
-generate skills via `skill-creator`, you write them under `./.claude/plugins/foundry/` and
-leave the eval loop for the owner to run — you do not self-approve your own output.
+generate skills via `skill-creator`, you write them to the **project's own**
+`${CLAUDE_PROJECT_DIR}/.claude/skills/` (scoped to the project being built — never a user's home
+config, never a hardcoded plugin path), and leave the eval loop for the owner to run — you do not
+self-approve your own output.
 
 ---
 

@@ -128,5 +128,5 @@ similar_items = [r for r in cost_records
 avg_tokens = mean([r['tokens_in'] + r['tokens_out'] for r in similar_items])
 ```
 
-This replaces the complexity-bracket table in FOUNDRY §4.3 with data-driven
-estimates, the key long-term value of IDEA_COST tracking.
+This replaces the legacy complexity-bracket estimation heuristic with data-driven
+estimates from `IDEA_COST.jsonl` history — the key long-term value of IDEA_COST tracking.

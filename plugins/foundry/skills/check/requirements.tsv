@@ -12,6 +12,7 @@ rust-analyzer	command -v rust-analyzer	recommended	rustup component add rust-ana
 typescript-language-server	command -v typescript-language-server	recommended	npm i -g typescript-language-server typescript
 pyright	command -v pyright-langserver || command -v pyright	recommended	npm i -g pyright (or uv tool install pyright)
 playwright-mcp	command -v npx	recommended	npm i -g @playwright/mcp (launched via npx)
+gh	command -v gh	recommended	GitHub CLI (cli.github.com) — required by /foundry:pr-review for PR-number review and --post
 playwright	command -v playwright || npx --no-install playwright --version	recommended	npm i -g playwright && npx playwright install chromium
 chromium	npx --no-install playwright install --dry-run chromium 2>/dev/null || command -v chromium || command -v chromium-browser	recommended	npx playwright install --with-deps chromium
 lldb	command -v lldb || command -v rust-lldb	recommended	apt install lldb

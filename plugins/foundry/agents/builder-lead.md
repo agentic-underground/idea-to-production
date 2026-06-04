@@ -183,7 +183,8 @@ For each pending roadmap item, produce a decomposition:
 ```
 
 Use IDEA_COST.jsonl history for estimates where available. Fall back to the
-heuristic table in FOUNDRY §4.3 for items with no comparable history.
+priority→tier heuristic in [`../knowledge/orchestration/tier-assignment.md`](../knowledge/orchestration/tier-assignment.md)
+for items with no comparable history.
 
 ---
 

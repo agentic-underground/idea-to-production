@@ -413,7 +413,7 @@ in `${CLAUDE_PLUGIN_ROOT}/agents/handler-{stack}.md`.
 
 | Handler | Stack | Spawned when |
 |---|---|---|
-| ARCHITECT-AGENT | Pattern decision (language-agnostic) | LEAD ENGINEER §5 or IMPLEMENT-AGENT when a new boundary/context is introduced |
+| handler-architect | Pattern decision (language-agnostic) | LEAD ENGINEER §5 or IMPLEMENT-AGENT when a new boundary/context is introduced |
 | PYTHON-AGENT | Python + pytest | Backend Python work |
 | JS-AGENT | JavaScript/TypeScript + jest/vitest | Frontend or Node work |
 | CSS-AGENT | CSS/SCSS + accessibility | Styling and layout |
@@ -578,35 +578,15 @@ roadmap cycle, or when the daily inspector surfaces proposals:
 
 ## 15.5 TOKEN EFFICIENCY MODEL POLICY
 
-Every FOUNDRY agent runs on the model that maximises value-per-token for its
-task. The mapping is non-negotiable.
+The model-tier policy is **canonical in exactly one place** —
+[`${CLAUDE_PLUGIN_ROOT}/knowledge/policy/model-selection.md`](../../knowledge/policy/model-selection.md).
+It carries: which work class runs on which **tier** (opus / sonnet / haiku) and why; how the
+`model: inherit` value-handlers are spawned **per phase** (TEST → haiku, IMPLEMENT → sonnet,
+STORY → opus); and the tier → concrete-model-ID mapping (resolved at spawn time, never hardcoded).
 
-| Work class | Model | Why |
-|---|---|---|
-| **Stories** (story tests, Gherkin feature docs, ADRs) | `claude-opus-4-8` | Synthesises SMU + EARS + scenarios + implementation in one motion; cheaper models produce thin stories |
-| **EARS** (requirements specification) | `claude-opus-4-8` | Requirement precision compounds downstream — one ambiguous EARS becomes ten bad tests |
-| **Review** (reviewer, reviewer, inspector, ARCHITECT-AGENT) | `claude-opus-4-8` | Reviewers must spot what writers missed — pattern-matching is not enough |
-| **Test code authoring** (failing-test creation, coverage-loop) | `claude-haiku-4-5` | Test code is high-volume, low-judgement: same AAA pattern, same naming, same fixtures |
-| **Everything else** (planning, implementation, sync, commit, push, orchestration) | `claude-sonnet-4-6` | The default. Use when no specific policy applies |
-
-### Encoding the policy
-
-| Agent type | How the model is set |
-|---|---|
-| Single-purpose phase agents (ds-step-1-ears, ds-step-2-feature-docs, ds-step-3-tests, ds-step-story-tests, reviewer, reviewer, inspector, handler-architect, coverage-loop-agent) | Pinned in the agent's frontmatter `model:` field. Do not downgrade. |
-| Multi-phase VALUE_HANDLERS (handler-python, -js, -react, -css, -fastapi, -playwright) | Frontmatter is `model: inherit`. The spawning phase agent picks the model per the rule below. |
-
-### Spawning rule for VALUE_HANDLERS
-
-When TEST-AGENT (Phase 3 / `ds-step-3-tests`) spawns a value handler, it MUST
-spawn with `model: claude-haiku-4-5` — the handler is authoring test code.
-
-When IMPLEMENT-AGENT (Phase 4 / `ds-step-5-implementation`) spawns a value
-handler, it MUST spawn with `model: claude-sonnet-4-6` — the handler is
-writing production code, the default.
-
-When STORY-AGENT (Phase 5 / `ds-step-story-tests`) spawns a value handler, it
-MUST spawn with `model: claude-opus-4-8` — story tests are stories.
+**Do not restate that table here.** Reference it, so the whole fleet re-tiers in one edit and no
+pinned ID can silently age out. (This pointer deliberately replaces a former duplicate of the policy,
+whose independent ageing is exactly what produced a stale-model-ID drift across 13 sites.)
 
 A handler asked to write test code on opus, or stories on haiku, must refuse
 and surface the model mismatch to the orchestrator.

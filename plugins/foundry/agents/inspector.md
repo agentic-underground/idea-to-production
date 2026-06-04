@@ -162,14 +162,23 @@ After reading all files individually, check cross-system consistency (all paths 
    VALUE_HANDLER_POOL, and `model-selection.md` — and none dangling.
 6. **Graceful-enhancement integrity**: foundry references `sentinel`/`pressroom` **by capability**,
    never by a cross-plugin `${CLAUDE_PLUGIN_ROOT}` path.
-7. **Portability sweep**: zero machine-specific home/config-dir couplings anywhere outside the
-   **provenance archive**, which is allowlisted: `docs/HISTORY.md`, `docs/MIGRATION.md`,
-   `docs/DEPRECATED.md`, the entire `examples/` directory (historical worked examples), **and any
-   file dispositioned as legacy** — one carrying an explicit `LEGACY`/deprecated banner or cataloged
-   in `docs/DEPRECATED.md` (e.g. `skills/code-quality/DEPLOYMENT.md`). The disposition criterion is
-   the banner/catalog membership, not the path.
+7. **Portability sweep — the `~/.claude` policy.** `~/.claude` (the home config dir) must **NEVER**
+   be referenced by any **live plugin or marketplace surface** — agents, skills, commands, knowledge,
+   manifests. It may appear **only** in the **provenance archive**, where each occurrence must read as
+   *history* and the doc must note that the folder is **no longer a concern of the marketplace
+   plugins** (they are self-improving and run where installed). Flag every live `~/.claude`-style or
+   hard-coded home/config-dir coupling as a defect. The allowlisted archive: `docs/HISTORY.md`,
+   `docs/MIGRATION.md`, `docs/DEPRECATED.md`, the entire `examples/` directory, `doc/historical/`,
+   **and any file dispositioned as legacy** (an explicit `LEGACY`/deprecated banner or a
+   `docs/DEPRECATED.md` catalog entry). The disposition criterion is the banner/catalog membership,
+   not the path. Note: a **project-relative** `./.claude/` (discovering a *project's* own build-system
+   config) is legitimate and **not** a `~/.claude` coupling.
    The lowercase `forge` rust **sample-project** name (`forge-core`, `{{crate_prefix}}=forge`,
    etc.) in `rust-webapp-rollout` is also allowed — it is a sample project, not FORGE-the-system.
+8. **`-check` copy integrity**: the three `skills/check/scripts/check.sh` copies
+   (foundry/sentinel/pressroom) must be **byte-identical** — assert
+   `md5sum plugins/*/skills/check/scripts/check.sh | awk '{print $1}' | sort -u | wc -l` equals `1`.
+   A divergence is a WARNING (the canonical copy drifted).
 
 ---
 
@@ -223,16 +232,34 @@ skill section needs major revision, manifest needs updating.]
 
 ---
 
-## Phase 5 — Surface & (optionally) apply
+## Phase 5 — Surface & apply (severity-phased, with batch approvals)
 
-- **Always:** present a short summary to the user; for any **CRITICAL** finding, lead with:
-  ```
-  🔴 FOUNDRY INSPECTOR — CRITICAL FINDING
-  ```
-- **Apply fixes only in the marketplace source repo** (writable, owned). Make surgical,
-  one-concern edits; never batch unrelated changes; never write outside the marketplace source. WARNING/SUGGESTION
-  items are captured in the report for the next improvement pass — do not interrupt the user for them.
-- Do **not** commit or push unless the user explicitly asks.
+Apply findings in **descending severity waves**, gating each wave on the user — so the user keeps
+control without being asked one question per finding:
+
+1. **CRITICAL — auto-apply, then report.** Apply every *unambiguous* CRITICAL fix directly (surgical,
+   one-concern edits). Lead the summary with, for each:
+   ```
+   🔴 FOUNDRY INSPECTOR — CRITICAL FINDING
+   ```
+   A CRITICAL whose correct fix is **intent-dependent** (more than one reasonable target) is NOT
+   auto-applied — carry it into the WARNING wave as a question instead.
+2. **WARNING — present the batch, one go/no-go.** List all WARNINGs with proposed fixes, then ask the
+   user **once**: apply all / apply a selected subset / defer to the report. For any WARNING whose fix
+   needs a decision (e.g. a path/target choice), present the **options** so the user can pick in the
+   same turn. Apply what they approve.
+3. **SUGGESTION — present the batch, one go/no-go.** Same pattern, lower stakes; default to deferring
+   to the report unless the user opts in.
+
+Always **scope companions**: when asked to inspect FOUNDRY, also sweep `sentinel`/`pressroom` for any
+finding-class that is marketplace-wide (e.g. a model-ID or coupling sweep) — never report
+"zero remain" without having checked the companions too.
+
+- **Apply fixes only in the marketplace source repo** (writable, owned). Surgical, one-concern edits;
+  never batch *unrelated* changes; never write outside the marketplace source.
+- Findings the user defers are captured in the report for the next pass.
+- Do **not** commit or push unless the user explicitly asks. (Under `pr-approval` merge governance,
+  applied fixes land on a branch → adversarial review → PR for the user to merge.)
 
 ---
 

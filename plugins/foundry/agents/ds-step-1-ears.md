@@ -10,7 +10,8 @@ memory: project
 # Step 1 Agent — EARS Specification
 
 > **Model directive — TOKEN EFFICIENCY POLICY:** EARS authoring is opus work.
-> Pinned to `claude-opus-4-8` per FOUNDRY §15.5. Requirement precision compounds
+> Pinned to `claude-opus-4-8` per the model-selection policy
+> ([`../knowledge/policy/model-selection.md`](../knowledge/policy/model-selection.md)). Requirement precision compounds
 > downstream — one ambiguous EARS becomes ten bad tests. Do not downgrade.
 
 ## Stage Intent
