@@ -586,7 +586,7 @@ task. The mapping is non-negotiable.
 | **Stories** (story tests, Gherkin feature docs, ADRs) | `claude-opus-4-8` | Synthesises SMU + EARS + scenarios + implementation in one motion; cheaper models produce thin stories |
 | **EARS** (requirements specification) | `claude-opus-4-8` | Requirement precision compounds downstream — one ambiguous EARS becomes ten bad tests |
 | **Review** (reviewer, reviewer, inspector, ARCHITECT-AGENT) | `claude-opus-4-8` | Reviewers must spot what writers missed — pattern-matching is not enough |
-| **Test code authoring** (failing-test creation, coverage-loop) | `claude-haiku-4-5-20251001` | Test code is high-volume, low-judgement: same AAA pattern, same naming, same fixtures |
+| **Test code authoring** (failing-test creation, coverage-loop) | `claude-haiku-4-5` | Test code is high-volume, low-judgement: same AAA pattern, same naming, same fixtures |
 | **Everything else** (planning, implementation, sync, commit, push, orchestration) | `claude-sonnet-4-6` | The default. Use when no specific policy applies |
 
 ### Encoding the policy
@@ -599,7 +599,7 @@ task. The mapping is non-negotiable.
 ### Spawning rule for VALUE_HANDLERS
 
 When TEST-AGENT (Phase 3 / `ds-step-3-tests`) spawns a value handler, it MUST
-spawn with `model: claude-haiku-4-5-20251001` — the handler is authoring test code.
+spawn with `model: claude-haiku-4-5` — the handler is authoring test code.
 
 When IMPLEMENT-AGENT (Phase 4 / `ds-step-5-implementation`) spawns a value
 handler, it MUST spawn with `model: claude-sonnet-4-6` — the handler is

@@ -8,7 +8,7 @@ description: >
   the variable is coverage density (happy/unhappy/abuse). Writes IN_PROGRESS.md
   for disaster recovery.
 tools: Read, Write, Edit, Bash, Grep, Glob
-model: claude-haiku-4-5-20251001
+model: claude-haiku-4-5
 color: green
 memory: project
 ---
@@ -16,7 +16,7 @@ memory: project
 # Coverage Loop Agent
 
 > **Model directive — TOKEN EFFICIENCY POLICY:** Coverage tests are test code.
-> Pinned to `claude-haiku-4-5-20251001` per FOUNDRY §15.5. The loop is
+> Pinned to `claude-haiku-4-5` per FOUNDRY §15.5. The loop is
 > high-volume repetition — same AAA pattern, same fixtures, same assertion
 > shape, repeatedly. Haiku writes coverage tests faster and cheaper than opus
 > or sonnet without quality loss for this work class.

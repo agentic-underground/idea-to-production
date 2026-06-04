@@ -66,7 +66,7 @@ they are not a substitute for behavioural or a11y assertions.
 
 | Spawning agent | Phase | Model to spawn this handler with |
 |---|---|---|
-| `ds-step-3-tests` | TEST (Phase 3) | `claude-haiku-4-5-20251001` (test code) |
+| `ds-step-3-tests` | TEST (Phase 3) | `claude-haiku-4-5` (test code) |
 | `ds-step-5-implementation` | IMPLEMENT (Phase 4) | `claude-sonnet-4-6` (default) |
 | `ds-step-story-tests` | STORY (Phase 5) | `claude-opus-4-8` (stories) |
 

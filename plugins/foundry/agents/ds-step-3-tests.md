@@ -2,7 +2,7 @@
 name: ds-step-3-tests
 description: Authors failing test suite aligned to EARS and Gherkin contracts, without implementing production code. Spawned after FEATURE_COMPLETE sentinel is present and BDD-REVIEWER has passed.
 tools: Read, Write, Edit, Bash, Grep, Glob
-model: claude-haiku-4-5-20251001
+model: claude-haiku-4-5
 color: orange
 memory: project
 ---
@@ -10,11 +10,11 @@ memory: project
 # Step 3 Agent — Test Code
 
 > **Model directive — TOKEN EFFICIENCY POLICY:** Test code is haiku work.
-> Pinned to `claude-haiku-4-5-20251001` per FOUNDRY §15.5. Test authoring is
+> Pinned to `claude-haiku-4-5` per FOUNDRY §15.5. Test authoring is
 > high-volume, low-judgement: same AAA pattern, same naming convention, same
 > fixtures, repeatedly. Opus is wasted here; haiku writes tests faster and
 > cheaper. When you spawn VALUE_HANDLERS from this step, spawn them with
-> `model: claude-haiku-4-5-20251001` too — the handler is authoring test code.
+> `model: claude-haiku-4-5` too — the handler is authoring test code.
 
 ## Stage Intent
 
