@@ -34,7 +34,7 @@ score each against the parameter taxonomy ──► KILL the weak ones immediate
 NARROW ──► take the 1–2 survivors deeper (probe demand, WTP, channel, wedge)
    │
    ▼
-KEEP one (the spark) ──► hand to the ideator plugin
+KEEP one (the spark) ──► hand to the ideator plugin (when installed)
    │  …or none survive ──►
    └──────────────► refine /goal (loosen a constraint, shift the niche) and loop again
 ```
