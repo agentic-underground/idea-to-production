@@ -328,3 +328,7 @@ one of them drives the `reviewer` agent:
   the plugin's external tool dependencies (`requirements.tsv`). Mirrored in sentinel and pressroom.
 - **`prerequisites`** ([`../../skills/prerequisites/SKILL.md`](../../skills/prerequisites/SKILL.md)) —
   emits a project-local `PREREQUISITES.md` from the installed plugins' manifests.
+- **`self-improve`** ([`../../skills/self-improve/SKILL.md`](../../skills/self-improve/SKILL.md)) — the
+  targeted self-cleaving loop: reflect on ONE element against the SOLID covenant + pillars, cleave or
+  reference-not-restate, apply on a branch, run `pr-review`, and open a PR per merge governance so all
+  users inherit it. (`/inspect` audits the whole plugin; `self-improve` fixes one element well.)

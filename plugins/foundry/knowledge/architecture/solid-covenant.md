@@ -66,7 +66,7 @@ SOLID-adherent elements that each do one thing better, and rewrites itself accor
 >   plugin) cleaves on a **branch**, passes the always-on adversarial gate (`/foundry:pr-review`), and
 >   is **raised as a PR** under the marketplace's merge governance (`protocols/merge-governance.md`) —
 >   so **every user of the marketplace inherits the improvement** on merge. The `inspector` flags the
->   opportunities, and a dedicated `self-improve` skill is the intended driver of this loop.
+>   opportunities, and the `self-improve` skill is the driver of this loop.
 > - **A project document** (a README, plan, spec in a user's project) cleaves **locally** — split the
 >   section, leave a pointer, keep history — under this same covenant, no marketplace PR involved.
 
