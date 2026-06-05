@@ -41,6 +41,19 @@ Every error path triggers a test.
 
 ---
 
+## Tests are coordinates
+
+A failing test is the **coordinate** that pins the exact code in logical space — the *reason* the code
+exists, and that code must produce only **PASS**; the sum of all coordinates *is* the SOLUTION. Place
+the coordinate first, then write the one implementation that turns it green. (Canon:
+[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+[`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice.)
+
+- **Typed, exact assertions** — assert the precise value/shape and the **exact thrown error type**; a
+  loose `toBeTruthy()` is a blurry coordinate.
+- **One axis per case** — empty, max, boundary, unicode, the error branch — a distinct coordinate each.
+- **A bug fix gets a negation coordinate.**
+
 ## Test-First Mandate — Non-Negotiable
 
 **No production line ships before its failing test.**

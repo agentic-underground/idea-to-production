@@ -42,6 +42,20 @@ Accessibility is not optional.
 
 ---
 
+## Tests are coordinates
+
+A failing test is the **coordinate** that pins the exact code in logical space — the *reason* the code
+exists, and that code must produce only **PASS**; the sum of all coordinates *is* the SOLUTION. Place
+the coordinate first, then write the one implementation that turns it green. (Canon:
+[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+[`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice.)
+
+- **One coordinate per prop / state / hook variant** — assert the **rendered, accessible outcome**
+  (Testing-Library queries / `aria`), never implementation details.
+- **One axis per user-event branch** — click, empty submit, error state — each a distinct coordinate
+  driven by `user-event`.
+- **A bug fix gets a negation coordinate** (the broken render must not recur).
+
 ## Test-First Mandate — Non-Negotiable
 
 **No component or hook ships before its failing test.** Render the component

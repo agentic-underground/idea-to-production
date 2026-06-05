@@ -23,6 +23,14 @@ Encode proof obligations in tests first, ensuring red-state evidence for unimple
 behavior. The tests written here are the guardrails — implementation must conform to
 them, not the other way around.
 
+> **Each failing test is a coordinate.** It is the *reason* the code will be written, and it pins the
+> exact implementation in logical space — code exists only to turn the coordinate green (only PASS),
+> and the **sum of the coordinates *is* the SOLUTION**. Place one coordinate per behavioural axis
+> (happy / unhappy / abuse; empty / max / boundary / the error branch); a test that touches a line
+> without asserting an outcome **pins nothing**. (Canon:
+> [`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+> [`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice.)
+
 ## Context Requirements
 
 Before beginning:

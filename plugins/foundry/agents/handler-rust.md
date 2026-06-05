@@ -101,10 +101,12 @@ orchestrator before doing any work.
 
 ---
 
-## Tests as coordinates — in practice
+## Tests are coordinates — in practice
 
-A failing unit test is a **coordinate** that pins one implementation in logical space (see
-`${CLAUDE_PLUGIN_ROOT}/knowledge/testing/test-policy.md` §coordinates). Concrete Rust habits:
+A failing unit test is a **coordinate** that pins one implementation in logical space — the *reason*
+the code exists, and the sum of all coordinates *is* the SOLUTION (canon:
+[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+`${CLAUDE_PLUGIN_ROOT}/knowledge/testing/test-policy.md` §Coordinates in practice). Concrete Rust habits:
 
 - **Typed errors, never strings.** A coordinate can assert `Err(ThingError::TooLong { max: 64, got: 65 })`
   exactly.

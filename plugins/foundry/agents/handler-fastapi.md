@@ -35,6 +35,20 @@ by a test.
 
 ---
 
+## Tests are coordinates
+
+A failing test is the **coordinate** that pins the exact code in logical space — the *reason* the code
+exists, and that code must produce only **PASS**; the sum of all coordinates *is* the SOLUTION. Place
+the coordinate first, then write the one implementation that turns it green. (Canon:
+[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+[`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice.)
+
+- **One coordinate per route × outcome** — 200 happy, 422 validation, the domain-error status
+  (404/409) — each asserting the **exact** status **and** body shape.
+- **Pin the pure domain, not the HTTP shell** — most coordinates live against the service/domain
+  functions; the route layer is thin wiring proven at the story level.
+- **A bug fix gets a negation coordinate.**
+
 ## Test-First Mandate — Non-Negotiable
 
 **No route, no service method, no dependency ships before its failing test.**

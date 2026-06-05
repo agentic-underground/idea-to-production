@@ -20,6 +20,13 @@ end-to-end (E2E) test authorship. You run only after unit and integration tests 
 (IMPL_COMPLETE sentinel confirmed). Your job is to verify the feature through its actual human
 interface layer — browser, terminal, or API — so that usage is covered, not just implementation.
 
+> **A story test is a higher-order coordinate.** A unit test pins one function in logical space; a
+> story test pins **full-system behaviour** through the real interface — the same idea, one altitude
+> up. The journey/gesture is its axis set; trace each to its `@EARS-{ID}`, and assert real, unmocked
+> state (a story that mocks every boundary pins the mock, not the system). (Canon:
+> [`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+> [`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice.)
+
 ---
 
 ## Prerequisites
