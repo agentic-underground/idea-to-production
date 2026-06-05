@@ -53,12 +53,14 @@ afterward.
 > coordinate, then write the one implementation that turns it green. A test written *after* the code
 > is a description; one written *before* is a location.
 
-**The SOLUTION (a deliberate double binding).** It is the **sum and combination of all the
+**The SOLUTION (a deliberate double binding, homed here).** It is the **sum and combination of all the
 coordinates** that causes the code to provide the **SOLUTION** — meaning *both* (a) the **problem
 solved**, *and* (b) the **solvent-matrix** in which component additives dissolve: each coordinate is a
 compound dissolved into the code until the mixture, taken whole, *is* the answer. Code is a solution in
-both senses at once. · **Homes:** [`testing/test-policy.md`](testing/test-policy.md) §Coordinates ·
-[`VALUE_FLOW.md`](../VALUE_FLOW.md) §7. Every test-producing agent carries a pointer to this.
+both senses at once. The *coordinate / location* reading is canonical in
+[`testing/test-policy.md`](testing/test-policy.md) §Coordinates in practice and
+[`../VALUE_FLOW.md`](../VALUE_FLOW.md) §7; the **solvent-matrix** reading originates here. Every
+test-producing agent **will carry** a short pointer to this framing (the weave lands in a follow-up).
 
 ---
 
@@ -108,8 +110,8 @@ This is the **worker tier's memory**: the record of *what works and what does no
 **`/foundry:pr-review`** (always-on adversarial gate) → **PR under merge-governance**, so **every user
 of the marketplace inherits the enhancement**. · **Aliases:** fix-upstream-once; self-cleave-and-PR;
 the self-improving marketplace. · **Homes:** [`architecture/solid-covenant.md`](architecture/solid-covenant.md)
-· [`protocols/merge-governance.md`](protocols/merge-governance.md) · the `self-improve` and `pr-review`
-skills · the `inspector` agent.
+· [`protocols/merge-governance.md`](protocols/merge-governance.md) · the `pr-review` skill and the
+`inspector` agent (with a dedicated `self-improve` skill as the planned driver of the self-cleave loop).
 
 ---
 

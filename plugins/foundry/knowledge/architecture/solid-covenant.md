@@ -63,11 +63,10 @@ SOLID-adherent elements that each do one thing better, and rewrites itself accor
 > and merged**, never silently self-applied. The scope decides the destination:
 >
 > - **A marketplace element** (an agent, skill, command, or knowledge doc that ships in a FOUNDRY
->   plugin) cleaves on a **branch**, passes the always-on adversarial gate
->   (`/foundry:pr-review`), and is **raised as a PR** under
->   [`../protocols/merge-governance.md`](../protocols/merge-governance.md) — so **every user of the
->   marketplace inherits the improvement** on merge. The `/foundry:self-improve` skill performs exactly
->   this loop; the `inspector` flags the opportunities.
+>   plugin) cleaves on a **branch**, passes the always-on adversarial gate (`/foundry:pr-review`), and
+>   is **raised as a PR** under the marketplace's merge governance (`protocols/merge-governance.md`) —
+>   so **every user of the marketplace inherits the improvement** on merge. The `inspector` flags the
+>   opportunities, and a dedicated `self-improve` skill is the intended driver of this loop.
 > - **A project document** (a README, plan, spec in a user's project) cleaves **locally** — split the
 >   section, leave a pointer, keep history — under this same covenant, no marketplace PR involved.
 
@@ -93,8 +92,8 @@ approval before any change is applied.
 
 - **System:** FOUNDRY plugin — the value-flow production system
 - **Covenant version:** 1.3 (adds **self-cleaving** — halving the distance when the defect is breadth)
-- **Canonical home:** [`knowledge/architecture/solid-covenant.md`](solid-covenant.md)
-- **See also:** [`architecture/solid.md`](solid.md) (the SOLID *principles* reference for code), [`../first-principles.md`](../first-principles.md) (the philosophical spine), and the marketplace [`glossary.md`](../glossary.md)
+- **Canonical home:** `knowledge/architecture/solid-covenant.md` (in the FOUNDRY plugin)
+- **See also (in the plugin):** `knowledge/architecture/solid.md` (the SOLID *principles* reference for code), `knowledge/first-principles.md` (the philosophical spine), and the marketplace `knowledge/glossary.md`. (Bare paths, not links — this fragment travels into project files where relative links would not resolve.)
 
 <!-- END SOLID REPLICATION FRAGMENT -->
 ---

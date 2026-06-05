@@ -11,11 +11,15 @@ The marketplace is **three forms, each used where it fits**:
 
 ## 1. Pure-core / hexagonal — the `knowledge/` layer  ·  *excellent fit*
 
-`knowledge/` is the **decidable core**: canonical facts with **zero outbound edges**. Agents and
-skills depend **inward** on it (`${CLAUDE_PLUGIN_ROOT}/knowledge/...`); knowledge never depends back on
-them. This is exactly the pure-core geometry ([`pure-core.md`](pure-core.md)) — and it is why the
-one-copy rule ([`../README.md`](../README.md)) holds: a fact lives in exactly one place, and everything
-references it. **This layer *is* hexagonal**, with knowledge as the core and skills/agents as adapters.
+`knowledge/` is the **decidable core**: canonical facts that carry **no inbound logical dependency** on
+agent or skill *behaviour* — no agent's logic leaks into a fact. Agents and skills depend **inward** on
+it (`${CLAUDE_PLUGIN_ROOT}/knowledge/...`). Knowledge docs *do* carry a few **navigational** pointers
+out (e.g. "the roster lives in `agents/...`", "merge governance gates `skills/pr-review`") — those are
+reader-wayfinding references, **not dependency edges**: nothing in a fact's *content* is decided by an
+agent. This is the pure-core geometry ([`pure-core.md`](pure-core.md)) read at the documentation level —
+and it is why the one-copy rule ([`../README.md`](../README.md)) holds: a fact lives in exactly one
+place, and everything references it. **This layer reads as hexagonal**, with knowledge as the core and
+skills/agents as adapters.
 
 ## 2. Ports-and-adapters — plugin composition  ·  *excellent fit*
 
