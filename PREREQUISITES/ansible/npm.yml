@@ -21,3 +21,6 @@
   changed_when: "'downloading' in pw.stdout | lower"
   tags: [foundry, playwright]
 # The @playwright/mcp server downloads its own browser on first use; this step is for the CLI runner.
+# The Context7 MCP (foundry) launches ephemerally via `npx -y @upstash/context7-mcp` (no install needed,
+# keyless by default); ensuring node/npm is present is the only requirement. Same for optional npx-based
+# MCPs (Tavily, Exa) — their API keys are runtime env, never stored in the playbook.

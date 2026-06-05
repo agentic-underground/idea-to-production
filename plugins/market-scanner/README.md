@@ -18,6 +18,14 @@ early and cheaply** so you don't spend months on one.
 
 Output is a **validated opportunity** (a scorecard + the evidence + the verdict).
 
+## Grounded in real evidence
+
+A scorecard built only on your say-so is a guess in a table. MARKET-SCANNER uses **web research** —
+built-in WebSearch/WebFetch plus a shipped, **keyless Fetch MCP** — to check demand signals, competitor
+**pricing pages**, and market-size references, and **cites what it finds**. Unverifiable marks become
+open questions, never silent guesses. Offline, it reasons from you and says so. (See
+[`PREREQUISITES/05-discovery.md`](../../PREREQUISITES/05-discovery.md); verify with `/market-scanner:check`.)
+
 ## How it composes
 
 - **→ ideator** (REFINEMENT): when the **`ideator`** plugin is installed, a kept opportunity is handed to

@@ -47,6 +47,20 @@ earns a keep verdict. It is the spark, made disciplined.
 6. **Emit the result** (see Output). For a KILL or PARK, record the reason in the kill ledger (scoring.md)
    so a like candidate is recognised faster next time.
 
+## Ground claims in evidence — use web research
+
+> A scorecard built only on the user's say-so is a guess in a table. Where a parameter turns on a fact
+> about the world, **go check it.**
+
+When verifying **demand** (A), **market size** (B), **willingness-to-pay / pricing** (C), and
+**competition** (D), use **WebSearch / WebFetch** (built-in, always available) — and the **Fetch MCP**
+(`mcp__fetch__*`, shipped, when approved) — to pull real signal: search-volume and forum complaints for
+the pain, competitor **pricing pages** and feature lists, and market-sizing references. **Cite what you
+find** in the scorecard's probe/evidence column, and let evidence *move* a mark (especially toward ❌).
+If web tools are unavailable, **reason from the user and say so** — flag the unverified marks as open
+questions rather than presenting a guess as fact. Evidence-gathering never blocks the dialogue; it
+sharpens it.
+
 ## The dialogue discipline (infer-first, recommend, challenge)
 
 - **Infer first.** From the goal + the user's words, fill what you can; ask only what genuinely blocks a

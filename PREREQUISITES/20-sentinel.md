@@ -44,3 +44,7 @@ coverage from heuristic to authoritative, and adds a **SAST** lens via the Semgr
 Ansible: [`ansible/binaries.yml`](ansible/binaries.yml) (osv-scanner/trivy/grype/gitleaks/trufflehog),
 [`ansible/cargo.yml`](ansible/cargo.yml) (cargo-audit), [`ansible/uv.yml`](ansible/uv.yml) (pip-audit/semgrep),
 [`ansible/go.yml`](ansible/go.yml) (govulncheck).
+
+> **No additional MCP needed.** SENTINEL ships the Semgrep MCP for SAST; the broader gaps (SBOM, IaC,
+> container scanning) are served by the optional **CLI** scanners already listed above (`syft`/`grype`,
+> `trivy`) — local binaries, not MCP servers, are the right model for a security gate.

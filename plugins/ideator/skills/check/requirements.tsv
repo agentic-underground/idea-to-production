@@ -4,6 +4,9 @@
 # referenced by capability, not probed here. The rich user-facing dossier is rendered by pressroom's
 # own tools (typst/latex/dot) when /publish is invoked — those are pressroom's deps, checked by
 # /pressroom:check, not duplicated here.
+# Built-in WebSearch/WebFetch (native Claude tools) are the always-on web-research baseline — no
+# install, no probe. The shipped Fetch MCP (.mcp.json) adds keyless URL→markdown extraction.
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled
 gh	command -v gh	recommended	GitHub CLI (cli.github.com) — used by self-improve to open the improvement PR
+fetch-mcp	command -v uvx	recommended	uv (launches `uvx mcp-server-fetch` — web research: validate value/price, wedge, stack-fit against live pages)
