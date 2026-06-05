@@ -87,3 +87,12 @@ to the plugins you actually have installed.
 > **Source of truth.** The machine-readable lists live in each plugin's
 > `skills/check/requirements.tsv`. The prose here is curated to match; if they drift, the `.tsv`
 > wins (it is what `-check` executes).
+
+> **Drift guard (CI).** [`scripts/verify-prereqs.sh`](../scripts/verify-prereqs.sh) — run in CI by
+> [`.github/workflows/verify.yml`](../.github/workflows/verify.yml) and locally with
+> `bash scripts/verify-prereqs.sh` — asserts the contract holds: `check.sh` is byte-identical across
+> plugins, every `requirements.tsv` row is well-formed, the shipped `.mcp.json` servers match the
+> [`40-mcp.md`](40-mcp.md) "Shipped" table, and **no Probe cell fetches-and-executes remote code**
+> (a probe checks presence with `command -v …`; it never downloads a package). It guards these
+> *structural* invariants; it does **not** assert prose tool-for-tool coverage of the `.tsv` (the
+> `.tsv` stays the source of truth, the prose is curated by hand).

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # check.sh — verify this plugin's external tool dependencies are installed & reachable.
 #
-# CANONICAL COPY — keep byte-identical across foundry/sentinel/pressroom skills/check/scripts/.
+# CANONICAL COPY — keep byte-identical across all plugins' skills/check/scripts/.
 # Only the sibling requirements.tsv differs per plugin. (Inspector/CI may assert the copies match.)
 #
 # Reads requirements.tsv sitting next to this script:

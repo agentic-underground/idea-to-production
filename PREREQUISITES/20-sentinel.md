@@ -38,7 +38,7 @@ coverage from heuristic to authoritative, and adds a **SAST** lens via the Semgr
 
 | Tool | Tier | Probe | Why |
 |---|---|---|---|
-| Semgrep MCP (`semgrep-mcp`) | recommended | `uvx semgrep-mcp --version` | Code-level vuln patterns (injection, taint, weak crypto). Shipped in [`plugins/sentinel/.mcp.json`](../plugins/sentinel/.mcp.json); bundles its own `semgrep`. Tools: `mcp__semgrep__*`. |
+| Semgrep MCP (`semgrep-mcp`) | recommended | `command -v uvx` | Code-level vuln patterns (injection, taint, weak crypto). Shipped in [`plugins/sentinel/.mcp.json`](../plugins/sentinel/.mcp.json); bundles its own `semgrep`. Tools: `mcp__semgrep__*`. |
 | `semgrep` (standalone CLI) | optional | `semgrep --version` | run rules directly without MCP | `uv tool install semgrep` |
 
 Ansible: [`ansible/binaries.yml`](ansible/binaries.yml) (osv-scanner/trivy/grype/gitleaks/trufflehog),

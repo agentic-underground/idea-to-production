@@ -1,0 +1,19 @@
+name: verify
+
+# Guards the PREREQUISITES ↔ plugins contract: check.sh canonical-copy parity,
+# well-formed requirements.tsv, shipped .mcp.json ⟺ 40-mcp.md, and no Probe cell
+# that fetches-and-executes remote code. See scripts/verify-prereqs.sh.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  prereqs-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify the PREREQUISITES contract
+        run: bash scripts/verify-prereqs.sh
