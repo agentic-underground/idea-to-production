@@ -1,8 +1,10 @@
 # PREREQUISITES — the software musculature for the `idea-to-production` marketplace
 
 This folder documents every external tool that the marketplace plugins (**market-scanner**, **ideator**,
-**foundry**, **sentinel**, **pressroom**) can use to do their best work, and **how to install it** —
-including paste-ready Ansible fragments under [`ansible/`](ansible/) for machine provisioning.
+**foundry**, **sentinel**, **pressroom**, **atelier**) can use to do their best work, and **how to install
+it** — including paste-ready Ansible fragments under [`ansible/`](ansible/) for machine provisioning.
+(**atelier** reuses foundry's stack: the Playwright MCP + a Chromium browser for live `/ui-review` crawls;
+see [`40-mcp.md`](40-mcp.md) and [`10-foundry.md`](10-foundry.md).)
 
 ---
 
@@ -79,6 +81,7 @@ Run the per-plugin checks (advisory by default; `--strict` exits non-zero on a m
 /foundry:check
 /sentinel:check
 /pressroom:check
+/atelier:check
 ```
 
 `/foundry:prerequisites` emits a project-local `PREREQUISITES.md` assembled from this folder, scoped

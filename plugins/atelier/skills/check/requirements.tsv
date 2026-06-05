@@ -1,0 +1,12 @@
+# name	probe-command	tier	install-hint
+# Canonical dependency manifest for ATELIER. TAB-separated. Probe passes when it exits 0.
+# ATELIER reviews with built-in vision (Read sees PNGs — no API key) and drives live browsers via the
+# Playwright MCP (.mcp.json). Companions (pressroom, foundry, ideator) are PLUGINS, referenced by
+# capability, not probed here. User-flow rendering is pressroom's job (verify via /pressroom:check).
+git	command -v git	required	apt install git
+bash	command -v bash	required	preinstalled
+node	command -v node	recommended	install via Volta (PREREQUISITES/00-core.md) — runs the crawler + npx
+playwright-mcp	command -v npx	recommended	npm i -g @playwright/mcp (launched via npx — live crawl/screenshot/a11y snapshot)
+gh	command -v gh	recommended	GitHub CLI (cli.github.com) — used by self-improve to open the improvement PR
+chromium	npx --no-install playwright install --dry-run chromium 2>/dev/null || command -v chromium || command -v chromium-browser	optional	npx playwright install --with-deps chromium (the MCP downloads its own on first use)
+ripgrep	command -v rg	optional	apt install ripgrep (faster local search over design notes/markers)

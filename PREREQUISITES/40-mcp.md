@@ -34,7 +34,7 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
 |---|---|---|---|---|
 | `fetch` | market-scanner, ideator | `uvx mcp-server-fetch` | `mcp__fetch__*` | Keyless web research: fetch a URL and extract it as **markdown in chunks** — competitor pricing, docs, forum threads. Grounds the discovery scorecard / IDEA package in real evidence. |
 | `context7` | foundry | `npx -y @upstash/context7-mcp` | `mcp__context7__*` | **Version-specific** library docs + examples for 9,000+ libraries, injected into context — handlers code against the current API, not the training cutoff. |
-| `playwright` | foundry | `npx -y @playwright/mcp@latest` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. Complements the Playwright **test** contract. |
+| `playwright` | foundry, atelier | `npx -y @playwright/mcp@latest` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. foundry uses it for STORY feedback; atelier for `/ui-review` crawl + a11y snapshot. |
 | `semgrep` | sentinel | `uvx semgrep-mcp` | `mcp__semgrep__*` | SAST: code-level vulnerability patterns. Bundles its own `semgrep`. |
 
 Prereqs: `fetch` + `semgrep` need `uv`/`uvx`; `context7` + `playwright` need `node`/`npx` (Playwright's

@@ -24,9 +24,10 @@ operation is [VALUE_FLOW](plugins/foundry/VALUE_FLOW.md).
 
 ---
 
-This marketplace ships five composable plugins spanning the whole arc — **DISCOVER → IDEATE → BUILD →
-SECURE / PUBLISH**. Install **foundry** for the core production discipline; add **market-scanner** and
-**ideator** to put a discovery-and-refinement front end *upstream* of the build; add **sentinel** and
+This marketplace ships six composable plugins spanning the whole arc — **DISCOVER → IDEATE → BUILD →
+SECURE / PUBLISH**, with **DESIGN** cross-cutting throughout. Install **foundry** for the core production
+discipline; add **market-scanner** and **ideator** to put a discovery-and-refinement front end *upstream*
+of the build; add **atelier** to make and adversarially review the visuals; add **sentinel** and
 **pressroom** to light up security gates and publication-grade output. Every plugin stands alone, and
 each lights up the others automatically when present (*graceful enhancement*) — no hard dependency in
 any direction.
@@ -40,6 +41,7 @@ any direction.
 | **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |
 | **[sentinel](plugins/sentinel/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
 | **[pressroom](plugins/pressroom/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
+| **[atelier](plugins/atelier/)** | The DESIGN studio: `/ui-review` crawls any SPA's routes (screenshot + accessibility snapshot) and writes a **scored, prioritised** critique citing named canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG 2.2); `/mockup` composes polished screens and flows and runs a **convergent** designer↔reviewer loop until they clear a design-fitness rubric. | Visual work — UIs, mockups, user-flows — that is *artistic, elegant, and accessible*, not first-draft. |
 
 ## How they compose
 
@@ -55,15 +57,20 @@ any direction.
    OPPORTUNITY  user-facing)       │
         ▲                          ▼
         └──── ideation-feedback ◀── a downstream ambiguity sharpens the front end (self-improve → PR)
+
+   DESIGN (atelier) ── cross-cutting ──▶ /ui-review critiques any rendered SPA · /mockup makes polished
+        screens & flows · the convergent designer↔reviewer loop raises both to a design-fitness rubric;
+        IDEATOR calls it so user-flows & mockups are design-reviewed, not first-draft.
 ```
 
 No plugin *requires* another. When the `ideator` plugin is installed, foundry's IDEA station **receives
 the IDEA package by capability** (the inline `ideator` skill is the graceful fallback when it is absent);
 when `sentinel` is installed, foundry's SECURITY station runs the gate before delivery; when `pressroom`
-is installed, the PUBLISHING station upgrades markdown into articles, diagrams, and PDFs. Absent any
-companion, each stage degrades cleanly and notes that the richer step was skipped. And the loop closes:
-an ambiguity a builder hits downstream flows back as **ideation-feedback** that sharpens market-scanner /
-ideator for every future idea.
+is installed, the PUBLISHING station upgrades markdown into articles, diagrams, and PDFs; when `atelier`
+is installed, user-flows and mockups are **design-reviewed by capability** before anyone sees them, and
+any SPA can be put under `/ui-review`. Absent any companion, each stage degrades cleanly and notes that
+the richer step was skipped. And the loop closes: an ambiguity a builder hits downstream flows back as
+**ideation-feedback** that sharpens market-scanner / ideator for every future idea.
 
 ## Install
 
@@ -76,6 +83,7 @@ Add the marketplace, then install whichever plugins you want:
 /plugin install foundry@idea-to-production
 /plugin install sentinel@idea-to-production
 /plugin install pressroom@idea-to-production
+/plugin install atelier@idea-to-production
 ```
 
 Each plugin works on its own — `market-scanner` and `ideator` need no build system to help you find and

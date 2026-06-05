@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "idea-to-production",
-  "description": "A composable suite for carrying software from IDEA to PRODUCTION: a discovery front door (market-scanner) that finds a worth-building opportunity, a refinement phase (ideator) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, and security and publishing companions (sentinel, pressroom). Each plugin stands alone and lights up the others automatically when installed.",
-  "version": "1.3.0",
+  "description": "A composable suite for carrying software from IDEA to PRODUCTION: a discovery front door (market-scanner) that finds a worth-building opportunity, a refinement phase (ideator) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, a design studio (atelier) that makes and adversarially reviews the visuals, and security and publishing companions (sentinel, pressroom). Each plugin stands alone and lights up the others automatically when installed.",
+  "version": "1.4.0",
   "owner": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com"
@@ -179,6 +179,34 @@
         "diagrams",
         "release-notes",
         "technical-writing"
+      ]
+    },
+    {
+      "name": "atelier",
+      "source": "./plugins/atelier",
+      "displayName": "ATELIER — Design studio & adversarial UI review",
+      "description": "The DESIGN studio — a designer's workshop that both makes and critiques visual work to a commercial-grade standard. /ui-review crawls the navigable routes of any SPA (screenshot + accessibility snapshot per route) and writes a scored, prioritised critique where every finding cites a named principle; /mockup composes polished screens, wireframes, and user-flows and runs them through a convergent designer↔reviewer loop until they clear a design-fitness rubric. The reviewer is a heavyweight expert in the design canon — Gestalt, the UX laws (Fitts/Hick/Miller/Jakob), Nielsen's heuristics, Norman's emotional design, and WCAG 2.2 accessibility. Composes with foundry's frontend design-system and pressroom's graphics by capability; degrades to markdown when absent. Ships a Playwright MCP for live review.",
+      "version": "1.0.0",
+      "author": {
+        "name": "whatbirdisthat",
+        "email": "95787+whatbirdisthat@users.noreply.github.com",
+        "url": "https://github.com/whatbirdisthat"
+      },
+      "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/atelier",
+      "repository": "https://github.com/whatbirdisthat/idea-to-production",
+      "license": "MIT OR Apache-2.0",
+      "category": "workflow",
+      "keywords": [
+        "design",
+        "ui",
+        "ux",
+        "design-review",
+        "accessibility",
+        "wcag",
+        "visual-hierarchy",
+        "wireframe",
+        "mockup",
+        "playwright"
       ]
     }
   ]
