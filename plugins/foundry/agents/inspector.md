@@ -123,7 +123,9 @@ Record every finding — do not suppress minor issues. A SUGGESTION is still a f
 - **Tool appropriateness**: Does `tools:` match what the agent actually needs?
 - **Output format / completion protocol**: Specified precisely enough to parse / signal done?
 - **Model policy**: Does `model:` agree with
-  [`model-selection.md`](../knowledge/policy/model-selection.md)?
+  [`model-selection.md`](../knowledge/policy/model-selection.md), **and is it a top-level frontmatter
+  key** (sibling to `name:`/`metadata:`, never nested *inside* `metadata:` — the universal convention;
+  a nested `model:` is silently ignored and falls to a default tier)?
 - **SOLID covenant**: Carries the covenant + a self-improvement obligation?
 - **Registration**: Is the agent wired into VALUE_FLOW, the builder VALUE_HANDLER_POOL, and
   the [`agent-roster`](../knowledge/orchestration/agent-roster.md) — i.e. not dangling?

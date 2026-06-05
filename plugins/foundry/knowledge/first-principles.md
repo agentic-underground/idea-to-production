@@ -112,7 +112,7 @@ This is the **worker tier's memory**: the record of *what works and what does no
 of the marketplace inherits the enhancement**. · **Aliases:** fix-upstream-once; self-cleave-and-PR;
 the self-improving marketplace. · **Homes:** [`architecture/solid-covenant.md`](architecture/solid-covenant.md)
 · [`protocols/merge-governance.md`](protocols/merge-governance.md) · the `pr-review` skill and the
-`inspector` agent (with a dedicated `self-improve` skill as the planned driver of the self-cleave loop).
+`inspector` agent · the `self-improve` skill (the targeted self-cleave loop).
 
 ---
 

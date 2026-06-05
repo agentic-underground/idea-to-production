@@ -89,12 +89,13 @@ audits for exactly this (`../agents/inspector.md`).
   **development-system-core** · **lifecycle-states** · **ideator** (IDEA) · **roadmapper** (ROADMAP) ·
   **frontend** (DESIGN) · **code-quality** · **reviewer-gate** · **handoff-protocol** ·
   **phase-sensor** (infra; PostToolUse hook) · **rust-webapp-rollout** (Rust/WASM/Vercel one-shot) ·
-  **pr-review** (adversarial PR/diff review → one verdict) · **prerequisites** (emit PREREQUISITES.md) ·
+  **pr-review** (adversarial PR/diff review → one verdict) · **self-improve** (targeted self-cleaving →
+  PR) · **prerequisites** (emit PREREQUISITES.md) ·
   **check** (verify tool dependencies). The companions add **check** too (sentinel, pressroom).
 
 ### Commands
 - foundry: **/foundry** · **/inspect** · **/coverage-loop** · **/phase-sensor** · **/rust-webapp-rollout** ·
-  **/foundry:pr-review** · **/foundry:check** · **/foundry:prerequisites**
+  **/foundry:pr-review** · **/foundry:self-improve** · **/foundry:check** · **/foundry:prerequisites**
 - sentinel: **/security-gate** · **/pii-audit** · **/secret-scan** · **/dependency-audit** · **/sentinel:check**
 - pressroom: **/publish** · **/pressroom:check**
 
