@@ -25,7 +25,7 @@ for how handlers use these.
 
 | Tool | Tier | Probe | Why |
 |---|---|---|---|
-| Playwright MCP (`@playwright/mcp`) | recommended | `npx -y @playwright/mcp@latest --version` | Live, exploratory browser feedback for web handlers (`mcp__playwright__*`). Shipped in [`plugins/foundry/.mcp.json`](../plugins/foundry/.mcp.json). |
+| Playwright MCP (`@playwright/mcp`) | recommended | `command -v npx` | Live, exploratory browser feedback for web handlers (`mcp__playwright__*`). Shipped in [`plugins/foundry/.mcp.json`](../plugins/foundry/.mcp.json). |
 | Playwright test runner | recommended | `npx playwright --version` | The committed, deterministic STORY tests. |
 | A Chromium browser | recommended | `npx playwright install chromium` | The CLI runner needs a browser. The MCP downloads its own on first use. (Only `firefox` is preinstalled on the validated box.) |
 
