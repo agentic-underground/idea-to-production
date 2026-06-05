@@ -35,7 +35,7 @@ if it must, ask a question back up the line until the answer is found.
    ║ ideator roadmapper plan  spec   feature   tests   builder/handlers  story  deliver║
    ║                                                                                   ║
    ║  cross-cutting: GOVERNANCE (reviewers · perf-delta gates · inspector)  — in foundry║
-   ║   companion plugins (used if installed):  PUBLISHING → pressroom · SECURITY → sentinel║
+   ║  companions (if installed): PUBLISHING → pressroom · SECURITY → sentinel · DESIGN → atelier║
    ╚═══════════════════════════════════════════════════════════════════════════════════╝
                           questions flow UP ▲   value flows DOWN ▼
 ```
@@ -116,7 +116,7 @@ A station with no handler is a defect FOUNDER reports. A gate without a check is
 > VERIFY apply to any item that ships to a runtime; for pure libraries the line ends at DELIVERY.)
 
 **Cross-cutting stations** are available to the whole line, not a single position. One is
-built into foundry; two are **companion plugins** that foundry uses *if installed* and degrades
+built into foundry; three are **companion plugins** that foundry uses *if installed* and degrades
 cleanly without (**graceful enhancement** — foundry's value artefact is markdown):
 
 - **GOVERNANCE** *(in foundry)* — `code-quality`, `reviewer-gate`; staffed by `reviewer`
@@ -124,14 +124,20 @@ cleanly without (**graceful enhancement** — foundry's value artefact is markdo
   `flaky-test-fixer`. A reviewer gate and, where relevant, a **performance-delta gate** sit at
   every transition.
 - **PUBLISHING** *(companion: `pressroom` plugin)* — when installed, foundry hands off to its
-  `writer` and `rich-pdf-with-diagrams` / `diagram-studio` skills (via the `/publish` command)
-  for narrative + print-quality artefacts. When absent, foundry delivers markdown and notes that
+  `writer`, `diagram-studio` / `mermaid-specialist`, `rich-pdf-with-diagrams`, and `design-reviewer`
+  skills (via the `/publish` command) for narrative + print-quality artefacts, themed diagrams, and an
+  adversarial print/data-viz design review. When absent, foundry delivers markdown and notes that
   rich publishing was skipped. Reference by capability/skill-name, never by `${CLAUDE_PLUGIN_ROOT}`
   path across the plugin boundary.
 - **SECURITY** *(companion: `sentinel` plugin)* — when installed, foundry's release path can run
   `/security-gate` (PII + secret + dependency audit → `SECURITY-REPORT.md`, verdict
   PASS/REVIEW/BLOCK) before DELIVERY. When absent, the gate is skipped with a noted recommendation
   to install `sentinel`.
+- **DESIGN** *(companion: `atelier` plugin)* — when installed, foundry's rendered UI surfaces can be
+  put under `/ui-review` (crawl + adversarial, canon-grounded critique with an accessibility gate), and
+  user-flows/mockups composed via `/mockup` in a convergent designer↔reviewer loop. It **composes with**
+  foundry's source-level `frontend` design-system (the DESIGN station 6b) by capability — extending the
+  rendered-experience review, never duplicating it. When absent, the `frontend` self-critique still runs.
 
 The canonical per-station input/exit contracts live in
 `knowledge/protocols/handoff-schema.md` (human-readable intent) and
@@ -286,8 +292,9 @@ reviewer (panel)                   — gates every transition (PASS / NEEDS_REVI
 | STORY | `lifecycle-states` | ds-step-story-tests, handler-playwright | testing/test-policy (perf-delta) |
 | DELIVERY | `lifecycle-states` | ds-step-7/8/9 | protocols/commit-message, protocols/definition-of-done |
 | GOVERNANCE | `code-quality`, `reviewer-gate` | reviewer, inspector, coverage-loop-agent, flaky-test-fixer | all pillars, testing/* |
-| PUBLISHING *(companion)* | `pressroom` plugin: `writer`, `rich-pdf-with-diagrams`, `diagram-studio` (via `/publish`) | (pressroom's reviewer) | — |
+| PUBLISHING *(companion)* | `pressroom` plugin: `writer`, `diagram-studio`, `mermaid-specialist`, `rich-pdf-with-diagrams`, `design-reviewer` (via `/publish`) | writer's reviewer · typographic/dataviz reviewers | — |
 | SECURITY *(companion)* | `sentinel` plugin: `pii-audit`, `secret-scan`, `dependency-audit` (via `/security-gate`) | (parallel audit sub-agents) | — |
+| DESIGN *(companion)* | `atelier` plugin: `ui-review`, `mockup` (via `/ui-review`, `/mockup`) | ui-design-reviewer | — |
 | SENSOR (infra) | `phase-sensor` | (hook) | per-phase notes |
 
 The [`knowledge/README.md`](knowledge/README.md) index says which doc answers which question, and

@@ -40,8 +40,11 @@ this plugin is installed it owns ideation; FOUNDRY's inline skill is the gracefu
      constraints, testable success, every open question answered-or-accepted). Do **not** hand off until
      it passes.
    - **User-facing** (rich): the IDEA dossier — narrative, scorecard table, market/pricing/competition
-     charts. Render via **pressroom `/publish`** *by capability* when installed; degrade to structured
-     markdown otherwise, and say so.
+     charts, **a user-flow, and (for a UI idea) a mockup screen**. Render *by capability*: charts/diagrams
+     via **pressroom `/publish`**; **user-flows and mockups via atelier `/mockup`** (designed to the canon
+     and design-reviewed before the user sees them — carefully composed, not first-draft). Degrade to
+     structured markdown / Mermaid-source otherwise, and say so. The flow/mockup must visualise the **first
+     slice** (don't let them drift from it).
 4. **Iterate with the user.** Present the package; ask "what needs adjusting?"; correct **both faces** in
    lock-step (they must never disagree). Re-display when a change is significant.
 5. **Hand off.** When the user is satisfied and the exit gate passes: hand the agent-facing package to

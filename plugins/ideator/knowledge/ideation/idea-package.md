@@ -46,12 +46,25 @@ The **IDEA dossier** the human reviews and iterates on before committing — gra
 - the **parameter scorecard** (a table — reuse the market-scanner A–E axes when the opportunity came from
   a scan);
 - **market-sizing / pricing / competition charts**;
+- the **user-flow** (how the actor moves through the first slice) and, where the idea is a UI, a
+  **mockup screen** of the key view;
 - the **chosen-idea rationale** and the first-slice picture.
 
-> **Rendering — by capability.** Produce the rich dossier by invoking **pressroom's `/publish`** (format
-> `pdf` for a print-quality dossier, `diagrams` for figures) **when pressroom is installed**. When it is
-> **absent, degrade to structured markdown** (tables, ASCII/Mermaid-source figures) and say plainly that
-> the richer rendering was skipped. Never re-author PDF/diagram rendering here — that is pressroom's job.
+> **Rendering — by capability (and carefully composed, not first-draft).** Produce the dossier's figures by
+> capability, never re-authoring rendering here:
+> - **Charts, scorecards, market/pricing diagrams** → **pressroom** `/publish` (`pdf` for a print-quality
+>   dossier, `diagrams` for figures) when installed — the **mermaid-specialist** picks the right diagram
+>   type and themes it, and the **design-reviewer** critiques it.
+> - **User-flows and UI mockups** → **atelier** `/mockup` when installed — it *designs* the flow/screen to
+>   the canon and runs the **convergent designer↔reviewer loop** so the user sees a considered artefact,
+>   not a whipped-up sketch. (Flows render as themed Mermaid; mockups as reviewed screens.)
+> - **Companions absent** → degrade to structured markdown (tables, ASCII / Mermaid-**source** figures, a
+>   text flow) and say plainly that the richer rendering + design review were skipped. Quality still
+>   matters: even the markdown flow is ordered and labelled, not a brain-dump.
+
+> **Tie to the slice.** The user-flow and mockup are not decoration — they *visualise the first vertical
+> slice* (Face 1 §3) and the **slice** challenge axis, so the user confirms the same thing the conveyor
+> will build. A flow that contradicts the slice is a parity failure, caught here.
 
 ## One understanding, two faces
 
