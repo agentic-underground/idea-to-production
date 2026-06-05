@@ -54,9 +54,13 @@ Gate-keepers read this and nothing else is assumed.
 - OUT: a shipped increment + slice-ledger entry.
 
 ### LEARN  (handler: marketer)
-- IN: a shipped slice + any usage/market signal.
+- IN: a shipped slice + any usage/market signal + any **ideation-feedback** raised while building
+  (an IDEA-package field that proved ambiguous downstream).
 - EXIT: signal captured; positioning in `docs/marketing/` still cohesive with reality.
-- OUT: the next IDEA candidate (closes the loop).
+- OUT: the next IDEA candidate (closes the loop). **When the `ideator` / `market-scanner` plugins are
+  installed**, also route the ideation-feedback to their self-improve intake (symptom → unclear field →
+  preventing question), so the upstream front end sharpens for every future ideation — not just this
+  project's brief. See `knowledge/pillars/knowledge-parity.md` ("feedback flows upstream").
 
 ## Rule for fresh agents
 If you are a gate-keeper and the incoming artifact does not satisfy its station's IN

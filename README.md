@@ -1,6 +1,7 @@
 # idea-to-production — a Claude Code plugin marketplace
 
-> Carry software from **IDEA to PRODUCTION** — with security and publishing that switch on when you need them.
+> Carry software from **the spark of an IDEA to PRODUCTION** — discover what's worth building, refine it
+> to a build-ready package, build it test-first, with security and publishing that switch on when you need them.
 
 ## What governs everything — the three pillars
 
@@ -23,15 +24,19 @@ operation is [VALUE_FLOW](plugins/foundry/VALUE_FLOW.md).
 
 ---
 
-This marketplace ships three composable plugins. Install **foundry** for the core production
-discipline; add **sentinel** and **pressroom** to light up security gates and publication-grade
-output. They are independent — foundry runs perfectly alone and emits markdown — but when the
-companions are present, foundry uses them automatically (*graceful enhancement*).
+This marketplace ships five composable plugins spanning the whole arc — **DISCOVER → IDEATE → BUILD →
+SECURE / PUBLISH**. Install **foundry** for the core production discipline; add **market-scanner** and
+**ideator** to put a discovery-and-refinement front end *upstream* of the build; add **sentinel** and
+**pressroom** to light up security gates and publication-grade output. Every plugin stands alone, and
+each lights up the others automatically when present (*graceful enhancement*) — no hard dependency in
+any direction.
 
 ## The plugins
 
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
+| **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
+| **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
 | **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |
 | **[sentinel](plugins/sentinel/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
 | **[pressroom](plugins/pressroom/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
@@ -39,17 +44,26 @@ companions are present, foundry uses them automatically (*graceful enhancement*)
 ## How they compose
 
 ```
-                 ┌─────────────── foundry (core, emits markdown) ───────────────┐
-   IDEA ▶ … ▶ SHIP                                                              │
-                 │  SECURITY gate ── if sentinel installed ─▶ SECURITY-REPORT.md │
-                 │  PUBLISHING    ── if pressroom installed ─▶ articles / PDFs    │
-                 └───────────────────────────────────────────────────────────────┘
+   "let's come up with a new idea"
+        │
+   DISCOVER ──▶ IDEATE ───────▶ BUILD ──────────────────────────────▶ SECURE / PUBLISH
+   market-scanner  ideator      foundry (core, emits markdown)         sentinel · pressroom
+        │            │             │
+   /goal +      IDEA package   IDEA ▶ ROADMAP ▶ … ▶ STORY ▶ SHIP
+   /market-scan (2 faces:          │  SECURITY  ── if sentinel installed ─▶ SECURITY-REPORT.md
+   → a kept     agent-facing +     │  PUBLISHING ── if pressroom installed ─▶ articles / PDFs
+   OPPORTUNITY  user-facing)       │
+        ▲                          ▼
+        └──── ideation-feedback ◀── a downstream ambiguity sharpens the front end (self-improve → PR)
 ```
 
-`foundry` never *requires* the companions. When `sentinel` is installed, foundry's SECURITY
-station can run the security gate before delivery; when `pressroom` is installed, foundry's
-PUBLISHING station can upgrade markdown into articles, diagrams, and PDFs. Absent, foundry
-delivers clean markdown and notes that the richer step was skipped.
+No plugin *requires* another. When the `ideator` plugin is installed, foundry's IDEA station **receives
+the IDEA package by capability** (the inline `ideator` skill is the graceful fallback when it is absent);
+when `sentinel` is installed, foundry's SECURITY station runs the gate before delivery; when `pressroom`
+is installed, the PUBLISHING station upgrades markdown into articles, diagrams, and PDFs. Absent any
+companion, each stage degrades cleanly and notes that the richer step was skipped. And the loop closes:
+an ambiguity a builder hits downstream flows back as **ideation-feedback** that sharpens market-scanner /
+ideator for every future idea.
 
 ## Install
 
@@ -57,13 +71,15 @@ Add the marketplace, then install whichever plugins you want:
 
 ```
 /plugin marketplace add whatbirdisthat/idea-to-production
+/plugin install market-scanner@idea-to-production
+/plugin install ideator@idea-to-production
 /plugin install foundry@idea-to-production
 /plugin install sentinel@idea-to-production
 /plugin install pressroom@idea-to-production
 ```
 
-Each plugin works on its own — `sentinel` and `pressroom` are useful on any repository, not just
-foundry projects.
+Each plugin works on its own — `market-scanner` and `ideator` need no build system to help you find and
+shape an idea, and `sentinel` and `pressroom` are useful on any repository, not just foundry projects.
 
 ## Concepts & glossary
 

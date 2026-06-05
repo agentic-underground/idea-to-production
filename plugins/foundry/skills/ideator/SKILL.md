@@ -42,6 +42,33 @@ them into the structured development system (EARS → Gherkin → TDD → commit
 
 ---
 
+## 0.5 UPSTREAM SOURCE — receive the IDEA package by capability (graceful enhancement)
+
+> **The rich front end lives upstream.** When the **`ideator` plugin** is installed, discovery
+> (`market-scanner`) and refinement (`ideator`) happen there, and an **IDEA package** arrives already
+> challenged to knowledge-parity. This skill is then the **thin fallback receiver** — it does *not*
+> re-interrogate. When the `ideator` plugin is **absent**, this skill runs the full inline dialogue (§3)
+> as the graceful-degradation fallback. Detect the plugin by **capability** (does an IDEA package / a
+> `/ideate` hand-off exist?), never by a cross-plugin filesystem path.
+
+| Situation | What this skill does |
+|---|---|
+| An **IDEA package** arrives from the `ideator` plugin (agent-facing: brief + SMU-seed + first slice + handoff contract) | **Ingest, don't re-ask.** Map its fields onto the brief (§4), **verify FOUNDRY's discovery exit criteria** are met (actionable problem, named actors, explicit scope, concrete constraints, testable success), then go straight to §5 confirmation → §6/§7 hand-off to ROADMAPPER. Carry the package's SMU-seed forward verbatim. |
+| The `ideator` plugin is **absent**, user brings a raw idea | Run the **inline fallback**: §3 dialogue → §4 brief → §5/§6/§7, exactly as before. |
+| The package **fails the exit gate** on ingest (a field is ambiguous) | Do not paper over it. Resolve the one gap with a single focused question (§3 style), write the answer back, and **emit ideation-feedback** (§0.5.1) so future ideations resolve it by default. |
+
+### 0.5.1 Feedback emission — close the loop to ideation
+
+When FOUNDER or any downstream station hits an ambiguity the IDEA package *should* have resolved, do
+**both**: (1) write the resolved answer back into the package/SMU for this project (the existing
+knowledge-parity mechanism — `${CLAUDE_PLUGIN_ROOT}/knowledge/pillars/knowledge-parity.md`), and
+(2) record a structured **ideation-feedback** entry (symptom → which IDEA-doc field was unclear → what
+would have prevented it) routed to the `ideator` / `market-scanner` **self-improve** intake, so every
+future ideation for all users asks the missing question by default. This is the LEARN station doing its
+job (`${CLAUDE_PLUGIN_ROOT}/skills/value-station-handoff/SKILL.md`, LEARN).
+
+---
+
 ## 1. TRIGGERS & ENTRY POINTS
 
 | User says / does | Entry point |
@@ -174,8 +201,9 @@ changes were made. Then proceed to §6.
 ### 6.2 File content
 
 Use the template at `references/project-readme-template.md`. The template must be rendered
-with the brief fields from §4 and must include the **SOLID Replication Fragment** (see
-`references/solid-fragment.md`) verbatim in the designated section.
+with the brief fields from §4 and must include the **SOLID Replication Fragment** (the
+covenant block in `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md`) verbatim
+in the designated section.
 
 Key sections of the output file:
 1. **Title & tagline**
@@ -186,7 +214,7 @@ Key sections of the output file:
 6. **Architecture sketch** (high-level, 3–5 bullet points; do not over-specify)
 7. **Roadmap entry** (formatted for ROADMAPPER, ready to paste)
 8. **SDLC next steps** (a numbered checklist pointing to the development system steps 0–9)
-9. **SOLID Replication Fragment** (verbatim from `references/solid-fragment.md`)
+9. **SOLID Replication Fragment** (verbatim from `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md`)
 
 ### 6.3 Delivery
 
@@ -266,8 +294,9 @@ Every project file produced by IDEATOR (§6) **must** carry the SOLID Replicatio
 This fragment travels with all documents generated in the project and instructs future
 documents/agents to continue the self-improvement discipline.
 
-The fragment is defined in `references/solid-fragment.md`. It is inserted verbatim into
-section 9 of every output file. Do not summarise or paraphrase it — copy it exactly.
+The fragment is the covenant block in `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md`
+(between its `SOLID REPLICATION FRAGMENT` markers). It is inserted verbatim into section 9 of every
+output file. Do not summarise or paraphrase it — copy it exactly.
 
 The effect: every README, spec, plan, and feature file generated downstream will contain a
 pointer back to this discipline, keeping the entire project's document ecosystem aligned
@@ -280,7 +309,7 @@ with the SOLID self-improvement model initiated by IDEATOR.
 | File | Purpose | When to read |
 |---|---|---|
 | `references/project-readme-template.md` | Template for §6 output | Before generating any project file |
-| `references/solid-fragment.md` | Replication fragment | When generating any project file |
+| `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md` | SOLID replication fragment | When generating any project file |
 | `references/dev-system.md` | Full SDLC Steps 0–9 | When performing §7 SDLC handoff without ROADMAPPER |
 | `references/self-improvement-review-prompt.md` | Sub-agent prompt for §8 | When triggering self-improvement |
 | `references/question-bank-extended.md` | Extended question library | When §3.2 bank is exhausted |
