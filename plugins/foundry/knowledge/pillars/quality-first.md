@@ -1,5 +1,7 @@
 # Pillar 2 — Quality as a First-Class Concern
 
+> **Bindings:** *quality-first* ≡ *quality-confidence*. (See the core language in [`../glossary.md`](../glossary.md) and [`../first-principles.md`](../first-principles.md) §1.)
+
 Quality is **built in**, not inspected in. It is engineered across a full assurance chain,
 and every layer is strengthened by a **performance-delta gate**. Quality is not a phase at the
 end; it is a property of every station.

@@ -1,5 +1,7 @@
 # Pillar 3 — Waste Elimination
 
+> **Bindings:** *waste-elimination* (incl. *rediscovery* waste). (See the core language in [`../glossary.md`](../glossary.md) and [`../first-principles.md`](../first-principles.md) §1.)
+
 The persistent, rigorous, **systematic** identification and elimination of waste in all its
 forms. FOUNDRY applies the **seven wastes** of lean production to software development. The
 governing intuition:

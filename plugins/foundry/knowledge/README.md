@@ -11,7 +11,8 @@ restate them. If a fact lives here, there is exactly one copy of it.
 
 | You need… | Read |
 |-----------|------|
-| Every name in the marketplace + the conceptual tree (foundry vs forge vs founder) | [`glossary.md`](glossary.md) |
+| **The philosophical spine** — the meta-principles, their bindings, *why* the system is shaped this way | [`first-principles.md`](first-principles.md) |
+| Every name in the marketplace + the conceptual tree (foundry vs forge vs founder) + the **core language** (multiple bindings) | [`glossary.md`](glossary.md) |
 | The three pillars, in depth | [`knowledge-parity`](pillars/knowledge-parity.md) · [`quality-first`](pillars/quality-first.md) · [`waste-elimination`](pillars/waste-elimination.md) |
 | Why determinism/pinning + zero-drift templates eliminate rediscovery waste | [`pillars/determinism-and-pinning.md`](pillars/determinism-and-pinning.md) |
 | The operational rules an implementer follows | [`pillars/implementation-covenant.md`](pillars/implementation-covenant.md) |
@@ -24,7 +25,8 @@ restate them. If a fact lives here, there is exactly one copy of it.
 | SOLID + the self-improvement covenant (halve the distance to perfection) | [`architecture/solid-covenant.md`](architecture/solid-covenant.md) |
 | The SOLID *principles* reference (engineering, with examples + smell checklist) | [`architecture/solid.md`](architecture/solid.md) |
 | The pure-core / one-way-dependency geometry that makes coordinates possible | [`architecture/pure-core.md`](architecture/pure-core.md) |
-| Clean Architecture / Hexagonal / DDD / etc. | [`clean-architecture`](architecture/clean-architecture.md) · [`hexagonal`](architecture/hexagonal.md) · [`ddd`](architecture/ddd.md) · [`dry-yagni`](architecture/dry-yagni.md) · [`clean-code`](architecture/clean-code.md) · [`pragmatic`](architecture/pragmatic.md) · [`twelve-factor`](architecture/twelve-factor.md) · [`untestable-patterns`](architecture/untestable-patterns.md) |
+| Clean Architecture / Hexagonal / DDD / etc. (forms we **build with**) | [`clean-architecture`](architecture/clean-architecture.md) · [`hexagonal`](architecture/hexagonal.md) · [`ddd`](architecture/ddd.md) · [`dry-yagni`](architecture/dry-yagni.md) · [`clean-code`](architecture/clean-code.md) · [`pragmatic`](architecture/pragmatic.md) · [`twelve-factor`](architecture/twelve-factor.md) · [`untestable-patterns`](architecture/untestable-patterns.md) |
+| The marketplace's **own** architecture — the deliberate hybrid (the form we **are**) | [`architecture/self-architecture.md`](architecture/self-architecture.md) |
 | The certainty-marker articulation protocol (THE ONLY WAY / GUARDRAIL / ANTI-PATTERN / WORKED EXAMPLE) | [`protocols/certainty-markers.md`](protocols/certainty-markers.md) |
 | The guardrails-ledger pattern (symptom → cause → fix) + FORBIDDEN lists | [`protocols/guardrails-ledger.md`](protocols/guardrails-ledger.md) |
 | Machine-readable phase state between agents | [`protocols/context-sentinel.md`](protocols/context-sentinel.md) |

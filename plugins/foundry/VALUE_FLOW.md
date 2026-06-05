@@ -11,6 +11,13 @@ constraint. It is greater than the sum of its parts — the user interacts with 
 layer to reach the clearest picture of the shippable value, and every value-station can,
 if it must, ask a question back up the line until the answer is found.
 
+> This document is the **operational** spine (*how* value moves). The **philosophical** spine (*why*
+> the system is shaped this way — the pillars, tests-as-coordinates, the SOLID covenant, the two
+> altitudes, the self-improving loop, each with its bindings) is
+> [`knowledge/first-principles.md`](knowledge/first-principles.md). The marketplace's **own**
+> architecture (a deliberate hybrid, distinct from the hexagonal form it builds *with*) is
+> [`knowledge/architecture/self-architecture.md`](knowledge/architecture/self-architecture.md).
+
 ---
 
 ## 1 · The conveyor (the picture)
