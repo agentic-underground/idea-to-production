@@ -67,8 +67,8 @@ altitudes read; composition (form 2) is how the whole thing plugs into a user's 
 > **GUARDRAIL — knowledge-restatement-in-agents.** The hexagonal `knowledge/` core only stays pure if
 > agents **reference** it, not **restate** it. Some agents still embed *summarised copies* of canon
 > (e.g. model-tier prose, the test contract) — a reverse dependency that drifts. The fix is
-> reference-with-a-certainty-marker, not a pasted table. This is the **standing target** for the
-> `/foundry:self-improve` skill and a recurring `inspector` finding. It is the only place the
+> reference-with-a-certainty-marker, not a pasted table. This is a recurring `inspector` finding — and
+> the **standing target** for the planned `self-improve` skill once it lands. It is the only place the
 > marketplace's own form is violated rather than merely different.
 
 ## Summary
