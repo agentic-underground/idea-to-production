@@ -15,6 +15,9 @@ understand the *system*; read here to disambiguate a *name*.
 ```
 idea-to-production  (the MARKETPLACE — carries software from IDEA to PRODUCTION)
 │
+├── market-scanner (PLUGIN · DISCOVERY front door) — goal-setter · market-scan · /goal · /market-scan
+├── ideator   (PLUGIN · REFINEMENT) — ideate (the IDEA package: agent-facing + user-facing) · /ideate
+│
 ├── foundry  (PLUGIN · the value-flow production system — the core conveyor)
 │   ├── THE CONVEYOR — value-stations, in order
 │   │   IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT (+DESIGN 6b) ▶ STORY ▶
@@ -33,11 +36,14 @@ idea-to-production  (the MARKETPLACE — carries software from IDEA to PRODUCTIO
 │   └── GOVERNANCE (cross-cutting, in-plugin) — code-quality, reviewer-gate, reviewer, inspector
 │
 ├── sentinel   (PLUGIN · SECURITY companion) — pii-audit · secret-scan · dependency-audit · /security-gate
-└── pressroom  (PLUGIN · PUBLISHING companion) — writer · diagram-studio · rich-pdf-with-diagrams · /publish
+├── pressroom  (PLUGIN · PUBLISHING companion) — writer · diagram-studio · mermaid-specialist · rich-pdf-with-diagrams · design-reviewer · /publish
+└── atelier    (PLUGIN · DESIGN companion) — ui-review · mockup · ui-design-reviewer · /ui-review · /mockup
 ```
 
-The two companions are **cross-cutting**: foundry uses them *by capability* when installed
-(graceful enhancement) and degrades to markdown when they are not. See `../VALUE_FLOW.md §4`.
+The companions are **cross-cutting**: foundry/ideator use them *by capability* when installed
+(graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
+is **DISCOVER (market-scanner) → IDEATE (ideator) → BUILD (foundry) → SECURE/PUBLISH (sentinel/pressroom)**,
+with **DESIGN (atelier)** cross-cutting — making and adversarially reviewing the visuals throughout.
 
 ---
 
@@ -54,10 +60,13 @@ These look alike and are constantly confused. They are different things:
 | **`builder` / `builder-lead`** | The orchestration **skill** (`builder`) and the **cycle-planner agent** (`builder-lead`) one altitude below `founder`. | Skill + agent inside foundry. |
 | **FORGE** | The historical origin environment where these plugins were first built — **not part of this marketplace** and not referenced by any runtime surface. Its story is archived in [`../docs/HISTORY.md`](../docs/HISTORY.md). | External / historical. |
 | **`forge`** (lowercase, in the rust references) | The shipped **worked-example project** (a Rust/WASM + Vercel app) used to illustrate `rust-webapp-rollout`. | A sample project name, not a system. |
+| **`atelier`** | The **DESIGN plugin** — makes (`/mockup`) and adversarially reviews (`/ui-review`) the *rendered* visuals of any app, to a SOTA-grounded canon. | A plugin in this marketplace. |
+| **`frontend`** (vs `atelier`) | A **skill inside foundry** — the *source-level* design system (the `@front-end` INTENT markers, `definition-of-good`, the build-time `design-critic`). `atelier` reviews the *rendered experience* and carries the deeper canon; it **composes with** `frontend` by capability, never duplicates it. | A skill inside foundry. |
 
 **Rule of thumb:** if a document inside a plugin says "the FORGE" as if it were *this* system, that
 is a bug — it should say **FOUNDRY** (the plugin) or name the specific companion. The `inspector`
-audits for exactly this (`../agents/inspector.md`).
+audits for exactly this (`../agents/inspector.md`). And don't confuse **`atelier`** (the design *plugin*,
+rendered-experience review) with foundry's **`frontend`** *skill* (source-level design system).
 
 ---
 
@@ -65,7 +74,9 @@ audits for exactly this (`../agents/inspector.md`).
 
 ### Marketplace & plugins
 - **idea-to-production** — the marketplace; the repository and the `marketplace.json` `name`.
-- **foundry / sentinel / pressroom** — the three plugins (core conveyor / security / publishing).
+- **market-scanner / ideator / foundry / sentinel / pressroom / atelier** — the six plugins:
+  DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the core conveyor /
+  SECURITY companion / PUBLISHING companion / DESIGN companion (make + adversarially review the visuals).
 
 ### Orchestration agents (foundry)
 - **founder** — COO/portfolio orchestrator. - **builder-lead** — cycle planner (emits `FOUNDRY_PLAN.md`).
@@ -91,13 +102,26 @@ audits for exactly this (`../agents/inspector.md`).
   **phase-sensor** (infra; PostToolUse hook) · **rust-webapp-rollout** (Rust/WASM/Vercel one-shot) ·
   **pr-review** (adversarial PR/diff review → one verdict) · **self-improve** (targeted self-cleaving →
   PR) · **prerequisites** (emit PREREQUISITES.md) ·
-  **check** (verify tool dependencies). The companions add **check** too (sentinel, pressroom).
+  **check** (verify tool dependencies). The companions add **check** too (market-scanner, ideator,
+  sentinel, pressroom, atelier).
+
+### Skills (companion plugins)
+- market-scanner: **goal-setter** · **market-scan** · **self-improve** · **check**.
+- ideator: **ideate** (the IDEA package) · **self-improve** · **check**.
+- sentinel: **pii-audit** · **secret-scan** · **dependency-audit** · **security-gate** · **check**.
+- pressroom: **writer** · **diagram-studio** · **mermaid-specialist** (full Mermaid taxonomy + theming + ELK) ·
+  **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review) · **check**.
+- atelier: **ui-review** (crawl + critique any SPA) · **mockup** (design + converge) · **self-improve** ·
+  **check**; agent **ui-design-reviewer**.
 
 ### Commands
 - foundry: **/foundry** · **/inspect** · **/coverage-loop** · **/phase-sensor** · **/rust-webapp-rollout** ·
   **/foundry:pr-review** · **/foundry:self-improve** · **/foundry:check** · **/foundry:prerequisites**
+- market-scanner: **/market-scan** · **/goal** · **/market-scanner:check**
+- ideator: **/ideate** · **/ideator:check**
 - sentinel: **/security-gate** · **/pii-audit** · **/secret-scan** · **/dependency-audit** · **/sentinel:check**
 - pressroom: **/publish** · **/pressroom:check**
+- atelier: **/ui-review** · **/mockup** · **/atelier:check**
 
 ### Core concepts
 - **Value-station** — a stage on the conveyor with an entry, a transformation, and a mandatory

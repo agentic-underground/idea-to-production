@@ -13,8 +13,10 @@ opportunity (from [`market-scanner`](../market-scanner/)) or a raw idea you alre
   criteria** (actionable problem, named actors, explicit scope, concrete constraints, testable success).
   This is what FOUNDRY ingests; it must be unambiguous to a fresh agent with no history.
 - **User-facing** (rich, illustrated): the **IDEA dossier** — opportunity narrative, parameter scorecard,
-  market/pricing/competition charts — rendered via [`pressroom`](../pressroom/)'s `/publish` **by
-  capability** when installed; degrades to structured markdown otherwise.
+  market/pricing/competition charts, a **user-flow**, and (for a UI idea) a **mockup screen** — rendered
+  **by capability**: charts via [`pressroom`](../pressroom/)'s `/publish`, and flows/mockups via
+  [`atelier`](../atelier/)'s `/mockup` (designed to the canon and **design-reviewed** before you see them —
+  carefully composed, not first-draft). Degrades to structured markdown / Mermaid-source otherwise.
 
 The two faces never disagree: a fact corrected in one is corrected in both. The package is **iterated with
 you** until both are right, *then* handed off.
