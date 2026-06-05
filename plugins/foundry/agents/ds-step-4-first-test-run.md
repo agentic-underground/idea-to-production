@@ -13,6 +13,12 @@ memory: project
 
 Validate that new tests fail for the right reasons while existing baseline tests remain stable. Produce a gap map that precisely guides implementation. Do NOT write implementation code during this step.
 
+> **The gap map is the set of unfilled coordinates.** Each red test is a coordinate awaiting the code
+> that turns it green; a red caused by an *infrastructure* error (bad import, missing env) is a
+> mislabeled point, not a real coordinate — fix it before proceeding. The map locates exactly what
+> IMPLEMENT must write. (Canon:
+> [`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2.)
+
 ## Context Requirements
 
 Before beginning:

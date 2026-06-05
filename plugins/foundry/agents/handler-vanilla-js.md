@@ -53,6 +53,19 @@ surface is keyboard-operable and WCAG 2.1 AA clean before it is considered done.
 
 ---
 
+## Tests are coordinates
+
+A failing test is the **coordinate** that pins the exact code in logical space — the *reason* the code
+exists, and that code must produce only **PASS**; the sum of all coordinates *is* the SOLUTION. Place
+the coordinate first, then write the one implementation that turns it green. (Canon:
+[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+[`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice.)
+
+- **DOM coordinates via `@testing-library/dom` + `user-event`** — assert the **accessible** outcome
+  (role / label / visible text), one per user-event branch.
+- **One axis per case** — empty, max, the error/guard branch — a distinct coordinate each.
+- **A bug fix gets a negation coordinate.**
+
 ## Test-First Mandate — Non-Negotiable
 
 **No production line ships before its failing test.**

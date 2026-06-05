@@ -44,6 +44,20 @@ Every error path you write has a test that triggers it. This is not negotiable.
 
 ---
 
+## Tests are coordinates
+
+A failing test is the **coordinate** that pins the exact code in logical space — the *reason* the code
+exists, and that code must produce only **PASS**; the sum of all coordinates *is* the SOLUTION. Place
+the coordinate first, then write the one implementation that turns it green. (Canon:
+[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+[`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice.)
+
+- **Assert the exact exception type, not a message** — `with pytest.raises(TooLongError):` (a
+  string-matched error is a blurry coordinate that refactors silently break).
+- **One axis per case, parametrized** — empty, max, over-max, unicode, the error branch — each a
+  distinct coordinate via `@pytest.mark.parametrize`.
+- **A bug fix gets a negation coordinate** — an input that must *not* reproduce the defect.
+
 ## Test-First Mandate — Non-Negotiable
 
 **No production line ships before its failing test.** Read this in the literal

@@ -18,6 +18,13 @@ GREEN → Write the simplest code to make it pass (even if ugly)
 REFACTOR → Clean up, with tests as safety net
 ```
 
+> **Why RED comes first — a test is a coordinate.** The failing test *locates* the code you are about
+> to write in logical space; it is the **reason** to write code, and that code must produce only
+> **PASS**. A Gherkin scenario is the same idea in the user's language — it **locates a behaviour**,
+> with happy / unhappy / abuse as its **axes**. The sum of all coordinates *is* the SOLUTION. (Canon:
+> [`../first-principles.md`](../first-principles.md) §2 ·
+> [`../testing/test-policy.md`](../testing/test-policy.md) §Coordinates in practice.)
+
 **Refactor means:** improve structure, not add features. Tests stay green throughout.
 
 ### Test Anatomy — Arrange / Act / Assert

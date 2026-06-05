@@ -44,6 +44,19 @@ requirements.
 
 ---
 
+## Tests are coordinates — higher-order
+
+A story test is a **higher-order coordinate**: it pins **full-system behaviour** through the real
+interface, not a single function. The code exists to turn it green, and the sum of the story
+coordinates *is* the proven SOLUTION. (Canon:
+[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+[`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice.)
+
+- **The gesture path is the axis set** — navigate → find → `toBeVisible()` → act → verify UI reacts →
+  reload → verify it persists. Each leg narrows the location.
+- **Trace each to its `@EARS-{ID}`** — an untraceable story coordinate locates nothing.
+- **Assert real, unmocked state** — a story that mocks every route pins the mock, not the system.
+
 ## Test-First Mandate — Non-Negotiable
 
 **The Playwright test exists BEFORE the UI element it exercises.** This

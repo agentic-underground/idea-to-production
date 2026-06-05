@@ -47,6 +47,19 @@ WCAG 2.1 AA is non-negotiable.
 
 ---
 
+## Tests are coordinates
+
+A failing test is the **coordinate** that pins the exact code in logical space — the *reason* the code
+exists, and that code must produce only **PASS**; the sum of all coordinates *is* the SOLUTION. (Canon:
+[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2 ·
+[`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice.)
+
+- **Coordinates are computed-style / visual assertions** — assert the rendered outcome (a computed
+  style, or a visual-regression snapshot), not the CSS source text.
+- **One axis per state** — base, hover, focus, dark-mode, and each breakpoint — a distinct coordinate
+  each.
+- **Accessibility outcomes are coordinates too** — contrast, `focus-visible`, reduced-motion.
+
 ## Test-First Mandate — Non-Negotiable
 
 **No style ships before its failing test.** The test sequence for CSS:
