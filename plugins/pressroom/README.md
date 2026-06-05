@@ -16,24 +16,28 @@ dependency).
 
 | Component | Does | Entry |
 |---|---|---|
-| **/publish** | the front door: write → diagram → render (markdown / pdf / diagrams) | `/publish [source] [format]` |
-| **writer** | mines git history & docs → articles (origin story, deep dive, retrospective, release notes) with an adversarial REVIEWER loop | skill (triggers on "write an article…") |
+| **/publish** | the front door: write → diagram → render → **design-review** (markdown / pdf / diagrams) | `/publish [source] [format]` |
+| **writer** | mines git history & docs → articles (origin story, deep dive, retrospective, release notes) with an adversarial prose REVIEWER loop | skill (triggers on "write an article…") |
 | **diagram-studio** | standalone, legible diagrams (Graphviz + Mermaid) → SVG/PNG/PDF for any target | skill (triggers on "diagram this…") |
-| **rich-pdf-with-diagrams** | print-quality PDF articles with embedded, A4-legible figures (LaTeX + Graphviz) | skill (triggers on "rich PDF", "print edition") |
+| **mermaid-specialist** | the Mermaid-native producer — the full diagram taxonomy (sequence, state, sankey, quadrant, timeline…), theming, and the ELK layout engine | skill (triggers on "mermaid…", "sequence/state/sankey…") |
+| **rich-pdf-with-diagrams** | print-quality PDF articles with embedded, A4-legible figures (Typst/LaTeX + Graphviz/Mermaid) | skill (triggers on "rich PDF", "print edition") |
+| **design-reviewer** | adversarial **visual** quality gate — typography (Bringhurst/grids) + data-viz (Tufte/Cleveland/Bertin) — scores the rendered artefact and drives a convergent loop | skill (triggers on "review this PDF/chart") |
 
 ## How the pieces compose
 
 ```
-/publish ──▶ writer (prose) ──▶ diagram-studio (figures) ──▶ render
-                                                              ├─ markdown (+ SVG)
-                                                              ├─ pdf  → rich-pdf-with-diagrams
-                                                              └─ diagrams only
+/publish ──▶ writer (prose) ──▶ diagram-studio / mermaid-specialist (figures) ──▶ render ──▶ design-reviewer
+                                                                                  ├─ markdown (+ SVG)         │ score the artefact
+                                                                                  ├─ pdf → rich-pdf-with-…    │ (typography + data-viz),
+                                                                                  └─ diagrams only            ▼ apply HIGH+MED, re-build,
+                                                                                          converge (no ping-pong) ◀── until it clears the rubric
 ```
 
-`writer` produces the words; `diagram-studio` produces individual embeddable figures;
-`rich-pdf-with-diagrams` produces a whole typeset document. All three share **one legibility
-discipline** — the 4×9 charting matrix — so a figure is never an unreadable wall of micro-text,
-whether it lands in a README or on a printed A4 page.
+`writer` produces the words; `diagram-studio` + `mermaid-specialist` produce the figures;
+`rich-pdf-with-diagrams` produces a whole typeset document; `design-reviewer` is the adversarial gate that
+**critiques and converges** the rendered result. All share **one legibility discipline** — the 4×9 charting
+matrix — so a figure is never an unreadable wall of micro-text, whether it lands in a README or on a printed
+A4 page. The maker↔reviewer loop **measurably improves** the artefact rather than ping-ponging.
 
 ## Install
 

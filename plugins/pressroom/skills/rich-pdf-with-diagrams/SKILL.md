@@ -271,11 +271,11 @@ skill.
 
 ## 9. PROVENANCE
 
-This skill was synthesised on 2026-05-22 from feedback gathered while
-producing the *From Conversation to Orchestration* print edition at
-`FootyManager/doc/articles/may-21/`. The two exemplar diagrams were taken
-from that article's first successful figures (system stack, FOUNDRY
-architecture).
+This skill was synthesised on 2026-05-22 from feedback gathered while producing an early long-form print
+edition; the two exemplar diagrams (system stack, FOUNDRY architecture) were that article's first
+successful figures. It is part of the **pressroom** plugin and **self-improving** — every subsequent
+article using it starts from a stricter baseline than the last.
 
-The skill's self-improvement covenant ensures that every subsequent
-article using it will start from a stricter baseline than the last.
+> The print/data-viz **`design-reviewer`** skill is the adversarial quality gate that now closes the loop:
+> it scores the rendered artefact against the typography + data-viz canon and drives convergent revision —
+> so figures and pages are *reviewed*, not just produced.

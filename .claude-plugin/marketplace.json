@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "idea-to-production",
   "description": "A composable suite for carrying software from IDEA to PRODUCTION: a discovery front door (market-scanner) that finds a worth-building opportunity, a refinement phase (ideator) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, a design studio (atelier) that makes and adversarially reviews the visuals, and security and publishing companions (sentinel, pressroom). Each plugin stands alone and lights up the others automatically when installed.",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "owner": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com"
@@ -157,8 +157,8 @@
       "name": "pressroom",
       "source": "./plugins/pressroom",
       "displayName": "PRESSROOM — Publishing & Documentation",
-      "description": "Turns project artefacts and markdown into publication-grade output: narrative articles mined from git history and docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with embedded, A4-legible figures. The PUBLISHING companion foundry hands off to when richer-than-markdown output is wanted — or use it directly on any project.",
-      "version": "1.1.0",
+      "description": "Turns project artefacts and markdown into publication-grade output: narrative articles mined from git history and docs, standalone diagrams (Graphviz + a Mermaid-native specialist covering the full diagram taxonomy, theming, and ELK), and print-quality PDFs with embedded, A4-legible figures — all held to standard by an adversarial design-reviewer (typography + data-viz canon) that critiques the rendered artefact in a convergent loop. The PUBLISHING companion foundry hands off to when richer-than-markdown output is wanted — or use it directly on any project.",
+      "version": "1.2.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",

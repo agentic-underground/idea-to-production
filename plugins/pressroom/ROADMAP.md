@@ -1,7 +1,9 @@
 # PRESSROOM — Roadmap
 
 The shipped v1 covers prose (writer), standalone diagrams (diagram-studio), print PDFs
-(rich-pdf-with-diagrams), and the `/publish` orchestrator. This roadmap captures the expansion
+(rich-pdf-with-diagrams), and the `/publish` orchestrator. **v1.2** adds the Mermaid-native
+**mermaid-specialist** (full taxonomy + theming + ELK) and the adversarial **design-reviewer**
+(typography + data-viz canon, in a convergent loop). This roadmap captures the remaining expansion
 path toward a complete publishing house. Items are independently shippable.
 
 ## Near-term

@@ -16,18 +16,26 @@ Pipeline:
    (If the source is already a finished markdown file and only a format conversion is wanted,
    skip drafting.)
 2. **Diagrams (if the piece needs figures or `format=diagrams`)** — invoke **diagram-studio**:
-   compose legible figures (Graphviz/Mermaid) under `doc/articles/<slug>/diagrams/`, rendered to
-   SVG for markdown or PDF for print, all obeying the 4×9 charting matrix.
+   compose legible figures under `doc/articles/<slug>/diagrams/`, rendered to SVG for markdown or PDF for
+   print, all obeying the 4×9 charting matrix. For **Mermaid-specific** work — choosing among the full
+   diagram taxonomy (sequence, state, sankey, quadrant, timeline…), theming to a palette, or driving the
+   ELK layout — defer to the **mermaid-specialist** skill (its peer).
 3. **Render to target:**
    - `markdown` → deliver the `.md` (with embedded SVG figures if any).
    - `pdf` → defer to **rich-pdf-with-diagrams**: typeset the article with embedded figures via
      `scripts/build-pdf.sh [--engine=auto|typst|latex]` (dual-engine — Typst single-pass, or LaTeX
-     three-pass), output `doc/articles/<slug>.pdf`.
+     three-pass; it also renders `*.mmd` via `mmdc`), output `doc/articles/<slug>.pdf`.
    - `diagrams` → deliver the figures only.
-4. **Commit** — follow `skills/writer/references/commit-format.md` (article commits only).
+4. **Design review (convergent loop)** — for `pdf` or `diagrams`, run the **design-reviewer** skill:
+   rasterise the PDF (`build-pdf.sh --raster` → `review/page-*.png`) or read the figure images, score the
+   artefact on the design-fitness rubric (typography + data-viz canon), apply the HIGH+MED findings, and
+   re-build — until **CONVERGED** / **DIMINISHING-RETURNS** / **CAP** (it improves the artefact, it does not
+   ping-pong). Skip only if the user opts out.
+5. **Commit** — follow `skills/writer/references/commit-format.md` (article commits only).
 
-Report the output path(s), word count, and — if a PDF — note any diagram feedback should be fed
-back via the rich-pdf self-improvement protocol before re-rendering.
+Report the output path(s), word count, the design-review **fitness score** (and any accepted residual),
+and — if a recurring composition failure surfaced — that the lesson was folded into the shared
+charting-matrix via the rich-pdf self-improvement protocol.
 
 This command is also what the `foundry` plugin hands off to (when PRESSROOM is installed) to
 upgrade its markdown deliverables into richer published artefacts.
