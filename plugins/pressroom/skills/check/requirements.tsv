@@ -6,6 +6,7 @@ bash	command -v bash	required	preinstalled
 typst	command -v typst	recommended	cargo install typst-cli  (default engine)
 pdflatex	command -v pdflatex	recommended	apt install texlive-latex-recommended texlive-latex-extra
 pdfinfo	command -v pdfinfo	recommended	apt install poppler-utils  (build verification)
+pdftoppm	command -v pdftoppm	recommended	apt install poppler-utils  (rasterise PDF pages → PNG for the design-reviewer; gs/magick are fallbacks)
 dot	command -v dot	recommended	apt install graphviz
 pandoc	command -v pandoc	recommended	apt install pandoc
 gs	command -v gs	recommended	apt install ghostscript

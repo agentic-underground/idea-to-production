@@ -55,6 +55,11 @@ cleanly via `rankdir`/clusters). Use **Mermaid** when the diagram will live as a
 ```` ```mermaid ```` block inside markdown that a renderer (GitHub, docs site) draws itself — in
 that case emit the Mermaid source, not a rendered file.
 
+> **Deep Mermaid work → the `mermaid-specialist`.** When the job is Mermaid-specific — picking the right
+> type from the full taxonomy (sequence, state, sankey, quadrant, timeline, journey…), theming to a
+> palette, or driving the **ELK** layout — defer to the [`mermaid-specialist`](../mermaid-specialist/SKILL.md)
+> skill (its peer). It shares this same charting-matrix; one legibility discipline, two producers.
+
 > **Both renderers are optional external CLIs** — `dot` (Graphviz) and `mmdc` (mermaid-cli) — and
 > may be absent on a given machine. `/pressroom:check` reports which are present; install guidance is
 > in the marketplace `PREREQUISITES/30-pressroom.md` (source tree). When the diagram
