@@ -12,7 +12,7 @@ metadata:
   type: producer
   output: a cleaved/improved element on a branch → adversarial review → PR (per merge governance)
   composes: [inspector (criteria), pr-review (gate), merge-governance (delivery)]
-  model: inherit
+model: inherit
 ---
 
 # FOUNDRY — Self-Improve (the self-cleaving loop)
@@ -26,7 +26,8 @@ and the §6 self-improving principle
 
 > **Self-improve vs inspect.** `/foundry:inspect` audits the **whole plugin** and reports a
 > severity-ranked list. `/foundry:self-improve` takes **one element** and *makes it better* — usually
-> by cleaving it. Inspect *finds*; self-improve *fixes one thing, well*.
+> by cleaving it. Inspect *sweeps the whole plugin*; self-improve *takes one element and makes it
+> better*. (Both can apply fixes; the axis is **scope**, not who-fixes.)
 
 > **GUARDRAIL — never self-merge.** A self-improvement is still a covenant change: it is **proposed,
 > reviewed, and merged**, never silently self-applied. Under `pr-approval`
