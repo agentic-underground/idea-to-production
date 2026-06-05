@@ -101,7 +101,7 @@ orchestrator before doing any work.
 
 ---
 
-## Tests as coordinates — in practice
+## Tests are coordinates — in practice
 
 A failing unit test is a **coordinate** that pins one implementation in logical space — the *reason*
 the code exists, and the sum of all coordinates *is* the SOLUTION (canon:

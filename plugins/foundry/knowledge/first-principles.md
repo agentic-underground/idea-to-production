@@ -60,7 +60,8 @@ compound dissolved into the code until the mixture, taken whole, *is* the answer
 both senses at once. The *coordinate / location* reading is canonical in
 [`testing/test-policy.md`](testing/test-policy.md) §Coordinates in practice and
 [`../VALUE_FLOW.md`](../VALUE_FLOW.md) §7; the **solvent-matrix** reading originates here. Every
-test-producing agent **will carry** a short pointer to this framing (the weave lands in a follow-up).
+test-producing agent carries a short pointer to this framing (handlers, the `ds-step-*` test agents,
+and the reviewer's TEST-DESIGN / COVERAGE / BDD roles).
 
 ---
 
