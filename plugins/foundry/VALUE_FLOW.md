@@ -55,6 +55,14 @@ The **IDEATOR** is the **PRODUCT_MANAGER**. Before production begins, the IDEATO
 asks clarifying questions — one at a time, conversationally — until the brief is
 unambiguous, actionable, and self-contained (a fresh agent with no history can act on it).
 
+**Upstream front end (graceful enhancement).** When the **`ideator` plugin** is installed, parity is
+reached *upstream*: `market-scanner` discovers a worth-building opportunity and the `ideator` plugin
+refines it into an **IDEA package** (agent-facing brief + SMU-seed + first slice + handoff contract)
+already challenged to knowledge-parity. FOUNDRY's IDEA station then **receives that package by
+capability** and verifies the discovery exit criteria — it does *not* re-interrogate. When the plugin is
+absent, the inline `ideator` skill runs the dialogue itself (the fallback). Either way the station's exit
+gate is identical: a stable, parity-reached brief. Detection is by capability, never by cross-plugin path.
+
 **Questions flow up.** Any value-station that hits an ambiguity it cannot resolve from its
 inputs asks the PRODUCT_MANAGER. If the PRODUCT_MANAGER cannot answer satisfactorily, **the
 user is consulted.** Production never improvises around a knowledge gap; it surfaces it.
@@ -89,7 +97,7 @@ A station with no handler is a defect FOUNDER reports. A gate without a check is
 
 | # | Station | Value it adds | Owning skill | Staffed by | Exit gate |
 |---|---------|---------------|--------------|------------|-----------|
-| 0 | **IDEA** | a candidate worth pursuing, understood | `ideator` | founder | brief stable; parity reached |
+| 0 | **IDEA** | a candidate worth pursuing, understood | `ideator` (receives the `ideator` plugin's IDEA package by capability when installed; inline dialogue is the fallback) | founder | brief stable; parity reached |
 | 1 | **ROADMAP** | agent-readable backlog, tiered | `roadmapper`, `builder` | builder-lead | item self-contained; tiered to budget |
 | 2 | **PLAN** | per-item plan + resumption | `development-system-core` | ds-step-0-plan | PLAN_COMPLETE; DoD drafted |
 | 3 | **EARS** | unambiguous requirements | `lifecycle-states` | ds-step-1-ears | EARS-IDs; EARS/SMU reviewers PASS |
