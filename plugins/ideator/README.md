@@ -19,6 +19,12 @@ opportunity (from [`market-scanner`](../market-scanner/)) or a raw idea you alre
 The two faces never disagree: a fact corrected in one is corrected in both. The package is **iterated with
 you** until both are right, *then* handed off.
 
+Where the challenge turns on a fact about the world — comparable **pricing**, whether an incumbent owns
+the **wedge**, the current **stack** reality — IDEATOR validates against **web research** (built-in
+WebSearch/WebFetch + a shipped, keyless Fetch MCP) before writing the answer into the package; what it
+can't verify is recorded as an open question, not a guess. (Reuses market-scanner's evidence when handed
+one; see [`PREREQUISITES/05-discovery.md`](../../PREREQUISITES/05-discovery.md).)
+
 ## How it composes
 
 - **market-scanner → IDEATOR**: a kept opportunity is refined here. Or bring your own raw idea — IDEATOR

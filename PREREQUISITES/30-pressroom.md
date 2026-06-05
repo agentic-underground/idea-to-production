@@ -40,3 +40,6 @@ Missing there: `pdflatex`, `dot`, `mmdc`, `pandoc`, `rsvg-convert`, `qpdf`, `mag
 
 Ansible: [`ansible/apt.yml`](ansible/apt.yml) (texlive/graphviz/poppler/ghostscript/libreoffice/pandoc/…),
 [`ansible/cargo.yml`](ansible/cargo.yml) (typst), [`ansible/npm.yml`](ansible/npm.yml) (mermaid-cli).
+
+> **No MCP applies.** PRESSROOM renders through local engines (typst/LaTeX, Graphviz, pandoc) — there is
+> no MCP server to add; the binaries above *are* the model.

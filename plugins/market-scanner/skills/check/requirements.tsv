@@ -2,7 +2,10 @@
 # Canonical dependency manifest for MARKET-SCANNER. TAB-separated. Probe passes when it exits 0.
 # MARKET-SCANNER is mostly a dialogue skill — few external tools. Companions (ideator, pressroom,
 # foundry) are PLUGINS, referenced by capability, not probed here.
+# Built-in WebSearch/WebFetch (native Claude tools) are the always-on web-research baseline — no
+# install, no probe. The shipped Fetch MCP (.mcp.json) adds keyless URL→markdown extraction.
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled
 gh	command -v gh	recommended	GitHub CLI (cli.github.com) — used by self-improve to open the improvement PR
+fetch-mcp	command -v uvx	recommended	uv (launches `uvx mcp-server-fetch` — web research: pull pricing/docs/forum pages as markdown)
 ripgrep	command -v rg	optional	apt install ripgrep (faster local research over notes/docs)

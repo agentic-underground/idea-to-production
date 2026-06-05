@@ -48,6 +48,17 @@ this plugin is installed it owns ideation; FOUNDRY's inline skill is the gracefu
    **FOUNDRY** if installed (its IDEA station receives it → roadmap → `/loop /foundry` builds it), else
    write the package to `doc/idea/<slug>/` and point the user at FOUNDRY/the inline dev system.
 
+## Validate against live evidence — use web research
+
+When the challenge turns on a fact about the world — **value & price** (what do comparable tools charge?),
+the **wedge** (does an incumbent already do this?), **stack-fit** (current library/runtime reality) — use
+**WebSearch / WebFetch** (built-in) and the **Fetch MCP** (`mcp__fetch__*`, shipped, when approved) to
+check real pricing pages, competitor features, and current docs before you write the answer into the
+package. An assumption confirmed against a live page is parity; an assumption you *couldn't* verify is an
+**open question** recorded in the package, not a silent guess. Degrade to reasoning-from-the-user when web
+tools are unavailable, and say so. (If `market-scanner` already gathered this evidence, reuse it — don't
+re-fetch.)
+
 ## The dialogue discipline
 
 Infer-first, one question per turn, **recommended answer + multiple-choice**, adversarial about the

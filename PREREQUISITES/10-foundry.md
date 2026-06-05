@@ -34,6 +34,12 @@ npm i -g @playwright/mcp playwright
 npx playwright install --with-deps chromium
 ```
 
+## Up-to-date library docs (Context7 MCP)
+
+| Tool | Tier | Probe | Why |
+|---|---|---|---|
+| Context7 MCP (`@upstash/context7-mcp`) | recommended | `command -v npx` | Injects **version-specific** docs + examples for 9,000+ libraries into context (`mcp__context7__*`), so handlers write code against the library's *current* API — knowledge-parity, not training-cutoff guesswork. Shipped in [`plugins/foundry/.mcp.json`](../plugins/foundry/.mcp.json). Keyless by default (optional key raises rate limits). |
+
 ## Debuggers (no new language required)
 
 | Tool | Tier | Probe | Drives |
