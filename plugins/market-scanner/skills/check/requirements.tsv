@@ -1,0 +1,8 @@
+# name	probe-command	tier	install-hint
+# Canonical dependency manifest for MARKET-SCANNER. TAB-separated. Probe passes when it exits 0.
+# MARKET-SCANNER is mostly a dialogue skill — few external tools. Companions (ideator, pressroom,
+# foundry) are PLUGINS, referenced by capability, not probed here.
+git	command -v git	required	apt install git
+bash	command -v bash	required	preinstalled
+gh	command -v gh	recommended	GitHub CLI (cli.github.com) — used by self-improve to open the improvement PR
+ripgrep	command -v rg	optional	apt install ripgrep (faster local research over notes/docs)
