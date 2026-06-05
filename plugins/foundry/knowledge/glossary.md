@@ -133,6 +133,54 @@ audits for exactly this (`../agents/inspector.md`).
 
 ---
 
+## Core language — the meta-principles (multiple bindings)
+
+The marketplace's governing ideas, each with **multiple bindings** so you recognise the principle
+however it surfaces — *formal* definition · *aliases* · *metaphor*. The depth lives in
+[`first-principles.md`](first-principles.md) (the philosophical spine); this is the browse index.
+
+> **Bindings convention:** a meta-principle carries ≥2 names by design — a principle you can name only
+> one way is one you will miss when it wears a different coat. (Precedent: the certainty markers bind
+> one truth four ways.)
+
+- **The conveyor** — *the driving force.* Formal: a line that carries VALUE from IDEA to PRODUCTION.
+  Aliases: value-flow; idea→production; the production facility. Metaphor: a factory line, not a filing
+  cabinet. → [`first-principles.md`](first-principles.md) §0, [`../VALUE_FLOW.md`](../VALUE_FLOW.md).
+- **Knowledge-parity** ≡ **knowledge-alignment** — understand the ask completely *before* acting.
+  → [`pillars/knowledge-parity.md`](pillars/knowledge-parity.md).
+- **Quality-first** ≡ **quality-confidence** — quality built in, not inspected in; gates never weakened.
+  → [`pillars/quality-first.md`](pillars/quality-first.md).
+- **Waste-elimination** — remove waste in every form, *including rediscovery*.
+  → [`pillars/waste-elimination.md`](pillars/waste-elimination.md).
+- **Token-efficiency** ≡ **progressive disclosure** — thin skills, fat references; define once,
+  reference many; station-scoped loading. The overarching constraint. → [`token-efficiency.md`](token-efficiency.md).
+- **Coordinate** ≡ **pin** ≡ **location** ≡ **proof-obligation** ≡ **the reason to write code** — a
+  failing test that pins the exact code in logical space; code exists only to turn it PASS. → §Coordinates,
+  [`testing/test-policy.md`](testing/test-policy.md).
+- **SOLUTION** (double binding) — *both* (a) the **problem solved** *and* (b) the **solvent-matrix** in
+  which component additives (coordinates) dissolve until the mixture *is* the answer. Code is a solution
+  in both senses. → [`first-principles.md`](first-principles.md) §2.
+- **Pure core** ≡ **decidable core** ≡ **the sacred core** ≡ **one-way dependency** — the geometry that
+  makes coordinates (and parallelism) possible. → [`architecture/pure-core.md`](architecture/pure-core.md).
+- **The SOLID covenant** ≡ **halve-the-distance** ≡ **self-cleaving** — SOLID applied to *agent
+  documents*; each pass at least halves the distance to perfection; an over-broad element cleaves into
+  smaller SOLID-adherent ones. → [`architecture/solid-covenant.md`](architecture/solid-covenant.md).
+- **Reasoning travels with the rule** — certainty markers (`THE ONLY WAY`/`GUARDRAIL`/`ANTI-PATTERN`/
+  `WORKED EXAMPLE`) + the guardrails ledger (symptom→cause→fix; pay-the-cost-once). The worker tier's
+  memory. → [`protocols/certainty-markers.md`](protocols/certainty-markers.md),
+  [`protocols/guardrails-ledger.md`](protocols/guardrails-ledger.md).
+- **The self-improving marketplace** ≡ **fix-upstream-once** ≡ **self-cleave-and-PR** — learn from a
+  mistake → fold the fix back at the source → ship to all users via PR. → [`first-principles.md`](first-principles.md) §6.
+- **The two altitudes** ≡ **workers & orchestrators** ≡ **makers & managers** — pragmatic workers
+  (exact patterns + ledgers) and aligned orchestrators (shared philosophy + language).
+  → [`first-principles.md`](first-principles.md) §7, [`architecture/self-architecture.md`](architecture/self-architecture.md).
+- **The marketplace's own form** — a deliberate **hybrid**: pure-core/hexagonal `knowledge/` +
+  ports-and-adapters plugin composition + a pipeline/hierarchical-orchestration agent conveyor (distinct
+  from the *hexagonal* form it prescribes for software it builds).
+  → [`architecture/self-architecture.md`](architecture/self-architecture.md).
+
+---
+
 ## 4. Where to look next
 - The system, end-to-end → [`../VALUE_FLOW.md`](../VALUE_FLOW.md)
 - A canonical fact → [`README.md`](README.md) (the "which doc answers which question" index)

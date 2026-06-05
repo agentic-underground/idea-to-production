@@ -51,6 +51,30 @@ the covenant. The `inspector` agent audits the system against exactly this law.
    on the abstract structure (the brief, the spec, the plan) — not the other
    way around. If the structure changes, update the abstract before the concrete.
 
+### Self-cleaving — when the defect is *breadth*
+
+"Halve the distance" usually means going *deeper*. But sometimes the largest remaining defect is
+**breadth**: an element has grown to do **more than one thing**, violating Single-Responsibility (1).
+The covenant's answer is **self-cleaving** — the element *splits itself* into smaller, more
+SOLID-adherent elements that each do one thing better, and rewrites itself accordingly. Cleaving is
+*how* you halve the distance when the problem is scope, not depth.
+
+> **IMPORTANT — THE ONLY WAY:** A self-cleave is still a covenant change — it is **proposed, reviewed,
+> and merged**, never silently self-applied. The scope decides the destination:
+>
+> - **A marketplace element** (an agent, skill, command, or knowledge doc that ships in a FOUNDRY
+>   plugin) cleaves on a **branch**, passes the always-on adversarial gate
+>   (`/foundry:pr-review`), and is **raised as a PR** under
+>   [`../protocols/merge-governance.md`](../protocols/merge-governance.md) — so **every user of the
+>   marketplace inherits the improvement** on merge. The `/foundry:self-improve` skill performs exactly
+>   this loop; the `inspector` flags the opportunities.
+> - **A project document** (a README, plan, spec in a user's project) cleaves **locally** — split the
+>   section, leave a pointer, keep history — under this same covenant, no marketplace PR involved.
+
+A cleave that loses information, breaks a downstream consumer (Liskov, 3), or trades one over-broad
+element for two tangled ones has **not** honoured the covenant. Cleave along the seam of
+responsibility, not down the middle of a sentence.
+
 ### Periodic self-review prompt
 
 At natural checkpoints (end of a milestone, before a major refactor, after a
@@ -68,9 +92,9 @@ approval before any change is applied.
 ### Lineage
 
 - **System:** FOUNDRY plugin — the value-flow production system
-- **Covenant version:** 1.2 (adds the prime law — *halve the distance to perfection*)
+- **Covenant version:** 1.3 (adds **self-cleaving** — halving the distance when the defect is breadth)
 - **Canonical home:** [`knowledge/architecture/solid-covenant.md`](solid-covenant.md)
-- **See also:** [`architecture/solid.md`](solid.md) (the SOLID *principles* reference for code), and the marketplace [`glossary.md`](../glossary.md)
+- **See also:** [`architecture/solid.md`](solid.md) (the SOLID *principles* reference for code), [`../first-principles.md`](../first-principles.md) (the philosophical spine), and the marketplace [`glossary.md`](../glossary.md)
 
 <!-- END SOLID REPLICATION FRAGMENT -->
 ---

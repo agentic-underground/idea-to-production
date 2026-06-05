@@ -2,6 +2,27 @@
 
 > Carry software from **IDEA to PRODUCTION** — with security and publishing that switch on when you need them.
 
+## What governs everything — the three pillars
+
+A disciplined, test-first conveyor that carries **VALUE** from **IDEA** to **PRODUCTION**, governed by
+**three pillars** under one overarching constraint:
+
+| Pillar | also called | in one line |
+|---|---|---|
+| 🧭 **Knowledge-parity** | knowledge-alignment | understand the ask **completely before acting** — recurring questions become written answers, asked once. |
+| 🛡️ **Quality-first** | quality-confidence | quality is **built in, not inspected in** — every station, strengthened by a performance-delta gate; a gate is never weakened to make progress. |
+| ♻️ **Waste-elimination** | — | remove waste in every form, *including rediscovery* — a bug caught in development is far cheaper than one in production. |
+
+> **Overarching constraint — token-efficiency:** *thin skills, fat references; define once, reference
+> many; load only what a station needs.* And the marketplace is **self-improving**: when an element
+> learns from a mistake, it folds the fix back into itself — *self-cleaving* into smaller, sharper
+> parts where needed — and **raises a PR so every user inherits the improvement**.
+
+The philosophy is the [first-principles spine](plugins/foundry/knowledge/first-principles.md); the
+operation is [VALUE_FLOW](plugins/foundry/VALUE_FLOW.md).
+
+---
+
 This marketplace ships three composable plugins. Install **foundry** for the core production
 discipline; add **sentinel** and **pressroom** to light up security gates and publication-grade
 output. They are independent — foundry runs perfectly alone and emits markdown — but when the

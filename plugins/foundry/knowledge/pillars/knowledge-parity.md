@@ -1,5 +1,7 @@
 # Pillar 1 — Knowledge Parity
 
+> **Bindings:** *knowledge-parity* ≡ *knowledge-alignment*. (See the core language in [`../glossary.md`](../glossary.md) and [`../first-principles.md`](../first-principles.md) §1.)
+
 **The agent fully and clearly understands the ask before it acts.** Parity is the
 precondition for everything downstream: a misunderstanding at the IDEA layer is the most
 expensive defect there is, because every station amplifies it.
