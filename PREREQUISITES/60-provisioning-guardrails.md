@@ -163,6 +163,35 @@ written *after* the mistake.
 
 ---
 
+## 8. Bridging a remote hypervisor's NIC + multi-host ergonomics
+
+> **GUARDRAIL:** To give VMs real LAN addresses (reachable fleet-wide, not just from the
+> hypervisor), bridge a host NIC — but the Ansible **control path must be a *different*
+> NIC than the one you bridge**, and the cutover must verify + roll back.
+
+- **Symptom:** bridging the host's primary/default-route NIC takes the host (and your
+  SSH session) offline mid-play, with no way back in.
+- **Cause:** the NIC you bridge is usually the default route; a botched NetworkManager
+  cutover drops it.
+- **Fix:** control the host over a *second* NIC (e.g. manage via `eno1`, bridge `eno2`).
+  Create the bridge with NetworkManager, **replicating the NIC's ipv4** (addresses,
+  gateway, DNS) onto the bridge so the host keeps its address + default route, then
+  **verify** (NIC enslaved, bridge has an IP, gateway pings) and **roll back** to the
+  original connection on failure. The control NIC is unaffected, so verify/rollback is
+  reliable. Have console access the first time regardless.
+
+> **GUARDRAIL (naming):** derive the fleet-wide id (the octet above) from `ip route get`
+> (local) / `getent` (remote) — `ansible_default_ipv4` is unreliable when a host has
+> multiple default routes (it can come back empty → a `000` id).
+
+> **GUARDRAIL (ergonomics):** have the create flow write a controller
+> `~/.ssh/config.d/<name>.conf` (behind an `Include`) with the full name **and** a short
+> alias and `HostName <name>.local`, removed on teardown. Then `ssh <prefix>-<TAB>`
+> tab-completes every VM with no hand-typed `.local` — the difference between a fleet you
+> can reach from memory and one you can't.
+
+---
+
 ## Related
 
 - [README — provisioning handoff contract](README.md) ·
