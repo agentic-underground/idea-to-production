@@ -28,12 +28,13 @@ operation is [VALUE_FLOW](plugins/foundry/VALUE_FLOW.md).
 
 ---
 
-This marketplace ships seven composable plugins — the **i2p** concierge front door plus six specialists
+This marketplace ships eight composable plugins — the **i2p** concierge front door plus seven specialists
 spanning the whole arc — **DISCOVER → IDEATE → BUILD → SECURE / PUBLISH**, with **DESIGN** cross-cutting
 throughout. Start with **i2p** for `/i2p-help`; install **foundry** for the core production
 discipline; add **market-scanner** and **ideator** to put a discovery-and-refinement front end *upstream*
 of the build; add **atelier** to make and adversarially review the visuals; add **sentinel** and
-**pressroom** to light up security gates and publication-grade output. Every plugin stands alone, and
+**pressroom** to light up security gates and publication-grade output; add **gatehouse** to give any repo
+a conversational front door that greets and routes whoever opens it. Every plugin stands alone, and
 each lights up the others automatically when present (*graceful enhancement*) — no hard dependency in
 any direction.
 
@@ -48,6 +49,7 @@ any direction.
 | **[sentinel](plugins/sentinel/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
 | **[pressroom](plugins/pressroom/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
 | **[atelier](plugins/atelier/)** | The DESIGN studio: `/ui-review` crawls any SPA's routes (screenshot + accessibility snapshot) and writes a **scored, prioritised** critique citing named canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG 2.2); `/mockup` composes polished screens and flows and runs a **convergent** designer↔reviewer loop until they clear a design-fitness rubric. | Visual work — UIs, mockups, user-flows — that is *artistic, elegant, and accessible*, not first-draft. |
+| **[gatehouse](plugins/gatehouse/)** | The ARRIVAL layer: a `SessionStart` hook renders a repo's maintainer-authored `.claude/welcome.md` so the agent greets whoever opens it and offers a conversational decision tree — operate the software, or evolve it — routing them to the right command, runbook, or plugin. **Smart-gated** (greets only on a cold/vague open; steps aside for a concrete task). `/gatehouse:define-welcome` reads a repo and writes its welcome for you. | Any repo to greet and orient whoever opens it next, instead of a wall of files. |
 
 ## How they compose
 
@@ -91,6 +93,7 @@ Add the marketplace, then install whichever plugins you want:
 /plugin install sentinel@idea-to-production
 /plugin install pressroom@idea-to-production
 /plugin install atelier@idea-to-production
+/plugin install gatehouse@idea-to-production
 ```
 
 Each plugin works on its own — `market-scanner` and `ideator` need no build system to help you find and
