@@ -24,7 +24,9 @@
     "handoff",
     "vertical-slice",
     "spec",
-    "discovery"
+    "discovery",
+    "naming",
+    "branding"
   ],
   "metadata": {
     "companions": {
@@ -33,6 +35,6 @@
       "publishing": "pressroom",
       "design": "atelier"
     },
-    "note": "skills/ and commands/ are auto-discovered from the plugin root. /ideate is the front door. Accepts a validated opportunity from the market-scanner plugin OR a raw idea; emits the IDEA package and hands it to FOUNDRY when installed. The user-facing dossier's charts render via pressroom /publish and its user-flows/mockups via atelier /mockup (design-reviewed) when installed; degrades to markdown otherwise."
+    "note": "skills/ and commands/ are auto-discovered from the plugin root. /ideate is the front door. Accepts a validated opportunity from the market-scanner plugin OR a raw idea; emits the IDEA package and hands it to FOUNDRY when installed. /ideator:name runs the dedicated name-search skill — a marketing-grade product-naming search with a deterministic, token-free availability checker (skills/name-search/scripts/namecheck.sh). The user-facing dossier's charts render via pressroom /publish and its user-flows/mockups via atelier /mockup (design-reviewed) when installed; degrades to markdown otherwise."
   }
 }
