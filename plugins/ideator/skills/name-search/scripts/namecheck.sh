@@ -14,7 +14,7 @@
 #   --registries=npm,pypi,crates,github   which registries to probe. default: npm,github,pypi,crates
 #   --adoption                            for TAKEN names, classify CLEAR/LOW_ADOPTION/ABANDONED/TAKEN
 #                                         via GitHub stars+last-push and npm staleness/deprecation
-#   --json                                emit JSON (default). reserved for future --table mode
+#   --json                                emit JSON (the only output mode; accepted for explicitness)
 #   --max-names=N                         safety cap on list size (default 50)
 #   -h | --help                           show this help
 #

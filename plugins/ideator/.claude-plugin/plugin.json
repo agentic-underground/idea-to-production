@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "ideator",
   "displayName": "IDEATOR — Refine an idea into a build-ready IDEA package",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "The REFINEMENT phase of the idea-to-production marketplace. IDEATOR takes a validated opportunity (from the market-scanner plugin) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise, high-clarity AGENT-FACING handoff documents (an idea brief, a subject-matter-understanding seed, the first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (the opportunity narrative, a parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability: charts via pressroom, and user-flows/mockups via atelier /mockup (designed to the canon and design-reviewed before you see them) when installed; degrades to markdown otherwise. The package is iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract. Supersedes FOUNDRY's inline ideator (which remains as a graceful-degradation fallback).",
   "author": {
     "name": "whatbirdisthat",

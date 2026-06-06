@@ -53,7 +53,7 @@ TAKEN / UNKNOWN**, and emits the JSON the report consumes — in ~2s for 10 name
 3. **Generate a wide net.** Follow [`references/generation.md`](references/generation.md): mine many veins
    — multi-language roots, eras, themes, and coinage techniques (portmanteau, blend, clipping, affixation,
    phonosemantic) — to produce 40–60 deduplicated candidates honouring the constraints. Run the generation
-   strategies in parallel (one agent per *strategy*, NOT per name).
+   veins in parallel (one agent per *vein*, NOT per name).
 4. **Verify deterministically.** Call the script ONCE for all candidates (the token contract above). Filter
    to the recommendable set (CLEAR + the LOW_ADOPTION/ABANDONED names that pass with a caveat); record every
    name's disposition for the report.
