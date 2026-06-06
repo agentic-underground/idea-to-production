@@ -12,6 +12,8 @@
 #      table in PREREQUISITES/40-mcp.md exactly (no claimed-but-absent / shipped-but-undocumented).
 #   D. no PREREQUISITES/*.md table Probe cell fetches-and-executes remote code
 #      (`npx -y <pkg>` / `uvx <pkg>`) — a probe must check presence, not download a package.
+#   E. SOUL.md is byte-identical across the canonical root and every plugin copy.
+#   F. inject-soul.sh is byte-identical across all plugins (the SessionStart injector).
 set -uo pipefail
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -123,6 +125,37 @@ else
   rm -f "$d_err"
   fail "Probe cells that fetch-and-execute remote code (use \`command -v <launcher>\` instead):"
   printf '%s\n' "$offenders" | sed 's/^/      /'
+fi
+
+# ── E. SOUL.md byte-identical (canonical root + every plugin copy) ───────────
+section "E. SOUL.md canonical-copy parity"
+mapfile -t souls < <(find plugins -path '*/SOUL.md' | sort)
+if [ ! -f SOUL.md ]; then
+  fail "canonical root SOUL.md is missing"
+elif [ "${#souls[@]}" -lt 1 ]; then
+  fail "expected ≥1 plugin SOUL.md copy, found ${#souls[@]}"
+else
+  souls=("SOUL.md" "${souls[@]}")
+  sums="$(md5sum "${souls[@]}" | awk '{print $1}' | sort -u)"
+  if [ "$(printf '%s\n' "$sums" | wc -l)" -eq 1 ]; then
+    pass "${#souls[@]} copies identical incl. root ($sums)"
+  else
+    fail "SOUL.md copies diverge (root vs plugins):"; md5sum "${souls[@]}" | sed 's/^/      /'
+  fi
+fi
+
+# ── F. inject-soul.sh byte-identical across all plugins ──────────────────────
+section "F. inject-soul.sh canonical-copy parity"
+mapfile -t injectors < <(find plugins -path '*/hooks/inject-soul.sh' | sort)
+if [ "${#injectors[@]}" -lt 2 ]; then
+  fail "expected ≥2 inject-soul.sh copies, found ${#injectors[@]}"
+else
+  sums="$(md5sum "${injectors[@]}" | awk '{print $1}' | sort -u)"
+  if [ "$(printf '%s\n' "$sums" | wc -l)" -eq 1 ]; then
+    pass "${#injectors[@]} copies identical ($sums)"
+  else
+    fail "inject-soul.sh copies diverge across plugins:"; md5sum "${injectors[@]}" | sed 's/^/      /'
+  fi
 fi
 
 # ── verdict ──────────────────────────────────────────────────────────────────
