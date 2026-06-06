@@ -21,11 +21,21 @@ opportunity (from [`market-scanner`](../market-scanner/)) or a raw idea you alre
 The two faces never disagree: a fact corrected in one is corrected in both. The package is **iterated with
 you** until both are right, *then* handed off.
 
+## Naming a product
+
+Need a name? **`/ideator:name`** (the `name-search` skill) runs a marketing-grade naming search: it distils
+the product's philosophy into a charter, generates a wide net of coined candidates across languages, eras,
+and techniques (portmanteau, blend, affixation, phonosemantic), verifies availability **deterministically**
+across npm / PyPI / crates.io / GitHub with an adoption tier (CLEAR / LOW_ADOPTION / ABANDONED / TAKEN) and
+**zero per-name LLM tokens**, adversarially challenges the survivors, and emits a ranked report (where it
+searched, every name kept/rejected and why, a top pick with confidence + residual risks). Honours stated
+constraints — syllable count, values to evoke. Use it to name a new product or to rename an existing one.
+
 Where the challenge turns on a fact about the world — comparable **pricing**, whether an incumbent owns
 the **wedge**, the current **stack** reality — IDEATOR validates against **web research** (built-in
 WebSearch/WebFetch + a shipped, keyless Fetch MCP) before writing the answer into the package; what it
 can't verify is recorded as an open question, not a guess. (Reuses market-scanner's evidence when handed
-one; see [`PREREQUISITES/05-discovery.md`](../../PREREQUISITES/05-discovery.md).)
+one; the marketplace's `PREREQUISITES/05-discovery.md` documents the discovery toolchain.)
 
 ## How it composes
 
@@ -49,4 +59,6 @@ IDEATOR holds the **three pillars** (knowledge-parity, quality-first, waste-elim
 **token-efficiency** constraint, and the **SOLID self-improvement covenant**
 ([`knowledge/covenant.md`](knowledge/covenant.md)). Refinement to knowledge-parity *is* its whole job.
 
-Verify your tools with **`/ideator:check`**. Dual-licensed **MIT OR Apache-2.0**.
+**Commands:** `/ideate` (refine an idea), **`/ideator:name`** (name a product), **`/ideator:inspect`**
+(audit this plugin), `/ideator:self-improve` (sharpen it), `/ideator:check` (verify tools). Dual-licensed
+**MIT OR Apache-2.0**.

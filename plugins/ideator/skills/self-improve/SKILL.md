@@ -37,7 +37,11 @@ EARS; the actor axis needed to force a named role"*).
    tighten a package field or exit-gate criterion
    ([`../../knowledge/ideation/idea-package.md`](../../knowledge/ideation/idea-package.md)) / cleave /
    reference-not-restate. If the element is already tight, say so and stop.
-3. **Apply on a branch** (surgical, one concern).
+3. **Apply on a branch** (surgical, one concern). **When the change adds, renames, or cleaves a skill,
+   update all four mirrors in the same branch** — `plugin.json` (keywords + `metadata.note`), the
+   `marketplace.json` entry (description + keywords + version), the `README.md`, and
+   `skills/check/requirements.tsv` (any new tool, tiered to who actually needs it). A capability that lives
+   in only one of these is drift the inspector will flag; bump the version so the marketplace re-syncs.
 4. **Adversarial gate**: run **`/foundry:pr-review`** if foundry is installed; otherwise self-review
    against the covenant and state the gate ran in reduced form.
 5. **Open a PR** for the human to merge (never self-merge), following the user's merge governance

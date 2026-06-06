@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "idea-to-production",
   "description": "A composable suite for carrying software from IDEA to PRODUCTION: a discovery front door (market-scanner) that finds a worth-building opportunity, a refinement phase (ideator) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, a design studio (atelier) that makes and adversarially reviews the visuals, and security and publishing companions (sentinel, pressroom). Each plugin stands alone and lights up the others automatically when installed.",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "owner": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com"
@@ -43,8 +43,8 @@
       "name": "ideator",
       "source": "./plugins/ideator",
       "displayName": "IDEATOR — Refine an idea into a build-ready IDEA package",
-      "description": "The REFINEMENT phase of the marketplace. Takes a validated opportunity (from market-scanner) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise AGENT-FACING handoff documents (idea brief, subject-matter-understanding seed, first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (opportunity narrative, parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability — charts via pressroom, user-flows/mockups via atelier (design-reviewed) — when installed; degrades to markdown otherwise. Iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Supersedes FOUNDRY's inline ideator, which remains as a graceful-degradation fallback. Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract.",
-      "version": "1.1.0",
+      "description": "The REFINEMENT phase of the marketplace. Takes a validated opportunity (from market-scanner) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise AGENT-FACING handoff documents (idea brief, subject-matter-understanding seed, first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (opportunity narrative, parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability — charts via pressroom, user-flows/mockups via atelier (design-reviewed) — when installed; degrades to markdown otherwise. Iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Supersedes FOUNDRY's inline ideator, which remains as a graceful-degradation fallback. Also runs /ideator:name — a marketing-grade product-naming search with a deterministic, token-free availability checker (npm/PyPI/crates/GitHub + adoption tier). Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract.",
+      "version": "1.1.1",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -64,7 +64,9 @@
         "handoff",
         "vertical-slice",
         "spec",
-        "discovery"
+        "discovery",
+        "naming",
+        "branding"
       ]
     },
     {
