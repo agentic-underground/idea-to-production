@@ -8,5 +8,7 @@
 # install, no probe. The shipped Fetch MCP (.mcp.json) adds keyless URL→markdown extraction.
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled
+curl	command -v curl	required	apt install curl — name-search/namecheck.sh probes npm/pypi/crates/GitHub
+jq	command -v jq	required	apt install jq — name-search/namecheck.sh builds/parses the availability JSON
 gh	command -v gh	recommended	GitHub CLI (cli.github.com) — used by self-improve to open the improvement PR
 fetch-mcp	command -v uvx	recommended	uv (launches `uvx mcp-server-fetch` — web research: validate value/price, wedge, stack-fit against live pages)

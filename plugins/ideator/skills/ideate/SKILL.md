@@ -68,32 +68,13 @@ Infer-first, one question per turn, **recommended answer + multiple-choice**, ad
 substance. Never a wall of questions; never silent enforcement (present the default, name the trade-off,
 let the user decide). The point is to reach parity fast *and* leave the user feeling the idea got sharper.
 
-## Bulk name availability checking
+## Naming the product
 
-When a naming exercise requires availability checks across many candidate names, **never spawn one
-agent per name** — that pattern costs 20 k+ tokens for a 50-candidate list and is pure waste.
-
-Instead, use the shared script via **one agent**:
-
-```bash
-bash <plugin-root>/scripts/namecheck.sh name1 name2 name3 ...
-```
-
-`namecheck.sh` checks each name in parallel (up to 10 concurrent) using `curl`:
-- **npm exact** — `registry.npmjs.org/<name>` → 404 = free
-- **npm hyphenated variants** — 1–2 natural morpheme-split positions
-- **GitHub user + org** — `api.github.com/users/<name>` and `/orgs/<name>` → both 404 = clear
-
-Outputs a JSON array of `{name, npmExactFree, npmHyphenFree, githubClear, brandClear, syllables,
-clean, evidence}`. `brandClear` is always `true` from the script — brand and trademark checks
-require web search and are **deferred to an adversarial-challenge phase**, not the bulk verify step.
-
-Typical cost: ~2 seconds for 10 names, ~10 seconds for 50 names, zero LLM tokens in the verify
-phase itself (one thin wrapper agent to call the script and return structured results).
-
-`<plugin-root>` resolves to the directory where this plugin is installed, typically
-`~/.claude/plugins/cache/idea-to-production/ideator/*/` — use `$CLAUDE_PLUGIN_ROOT` if the
-harness injects it, or ask the agent to locate the script via `find ~/.claude -name namecheck.sh`.
+When the idea needs a name — a new product, or a rename — use the dedicated **`name-search` skill**
+(`/ideator:name`), which owns naming end-to-end: charter → wide-net generation → **deterministic**
+availability verification (npm/PyPI/crates/GitHub + adoption tier, zero per-name LLM tokens) →
+adversarial challenge → a ranked report with a top pick. Don't inline naming here — point at it, so a
+naming exercise gets the full marketing-grade search rather than an ad-hoc check.
 
 ## Self-improvement covenant
 
