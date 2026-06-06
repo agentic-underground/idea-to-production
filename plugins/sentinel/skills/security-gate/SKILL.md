@@ -134,3 +134,14 @@ class cannot pass again.
 
 The gate carries no detection logic of its own — it composes the three sub-skills. See:
 [`../pii-audit/SKILL.md`](../pii-audit/SKILL.md), [`../secret-scan/SKILL.md`](../secret-scan/SKILL.md), [`../dependency-audit/SKILL.md`](../dependency-audit/SKILL.md).
+
+## Product lifecycle (by capability)
+
+When the gate returns a **PASS** verdict (no unresolved BLOCK/REVIEW), and the **i2p** plugin is installed, mark the **ASSURE** phase done so the marketplace
+product lifecycle and the status line advance to PUBLISH:
+
+```bash
+/i2p-lifecycle done ASSURE   # order-safe & idempotent — a no-op unless a lifecycle is running at ASSURE
+```
+
+Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

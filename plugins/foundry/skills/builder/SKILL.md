@@ -657,3 +657,14 @@ cost records, and inspection reports — carry this covenant.
 5. **Dependency Inversion** — The pipeline depends on phase abstractions, not on specific implementations.
 
 *Skill: FOUNDRY v1.0 — idea-to-production marketplace*
+
+## Product lifecycle (by capability)
+
+When the conveyor delivers a shippable item (it reaches **SHIP** / the item is marked COMPLETE), and the **i2p** plugin is installed, mark the **BUILD** phase done so the marketplace
+product lifecycle and the status line advance to ASSURE:
+
+```bash
+/i2p-lifecycle done BUILD   # order-safe & idempotent — a no-op unless a lifecycle is running at BUILD
+```
+
+Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

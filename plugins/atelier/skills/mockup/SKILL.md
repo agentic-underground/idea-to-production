@@ -62,3 +62,14 @@ Carries the SOLID covenant. When a delivered mockup later proves weak in a way t
 that's a canon/rubric gap → `self-improve` ([`../self-improve/SKILL.md`](../self-improve/SKILL.md)) → PR,
 so the next mockup is better by default. When both ATELIER and foundry are present, offer the lesson to
 foundry's source-level `design-critic` too.
+
+## Product lifecycle (by capability)
+
+When the product's primary **design phase** concludes and hands off to build (this is guarded, so in-build design reviews never jump the lifecycle), and the **i2p** plugin is installed, mark the **DESIGN** phase done so the marketplace
+product lifecycle and the status line advance to BUILD:
+
+```bash
+/i2p-lifecycle done DESIGN   # order-safe & idempotent — a no-op unless a lifecycle is running at DESIGN
+```
+
+Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

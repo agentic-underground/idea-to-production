@@ -25,7 +25,8 @@ thin driver over the state file.
 ```bash
 bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh status        # where are we?
 bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh init [name]   # start at DISCOVER
-bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh advance       # next phase
+bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh done <PHASE>  # mark PHASE done → next (order-safe)
+bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh advance       # next phase (unconditional)
 bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh set <PHASE>   # jump to a phase
 ```
 
@@ -43,10 +44,22 @@ When the user wants to start (or `/i2p-help` offered and they accepted):
 
 ## Advance the lifecycle
 
-Advance at each phase's **exit signal** (see the model doc): a kept opportunity → IDEATE; a complete IDEA
-package → BUILD (via DESIGN when UI is in scope); SHIP → ASSURE; a PASS security gate → PUBLISH; release
-out → IN_PRODUCTION. Either call `advance`/`set` here, or let the owning plugin advance it as it completes
-its station (the documented convention; full per-plugin wiring is an incremental rollout).
+Advancement is **wired into each owning plugin**: when a station completes it calls
+`/i2p-lifecycle done <its-phase>` (by capability — only when i2p is installed). `done <PHASE>` is
+**order-safe and idempotent** — it advances to the next phase *only if* the lifecycle is currently at
+`<PHASE>`, and is a silent no-op otherwise (or when no lifecycle is running), so a plugin can never jump
+the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
+
+| Owner | Marks done | → advances to |
+|---|---|---|
+| market-scanner (kept OPPORTUNITY) | `done DISCOVER` | IDEATE |
+| ideator (IDEA package handed off) | `done IDEATE` | DESIGN |
+| atelier (design phase concluded) | `done DESIGN` | BUILD |
+| foundry (item SHIPs / COMPLETE) | `done BUILD` | ASSURE |
+| sentinel (security gate PASS) | `done ASSURE` | PUBLISH |
+| pressroom (publication out) | `done PUBLISH` | IN_PRODUCTION |
+
+You can also drive it by hand here with `done`/`advance`/`set`.
 
 ## Self-improvement covenant
 Inherits the i2p covenant. The phase set and signals live in one place

@@ -82,3 +82,14 @@ Carries the SOLID self-improvement covenant ([`../../knowledge/covenant.md`](../
 When a downstream builder hits an ambiguity this package *should* have resolved, that is not a per-idea
 slip but a **challenge axis or package field that needs sharpening** — flag it for the `self-improve`
 skill so a PR lands the fix for every future ideation.
+
+## Product lifecycle (by capability)
+
+When the IDEA package is complete and handed off (FOUNDRY's discovery exit criteria met), and the **i2p** plugin is installed, mark the **IDEATE** phase done so the marketplace
+product lifecycle and the status line advance to DESIGN:
+
+```bash
+/i2p-lifecycle done IDEATE   # order-safe & idempotent — a no-op unless a lifecycle is running at IDEATE
+```
+
+Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

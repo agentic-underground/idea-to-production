@@ -89,6 +89,22 @@ case "$cmd" in
     done
     [ -n "$nxt" ] || { echo "lifecycle: already at terminal phase ($cur)"; exit 0; }
     write_state "" "$nxt" update && echo "lifecycle: $cur → $nxt" ;;
+  done)
+    # Order-safe completion: advance to the next phase ONLY IF we are at PHASE.
+    # Idempotent and decoupled — every owner plugin calls `done <its-phase>` when its
+    # station completes; a no-op when the lifecycle isn't started or isn't at PHASE, so
+    # it can never jump the lifecycle out of order or auto-start it. Always exits 0.
+    ph="${2:-}"; valid_phase "$ph" || { echo "lifecycle: invalid phase '$ph' (valid: $PHASES)" >&2; exit 0; }
+    cur="$(get_phase)"
+    [ -n "$cur" ] || { echo "lifecycle: not started — no change"; exit 0; }
+    [ "$cur" = "$ph" ] || { echo "lifecycle: at ${cur}, not ${ph} — no change"; exit 0; }
+    nxt=""; found=0
+    for x in $PHASES; do
+      if [ "$found" = "1" ]; then nxt="$x"; break; fi
+      [ "$x" = "$cur" ] && found=1
+    done
+    [ -n "$nxt" ] || { echo "lifecycle: ${cur} is terminal — no change"; exit 0; }
+    write_state "" "$nxt" update && echo "lifecycle: ${cur} done → ${nxt}" ;;
   *)
-    echo "usage: lifecycle.sh [--dir <path>] {init [name]|get|status|set <PHASE>|advance}" >&2; exit 2 ;;
+    echo "usage: lifecycle.sh [--dir <path>] {init [name]|get|status|set <PHASE>|done <PHASE>|advance}" >&2; exit 2 ;;
 esac

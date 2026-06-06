@@ -11,7 +11,9 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh $ARGUMENTS
 - no args / `status` → report the current phase.
 - `init [name]` → start a new lifecycle at **DISCOVER**, then route to the phase owner
   (`/market-scan`, then `/ideate`, …) — naming only installed plugins.
-- `advance` / `set <PHASE>` → move through the phases at each exit signal.
+- `done <PHASE>` → mark a phase complete; advances to the next **only if** currently at `<PHASE>`
+  (order-safe, idempotent). This is what each owning plugin calls at its exit signal.
+- `advance` / `set <PHASE>` → move through the phases by hand.
 
 For the model itself (owners, academic lineage, entry/exit signals), see
 [`../knowledge/product-lifecycle.md`](../knowledge/product-lifecycle.md) — or run `/i2p-help`, which

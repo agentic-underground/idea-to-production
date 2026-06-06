@@ -66,8 +66,11 @@ A phase is *entered* when its predecessor's exit signal fires, and *exited* when
 
 ## How the marketplace aligns to this spine
 
-- The **state file** `.i2p/lifecycle.json` records `current_phase`; plugins advance it at their exit
-  signal via `skills/lifecycle/scripts/lifecycle.sh` (`init|get|set|advance`).
+- The **state file** `.i2p/lifecycle.json` records `current_phase`. Each owning plugin **advances it at
+  its own exit signal** by calling `/i2p-lifecycle done <its-phase>` (by capability — only when i2p is
+  installed). `done` is **order-safe & idempotent**: it advances *only if* the lifecycle is at that phase,
+  so a plugin can never jump it out of order or auto-start it. Helper:
+  `skills/lifecycle/scripts/lifecycle.sh` (`init|get|status|done|set|advance`).
 - The **statusline** phase widget (shipped by `concierge`) reads it and shows `◆ lifecycle … (n/7)`.
 - **`/i2p-help`** explains this lifecycle and offers to **kick one off**; **`/i2p-lifecycle`** initialises
   and reports it.

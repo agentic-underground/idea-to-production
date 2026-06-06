@@ -39,3 +39,14 @@ charting-matrix via the rich-pdf self-improvement protocol.
 
 This command is also what the `foundry` plugin hands off to (when PRESSROOM is installed) to
 upgrade its markdown deliverables into richer published artefacts.
+
+## Product lifecycle (by capability)
+
+When publication-grade output is produced (the release is documented and out), and the **i2p** plugin is installed, mark the **PUBLISH** phase done so the marketplace
+product lifecycle and the status line advance to IN_PRODUCTION:
+
+```bash
+/i2p-lifecycle done PUBLISH   # order-safe & idempotent — a no-op unless a lifecycle is running at PUBLISH
+```
+
+Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

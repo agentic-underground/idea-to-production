@@ -90,3 +90,14 @@ Carries the SOLID self-improvement covenant ([`../../knowledge/covenant.md`](../
 When the same *kind* of weak candidate keeps surviving to step 5, that is not a per-scan slip but a
 **parameter or kill-threshold that needs sharpening** — flag it for the `self-improve` skill so a PR
 lands the fix for every future scan.
+
+## Product lifecycle (by capability)
+
+When a candidate earns a **KEEP** verdict (a validated OPPORTUNITY ready for refinement), and the **i2p** plugin is installed, mark the **DISCOVER** phase done so the marketplace
+product lifecycle and the status line advance to IDEATE:
+
+```bash
+/i2p-lifecycle done DISCOVER   # order-safe & idempotent — a no-op unless a lifecycle is running at DISCOVER
+```
+
+Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.
