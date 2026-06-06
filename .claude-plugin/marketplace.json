@@ -16,7 +16,7 @@
       "source": "./plugins/market-scanner",
       "displayName": "MARKET-SCANNER — Discover what's worth building",
       "description": "The DISCOVERY front door of the marketplace — upstream of any code. Set a standing discovery /goal, then run /market-scan: an adversarially-challenged dialogue over a market parameter taxonomy (problem severity, demand evidence, market size, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and NARROWS candidate opportunities, killing weak ideas early. Loop it over your goal until one candidate earns a keep verdict — the spark. Hands a validated OPPORTUNITY to the ideator plugin when installed, or emits a structured markdown opportunity brief standalone. Self-improving: downstream feedback sharpens the parameters and scoring over time.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -44,7 +44,7 @@
       "source": "./plugins/ideator",
       "displayName": "IDEATOR — Refine an idea into a build-ready IDEA package",
       "description": "The REFINEMENT phase of the marketplace. Takes a validated opportunity (from market-scanner) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise AGENT-FACING handoff documents (idea brief, subject-matter-understanding seed, first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (opportunity narrative, parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability — charts via pressroom, user-flows/mockups via atelier (design-reviewed) — when installed; degrades to markdown otherwise. Iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Supersedes FOUNDRY's inline ideator, which remains as a graceful-degradation fallback. Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -72,7 +72,7 @@
       "source": "./plugins/foundry",
       "displayName": "FOUNDRY — Value-Flow Production System",
       "description": "An opinionated, disciplined, quality-first software production system. A conveyor that carries value from IDEA to PRODUCTION across role-tuned agents and value-stations (IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP), governed by three pillars — knowledge parity, quality-first with a performance-delta gate, and waste elimination — under an overarching token-efficiency constraint. Emits markdown; uses the sentinel and pressroom companions automatically when present.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -129,7 +129,7 @@
       "source": "./plugins/sentinel",
       "displayName": "SENTINEL — Security & Privacy Gate",
       "description": "The pre-release security gate for any repository. Catches PII, secrets/credentials, and supply-chain risk before they ship. Runs parallel, multi-agent audits across data files, git history, source, and frontend, and consolidates them into a single severity-ranked report with a PASS / REVIEW / BLOCK verdict. Stands alone, or serves as foundry's SECURITY gate when both are installed.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -158,7 +158,7 @@
       "source": "./plugins/pressroom",
       "displayName": "PRESSROOM — Publishing & Documentation",
       "description": "Turns project artefacts and markdown into publication-grade output: narrative articles mined from git history and docs, standalone diagrams (Graphviz + a Mermaid-native specialist covering the full diagram taxonomy, theming, and ELK), and print-quality PDFs with embedded, A4-legible figures — all held to standard by an adversarial design-reviewer (typography + data-viz canon) that critiques the rendered artefact in a convergent loop. The PUBLISHING companion foundry hands off to when richer-than-markdown output is wanted — or use it directly on any project.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -186,7 +186,7 @@
       "source": "./plugins/atelier",
       "displayName": "ATELIER — Design studio & adversarial UI review",
       "description": "The DESIGN studio — a designer's workshop that both makes and critiques visual work to a commercial-grade standard. /ui-review crawls the navigable routes of any SPA (screenshot + accessibility snapshot per route) and writes a scored, prioritised critique where every finding cites a named principle; /mockup composes polished screens, wireframes, and user-flows and runs them through a convergent designer↔reviewer loop until they clear a design-fitness rubric. The reviewer is a heavyweight expert in the design canon — Gestalt, the UX laws (Fitts/Hick/Miller/Jakob), Nielsen's heuristics, Norman's emotional design, and WCAG 2.2 accessibility. Composes with foundry's frontend design-system and pressroom's graphics by capability; degrades to markdown when absent. Ships a Playwright MCP for live review.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
