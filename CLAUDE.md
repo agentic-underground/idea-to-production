@@ -3,7 +3,8 @@
 Agent entry point for the **idea-to-production** Claude Code plugin marketplace. Humans
 start at [README.md](./README.md); agents working *on the marketplace itself* start here.
 
-- **What this repo is** — a marketplace of six composable plugins that carry software
+- **What this repo is** — a marketplace of seven composable plugins (the **i2p** concierge
+  front door plus six specialists) that carry software
   from IDEA to PRODUCTION. The pillars and plugin tour: [README.md](./README.md). The
   philosophical spine: [`plugins/foundry/knowledge/first-principles.md`](plugins/foundry/knowledge/first-principles.md).
   The operation: [`plugins/foundry/VALUE_FLOW.md`](plugins/foundry/VALUE_FLOW.md).
@@ -32,6 +33,6 @@ right), mark it with **one of these seven**; they all mean *everything's set, we
 **Canonical source:** [`SOUL.md`](./SOUL.md) — mirrored byte-for-byte into every plugin
 and injected into the agent's context once per session by each plugin's SessionStart
 hook (`plugins/*/hooks/inject-soul.sh`). It is ALWAYS_ON: present whenever **any** of the
-six plugins is active, never duplicated, never omitted. How a document reaches an agent's
+seven plugins is active, never duplicated, never omitted. How a document reaches an agent's
 context — and exactly where SOUL fits — is explained in
 [`doc/context-building-pipeline.md`](doc/context-building-pipeline.md).

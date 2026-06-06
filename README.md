@@ -3,6 +3,10 @@
 > Carry software from **the spark of an IDEA to PRODUCTION** — discover what's worth building, refine it
 > to a build-ready package, build it test-first, with security and publishing that switch on when you need them.
 
+> **Start here →** install the suite, then run **`/i2p-help`** to browse every power you have, **`/i2p-flow`**
+> to see the pipeline, and **`/i2p-review`** for one verdict from every reviewer. The **i2p** concierge is
+> the front door.
+
 ## What governs everything — the three pillars
 
 A disciplined, test-first conveyor that carries **VALUE** from **IDEA** to **PRODUCTION**, governed by
@@ -24,8 +28,9 @@ operation is [VALUE_FLOW](plugins/foundry/VALUE_FLOW.md).
 
 ---
 
-This marketplace ships six composable plugins spanning the whole arc — **DISCOVER → IDEATE → BUILD →
-SECURE / PUBLISH**, with **DESIGN** cross-cutting throughout. Install **foundry** for the core production
+This marketplace ships seven composable plugins — the **i2p** concierge front door plus six specialists
+spanning the whole arc — **DISCOVER → IDEATE → BUILD → SECURE / PUBLISH**, with **DESIGN** cross-cutting
+throughout. Start with **i2p** for `/i2p-help`; install **foundry** for the core production
 discipline; add **market-scanner** and **ideator** to put a discovery-and-refinement front end *upstream*
 of the build; add **atelier** to make and adversarially review the visuals; add **sentinel** and
 **pressroom** to light up security gates and publication-grade output. Every plugin stands alone, and
@@ -36,6 +41,7 @@ any direction.
 
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
+| **[i2p](plugins/i2p/)** | The CONCIERGE front door: `/i2p-help` browses every power you have (grouped by the value flow), `/i2p-review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p-check` consolidates readiness, `/i2p-flow` maps the pipeline and your next command. Introduces itself on session start. | A single front door to the whole suite — and one review that pulls in *all* the reviewers at once. |
 | **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
 | **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
 | **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |
@@ -78,6 +84,7 @@ Add the marketplace, then install whichever plugins you want:
 
 ```
 /plugin marketplace add whatbirdisthat/idea-to-production
+/plugin install i2p@idea-to-production
 /plugin install market-scanner@idea-to-production
 /plugin install ideator@idea-to-production
 /plugin install foundry@idea-to-production

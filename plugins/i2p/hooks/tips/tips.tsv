@@ -1,0 +1,15 @@
+# i2p rotating tips — one per line, each ≤25 words, no leading "Did you know?" (the hook adds it).
+# Blank lines and #-comments are ignored. Keep them honest: reference real, installed capabilities.
+/i2p-help browses every power you have now, grouped by the value flow — your front door to the whole marketplace.
+/i2p-review fans out every installed reviewer — code, design, docs, security — and returns one verdict in I2P_REVIEW.md.
+/i2p-check runs all your plugins' dependency checks at once and merges them into a single readiness table.
+/i2p-flow draws where each plugin sits from idea to production — and tells you the next command to run.
+foundry's /pr-review reviews a diff like a hostile-but-fair senior engineer, then gives one PASS/NEEDS_REVISION/BLOCK verdict.
+market-scanner's /goal then /market-scan hunt for a worth-building opportunity before you write any code.
+ideator's /ideate turns a raw idea into a build-ready IDEA package — agent-facing docs plus an illustrated dossier.
+atelier's /ui-review crawls any running SPA and scores each screen against named design canon and WCAG 2.2.
+atelier's /mockup composes polished screens and runs a designer↔reviewer loop until they clear a design-fitness rubric.
+sentinel's /security-gate catches PII, secrets, and vulnerable dependencies before you ship — one PASS/REVIEW/BLOCK report.
+pressroom's /publish turns your repo into articles, diagrams, or a print-quality PDF with legible figures.
+Every plugin stands alone and lights up the others automatically when installed — no hard dependencies in any direction.
+The whole suite is self-improving: a lesson learned folds back via PR, so every user inherits the fix.

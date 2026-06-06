@@ -74,7 +74,10 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 
 ### Marketplace & plugins
 - **idea-to-production** — the marketplace; the repository and the `marketplace.json` `name`.
-- **market-scanner / ideator / foundry / sentinel / pressroom / atelier** — the six plugins:
+- **i2p** — the concierge / front door: marketplace-level meta-commands (`/i2p-help`, `/i2p-review`,
+  `/i2p-check`, `/i2p-flow`) plus session-start onboarding. A thin orchestrator that composes the six
+  specialists by capability and never re-implements them.
+- **market-scanner / ideator / foundry / sentinel / pressroom / atelier** — the six specialist plugins:
   DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the core conveyor /
   SECURITY companion / PUBLISHING companion / DESIGN companion (make + adversarially review the visuals).
 
