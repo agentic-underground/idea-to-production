@@ -73,7 +73,13 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 ## 3. Flat glossary
 
 ### Marketplace & plugins
-- **idea-to-production** — the marketplace; the repository and the `marketplace.json` `name`.
+- **idea-to-production** — the marketplace; the repository and the `marketplace.json` `name`. Its
+  organising spine is the **product lifecycle** (below).
+- **product lifecycle** — the *creation arc* the suite is organised around: **DISCOVER → IDEATE → DESIGN →
+  BUILD → ASSURE → PUBLISH → IN PRODUCTION**, one phase per plugin. The canonical model (owners, academic
+  lineage, entry/exit signals) is `i2p/knowledge/product-lifecycle.md`; tracked per-project in
+  `.i2p/lifecycle.json` and shown on the concierge status line. Distinct from the *marketing* product life
+  cycle (introduction→growth→maturity→decline), which begins downstream where this ends.
 - **i2p** — the marketplace **front door / meta-layer**: marketplace-level meta-commands (`/i2p-help`,
   `/i2p-review`, `/i2p-check`, `/i2p-flow`) plus session-start onboarding. A thin orchestrator that
   composes the six specialists by capability and never re-implements them.

@@ -5,6 +5,10 @@
 > the change is wrong or this document is out of date — resolve that before proceeding.
 > FOUNDRY is a **production facility**: it does not store configuration, it carries value.
 
+> **Marketplace spine.** FOUNDRY's conveyor is the **BUILD** phase of the marketplace-wide
+> **product lifecycle** (DISCOVER → IDEATE → DESIGN → **BUILD** → ASSURE → PUBLISH → IN PRODUCTION).
+> The canonical lifecycle model is [`../i2p/knowledge/product-lifecycle.md`](../i2p/knowledge/product-lifecycle.md).
+
 FOUNDRY is one cohesive capability: a **conveyor that carries VALUE from IDEA to
 PRODUCTION**, staffed by role-tuned agents, governed by three pillars and one overarching
 constraint. It is greater than the sum of its parts — the user interacts with the IDEA

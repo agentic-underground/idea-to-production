@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "idea-to-production",
   "description": "A composable suite for carrying software from IDEA to PRODUCTION: a front-door / meta-layer (i2p) that introduces the whole suite and reviews across all of it, a discovery phase (market-scanner) that finds a worth-building opportunity, a refinement phase (ideator) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, a design studio (atelier) that makes and adversarially reviews the visuals, an arrival layer (concierge) that greets whoever opens a repo and routes them, and security and publishing companions (sentinel, pressroom). Each plugin stands alone and lights up the others automatically when installed.",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "owner": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com"
@@ -16,7 +16,7 @@
       "source": "./plugins/i2p",
       "displayName": "IDEA-TO-PRODUCTION — Marketplace front door & meta-commands",
       "description": "The FRONT DOOR and meta-layer of the marketplace — the marketplace-level surface the six specialist plugins never had. /i2p-help browses the powers you have now, grouped by the DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸ PUBLISH value flow (listing only what is installed); /i2p-review fans out EVERY installed reviewer — code (foundry), design (atelier), rendered docs (pressroom), security (sentinel) — into ONE adversarial verdict in I2P_REVIEW.md; /i2p-check consolidates every plugin's readiness into one table; /i2p-flow maps where each plugin sits and the next command to run. Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator that delegates to the specialists by capability and never re-implements them. Carries the SOLID self-improvement covenant.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -134,7 +134,9 @@
         },
         "typescript-language-server": {
           "command": "typescript-language-server",
-          "args": ["--stdio"],
+          "args": [
+            "--stdio"
+          ],
           "extensionToLanguage": {
             ".ts": "typescript",
             ".tsx": "typescriptreact",
@@ -146,7 +148,9 @@
         },
         "pyright": {
           "command": "pyright-langserver",
-          "args": ["--stdio"],
+          "args": [
+            "--stdio"
+          ],
           "extensionToLanguage": {
             ".py": "python",
             ".pyi": "python"
