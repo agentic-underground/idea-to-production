@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "gatehouse",
+  "displayName": "GATEHOUSE — Define your repo's welcome experience",
+  "version": "1.0.0",
+  "description": "The ARRIVAL layer of the idea-to-production marketplace. GATEHOUSE lets a repository greet whoever opens it: when a project ships a maintainer-authored .claude/welcome.md, a SessionStart hook injects it so the agent can open with a one-line greeting and a conversational decision tree of the handful of things people come there to do — operate the software, or evolve it — and route the user straight to the right command, runbook, or downstream plugin. Smart-gated: it greets only on a vague/cold open and steps aside the moment the user states a concrete task, so it never nags. /gatehouse:define-welcome is the authoring tool — it reads a repo and writes its welcome experience for you. The engine ships in the marketplace; the content stays repo-local, exactly like CLAUDE.md. Stands alone; lights up ideator and foundry as the 'evolve the software' destinations when they are installed.",
+  "author": {
+    "name": "whatbirdisthat",
+    "email": "95787+whatbirdisthat@users.noreply.github.com",
+    "url": "https://github.com/whatbirdisthat"
+  },
+  "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/gatehouse",
+  "repository": "https://github.com/whatbirdisthat/idea-to-production",
+  "license": "MIT OR Apache-2.0",
+  "category": "workflow",
+  "defaultEnabled": true,
+  "keywords": [
+    "welcome",
+    "onboarding",
+    "session-start",
+    "developer-experience",
+    "greeting",
+    "decision-tree",
+    "wayfinding",
+    "hooks",
+    "concierge",
+    "repo-front-door"
+  ],
+  "metadata": {
+    "companions": {
+      "refinement": "ideator",
+      "carriage": "foundry"
+    },
+    "note": "skills/, commands/, and hooks/hooks.json are auto-discovered from the plugin root. /gatehouse:define-welcome authors a repo's .claude/welcome.md. The SessionStart hook (hooks/inject-welcome.sh) renders that file when present and is a silent no-op when absent — safe in every repo. Carries the byte-identical SOUL.md + inject-soul.sh canonical copies (CI verify-prereqs.sh checks E/F)."
+  }
+}
