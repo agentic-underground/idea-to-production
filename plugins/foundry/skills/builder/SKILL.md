@@ -528,6 +528,15 @@ accuracy = (1 - abs(actual_tokens - estimated_tokens) / estimated_tokens) * 100
 Surface accuracy trends at tier boundaries. Over time, LEAD ENGINEER uses this
 data to improve estimates. See §14 (self-improvement).
 
+### 12.3 Milestone scorecard
+
+`IDEA_COST.jsonl` is the *only* place real tokens/wall-clock are captured (here, mid-cycle). At the same
+`STORY_PROVEN` milestone, run the **`scorecard` skill** (`/foundry:scorecard`) to snapshot the project's
+artifact-measured quality — `scorecard.sh` reads this record for the real cost fields and combines it with
+coverage, corpus FP-rate, rule/test counts, and the SENTINEL verdict into `SCORECARD.json`. That snapshot,
+compared run-over-run, is the proof the product is getting better. Schema:
+[`${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/scorecard-schema.md`](../../knowledge/orchestration/scorecard-schema.md).
+
 ---
 
 ## 13. INSPECTION PROTOCOL
