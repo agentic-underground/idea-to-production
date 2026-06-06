@@ -4,7 +4,7 @@
 # SessionStart hook fires together. Cross-plugin dedup is an atomic per-(session,source)
 # sentinel; the canon re-injects on startup/resume/clear/compact so it is never omitted.
 #
-# CANONICAL COPY — byte-identical across all seven plugins (CI: scripts/verify-prereqs.sh
+# CANONICAL COPY — byte-identical across all eight plugins (CI: scripts/verify-prereqs.sh
 # Check F) and reads the byte-identical per-plugin SOUL.md (Check E). Edits start at the
 # repo-root SOUL.md / this file and are mirrored outward. The script touches only the
 # temp dir; it never reads or writes the user's project.
@@ -31,7 +31,7 @@ if [ -n "$payload" ] && command -v jq >/dev/null 2>&1; then
 fi
 [ -n "$session_id" ] || session_id="$(json_field session_id)"
 [ -n "$source_evt" ] || source_evt="$(json_field source)"
-# Fallbacks: a stable per-launch key still dedups the 7 hooks rather than injecting 7x.
+# Fallbacks: a stable per-launch key still dedups the 8 hooks rather than injecting 8x.
 [ -n "$session_id" ] || session_id="noid-${PPID:-$$}"
 [ -n "$source_evt" ] || source_evt="startup"
 safe_key="$(printf '%s-%s' "$session_id" "$source_evt" | tr -c 'A-Za-z0-9._-' '_')"

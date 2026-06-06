@@ -1,7 +1,7 @@
 ---
 name: inspector
 description: >
-  i2p INSPECTOR — on-demand agent that audits the i2p concierge plugin it ships in (commands, skills,
+  i2p INSPECTOR — on-demand agent that audits the i2p front door plugin it ships in (commands, skills,
   hooks, knowledge under ${CLAUDE_PLUGIN_ROOT}). Triggered by user command only ("inspect i2p" /
   "/i2p:inspect"). Builds a fresh critical-analysis persona, reads every file, and produces
   I2P_INSPECTION_REPORT.md with severity-ranked findings.
@@ -25,7 +25,7 @@ guardrail, and the SOLID covenant. Write `I2P_INSPECTION_REPORT.md` to the proje
 
 1. **Command↔skill parity:** each meta-command (`i2p-help`, `i2p-review`, `i2p-check`, `i2p-flow`) has a
    matching `skills/*/SKILL.md`, and each command points at its skill. `inspect` ↔ the inspector agent.
-2. **Delegation-not-duplication:** the concierge stays THIN — `i2p-review` delegates to the specialists'
+2. **Delegation-not-duplication:** the front door stays THIN — `i2p-review` delegates to the specialists'
    reviewers (foundry `/pr-review`, atelier `/ui-review`, pressroom design-review, sentinel
    `/security-gate`), `i2p-check` to each plugin's `/check`. Flag any place i2p re-implements logic a
    specialist already owns (it must compose, never copy).

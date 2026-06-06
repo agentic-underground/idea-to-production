@@ -1,14 +1,14 @@
 ---
 name: help
 description: >
-  The marketplace concierge's front door. Use for /i2p-help (or "what can i2p do?",
+  The marketplace's front door. Use for /i2p-help (or "what can i2p do?",
   "what powers do I have now?", "browse the idea-to-production marketplace", "where do I
   start?"). Renders the three pillars and the DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸
   PUBLISH value flow, listing only the plugins currently installed with their headline
   commands and the next thing to run, then points at the deeper docs. Thin: it describes the
   specialists, it does not run them.
 metadata:
-  type: concierge
+  type: front-door
   output: a scannable capability menu (no files written)
   composes: [all six specialist plugins, by capability — read-only]
 model: inherit
@@ -39,7 +39,7 @@ probe the filesystem. The plugins to look for:
 | **atelier** | DESIGN (cross-cutting) | `/ui-review`, `/mockup` |
 | **sentinel** | SECURE | `/security-gate`, `/secret-scan`, `/pii-audit`, `/dependency-audit` |
 | **pressroom** | PUBLISH | `/publish`, `/pressroom:design-review` |
-| **i2p** | concierge | `/i2p-help`, `/i2p-review`, `/i2p-check`, `/i2p-flow` |
+| **i2p** | front door | `/i2p-help`, `/i2p-review`, `/i2p-check`, `/i2p-flow` |
 
 ## 2. Render the menu
 
@@ -64,6 +64,6 @@ commands, what each produces, and a "next command" suggestion. Otherwise show th
 
 ## Self-improvement covenant
 
-Inherits the concierge covenant (`knowledge/covenant.md`). When a user couldn't find a power they had,
+Inherits the front door covenant (`knowledge/covenant.md`). When a user couldn't find a power they had,
 that is a gap in this menu — add the missing line or a tip, fixed upstream once, so every future
 `/i2p-help` surfaces it.

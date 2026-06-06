@@ -5,10 +5,10 @@ description: >
   door a developer or operator meets when they open it in an agent harness. Reads the
   repo to infer what it is and the handful of things people come here to do, proposes
   2–4 top-level "lanes" with concrete decision trees, and writes `.claude/welcome.md`
-  in the GATEHOUSE format so the SessionStart hook can greet arrivals and route them.
+  in the CONCIERGE format so the SessionStart hook can greet arrivals and route them.
   Trigger when the user says "define a welcome experience", "set up a greeting for this
   repo", "add a front door / concierge", "what should this repo say when opened", or
-  invokes `/gatehouse:define-welcome`.
+  invokes `/concierge:define-welcome`.
 metadata:
   type: producer
   output: .claude/welcome.md
@@ -17,7 +17,7 @@ metadata:
 # DEFINE-WELCOME
 
 You are authoring this repository's **welcome experience** — the file
-`.claude/welcome.md` that GATEHOUSE's SessionStart hook renders so a future agent can
+`.claude/welcome.md` that CONCIERGE's SessionStart hook renders so a future agent can
 greet whoever opens the repo and route them, conversationally, to what they came to do.
 The format and its rules of thumb live in
 [`knowledge/welcome-format.md`](../../knowledge/welcome-format.md) — read it first; this

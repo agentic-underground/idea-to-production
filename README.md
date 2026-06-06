@@ -4,8 +4,8 @@
 > to a build-ready package, build it test-first, with security and publishing that switch on when you need them.
 
 > **Start here →** install the suite, then run **`/i2p-help`** to browse every power you have, **`/i2p-flow`**
-> to see the pipeline, and **`/i2p-review`** for one verdict from every reviewer. The **i2p** concierge is
-> the front door.
+> to see the pipeline, and **`/i2p-review`** for one verdict from every reviewer. The **i2p** plugin is
+> the marketplace front door; the **concierge** plugin greets whoever opens the repo.
 
 ## What governs everything — the three pillars
 
@@ -28,12 +28,12 @@ operation is [VALUE_FLOW](plugins/foundry/VALUE_FLOW.md).
 
 ---
 
-This marketplace ships eight composable plugins — the **i2p** concierge front door plus seven specialists
-spanning the whole arc — **DISCOVER → IDEATE → BUILD → SECURE / PUBLISH**, with **DESIGN** cross-cutting
-throughout. Start with **i2p** for `/i2p-help`; install **foundry** for the core production
+This marketplace ships eight composable plugins — the **i2p** front door and the **concierge** greeter,
+plus six specialists spanning the whole arc — **DISCOVER → IDEATE → BUILD → SECURE / PUBLISH**, with
+**DESIGN** cross-cutting throughout. Start with **i2p** for `/i2p-help`; install **foundry** for the core production
 discipline; add **market-scanner** and **ideator** to put a discovery-and-refinement front end *upstream*
 of the build; add **atelier** to make and adversarially review the visuals; add **sentinel** and
-**pressroom** to light up security gates and publication-grade output; add **gatehouse** to give any repo
+**pressroom** to light up security gates and publication-grade output; add **concierge** to give any repo
 a conversational front door that greets and routes whoever opens it. Every plugin stands alone, and
 each lights up the others automatically when present (*graceful enhancement*) — no hard dependency in
 any direction.
@@ -42,14 +42,14 @@ any direction.
 
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
-| **[i2p](plugins/i2p/)** | The CONCIERGE front door: `/i2p-help` browses every power you have (grouped by the value flow), `/i2p-review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p-check` consolidates readiness, `/i2p-flow` maps the pipeline and your next command. Introduces itself on session start. | A single front door to the whole suite — and one review that pulls in *all* the reviewers at once. |
+| **[i2p](plugins/i2p/)** | The marketplace FRONT DOOR / meta-layer: `/i2p-help` browses every power you have (grouped by the value flow), `/i2p-review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p-check` consolidates readiness, `/i2p-flow` maps the pipeline and your next command. Introduces itself on session start. | A single front door to the whole suite — and one review that pulls in *all* the reviewers at once. |
 | **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
 | **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
 | **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |
 | **[sentinel](plugins/sentinel/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
 | **[pressroom](plugins/pressroom/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
 | **[atelier](plugins/atelier/)** | The DESIGN studio: `/ui-review` crawls any SPA's routes (screenshot + accessibility snapshot) and writes a **scored, prioritised** critique citing named canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG 2.2); `/mockup` composes polished screens and flows and runs a **convergent** designer↔reviewer loop until they clear a design-fitness rubric. | Visual work — UIs, mockups, user-flows — that is *artistic, elegant, and accessible*, not first-draft. |
-| **[gatehouse](plugins/gatehouse/)** | The ARRIVAL layer: a `SessionStart` hook renders a repo's maintainer-authored `.claude/welcome.md` so the agent greets whoever opens it and offers a conversational decision tree — operate the software, or evolve it — routing them to the right command, runbook, or plugin. **Smart-gated** (greets only on a cold/vague open; steps aside for a concrete task). `/gatehouse:define-welcome` reads a repo and writes its welcome for you. | Any repo to greet and orient whoever opens it next, instead of a wall of files. |
+| **[concierge](plugins/concierge/)** | The ARRIVAL layer: a `SessionStart` hook renders a repo's maintainer-authored `.claude/welcome.md` so the agent greets whoever opens it and offers a conversational decision tree — operate the software, or evolve it — routing them to the right command, runbook, or plugin. **Smart-gated** (greets only on a cold/vague open; steps aside for a concrete task). `/concierge:define-welcome` reads a repo and writes its welcome for you. Also ships the idea-to-production **status line** — `/concierge:statusline` turns on a rich two-line bar (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). | Any repo to greet and orient whoever opens it next — plus a status bar that surfaces the whole suite at a glance. |
 
 ## How they compose
 
@@ -93,7 +93,7 @@ Add the marketplace, then install whichever plugins you want:
 /plugin install sentinel@idea-to-production
 /plugin install pressroom@idea-to-production
 /plugin install atelier@idea-to-production
-/plugin install gatehouse@idea-to-production
+/plugin install concierge@idea-to-production
 ```
 
 Each plugin works on its own — `market-scanner` and `ideator` need no build system to help you find and

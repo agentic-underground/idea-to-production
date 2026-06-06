@@ -16,7 +16,7 @@ read -r -d '' MSG <<'EOF' || true
 EOF
 
 read -r -d '' CTX <<'EOF' || true
-The idea-to-production marketplace (concierge plugin "i2p") is active. If the user has not yet been oriented this session, give a one-line conversational intro and mention that /i2p-help browses every installed capability. Do not repeat this on later turns.
+The idea-to-production marketplace (front door plugin "i2p") is active. If the user has not yet been oriented this session, give a one-line conversational intro and mention that /i2p-help browses every installed capability. Do not repeat this on later turns.
 EOF
 
 # jq builds correctly-escaped JSON; fall back to a static payload if jq is absent.

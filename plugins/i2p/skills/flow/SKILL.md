@@ -7,7 +7,7 @@ description: >
   artefact at each stage, marks dark stages, and — given a starting point — traces the ordered path
   to PRODUCTION. Renders Mermaid when a renderer is present, else markdown.
 metadata:
-  type: concierge
+  type: front-door
   output: a value-flow map + "your next command" (Mermaid when pressroom/atelier present, else markdown)
   composes: [pressroom/atelier renderers by capability — read-only]
 model: inherit
@@ -60,5 +60,5 @@ Close with a single **"your next command"** line.
 
 ## Self-improvement covenant
 
-Inherits the concierge covenant (`knowledge/covenant.md`). When the flow gains a stage or a plugin, this
+Inherits the front door covenant (`knowledge/covenant.md`). When the flow gains a stage or a plugin, this
 map is the one place that learns it — update once, every `/i2p-flow` inherits it.

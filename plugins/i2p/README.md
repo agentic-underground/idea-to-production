@@ -1,4 +1,4 @@
-# i2p — the idea-to-production concierge
+# i2p — the idea-to-production front door
 
 > The marketplace-level front door. Install the suite and you gain great powers across six specialist
 > plugins — **i2p** is the plugin that tells you so, and hands you one verbatim place to drive them all.

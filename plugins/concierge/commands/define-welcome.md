@@ -1,5 +1,5 @@
 ---
-description: Define this repository's welcome experience — read the repo, propose 2–4 conversational "lanes" with concrete decision trees, and write .claude/welcome.md so GATEHOUSE greets and routes whoever opens it next.
+description: Define this repository's welcome experience — read the repo, propose 2–4 conversational "lanes" with concrete decision trees, and write .claude/welcome.md so CONCIERGE greets and routes whoever opens it next.
 ---
 
 Author this repository's welcome experience. Follow the

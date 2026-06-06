@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "i2p",
-  "displayName": "IDEA-TO-PRODUCTION — Marketplace concierge & meta-commands",
+  "displayName": "IDEA-TO-PRODUCTION — Marketplace front door & meta-commands",
   "version": "1.0.0",
-  "description": "The CONCIERGE of the idea-to-production marketplace — the marketplace-level front door the six specialist plugins never had. Adds /i2p-help (browse the whole suite's powers, grouped by the DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸ PUBLISH value flow), /i2p-review (a cross-plugin adversarial review that fans out EVERY installed reviewer — code, design, docs, security — into one verdict), /i2p-check (consolidated readiness across all installed plugins), and /i2p-flow (where each plugin sits in the flow and the next command to run). Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator: it delegates to the specialist plugins by capability and never re-implements them. Carries the SOLID self-improvement covenant.",
+  "description": "The FRONT DOOR of the idea-to-production marketplace — the marketplace-level front door the six specialist plugins never had. Adds /i2p-help (browse the whole suite's powers, grouped by the DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸ PUBLISH value flow), /i2p-review (a cross-plugin adversarial review that fans out EVERY installed reviewer — code, design, docs, security — into one verdict), /i2p-check (consolidated readiness across all installed plugins), and /i2p-flow (where each plugin sits in the flow and the next command to run). Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator: it delegates to the specialist plugins by capability and never re-implements them. Carries the SOLID self-improvement covenant.",
   "author": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -15,7 +15,7 @@
   "category": "workflow",
   "defaultEnabled": true,
   "keywords": [
-    "concierge",
+    "front-door",
     "marketplace",
     "help",
     "onboarding",

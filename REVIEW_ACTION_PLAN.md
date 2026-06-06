@@ -127,8 +127,8 @@ standalone-installed plugin"** to a standing generic Phase-3 assertion in `inspe
 all plugin READMEs and de-load-bear those links (reference companions by capability / repo URL). Flagged in
 ideator #21 (PREREQUISITES link fixed there) and market-scanner; likely present in others.
 
-### G. Cross-cutting — `gatehouse` (new 7th plugin) was NOT in this sweep
-`gatehouse` was added after the sweep (marketplace v1.6.0). Run `/gatehouse:inspect` if it exists; otherwise
+### G. Cross-cutting — `concierge` (new 7th plugin) was NOT in this sweep
+`concierge` was added after the sweep (marketplace v1.6.0). Run `/concierge:inspect` if it exists; otherwise
 apply the same checks. Ensure it carries the **byte-identical `knowledge/inspection-core.md`**, a
 `knowledge/covenant.md`, and — if it has user-facing skills — an `inspect` command/agent and a `self-improve`
 skill, and that it's included in the canonical-copy md5 integrity set.

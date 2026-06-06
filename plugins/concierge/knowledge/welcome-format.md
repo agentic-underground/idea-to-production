@@ -1,7 +1,7 @@
 # The `.claude/welcome.md` format
 
 A repository's welcome experience is a single markdown file at `.claude/welcome.md` in
-the project root. GATEHOUSE's SessionStart hook injects it **verbatim** (wrapped in the
+the project root. CONCIERGE's SessionStart hook injects it **verbatim** (wrapped in the
 runtime contract from `hooks/welcome-preamble.md`) — there is no parser, so the format
 is a convention for the agent and the maintainer, not a schema to satisfy. Keep it
 short: it enters context every session, so it should be pointers and exact commands,
@@ -50,5 +50,5 @@ or file path, so the agent can go straight from "I want X" to running it.
 - **Don't restate `CLAUDE.md`.** The welcome is wayfinding — "here's what you can do
   and how to start" — not a re-statement of conventions the agent already has.
 
-Authoring this file by hand is fine; `/gatehouse:define-welcome` will read the repo and
+Authoring this file by hand is fine; `/concierge:define-welcome` will read the repo and
 draft it with you.

@@ -94,6 +94,6 @@ merge-governance decision (foundry's `knowledge/protocols/merge-governance.md` w
 
 ## Self-improvement covenant
 
-Inherits the concierge covenant (`knowledge/covenant.md`) and each specialist's reviewer covenant.
+Inherits the front door covenant (`knowledge/covenant.md`) and each specialist's reviewer covenant.
 Additionally: whenever a real defect ships past a PASS, add the lens — or wire in the specialist plugin —
 that would have caught it, so the same class cannot pass again.

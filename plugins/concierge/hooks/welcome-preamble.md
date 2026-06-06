@@ -1,4 +1,4 @@
-# GATEHOUSE — welcome experience (runtime contract)
+# CONCIERGE — welcome experience (runtime contract)
 
 This project ships a **welcome experience**, defined by its maintainers in
 `.claude/welcome.md` and reproduced below. It tells a fresh arrival what this repository

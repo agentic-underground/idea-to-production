@@ -57,5 +57,5 @@ Then a one-line summary: `<N> present, <M> missing (<K> required)` across the su
 
 ## Self-improvement covenant
 
-Inherits the concierge covenant (`knowledge/covenant.md`). If a tool a plugin needs isn't being
+Inherits the front door covenant (`knowledge/covenant.md`). If a tool a plugin needs isn't being
 checked, the fix is upstream in **that plugin's** `requirements.tsv` — not a patch here.

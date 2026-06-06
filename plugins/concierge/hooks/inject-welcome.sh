@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# inject-welcome.sh — GATEHOUSE SessionStart hook. If the project being opened ships a
+# inject-welcome.sh — CONCIERGE SessionStart hook. If the project being opened ships a
 # welcome experience at `<project>/.claude/welcome.md`, emit it (wrapped in the runtime
 # contract) as SessionStart additionalContext so the agent can greet the user and offer
 # its decision tree. If there is no welcome.md, this is a silent no-op — which is what
@@ -7,7 +7,7 @@
 #
 # The engine ships in the marketplace; the CONTENT is repo-local (mirrors how CLAUDE.md
 # is repo-local while the harness is universal). Authoring a welcome.md is what
-# /gatehouse:define-welcome does. This script reads only the plugin's preamble and the
+# /concierge:define-welcome does. This script reads only the plugin's preamble and the
 # project's own welcome.md; it never writes anything.
 set -uo pipefail
 

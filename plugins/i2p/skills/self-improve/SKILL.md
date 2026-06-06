@@ -1,9 +1,9 @@
 ---
 name: self-improve
 description: >
-  Improve the i2p concierge itself by folding discoverability feedback back into /i2p-help, the tips, and
+  Improve the i2p front door itself by folding discoverability feedback back into /i2p-help, the tips, and
   the /i2p-review fan-out — and by self-cleaving over-broad elements. Trigger with /i2p:self-improve (or
-  "a user couldn't find a power they had — fix the concierge", "/i2p-review missed a reviewer it should
+  "a user couldn't find a power they had — fix the front door", "/i2p-review missed a reviewer it should
   run", "fold this onboarding feedback in"). Reflects one element against the covenant + pillars, applies
   the fix on a branch, runs the adversarial review (foundry's /foundry:pr-review if installed), and opens a
   PR so every future session, for all users, surfaces the power by default.
@@ -15,7 +15,7 @@ model: inherit
 
 # i2p — Self-improve
 
-The concierge half of the marketplace's self-improving loop. A power that **exists but stayed hidden** —
+The front door half of the marketplace's self-improving loop. A power that **exists but stayed hidden** —
 a user who never found `/i2p-review`, a stage missing from `/i2p-flow`, a new specialist reviewer the
 fan-out never called — is the signal: the fix is a *better `/i2p-help` line, a new tip, or a new lens in
 `/i2p-review`*, fixed once, upstream — not a one-off explanation in chat. (Covenant:
@@ -25,7 +25,7 @@ fan-out never called — is the signal: the fix is a *better `/i2p-help` line, a
 
 i2p gets sharper from **discoverability feedback** — a user who couldn't find a capability they had, a
 `/i2p-review` that omitted a reviewer, a tip that misdescribed a command, or a new plugin added to the
-marketplace that the concierge doesn't yet announce. Each entry is **symptom → which concierge surface let
+marketplace that the front door doesn't yet announce. Each entry is **symptom → which front door surface let
 it through → what would have surfaced it** (e.g. *"the user hand-rolled a security check → `/i2p-help`
 didn't mention sentinel's `/security-gate` at the SECURE stage; add it"*).
 
