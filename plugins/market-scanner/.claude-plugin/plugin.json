@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "market-scanner",
   "displayName": "MARKET-SCANNER — Discover what's worth building",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "The DISCOVERY front door of the idea-to-production marketplace. MARKET-SCANNER helps a user find a worth-building opportunity before any code exists: set a standing discovery /goal, then run /market-scan — an adversarially-challenged dialogue over a market parameter taxonomy (problem severity, demand evidence, market size, willingness-to-pay, pricing power, competition, reachability, and stack-fit) that proposes, scores, validates, and NARROWS candidate opportunities, killing weak ideas early. Loop it over your goal until one candidate earns a keep verdict — the spark. Hands a validated OPPORTUNITY to the ideator plugin (REFINEMENT) when installed, or emits a structured markdown opportunity brief standalone. Self-improving: downstream ideation/build feedback sharpens the parameters and scoring over time.",
   "author": {
     "name": "whatbirdisthat",
