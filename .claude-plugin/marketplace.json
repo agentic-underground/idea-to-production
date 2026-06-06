@@ -1,8 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "idea-to-production",
-  "description": "A composable suite for carrying software from IDEA to PRODUCTION: a concierge front door (i2p) that introduces the whole suite and reviews across all of it, a discovery phase (market-scanner) that finds a worth-building opportunity, a refinement phase (ideator) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, a design studio (atelier) that makes and adversarially reviews the visuals, and security and publishing companions (sentinel, pressroom). Each plugin stands alone and lights up the others automatically when installed.",
-  "version": "1.6.0",
+  "description": "A composable suite for carrying software from IDEA to PRODUCTION: a concierge front door (i2p) that introduces the whole suite and reviews across all of it, a discovery phase (market-scanner) that finds a worth-building opportunity, a refinement phase (ideator) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, a design studio (atelier) that makes and adversarially reviews the visuals, an arrival layer (gatehouse) that greets whoever opens a repo and routes them, and security and publishing companions (sentinel, pressroom). Each plugin stands alone and lights up the others automatically when installed.",
+  "version": "1.7.0",
   "owner": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com"
@@ -237,6 +237,34 @@
         "wireframe",
         "mockup",
         "playwright"
+      ]
+    },
+    {
+      "name": "gatehouse",
+      "source": "./plugins/gatehouse",
+      "displayName": "GATEHOUSE — Define your repo's welcome experience",
+      "description": "The ARRIVAL layer of the marketplace. GATEHOUSE lets a repository greet whoever opens it: when a project ships a maintainer-authored .claude/welcome.md, a SessionStart hook injects it so the agent opens with a one-line greeting and a conversational decision tree of the handful of things people come there to do — operate the software, or evolve it — routing the user straight to the right command, runbook, or downstream plugin. Smart-gated: it greets only on a vague/cold open and steps aside the moment the user states a concrete task, so it never nags. /gatehouse:define-welcome is the authoring tool — it reads a repo and writes its welcome experience for you. The engine ships in the marketplace; the content stays repo-local, exactly like CLAUDE.md. Stands alone; lights up ideator and foundry as the 'evolve the software' destinations when installed.",
+      "version": "1.0.0",
+      "author": {
+        "name": "whatbirdisthat",
+        "email": "95787+whatbirdisthat@users.noreply.github.com",
+        "url": "https://github.com/whatbirdisthat"
+      },
+      "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/gatehouse",
+      "repository": "https://github.com/whatbirdisthat/idea-to-production",
+      "license": "MIT OR Apache-2.0",
+      "category": "workflow",
+      "keywords": [
+        "welcome",
+        "onboarding",
+        "session-start",
+        "developer-experience",
+        "greeting",
+        "decision-tree",
+        "wayfinding",
+        "hooks",
+        "concierge",
+        "repo-front-door"
       ]
     }
   ]
