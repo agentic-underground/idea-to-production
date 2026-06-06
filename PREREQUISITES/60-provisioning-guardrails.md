@@ -132,6 +132,37 @@ written *after* the mistake.
 
 ---
 
+## 7. Driving a REMOTE hypervisor over `qemu+ssh://` — four prerequisites
+
+> **GUARDRAIL:** Provisioning VMs on a *remote* libvirt host (`virsh --connect
+> qemu+ssh://user@host/system`, `virt-install --connect …`) needs four things the
+> *local* path never exposes. Each is silent until you point at a real remote host.
+
+1. **Trust the hypervisor's SSH host key on the controller.** libvirt's `qemu+ssh`
+   transport uses plain `ssh` and does **not** honour Ansible's
+   `host_key_checking=False`; an unknown host key fails with
+   `Host key verification failed` / `ssh-askpass … No such file`. → `ssh-keyscan` the
+   hypervisor into the controller's `~/.ssh/known_hosts` first (idempotently).
+2. **Escalate locally only for a local connection.** A play that `become: true` for
+   `qemu:///system` must **not** escalate for `qemu+ssh://user@host` — the transport
+   has to run as the **SSH user** (its key + known_hosts), not root. Gate it:
+   `become: "{{ target in ['localhost','127.0.0.1'] }}"`.
+3. **Build the cloud-init seed as the controller user.** Seed-staging tasks should run
+   `become: false` into a user-owned dir (`~/.cache/…`), so a local (escalated) run and
+   a remote (user) run never clash over root-vs-user file ownership of the staged seed.
+4. **The qemu-run user needs the `kvm` group.** If the host's `/etc/libvirt/qemu.conf`
+   runs qemu as a **login user** (a common desktop config, `user="…"`) rather than the
+   default `libvirt-qemu:kvm`, that user must be in the **`kvm`** group or qemu can't
+   open `/dev/kvm` (`Could not access KVM kernel module: Permission denied`). Add the
+   operator to `libvirt`+`kvm` and **restart libvirtd** so freshly-spawned qemu inherits
+   it. *(Default libvirt-qemu setups already have this; the custom-user ones don't.)*
+
+> **ANTI-PATTERN (DO NOT):** allocate VM names per-hypervisor when you run a multi-host
+> fleet — host A and host B both start at `…-001` and collide in a shared inventory.
+> Allocate names unique **fleet-wide** (per-host offset/prefix, or from the inventory).
+
+---
+
 ## Related
 
 - [README — provisioning handoff contract](README.md) ·
