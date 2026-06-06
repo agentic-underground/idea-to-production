@@ -61,6 +61,7 @@ debuggers, real security scanners, and dual-engine publishing.
 | [`40-mcp.md`](40-mcp.md) | MCP servers the plugins ship (Playwright, Semgrep, Fetch, Context7) + optional extras, and how plugin MCP works. |
 | [`45-lsp.md`](45-lsp.md) | Language servers wired via the marketplace manifest, + the official LSP companion plugins. |
 | [`50-awesome-software.md`](50-awesome-software.md) | "Software I found that is awesome" — curated for the Ansible provisioning project. |
+| [`60-provisioning-guardrails.md`](60-provisioning-guardrails.md) | Hard-won provisioning gotchas (symptom→cause→fix): Volta `--skip-setup`, cloud-image UEFI, cloud-init `generate_mirrorlists`, HTTP-only apt-cache HTTPS rewrite, best-effort apt, stale cloud-init seeds. |
 
 ## Tiers
 
