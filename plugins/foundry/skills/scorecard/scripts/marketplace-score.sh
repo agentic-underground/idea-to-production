@@ -22,19 +22,26 @@ check_sh_ok=$(check_identical "plugins/*/skills/check/scripts/check.sh")
 core_ok=$(check_identical "plugins/*/knowledge/inspection-core.md")
 
 # ---- portability violations: live ~/.claude couplings outside the allowlisted archive ----
-# (mirrors the inspection-core portability sweep; archive dirs are allowlisted)
+# (mirrors the inspection-core portability sweep). Exclude the allowlisted archive AND the files that
+# legitimately DESCRIBE the ~/.claude policy rather than couple to it (inspection-core.md, the inspector
+# agents, and the foundry portability/policy knowledge) — those are policy text, not couplings.
 port_viol=$(grep -rIn '~/\.claude' plugins/ 2>/dev/null \
   | grep -vE '/(docs/HISTORY|docs/MIGRATION|docs/DEPRECATED)\.md|/examples/|/doc/historical/' \
+  | grep -vE '/knowledge/inspection-core\.md|/agents/inspector\.md|/knowledge/(policy|protocols)/' \
   | wc -l | tr -d ' ')
+
+# integer-count of a header pattern in a file (grep -c prints "0" and exits 1 on no match — capture
+# stdout, ignore the exit code, never let `|| echo 0` append a second line)
+count_hdr() { local n; n=$(grep -cE "$1" "$2" 2>/dev/null); echo "${n:-0}"; }
 
 # ---- inspection findings: tally the latest *_INSPECTION_REPORT.md in the tree, if any ----
 crit=0 warn=0 sugg=0 reports=0
 while IFS= read -r r; do
   [[ -z "$r" ]] && continue
   reports=$(( reports + 1 ))
-  crit=$(( crit + $(grep -cE '^### CRITICAL' "$r" 2>/dev/null || echo 0) ))
-  warn=$(( warn + $(grep -cE '^### WARNING' "$r" 2>/dev/null || echo 0) ))
-  sugg=$(( sugg + $(grep -cE '^### SUGGESTION' "$r" 2>/dev/null || echo 0) ))
+  crit=$(( crit + $(count_hdr '^### CRITICAL' "$r") ))
+  warn=$(( warn + $(count_hdr '^### WARNING' "$r") ))
+  sugg=$(( sugg + $(count_hdr '^### SUGGESTION' "$r") ))
 done < <(find . -maxdepth 2 -name '*_INSPECTION_REPORT.md' 2>/dev/null)
 
 # ---- merged self-improve PRs (gh optional) ----
