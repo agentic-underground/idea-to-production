@@ -52,6 +52,13 @@ Before beginning:
 8. Update plan file: mark checklist complete, add "Completed" section with commit hash and date.
 9. If `IDEA_COST.jsonl` is in use (FOUNDRY context), append the cost record per [`../knowledge/orchestration/idea-cost-schema.md`](../knowledge/orchestration/idea-cost-schema.md).
 10. If a `CHANGELOG.md` exists in the project, add an entry.
+11. **Git-hygiene advisory (PROPOSE-only, P1-12).** Run
+    [`../skills/builder/scripts/git-hygiene.sh`](../skills/builder/scripts/git-hygiene.sh) from the
+    project root. It lists merged-but-undeleted local branches (`git branch --merged main`, minus
+    main/current) and orphaned/stale worktrees, and prints the EXACT cleanup commands
+    (`git branch -d …`, `git worktree remove …`) for the **human** to run. It is detect-and-propose:
+    it NEVER deletes a branch or removes a worktree. Surface its output in the completion report;
+    do not act on it yourself.
 
 ## Required Output
 

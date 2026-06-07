@@ -120,6 +120,18 @@ with the current phase/cycle, and add a single line to your reply: `↻ refreshe
 This keeps the repo's front door current as the product emerges, without interrupting anyone. Only the
 `author` mode (interactive) creates the welcome the first time; `refresh` never creates one from nothing.
 
+**Verify the re-stamp landed (verify-and-disclose, never auto-rewrite).** A silent write failure (the edit
+didn't apply, a path slipped, the stamp wasn't rewritten) must not leave a stale stamp masquerading as
+current. After you regenerate, **re-read** the first `concierge:welcome` stamp line of `.claude/welcome.md`
+and confirm it now carries `for_phase=<current-phase> cycle=<current-cycle>` matching the lifecycle's
+`current_phase`/`cycle`:
+
+- **Match** → the refresh took; emit the `↻ refreshed the welcome for <PHASE>` line and you are done.
+- **Mismatch** (stamp still shows the OLD phase/cycle, or no stamp is present) → the refresh **silently
+  failed**. **Disclose it** with exactly `⚠ welcome refresh did not take — stamp still <old-phase>` rather
+  than leaving the stale stamp unmentioned. Do **not** hand-patch the stamp to paper over the failure — the
+  point is to surface that the regeneration didn't land, not to fake a fresh stamp on stale content.
+
 ## Quality bar
 
 - 2–4 lanes; each leaf ends at a real, runnable action.

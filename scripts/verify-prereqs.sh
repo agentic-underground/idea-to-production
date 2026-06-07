@@ -24,6 +24,24 @@
 #      and root *.md that end in a real extension (.md/.sh/.tsv/.json/.svg/.png) point at a file that
 #      exists on disk. Conservative: skips http(s)/mailto/anchors, ${CLAUDE_PLUGIN_ROOT}-relative,
 #      placeholders, and links inside inline-code spans.
+#   J. four-mirror guardrail (P1-21) — the conservative SKILL↔mirror floor. For every
+#      plugins/<p>/skills/<s>/ found dynamically: a SKILL.md exists and carries valid frontmatter
+#      (a non-empty `name:` and a `description:`); and every plugin that ships ≥1 skill has a
+#      README.md that mentions at least one /command (so the skills are reachable from the user-facing
+#      mirror). EXEMPTION: requirements.tsv rows are applicable-only (a skill with no external-tool
+#      deps legitimately has none), and the README mention is asserted per-PLUGIN, not per-skill, so
+#      internal skills (self-improve, etc.) need no individual README line. marketplace.json parity is
+#      check H's job — J does not duplicate it.
+#   K. MCP servers are version-pinned (P1-10) — for every plugins/*/.mcp.json, every server's launch
+#      args must carry an explicit version PIN, never a floating tag. FLAG `@latest`, a bare npx/`-y`
+#      package with no `@<version>`, and an unversioned uvx/bunx package. ALLOW an explicit
+#      `@<semver>`/`@<pin>`. (Floating tags re-resolve on every launch → non-reproducible installs.)
+#   L. hooks smoke-exec (P1-8) — for every plugins/*/hooks/hooks.json, each declared command's script
+#      (resolved ${CLAUDE_PLUGIN_ROOT} → the plugin dir) must EXIST, pass `bash -n`, and run to a
+#      ZERO exit when fed a minimal synthetic SessionStart event on stdin — in a sandbox
+#      (HOME + CLAUDE_PROJECT_DIR = fresh mktemp dirs) so it can't touch real state, under a timeout.
+#      A missing / unparsable / non-zero-exiting hook = FAIL: this is what makes a dead
+#      inject-soul/capture-cost detectable, vs the `2>/dev/null||true` that hides it at runtime.
 #
 # Flag:
 #   --fix  guarded canonical re-sync — when the canonical-copy parity checks (A check.sh, E SOUL.md,
@@ -341,6 +359,140 @@ if [ -z "$broken_links" ]; then
   pass "all repo-local doc links resolve (.md/.sh/.tsv/.json/.svg/.png, ../-relative against the linking file)"
 else
   fail "broken internal doc links (target missing on disk):"; printf '%s\n' "$broken_links"
+fi
+
+# ── J. four-mirror guardrail (P1-21): the conservative SKILL↔mirror floor ─────
+# Every plugins/<p>/skills/<s>/ (found dynamically) must carry a SKILL.md with valid frontmatter
+# (a non-empty `name:` and a `description:` key inside the leading `---`…`---` block); and every
+# plugin that ships ≥1 skill must have a README.md that mentions at least one /command, so its
+# skills are reachable from the user-facing mirror. This is the WEAKEST defensible invariant — it
+# does NOT assert every skill name appears in the README (internal skills like self-improve need no
+# line) and does NOT require a requirements.tsv row (applicable-only: a depless skill has none).
+# marketplace.json parity is check H's job; J is purely SKILL↔README/frontmatter.
+section "J. four-mirror guardrail (SKILL.md frontmatter + plugin README ↦ /command)"
+j_ok=1
+# (1) every skill dir has a SKILL.md with name+description frontmatter
+while IFS= read -r sdir; do
+  md="$sdir/SKILL.md"
+  if [ ! -f "$md" ]; then
+    j_ok=0; fail "$sdir: missing SKILL.md"; continue
+  fi
+  # Pull the leading frontmatter block (between the first two `---` lines) and assert name+description.
+  fm_err="$(awk '
+    NR==1 && $0=="---" { inb=1; next }
+    inb && $0=="---"   { inb=0; done=1; exit }
+    inb && /^name:[ \t]*[^ \t]/        { hasname=1 }
+    inb && /^description:/             { hasdesc=1 }
+    END {
+      if (!done)    { print "      "FILE": no closing --- frontmatter block"; exit }
+      if (!hasname) print "      "FILE": frontmatter missing a non-empty name:"
+      if (!hasdesc) print "      "FILE": frontmatter missing description:"
+    }
+  ' FILE="$md" "$md")"
+  if [ -n "$fm_err" ]; then j_ok=0; fail "$md: invalid SKILL.md frontmatter:"; printf '%s\n' "$fm_err"; fi
+done < <(find plugins -mindepth 3 -maxdepth 3 -type d -path '*/skills/*' | sort)
+# (2) every plugin that ships ≥1 skill has a README.md mentioning at least one /command
+while IFS= read -r pdir; do
+  [ -n "$(find "$pdir/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | head -1)" ] || continue
+  rm="$pdir/README.md"
+  if [ ! -f "$rm" ]; then
+    j_ok=0; fail "$(basename "$pdir"): ships skills but has no README.md"
+  elif ! grep -qE '(^|[^[:alnum:]])/[a-z][a-z0-9:_-]+' "$rm"; then
+    j_ok=0; fail "$(basename "$pdir"): README.md mentions no /command (skills unreachable from the user-facing mirror)"
+  fi
+done < <(find plugins -mindepth 1 -maxdepth 1 -type d | sort)
+[ "$j_ok" -eq 1 ] && pass "every skill has SKILL.md (name+description frontmatter); every skill-shipping plugin's README names a /command"
+
+# ── K. MCP servers are version-pinned (P1-10) ────────────────────────────────
+# For every plugins/*/.mcp.json server, the launch args must name an explicitly PINNED package, never
+# a floating tag that re-resolves on each launch. The package spec is the first arg that is NOT an
+# npx/uvx flag (-y/--yes/--no-install/-q/…) and not the runner itself. Deny: a `@latest`/`@next`-style
+# floating tag; a bare scoped/unscoped package with NO `@<version>` for an npx/`-y` invocation; an
+# unversioned uvx/bunx package. Allow: any explicit `@<pin>` (semver or otherwise). jq enumerates the
+# servers; the per-spec verdict is mawk-free (pure shell case), so this is portable on GitHub runners.
+section "K. MCP servers version-pinned (no floating tags)"
+if ! command -v jq >/dev/null 2>&1; then
+  fail "jq not found — required to read plugins/*/.mcp.json"
+else
+  k_ok=1
+  for f in plugins/*/.mcp.json; do
+    [ -f "$f" ] || continue
+    # Emit one "<server>\t<command>\t<arg1> <arg2> …" line per server.
+    while IFS=$'\t' read -r srv cmd args; do
+      [ -n "$srv" ] || continue
+      # The package spec = first non-flag, non-runner token in args.
+      spec=""
+      for a in $args; do
+        case "$a" in
+          -y|--yes|--no-install|-q|--quiet|-p|--package|--) continue ;;
+          npx|uvx|bunx|pnpm|dlx) continue ;;
+          *) spec="$a"; break ;;
+        esac
+      done
+      if [ -z "$spec" ]; then
+        k_ok=0; fail "$f [$srv]: could not find a package spec in args ($args)"; continue
+      fi
+      # Floating tag → fail outright.
+      case "$spec" in
+        *@latest|*@next|*@canary|*@beta|*@nightly|*@dev)
+          k_ok=0; fail "$f [$srv]: floating tag '$spec' — pin an explicit @<version>"; continue ;;
+      esac
+      # Does the spec carry an @<version> pin? A scoped name @scope/pkg has ONE leading @ and no
+      # second @ → unpinned; a pinned spec has a trailing @<pin> (so @scope/pkg@1.2.3 has two @).
+      ats="${spec//[!@]/}"          # the @ characters only
+      case "$spec" in
+        @*) pinned=$([ "${#ats}" -ge 2 ] && echo 1 || echo 0) ;;   # scoped: need a SECOND @
+        *)  pinned=$([ "${#ats}" -ge 1 ] && echo 1 || echo 0) ;;   # unscoped: any @ is the pin
+      esac
+      if [ "$pinned" -ne 1 ]; then
+        k_ok=0; fail "$f [$srv]: '$spec' is unpinned — add @<version> ($cmd has no version pin)"
+      fi
+    done < <(jq -r '.mcpServers | to_entries[] | [.key, (.value.command // ""), ((.value.args // []) | join(" "))] | @tsv' "$f")
+  done
+  [ "$k_ok" -eq 1 ] && pass "every .mcp.json server pins an explicit @<version> (no @latest / bare package)"
+fi
+
+# ── L. hooks smoke-exec (P1-8) ───────────────────────────────────────────────
+# For every plugins/*/hooks/hooks.json, resolve each declared command's script path
+# (${CLAUDE_PLUGIN_ROOT} → the plugin dir) and assert: the script EXISTS, passes `bash -n`, and runs
+# to a ZERO exit when fed a minimal synthetic SessionStart event on stdin — sandboxed so it cannot
+# touch real state: HOME and CLAUDE_PROJECT_DIR are fresh mktemp dirs, and it runs under a timeout
+# (when available). A hook that is missing, unparsable, or exits non-zero = FAIL — that is exactly the
+# dead inject-soul/capture-cost the runtime's `2>/dev/null || true` would otherwise hide. Hooks that
+# legitimately emit nothing are fine (output is discarded; only the exit code is asserted).
+section "L. hooks smoke-exec (exist · bash -n · zero-exit on a synthetic event)"
+if ! command -v jq >/dev/null 2>&1; then
+  fail "jq not found — required to read plugins/*/hooks/hooks.json"
+else
+  l_ok=1
+  TIMEOUT=""; command -v timeout >/dev/null 2>&1 && TIMEOUT="timeout 20"
+  syn='{"cwd":"/tmp","session_id":"smoke","source":"startup","hook_event_name":"SessionStart"}'
+  for hj in plugins/*/hooks/hooks.json; do
+    [ -f "$hj" ] || continue
+    pdir="$(cd "$(dirname "$(dirname "$hj")")" && pwd)"
+    while IFS= read -r cmd; do
+      [ -n "$cmd" ] || continue
+      # Resolve the script path: the token after ${CLAUDE_PLUGIN_ROOT}.
+      rel="$(printf '%s\n' "$cmd" | sed -n 's#.*${CLAUDE_PLUGIN_ROOT}\(/[^ ]*\).*#\1#p')"
+      if [ -z "$rel" ]; then continue; fi   # non-script command (no plugin-root script) — nothing to smoke
+      script="$pdir$rel"
+      if [ ! -f "$script" ]; then
+        l_ok=0; fail "$hj: command references missing script $rel"; continue
+      fi
+      if ! bash -n "$script" 2>/dev/null; then
+        l_ok=0; fail "$script: bash -n syntax error"; continue
+      fi
+      sb="$(mktemp -d)"; pj="$(mktemp -d)"
+      if printf '%s' "$syn" | HOME="$sb" CLAUDE_PROJECT_DIR="$pj" CLAUDE_PLUGIN_ROOT="$pdir" $TIMEOUT bash "$script" >/dev/null 2>&1; then
+        :
+      else
+        rc=$?
+        l_ok=0; fail "$script: non-zero exit ($rc) on a synthetic SessionStart event"
+      fi
+      rm -rf "$sb" "$pj"
+    done < <(jq -r '.hooks // {} | to_entries[] | .value[] | .hooks[]? | select(.type=="command") | .command' "$hj")
+  done
+  [ "$l_ok" -eq 1 ] && pass "every hooks.json command resolves to a script that exists, parses, and exits 0 on a synthetic event"
 fi
 
 # ── --fix: guarded canonical re-sync ─────────────────────────────────────────

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# i2p-statusline-version: 2
 # idea-to-production rich status line — two-line layout, wide gauges, caught widget.
 # Reads JSON from stdin, renders a two-line ANSI status bar.
 # Never exits non-zero; all fields degrade gracefully when absent.
@@ -6,6 +7,10 @@
 # CANONICAL COPY — shipped by the `concierge` plugin. /concierge:statusline copies this
 # to ~/.claude/statusline-command.sh and points settings.json at it (settings.json cannot
 # expand ${CLAUDE_PLUGIN_ROOT}). Edit here; re-run /concierge:statusline to update.
+#
+# VERSION STAMP (`i2p-statusline-version:` above) — bump it on every renderer change. The
+# SessionStart drift check (hooks/check-statusline-drift.sh) compares the installed copy's
+# stamp/md5 against this shipped renderer and offers /concierge:statusline to refresh on drift.
 
 set +e
 input=$(cat)

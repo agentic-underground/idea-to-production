@@ -1,0 +1,14 @@
+# adversarial-artifacts.lst — the SINGLE source of truth for which review artifacts feed
+# the status line's ⚔ caught tally. One basename GLOB per line; blank lines and #-comments
+# are ignored. count-adversarial-catches.sh reads this; add a line here when a new reviewer
+# ships a new artifact so the HUD instrument widens with it (P1-13).
+#
+# Each glob is matched (via bash `case`) against the BASENAME of a written/edited file.
+PR_REVIEW.md
+I2P_REVIEW.md
+SECURITY-REPORT.md
+PII-REPORT.md
+DESIGN_REVIEW.md
+UI_REVIEW.md
+*_INSPECTION_REPORT.md
+*_REVIEW.md

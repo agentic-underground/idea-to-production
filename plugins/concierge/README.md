@@ -80,6 +80,20 @@ points at a stable path). The **⚔ caught** tally is fed automatically by a Pos
 `~/.claude/state/statusline-widgets.d/*.sh`; each is fed the same stdin JSON and prints one already-colored
 segment. A failing or empty widget is silently skipped, so it can never break the bar.
 
+## Check & inspect
+
+Like every plugin in the marketplace, CONCIERGE carries its own integrity surfaces:
+
+- **`/concierge:check`** — a fast ✓/✗ probe of the tools its hooks and status line use (`jq` for
+  clean-JSON parsing, `bash`, optionally `git`), grouped by tier. Advisory by default (everything
+  degrades to a pure-bash fallback, never failing the session); `--strict` exits non-zero on a missing
+  required tool. Reads the canonical manifest [`skills/check/requirements.tsv`](skills/check/requirements.tsv).
+- **`/concierge:inspect`** — runs the on-demand [`inspector`](agents/inspector.md) agent: an independent,
+  critical audit of CONCIERGE's skills, agents, knowledge, commands, hooks, and the status line per the
+  shared [`knowledge/inspection-core.md`](knowledge/inspection-core.md), plus CONCIERGE-specific checks
+  (hook↔manifest parity, welcome lifecycle integrity, status-line portability + drift, the data-driven
+  HUD instrument, canonical-copy integrity). Writes a severity-ranked `CONCIERGE_INSPECTION_REPORT.md`.
+
 ## Companions
 
 CONCIERGE stands alone. When [`ideator`](../ideator) and [`foundry`](../foundry) are

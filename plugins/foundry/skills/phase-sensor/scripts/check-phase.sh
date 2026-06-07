@@ -25,9 +25,12 @@ log() { printf '[%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" >> "$LOG"; }
 # Fast-exit if the modified file is not ROADMAP.md — avoids per-edit overhead.
 if [ -p /dev/stdin ]; then
     hook_json=$(cat)
+    # An event without a file_path (e.g. a SessionStart-style event) makes the
+    # grep exit non-zero; under `pipefail` that would kill the whole hook. Tolerate
+    # it: a missing file_path must yield an empty string and a clean no-op (exit 0).
     hook_file=$(printf '%s' "$hook_json" \
         | grep -o '"file_path":"[^"]*"' | head -1 \
-        | sed 's/"file_path":"//;s/"//')
+        | sed 's/"file_path":"//;s/"//' || true)
     if [ -n "$hook_file" ] && [[ "$hook_file" != *ROADMAP.md* ]]; then
         exit 0
     fi

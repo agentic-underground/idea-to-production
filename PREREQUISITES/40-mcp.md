@@ -20,22 +20,21 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
   `claude mcp list` shows them as `⏸ Pending approval`, and Claude Code does not connect to (run) a
   plugin/project MCP server until you approve it. Treat this as the safety default, not an absolute
   guarantee — a permissive permission mode or pre-approval changes it.
-- **Pin for provisioning.** The shipped configs use the upstream-documented unpinned launch
-  (`@playwright/mcp@latest`, `uvx semgrep-mcp`, `uvx mcp-server-fetch`, and `@upstash/context7-mcp` —
-  which ships with **no version tag at all**) for zero-config first use. Each of these fetches and
-  executes third-party code at launch. For reproducible or hardened machines, **pin a version** —
-  `@playwright/mcp@<ver>`, `@upstash/context7-mcp@<ver>`, `uvx --from semgrep-mcp==<ver> semgrep-mcp`,
-  `uvx --from mcp-server-fetch==<ver> mcp-server-fetch` — so a fetched server can't change underneath you.
-- Manual fallback (no plugin): `claude mcp add playwright -- npx -y @playwright/mcp@latest`.
+- **Pinned for reproducibility.** Each of these servers fetches and executes third-party code at
+  launch, so the shipped configs pin an **explicit version** (never a floating `@latest`) — a fetched
+  server can't change underneath you. The current pins: `@playwright/mcp@0.0.75`,
+  `@upstash/context7-mcp@3.1.0`, `uvx mcp-server-fetch@2026.6.4`, `uvx semgrep-mcp@0.9.0`.
+  `scripts/verify-prereqs.sh` check K asserts every `.mcp.json` server carries such a pin.
+- Manual fallback (no plugin): `claude mcp add playwright -- npx -y @playwright/mcp@0.0.75`.
 
 ## Shipped by the marketplace
 
 | Server | Plugin(s) | Package / launch | Tools | Purpose |
 |---|---|---|---|---|
-| `fetch` | market-scanner, ideator | `uvx mcp-server-fetch` | `mcp__fetch__*` | Keyless web research: fetch a URL and extract it as **markdown in chunks** — competitor pricing, docs, forum threads. Grounds the discovery scorecard / IDEA package in real evidence. |
-| `context7` | foundry | `npx -y @upstash/context7-mcp` | `mcp__context7__*` | **Version-specific** library docs + examples for 9,000+ libraries, injected into context — handlers code against the current API, not the training cutoff. |
-| `playwright` | foundry, atelier | `npx -y @playwright/mcp@latest` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. foundry uses it for STORY feedback; atelier for `/ui-review` crawl + a11y snapshot. |
-| `semgrep` | sentinel | `uvx semgrep-mcp` | `mcp__semgrep__*` | SAST: code-level vulnerability patterns. Bundles its own `semgrep`. |
+| `fetch` | market-scanner, ideator | `uvx mcp-server-fetch@2026.6.4` | `mcp__fetch__*` | Keyless web research: fetch a URL and extract it as **markdown in chunks** — competitor pricing, docs, forum threads. Grounds the discovery scorecard / IDEA package in real evidence. |
+| `context7` | foundry | `npx -y @upstash/context7-mcp@3.1.0` | `mcp__context7__*` | **Version-specific** library docs + examples for 9,000+ libraries, injected into context — handlers code against the current API, not the training cutoff. |
+| `playwright` | foundry, atelier | `npx -y @playwright/mcp@0.0.75` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. foundry uses it for STORY feedback; atelier for `/ui-review` crawl + a11y snapshot. |
+| `semgrep` | sentinel | `uvx semgrep-mcp@0.9.0` | `mcp__semgrep__*` | SAST: code-level vulnerability patterns. Bundles its own `semgrep`. |
 
 Prereqs: `fetch` + `semgrep` need `uv`/`uvx`; `context7` + `playwright` need `node`/`npx` (Playwright's
 browser auto-downloads on first use). All four run **keyless** — nothing to provision but the launcher

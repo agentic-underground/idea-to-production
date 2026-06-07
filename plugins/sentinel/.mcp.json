@@ -2,7 +2,7 @@
   "mcpServers": {
     "semgrep": {
       "command": "uvx",
-      "args": ["semgrep-mcp"],
+      "args": ["semgrep-mcp@0.9.0"],
       "env": {}
     }
   }

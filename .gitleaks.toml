@@ -1,0 +1,36 @@
+# .gitleaks.toml — dogfood config for the idea-to-production marketplace's
+# own secret/PII self-audit (P1-11, "cobbler's children").
+#
+# The CI job `secret-scan-self` (.github/workflows/verify.yml) runs gitleaks over
+# this repo's tree AND git history — the same tool SENTINEL's /secret-scan skill
+# wraps. This config narrows the dogfood to REAL findings by allowlisting two
+# known-good classes the marketplace legitimately ships:
+#
+#   1. The maintainer's KNOWN-GOOD noreply authorship email, which appears in
+#      every plugin.json's `author.email` (legitimate metadata, not PII to leak).
+#   2. SENTINEL's own teaching material — the pii-audit reference docs deliberately
+#      embed FAKE example secrets (sk_live_…, sk_test_PLACEHOLDER, a dummy
+#      -----BEGIN PRIVATE KEY----- block) to illustrate what its scanners detect.
+#      These are documentation placeholders, not live credentials.
+#
+# Every suppression below is narrow and disclosed — consistent with the
+# SECRET-PATTERNS.md §5 allowlist covenant (prefer a specific file over a broad
+# glob; never silently widen). A real secret committed ANYWHERE ELSE still trips.
+
+# Extend gitleaks' built-in ruleset rather than replacing it.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Marketplace dogfood allowlist — known-good authorship metadata + SENTINEL's own example secrets"
+
+# 1. Maintainer's known-good noreply email (GitHub authorship metadata).
+regexes = [
+  '''95787\+whatbirdisthat@users\.noreply\.github\.com''',
+]
+
+# 2. SENTINEL pii-audit reference docs — deliberately contain fake/placeholder
+#    secrets as teaching examples of what the scanner looks for.
+paths = [
+  '''plugins/sentinel/skills/pii-audit/references/.*''',
+]

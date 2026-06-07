@@ -23,10 +23,25 @@ fi
 [ -n "$fp" ] || exit 0
 
 # --- is it an adversarial-review artifact? ---
-case "$(basename "$fp")" in
-  PR_REVIEW.md|I2P_REVIEW.md|SECURITY-REPORT.md|PII-REPORT.md|*_INSPECTION_REPORT.md) ;;
-  *) exit 0 ;;
-esac
+# The artifact-name set is defined ONCE in statusline/adversarial-artifacts.lst (one glob
+# per line) so new reviewers widen the HUD by editing data, not this script (P1-13).
+bn="$(basename "$fp")"
+lst="$(dirname "${BASH_SOURCE[0]}")/adversarial-artifacts.lst"
+matched=0
+if [ -r "$lst" ]; then
+  while IFS= read -r glob || [ -n "$glob" ]; do
+    glob="${glob%%#*}"                                   # strip trailing comments
+    glob="$(printf '%s' "$glob" | tr -d '[:space:]')"    # trim whitespace
+    [ -n "$glob" ] || continue
+    case "$bn" in $glob) matched=1; break ;; esac
+  done < "$lst"
+else
+  # Fallback to the historic built-in set if the list is somehow unreadable.
+  case "$bn" in
+    PR_REVIEW.md|I2P_REVIEW.md|SECURITY-REPORT.md|PII-REPORT.md|*_INSPECTION_REPORT.md) matched=1 ;;
+  esac
+fi
+[ "$matched" -eq 1 ] || exit 0
 [ -f "$fp" ] || exit 0
 
 # --- did it CATCH something? (non-PASS verdict, or a real finding) ---

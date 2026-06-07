@@ -26,7 +26,12 @@
 >   (check I broken-refs) ✅ P1-4 (cache-staleness advisory) ✅ P1-5 (scorecard line-wise parse) ✅ P1-6
 >   (phase-sensor roadmap↔sentinel) ✅ P1-7 (`DEGRADED_CAPABILITIES` contract) ✅ P1-23 (lifecycle.json
 >   corrupt-state validation).
-> - **Remaining:** P1-B (9) · P1-C (8) · P2 (20) = **37 items** (15/52 shipped).
+> - **P1-B — DONE:** ✅ P1-8 (hooks smoke-exec → check L; caught+fixed a real check-phase hook bug) ✅ P1-9
+>   (statusline drift + version-stamp + SessionStart compare) ✅ P1-10 (MCP versions pinned → check K) ✅ P1-11
+>   (gitleaks secret-scan CI dogfood + allowlist) ✅ P1-12 (git-hygiene advisory, propose-only) ✅ P1-13 (HUD
+>   artifact shared list) ✅ P1-14 (concierge check + inspector, canonical copies) ✅ P1-21 (four-mirror →
+>   check J) ✅ P1-22 (welcome write-verify, verify-and-disclose). verify-prereqs A–L green.
+> - **Remaining:** P1-C (8) · P2 (20) = **28 items** (24/52 shipped).
 
 ---
 
