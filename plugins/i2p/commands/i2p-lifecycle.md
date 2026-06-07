@@ -15,6 +15,10 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh $ARGUMENTS
   (order-safe, idempotent). This is what each owning plugin calls at its exit signal.
 - `advance` / `set <PHASE>` → move through the phases by hand.
 
+For **token-cost** (actual vs estimate per phase, + the self-calibrating estimator) run the sibling
+`skills/lifecycle/scripts/cost.sh report .`; the status line shows live spend (`◇ session`, `◈ life`).
+See [`../knowledge/instrumentation.md`](../knowledge/instrumentation.md).
+
 For the model itself (owners, academic lineage, entry/exit signals), see
 [`../knowledge/product-lifecycle.md`](../knowledge/product-lifecycle.md) — or run `/i2p-help`, which
 explains the lifecycle and offers to kick one off. Enable the phase widget with `/concierge:statusline`.

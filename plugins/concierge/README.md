@@ -41,8 +41,15 @@ CONCIERGE also ships the idea-to-production **status line** — a rich two-line 
 - **Line 1** — `user@host:cwd`, git branch, repo, PR + review state, model, version, output style,
   vim mode, effort/thinking, session, worktree, agent (each shown only when present).
 - **Line 2** — wide gauges for context-window and 5h/7d rate limits, the **product-lifecycle phase**
-  (once a project has a `.i2p/lifecycle.json` — see `/i2p-help`), and a **⚔ caught** tally of the times
-  an adversarial reviewer caught something.
+  (once a project has a `.i2p/lifecycle.json` — see `/i2p-help`), **token-cost** widgets (`◇ session`
+  spend in tokens + $, and `◈ life` actual-vs-estimate when a lifecycle is running), and a **⚔ caught**
+  tally of the times an adversarial reviewer caught something.
+
+These two — the **⚔ catch counter** and the **token-cost tracker** — are the marketplace's *first-order
+instruments*: always on, fed by deterministic hooks (a PostToolUse counter and a `Stop` cost-capture hook),
+and self-calibrating. The token tracker compares each lifecycle phase's estimate to its measured actual and
+folds the ratio back so estimates improve over time. Full contract:
+[`i2p/knowledge/instrumentation.md`](../i2p/knowledge/instrumentation.md).
 
 Turn it on with **`/concierge:statusline`** (and `/concierge:statusline off` to remove it). On first
 activation CONCIERGE makes a single, unobtrusive offer — a splash, nothing more. The renderer

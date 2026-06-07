@@ -83,6 +83,10 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - **i2p** — the marketplace **front door / meta-layer**: marketplace-level meta-commands (`/i2p-help`,
   `/i2p-review`, `/i2p-check`, `/i2p-flow`) plus session-start onboarding. A thin orchestrator that
   composes the six specialists by capability and never re-implements them.
+- **first-order instrumentation** — the HUD's always-on instruments, fed by deterministic hooks: the
+  **⚔ adversarial-catch counter** (times a reviewer caught something) and the **token-cost tracker**
+  (per-phase actual vs a self-calibrating estimate, tokens + $). Canonical:
+  `i2p/knowledge/instrumentation.md`; state under `~/.claude/state/` and `<project>/.i2p/cost.json`.
 - **concierge** — the **arrival / greeter**: a SessionStart hook renders a repo's
   `.claude/welcome.md` to greet and route whoever opens it; `/concierge:define-welcome` authors that
   welcome; also offers the idea-to-production status line on first activation.

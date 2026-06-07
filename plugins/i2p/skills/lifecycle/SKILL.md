@@ -33,6 +33,20 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh set <PHASE>   #
 State lives at `<project>/.i2p/lifecycle.json`. The `concierge` status line reads it and renders
 `◆ lifecycle ●●◉○○○○ <PHASE> (n/7)`.
 
+## Token-cost & estimate↔actual calibration
+
+`init` seeds calibration-aware per-phase **token estimates**; `done <PHASE>` folds that phase's
+**actual-vs-estimate** into a global calibration ledger so estimates self-correct over time. Actuals are
+measured automatically by `concierge`'s `capture-cost.sh` Stop hook (`.i2p/cost.json`); the status line
+shows `◇ … session` and `◈ life actual/~estimate (Δ%) · $`. Report cost with:
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/cost.sh report <dir>
+```
+
+When reporting lifecycle status, also run `cost.sh report` and summarise spend + estimation accuracy.
+Full model + schema: [`../../knowledge/instrumentation.md`](../../knowledge/instrumentation.md).
+
 ## Kick off a new product lifecycle
 
 When the user wants to start (or `/i2p-help` offered and they accepted):

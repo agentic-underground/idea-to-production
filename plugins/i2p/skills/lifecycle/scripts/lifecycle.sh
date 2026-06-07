@@ -32,6 +32,10 @@ cmd="${1:-status}"
 LF_DIR="${dir%/}/.i2p"
 LF="${LF_DIR}/lifecycle.json"
 
+# Sibling cost estimator/calibrator (best-effort — lifecycle works without it).
+COST="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/cost.sh"
+run_cost() { [ -r "$COST" ] && bash "$COST" "$@" >/dev/null 2>&1 || true; }
+
 now() { date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo ""; }
 have_jq() { command -v jq >/dev/null 2>&1; }
 
@@ -75,7 +79,8 @@ case "$cmd" in
   init)
     if [ -f "$LF" ]; then echo "lifecycle: already initialised at $(get_phase) — $LF"; exit 0; fi
     product="${2:-$(basename "$(cd "$dir" 2>/dev/null && pwd || echo product)")}"
-    write_state "$product" "DISCOVER" init && echo "lifecycle: started '$product' at DISCOVER — $LF" ;;
+    write_state "$product" "DISCOVER" init && echo "lifecycle: started '$product' at DISCOVER — $LF"
+    run_cost estimate "$dir" ;;   # seed calibration-aware per-phase token estimates
   set)
     ph="${2:-}"; valid_phase "$ph" || { echo "lifecycle: invalid phase '$ph' (valid: $PHASES)" >&2; exit 1; }
     [ -f "$LF" ] || { echo "lifecycle: not initialised; run init first" >&2; exit 1; }
@@ -104,6 +109,7 @@ case "$cmd" in
       [ "$x" = "$cur" ] && found=1
     done
     [ -n "$nxt" ] || { echo "lifecycle: ${cur} is terminal — no change"; exit 0; }
+    run_cost close "$dir" "$cur"   # fold this phase's actual-vs-estimate into the calibration ledger
     write_state "" "$nxt" update && echo "lifecycle: ${cur} done → ${nxt}" ;;
   *)
     echo "usage: lifecycle.sh [--dir <path>] {init [name]|get|status|set <PHASE>|done <PHASE>|advance}" >&2; exit 2 ;;

@@ -528,6 +528,20 @@ accuracy = (1 - abs(actual_tokens - estimated_tokens) / estimated_tokens) * 100
 Surface accuracy trends at tier boundaries. Over time, LEAD ENGINEER uses this
 data to improve estimates. See §14 (self-improvement).
 
+### 12.2a Fold the BUILD actual into the product lifecycle (by capability)
+
+If the **i2p** plugin is installed and the project has an active lifecycle (`.i2p/lifecycle.json` exists),
+record this item's authoritative all-agent token total into the lifecycle's **BUILD** phase so the
+status-line `◈ life` widget and the estimate↔actual calibration reflect real build cost (not just the
+main-thread transcript the Stop hook sees):
+
+```bash
+bash <i2p>/skills/lifecycle/scripts/cost.sh record . BUILD <token_accounting.tokens_total>
+```
+
+Resolve `<i2p>` by capability (the installed i2p plugin root); skip silently if i2p is absent. This is the
+authoritative BUILD actual — see `i2p/knowledge/instrumentation.md`.
+
 ### 12.3 Milestone scorecard
 
 `IDEA_COST.jsonl` is the *only* place real tokens/wall-clock are captured (here, mid-cycle). At the same

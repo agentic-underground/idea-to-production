@@ -104,6 +104,9 @@ five_h_reset=$(jget '.rate_limits.five_hour.resets_at')
 seven_d_pct=$(jget '.rate_limits.seven_day.used_percentage')
 seven_d_reset=$(jget '.rate_limits.seven_day.resets_at')
 
+# Session cost (authoritative cumulative session $ from the harness)
+sess_cost_usd=$(jget '.cost.total_cost_usd')
+
 # Adversarial catch counter — never crash if file missing or unreadable
 catches_file="${HOME}/.claude/state/adversarial-catches.total"
 catches=0
@@ -191,6 +194,15 @@ fmt_tokens() {
 }
 
 # ---------------------------------------------------------------------------
+# Helper: format a USD amount  e.g. 0.5432 -> $0.54 ; 12.3 -> $12.30
+# ---------------------------------------------------------------------------
+fmt_usd() {
+  local v="$1"
+  [ -z "$v" ] || [ "$v" = "null" ] && return
+  awk -v x="$v" 'BEGIN{ if (x+0 < 0) x=0; printf "$%.2f", x+0 }' 2>/dev/null
+}
+
+# ---------------------------------------------------------------------------
 # Helper: format unix epoch as HH:MM
 # ---------------------------------------------------------------------------
 fmt_epoch_hhmm() {
@@ -240,6 +252,68 @@ lifecycle_widget() {
     fi
   done
   LC_OUT="${FG_BBLACK}◆ lifecycle ${R}${track} ${BOLD}${FG_BCYAN}${cur}${R}${DIM} (${idx}/${total})${R}"
+}
+
+# ---------------------------------------------------------------------------
+# Session-cost widget (always-on, first-order) — tokens from the capture-cost
+# Stop hook's session.json; $ from the harness's authoritative cost.total_cost_usd
+# (falling back to the hook's price-map estimate). Degrades to nothing if neither
+# is available.
+# ---------------------------------------------------------------------------
+session_cost_widget() {
+  SC_OUT=""
+  local sj="${HOME}/.claude/state/i2p-cost/session.json"
+  local tok="" usd=""
+  if [ -n "$_jq_ok" ] && [ -r "$sj" ]; then
+    tok=$(jq -r '.tokens // empty' "$sj" 2>/dev/null)
+    usd=$(jq -r '.usd // empty' "$sj" 2>/dev/null)
+  fi
+  # Prefer the harness's authoritative session cost for the $ figure.
+  [ -n "$sess_cost_usd" ] && usd="$sess_cost_usd"
+  local tstr="" ustr=""
+  [ -n "$tok" ] && tstr="$(fmt_tokens "$tok")"
+  [ -n "$usd" ] && ustr="$(fmt_usd "$usd")"
+  [ -n "$tstr" ] || [ -n "$ustr" ] || return
+  local body=""
+  [ -n "$tstr" ] && body="$tstr"
+  [ -n "$tstr" ] && [ -n "$ustr" ] && body="${body} ${DIM}·${R} ${FG_BWHITE}${ustr}${R}${FG_BCYAN}"
+  [ -z "$tstr" ] && [ -n "$ustr" ] && body="$ustr"
+  SC_OUT="${FG_BBLACK}◇ ${FG_BCYAN}${body}${R}${DIM} session${R}"
+}
+
+# ---------------------------------------------------------------------------
+# Lifecycle-cost widget — reads the project-local .i2p/cost.json totals and shows
+# actual/estimate tokens (Δ%, coloured by over/under) + $. Only renders when a
+# lifecycle cost ledger exists. Written by capture-cost.sh + the i2p cost.sh.
+# ---------------------------------------------------------------------------
+lifecycle_cost_widget() {
+  LCC_OUT=""
+  local proj="${cwd/#\~/$HOME}"
+  [ -n "$proj" ] || return
+  local cf="${proj}/.i2p/cost.json"
+  [ -n "$_jq_ok" ] && [ -r "$cf" ] || return
+  local act est usd
+  act=$(jq -r '.totals.actual_tokens // 0' "$cf" 2>/dev/null)
+  est=$(jq -r '.totals.estimate_tokens // 0' "$cf" 2>/dev/null)
+  usd=$(jq -r '.totals.actual_usd // 0' "$cf" 2>/dev/null)
+  case "$act" in (''|*[!0-9]*) act=0 ;; esac
+  case "$est" in (''|*[!0-9]*) est=0 ;; esac
+  [ "$act" -gt 0 ] 2>/dev/null || [ "$est" -gt 0 ] 2>/dev/null || return
+  local astr estr delta clr=""
+  astr="$(fmt_tokens "$act")"
+  if [ "$est" -gt 0 ] 2>/dev/null; then
+    estr="/~$(fmt_tokens "$est")"
+    local pct; pct=$(awk -v a="$act" -v e="$est" 'BEGIN{ if(e>0) printf "%d", (a-e)*100/e; else print 0 }')
+    if   [ "$pct" -gt 15 ] 2>/dev/null; then clr="$FG_BRED"
+    elif [ "$pct" -lt -15 ] 2>/dev/null; then clr="$FG_BGREEN"
+    else clr="$FG_BYELLOW"; fi
+    local sign=""; [ "$pct" -gt 0 ] 2>/dev/null && sign="+"
+    delta=" ${clr}(${sign}${pct}%)${R}"
+  else
+    estr=""; delta=""
+  fi
+  local ustr=""; [ -n "$usd" ] && ustr="${DIM} · ${FG_BWHITE}$(fmt_usd "$usd")${R}"
+  LCC_OUT="${FG_BBLACK}◈ life ${FG_BCYAN}${astr}${R}${DIM}${estr}${R}${delta}${ustr}"
 }
 
 # ---------------------------------------------------------------------------
@@ -388,6 +462,14 @@ fi
 # Product-lifecycle phase
 lifecycle_widget
 [ -n "$LC_OUT" ] && line2_parts+=("$LC_OUT")
+
+# Session spend — always-on, first-order (tokens + $)
+session_cost_widget
+[ -n "$SC_OUT" ] && line2_parts+=("$SC_OUT")
+
+# Lifecycle spend vs estimate (only when a lifecycle cost ledger exists)
+lifecycle_cost_widget
+[ -n "$LCC_OUT" ] && line2_parts+=("$LCC_OUT")
 
 # Adversarial catch counter — always rendered on line 2
 if [ "$catches" -gt 0 ] 2>/dev/null; then

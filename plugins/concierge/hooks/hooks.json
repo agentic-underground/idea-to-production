@@ -28,6 +28,16 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/statusline/capture-cost.sh 2>/dev/null || true"
+          }
+        ]
+      }
     ]
   }
 }
