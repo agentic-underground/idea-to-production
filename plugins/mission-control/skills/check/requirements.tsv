@@ -1,0 +1,14 @@
+# name	probe-command	tier	install-hint
+# Canonical dependency manifest for MISSION-CONTROL. TAB-separated. See PREREQUISITES/.
+# MISSION-CONTROL degrades gracefully — a missing CLI narrows a lens to "partial", never a false "healthy".
+git	command -v git	required	apt install git
+bash	command -v bash	required	preinstalled
+curl	command -v curl	recommended	apt install curl
+jq	command -v jq	recommended	apt install jq
+promtool	command -v promtool	optional	github.com/prometheus/prometheus releases (Prometheus rule/SLO check)
+logcli	command -v logcli	optional	github.com/grafana/loki releases (Loki log query)
+kubectl	command -v kubectl	optional	kubernetes.io/docs/tasks/tools (workload health & saturation)
+aws	command -v aws	optional	awscli — CloudWatch metrics & logs
+gcloud	command -v gcloud	optional	cloud.google.com/sdk — Cloud Monitoring & Logging
+az	command -v az	optional	docs.microsoft.com/cli/azure — Azure Monitor
+gh	command -v gh	optional	cli.github.com (incident/issue automation)
