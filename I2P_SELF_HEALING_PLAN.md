@@ -19,10 +19,14 @@
 >
 > **▶ Implementation progress (the loop).** Each batch ships direct-to-main, demonstrably verified, then is
 > marked ✅ here; the file is `git rm`'d when all 52 are ✅.
-> - **P0 core — `eb7783f`:** ✅ P0-1 ✅ P0-2 ✅ P0-3 ✅ P0-5 ✅ P0-6 ✅ P0-7 (browser/env self-heal:
->   `scripts/ensure-browser.sh` heals+verifies the real ms-playwright stub on this box; the no-download rule
->   now covers tsv probes; the `mmdc` row is a capability probe; `headless-browser.md` ledger + the reflex).
-> - **Remaining:** P0-4, all of P1-A / P1-B / P1-C / P2.
+> - **P0 — DONE (`eb7783f`, `276c1e2`):** ✅ P0-1..P0-7 (browser/env self-heal: `ensure-browser.sh`
+>   heals+verifies the real ms-playwright stub; no-download rule covers tsv probes; `mmdc` capability probe;
+>   `headless-browser.md` ledger; `/foundry:prerequisites --fix` dispatcher).
+> - **P1-A — DONE:** ✅ P1-1 (verify-prereqs `--fix`, guarded) ✅ P1-2 (check H marketplace drift) ✅ P1-3
+>   (check I broken-refs) ✅ P1-4 (cache-staleness advisory) ✅ P1-5 (scorecard line-wise parse) ✅ P1-6
+>   (phase-sensor roadmap↔sentinel) ✅ P1-7 (`DEGRADED_CAPABILITIES` contract) ✅ P1-23 (lifecycle.json
+>   corrupt-state validation).
+> - **Remaining:** P1-B (9) · P1-C (8) · P2 (20) = **37 items** (15/52 shipped).
 
 ---
 

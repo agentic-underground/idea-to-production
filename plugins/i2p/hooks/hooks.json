@@ -10,6 +10,10 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-intro.sh 2>/dev/null || true"
+          },
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/offer-cache-update.sh 2>/dev/null || true"
           }
         ]
       }

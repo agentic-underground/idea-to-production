@@ -51,8 +51,25 @@ rc=$(find src rules -type f \( -name '*.rules.ts' -o -name '*.rules.js' -o -name
 test_count=$NA
 icost=""
 for f in IDEA_COST.jsonl doc/IDEA_COST.jsonl; do [[ -f "$f" ]] && { icost="$f"; break; }; done
+
+# Read the LAST VALID JSON object line-wise — never slurp (`jq -s`). A single malformed
+# line in IDEA_COST.jsonl must NOT zero every metric: skip corrupt lines, keep the last
+# good record. `jq -c .` drops any line it can't parse (2>/dev/null swallows the per-line
+# error); `tail -1` takes the most recent survivor. Then each field is read from $icost_last
+# with a plain `jq -r` (no -s). If a corrupt line was skipped, warn once on stderr.
+icost_last=""
 if [[ -n "$icost" ]]; then
-  test_count=$(jq -rs '.[-1].artefact_counts.test_count_total // empty' "$icost" 2>/dev/null); test_count=${test_count:-$NA}
+  icost_last=$(grep -v '^[[:space:]]*$' "$icost" | jq -c . 2>/dev/null | tail -1)
+  _icost_nonblank=$(grep -cv '^[[:space:]]*$' "$icost")
+  _icost_valid=$(grep -v '^[[:space:]]*$' "$icost" | jq -c . 2>/dev/null | wc -l | tr -d ' ')
+  if [[ "$_icost_nonblank" -gt "$_icost_valid" ]]; then
+    echo "scorecard: WARNING — $((_icost_nonblank - _icost_valid)) malformed line(s) in $icost skipped; using last valid record" >&2
+  fi
+fi
+icf() { [[ -n "$icost_last" ]] && printf '%s' "$icost_last" | jq -r "$1 // empty" 2>/dev/null; }
+
+if [[ -n "$icost_last" ]]; then
+  test_count=$(icf '.artefact_counts.test_count_total'); test_count=${test_count:-$NA}
 fi
 if [[ "$test_count" == "$NA" ]]; then
   tc=$(grep -rlE "\b(it|test|describe)\(|def test_|@Test" \
@@ -62,13 +79,15 @@ fi
 
 # ---- real cost from the last FOUNDRY cycle (only a real cycle can record tokens) ----
 tokens_total=$NA elapsed_s=$NA regressions=$NA est_acc=$NA cost_note=""
-if [[ -n "$icost" ]]; then
-  tokens_total=$(jq -rs '.[-1].token_accounting.tokens_total // empty' "$icost" 2>/dev/null); tokens_total=${tokens_total:-$NA}
-  elapsed_s=$(jq -rs '.[-1].time_accounting.elapsed_s // empty' "$icost" 2>/dev/null); elapsed_s=${elapsed_s:-$NA}
-  regressions=$(jq -rs '.[-1].quality.regressions_introduced // empty' "$icost" 2>/dev/null); regressions=${regressions:-$NA}
-  est_acc=$(jq -rs '.[-1].token_accounting.estimation_accuracy_pct // empty' "$icost" 2>/dev/null); est_acc=${est_acc:-$NA}
-else
+if [[ -n "$icost_last" ]]; then
+  tokens_total=$(icf '.token_accounting.tokens_total'); tokens_total=${tokens_total:-$NA}
+  elapsed_s=$(icf '.time_accounting.elapsed_s'); elapsed_s=${elapsed_s:-$NA}
+  regressions=$(icf '.quality.regressions_introduced'); regressions=${regressions:-$NA}
+  est_acc=$(icf '.token_accounting.estimation_accuracy_pct'); est_acc=${est_acc:-$NA}
+elif [[ -z "$icost" ]]; then
   cost_note="no IDEA_COST.jsonl — token/wall-clock omitted (only a real FOUNDRY cycle records them)"
+else
+  cost_note="IDEA_COST.jsonl present but no valid record — token/wall-clock omitted"
 fi
 
 # ---- SENTINEL gate verdict ----

@@ -20,6 +20,21 @@ skill for the next unit of work is automatically installed and ready.
 4. Extracts the embedded `SKILL.md` and installs it under `skills/<name>/`.
 5. Commits the new skill to the project and logs the transition.
 
+## ROADMAP ↔ sentinel-state cross-check
+
+Before phase detection, the sensor cross-checks each ROADMAP item's declared `STATUS:`
+against its terminal completion sentinel in the **sentinel audit log**
+(`doc/FOUNDRY_PLAN.md` under `## Sentinel Audit Log`, per
+`knowledge/protocols/context-sentinel.md`):
+
+- `STATUS: COMPLETE` must be witnessed by `SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}`.
+- `STATUS: AWAITING MERGE` must be witnessed by `SENTINEL::AWAITING_MERGE::ROADMAP-{N}`
+  (or its superseding `DELIVERY_COMPLETE`).
+
+On a mismatch it emits a specific `WARN [N] …` line and a non-zero exit — **detect-only,
+never auto-fix** (an unwitnessed COMPLETE may mean the item never actually reached `main`).
+It is **silent** when records agree, or when there is no audit log to contradict.
+
 ## Phase detection table
 
 | Phase | Name | Artifact marking phase complete |

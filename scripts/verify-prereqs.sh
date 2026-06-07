@@ -17,7 +17,29 @@
 #      but must never `npx -y`/`uvx`/`pip install`/`npm install`/`curl … | sh` a package.
 #   E. SOUL.md is byte-identical across the canonical root and every plugin copy.
 #   F. inject-soul.sh is byte-identical across all plugins (the SessionStart injector).
+#   H. marketplace.json ⟺ plugins/ — every plugins/<name>/ dir has a matching
+#      marketplace.json[].name entry and vice-versa (no orphan dir, no orphan entry), and each
+#      plugin's plugin.json.version equals its marketplace.json entry version.
+#   I. internal doc links resolve — repo-local markdown links in plugins/**/*.md, PREREQUISITES/*.md,
+#      and root *.md that end in a real extension (.md/.sh/.tsv/.json/.svg/.png) point at a file that
+#      exists on disk. Conservative: skips http(s)/mailto/anchors, ${CLAUDE_PLUGIN_ROOT}-relative,
+#      placeholders, and links inside inline-code spans.
+#
+# Flag:
+#   --fix  guarded canonical re-sync — when the canonical-copy parity checks (A check.sh, E SOUL.md,
+#          F inject-soul.sh) FAIL, re-sync each drifted copy FROM its named canonical source (root
+#          SOUL.md for E; the most-common copy for A/F). GUARDS: refuses on a dirty git tree, prints
+#          the diff before writing, and operates ONLY on the canonical-copy sets these checks track
+#          (never a file the user intentionally diverged elsewhere). Without --fix: detect-only.
 set -uo pipefail
+
+fix=0
+for arg in "$@"; do
+  case "$arg" in
+    --fix) fix=1 ;;
+    *) printf "unknown argument: %s (supported: --fix)\n" "$arg" >&2; exit 2 ;;
+  esac
+done
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo"
@@ -30,6 +52,35 @@ pass() { printf "  %b✓%b %s\n" "$green" "$reset" "$1"; }
 fail() { printf "  %b✗ %s%b\n" "$red" "$1" "$reset"; fails=$((fails+1)); }
 section() { printf "\n%b%s%b\n" "$bold" "$1" "$reset"; }
 
+# ── --fix registry (canonical-copy re-sync, used by checks A/E/F) ─────────────
+# Each parity check, when it detects drift, registers the canonical source and the drifted copies
+# it would re-sync. The actual re-sync happens in the guarded --fix block before the verdict — never
+# inline, so detect-only behaviour (the default) is preserved byte-for-byte.
+resync_src=()    # parallel arrays: resync_src[i] is the canonical source for…
+resync_dst=()    # …resync_dst[i], one drifted copy to overwrite from it.
+# canonical_of <file…> : echo the canonical copy of a set — the most-common-by-md5 member (ties
+# broken by sort order). This is the "repo-root-blessed" copy: the majority that the lone drifted
+# copy diverged from. mawk-safe (no gawk extensions).
+canonical_of() {
+  md5sum "$@" | awk '
+    { c[$1]++; if (!($1 in first)) first[$1]=$2 }   # $1=md5, $2=path; remember first path per md5
+    END { best=""; bn=0
+          for (h in c) if (c[h]>bn || (c[h]==bn && first[h]<best)) { bn=c[h]; best=first[h] }
+          print best }
+  '
+}
+# register_drift <canonical> <file…> : queue every file whose md5 != canonical's md5 for re-sync.
+register_drift() {
+  local canon="$1"; shift
+  local cs ds f
+  cs="$(md5sum "$canon" | awk '{print $1}')"
+  for f in "$@"; do
+    [ "$f" = "$canon" ] && continue
+    ds="$(md5sum "$f" | awk '{print $1}')"
+    if [ "$ds" != "$cs" ]; then resync_src+=("$canon"); resync_dst+=("$f"); fi
+  done
+}
+
 # ── A. check.sh byte-identical across all plugins ────────────────────────────
 section "A. check.sh canonical-copy parity"
 mapfile -t checks < <(find plugins -path '*/skills/check/scripts/check.sh' | sort)
@@ -41,6 +92,7 @@ else
     pass "${#checks[@]} copies identical ($sums)"
   else
     fail "check.sh copies diverge across plugins:"; md5sum "${checks[@]}" | sed 's/^/      /'
+    register_drift "$(canonical_of "${checks[@]}")" "${checks[@]}"
   fi
 fi
 
@@ -185,6 +237,7 @@ else
     pass "${#souls[@]} copies identical incl. root ($sums)"
   else
     fail "SOUL.md copies diverge (root vs plugins):"; md5sum "${souls[@]}" | sed 's/^/      /'
+    register_drift "SOUL.md" "${souls[@]}"   # named canonical source = root SOUL.md
   fi
 fi
 
@@ -199,6 +252,118 @@ else
     pass "${#injectors[@]} copies identical ($sums)"
   else
     fail "inject-soul.sh copies diverge across plugins:"; md5sum "${injectors[@]}" | sed 's/^/      /'
+    register_drift "$(canonical_of "${injectors[@]}")" "${injectors[@]}"
+  fi
+fi
+
+# ── H. marketplace.json ⟺ plugins/ (names + versions aligned) ────────────────
+# Two assertions, both enumerated dynamically (no hard-coded plugin list):
+#   (1) name set parity — every plugins/<name>/ dir has a marketplace.json[].name entry and vice-
+#       versa (no orphan dir, no orphan entry); and
+#   (2) version alignment — each plugin's plugin.json.version equals its marketplace.json entry
+#       version (the four-mirror alignment the maintainer loop keeps bumping).
+section "H. marketplace.json ⟺ plugins/ (names + versions aligned)"
+mkt=".claude-plugin/marketplace.json"
+if ! command -v jq >/dev/null 2>&1; then
+  fail "jq not found — required to read $mkt"
+elif [ ! -f "$mkt" ]; then
+  fail "$mkt is missing"
+else
+  # (1) name-set parity
+  dirs="$(ls -d plugins/*/ 2>/dev/null | sed 's#plugins/##; s#/$##' | sort)"
+  entries="$(jq -r '.plugins[].name' "$mkt" | sort)"
+  orphan_dirs="$(comm -23 <(printf '%s\n' "$dirs") <(printf '%s\n' "$entries"))"
+  orphan_entries="$(comm -13 <(printf '%s\n' "$dirs") <(printf '%s\n' "$entries"))"
+  h_ok=1
+  if [ -n "$orphan_dirs" ]; then
+    h_ok=0; fail "plugins/ dir(s) with no marketplace.json entry:"; printf '%s\n' "$orphan_dirs" | sed 's/^/      /'
+  fi
+  if [ -n "$orphan_entries" ]; then
+    h_ok=0; fail "marketplace.json entr(y/ies) with no plugins/ dir:"; printf '%s\n' "$orphan_entries" | sed 's/^/      /'
+  fi
+  # (2) version alignment — only for names present on BOTH sides (a name orphan is already failed above)
+  for name in $(comm -12 <(printf '%s\n' "$dirs") <(printf '%s\n' "$entries")); do
+    mver="$(jq -r --arg n "$name" '.plugins[] | select(.name==$n) | .version // "∅"' "$mkt")"
+    pj="plugins/$name/.claude-plugin/plugin.json"
+    if [ ! -f "$pj" ]; then
+      h_ok=0; fail "$name: missing $pj"
+    else
+      pver="$(jq -r '.version // "∅"' "$pj")"
+      if [ "$mver" != "$pver" ]; then
+        h_ok=0; fail "$name: version mismatch — marketplace.json=$mver, plugin.json=$pver"
+      fi
+    fi
+  done
+  [ "$h_ok" -eq 1 ] && pass "$(printf '%s\n' "$entries" | grep -c .) plugins aligned (names paired, plugin.json.version == marketplace.json version)"
+fi
+
+# ── I. internal doc links resolve ────────────────────────────────────────────
+# Resolve repo-local markdown links [...](path) across plugins/**/*.md, PREREQUISITES/*.md, and root
+# *.md, and report any that point at a missing file. Conservative by design (only clearly-local file
+# links — never a false positive on a runtime-resolved or illustrative link). A link is CHECKED only
+# when its target, after stripping any "title" and #anchor:
+#   • is NOT http(s):// / mailto: / a pure #anchor / ${CLAUDE_PLUGIN_ROOT}-relative (runtime-resolved),
+#   • is NOT absolute (/-rooted) and contains no <placeholder> token,
+#   • is NOT inside an inline-code span (`…` — those are rendered-output examples, not live refs), and
+#   • ends in a real, repo-tracked extension: .md .sh .tsv .json .svg .png.
+# It is then resolved against the LINKING FILE's directory (so ../-relative links work) and must exist.
+# FUTURE EXTENSION: this pass deliberately does NOT validate /command tokens (e.g. /foundry:check) —
+# semantic command-token resolution is noisy and out of scope here; add it as a separate check later.
+section "I. internal doc links resolve"
+broken_links="$(
+  { find plugins -name '*.md'; ls PREREQUISITES/*.md 2>/dev/null; ls ./*.md 2>/dev/null; } | sort -u | while IFS= read -r f; do
+    dir="$(dirname "$f")"
+    # awk emits one link target per line, after blanking inline-code spans so links inside `…` are skipped.
+    awk '
+      {
+        line=$0
+        while (match(line, /`[^`]*`/)) line = substr(line,1,RSTART-1) substr(line,RSTART+RLENGTH)
+        s=line
+        while (match(s, /\]\([^)]+\)/)) { print substr(s, RSTART+2, RLENGTH-3); s=substr(s, RSTART+RLENGTH) }
+      }
+    ' "$f" | while IFS= read -r raw; do
+      target="${raw%% *}"      # drop a trailing "title"
+      target="${target%%#*}"   # drop an #anchor
+      [ -z "$target" ] && continue
+      case "$target" in
+        http://*|https://*|mailto:*|\#*|*CLAUDE_PLUGIN_ROOT*|/*) continue ;;
+        *"<"*|*">"*) continue ;;   # illustrative placeholder, not a real path
+      esac
+      case "$target" in
+        *.md|*.sh|*.tsv|*.json|*.svg|*.png) ;;
+        *) continue ;;
+      esac
+      [ -e "$dir/$target" ] || printf '      %s -> %s\n' "$f" "$target"
+    done
+  done
+)"
+if [ -z "$broken_links" ]; then
+  pass "all repo-local doc links resolve (.md/.sh/.tsv/.json/.svg/.png, ../-relative against the linking file)"
+else
+  fail "broken internal doc links (target missing on disk):"; printf '%s\n' "$broken_links"
+fi
+
+# ── --fix: guarded canonical re-sync ─────────────────────────────────────────
+# Only acts when --fix was passed. Re-syncs the drifted canonical copies registered by checks A/E/F
+# from their named canonical source. GUARDS (all mandatory): refuse on a dirty git tree; print the
+# diff of every change first; touch ONLY the registered canonical-copy set (never an unrelated or
+# intentionally-diverged file). Without --fix the registry is computed but never applied.
+if [ "$fix" -eq 1 ]; then
+  section "--fix. guarded canonical re-sync"
+  if [ "${#resync_dst[@]}" -eq 0 ]; then
+    pass "nothing to re-sync; all parity checks pass"
+  elif ! git diff --quiet || ! git diff --cached --quiet; then
+    fail "refusing to --fix: git tree is dirty. Commit/stash your changes first, then re-run --fix."
+  else
+    printf "  %bwould re-sync %d drifted copy(ies) from their canonical source:%b\n" "$dim" "${#resync_dst[@]}" "$reset"
+    for i in "${!resync_dst[@]}"; do
+      printf "    %s  ⟸  %s\n" "${resync_dst[$i]}" "${resync_src[$i]}"
+      diff -u "${resync_dst[$i]}" "${resync_src[$i]}" | sed 's/^/      /' || true
+    done
+    for i in "${!resync_dst[@]}"; do
+      cp "${resync_src[$i]}" "${resync_dst[$i]}"
+    done
+    pass "re-synced ${#resync_dst[@]} copy(ies); re-run without --fix to confirm parity restored"
   fi
 fi
 

@@ -36,12 +36,64 @@ fi
 # EARS-013: nothing to do if ROADMAP is absent or has no IN PROGRESS features
 [ -f "$ROADMAP" ] || { echo "No ROADMAP.md at ${ROADMAP}"; exit 0; }
 
-if ! grep -q "STATUS: IN PROGRESS" "$ROADMAP"; then
-    echo "No features currently IN PROGRESS — nothing to evaluate"
-    exit 0
-fi
+# ---- ROADMAP ↔ sentinel-state cross-check (P1-6) ----
+# A ROADMAP item's STATUS must agree with its terminal completion sentinel in the
+# sentinel audit log (`doc/FOUNDRY_PLAN.md` under `## Sentinel Audit Log`, per
+# knowledge/protocols/context-sentinel.md). The end-of-life sentinel is
+# DELIVERY_COMPLETE; the terminal-pending one is AWAITING_MERGE. When a roadmap
+# item is marked COMPLETE but the audit log carries NO DELIVERY_COMPLETE for it,
+# the two records disagree — surface the SPECIFIC mismatch and never auto-fix.
+# This is DETECT-only (the plan's "detect-auto"): a WARN, not a state change.
+# The check is silent when the records are consistent, or when there is no audit
+# log to cross-check against (nothing to contradict).
+cross_check_sentinels() {
+    local plan="${PROJECT}/doc/FOUNDRY_PLAN.md"
+    [ -f "$plan" ] || return 0          # no audit log → nothing to cross-check
+    # Pull only the sentinel-audit-log region so stray prose can't false-match.
+    local audit
+    audit=$(awk '/^## +Sentinel Audit Log/{a=1; next} a && /^## /{a=0} a{print}' "$plan")
+    [ -n "$audit" ] || return 0          # log section absent/empty → nothing to assert
+
+    local n
+    # Each ROADMAP header carries its id as `## [N] ...`; map COMPLETE/AWAITING MERGE
+    # items to the sentinel that must witness them.
+    while IFS= read -r header; do
+        n=$(printf '%s' "$header" | grep -o '\[[0-9]*\]' | tr -d '[]')
+        [ -n "$n" ] || continue
+        # Find this item's declared STATUS (first STATUS line in its block).
+        local status
+        status=$(awk -v n="$n" '
+            $0 ~ ("^## \\[" n "\\]") { in_f=1; next }
+            in_f && /^## \[/          { in_f=0 }
+            in_f && /STATUS:/ { sub(/.*STATUS:[ \t]*/, ""); sub(/[ \t].*/, "", $0); print; exit }
+        ' "$ROADMAP")
+        case "$status" in
+            COMPLETE)
+                if ! printf '%s\n' "$audit" | grep -q "SENTINEL::DELIVERY_COMPLETE::ROADMAP-${n}::"; then
+                    echo "WARN [${n}] ROADMAP STATUS: COMPLETE but no SENTINEL::DELIVERY_COMPLETE::ROADMAP-${n} in sentinel audit log — completion is unwitnessed; verify the item actually delivered to main."
+                    log "  [${n}] CROSS-CHECK MISMATCH: COMPLETE without DELIVERY_COMPLETE sentinel"
+                    sensor_exit=1
+                fi
+                ;;
+            AWAITING)
+                # `AWAITING MERGE` truncates to `AWAITING` after the status split above.
+                if ! printf '%s\n' "$audit" | grep -qE "SENTINEL::(AWAITING_MERGE|DELIVERY_COMPLETE)::ROADMAP-${n}::"; then
+                    echo "WARN [${n}] ROADMAP STATUS: AWAITING MERGE but no SENTINEL::AWAITING_MERGE::ROADMAP-${n} in sentinel audit log — the awaiting-merge state is unwitnessed."
+                    log "  [${n}] CROSS-CHECK MISMATCH: AWAITING MERGE without AWAITING_MERGE sentinel"
+                    sensor_exit=1
+                fi
+                ;;
+        esac
+    done < <(grep '^## \[[0-9]' "$ROADMAP")
+}
 
 sensor_exit=0
+cross_check_sentinels
+
+if ! grep -q "STATUS: IN PROGRESS" "$ROADMAP"; then
+    echo "No features currently IN PROGRESS — nothing to evaluate"
+    exit "$sensor_exit"
+fi
 
 # Process each IN PROGRESS feature
 while IFS= read -r header; do

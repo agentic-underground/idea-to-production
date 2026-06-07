@@ -43,6 +43,23 @@ have_jq() { command -v jq >/dev/null 2>&1; }
 
 valid_phase() { case " $PHASES " in *" $1 "*) return 0 ;; *) return 1 ;; esac; }
 
+# is_corrupt — the file EXISTS but is NOT parseable JSON. This distinguishes a
+# truncated/corrupt state file (recoverable, must not be clobbered) from a genuinely
+# absent one (a fresh project, fine to init). Without jq we cannot parse JSON, so we
+# CANNOT prove corruption — we conservatively answer "not corrupt" (no false alarm,
+# and the grep fallback in get_phase still degrades safely). The fix is only as strong
+# as jq's presence; this is acceptable because writes require jq anyway (write_state).
+is_corrupt() {
+  [ -f "$LF" ] || return 1            # absent → not corrupt (it's "not started")
+  have_jq || return 1                 # no jq → cannot decide; treat as not-corrupt
+  jq -e . "$LF" >/dev/null 2>&1 && return 1 || return 0
+}
+
+# corrupt_msg — one clear diagnostic, to stderr, never confused with "not started".
+corrupt_msg() {
+  echo "lifecycle: $LF is corrupt — not overwriting; back it up and re-init / repair (e.g. mv '$LF' '$LF.bak' && /i2p-lifecycle)" >&2
+}
+
 get_phase() {
   [ -r "$LF" ] || { echo ""; return; }
   if have_jq; then jq -r '.current_phase // empty' "$LF" 2>/dev/null; else
@@ -87,8 +104,12 @@ bump_cycle() {  # increment the cycle counter on an OPERATE ↻ DISCOVER wrap
 
 case "$cmd" in
   get)
+    # A corrupt file is NOT "no phase": say so on stderr (keep stdout empty/parseable).
+    if is_corrupt; then corrupt_msg; exit 1; fi
     get_phase ;;
   status)
+    # Distinguish corrupt from not-started — a corrupt file must never read as "not started".
+    if is_corrupt; then echo "lifecycle: corrupt — $LF is not valid JSON (back it up and re-init / repair)"; exit 1; fi
     p="$(get_phase)"
     if [ -n "$p" ]; then
       n=0; idx=0; for x in $PHASES; do n=$((n+1)); [ "$x" = "$p" ] && idx=$n; done
@@ -98,15 +119,19 @@ case "$cmd" in
       echo "lifecycle: not started (run: /i2p-lifecycle  or  lifecycle.sh init)"
     fi ;;
   init)
+    # Refuse to clobber a corrupt-but-recoverable state file with a fresh init.
+    if is_corrupt; then corrupt_msg; exit 1; fi
     if [ -f "$LF" ]; then echo "lifecycle: already initialised at $(get_phase) — $LF"; exit 0; fi
     product="${2:-$(basename "$(cd "$dir" 2>/dev/null && pwd || echo product)")}"
     write_state "$product" "DISCOVER" init && echo "lifecycle: started '$product' at DISCOVER — $LF"
     run_cost estimate "$dir" ;;   # seed calibration-aware per-phase token estimates
   set)
     ph="${2:-}"; valid_phase "$ph" || { echo "lifecycle: invalid phase '$ph' (valid: $PHASES)" >&2; exit 1; }
+    if is_corrupt; then corrupt_msg; exit 1; fi   # REFUSE to write over a recoverable corrupt file
     [ -f "$LF" ] || { echo "lifecycle: not initialised; run init first" >&2; exit 1; }
     write_state "" "$ph" update && echo "lifecycle: → $ph" ;;
   advance)
+    if is_corrupt; then corrupt_msg; exit 1; fi   # REFUSE to advance/clobber a corrupt file
     cur="$(get_phase)"; [ -n "$cur" ] || { echo "lifecycle: not initialised; run init first" >&2; exit 1; }
     nxt="$(next_phase "$cur")"
     write_state "" "$nxt" update || exit 1
@@ -120,6 +145,10 @@ case "$cmd" in
     # At the LAST phase (OPERATE) the next phase wraps to the FIRST (DISCOVER) — the
     # cyclic re-entry — and the cycle counter bumps: a learning became a new opportunity.
     ph="${2:-}"; valid_phase "$ph" || { echo "lifecycle: invalid phase '$ph' (valid: $PHASES)" >&2; exit 0; }
+    # REFUSE to clobber a corrupt-but-recoverable state. Unlike the normal no-op (exit 0),
+    # corruption is a real fault: diagnose to stderr and exit non-zero so it is never
+    # mistaken for "advanced" or for the benign not-started/not-at-phase no-ops below.
+    if is_corrupt; then corrupt_msg; exit 1; fi
     cur="$(get_phase)"
     [ -n "$cur" ] || { echo "lifecycle: not started — no change"; exit 0; }
     [ "$cur" = "$ph" ] || { echo "lifecycle: at ${cur}, not ${ph} — no change"; exit 0; }
