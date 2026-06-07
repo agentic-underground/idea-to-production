@@ -47,7 +47,17 @@ this plugin is installed it owns ideation; FOUNDRY's inline skill is the gracefu
      slice** (don't let them drift from it).
 4. **Iterate with the user.** Present the package; ask "what needs adjusting?"; correct **both faces** in
    lock-step (they must never disagree). Re-display when a change is significant.
-5. **Hand off.** When the user is satisfied and the exit gate passes: hand the agent-facing package to
+5. **Challenge the package independently — before handoff.** The challenge protocol in step 2 is *you*
+   pressure-testing your own work; that is not adversarial review. Once the agent-facing package is
+   drafted and the user is satisfied, spawn the **IDEA challenger** agent
+   ([`${CLAUDE_PLUGIN_ROOT}/agents/challenger.md`](../../agents/challenger.md)) as a **fresh-context
+   second party** — hand it the agent-facing package (brief + SMU-seed + first slice + handoff contract)
+   and instruct it to *refute that it is build-ready and at knowledge-parity*. Resolve its verdict before
+   handoff: **READY** → the package has earned the handoff, proceed; **NEEDS_REVISION** → close the named
+   gaps in the dialogue and re-challenge (never hand off over open gaps); **NOT_READY** → the idea is
+   still soft, return to discovery (or market-scanner) rather than paper over it. Only a package that
+   survives the challenger is handed to FOUNDRY.
+6. **Hand off.** When the user is satisfied and the exit gate passes: hand the agent-facing package to
    **FOUNDRY** if installed (its IDEA station receives it → roadmap → `/loop /foundry` builds it), else
    write the package to `doc/idea/<slug>/` and point the user at FOUNDRY/the inline dev system.
 

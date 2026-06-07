@@ -44,7 +44,16 @@ earns a keep verdict. It is the spark, made disciplined.
    every area where your understanding is shallow — bring it to **knowledge-parity** before any keep.
 5. **Narrow** to the 1–2 strongest, take them deeper (demand evidence, WTP probe, the wedge, the
    channel), and reach a verdict per candidate: **KEEP / PARK / KILL**.
-6. **Emit the result** (see Output). For a KILL or PARK, record the reason in the kill ledger (scoring.md)
+6. **Challenge the KEEP independently — before any handoff.** A keep verdict is *you* agreeing with
+   yourself; that is not adversarial review. Spawn the **opportunity challenger** agent
+   ([`${CLAUDE_PLUGIN_ROOT}/agents/challenger.md`](../../agents/challenger.md)) as a **fresh-context
+   second party** — hand it the candidate, the A–E scorecard + evidence, the price band, and the open
+   questions, and instruct it to *try to KILL the keep*. Resolve its verdict before proceeding:
+   **UPHOLD_KEEP** → the keep is earned, continue; **DOWNGRADE_TO_KILL** → it is not an opportunity,
+   record the kill-ledger entry and return to propose again (never hand off a downgraded candidate);
+   **NEEDS_EVIDENCE** → gather the missing proof and re-challenge. Only a KEEP that survives the
+   challenger is handed to the ideator.
+7. **Emit the result** (see Output). For a KILL or PARK, record the reason in the kill ledger (scoring.md)
    so a like candidate is recognised faster next time.
 
 ## Ground claims in evidence — use web research
