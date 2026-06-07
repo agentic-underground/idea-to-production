@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # ensure-browser.sh — idempotent DETECT → HEAL → VERIFY for the headless browser
 # the marketplace's two browser resolvers (puppeteer/mmdc and the Playwright MCP)
-# depend on. Implements I2P_SELF_HEALING_PLAN.md items P0-3 (the self-verifying
-# heal) and P0-2 (the env single-source-of-truth).
+# depend on. It is the self-verifying browser heal and the single source of truth
+# for the browser env (PUPPETEER_EXECUTABLE_PATH / ms-playwright slot).
 #
-# The incident (plan §2): "browser not installed" is reported while a real,
+# The incident it answers: "browser not installed" is reported while a real,
 # launchable Chrome already sits on disk in a sibling cache slot. The ONLY WAY is
 # DIAGNOSE before installing — locate an existing browser, re-point the consumer
 # (PUPPETEER_EXECUTABLE_PATH for puppeteer/mmdc; repair the empty ms-playwright
@@ -16,7 +16,7 @@
 #   --fix     repair empty ms-playwright stub slots (atomic, self-loop guarded,
 #             family-type guarded), then verify; export the resolver env.
 #
-# Safe-auto contract (plan §1, §3): a slot is only called "healed" once the
+# Safe-auto contract: a slot is only called "healed" once the
 # healed binary VERIFIES a real headless launch. When unsure, REPORT — never heal.
 #
 # Idempotent: a second run is a no-op. Handles a missing $HOME and missing tools

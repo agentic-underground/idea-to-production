@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# overdue-action-items.sh — the postmortem action-item FOLLOW-UP DETECTOR (self-healing plan P2-19).
+# overdue-action-items.sh — the postmortem action-item FOLLOW-UP DETECTOR.
 #
 # WHAT IT DOES (DETECT → SURFACE — never auto-close, never gate):
 #   Reads the append-only action-item LEDGER (<project>/.i2p/action-items.jsonl, written by

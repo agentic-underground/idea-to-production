@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # stuck-phase.sh — stuck-phase / time-in-phase detector for the maintenance cadence
-# (self-healing plan P1-25; referenced from the maintain SKILL).
+# (referenced from the maintain SKILL).
 #
 # WHAT IT DOES (DETECT → PROPOSE — never auto-advance):
 #   Reads <project>/.i2p/lifecycle.json, computes how long the CURRENT phase has been active

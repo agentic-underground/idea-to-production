@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # mcp-liveness.sh — SessionStart hook. Mid-session MCP-death detector for the OPERATE
-# runtime surface (self-healing plan P1-24).
+# runtime surface.
 #
-# WHY A HOOK, NOT A SKILL. Per the heal-itself-circularity rule (I2P_SELF_HEALING_PLAN §5
-# P1-C note, degraded-capabilities.md §2): a detector that lives inside a skill/MCP goes
+# WHY A HOOK, NOT A SKILL. Per the heal-itself-circularity rule (the degraded-capabilities
+# protocol, degraded-capabilities.md §2): a detector that lives inside a skill/MCP goes
 # blind exactly when that surface crashes. This lives in the crash-surviving hook substrate
-# (the same layer as inject-soul / the P1-8 heartbeat) so it survives the failure it detects.
+# (the same layer as inject-soul / the hook-heartbeat) so it survives the failure it detects.
 #
 # WHAT IT DOES (DETECT-ONLY — never restart, never install):
 #   1. Enumerate the shipped MCP servers (marketplace plugins/*/.mcp.json, else the harness's

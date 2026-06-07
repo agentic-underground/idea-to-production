@@ -79,7 +79,7 @@ logic of its own; each sub-heal lives with — and is verified by — the surfac
 safe sub-heal joins by **adding one line to the register below**, never by growing a switch of
 heals with differing risk. The hard rule: **only heals that are idempotent and verify their own
 result run automatically** — anything destructive or ambiguous is *reported, never auto-run* (the
-human-gated stance: `I2P_SELF_HEALING_PLAN.md` §1, §9).
+human-gated stance: [`../../knowledge/architecture/self-architecture.md`](../../knowledge/architecture/self-architecture.md)).
 
 ### The sub-heal register (safe-auto only)
 
@@ -101,10 +101,10 @@ auto-run in this dispatcher:
 
 - **Canonical-copy drift.** Run `bash ${repo}/scripts/verify-prereqs.sh` (when reachable) and, if it
   reports drift, **report it** — do not re-sync. A guarded re-sync (refuse-on-dirty-tree, named
-  canonical source, diff-first) is the future `verify-prereqs.sh --fix` (`I2P_SELF_HEALING_PLAN.md`
-  P1-1); until that ships, this dispatcher only **detects** the drift and tells the human to resolve
-  it. Re-syncing away an intentional divergence is exactly the destructive ambiguity the human-gated
-  stance forbids.
+  canonical source, diff-first) is available as `verify-prereqs.sh --fix`, but this dispatcher
+  deliberately only **detects** the drift and tells the human to run it: re-syncing away an
+  intentional divergence is exactly the destructive ambiguity the human-gated stance forbids, so the
+  `--fix` stays human-invoked, never auto-run from here.
 
 ### `--fix` run order
 

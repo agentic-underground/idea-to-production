@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# action-items.sh — the postmortem ACTION-ITEM LEDGER writer/reader (self-healing plan P2-19).
+# action-items.sh — the postmortem ACTION-ITEM LEDGER writer/reader.
 #
 # A blameless postmortem ends in "concrete, owned, dated action items" — but `incident` only WROTE
 # them into POSTMORTEM-<id>.md prose; nothing tracked them to completion, so they quietly rotted.

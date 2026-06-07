@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # marketplace-golden-signals.sh — dogfood MISSION-CONTROL's observability on the MARKETPLACE ITSELF
-# (self-healing plan P2-18, "cobbler's children"). The marketplace ships an OPERATE observability lens
+# ("cobbler's children"). The marketplace ships an OPERATE observability lens
 # but never turned it on its OWN runtime/health; this script does, mapping the four golden signals onto
 # the marketplace's own deterministic surface, and emitting a HEALTH SUMMARY the HUD or a CI artifact reads.
 #

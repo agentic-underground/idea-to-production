@@ -117,7 +117,7 @@ Any skill/agent/instrument that reads degraded-capabilities MUST honour all thre
    measured dimension whose producing lens is degraded, marks coverage **PARTIAL** — it MUST NOT
    read "0 findings" as "0 problems" when the lens that finds them did not run. A degraded lens
    yields `partial`, never a silent `PASS`. (This is the concrete defence against the false-green
-   class the self-healing plan exists to close.)
+   class the marketplace's self-healing work exists to close.)
 
 ### Consumer reference points (implement against this doc)
 

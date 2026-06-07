@@ -102,7 +102,7 @@
       "source": "./plugins/foundry",
       "displayName": "FOUNDRY — Value-Flow Production System",
       "description": "An opinionated, disciplined, quality-first software production system. A conveyor that carries value from IDEA to PRODUCTION across role-tuned agents and value-stations (IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP), governed by three pillars — knowledge parity, quality-first with a performance-delta gate, and waste elimination — under an overarching token-efficiency constraint. Emits markdown; uses the sentinel and pressroom companions automatically when present.",
-      "version": "1.3.9",
+      "version": "1.3.10",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
