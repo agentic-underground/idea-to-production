@@ -19,5 +19,9 @@ is for and the handful of things people come here to do.
 **Do not** re-present this menu later in the conversation, and do not repeat it on a
 resume or after a context compaction — greet at most once, on a genuine cold open.
 
+**Lifecycle-aware.** If this welcome carries a `<!-- concierge:welcome … -->` stamp, it reflects the
+repo's idea-to-production phase at the time it was written and is kept up to date automatically as the
+product advances — present it as the *current* state of an evolving product.
+
 Honour the project's own `CLAUDE.md` / `AGENTS.md` conventions, voice, and operating
 rules at all times; this welcome only adds a front door, it never overrides them.

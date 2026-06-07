@@ -6,6 +6,11 @@ description: >
   repo to infer what it is and the handful of things people come here to do, proposes
   2–4 top-level "lanes" with concrete decision trees, and writes `.claude/welcome.md`
   in the CONCIERGE format so the SessionStart hook can greet arrivals and route them.
+  If the repo is in an idea-to-production lifecycle, it also reads the lifecycle phase
+  and the product's emergent artifacts so the welcome reflects what the product is
+  *becoming*, and stamps the file with its phase. Runs in two modes: interactive
+  **author** (default) and silent **refresh** (`/concierge:define-welcome refresh`),
+  the latter used to keep a managed welcome up to date as phases advance.
   Trigger when the user says "define a welcome experience", "set up a greeting for this
   repo", "add a front door / concierge", "what should this repo say when opened", or
   invokes `/concierge:define-welcome`.
@@ -29,6 +34,23 @@ enters context every session, so every line must earn its place.
 ## Procedure
 
 ### 1. Understand the repository
+
+**First, detect the lifecycle context.** If `.i2p/lifecycle.json` exists, this repo is in an
+idea-to-production lifecycle — read its `current_phase` and `cycle`, plus the small *emergent*
+artifact(s) for that phase, so the welcome reflects what the product is **becoming**, not just the files
+that exist yet. These reads are *targeted* (small, identity-bearing files), never a deep scan:
+
+| Phase | Read (when present) | The welcome should convey |
+|---|---|---|
+| DISCOVER | `.market-scanner/goal.md`, `doc/opportunities/<slug>.md` | "this repo is hunting [opportunity] — continue with `/market-scan`" |
+| IDEATE | `doc/idea/<slug>/` IDEA brief (problem / scope / success) + any coined name | "becoming **[Name]**: [one-liner] — next `/ideate` → FOUNDRY" |
+| DESIGN | `doc/design/mockups/<slug>/rationale.md` | "[Name] — designed; review with `/ui-review`" |
+| BUILD | `doc/SUBJECT_MATTER_UNDERSTANDING.md`, `ROADMAP.md` | "[Name] — building; lanes from the roadmap" |
+| ASSURE / SECURE | `PR_REVIEW.md` / `SECURITY-REPORT.md` verdicts | "proven / secured — current gate status" |
+| PUBLISH / OPERATE | `doc/articles/` titles; mission-control surfaces | "live — story + operate lanes" |
+
+Early phases lead with *what it's becoming and the next command*; later phases give the full lanes. For a
+repo with **no** lifecycle, skip this and rely on the repo reads below.
 
 Read enough to know what this repo is *for* and what people *do* here. Look at:
 
@@ -73,12 +95,30 @@ voice, optionally closing on a green-gate one-liner), a `## Lanes` summary list,
 `## <Lane>` section per lane with its decision tree. Create the `.claude/` directory if
 absent. Keep it tight.
 
+**Stamp it** when a lifecycle is running, so CONCIERGE can keep the welcome in step with the product —
+lead the file with a phase stamp (an HTML comment, invisible when rendered):
+
+```
+<!-- concierge:welcome for_phase=<PHASE> cycle=<N> product=<slug-or-name> generated=<iso8601> -->
+```
+
 ### 5. Hand back
 
 Tell the user the welcome experience is written, and that it takes effect on the **next
 session** (the SessionStart hook reads it on a cold open) — they should reload to see
 it. Note that it is smart-gated: it greets only on a vague/cold open and steps aside the
 moment someone states a concrete task. Offer to refine any lane.
+
+## Refresh mode (`refresh`)
+
+When invoked as `/concierge:define-welcome refresh` — CONCIERGE triggers this automatically when a
+**managed** welcome falls out of step with the lifecycle (the `offer-welcome.sh` hook detects a stale
+phase stamp) — run **silently and artifact-driven**: do **not** use AskUserQuestion. Re-read the
+lifecycle phase + that phase's emergent artifacts, regenerate the greeting and re-prioritise the lanes to
+match what the product now is, **preserve any user-authored lanes that are still valid**, restamp the file
+with the current phase/cycle, and add a single line to your reply: `↻ refreshed the welcome for <PHASE>`.
+This keeps the repo's front door current as the product emerges, without interrupting anyone. Only the
+`author` mode (interactive) creates the welcome the first time; `refresh` never creates one from nothing.
 
 ## Quality bar
 

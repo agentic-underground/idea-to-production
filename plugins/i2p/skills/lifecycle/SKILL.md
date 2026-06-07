@@ -80,6 +80,12 @@ the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
 
 You can also drive it by hand here with `done`/`advance`/`set`.
 
+**Keep the welcome in step (by capability).** After advancing — and only when the `concierge` plugin is
+installed and the repo has a `.claude/welcome.md` — run `/concierge:define-welcome refresh` so the repo's
+front door reflects the new phase's emergent identity. Silent and order-safe; degrades to nothing when
+concierge is absent. (CONCIERGE also auto-detects a stale welcome on the next SessionStart via its
+`offer-welcome.sh` hook, so this is a same-session liveness nicety, not the only path.)
+
 ## Self-improvement covenant
 Inherits the i2p covenant. The phase set and signals live in one place
 ([`../../knowledge/product-lifecycle.md`](../../knowledge/product-lifecycle.md)); if reality drifts, fix

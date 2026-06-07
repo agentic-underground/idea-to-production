@@ -19,6 +19,14 @@ The engine ships in the marketplace; the **content is repo-local**, exactly like
   has a `.claude/welcome.md`, it injects it (wrapped in the runtime contract from
   `hooks/welcome-preamble.md`) as `additionalContext`. If there is no welcome file, it
   is a **silent no-op** — which is why it is safe to have enabled in every repo.
+- **`hooks/offer-welcome.sh`** — its mirror image: a `SessionStart` hook that acts when there is **no**
+  welcome (or a managed one has fallen out of date). On a cold/vague open it surfaces a smart-gated,
+  **in-the-know** offer to author one — tailored from the repo's `CLAUDE.md`/`README` (and, under an active
+  idea-to-production lifecycle, the product's emergent artifacts), so it reads "I can set up a greeting that
+  routes people to X/Y/Z" rather than a bland "want a greeting?". On opt-in it hands off to
+  `/concierge:define-welcome`. It re-offers on cold opens until you accept or decline; a per-repo decline
+  and a global "never offer" opt-out (both under `~/.claude/hook-state`, written only on your say-so) stop
+  it, and the hook never writes your repo.
 - **Smart-gated.** The runtime contract tells the agent to present the welcome only on
   a *cold, vague open* ("hi", "what can I do here?") and to **step aside** the moment
   the user opens with a concrete task. It greets at most once — never mid-conversation,
@@ -33,6 +41,16 @@ A single, short markdown file: a greeting line, a `## Lanes` list (2–4), and a
 decision-tree section per lane whose leaves are **real commands and paths**. Injected
 verbatim — no schema to satisfy. Full spec and rules of thumb:
 [`knowledge/welcome-format.md`](knowledge/welcome-format.md).
+
+## A living welcome (lifecycle-managed)
+
+When a repo is built through the idea-to-production lifecycle (`.i2p/lifecycle.json`), the welcome is more
+than a one-shot. `/concierge:define-welcome` stamps it with the phase it was written for and tailors it to
+the product's **emergent identity** (DISCOVER opportunity → IDEATE IDEA package + name → BUILD
+SMU/ROADMAP → … → OPERATE). As the lifecycle advances, CONCIERGE **auto-refreshes** the welcome —
+silently, artifact-driven, with a one-line `↻` note — so whoever opens the repo always meets a *current*
+front door, managed for you, with the same opt-outs. A hand-authored welcome with **no** stamp is never
+auto-touched.
 
 ## The status line
 
