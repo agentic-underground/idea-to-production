@@ -17,3 +17,4 @@ shipped to or read by the installed plugins at runtime.
 | File | What it is |
 |---|---|
 | `FOUNDRY_INSPECTION_REPORT-YYYY-MM-DD.md` | A dated snapshot from `/foundry:inspect` — the inspector's severity-ranked audit of the plugins at that point in time. Superseded by later runs; kept as the audit trail. |
+| `I2P_REVIEW-YYYY-MM-DD.md` | A dated snapshot from `/i2p-review` — the cross-plugin adversarial review verdict at that point in time. Archived once its findings are addressed; the live verdict (when a fresh run exists) is `I2P_REVIEW.md` at the repo root. |
