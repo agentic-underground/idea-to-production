@@ -4,15 +4,18 @@
 > this is a backlog for maintainers to schedule. When every item is shipped or consciously dismissed,
 > delete it: `git rm I2P_SELF_HEALING_PLAN.md`.
 >
-> **Governance: `pr-approval`, never self-merge** (`plugins/foundry/knowledge/protocols/merge-governance.md`).
-> Each item is a discrete, individually-shippable `/<plugin>:self-improve` target → `/foundry:pr-review` →
-> PR for a human to merge. **Honour the four-mirror guardrail** (`REVIEW_ACTION_PLAN.md`): when an item
-> changes a skill, update `plugin.json` + the `marketplace.json` entry + `README.md` +
-> `skills/check/requirements.tsv` in the same branch and bump the plugin version.
+> **Governance — two distinct things, do not conflate (see §7):** (1) the *product invariant* — the
+> marketplace's **shipped** self-improve **never self-merges** (`/<plugin>:self-improve` → `/foundry:pr-review`
+> → a human merges; `plugins/foundry/knowledge/protocols/merge-governance.md` governs the *product*). (2) the
+> *maintainer workflow* — this repo ships **direct-to-main in batches**, each batch honouring, in the same
+> commit, the **four-mirror guardrail** (`REVIEW_ACTION_PLAN.md`: a skill change ⇒ update `plugin.json` + the
+> `marketplace.json` entry + `README.md` + `skills/check/requirements.tsv` + bump the version — now
+> CI-enforced by **P1-21**), and a **`/foundry:pr-review base..head` PASS over the local diff** (no GitHub PR
+> required). The human-gated stance survives; the per-item-PR ceremony does not.
 >
-> **Authored 2026-06-07; revised after adversarial review (§8).** Origin: a real incident (§2) + a
-> marketplace-wide self-healing sweep, then hardened by a five-lens panel that **refuted the first draft**
-> (foundry-centric, a broken flagship sketch, two factual overclaims) — all fixed below.
+> **Authored 2026-06-07; revised twice (§8).** First a five-lens panel refuted the foundry-centric first
+> draft. Then (this revision) re-triaged against the current tree — the marketplace grew to **nine** plugins
+> (`mission-control`) since authoring — with **10 new items folded in and re-reviewed to PASS**.
 
 ---
 
@@ -35,10 +38,12 @@ a clean tree, a bounded retry) — **not** removing human judgement from destruc
 dependency auto-pin, merge). Every item states which side of that line it sits on, and **"safe-auto" is only
 earned once the heal VERIFIES its own result** (a heal that can silently leave a broken state is not safe).
 
-**Scope note (from review):** the marketplace is **eight** plugins — `i2p` (front door), `concierge`
-(greeter/HUD), `foundry`, `sentinel`, `pressroom`, `atelier`, `ideator`, `market-scanner`. The first draft
-addressed almost only `foundry`; this revision adds a cross-plugin batch (§5 P1-B) covering the front-door,
-the statusline instruments, the hook substrate, and the marketplace's own supply-chain/security.
+**Scope note:** the marketplace is **nine** plugins — `i2p` (front door), `concierge` (greeter/HUD),
+`foundry`, `sentinel`, `pressroom`, `atelier`, `ideator`, `market-scanner`, and **`mission-control`** (the
+OPERATE-phase owner: observability/incident/maintain/iterate/operate-gate, with its own check + inspector).
+The first draft addressed almost only `foundry`; the cross-plugin batch (§5 P1-B) covers the front-door, the
+statusline instruments, the hook substrate, the marketplace's own supply-chain/security, and now the OPERATE
+runtime surface mission-control owns.
 
 ---
 
@@ -107,13 +112,13 @@ RECOVER/RESUME mechanisms. The opportunity is to lift the common, safe cases to 
 
 | Mechanism | Where | Class |
 |---|---|---|
-| `scripts/verify-prereqs.sh` (CI `verify.yml`) — checks **A** check.sh parity · **B** tsv 4-TAB-field well-formed · **C** `.mcp.json`↔`PREREQUISITES/40-mcp.md` parity · **D** no-download probe rule (`npx -y`/`uvx`…) over `PREREQUISITES/*.md` · **E** SOUL.md parity (root+8) · **F** inject-soul.sh parity | repo root | **D** (CI gate) |
+| `scripts/verify-prereqs.sh` (CI `verify.yml`) — checks **A** check.sh parity · **B** tsv 4-TAB-field well-formed · **C** `.mcp.json`↔`PREREQUISITES/40-mcp.md` parity · **D** no-download probe rule (`npx -y`/`uvx`…) over `PREREQUISITES/*.md` · **E** SOUL.md parity (root+9, counted dynamically via `find`) · **F** inject-soul.sh parity | repo root | **D** (CI gate) |
 | flaky-test-fixer (edits + commits within the gate) | `plugins/foundry/agents/flaky-test-fixer.md` | **D+H** |
 | coverage-loop + `IN_PROGRESS.md` disaster-recovery | `plugins/foundry/agents/coverage-loop-agent.md` | **R** |
 | self-improve (per plugin) — reflect → cleave/reference → branch → pr-review → PR | `plugins/*/skills/self-improve` | **D+H** (human-gated merge) |
 | inspector (per plugin) — drift/portability/canonical-copy/manifest audit | `plugins/*/agents/inspector.md` | **D** |
 | scorecard — disk-measured product + marketplace health series | `plugins/foundry/skills/scorecard` | **D** |
-| SOUL injection dedup (idempotent, once per session across 8 plugins) | `plugins/*/hooks/inject-soul.sh` | **R** |
+| SOUL injection dedup (idempotent, once per session across 9 plugins) | `plugins/*/hooks/inject-soul.sh` | **R** |
 | phase-sensor — detect phase, auto-install next skill (idempotent) | `plugins/foundry/skills/phase-sensor` | **R** |
 | lifecycle-orchestrator loop-state + NEEDS_REVISION≤3 escalation | `plugins/foundry/agents/lifecycle-orchestrator.md` | **R** |
 | graceful enhancement — companions by **capability**, degrade when absent | `plugins/foundry/VALUE_FLOW.md` §4 | **R/D** |
@@ -121,10 +126,16 @@ RECOVER/RESUME mechanisms. The opportunity is to lift the common, safe cases to 
 | merge-governance + pr-review — always-on adversarial gate | `plugins/foundry/...` | gating |
 | context-sentinel / handoff-schema — resumable phase state | `plugins/foundry/knowledge/protocols/` | **R** |
 | guardrails-ledger (pattern; domain ledgers live with their skill) | `plugins/foundry/knowledge/protocols/guardrails-ledger.md` | **PREVENT** |
+| managed-welcome refresh — detect a stale phase-stamp → regenerate → re-stamp (recent work) | `plugins/concierge/hooks/offer-welcome.sh` + `skills/define-welcome` | **D+H** |
+| mission-control OPERATE skills — observability/incident/maintain detect runtime degradation (no auto-heal yet) | `plugins/mission-control/skills/` | **D** |
+| OPERATE↻DISCOVER cyclic re-entry — operate learnings re-open discovery (a feedback loop) | `plugins/i2p/skills/lifecycle/scripts/lifecycle.sh` | **R** |
+| reviewer evidence + mandatory self-refutation (kills false-positive findings before they ship) | `plugins/foundry/agents/reviewer.md` | gating |
 
-**Takeaway:** detection + CI integrity are strong (`verify-prereqs.sh` is the spine). Gaps are (a)
-**capability** vs presence, (b) **HEAL** where safe, (c) **runtime** resilience, and (d) **non-foundry**
-surfaces (hooks, HUD, front-door, the marketplace's own supply chain).
+**Takeaway:** detection + CI integrity are strong (`verify-prereqs.sh` is the spine), and recent work added a
+detect-and-heal island (the managed welcome) plus the OPERATE runtime surface (mission-control). Gaps remain:
+(a) **capability** vs presence, (b) **HEAL/VERIFY** where safe, (c) **runtime** resilience — now co-ownable
+by mission-control — and (d) **non-foundry** surfaces (hooks, HUD, front-door, the marketplace's own supply
+chain).
 
 ---
 
@@ -134,21 +145,18 @@ Per item: **gap · current · proposed (stage) · owner · safe-auto? · prevent
 
 ### P0 — Environment & tool wiring (the incident's class; highest leverage)
 
-**P0-1 · Capability probes, not presence probes.**
-*Gap:* browser/render `check` rows pass on `command -v` while the consumer can't launch (§2). *Current:*
-presence-only; `verify-prereqs.sh` check D forbids downloading probes **but only scans `PREREQUISITES/*.md`,
-not the tsv** — so the tsv is unguarded. *Proposed (DETECT→VERIFY):* strengthen the **probe command** (no
-schema change — check B requires exactly 4 TAB fields) so the row exercises capability **without
-downloading**, and the probe must **export the resolver first** or it false-negatives on a box that *has* a
-browser (review CORRECTNESS H2). Add a `verify-prereqs.sh` invariant that capability rows stay no-download.
-Keep capability probes on **`optional` tier or behind a `--deep` flag** — they spawn a render and slow
-`/check`. *Owners (per-plugin — there is no canonical tsv):* `plugins/pressroom/.../requirements.tsv` (mmdc),
-`plugins/atelier` + `plugins/foundry` (chromium). *Safe-auto:* yes (detection). *Prevention:* CI invariant.
-
-```sh
-# pressroom mmdc row — exports the resolver, then renders; strictly no-download:
-mmdc	bash -c 'command -v mmdc || exit 1; export PUPPETEER_EXECUTABLE_PATH="${PUPPETEER_EXECUTABLE_PATH:-$(command -v chromium||command -v chromium-browser||command -v google-chrome)}"; mmdc -i <(printf "flowchart LR\n a-->b") -o "$(mktemp --suffix=.svg)" >/dev/null 2>&1'	optional	npm i -g @mermaid-js/mermaid-cli
-```
+**P0-1 · Capability probes, not presence probes — the CI invariant.**
+*Gap:* a `/check` row can pass on mere presence while the consumer can't launch (§2). *Current (corrected on
+re-triage):* the **chromium** rows in `atelier` + `foundry` already use a no-download capability-*ish* probe
+(`npx --no-install playwright install --dry-run chromium 2>/dev/null || command -v chromium …`) — they are
+**not** pure-presence (they could be strengthened to an actual headless render, but they are not the open
+gap). The one **pure-`command -v`** row is `pressroom`'s **mmdc** — split out as **P0-7**. Separately,
+`verify-prereqs.sh` **check D forbids downloading probes but only scans `PREREQUISITES/*.md`, not the tsv** —
+so capability rows in the tsv are unguarded. *Proposed (DETECT→VERIFY):* add a `verify-prereqs.sh` invariant
+that capability rows stay **no-download** (extend check D over the tsv, not just the markdown); the probe must
+**export the resolver first** or it false-negatives on a box that *has* a browser; keep capability probes on
+**`optional` tier / behind `--deep`** (they spawn a render and slow `/check`). *Owner:* `scripts/verify-prereqs.sh`
+(the invariant); the per-plugin tsvs own their own rows. *Safe-auto:* yes (detection). *Prevention:* CI invariant.
 
 **P0-2 · One browser resolver, not two (env single-source-of-truth).**
 *Gap:* mmdc/puppeteer and the Playwright MCP discover browsers independently. *Current:* `.mcp.json` ships
@@ -206,6 +214,17 @@ by `atelier/ui-review`, `atelier/mockup`, `pressroom/rich-pdf-with-diagrams`, an
 **P0-6 · Document the (two marketplace) discovery mechanisms** in `PREREQUISITES/40-mcp.md` (which today
 documents none) so the failure is recognisable. *(Docs only.)*
 
+**P0-7 · mmdc capability probe (split from P0-1 — the one real pure-presence row).**
+*Gap:* `plugins/pressroom/skills/check/requirements.tsv`'s `mmdc` row is `command -v mmdc` — it passes when
+the binary exists even if mmdc can't find a browser to render with. *Proposed (DETECT→VERIFY):* replace it
+with a no-download capability probe that exports the resolver, then renders a trivial diagram to a temp file:
+*Owner:* pressroom. *Safe-auto:* yes (detection); keep `optional`/`--deep`. *Prevention:* the P0-1 CI invariant.
+
+```sh
+# pressroom mmdc row — exports the resolver, then renders; strictly no-download:
+mmdc	bash -c 'command -v mmdc || exit 1; export PUPPETEER_EXECUTABLE_PATH="${PUPPETEER_EXECUTABLE_PATH:-$(command -v chromium||command -v chromium-browser||command -v google-chrome)}"; mmdc -i <(printf "flowchart LR\n a-->b") -o "$(mktemp --suffix=.svg)" >/dev/null 2>&1'	optional	npm i -g @mermaid-js/mermaid-cli
+```
+
 ### P1-A — Integrity & data self-heal (extend `verify-prereqs.sh` from DETECT to guarded HEAL)
 
 | # | Gap | Proposed (stage) | Owner | Safe-auto? |
@@ -214,21 +233,24 @@ documents none) so the failure is recognisable. *(Docs only.)*
 | P1-2 | `marketplace.json` ↔ plugin-set/version drift; orphan dirs/entries | CI invariant: `ls plugins/` ↔ `marketplace.json[].name`, versions/keywords consistent across the four mirrors | `verify-prereqs.sh` | detect-auto |
 | P1-3 | Broken refs — agent `tools:`, knowledge links, **and `/command` tokens in hooks/tips/README** | CI ref-resolver across all plugins incl. hook-embedded command strings (review M7) | `verify-prereqs.sh` | detect-auto |
 | P1-4 | Plugin-cache staleness (installed cache lags repo) | SessionStart advisory: cache version vs marketplace.json → suggest `/plugin marketplace update` | a plugin hook | detect-auto |
-| P1-5 | **Scorecard `jq -rs` slurp zeroes ALL metrics on one bad line; ignores `MARKETPLACE_SCORECARD.jsonl`** (review C2) | parse **line-wise** (`grep -v '^$' \| jq -c . 2>/dev/null \| tail -1`), skip corrupt lines with a warning, **across BOTH series** | `plugins/foundry/skills/scorecard/scripts/*.sh` | yes (skip+warn) |
+| P1-5 | **Scorecard `jq -rs` slurp on `IDEA_COST.jsonl` zeroes ALL metrics on one bad line** (`scorecard.sh:55,66-69`). *Re-triage split:* the "ignores `MARKETPLACE_SCORECARD.jsonl`" half is **STALE** — `marketplace-score.sh` uses `jq -nc` (no slurp) and the ledger is now tracked + appended | parse the IDEA_COST reads **line-wise** (`grep -v '^$' \| jq -c . 2>/dev/null \| tail -1`), skip corrupt lines with a warning — **`scorecard.sh` only** | `plugins/foundry/skills/scorecard/scripts/scorecard.sh` | yes (skip+warn) |
 | P1-6 | ROADMAP status ↔ sentinel-state divergence | phase-sensor cross-check: COMPLETE ↔ DELIVERY_COMPLETE; warn on mismatch | `plugins/foundry/skills/phase-sensor` | detect-auto |
-| P1-7 | DEGRADED_CAPABILITIES signal is undefined but three items depend on it | **define-first**: shape + emit-point + consumer contract in `knowledge/protocols/` before P1-B-runtime items ship (review FEAS) | `plugins/foundry/knowledge/protocols/` | n/a (spec) |
+| P1-7 | DEGRADED_CAPABILITIES signal is undefined but three items depend on it | **define-first**: shape + emit-point + consumer contract in `knowledge/protocols/` before P1-B/P1-C runtime items ship (review FEAS) — **co-authored with mission-control** (it emits the signal) | `plugins/foundry/knowledge/protocols/` + mission-control | n/a (spec) |
+| **P1-23** | **`.i2p/lifecycle.json` corrupt-state silently read as "no phases"** — `lifecycle.sh`'s `jq -r '.current_phase // empty' … 2>/dev/null` swallows a parse error, so a truncated state file = silent data loss (new, re-triage) | validate JSON on read; distinguish **corrupt** from **absent**; emit a repair hint, never treat corrupt as no-phases | `plugins/i2p/skills/lifecycle` + `verify-prereqs.sh` | detect-auto |
 
 ### P1-B — Cross-plugin & instrument self-heal (the classes the first draft missed — review COMPLETENESS)
 
 | # | Gap | Proposed (stage) | Owner | Safe-auto? |
 |---|---|---|---|---|
 | P1-8 | **Hook failures swallowed forever by `2>/dev/null \|\| true`** — a dead `inject-soul`/`check-phase`/`capture-cost` is undetectable (review C1, CRITICAL) | hooks write a heartbeat/last-error sentinel under `~/.claude/hook-state/`; a SessionStart (or `verify-prereqs.sh`) smoke-exec of each hook against a fixture flags non-zero exits | `plugins/*/hooks/` + verify | detect-auto |
-| P1-9 | **Statusline canonical copy in `~/.claude/statusline-command.sh` drifts** from the shipped renderer — escapes the repo, no re-sync (review H3) | version-stamp the renderer; SessionStart compares installed vs shipped, offers `/concierge:statusline` refresh | `plugins/concierge/statusline` | yes (offer) |
+| P1-9 | **Statusline canonical copy in `~/.claude/statusline-command.sh` drifts** from the shipped renderer — **CONFIRMED LIVE this re-triage**: installed md5 ≠ shipped (the recent cycle-indicator edit never propagated). One of the two highest-severity P1-B items | version-stamp the renderer; SessionStart compares installed vs shipped, offers `/concierge:statusline` refresh | `plugins/concierge/statusline` | yes (offer) |
 | P1-10 | **Shipped MCP deps unpinned (`@playwright/mcp@latest`, unversioned `context7`/`fetch`/`semgrep`)** — supply-chain/reproducibility (review H4) | CI invariant: `.mcp.json` args carry a pinned version; run sentinel typosquat/abandoned over the MCP package set (dogfood) | `plugins/*/.mcp.json` + verify | detect-auto |
 | P1-11 | **Marketplace runs no secret/PII self-audit of itself** (cobbler's children — review H5) | add a `sentinel:secret-scan` (+ pii) job to `verify.yml` over the tree/history | `.github/workflows/` | detect-auto |
 | P1-12 | **Git-state hygiene** — merged-but-undeleted branches, orphaned worktrees (the exact class from this session — review H6) | delivery-phase advisory lists stale branches/worktrees and **proposes** cleanup (never auto-deletes) | `plugins/foundry` delivery | **no** (propose) |
 | P1-13 | **HUD instruments narrow silently** — `count-adversarial-catches.sh` hard-codes review-artifact filenames; new reviewers never count (review M8) | derive the artifact-name set from a single shared list, or CI-assert it matches reviewers' declared outputs | `plugins/concierge/statusline` | detect-auto |
-| P1-14 | **`concierge`/`i2p` have no `/check` or inspect-backed self-heal entry** — two whole plugins outside every integrity loop (review L13) | give the front-door/greeter a check surface (or fold into i2p-check) and an inspector pass | `plugins/{i2p,concierge}` | detect-auto |
+| P1-14 | **`concierge` has no `/check` or inspector** — the one plugin outside every integrity loop (re-triage: i2p AND mission-control now have both; concierge is the lone outlier) | give the greeter/HUD a check surface (or fold into `i2p-check`) and an inspector pass | `plugins/concierge` | detect-auto |
+| **P1-21** | **Four-mirror guardrail is relied on but never CI-enforced** — a skill can ship without its `plugin.json` / `marketplace.json` entry / `README` / `requirements.tsv` mirror updated; checks A–F don't assert it (new) | `verify-prereqs.sh` **check G**: for each `plugins/*/skills/*`, assert the *applicable* mirrors are present (per-artifact requirement + an exemption table, the pattern check D already uses) | `scripts/verify-prereqs.sh` | detect-auto |
+| **P1-22** | **Concierge managed-welcome refresh has no write-verification** — `offer-welcome.sh` instructs a silent regenerate but nothing confirms the file was rewritten / re-stamped, so a stale stamp can persist (new — a gap in recent work) | after a managed refresh, **verify** the welcome carries a fresh `concierge:welcome for_phase=…cycle=…` stamp matching the lifecycle; on mismatch surface DEGRADED — **verify-and-disclose only, never auto-rewrite** | `plugins/concierge` | yes (verify) |
 
 ### P1-C — Run-time resilience (depends on P1-7 signal)
 
@@ -240,6 +262,16 @@ documents none) so the failure is recognisable. *(Docs only.)*
 | P1-18 | Transient failures (timeout/ECONNRESET) end a run | `--retries=N` with backoff on classified-transient errors only | yes (bounded) |
 | P1-19 | Lint/format failure halts the gate for trivial style | auto-format **changed files only**, assert the post-format diff ⊆ touched files, separate commit, then re-run (review SAFETY) | yes (scoped) |
 | P1-20 | Rate-limit/token-budget exhaustion mid-run just halts (data already on the HUD, unused) | when `rate_limits.*.used_percentage` crosses a threshold, orchestrator emits `CHECKPOINT_<phase>.md` and pauses rather than dying mid-write (review M10) | yes (checkpoint) |
+| **P1-24** | Mid-session **MCP crash undetected** — `check` only runs at invocation; a server that dies mid-session stays dead | SessionStart **liveness ping** of each declared MCP → emit `DEGRADED_CAPABILITIES` on no-response (detect-only, **never restart**). Lives in the **hook substrate** (survives a skill/MCP crash) | detect-auto |
+| **P1-25** | **Stuck-phase / time-in-phase** undetected — a phase running far past budget is invisible | from `lifecycle.json.history[]` timestamps, flag a phase exceeding a budget; **propose**, never auto-advance | **no** (propose) |
+
+> **Re-ownership (re-triage).** mission-control now owns the OPERATE phase, so P1-C runtime (P1-15…P1-20,
+> P1-24/25) is **co-owned mission-control↔foundry** — mission-control owns the runtime/observability surface,
+> foundry owns the scorecard/cost substrate it reads. **Critical safety fix (review):** to avoid mission-control
+> *healing itself* (a crash would blind its own detector), the **detectors live in the SessionStart hook
+> substrate** (the same layer as P1-8's heartbeat), not inside mission-control skills — mission-control owns the
+> canon and the consumer; the detector survives the crash. Items **reference**
+> `mission-control/knowledge/operate-canon.md`, never restate OPERATE semantics.
 
 ### P2 — Quality & lifecycle self-heal (mostly detect-and-propose; risky heals stay human-gated)
 
@@ -261,11 +293,16 @@ documents none) so the failure is recognisable. *(Docs only.)*
 | P2-14 | **LSP capability unverified** — same presence-vs-capability gap as the browser, generalised (review L12) | a capability-grade LSP probe row (does the server actually respond) | detect-auto |
 | P2-15 | Deployed-artifact version ↔ DELIVERY_COMPLETE mismatch | VERIFY records deployed digest; flag mismatch | detect-auto |
 | P2-16 | Stacked PRs stranded when a base merges | retarget-to-main guard wired into the delivery step | detect-auto |
+| **P2-17** | **Self-improve has no closed-loop regression measure** — "halve the distance to flawless" is eyeballed at PR time; the scorecard doesn't trend per-element finding counts (new) | scorecard retains per-inspector/per-reviewer finding counts across runs; self-improve **asserts the count dropped** (or warns it didn't) — closes the open verify step | foundry scorecard + mission-control | detect-auto |
+| **P2-18** | **Cobbler's children** — the marketplace doesn't dogfood mission-control on ITSELF (no SLOs/golden-signals on its own runtime) (new) | run mission-control observability over the repo's own runtime as an **external CI job** (the P1-11 substrate — cross-references it as the security slice); surface marketplace health on the HUD | mission-control (external CI) | detect-auto |
+| **P2-19** | **Incident postmortem action-items not tracked to completion** — `incident` writes them, nothing follows up (new) | record action-items to a tracked ledger; a detector flags un-closed/overdue ones as a re-entry signal | mission-control `incident`/`iterate` | detect-auto |
+| **P2-20** | **`cost.json` is per-phase-flat, not cycle-aware** — across OPERATE↻DISCOVER a new cycle overwrites prior-cycle cost (new) | make cost accounting **cycle-indexed** (additive schema; readers default to cycle 1 when absent — no destructive migration) | mission-control + foundry scorecard | detect-auto (schema) |
 
-> **Count:** 6 P0 + 7 P1-A + 7 P1-B + 6 P1-C + 16 P2 = **42 concrete items**, spanning the env/wiring,
-> integrity/data, cross-plugin/instrument, runtime, and quality/lifecycle classes. The cross-plugin batch
-> (P1-B) and the runtime-signal define-first item (P1-7) were added in revision after the completeness lens
-> proved the first draft was foundry-centric.
+> **Count:** 7 P0 + 8 P1-A + 9 P1-B + 8 P1-C + 20 P2 = **52 concrete items**, spanning the env/wiring,
+> integrity/data, cross-plugin/instrument, runtime, and quality/lifecycle classes. The first revision grew
+> the cross-plugin P1-B batch (foundry-centric → marketplace-wide); **this revision** (re-triage against the
+> nine-plugin tree) added **P0-7, P1-21/22/23, P1-24/25, P2-17/18/19/20** — the four-mirror CI invariant, the
+> OPERATE runtime surface, and the closed-loop / self-observability gaps recent work created.
 
 ---
 
@@ -276,8 +313,12 @@ documents none) so the failure is recognisable. *(Docs only.)*
   domain." Put TC-BROWSER-1 in `knowledge/tooling/headless-browser.md` (P0-5); put each future class in its
   owning skill's ledger. Reference the pattern file; don't append to it.
 - **`scripts/verify-prereqs.sh` is the home for new invariants** (it already enforces canonical-copy parity
-  and the no-download-probe rule). Every P1-A/P1-B integrity item adds a check, and a guarded `--fix` where
-  the repair is safe and self-verifying.
+  and the no-download-probe rule). Every P1-A/P1-B integrity item adds a check — including **check G**, the
+  four-mirror consistency invariant (P1-21) — and a guarded `--fix` where the repair is safe and self-verifying.
+- **Runtime detectors live in the hook substrate, not in the surface they watch.** A detector that runs
+  inside the thing it monitors (mission-control watching its own MCP; a skill verifying its own output) goes
+  blind exactly when that surface fails. SessionStart hooks + `verify-prereqs.sh` + external CI are the
+  crash-surviving substrate for P1-8 / P1-24 / P2-18.
 - **PREVENT is the definition-of-done for each item:** not closed until the class can't silently return — a
   CI invariant, a ledger entry, or a referenced `THE ONLY WAY` rule.
 
@@ -286,14 +327,24 @@ documents none) so the failure is recognisable. *(Docs only.)*
 ## 7 · Sequencing & ownership
 
 1. **P0 first** — fixes the incident class, near-entirely safe-auto, unblocks browser/render "out of the
-   box." Order: P0-1 → P0-3 → P0-2 → P0-5 → P0-4 → P0-6.
-2. **P1-A integrity** (cheap CI extensions) and **P1-B cross-plugin** (the missed classes; P1-8 hook-health
-   and P1-5 scorecard-slurp are the two highest-severity — do them early).
-3. **P1-7** (define `DEGRADED_CAPABILITIES`) **before** P1-C runtime items. Then **P1-C**, then **P2**.
+   box." Order: P0-1 (+ **P0-7** mmdc) → P0-3 → P0-2 → P0-5 → P0-4 → P0-6.
+2. **P1-A integrity** (cheap CI extensions — **P1-21** four-mirror check G and **P1-23** lifecycle-validate are
+   cheap wins) and **P1-B cross-plugin** — **P1-8** hook-health, **P1-9** the live statusline drift, and
+   **P1-5** scorecard-slurp are the highest-severity; do them early.
+3. **P1-7** (define `DEGRADED_CAPABILITIES`, co-authored with mission-control) **before** the P1-C runtime
+   items (**P1-24** liveness, **P1-25** stuck-phase). Then **P1-C**, then **P2** (P2-17/18/19/20 ride on the
+   scorecard/observability substrate).
 
-Each item ships as its own `/<plugin>:self-improve <target>` → `/foundry:pr-review` → PR (pr-approval),
-honouring the four-mirror guardrail + version bump on any skill change. Re-run the relevant
-`/<plugin>:inspect` and `/foundry:scorecard` after each to record the closed-finding trend.
+**Governance (reconciled — product invariant ≠ maintainer workflow):**
+- **Product invariant (keep):** the marketplace's *shipped* self-improve **never self-merges** —
+  `/<plugin>:self-improve` → `/foundry:pr-review` → a human merges (`merge-governance.md` governs the *product*).
+- **Maintainer workflow (relaxed to match this repo):** ship **direct-to-main in batches**, no GitHub PR
+  required. Each batch must still, in the same commit: (a) honour the **four-mirror guardrail** (now
+  CI-enforced by P1-21), (b) **version-bump** any plugin whose skill changed, and (c) carry a
+  **`/foundry:pr-review base..head` PASS** over the local diff (it reviews a diff without opening a PR; a
+  failing review blocks the batch exactly as a PR review would). Per-item branches are optional — group
+  related items. Re-run the relevant `/<plugin>:inspect` and `/foundry:scorecard` after each batch to record
+  the closed-finding trend.
 
 ---
 
@@ -331,13 +382,39 @@ HIGH). All applied:
 Post-revision self-assessment against the same lenses: **PASS** — claims now match the repo, the flagship
 heal is correct and self-verifying, the human-gated line is preserved, and the previously-omitted classes
 are covered. Residual known-unknowns: items are scoped but not yet implemented; the maintainers' own
-`/foundry:pr-review` on each implementing PR is the binding gate.
+`/foundry:pr-review` on each implementing batch is the binding gate.
+
+### Second pass — re-triage against the nine-plugin tree + the 10 new items (this revision)
+
+A second five-lens panel reviewed the re-triage corrections and the extensions (refute-not-rubber-stamp).
+**Verdict: NEEDS_REVISION → PASS** after folding four fixes:
+
+- **[CRITICAL · ARCHITECTURE-FIT]** Re-owning runtime self-heal to mission-control risks it **healing
+  itself** — a crashed mission-control can't detect its own crash. → **Detectors moved to the SessionStart
+  hook substrate** (P1-8/P1-24); the self-observability dogfood (P2-18) runs as **external CI**. mission-control
+  owns the canon + consumer; the detector survives the crash.
+- **[HIGH · FEASIBILITY]** Check G (four-mirror, P1-21) vs auto-discovery — a blanket "all four mirrors"
+  over-fires (not every skill has a tsv row). → **Scoped to *applicable* mirrors per artifact with an
+  exemption table** (the pattern check D already uses); feasible because all mirrors are on-disk enumerable.
+- **[MEDIUM · SAFETY]** P1-22's "verify" must not itself rewrite the welcome (an auto-rewrite could corrupt).
+  → **Verify-and-disclose only**; the refresh stays the existing human-in-loop agent action.
+- **[MEDIUM · SAFETY]** P2-20 (cycle-aware cost) risked a destructive schema migration. → **Additive schema**
+  (readers default to cycle 1 when absent).
+
+Re-triage corrections folded (claims now match the nine-plugin tree): "eight plugins" → **nine**; **P0-1**
+narrowed (chromium rows already use a no-download `--dry-run` probe; **mmdc** is the real pure-presence gap →
+**P0-7**); **P1-5** split (the `MARKETPLACE_SCORECARD.jsonl` half is **stale** — now tracked + `jq -nc`
+appended; the `IDEA_COST.jsonl` `jq -rs` slurp is **real**); **P1-9** confirmed **LIVE** (installed-vs-shipped
+md5 drift reproduced); **P1-14** narrowed to **concierge** (i2p and mission-control now carry check+inspector).
+Second-pass self-assessment: **PASS** — claims verified against the tree, the human-gated line preserved, the
+heal-itself circularity broken.
 
 ---
 
 ## 9 · Non-goals & honesty
 
-- **No plugin code/config is changed by this PR** — this is a plan. Reference sketches are illustrative.
+- **No plugin code/config is changed by this document** — it is a plan / backlog (revised in place on `main`).
+  Reference sketches are illustrative.
 - **The human-gated stance is preserved.** Destructive heals (auto-revert P2-2, dep auto-pin P2-10, git
   cleanup P1-12, any merge) stay *detect-and-propose*. Only idempotent, **self-verifying** repairs are
   proposed safe-auto.
