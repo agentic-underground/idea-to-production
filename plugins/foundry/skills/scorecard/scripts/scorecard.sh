@@ -14,6 +14,13 @@
 #   IDEA_COST.jsonl (root or doc/)   → real tokens / wall-clock / regressions from the last FOUNDRY cycle
 #   SECURITY-REPORT.md               → SENTINEL gate verdict (PASS/REVIEW/BLOCK)
 #   src/**/*.rules.* / rules/**      → rule count (detection-style products)
+#   .i2p/degraded-capabilities.json  → degraded lenses (P1-17) → coverage is PARTIAL, never a silent PASS
+#
+# Degraded-capabilities contract (P1-17): per
+# plugins/foundry/knowledge/protocols/degraded-capabilities.md §3.3 — "Never count a non-run as a pass."
+# When a lens that PRODUCES a measured dimension is degraded, the dimension is labelled PARTIAL and the
+# missing lens is NAMED, so "0 findings because clean" is never confused with "0 because the lens didn't
+# run". A missing state file means "no known degradation" (NOT an error) → normal full report.
 
 set -uo pipefail
 ROOT="${1:-$PWD}"
@@ -100,6 +107,39 @@ for s in SECURITY-REPORT.md doc/SECURITY-REPORT.md; do
   fi
 done
 
+# ---- degraded capabilities (P1-17 — never count a non-run as a pass) ----
+# Read <project>/.i2p/degraded-capabilities.json (the authoritative state-file carrier, §1).
+# A missing file = no known degradation = normal full report (NOT an error). For each degraded
+# `capability`, route the affected scorecard dimension to PARTIAL and name the missing lens.
+#
+# capability family → affected dimension:
+#   lens.security  → security_gate         (the security lens did not run)
+#   lens.coverage  → coverage.*            (a coverage/test lens did not run)
+#   lens.corpus    → corpus.*              (the corpus parity lens did not run)
+#   tool.*/mcp.*   → recorded as a degradation note (may narrow a dimension a producer mapped to it)
+degraded_security=0 degraded_coverage=0 degraded_corpus=0
+degraded_names=()        # one element per degradation: "capability (reason; since since_phase)"
+dcf=".i2p/degraded-capabilities.json"
+if [[ -f "$dcf" ]]; then
+  # Enumerate degraded records tolerantly (readers tolerate extra keys; tolerate a malformed file).
+  while IFS=$'\t' read -r cap reason since; do
+    [[ -z "$cap" ]] && continue
+    case "$cap" in
+      lens.security*) degraded_security=1 ;;
+      lens.coverage*) degraded_coverage=1 ;;
+      lens.corpus*)   degraded_corpus=1 ;;
+    esac
+    degraded_names+=("${cap} (${reason:-unavailable}; since ${since:-?})")
+  done < <(jq -r '.degraded[]? | [.capability, (.reason // "unavailable"), (.since_phase // "?")] | @tsv' "$dcf" 2>/dev/null)
+fi
+
+# Apply PARTIAL labelling. A degraded lens turns its dimension to "partial" — distinct from a clean
+# numeric/PASS — so a reader can tell "0 because clean" from "0 because the lens didn't run".
+sec_status="full"; cov_status="full"; corpus_status="full"
+if [[ "$degraded_security" == 1 ]]; then sec_verdict='"PARTIAL"'; sec_status="partial"; fi
+[[ "$degraded_coverage" == 1 ]] && cov_status="partial"
+[[ "$degraded_corpus" == 1 ]] && corpus_status="partial"
+
 # Note: date is captured by the caller/agent; the script avoids embedding a timestamp so re-runs are
 # deterministic. Pass one in via SCORECARD_TS if you want it recorded.
 ts="${SCORECARD_TS:-}"
@@ -108,21 +148,31 @@ ts="${SCORECARD_TS:-}"
 qq() { [[ "$1" == "$NA" || -z "$1" ]] && echo "null" || echo "\"$1\""; }
 num() { [[ "$1" == "$NA" || -z "$1" ]] && echo "null" || echo "$1"; }
 
+# degraded block — a machine-readable list of the lenses that did NOT run (empty array = none).
+degraded_json="[]"
+if [[ -f "$dcf" ]]; then
+  degraded_json="$(jq -c '[.degraded[]? | {capability, reason: (.reason // "unavailable"), since_phase: (.since_phase // null)}]' "$dcf" 2>/dev/null)"
+  [[ -z "$degraded_json" || "$degraded_json" == "null" ]] && degraded_json="[]"
+fi
+
 cat > SCORECARD.json <<EOF
 {
   "schema": "product-scorecard/1.0",
   "generated_ts": $(qq "$ts"),
   "project": "$(basename "$ROOT")",
   "coverage": {
+    "status": "$cov_status",
     "branch_pct": $(num "$cov_branch"),
     "line_pct": $(num "$cov_line"),
     "function_pct": $(num "$cov_fn"),
     "statement_pct": $(num "$cov_stmt")
   },
-  "corpus": { "fixtures": $(num "$corpus_fixtures"), "false_positive_pct": $(num "$corpus_fp") },
+  "corpus": { "status": "$corpus_status", "fixtures": $(num "$corpus_fixtures"), "false_positive_pct": $(num "$corpus_fp") },
   "rules": $(num "$rule_files"),
   "tests": $(qq "$test_count"),
   "security_gate": $sec_verdict,
+  "security_status": "$sec_status",
+  "degraded": $degraded_json,
   "cost": {
     "tokens_total": $(num "$tokens_total"),
     "elapsed_s": $(num "$elapsed_s"),
@@ -134,13 +184,22 @@ cat > SCORECARD.json <<EOF
 EOF
 
 # ---- human summary ----
+_cov_tag=""; [[ "$cov_status" == "partial" ]] && _cov_tag="  [PARTIAL — coverage lens did not run]"
+_corpus_tag=""; [[ "$corpus_status" == "partial" ]] && _corpus_tag="  [PARTIAL — corpus lens did not run]"
 echo "PRODUCT SCORECARD — $(basename "$ROOT")"
-echo "  coverage:  branch ${cov_branch}%  line ${cov_line}%  fn ${cov_fn}%  stmt ${cov_stmt}%"
-echo "  corpus:    ${corpus_fixtures} fixtures   FP ${corpus_fp}%"
+echo "  coverage:  branch ${cov_branch}%  line ${cov_line}%  fn ${cov_fn}%  stmt ${cov_stmt}%${_cov_tag}"
+echo "  corpus:    ${corpus_fixtures} fixtures   FP ${corpus_fp}%${_corpus_tag}"
 echo "  rules:     ${rule_files}"
 echo "  tests:     ${test_count}"
-echo "  security:  $(echo "$sec_verdict" | tr -d '\"')"
+echo "  security:  $(echo "$sec_verdict" | tr -d '\"')$([[ "$sec_status" == "partial" ]] && echo "  [PARTIAL — security lens did not run]")"
 _el="$elapsed_s"; [[ "$_el" != "$NA" ]] && _el="${_el}s"
 echo "  cost:      tokens ${tokens_total}  elapsed ${_el}  regressions ${regressions}"
 [[ -n "$cost_note" ]] && echo "             ($cost_note)"
+# Disclose every degraded lens by name (the three contract fields) — never swallow the gap.
+if [[ ${#degraded_names[@]} -gt 0 ]]; then
+  echo "  COVERAGE IS PARTIAL — the following lens(es) did not run (0 findings ≠ 0 problems):"
+  for _d in "${degraded_names[@]}"; do
+    echo "    · ${_d}"
+  done
+fi
 echo "  → wrote SCORECARD.json"

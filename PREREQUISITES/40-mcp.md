@@ -40,6 +40,30 @@ Prereqs: `fetch` + `semgrep` need `uv`/`uvx`; `context7` + `playwright` need `no
 browser auto-downloads on first use). All four run **keyless** — nothing to provision but the launcher
 (Context7 takes an optional key only to raise rate limits).
 
+## headless_capable — which phases need a spawnable MCP/browser, which are headless-safe
+
+A **headless/CI run** (no display, no approval prompt, or an environment where an `.mcp.json` server
+cannot be spawned) can still do most of the value-flow — but a few phases/skills **require** a live MCP or
+a real browser and must be **routed around and disclosed**, never silently producing an empty pass. This is
+prose guidance; the runtime contract it serves is
+[`../plugins/foundry/knowledge/protocols/degraded-capabilities.md`](../plugins/foundry/knowledge/protocols/degraded-capabilities.md)
+(a `mcp.*` degraded record, or a detected headless/CI env, is what a consumer routes on).
+
+| Phase / skill | Needs a spawnable MCP/browser? | headless_capable | Routing when MCP can't spawn |
+|---|---|---|---|
+| DISCOVER / IDEATE web research (`fetch`) | `mcp.fetch` (web fetch) | **degrades** | fall back to user-supplied evidence; disclose research is un-grounded |
+| BUILD — most DEV_SYSTEM phases (EARS, FEATURE, TEST, IMPLEMENT, commit) | no | **yes — headless-safe** | run normally |
+| BUILD — `context7` version-specific docs lookup | `mcp.context7` (nice-to-have) | **yes (degrades)** | code against the training cutoff; disclose docs were not version-checked |
+| BUILD/ASSURE — STORY browser/E2E tests (`ds-step-story-tests`, PLAYWRIGHT-AGENT) | `mcp.playwright` + a real Chromium | **no — requires browser** | skip browser story tests; run CLI/API journey tests where the interface allows; disclose the browser lens did not run |
+| DESIGN — `atelier:mockup` / `atelier:ui-review` (screenshot + a11y crawl) | `mcp.playwright` + browser | **no — requires browser** | emit an SVG/wireframe fallback or skip; disclose screenshot-grade review skipped |
+| SECURE — `sentinel` SAST (`semgrep` MCP) | `mcp.semgrep` | **no — requires MCP** | skip the SAST lens; run SCA/secrets lenses that don't need it; mark the security lens PARTIAL |
+
+**The rule:** a headless-safe phase runs unchanged; an MCP/browser-dependent phase, when its MCP can't
+spawn (a `mcp.*` DEGRADED record is present, or `CI`/no-display is detected), takes its degraded-but-valid
+fallback **and discloses the gap** — it never reports a clean pass over a lens that did not run. The
+phase-sensor / lifecycle-orchestrator route on this table; the scorecard (P1-17) marks the affected
+coverage PARTIAL.
+
 ## Headless-browser discovery (the two marketplace resolvers)
 
 The marketplace owns **two** consumers that each need a Chromium, and **each finds one differently** —

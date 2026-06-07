@@ -38,6 +38,34 @@ already parses manifests/lockfiles across ecosystems and flags vulnerable/unpinn
 packages. Fold its findings into the maintenance report. When SENTINEL is **absent**, fall back to a static
 read of the manifests and **note the reduced coverage** — never declare deps clean on no audit.
 
+## Stuck-phase detection (time-in-phase)
+
+A lifecycle phase running far past its budget is invisible drift, not progress — a maintenance signal the
+cadence must surface. [`scripts/stuck-phase.sh`](scripts/stuck-phase.sh) reads `<project>/.i2p/lifecycle.json`
+`history[]` timestamps, computes time-in-current-phase, and against sensible per-phase budgets (OPERATE is
+long-lived by design; BUILD/ASSURE/SECURE/PUBLISH should not sit for days) **prints a proposal** when a phase
+is over budget — e.g. *"phase BUILD active 9d (budget 7d) — investigate or advance: `/i2p-lifecycle done
+BUILD`"*. It **never auto-advances** (advancing is a human decision) and degrades gracefully on a corrupt or
+absent `lifecycle.json`. Run it as part of the cadence:
+
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/skills/maintain/scripts/stuck-phase.sh" --dir <project>
+```
+
+Fold an over-budget phase into MAINTENANCE-FINDINGS.md as a cadence item; it is a propose-only advisory, not a
+gate.
+
+## Degraded capabilities (point-of-use)
+
+For the dependency/CVE rows, when SENTINEL (or any tool you reach for) is **absent at point-of-use**, follow
+the degraded-capabilities discipline defined once in
+[`../../knowledge/operate-canon.md`](../../knowledge/operate-canon.md) §5 (canonical contract:
+`degraded-capabilities.md`): **emit** a `{capability, reason, since_phase}` record (e.g.
+`{"capability":"lens.dependency-audit","reason":"SENTINEL not installed","since_phase":"OPERATE"}`) — inline
+marker + the `<project>/.i2p/degraded-capabilities.json` state file when reachable — **route around** it (fall
+back to the static manifest read), and **disclose** the reduced coverage as **partial**, never "deps clean on
+no audit".
+
 ## Lightweight change discipline
 
 Changes to a live system are deliberate: a known blast radius, a rollback plan, and — for risky change —

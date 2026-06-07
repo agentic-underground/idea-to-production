@@ -64,6 +64,18 @@ A **blameless** retrospective — blameless because people who fear punishment h
 Write `POSTMORTEM-<id>.md`. Every action item that adds monitoring or a runbook is a self-improvement
 signal for the `observability` and `incident` skills.
 
+## Degraded capabilities (point-of-use)
+
+If a tool/MCP/telemetry source you need to triage or mitigate is unavailable **when you reach for it** (a
+dead metrics backend during `declare`, a missing dashboard link for a `runbook`), follow the
+degraded-capabilities discipline defined once in
+[`../../knowledge/operate-canon.md`](../../knowledge/operate-canon.md) §5 (canonical contract:
+`degraded-capabilities.md`): **emit** a `{capability, reason, since_phase}` record (inline marker + the
+`<project>/.i2p/degraded-capabilities.json` state file when reachable), **route around** the gap (mitigate
+with what IS reachable — restoring service still comes first), and **disclose** the blind spot in the
+incident record / postmortem so the missing signal is itself a contributing-cause action item — never a
+silent omission.
+
 ## Self-improvement covenant
 
 Covenant: [`../../knowledge/covenant.md`](../../knowledge/covenant.md). An incident that **surprised** us —

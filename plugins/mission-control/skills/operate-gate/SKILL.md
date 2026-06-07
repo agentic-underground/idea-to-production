@@ -122,6 +122,17 @@ WATCH with the gap noted (no false "healthy").
   notes the gap otherwise.
 - Stands alone on any live repo; lights up the companions automatically when present.
 
+This degradation is **machine-checkable**, not ad-hoc. Per the contract defined once in
+[`../../knowledge/operate-canon.md`](../../knowledge/operate-canon.md) §5 (canonical:
+`degraded-capabilities.md`): when a sub-lens (`observability`/`incident`/`maintain`) cannot run because a
+tool/MCP/lens is unavailable at point-of-use, it **emits** a `{capability, reason, since_phase}` record
+(inline + `<project>/.i2p/degraded-capabilities.json`). OPERATE-GATE **reads** that state file when present,
+**routes around** the dead lens, and reflects it in the report: the lens's row shows **partial** coverage,
+its gap is named in **Gaps & coverage**, and — per the verdict rule — that lens **cannot return READY**. A
+degraded lens yields WATCH-with-gap, never a silent PASS over a check that did not run. The SessionStart
+MCP-liveness hook (`hooks/scripts/mcp-liveness.sh`) pre-populates the state file with any MCP that died, so
+a mid-session MCP death is already disclosed by the time the gate runs.
+
 ---
 
 ## Self-improvement covenant

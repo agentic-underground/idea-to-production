@@ -35,6 +35,34 @@ On a mismatch it emits a specific `WARN [N] …` line and a non-zero exit — **
 never auto-fix** (an unwitnessed COMPLETE may mean the item never actually reached `main`).
 It is **silent** when records agree, or when there is no audit log to contradict.
 
+## Headless / MCP-spawn routing (P1-16)
+
+Before installing the skill for a detected phase, the sensor checks whether that phase **requires a
+spawnable MCP/browser** in an environment that may not have one. The routing contract is
+[`${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/degraded-capabilities.md`](../../knowledge/protocols/degraded-capabilities.md);
+the per-phase `headless_capable` map is the table in `PREREQUISITES/40-mcp.md` (§ *headless_capable*).
+
+Detect "MCPs can't spawn" two ways (either is sufficient):
+
+1. **A DEGRADED record is present** — `<project>/.i2p/degraded-capabilities.json` carries an `mcp.*`
+   capability (e.g. `mcp.playwright`, `mcp.semgrep`), written by the SessionStart liveness ping (P1-24)
+   or emitted at point-of-use (P1-15).
+2. **A headless/CI environment** — `CI` is set, or there is no display/browser
+   (`$DISPLAY` empty AND no `chromium`/`google-chrome` on PATH AND no `PUPPETEER_EXECUTABLE_PATH`).
+
+When either holds, route per the `headless_capable` table:
+
+- **Headless-safe phases** (EARS, FEATURE, TEST, IMPLEMENT, commit) — install and run **normally**.
+- **MCP/browser-dependent phases** (STORY browser/E2E via `ds-step-story-tests`+PLAYWRIGHT-AGENT;
+  `atelier` mockup/ui-review; `sentinel` SAST) — **skip the MCP-dependent step** and take its
+  degraded-but-valid fallback (CLI/API journey tests, SVG/wireframe, SCA/secrets-only), then
+  **DISCLOSE** the gap: name the `capability`, `reason`, and `since_phase` from the record (per the
+  contract §3). Never install a browser-story step that will produce an empty pass — that is the exact
+  false-green the contract forbids; the scorecard (P1-17) then marks the affected coverage PARTIAL.
+
+This is **detect-and-route**, never auto-spawn/auto-restart — the sensor discloses and chooses the
+headless-safe path; it does not try to resurrect a dead MCP.
+
 ## Phase detection table
 
 | Phase | Name | Artifact marking phase complete |

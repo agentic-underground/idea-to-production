@@ -59,6 +59,17 @@ For each golden signal that matters to users:
 - When a tool or telemetry is **absent**, reason from what IS reachable and **name the blind spot** — never
   declare a signal "healthy" on no evidence.
 
+### Degraded capabilities (point-of-use)
+
+When a metrics backend, log source, or probe tool you need is unavailable **at the moment you reach for it**,
+follow the degraded-capabilities discipline defined once in
+[`../../knowledge/operate-canon.md`](../../knowledge/operate-canon.md) §5 (which references the canonical
+contract, `degraded-capabilities.md`): **emit** a `{capability, reason, since_phase}` record (e.g.
+`{"capability":"tool.promtool","reason":"metrics backend unreachable","since_phase":"OPERATE"}`) — the inline
+`DEGRADED_CAPABILITIES:` marker in your findings, and the `<project>/.i2p/degraded-capabilities.json` state
+file when reachable — **route around** the dead source (read what IS reachable), and **disclose** the affected
+signal as **partial coverage**, never a "healthy" verdict on no evidence.
+
 ## Output
 
 A findings section (standalone `OBSERVABILITY-FINDINGS.md`, or folded into OPERATE-REPORT.md):

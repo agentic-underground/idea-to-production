@@ -31,7 +31,11 @@
 >   (gitleaks secret-scan CI dogfood + allowlist) ✅ P1-12 (git-hygiene advisory, propose-only) ✅ P1-13 (HUD
 >   artifact shared list) ✅ P1-14 (concierge check + inspector, canonical copies) ✅ P1-21 (four-mirror →
 >   check J) ✅ P1-22 (welcome write-verify, verify-and-disclose). verify-prereqs A–L green.
-> - **Remaining:** P1-C (8) · P2 (20) = **28 items** (24/52 shipped).
+> - **P1-C — DONE:** ✅ P1-15 (point-of-use DEGRADED emit + route/disclose) ✅ P1-16 (headless_capable routing)
+>   ✅ P1-17 (scorecard PARTIAL not silent-PASS) ✅ P1-18 (bounded retries on classified-transient) ✅ P1-19
+>   (scoped auto-format, change-set-subset assert) ✅ P1-20 (CHECKPOINT on rate-limit threshold) ✅ P1-24
+>   (MCP liveness ping in the hook substrate → degraded-capabilities.json) ✅ P1-25 (stuck-phase proposal).
+> - **Remaining:** P2 (20) = **20 items** (32/52 shipped).
 
 ---
 

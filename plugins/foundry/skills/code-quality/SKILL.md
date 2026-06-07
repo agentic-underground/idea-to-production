@@ -105,6 +105,25 @@ and either (a) write the missing test or (b) justify an explicit `# pragma: no c
 exclusion. Present both options to the user. Do not proceed to Step 2 until
 coverage is at 100% or all gaps have explicit, documented exclusions.
 
+### Step 1b — Scoped auto-format on a trivial-style gate failure (P1-19)
+
+When a review/quality gate would fail **only** for mechanical formatting (whitespace, import order,
+quote style) on files the change already touches, do **not** halt the gate and do **not** reformat the
+whole repo. Run the scoped auto-format self-heal:
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/skills/code-quality/scripts/autoformat-changed.sh --base <merge-base|HEAD> .
+```
+
+It formats **only** the files in `git diff --name-only <base>`, **asserts** the post-format change set is
+a SUBSET of the touched files (ABORTS without committing if formatting would spill outside the change
+set), lands the fix as a **separate** `style: auto-format changed files` commit, and exits **10** to
+signal the gate to re-run. Exit **0** = nothing to do; **2** = spill refused (gate stays red — investigate
+the formatter config, never widen the blast radius); **3** = no formatter configured (pass `--formatter`).
+Never reformats untouched files — a repo-wide reformat is the exact unsafe blast radius this prevents.
+This is a safe-auto heal: scoped, asserted-subset, separate-commit, re-run — see the script header for the
+full SAFETY CONTRACT.
+
 ### Step 2 — Quality Analysis
 
 Run all lenses in parallel. Read the reference file for each applicable lens.

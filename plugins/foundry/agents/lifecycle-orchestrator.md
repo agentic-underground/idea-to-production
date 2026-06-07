@@ -26,9 +26,13 @@ Propel value from ideation artifact to shippable outcome by coordinating stage a
 
 1. Read `DEFINITION_OF_DONE.md` (project root or `doc/`).
 2. Read `ORCHESTRATION_LOOP.md` if present (or use the loop model below).
-3. Load the roadmap entry and IDEATOR brief for the current item.
-4. Initialize loop state for the current item.
-5. If `doc/SUBJECT_MATTER_UNDERSTANDING.md` exists, note it — all stage agents will need it.
+3. **Resume check (P1-20):** if a `CHECKPOINT_<phase>.md` exists at the project root for this item, load
+   it — it carries the full `loop_state` and resume instructions; continue from its `current_stage` instead
+   of re-planning, and delete it once the run advances past that phase. (A checkpoint is emitted when a
+   rate-limit/budget threshold was crossed — see *Checkpoint on Rate-Limit / Budget Threshold*.)
+4. Load the roadmap entry and IDEATOR brief for the current item.
+5. Initialize loop state for the current item (or restore it from the checkpoint in step 3).
+6. If `doc/SUBJECT_MATTER_UNDERSTANDING.md` exists, note it — all stage agents will need it.
 
 ## Stage Routing
 
@@ -74,6 +78,33 @@ Spawn these named agents (each defined in `${CLAUDE_PLUGIN_ROOT}/agents/`):
 4. **At step-9**, perform global DoD audit. If any gate fails, open next iteration and route to the owning stage.
 5. **NEEDS_REVISION limit**: If a stage receives NEEDS_REVISION 3 times without resolving, escalate to BLOCK and surface to user.
 
+## Bounded Retries on Classified-Transient Errors (P1-18)
+
+A stage agent or tool call can fail two ways, and they demand opposite responses. **Retry policy
+(`--retries=N`, default N=2):** retry ONLY a **classified-transient** error, with **exponential backoff**,
+bounded by N; **fail fast** on a **deterministic** error — a retry there only burns tokens and wall-clock.
+
+**Transient-classification list** (retry these, up to N times; backoff `base * 2^attempt`, base ≈ 2s,
+jittered):
+
+| Class | Match signal |
+|---|---|
+| Network timeout | `timeout`, `ETIMEDOUT`, `deadline exceeded`, a tool that exceeded its wall-clock budget |
+| Connection reset | `ECONNRESET`, `ECONNREFUSED`, `EPIPE`, `socket hang up` |
+| Rate-limit **not exhausted** | HTTP `429` / `rate limit` **when** `rate_limits.*.used_percentage < 100` (a real ceiling-hit is NOT transient — see P1-20) |
+| Transient server error | HTTP `500/502/503/504`, `5xx`, `upstream connect error` |
+| Spawn flake | MCP/subprocess failed to start once with no config error (a missing binary is deterministic, not this) |
+
+**Deterministic errors — NEVER retried (fail fast, surface immediately):** a non-zero test assertion, a
+compile/type error, `4xx` other than 429 (esp. `401/403/404/422`), a schema/validation failure, a missing
+file/binary/permission error, a reviewer `NEEDS_REVISION`/`BLOCK`, or any error whose cause is in the
+artifact under construction. Retrying these masks a real defect.
+
+**Bound & disclose.** N is bounded (default 2; never unbounded). On exhausting N retries, stop and surface
+the last error with the attempt count — do not loop forever. Each retry is logged (attempt n/N, error
+class, backoff slept). A transient that recovers within N is invisible to the gate; one that doesn't is
+reported as a genuine failure, not a silent hang.
+
 ## Loop State Model
 
 Maintain this state across stage transitions:
@@ -105,6 +136,33 @@ loop_state:
       stage: "..."
       reviewed: true
 ```
+
+## Checkpoint on Rate-Limit / Budget Threshold (P1-20)
+
+The rate-limit data is already on the HUD — do not let it go unused until a hard ceiling kills the run
+mid-write. **Before spawning each stage agent** (and on any tool result that carries `rate_limits`), read
+`rate_limits.*.used_percentage`. When **any** window crosses the threshold (**default ~90%**), do NOT start
+the next stage. Instead, **checkpoint cleanly and PAUSE**:
+
+1. Emit a resumable **`CHECKPOINT_<phase>.md`** (where `<phase>` is the current stage id, e.g.
+   `CHECKPOINT_step-5-implementation.md`) at the project root. It is a handoff payload per
+   [`${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/handoff-schema.md`](../knowledge/protocols/handoff-schema.md)
+   carrying: the full `loop_state` (item_slug, iteration, current_stage, stage_status, sentinel_chain,
+   artifacts_index), the next stage to run, the open `unresolved_risks`, and explicit
+   `next_agent_instructions` so a **cold-start** agent resumes with zero conversation history. Cross-ref the
+   accumulated sentinel chain ([`context-sentinel.md`](../knowledge/protocols/context-sentinel.md)) so
+   completed phases are not redone.
+2. **Stop at a clean boundary** — never mid-write. Finish or roll back the current atomic write first; a
+   checkpoint emitted halfway through editing a file is worse than none. Pause **between** stages.
+3. **Disclose** to the user: which rate-limit window crossed, the `used_percentage`, the checkpoint path,
+   and the exact resume instruction (re-invoke the orchestrator; it reads `CHECKPOINT_<phase>.md` in
+   *Mandatory First Actions* and continues from `current_stage`).
+
+This complements P1-18: P1-18 retries a transient blip; P1-20 handles the **non-transient** approach of a
+real ceiling — a budget threshold is a deterministic "stop soon", checkpointed and resumable, not retried.
+On resume, the orchestrator MUST honour an existing `CHECKPOINT_<phase>.md` (load it in step 3 of Mandatory
+First Actions) and delete it once the run advances past that phase, so a stale checkpoint never re-pauses a
+healthy run.
 
 ## Global DoD Audit (after step-9)
 

@@ -98,6 +98,40 @@ bureaucracy.
 
 ---
 
+## 5. Degraded capabilities — route around a dead tool/MCP/lens, and DISCLOSE
+
+OPERATE runs against live, fallible infrastructure: an MCP server dies mid-session, a telemetry
+source is unreachable, a companion lens (`sentinel`'s dependency-audit) isn't installed. The
+discipline is **detect → degrade → disclose**, made machine-checkable, never a silent pass.
+
+**The contract is defined once**, in
+[`../../foundry/knowledge/protocols/degraded-capabilities.md`](../../foundry/knowledge/protocols/degraded-capabilities.md)
+(the `{capability, reason, since_phase}` record, its two carriers — an inline marker and the
+`<project>/.i2p/degraded-capabilities.json` state file — and the consumer rules). MISSION-CONTROL's
+skills are **point-of-use producers AND consumers** of that signal; they reference the contract,
+they do not restate it. Three obligations bind every OPERATE skill (P1-15):
+
+1. **Emit at point-of-use.** When a skill reaches for a tool/MCP/lens it needs and finds it
+   unavailable — *not* at session start, but in the moment of use — it emits a DEGRADED_CAPABILITIES
+   record: the inline marker in its findings (`DEGRADED_CAPABILITIES: [{…}]`), and, when a durable
+   writer is reachable, merged additively into `<project>/.i2p/degraded-capabilities.json`. The
+   `capability` is namespaced (`mcp.<name>`, `lens.<name>`, `tool.<name>`); the `reason` is concrete;
+   `since_phase` is `OPERATE` (or the more specific lifecycle phase if known).
+2. **Route around it.** The downstream step whose required capability is degraded takes its
+   degraded-but-valid fallback (a static manifest read instead of a live audit, a reachable-endpoint
+   probe instead of the full metrics backend) — it does **not** fail the run, and it does **not**
+   silently emit an empty result that looks like success.
+3. **DISCLOSE — never a silent pass.** The skip is surfaced in the report, naming the capability,
+   the reason, and the phase, and the affected coverage is marked **PARTIAL**, never READY/PASS:
+   *"ran without the dependency-audit lens — SENTINEL not installed; supply-chain coverage PARTIAL."*
+
+The SessionStart MCP-liveness hook (`hooks/scripts/mcp-liveness.sh`, P1-24) is the crash-surviving
+*emitter* for mid-session MCP death (it lives in the hook substrate, not in a skill, so it survives
+the crash it detects); the skills below are the point-of-use emitters and the consumers that route
+around and disclose.
+
+---
+
 ## How the OPERATE skills use this canon
 
 | Skill | Canon it grounds in |
@@ -106,7 +140,10 @@ bureaucracy.
 | `observability` | SRE three pillars + four golden signals + SLI→SLO→alert definition |
 | `incident` | ICS roles · SEV ladder · mitigate-before-diagnose · blameless postmortem |
 | `iterate` | Build-Measure-Learn · actionable metrics · pivot-or-persevere → re-enter DISCOVER (↻) |
-| `maintain` | ITIL-lite change/maintenance cadence + tech-debt + dependency upkeep |
+| `maintain` | ITIL-lite change/maintenance cadence + tech-debt + dependency upkeep + stuck-phase detection (§4) |
+
+All five also obey §5 (degraded capabilities): on hitting an unavailable tool/MCP/lens at point-of-use
+they emit a record, route around it, and disclose PARTIAL coverage — never a silent pass.
 
 > Self-improvement covenant: if any definition here drifts from how the skills behave or from current SRE
 > practice, fix it **here once** — every OPERATE skill that cites this canon inherits the correction.
