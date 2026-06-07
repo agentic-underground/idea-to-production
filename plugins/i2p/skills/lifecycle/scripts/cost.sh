@@ -13,11 +13,12 @@
 # The canonical model + schema is i2p/knowledge/instrumentation.md. Needs jq.
 set -uo pipefail
 
-PHASES="DISCOVER IDEATE DESIGN BUILD ASSURE PUBLISH"
+PHASES="DISCOVER IDEATE DESIGN BUILD ASSURE SECURE PUBLISH OPERATE"
 # Rough seed estimates (tokens). Intentionally approximate — the calibration loop corrects them.
 base_for() { case "$1" in
   DISCOVER) echo 30000 ;; IDEATE) echo 40000 ;; DESIGN) echo 50000 ;;
-  BUILD) echo 120000 ;; ASSURE) echo 25000 ;; PUBLISH) echo 30000 ;; *) echo 0 ;;
+  BUILD) echo 120000 ;; ASSURE) echo 25000 ;; SECURE) echo 25000 ;;
+  PUBLISH) echo 30000 ;; OPERATE) echo 40000 ;; *) echo 0 ;;
 esac; }
 
 EWMA_ALPHA=0.4

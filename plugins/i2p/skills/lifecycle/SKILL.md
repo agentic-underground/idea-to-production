@@ -15,10 +15,13 @@ model: inherit
 
 # i2p — Product lifecycle
 
-One spine for the whole suite: **DISCOVER ① → IDEATE ② → DESIGN ③ → BUILD ④ → ASSURE ⑤ → PUBLISH ⑥ →
-★ IN PRODUCTION**. The canonical model (owners, academic lineage, entry/exit signals, domain binding)
-is [`../../knowledge/product-lifecycle.md`](../../knowledge/product-lifecycle.md). This skill is the
-thin driver over the state file.
+One spine for the whole suite — **eight phases that form a cycle**: **DISCOVER ① → IDEATE ② → DESIGN ③ →
+BUILD ④ → ASSURE ⑤ → SECURE ⑥ → PUBLISH ⑦ → OPERATE ⑧ ↻**. ASSURE (quality) and SECURE (security) are
+**separate first-class gates**; OPERATE is the living-in-production phase whose learnings loop back to
+DISCOVER. The canonical model (owners, the three cross-cutting concerns, academic lineage, entry/exit
+signals, domain binding) is
+[`../../knowledge/product-lifecycle.md`](../../knowledge/product-lifecycle.md). This skill is the thin
+driver over the state file.
 
 ## Commands
 
@@ -31,7 +34,7 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh set <PHASE>   #
 ```
 
 State lives at `<project>/.i2p/lifecycle.json`. The `concierge` status line reads it and renders
-`◆ lifecycle ●●◉○○○○ <PHASE> (n/7)`.
+`◆ lifecycle ●●◉○○○○○ <PHASE> (n/8)`.
 
 ## Token-cost & estimate↔actual calibration
 
@@ -66,12 +69,14 @@ the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
 
 | Owner | Marks done | → advances to |
 |---|---|---|
-| market-scanner (kept OPPORTUNITY) | `done DISCOVER` | IDEATE |
-| ideator (IDEA package handed off) | `done IDEATE` | DESIGN |
+| market-scanner (kept OPPORTUNITY, challenger upholds) | `done DISCOVER` | IDEATE |
+| ideator (IDEA package handed off, challenger READY) | `done IDEATE` | DESIGN |
 | atelier (design phase concluded) | `done DESIGN` | BUILD |
-| foundry (item SHIPs / COMPLETE) | `done BUILD` | ASSURE |
-| sentinel (security gate PASS) | `done ASSURE` | PUBLISH |
-| pressroom (publication out) | `done PUBLISH` | IN_PRODUCTION |
+| foundry (item SHIPs — tests green, story proven) | `done BUILD` | ASSURE |
+| foundry (adversarial quality review PASS — `/pr-review`) | `done ASSURE` | SECURE |
+| sentinel (security-gate PASS) | `done SECURE` | PUBLISH |
+| pressroom (publication out) | `done PUBLISH` | OPERATE |
+| mission-control (operate learning → next cycle) | `done OPERATE` | DISCOVER ↻ |
 
 You can also drive it by hand here with `done`/`advance`/`set`.
 

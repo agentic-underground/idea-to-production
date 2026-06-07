@@ -2,7 +2,7 @@
 # lifecycle.sh — read/advance the idea-to-production product-lifecycle state for a project.
 #
 # State lives at <project>/.i2p/lifecycle.json:
-#   {"product":"…","current_phase":"DISCOVER","phases":[…7…],"started_at":"…","history":[{"phase","at"}]}
+#   {"product":"…","current_phase":"DISCOVER","phases":[…8…],"started_at":"…","history":[{"phase","at"}]}
 #
 # Usage (run from the project root, or pass --dir <path>):
 #   lifecycle.sh init [product-name]   # create the state at DISCOVER (no-op if it exists)
@@ -15,7 +15,7 @@
 # .i2p/lifecycle.json; always exits 0 on read paths. Requires jq for writes (degrades with a message).
 set -uo pipefail
 
-PHASES="DISCOVER IDEATE DESIGN BUILD ASSURE PUBLISH IN_PRODUCTION"
+PHASES="DISCOVER IDEATE DESIGN BUILD ASSURE SECURE PUBLISH OPERATE"
 
 dir="."
 # allow --dir <path> anywhere

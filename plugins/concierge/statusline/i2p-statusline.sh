@@ -221,7 +221,7 @@ MSEP="   ${DIM}│${R}   "
 
 # ---------------------------------------------------------------------------
 # Product-lifecycle phase widget — reads the project-local .i2p/lifecycle.json
-# (current_phase + phases[]) and renders a 6-pip progress track. Degrades to
+# (current_phase + phases[]) and renders an 8-pip progress track. Degrades to
 # nothing when the file is absent. The state file is written by the i2p
 # lifecycle helper (/i2p-help kickoff); this only READS it.
 # ---------------------------------------------------------------------------
@@ -237,7 +237,7 @@ lifecycle_widget() {
     phases=$(jq -r '(.phases // []) | join(" ")' "$lf" 2>/dev/null)
   fi
   [ -n "$cur" ] || return
-  [ -n "$phases" ] || phases="DISCOVER IDEATE DESIGN BUILD ASSURE PUBLISH"
+  [ -n "$phases" ] || phases="DISCOVER IDEATE DESIGN BUILD ASSURE SECURE PUBLISH OPERATE"
   local i=0 idx=0 total=0 p
   for p in $phases; do total=$((total+1)); [ "$p" = "$cur" ] && idx=$total; done
   local track=""
