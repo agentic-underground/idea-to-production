@@ -97,6 +97,52 @@ else
   cost_note="IDEA_COST.jsonl present but no valid record — token/wall-clock omitted"
 fi
 
+# ---- P2-1: coverage regression vs the last-N baseline records (detect-auto, flag only) ----
+# IDEA_COST.jsonl is the tracked per-run ledger (one record per cycle). A run can regress coverage
+# silently — branch coverage drops with no justification. Here we compare the CURRENT run's branch
+# coverage (the live coverage-summary.json above, falling back to the last record's recorded value)
+# against the WORST of the previous N records' `quality.final_branch_coverage_pct`, and FLAG a drop.
+#
+# This is additive and tolerant by design: older records that predate the field are simply skipped
+# (`select(...!=null)`), so the baseline shrinks gracefully rather than erroring. The flag is a
+# scorecard signal, never an exit-1 — a regression may be legitimate, so a run can JUSTIFY it by
+# carrying a pragma marker on its record (`quality.coverage_regression_pragma`, a non-empty reason
+# string); when present the drop is recorded as justified and not flagged. N is small (5) so the
+# baseline tracks recent reality, not ancient history.
+COV_BASELINE_N=5
+cov_regression=null        # null = not evaluated; true/false once we have a baseline + a current value
+cov_baseline_min=$NA cov_regression_pragma="" cov_baseline_count=0
+if [[ -n "$icost" ]]; then
+  # Current branch coverage: prefer the live coverage file (already parsed above), else the last
+  # record's own recorded branch coverage (so a run with no fresh coverage file still compares).
+  cov_now="$cov_branch"
+  if [[ "$cov_now" == "$NA" && -n "$icost_last" ]]; then
+    cov_now=$(printf '%s' "$icost_last" | jq -r '.quality.final_branch_coverage_pct // empty' 2>/dev/null)
+    cov_now=${cov_now:-$NA}
+  fi
+  # Previous N records' branch coverage (exclude the current/last record itself), worst (min) = the
+  # baseline floor a non-justified run must not fall below.
+  read -r cov_baseline_min cov_baseline_count < <(
+    grep -v '^[[:space:]]*$' "$icost" | jq -c . 2>/dev/null | head -n -1 \
+      | tail -n "$COV_BASELINE_N" \
+      | jq -rs '[ .[] | .quality.final_branch_coverage_pct | select(. != null) ]
+                | if length==0 then "null 0" else "\(min) \(length)" end' 2>/dev/null
+  )
+  cov_baseline_min=${cov_baseline_min:-$NA}; cov_baseline_count=${cov_baseline_count:-0}
+  # The justifying pragma on the current run's record (additive; absent → unjustified).
+  if [[ -n "$icost_last" ]]; then
+    cov_regression_pragma=$(printf '%s' "$icost_last" | jq -r '.quality.coverage_regression_pragma // empty' 2>/dev/null)
+  fi
+  if [[ "$cov_now" != "$NA" && "$cov_baseline_min" != "$NA" && "$cov_baseline_count" -gt 0 ]]; then
+    if awk "BEGIN{exit !($cov_now < $cov_baseline_min)}"; then
+      # A drop below the recent floor. Justified only if a pragma reason is present on the record.
+      if [[ -n "$cov_regression_pragma" ]]; then cov_regression=false; else cov_regression=true; fi
+    else
+      cov_regression=false
+    fi
+  fi
+fi
+
 # ---- SENTINEL gate verdict ----
 sec_verdict='"n/a"'
 for s in SECURITY-REPORT.md doc/SECURITY-REPORT.md; do
@@ -167,6 +213,13 @@ cat > SCORECARD.json <<EOF
     "function_pct": $(num "$cov_fn"),
     "statement_pct": $(num "$cov_stmt")
   },
+  "coverage_regression": {
+    "flagged": $cov_regression,
+    "baseline_n": $cov_baseline_count,
+    "baseline_min_branch_pct": $(num "$cov_baseline_min"),
+    "current_branch_pct": $(num "${cov_now:-$NA}"),
+    "justified_by_pragma": $([[ -n "$cov_regression_pragma" ]] && echo "true" || echo "false")
+  },
   "corpus": { "status": "$corpus_status", "fixtures": $(num "$corpus_fixtures"), "false_positive_pct": $(num "$corpus_fp") },
   "rules": $(num "$rule_files"),
   "tests": $(qq "$test_count"),
@@ -188,6 +241,14 @@ _cov_tag=""; [[ "$cov_status" == "partial" ]] && _cov_tag="  [PARTIAL — covera
 _corpus_tag=""; [[ "$corpus_status" == "partial" ]] && _corpus_tag="  [PARTIAL — corpus lens did not run]"
 echo "PRODUCT SCORECARD — $(basename "$ROOT")"
 echo "  coverage:  branch ${cov_branch}%  line ${cov_line}%  fn ${cov_fn}%  stmt ${cov_stmt}%${_cov_tag}"
+# P2-1: coverage regression vs the last-N (=${COV_BASELINE_N}) IDEA_COST baselines — flag only, never blocks.
+if [[ "$cov_regression" == "true" ]]; then
+  echo "  ⚠ REGRESSION: branch coverage ${cov_branch}% < recent floor ${cov_baseline_min}% (last ${cov_baseline_count} runs) with NO justifying pragma"
+elif [[ "$cov_regression" == "false" && -n "$cov_regression_pragma" ]]; then
+  echo "  coverage-Δ:  branch dropped below the ${cov_baseline_count}-run floor (${cov_baseline_min}%) — JUSTIFIED: ${cov_regression_pragma}"
+elif [[ "$cov_baseline_count" -gt 0 && "$cov_branch" != "$NA" ]]; then
+  echo "  coverage-Δ:  no regression — branch ${cov_branch}% ≥ ${cov_baseline_count}-run floor ${cov_baseline_min}%"
+fi
 echo "  corpus:    ${corpus_fixtures} fixtures   FP ${corpus_fp}%${_corpus_tag}"
 echo "  rules:     ${rule_files}"
 echo "  tests:     ${test_count}"

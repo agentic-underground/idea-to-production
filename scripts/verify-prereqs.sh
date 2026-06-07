@@ -42,6 +42,13 @@
 #      (HOME + CLAUDE_PROJECT_DIR = fresh mktemp dirs) so it can't touch real state, under a timeout.
 #      A missing / unparsable / non-zero-exiting hook = FAIL: this is what makes a dead
 #      inject-soul/capture-cost detectable, vs the `2>/dev/null||true` that hides it at runtime.
+#   M. LSP capability probes exist AND are no-download (P2-14) — the browser incident's
+#      presence-vs-capability lesson, generalised to Language Server Protocol servers. Asserts that
+#      (1) at least one CAPABILITY-grade LSP probe exists (one that drives a server over its JSON-RPC
+#      stdio wire — fingerprinted by an `initialize` request framed with `Content-Length`, not a
+#      `command -v <lsp>` presence row), so the presence≠capability lesson is actually applied; and
+#      (2) every such capability probe obeys the no-download invariant (check G's deny set, scoped to
+#      the LSP class) — it may launch the server locally but must never fetch-and-run a package.
 #
 # Flag:
 #   --fix  guarded canonical re-sync — when the canonical-copy parity checks (A check.sh, E SOUL.md,
@@ -494,6 +501,60 @@ else
   done
   [ "$l_ok" -eq 1 ] && pass "every hooks.json command resolves to a script that exists, parses, and exits 0 on a synthetic event"
 fi
+
+# ── M. LSP capability probes exist AND are no-download (P2-14) ────────────────
+# The browser incident's lesson — presence ≠ capability — generalised to Language Server
+# Protocol servers (review L12). A `command -v <lsp>` row proves the binary is on PATH; it does
+# NOT prove the server actually SPEAKS LSP. So this check asserts TWO things over the
+# requirements.tsv probe cells (column 2):
+#   (1) APPLIED — at least one CAPABILITY-grade LSP probe exists somewhere in the marketplace: a
+#       probe that drives a language server over its JSON-RPC stdio wire (the capability signature is
+#       an LSP `initialize` request framed with `Content-Length` — the protocol itself, not a flag).
+#       A marketplace with only `command -v <lsp>` presence rows has re-opened the exact gap P2-14
+#       closes, so that is a FAIL.
+#   (2) NO-DOWNLOAD — every such capability probe obeys the sacred no-download invariant (the same
+#       deny set check G enforces for the whole tsv probe class): a capability probe may LAUNCH the
+#       server locally, but must never fetch-and-run a package (uvx/bunx/pnpm dlx, npx -y/--yes,
+#       npx …@<spec>, pip install, npm i|install, curl … | sh). This is check G's property, asserted
+#       again but SCOPED to the LSP class so a future capability row can't smuggle in a download.
+# Detection is on the PROTOCOL fingerprint, so it is independent of which LSP server (pyright /
+# typescript-language-server / rust-analyzer) a probe happens to drive. awk stderr is captured so a
+# parse/runtime error fails the check loudly (never a vacuous PASS). The deny boolean is kept on ONE
+# line on purpose (mawk on Debian/GitHub ubuntu-latest rejects a parenthesised expr split across lines).
+section "M. LSP capability probes exist + are no-download (presence ≠ capability)"
+m_err="$(mktemp)"
+# awk emits one tagged line per capability-grade LSP row: "CAP\t…" for every such row, plus an extra
+# "BAD\t…" for any that ALSO violate the no-download deny set. Shell splits the tags afterwards — a
+# single stdout stream, so there is no dual-redirect conflict (a genuine awk fault still lands on
+# stderr → m_err and fails the check loudly).
+m_lines="$(
+  while IFS= read -r tsv; do
+    awk -F'\t' -v file="$tsv" '
+      /^#/ || /^[[:space:]]*$/ { next }
+      {
+        p=$2
+        # Capability signature: an LSP `initialize` request framed on the JSON-RPC stdio wire.
+        if (!(p ~ /Content-Length/ && p ~ /initialize/)) next
+        print "CAP\t"file" :: "$1
+        if (p ~ /command -v/ && p !~ /(^|[^[:alnum:]_])(uvx|bunx)([ \t]|$)/ && p !~ /pnpm[ \t]+dlx/ && p !~ /npx[ \t]+(-y|--yes)/ && p !~ /npx[ \t]+[^ \t]*@/ && p !~ /pip[ \t]+install/ && p !~ /npm[ \t]+(i|install)([ \t]|$)/ && p !~ /curl[^|]*\|[ \t]*(ba)?sh/) next
+        print "BAD\t"file" :: "$1" :: "p
+      }
+    ' "$tsv" 2>>"$m_err"
+  done < <(find plugins -path '*/skills/check/requirements.tsv' | sort)
+)"
+m_caps="$(printf '%s\n' "$m_lines" | sed -n 's/^CAP\t//p')"
+m_offenders="$(printf '%s\n' "$m_lines" | sed -n 's/^BAD\t//p')"
+if [ -s "$m_err" ]; then
+  fail "awk error while scanning for LSP capability probes — check M did not run:"; sed 's/^/      /' "$m_err"
+elif [ -z "$m_caps" ]; then
+  fail "no capability-grade LSP probe found — every LSP row is presence-only (command -v); presence ≠ capability (P2-14)."
+elif [ -n "$m_offenders" ]; then
+  fail "LSP capability probe(s) violate the no-download invariant (launch the server locally; never fetch a package):"
+  printf '%s\n' "$m_offenders" | sed 's/^/      /'
+else
+  pass "$(printf '%s\n' "$m_caps" | grep -c .) capability-grade LSP probe(s) present, all no-download (JSON-RPC initialize over stdio, never an install)"
+fi
+rm -f "$m_err"
 
 # ── --fix: guarded canonical re-sync ─────────────────────────────────────────
 # Only acts when --fix was passed. Re-syncs the drifted canonical copies registered by checks A/E/F

@@ -47,6 +47,35 @@ tallied from `*_INSPECTION_REPORT.md`), merged self-improve PRs (`gh`), canonica
 (check.sh + inspection-core md5 booleans), live `~/.claude` portability violations (must trend to 0), and
 self-coverage (plugins/skills/agents/commands/inspect/self-improve counts).
 
+## Regression & drift detectors (flag-only, never a gate)
+
+Three additive signals turn the scorecards from snapshots into *closed loops* — each is surfaced as a
+flag/trend, never an exit-1, so a run is never blocked by them:
+
+- **Coverage regression vs the last-N baselines (P2-1, product).** `scorecard.sh` compares the current
+  branch coverage against the worst of the previous **5** `IDEA_COST.jsonl` records'
+  `quality.final_branch_coverage_pct` and FLAGS a drop in `coverage_regression` — unless the current
+  run's record carries a justifying `quality.coverage_regression_pragma` (a non-empty reason string),
+  in which case the drop is recorded as *justified*. Older records that predate the field are skipped,
+  so the baseline shrinks gracefully rather than erroring.
+- **Canon-restatement trend (P2-13, marketplace).** `marketplace-score.sh` greps `plugins/*/agents/*.md`
+  for canon inlined *without* a certainty-marker citation — an inlined model-tier table, ≥3 SOLID
+  definitions, or the five-level test-contract prose — and reports `canon_restatements.{count,files}`.
+  This is the "one thing to fix" from
+  [`../../knowledge/architecture/self-architecture.md`](../../knowledge/architecture/self-architecture.md):
+  trend it **down** by replacing each pasted copy with a reference (the standing target for
+  `/foundry:self-improve`).
+- **Per-element finding retention (P2-17, marketplace).** `marketplace-score.sh` tallies inspection
+  findings **per element** (grouped by each finding's `**File:** \`path\`` line) into
+  `per_element_findings` — a `{element: count}` map retained on every ledger line. This is the
+  closed-loop measure `/foundry:self-improve` asserts against:
+
+  > **GUARDRAIL — self-improve closed-loop assertion.** After self-improve touches an element and a fresh
+  > inspection runs, score the marketplace and read the PREVIOUS ledger line's `per_element_findings`.
+  > **ASSERT** the count for the touched element dropped run-over-run; if it did not, **WARN** (it did not
+  > halve the distance to flawless — re-open it). This replaces the eyeballed PR-time check with a measured
+  > one. The ledger is append-only, so the per-element series is the proof.
+
 ## Reading the trend (the only honest proof)
 
 A single scorecard is a snapshot; *improvement* is the **trend** across snapshots. Because both files are

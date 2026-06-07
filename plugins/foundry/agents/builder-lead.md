@@ -188,6 +188,64 @@ for items with no comparable history.
 
 ---
 
+## Phase 4.5 — Cycle-Integrity Self-Heal (pre-flight gates)
+
+Before emitting the plan, run these detect-and-degrade checks. Each states what it detects, the safe
+action, and where the governing protocol lives. None of them mutate the codebase; they HALT or WARN.
+
+### Roster cross-check — reviewer roles & handlers exist (P2-4)
+
+Every reviewer role and VALUE_HANDLER your decomposition names in Phase 4 (`Reviewers that will be
+invoked`, `VALUE_HANDLERS required`) must actually be **registered**. Cross-check each named role and
+handler against the roster ([`../knowledge/orchestration/agent-roster.md`](../knowledge/orchestration/agent-roster.md))
+and the on-disk agents (`${CLAUDE_PLUGIN_ROOT}/agents/`). On a miss:
+
+- A missing **VALUE_HANDLER** → degrade: note the gap, route the item to the nearest registered handler
+  (or flag the item as blocked on a new handler), and record it under `## Missing Handlers` for the
+  self-improvement covenant (§14 of FOUNDRY SKILL.md / [`../knowledge/architecture/solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+- A missing **reviewer role** → WARN loudly in the plan: a phase that names a non-existent reviewer would
+  silently skip its gate. Name the missing role and the transition it guards; do not let the plan claim a
+  gate that cannot run.
+
+This is detect-and-degrade, never silent: a roster gap surfaces in `FOUNDRY_PLAN.md`, it does not vanish.
+
+### Topological sort — halt on a dependency cycle (P2-7)
+
+The `Depends on:` edges across your Phase 4 decomposition form a dependency graph. **Topologically sort
+the items** before producing the parallel grouping. If the sort cannot complete, a **cycle** exists
+(e.g. `#3 → #5 → #7 → #3`): **HALT** and surface the exact cycle path — a cyclic decomposition has no
+valid build order and parallel grouping (§5) is undefined over it. Do not guess an order; report the
+cycle and stop so the human (or `founder`) can break it. The legal-order requirement is the orchestration
+hierarchy's precondition (see [`../knowledge/orchestration/orchestration-loop.md`](../knowledge/orchestration/orchestration-loop.md)
+and `${CLAUDE_PLUGIN_ROOT}/VALUE_FLOW.md` §9); a cycle violates it.
+
+### IDEA_COST high-variance flag → handler-architect (P2-9)
+
+When IDEA_COST history is available, an item whose comparable cost samples have **high variance**
+(e.g. `tokens_total` stdev > ~0.5× mean across comparables, or wildly swinging `estimation_accuracy_pct`)
+is an anomaly the estimate cannot be trusted on. **Flag it** in the decomposition (`estimation_basis:
+HIGH_VARIANCE`) and **route it to `handler-architect`** for investigation before committing a budget —
+high cost variance usually signals an unresolved architectural decision, which is exactly what the
+opus-pinned architect exists to settle (see the trigger conditions in Phase 2.5 and the
+[`../knowledge/orchestration/idea-cost-schema.md`](../knowledge/orchestration/idea-cost-schema.md)
+`token_accounting` fields the variance is computed over). Record the flag under `## Self-Improvement
+Flags` so the anomaly is investigated, not just re-estimated.
+
+### Catastrophic-regression — PROPOSE a revert, never auto-revert (P2-2)
+
+If, during or after a cycle, a delivered item triggers a **catastrophic regression** — coverage
+collapses **AND** the suite fails (the `lifecycle-orchestrator` REGRESSION-REVIEWER and COVERAGE-REVIEWER
+both fail on the same change) — the safe response is **not** to keep building on a broken trunk. **PROPOSE
+a revert** to the human, naming the **prior-good SHA** (the last commit on `main` whose
+`SENTINEL::DELIVERY_COMPLETE` carried a green suite + non-collapsed coverage — recover it from the commit
+trail / `IDEA_COST.jsonl` `completed_at` ordering, e.g. `git log --first-parent main` back to the last
+clean delivery). **NEVER auto-revert.** A revert is a merge-graph mutation and is therefore human-gated
+exactly like any merge under [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md):
+the agent proposes (`git revert <bad-sha>` or reset-to `<prior-good-sha>`), states the evidence, and
+**stops — the human decides**. This is detect-and-propose, on the *no auto* side of the line.
+
+---
+
 ## Phase 5 — Parallel Grouping
 
 Produce a grouping that maximises concurrent processing:

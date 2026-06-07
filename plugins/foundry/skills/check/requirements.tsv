@@ -11,6 +11,7 @@ cargo	command -v cargo	recommended	rustup (https://rustup.rs)
 rust-analyzer	command -v rust-analyzer	recommended	rustup component add rust-analyzer
 typescript-language-server	command -v typescript-language-server	recommended	npm i -g typescript-language-server typescript
 pyright	command -v pyright-langserver || command -v pyright	recommended	npm i -g pyright (or uv tool install pyright)
+pyright-lsp-capability	command -v pyright-langserver >/dev/null 2>&1 || exit 1; init='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"processId":null,"rootUri":null,"capabilities":{}}}'; { printf 'Content-Length: %d\r\n\r\n%s' "${#init}" "$init"; sleep 4; } | timeout 20 pyright-langserver --stdio 2>/dev/null | head -c 8000 | grep -q '"id":1'	optional	capability-grade LSP probe (no-download): JSON-RPC initialize handshake — presence of pyright-langserver is NOT enough
 playwright-mcp	command -v npx	recommended	npm i -g @playwright/mcp (launched via npx)
 context7-mcp	command -v npx	recommended	npx -y @upstash/context7-mcp (up-to-date, version-specific library docs — knowledge-parity for handlers)
 gh	command -v gh	recommended	GitHub CLI (cli.github.com) — required by /foundry:pr-review for PR-number review and --post

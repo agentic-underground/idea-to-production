@@ -35,7 +35,15 @@
 >   ✅ P1-17 (scorecard PARTIAL not silent-PASS) ✅ P1-18 (bounded retries on classified-transient) ✅ P1-19
 >   (scoped auto-format, change-set-subset assert) ✅ P1-20 (CHECKPOINT on rate-limit threshold) ✅ P1-24
 >   (MCP liveness ping in the hook substrate → degraded-capabilities.json) ✅ P1-25 (stuck-phase proposal).
-> - **Remaining:** P2 (20) = **20 items** (32/52 shipped).
+> - **P2-A (foundry) — DONE:** ✅ P2-1 (coverage-regression vs last-N baselines, pragma-justified) ✅ P2-2
+>   (catastrophic-regression PROPOSE-revert, prior-good SHA, never auto) ✅ P2-3 (frozen-spec commit-scan gate)
+>   ✅ P2-4 (reviewer/handler roster pre-flight cross-check) ✅ P2-6 (2×-reject root-cause + escalate) ✅ P2-7
+>   (decomposition topo-sort, halt on cycle) ✅ P2-8 (per-phase CHECKPOINT_<phase>.md) ✅ P2-9 (IDEA_COST
+>   high-variance → handler-architect) ✅ P2-12 (cleave auto-stubs docs+glossary) ✅ P2-13 (canon-restatement
+>   detector → scorecard trend; real count=8) ✅ P2-14 (LSP capability probe + check M; no-download) ✅ P2-15
+>   (deployed-digest ↔ DELIVERY_COMPLETE mismatch) ✅ P2-16 (stacked-PR retarget-to-main guard) ✅ P2-17
+>   (self-improve closed-loop: per-element finding-count trend + assertion). verify-prereqs A–M green.
+> - **Remaining:** P2 commit 2 = P2-5,10,11,18,19,20 = **6 items** (46/52 shipped).
 
 ---
 

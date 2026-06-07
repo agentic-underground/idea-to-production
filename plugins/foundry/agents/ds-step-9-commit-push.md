@@ -33,6 +33,16 @@ Before beginning:
 
 1. Run `git status` — confirm only expected files are modified.
 2. Run `git add -p` — stage changes interactively, review every hunk.
+2b. **Frozen-spec commit-scan gate (P2-3).** Scan the staged diff for changes to a **frozen spec** —
+    the EARS specification (`doc/SPECIFICATION.ears.md`) or any `.feature` file. Once `FEATURE_COMPLETE`
+    has fired for an item, its spec is **frozen** for steps 3–9 (see the specification-state freeze rule,
+    [`../skills/lifecycle-states/states/specification.md`](../skills/lifecycle-states/states/specification.md)).
+    A staged edit to a frozen EARS/`.feature` artefact **without** a DISCUSS sentinel authorising it
+    (the spec was re-opened via DISCUSS mode — [`../skills/roadmapper/SKILL.md`](../skills/roadmapper/SKILL.md) §11)
+    is a spec freeze break. **HALT delivery** with guidance: *"this spec is frozen; open a DISCUSS sentinel
+    to change it — return to DISCUSS mode (roadmapper §11) to amend EARS/.feature, then re-run the loop."*
+    Do not commit a silent spec mutation past a passed reviewer gate. This is a detect-and-halt gate, not a
+    fix.
 3. Run `git commit` with the message from step-8 handoff.
 4. **Run the always-on adversarial gate.** Invoke `/foundry:pr-review` for this change (if it has
    not already been run and recorded for this exact diff) and require a **PASS**
@@ -44,8 +54,32 @@ Before beginning:
      are opt-in and need prior user approval — see the PR-base policy in `merge-governance.md`) whose
      body carries the review verdict + findings. **Stop here — the human merges and closes.** Do not
      merge to `main`.
+     - **Stacked-PR retarget-to-main guard (P2-16).** If this item's branch is part of an **approved
+       stacked strategy** (its PR is based on another feature branch, not `main`), guard against stranded
+       PRs: when a base PR/branch **merges**, any PR still based on that now-merged branch must be
+       **retargeted to `main`** (or the next still-open base) the moment its base merges —
+       `gh pr edit <n> --base <main|next-open-base>` — and the stack merged **base → tip in order**. A
+       stacked PR left pointing at an already-merged base merges into a dead branch, silently stranding
+       its work off trunk. Apply the retargeting procedure exactly as specified in
+       [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md)
+       (*"Stacked-PR retargeting guard — THE ONLY WAY"*): retarget the directly-stacked PR(s), re-confirm
+       the diff is only the PR's own commits, and after merge **verify it landed on `main`**
+       (`git cat-file -e main:<a-changed-file>`). This is a detect-and-guard step at delivery time.
    - **`direct-merge`**: merge the branch to `main` and `git push` (the granted-autonomy path).
 6. Capture the commit hash from the push/merge output.
+6b. **Deployed-digest ↔ DELIVERY_COMPLETE consistency (P2-15).** The `DELIVERY_COMPLETE` sentinel asserts
+    *"the change is on `main`"* (see Sentinel Emission below and
+    [`../knowledge/protocols/context-sentinel.md`](../knowledge/protocols/context-sentinel.md)) — so the
+    artefact identity it claims must match what actually landed. **Record the deployed digest**: the
+    short commit hash now on `main` (`git rev-parse --short main`), plus — when this delivery produces a
+    deployable artefact (a built bundle, image tag, or published package version) — that artefact's digest
+    or version. **Compare** the recorded digest against the value the `DELIVERY_COMPLETE` sentinel payload
+    will carry. On a **mismatch** (e.g. the sentinel claims a hash/version that is not the one on `main`,
+    or a build was published from a different SHA than the one merged): **flag it** in the completion
+    report and do **not** emit a `DELIVERY_COMPLETE` that misstates the artefact — a delivery sentinel that
+    names the wrong artefact silently breaks the traceability chain
+    ([`../skills/lifecycle-states/states/delivery.md`](../skills/lifecycle-states/states/delivery.md)).
+    Detect-and-flag: surface the mismatch, do not paper over it.
 7. Update roadmap entry: change `STATUS: IN PROGRESS` → `STATUS: COMPLETE`, add completion date.
    (In `pr-approval` mode, hold the item at `STATUS: AWAITING MERGE` until the human merges the PR,
    then flip to `COMPLETE`.)

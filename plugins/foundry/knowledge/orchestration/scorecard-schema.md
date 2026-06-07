@@ -27,6 +27,10 @@ append-only (one line per scoring event), so the series is the proof.
   "cost": {
     "tokens_total": 0, "elapsed_s": 0, "regressions_introduced": 0,
     "estimation_accuracy_pct": 0.0, "note": "string-or-null"
+  },
+  "coverage_regression": {
+    "flagged": false, "baseline_n": 0, "baseline_min_branch_pct": 0.0,
+    "current_branch_pct": 0.0, "justified_by_pragma": false
   }
 }
 ```
@@ -39,6 +43,7 @@ append-only (one line per scoring event), so the series is the proof.
 | `tests` | `IDEA_COST.jsonl` `test_count_total`, else a test-file heuristic | authoritative when a cycle recorded it |
 | `security_gate` | `SECURITY-REPORT.md` (SENTINEL) | first PASS/REVIEW/BLOCK token |
 | `cost.*` | **last record of `IDEA_COST.jsonl`** | **only a real FOUNDRY cycle records tokens** — omitted (null + note) otherwise; a shell script cannot measure tokens |
+| `coverage_regression` (**P2-1**) | current branch coverage vs the worst of the last N=5 `IDEA_COST.jsonl` `quality.final_branch_coverage_pct` records | detect-auto, **flag-only** (never blocks): `flagged:true` on a drop below the recent floor **unless** the current record carries a `quality.coverage_regression_pragma` reason. Additive — records predating the field are skipped; `flagged:null` when there is no baseline. |
 
 Absent sources report `null` / `"n/a"` — honest by omission, never a fabricated value.
 
@@ -51,7 +56,10 @@ Absent sources report `null` / `"n/a"` — honest by omission, never a fabricate
   "inspection": { "reports_seen": 0, "critical": 0, "warning": 0, "suggestion": 0 },
   "self_improve_prs_merged": 0,
   "coverage_of_self": { "plugins": 0, "skills": 0, "agents": 0, "commands": 0,
-                        "inspect_commands": 0, "self_improve_skills": 0 }
+                        "inspect_commands": 0, "self_improve_skills": 0 },
+  "canon_restatements": 0,
+  "canon_restatement_files": [],
+  "per_element_findings": { "path/to/element": 0 }
 }
 ```
 
@@ -63,6 +71,8 @@ Absent sources report `null` / `"n/a"` — honest by omission, never a fabricate
 | `inspection.{critical,warning,suggestion}` | tally of `*_INSPECTION_REPORT.md` | findings-closed > findings-opened run-over-run |
 | `self_improve_prs_merged` | `gh pr list --state merged --search 'self-improve in:title'` | up |
 | `coverage_of_self.*` | `find` over `plugins/` | inspect/self-improve coverage → one per plugin |
+| `canon_restatements` / `canon_restatement_files` (**P2-13**) | grep `plugins/*/agents/*.md` for inlined canon (model-tier tables, the test-contract prose, ≥3 SOLID definitions) **lacking** a nearby certainty-marker citation to the canonical `knowledge/...` source | **trend → 0** (the self-architecture "one thing to fix": agents should reference canon, not restate it) |
+| `per_element_findings` (**P2-17**) | per-inspector/per-reviewer finding counts grouped by each finding's `**File:**` line across `*_INSPECTION_REPORT.md` | closed-loop: self-improve **asserts the touched element's count dropped** run-over-run (or WARNs it did not) |
 
 ## The capture loop (how real cost gets in)
 

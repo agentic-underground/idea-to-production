@@ -85,6 +85,17 @@ the glossary, any skill that spawned it) so nothing dangles — and register any
 as the propagation checklist in
 [`../../knowledge/protocols/context-sentinel.md`](../../knowledge/protocols/context-sentinel.md) requires.
 
+> **Auto-stub docs + glossary on cleave (P2-12 — yes-heal, a stub is acceptable).** A cleave is not done
+> until every **newly born** agent/skill has its documentation and **glossary** entry. A new element that
+> exists in `agents/`/`skills/` but is absent from the glossary
+> ([`../../knowledge/glossary.md`](../../knowledge/glossary.md)) is undiscoverable and will fail the
+> doc-link / glossary-coverage checks. So when this cleave creates a new element, **auto-stub** in the
+> same change: a minimal one-line glossary entry (name → what it denotes, placed in the right section of
+> the conceptual-domain tree) and any docs entry the propagation checklist names (agent-roster row,
+> VALUE_FLOW mention). The stub is deliberately minimal — a placeholder a later pass fleshes out — but it
+> **must exist and resolve**; an honest stub beats a dangling reference. This is the glossary/`docs` line
+> of the context-sentinel propagation checklist applied to *new elements*, automated at cleave time.
+
 ## 3. Apply — on a branch, behind the gate
 
 1. If `--dry-run`: present the proposal (what cleaves into what, or what becomes a reference) and stop.

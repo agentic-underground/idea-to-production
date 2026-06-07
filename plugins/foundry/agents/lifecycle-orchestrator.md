@@ -77,6 +77,16 @@ Spawn these named agents (each defined in `${CLAUDE_PLUGIN_ROOT}/agents/`):
    - Reviewer critical_open = 0
 4. **At step-9**, perform global DoD audit. If any gate fails, open next iteration and route to the owning stage.
 5. **NEEDS_REVISION limit**: If a stage receives NEEDS_REVISION 3 times without resolving, escalate to BLOCK and surface to user.
+6. **Repeat-rejection root-cause (P2-6).** When the **same reviewer role** rejects the **same stage** a
+   **second time with an identical (or near-identical) `NEEDS_REVISION`** — the same finding class
+   surviving a revision — do **not** silently loop into a third identical pass. The revision did not
+   address the finding, so re-running it blind only burns tokens. Instead, on the 2nd identical
+   `NEEDS_REVISION`: emit a **root-cause diagnostic** ("reviewer `{role}` rejected `{stage}` twice on the
+   same finding `{summary}`; the revision did not move it — the cause is likely upstream / a spec
+   ambiguity / a reviewer-criterion mismatch") and **escalate** to the user (and, if the cause looks
+   systemic, flag it for the self-improvement covenant per the SOLID Covenant note below). Two identical
+   rejections are a signal, not a retry; surface it. This sits *before* rule 5's blind 3-strike BLOCK —
+   an identical 2nd rejection escalates with a diagnostic rather than spending a third silent attempt.
 
 ## Bounded Retries on Classified-Transient Errors (P1-18)
 
@@ -163,6 +173,29 @@ real ceiling — a budget threshold is a deterministic "stop soon", checkpointed
 On resume, the orchestrator MUST honour an existing `CHECKPOINT_<phase>.md` (load it in step 3 of Mandatory
 First Actions) and delete it once the run advances past that phase, so a stale checkpoint never re-pauses a
 healthy run.
+
+## Per-Phase Resumable Checkpoint (P2-8 — generalises P1-20)
+
+P1-20 (above) emits a `CHECKPOINT_<phase>.md` **only** when a rate-limit/budget ceiling is approached.
+P2-8 generalises that single trigger: **every phase boundary** drops a resumable checkpoint, so any
+interruption — not just a rate-limit pause — is recoverable. **On each clean stage transition** (after a
+stage emits its sentinel and its reviewer gate is satisfied, before spawning the next stage agent), write
+the same resumable `CHECKPOINT_<phase>.md` at the project root, **overwriting the previous phase's
+checkpoint** (one live checkpoint per item, named for the *current* `<phase>`).
+
+This is the **identical artefact and schema** as P1-20 — a handoff payload per
+[`${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/handoff-schema.md`](../knowledge/protocols/handoff-schema.md)
+carrying the full `loop_state`, the next stage to run, open `unresolved_risks`, and explicit
+`next_agent_instructions` for a cold-start resume, cross-referencing the accumulated sentinel chain
+([`context-sentinel.md`](../knowledge/protocols/context-sentinel.md)). The two triggers do **not**
+contradict: P1-20 is the *rate-limit/budget PAUSE* path (checkpoint **and stop, disclosing the window**);
+P2-8 is the *routine progress* path (checkpoint **and continue**). Both write to the same file, both are
+honoured identically on resume by *Mandatory First Actions* step 3 (load `CHECKPOINT_<phase>.md`, continue
+from `current_stage`, delete once the run advances past that phase). Always checkpoint at a **clean
+boundary, never mid-write** — finish or roll back the current atomic write first.
+
+This makes pause/resume a property of the **whole loop**, not just the coverage-loop and the rate-limit
+ceiling: a crash, a context reset, or a manual stop at any phase leaves a current, resumable checkpoint.
 
 ## Global DoD Audit (after step-9)
 
