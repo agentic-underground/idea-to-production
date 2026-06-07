@@ -11,7 +11,7 @@ dot	command -v dot	recommended	apt install graphviz
 pandoc	command -v pandoc	recommended	apt install pandoc
 gs	command -v gs	recommended	apt install ghostscript
 lualatex	command -v lualatex	optional	apt install texlive-luatex
-mmdc	command -v mmdc	optional	npm i -g @mermaid-js/mermaid-cli
+mmdc	bash -c 'command -v mmdc || exit 1; export PUPPETEER_EXECUTABLE_PATH="${PUPPETEER_EXECUTABLE_PATH:-$(command -v chromium||command -v chromium-browser||command -v google-chrome)}"; mmdc -i <(printf "flowchart LR\n a-->b") -o "$(mktemp --suffix=.svg)" >/dev/null 2>&1'	optional	npm i -g @mermaid-js/mermaid-cli
 soffice	command -v soffice || command -v libreoffice	optional	apt install libreoffice
 rsvg-convert	command -v rsvg-convert	optional	apt install librsvg2-bin
 qpdf	command -v qpdf	optional	apt install qpdf

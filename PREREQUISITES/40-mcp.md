@@ -41,6 +41,41 @@ Prereqs: `fetch` + `semgrep` need `uv`/`uvx`; `context7` + `playwright` need `no
 browser auto-downloads on first use). All four run **keyless** — nothing to provision but the launcher
 (Context7 takes an optional key only to raise rate limits).
 
+## Headless-browser discovery (the two marketplace resolvers)
+
+The marketplace owns **two** consumers that each need a Chromium, and **each finds one differently** —
+so the *same* browser is often on disk in several places while one consumer still reports "not
+installed". The two resolvers:
+
+- **mmdc / puppeteer** (pressroom renders Mermaid via `mmdc` → puppeteer) — resolves a **pinned Chrome
+  revision** under `~/.cache/puppeteer`, **or** whatever `PUPPETEER_EXECUTABLE_PATH` points at.
+- **Playwright MCP** (`@playwright/mcp`, shipped by `atelier` + `foundry`) — resolves a **slot** under
+  `~/.cache/ms-playwright` (`PLAYWRIGHT_BROWSERS_PATH`), including a per-MCP `mcp-chromium-<hash>/` slot.
+
+A browser also lives system-wide (`command -v chromium`/`chromium-browser`/`google-chrome`). A
+**presence** probe answers "is a browser on the box?" — not "can *this consumer* launch one?"; that
+gap is the recurring failure, captured as **TC-BROWSER-1**.
+
+**Env single-source-of-truth.** One resolver, resolved **once at setup** by
+[`scripts/ensure-browser.sh`](../scripts/ensure-browser.sh) into the user's shell / CI env — never baked
+into `.mcp.json`:
+
+```sh
+export PUPPETEER_EXECUTABLE_PATH="$(command -v chromium||command -v chromium-browser||command -v google-chrome)"   # or a cache-resident binary
+export PUPPETEER_SKIP_DOWNLOAD=1
+export PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}"
+```
+
+These are machine-specific paths, so they are **resolved into the env by `ensure-browser.sh`, NEVER
+written into a shipped `.mcp.json`** — every shipped server carries `env: {}` on purpose. This is the
+**capability-not-path** rule: a shipped config declares the *capability* (a browser MCP), the setup
+step supplies the *path* the local machine actually has. Bake a path in and the config is wrong on the
+next machine; resolve it at setup and it is right on every machine.
+
+For the full pattern — both resolvers, the TC-BROWSER-1 ledger entry, the `--fix` repair, and the
+`THE ONLY WAY` "diagnose-before-installing" rule — see
+[`knowledge/tooling/headless-browser.md`](../plugins/foundry/knowledge/tooling/headless-browser.md).
+
 ## Optional extras worth wiring (not shipped by default)
 
 Grouped by what they amplify. The shipped four cover the common case keylessly; these need an API key,

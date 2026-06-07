@@ -12,6 +12,9 @@
 #      table in PREREQUISITES/40-mcp.md exactly (no claimed-but-absent / shipped-but-undocumented).
 #   D. no PREREQUISITES/*.md table Probe cell fetches-and-executes remote code
 #      (`npx -y <pkg>` / `uvx <pkg>`) — a probe must check presence, not download a package.
+#   D′. no-download tsv probes: the SAME no-download rule as check D, extended over the
+#      requirements.tsv probe cells (column 2) — a capability probe may render/launch locally
+#      but must never `npx -y`/`uvx`/`pip install`/`npm install`/`curl … | sh` a package.
 #   E. SOUL.md is byte-identical across the canonical root and every plugin copy.
 #   F. inject-soul.sh is byte-identical across all plugins (the SessionStart injector).
 set -uo pipefail
@@ -125,6 +128,47 @@ else
   rm -f "$d_err"
   fail "Probe cells that fetch-and-execute remote code (use \`command -v <launcher>\` instead):"
   printf '%s\n' "$offenders" | sed 's/^/      /'
+fi
+
+# ── D′. no-download tsv probes (check D, extended over requirements.tsv) ──────
+# This is the tsv twin of check D: the same fetch-and-execute rule, applied to the
+# requirements.tsv probe cells (column 2). A capability probe may render/launch LOCALLY
+# (the pressroom mmdc row exports a resolver then renders a trivial diagram), but it must
+# never DOWNLOAD-AND-RUN a package. Allow-list (mirrors check D + the established tsv idiom):
+#   • any probe containing `command -v …`            (pure presence — never fetches), and
+#   • `npx --no-install …`                           (refuses to auto-install; fails if absent).
+# Deny (the property, not a flag-spelling):
+#   • uvx / bunx / pnpm dlx                           (always fetch an uninstalled tool), or
+#   • npx -y / --yes …                                (auto-install), or
+#   • npx …@<spec>                                    (an explicit remote package spec), or
+#   • pip install / npm i|install / curl … | sh       (classic download-and-execute).
+# NOTE: only column 2 (the probe) is scanned — install hints in column 4 legitimately say
+# `npm i -g …` / `uvx …`. The deny boolean is kept on ONE line on purpose (mawk on Debian/
+# GitHub ubuntu-latest rejects a parenthesised expression split across lines). awk stderr is
+# captured so a parse/runtime error fails the check loudly (never a vacuous PASS).
+section "G. requirements.tsv probes are no-download (check D, extended over tsv probe cells)"
+g_err="$(mktemp)"
+tsv_offenders="$(
+  while IFS= read -r tsv; do
+    awk -F'\t' -v file="$tsv" '
+      /^#/ || /^[[:space:]]*$/ { next }
+      { p=$2
+        if (p ~ /command -v/) next
+        if (p ~ /npx[ \t]+--no-install/) next
+        if (p ~ /(^|[^[:alnum:]_])(uvx|bunx)([ \t]|$)/ || p ~ /pnpm[ \t]+dlx/ || p ~ /npx[ \t]+(-y|--yes)/ || p ~ /npx[ \t]+[^ \t]*@/ || p ~ /pip[ \t]+install/ || p ~ /npm[ \t]+(i|install)([ \t]|$)/ || p ~ /curl[^|]*\|[ \t]*(ba)?sh/) print file" :: "$1" :: "p
+      }
+    ' "$tsv" 2>>"$g_err"
+  done < <(find plugins -path '*/skills/check/requirements.tsv' | sort)
+)"
+if [ -s "$g_err" ]; then
+  fail "awk error while scanning tsv probe cells — the no-download check did not run:"; sed 's/^/      /' "$g_err"; rm -f "$g_err"
+elif [ -z "$tsv_offenders" ]; then
+  rm -f "$g_err"
+  pass "no requirements.tsv probe downloads a package (capability probes render/launch locally)"
+else
+  rm -f "$g_err"
+  fail "requirements.tsv probe cells that fetch-and-execute remote code (use \`command -v\`/\`npx --no-install\`/a local render):"
+  printf '%s\n' "$tsv_offenders" | sed 's/^/      /'
 fi
 
 # ── E. SOUL.md byte-identical (canonical root + every plugin copy) ───────────
