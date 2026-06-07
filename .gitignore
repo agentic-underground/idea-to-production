@@ -1,0 +1,41 @@
+# .gitignore — idea-to-production marketplace
+#
+# Surgical, not blanket. Two directories hold BOTH tracked assets and runtime
+# cruft, so they are never ignored wholesale:
+#   .claude/   → agent-memory/ is a tracked ledger; only runtime files are ignored below.
+#   .foundry/  → MARKETPLACE_SCORECARD.jsonl + governance.md are tracked; never ignore this dir.
+# Inspection reports are tracked ONLY when archived under doc/historical/, so their
+# ignore rules are root-anchored (a leading /) to leave the archives addable.
+
+# --- Claude Code harness runtime (per-machine / per-session, never shared) ---
+.claude/scheduled_tasks.lock
+.claude/cache/
+.claude/settings.local.json
+
+# --- Marketplace self-dogfood + lifecycle runtime artifacts (regenerable/transient) ---
+# These appear at the repo root when the marketplace's own scripts run against itself.
+# The durable ledgers (.foundry/MARKETPLACE_SCORECARD.jsonl, doc/historical/*) stay tracked.
+/SCORECARD.json
+/marketplace-health.json
+/IN_PROGRESS.md
+/CHECKPOINT_*.md
+/.i2p/
+/*_INSPECTION_REPORT.md
+
+# --- OS / editor cruft ---
+.DS_Store
+*~
+*.swp
+*.swo
+.idea/
+
+# --- Language tooling (defensive: plugins drive local node/python test runs) ---
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+coverage/
+.coverage
+*.log
