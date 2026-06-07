@@ -52,6 +52,15 @@ Invoke the agent: *"founder, plan this"* / *"explain what we're doing"* / *"expa
 `/foundry`. FOUNDER runs discovery (`foundry -help`, `frontend -help`), emits a topology READOUT, then
 asks which mode you want. To audit the plugin's own health, say *"inspect FOUNDRY"* (`/inspect`).
 
+To document the external software the installed plugins need — and stamp this machine's ✓/✗ status —
+run `/foundry:prerequisites`. Add `--fix` (`/foundry:prerequisites --fix`) to *also* dispatch the
+safe, idempotent, **self-verifying** sub-heals before re-stamping: a **thin dispatcher** (not a fat
+omni-repair) that calls each plugin's own already-shipped heal — today `scripts/ensure-browser.sh
+--fix` for browser/env wiring — then re-runs the per-plugin checks so the document reflects the
+post-heal state. Only heals that verify their own result run automatically; anything destructive or
+ambiguous (e.g. a canonical-copy re-sync) is **reported, never auto-run** — the human-gated stance.
+Without `--fix`, behaviour is unchanged (pure generate-and-stamp).
+
 ## Companion plugins (optional — graceful enhancement)
 foundry's value artefact is **markdown**. Two cross-cutting concerns live in separate plugins in
 the same marketplace and are used *automatically if installed*, with clean degradation if not:

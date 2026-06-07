@@ -16,6 +16,13 @@
 > **Authored 2026-06-07; revised twice (§8).** First a five-lens panel refuted the foundry-centric first
 > draft. Then (this revision) re-triaged against the current tree — the marketplace grew to **nine** plugins
 > (`mission-control`) since authoring — with **10 new items folded in and re-reviewed to PASS**.
+>
+> **▶ Implementation progress (the loop).** Each batch ships direct-to-main, demonstrably verified, then is
+> marked ✅ here; the file is `git rm`'d when all 52 are ✅.
+> - **P0 core — `eb7783f`:** ✅ P0-1 ✅ P0-2 ✅ P0-3 ✅ P0-5 ✅ P0-6 ✅ P0-7 (browser/env self-heal:
+>   `scripts/ensure-browser.sh` heals+verifies the real ms-playwright stub on this box; the no-download rule
+>   now covers tsv probes; the `mmdc` row is a capability probe; `headless-browser.md` ledger + the reflex).
+> - **Remaining:** P0-4, all of P1-A / P1-B / P1-C / P2.
 
 ---
 

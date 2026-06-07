@@ -6,7 +6,8 @@ description: >
   guidance and the current ✓/✗ status of this machine. Trigger with /foundry:prerequisites (or
   "what software do I need?", "generate a prerequisites doc", "document the tool dependencies").
   Assembles from the marketplace PREREQUISITES/ folder and runs each installed plugin's -check to
-  stamp live status. Writes PREREQUISITES.md into the current project.
+  stamp live status. Writes PREREQUISITES.md into the current project. Pass --fix to additionally
+  dispatch the safe, idempotent, self-verifying sub-heals (browser/env wiring) before re-stamping.
 metadata:
   type: producer
   output: PREREQUISITES.md (in the current project root)
@@ -67,7 +68,57 @@ missing on this machine.
    authoritative lists are the per-plugin `skills/check/requirements.tsv` files and the
    `PREREQUISITES/` folder.
 
+## `--fix` — the thin self-heal dispatcher
+
+`/foundry:prerequisites --fix` runs the same generate-and-stamp flow, but **before** stamping it
+**dispatches to each plugin's already-shipped, idempotent, self-verifying sub-heal**, then re-runs
+the per-plugin `/check`s so the document reflects the *post-heal* state.
+
+This is a **dispatcher, not a repair engine** (SOLID — single responsibility). It owns *no* repair
+logic of its own; each sub-heal lives with — and is verified by — the surface that owns it. A new
+safe sub-heal joins by **adding one line to the register below**, never by growing a switch of
+heals with differing risk. The hard rule: **only heals that are idempotent and verify their own
+result run automatically** — anything destructive or ambiguous is *reported, never auto-run* (the
+human-gated stance: `I2P_SELF_HEALING_PLAN.md` §1, §9).
+
+### The sub-heal register (safe-auto only)
+
+| # | Sub-heal | Command | Owner | Why it's safe-auto |
+|---|---|---|---|---|
+| 1 | Browser / env wiring (P0-2, P0-3) | `bash ${repo}/scripts/ensure-browser.sh --fix` | `scripts/ensure-browser.sh` | Idempotent (a second run is a no-op); only ever replaces an **empty** ms-playwright stub slot with a symlink to an already-present browser, and calls a slot "healed" **only after the healed path launches headless**. Never downloads. |
+
+Here `${repo}` is the marketplace **source-tree root** (the directory above `${CLAUDE_PLUGIN_ROOT}`
+that contains `scripts/`). The same reachability rule the generate flow uses for the `PREREQUISITES/`
+folder applies: when foundry was installed **standalone** there is no marketplace root above the
+plugin, so `scripts/ensure-browser.sh` is not reachable — in that case **skip the sub-heals, say so,
+and fall through to the normal generate-and-stamp** (degrade gracefully, never fabricate a path
+across the plugin boundary).
+
+### Detect-and-report — never auto-run
+
+These are surfaced for the human but **not** healed here, because they are not yet provably safe to
+auto-run in this dispatcher:
+
+- **Canonical-copy drift.** Run `bash ${repo}/scripts/verify-prereqs.sh` (when reachable) and, if it
+  reports drift, **report it** — do not re-sync. A guarded re-sync (refuse-on-dirty-tree, named
+  canonical source, diff-first) is the future `verify-prereqs.sh --fix` (`I2P_SELF_HEALING_PLAN.md`
+  P1-1); until that ships, this dispatcher only **detects** the drift and tells the human to resolve
+  it. Re-syncing away an intentional divergence is exactly the destructive ambiguity the human-gated
+  stance forbids.
+
+### `--fix` run order
+
+1. **Dispatch the sub-heals** in the register above (only those whose owning script is reachable).
+   Each script self-reports what it healed / verified / skipped; relay that to the user verbatim.
+2. **Detect-and-report** the non-auto items (canonical-copy drift) — surface, do not repair.
+3. **Re-stamp** — run the per-plugin `/check`s exactly as the generate flow's step 2, so the live
+   status snapshot reflects the post-heal machine.
+4. **Re-assemble `PREREQUISITES.md`** (generate flow steps 3–4) embedding that post-heal snapshot.
+
+Without `--fix`, behaviour is **unchanged**: pure generate-and-stamp, no machine mutation.
+
 ## Relationship to `/foundry:check`
 
 `-check` answers "is it installed *right now*?" (a probe). `-prerequisites` answers "what should be
 installed, why, and how?" (a document) — and embeds the check output as the live status snapshot.
+`-prerequisites --fix` adds one verb: dispatch the safe, self-verifying heals, then re-probe.
