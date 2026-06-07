@@ -1,15 +1,15 @@
 ---
-description: Browse the idea-to-production marketplace — the powers you have now, grouped by the DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸ PUBLISH value flow, listing only the plugins currently installed and the next command to run.
+description: Browse the idea-to-production marketplace — the powers you have now, grouped by the DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻ value flow, listing only the plugins currently installed and the next command to run.
 ---
 
 Be the marketplace front door. Follow the [`help` skill](../skills/help/SKILL.md):
 
 1. Enumerate which `idea-to-production` plugins are **currently active** (market-scanner, ideator,
-   foundry, atelier, sentinel, pressroom, and i2p itself) — judge from the skills/commands available to
+   foundry, atelier, sentinel, pressroom, mission-control, and i2p itself) — judge from the skills/commands available to
    you this session; do not probe the filesystem.
 2. Render the **three pillars** in one line each, then a compact map of the value flow
-   (DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸ PUBLISH) showing only the installed plugins, each with
-   its headline command(s) and a one-line "run this when you want…".
+   (DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻) showing only the installed
+   plugins, each with its headline command(s) and a one-line "run this when you want…".
 3. Surface the sibling meta-commands: `/i2p-review`, `/i2p-check`, `/i2p-flow`.
 4. Point to deeper docs: the marketplace `README.md`, `plugins/foundry/knowledge/glossary.md`, and
    `plugins/foundry/VALUE_FLOW.md`.

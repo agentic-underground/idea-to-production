@@ -1,5 +1,5 @@
 ---
-description: Start or report the idea-to-production PRODUCT LIFECYCLE — DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ PUBLISH ▸ IN PRODUCTION. Tracks .i2p/lifecycle.json; the status line shows the phase.
+description: Start or report the idea-to-production PRODUCT LIFECYCLE — DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻ (eight phases forming a cycle). Tracks .i2p/lifecycle.json; the status line shows the phase.
 ---
 
 Drive the product lifecycle. Follow the [`lifecycle` skill](../skills/lifecycle/SKILL.md):

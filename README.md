@@ -28,13 +28,18 @@ operation is [VALUE_FLOW](plugins/foundry/VALUE_FLOW.md).
 
 ---
 
-This marketplace ships eight composable plugins — the **i2p** front door and the **concierge** greeter,
-plus six specialists spanning the whole arc — **DISCOVER → IDEATE → BUILD → SECURE / PUBLISH**, with
-**DESIGN** cross-cutting throughout. Start with **i2p** for `/i2p-help`; install **foundry** for the core production
+This marketplace ships nine composable plugins — the **i2p** front door and the **concierge** greeter,
+plus seven specialists spanning the whole arc — **DISCOVER → IDEATE → DESIGN → BUILD → ASSURE → SECURE →
+PUBLISH → OPERATE ↻** (eight phases forming a cycle; OPERATE's learnings loop back to DISCOVER). **ASSURE**
+(quality V&V, foundry) and **SECURE** (security, sentinel) are **separate first-class gates**; three
+concerns **cross-cut** every phase — usability (atelier/DESIGN), quality (foundry/ASSURE, built-in not
+inspected-in), security (sentinel/SECURE, baked in from the start). Start with **i2p** for `/i2p-help`; install **foundry** for the core production
 discipline; add **market-scanner** and **ideator** to put a discovery-and-refinement front end *upstream*
 of the build; add **atelier** to make and adversarially review the visuals; add **sentinel** and
-**pressroom** to light up security gates and publication-grade output; add **concierge** to give any repo
-a conversational front door that greets and routes whoever opens it. Every plugin stands alone, and
+**pressroom** to light up security gates and publication-grade output; add **mission-control** to operate
+the live product (observe, respond to incidents, iterate, maintain) and loop its learnings back to
+discovery; add **concierge** to give any repo a conversational front door that greets and routes whoever
+opens it. Every plugin stands alone, and
 each lights up the others automatically when present (*graceful enhancement*) — no hard dependency in
 any direction.
 
@@ -56,19 +61,23 @@ any direction.
 ```
    "let's come up with a new idea"
         │
-   DISCOVER ──▶ IDEATE ───────▶ BUILD ──────────────────────────────▶ SECURE / PUBLISH
-   market-scanner  ideator      foundry (core, emits markdown)         sentinel · pressroom
-        │            │             │
-   /goal +      IDEA package   IDEA ▶ ROADMAP ▶ … ▶ STORY ▶ SHIP
-   /market-scan (2 faces:          │  SECURITY  ── if sentinel installed ─▶ SECURITY-REPORT.md
-   → a kept     agent-facing +     │  PUBLISHING ── if pressroom installed ─▶ articles / PDFs
-   OPPORTUNITY  user-facing)       │
-        ▲                          ▼
+   DISCOVER ─▶ IDEATE ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ──▶ SECURE ──▶ PUBLISH ─▶ OPERATE ↻
+   market-     ideator   atelier   foundry  foundry    sentinel    pressroom  mission-
+   scanner                         (core)   (quality)  (security)             control
+        │         │         │         │        │           │           │          │
+   /goal +    IDEA pkg  /mockup   IDEA ▶ …  /pr-review  /security   /publish   observe ·
+   /market-   (2 faces) /ui-      ▶ STORY   quality     -gate       articles   respond ·
+   scan ▶ a   agent + ▏ review    ▶ SHIP    PASS        SECURITY-   / PDFs     iterate
+   kept       user-    ▏(usability)         (V&V)       REPORT.md              │
+   OPPORTUNITY facing  ▏cross-cuts          if foundry  if sentinel if press-  ↻ loops back
+        ▲                                                                       to DISCOVER
         └──── ideation-feedback ◀── a downstream ambiguity sharpens the front end (self-improve → PR)
 
-   DESIGN (atelier) ── cross-cutting ──▶ /ui-review critiques any rendered SPA · /mockup makes polished
-        screens & flows · the convergent designer↔reviewer loop raises both to a design-fitness rubric;
-        IDEATOR calls it so user-flows & mockups are design-reviewed, not first-draft.
+   Three cross-cutting concerns ride every phase: usability (atelier — /ui-review · /mockup, the
+   convergent designer↔reviewer loop), quality (foundry — built-in not inspected-in, certified at the
+   ASSURE gate), security (sentinel — baked in from the start, certified at the SECURE gate). OPERATE
+   (mission-control) keeps the live product healthy and feeds the next cycle. ASSURE (quality) and
+   SECURE (security) are deliberately separate gates.
 ```
 
 No plugin *requires* another. When the `ideator` plugin is installed, foundry's IDEA station **receives

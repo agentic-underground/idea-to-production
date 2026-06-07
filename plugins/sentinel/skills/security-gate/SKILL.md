@@ -137,11 +137,13 @@ The gate carries no detection logic of its own — it composes the three sub-ski
 
 ## Product lifecycle (by capability)
 
-When the gate returns a **PASS** verdict (no unresolved BLOCK/REVIEW), and the **i2p** plugin is installed, mark the **ASSURE** phase done so the marketplace
+SENTINEL owns the **SECURE** phase — the security gate, distinct from foundry's **ASSURE** quality gate
+that precedes it (quality ≠ security). When the gate returns a **PASS** verdict (no unresolved
+BLOCK/REVIEW), and the **i2p** plugin is installed, mark the **SECURE** phase done so the marketplace
 product lifecycle and the status line advance to PUBLISH:
 
 ```bash
-/i2p-lifecycle done ASSURE   # order-safe & idempotent — a no-op unless a lifecycle is running at ASSURE
+/i2p-lifecycle done SECURE   # order-safe & idempotent — a no-op unless a lifecycle is running at SECURE
 ```
 
 Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

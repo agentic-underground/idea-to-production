@@ -9,7 +9,7 @@ description: >
 metadata:
   type: orchestrator
   output: .i2p/lifecycle.json (current_phase + history) + a phase report
-  composes: [market-scanner, ideator, atelier, foundry, sentinel, pressroom — by capability]
+  composes: [market-scanner, ideator, atelier, foundry, sentinel, pressroom, mission-control — by capability]
 model: inherit
 ---
 

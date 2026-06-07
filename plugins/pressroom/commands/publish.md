@@ -43,7 +43,7 @@ upgrade its markdown deliverables into richer published artefacts.
 ## Product lifecycle (by capability)
 
 When publication-grade output is produced (the release is documented and out), and the **i2p** plugin is installed, mark the **PUBLISH** phase done so the marketplace
-product lifecycle and the status line advance to IN_PRODUCTION:
+product lifecycle and the status line advance to OPERATE (the living phase, owned by `mission-control`):
 
 ```bash
 /i2p-lifecycle done PUBLISH   # order-safe & idempotent — a no-op unless a lifecycle is running at PUBLISH

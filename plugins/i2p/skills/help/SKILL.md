@@ -3,9 +3,9 @@ name: help
 description: >
   The marketplace's front door. Use for /i2p-help (or "what can i2p do?",
   "what powers do I have now?", "browse the idea-to-production marketplace", "where do I
-  start?"). Renders the three pillars and the DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸
-  PUBLISH value flow, listing only the plugins currently installed with their headline
-  commands and the next thing to run, then points at the deeper docs. Thin: it describes the
+  start?"). Renders the three pillars and the DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸
+  SECURE ▸ PUBLISH ▸ OPERATE value flow, listing only the plugins currently installed with their
+  headline commands and the next thing to run, then points at the deeper docs. Thin: it describes the
   specialists, it does not run them.
 metadata:
   type: front-door
@@ -35,10 +35,11 @@ probe the filesystem. The plugins to look for:
 |---|---|---|
 | **market-scanner** | DISCOVER | `/goal`, `/market-scan` |
 | **ideator** | IDEATE | `/ideate` |
-| **foundry** | BUILD | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
-| **atelier** | DESIGN (cross-cutting) | `/ui-review`, `/mockup` |
-| **sentinel** | SECURE | `/security-gate`, `/secret-scan`, `/pii-audit`, `/dependency-audit` |
+| **atelier** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
+| **foundry** | BUILD + ASSURE (quality gate) | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
+| **sentinel** | SECURE (security gate) | `/security-gate`, `/secret-scan`, `/pii-audit`, `/dependency-audit` |
 | **pressroom** | PUBLISH | `/publish`, `/pressroom:design-review` |
+| **mission-control** | OPERATE | *(add to unlock — observe, respond to incidents, iterate the live product)* |
 | **i2p** | front door | `/i2p-help`, `/i2p-review`, `/i2p-check`, `/i2p-flow`, `/i2p-lifecycle` |
 | **concierge** | arrival | `/concierge:define-welcome`, `/concierge:statusline` |
 
@@ -61,11 +62,16 @@ Keep it scannable — a menu, not an essay:
 Always include a short **Product Lifecycle** section, because it is the spine the whole suite is organised
 around. Summarise the model from [`../../knowledge/product-lifecycle.md`](../../knowledge/product-lifecycle.md):
 
-> **idea-to-production is the *creation arc*** of a product — it begins with **the search for an idea** and
-> ends when that idea is **IN PRODUCTION** (realised & live). Six phases, each owned by one plugin:
+> **idea-to-production is the *creation arc*** of a product — it begins with **the search for an idea**
+> and carries it into **OPERATE** (realised, live, and kept alive). **Eight phases forming a cycle**, each
+> owned by one plugin:
 > **DISCOVER ①** (market-scanner) → **IDEATE ②** (ideator) → **DESIGN ③** (atelier) → **BUILD ④** (foundry)
-> → **ASSURE ⑤** (sentinel) → **PUBLISH ⑥** (pressroom) → **★ IN PRODUCTION**. (The marketing *market life
-> cycle* — introduction→growth→maturity→decline — begins downstream, where this ends.)
+> → **ASSURE ⑤** (foundry — quality V&V) → **SECURE ⑥** (sentinel — security) → **PUBLISH ⑦** (pressroom)
+> → **OPERATE ⑧** (mission-control — observe, respond, iterate) ↻ loops back to DISCOVER. **ASSURE and
+> SECURE are separate first-class gates** (quality ≠ security). Three concerns **cross-cut** every phase:
+> usability (atelier), quality (foundry — built-in not inspected-in), security (sentinel — baked in from
+> the start). (The marketing *market life cycle* — introduction→growth→maturity→decline — runs alongside
+> OPERATE.)
 
 Then **offer to kick one off**: ask if they'd like to start a product lifecycle for this project. If yes,
 run `/i2p-lifecycle init` (sets phase DISCOVER) and route them to the first installed owner

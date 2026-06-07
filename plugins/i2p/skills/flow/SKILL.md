@@ -3,9 +3,9 @@ name: flow
 description: >
   The value-flow map. Use for /i2p-flow (or "show me the value flow", "where does each plugin
   fit?", "what's my next step?", "draw the idea-to-production pipeline"). Places each installed
-  plugin on DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸ PUBLISH, names the headline command and
-  artefact at each stage, marks dark stages, and — given a starting point — traces the ordered path
-  to PRODUCTION. Renders Mermaid when a renderer is present, else markdown.
+  plugin on DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE, names the
+  headline command and artefact at each stage, marks dark stages, and — given a starting point —
+  traces the ordered path to PRODUCTION. Renders Mermaid when a renderer is present, else markdown.
 metadata:
   type: front-door
   output: a value-flow map + "your next command" (Mermaid when pressroom/atelier present, else markdown)
@@ -23,23 +23,27 @@ carries VALUE from IDEA to PRODUCTION; this draws the map with only the parts yo
 ## 1. The stages
 
 ```
-DISCOVER ──▶ IDEATE ──▶ BUILD ──────────────▶ SECURE / PUBLISH
-market-scanner ideator  foundry               sentinel · pressroom
-   /goal +     /ideate   IDEA ▶ ROADMAP ▶ … ▶ STORY ▶ SHIP
-   /market-scan          │
-                         ▼
-   DESIGN (atelier) ── cross-cutting ──▶ /ui-review · /mockup
+DISCOVER ─▶ IDEATE ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
+market-     ideator   atelier   foundry  foundry   sentinel  pressroom  mission-
+scanner                         │        (quality) (security)           control
+ /goal +     /ideate  /mockup   IDEA▶…▶  /pr-review /security  /publish  observe ·
+ /market-scan         /ui-review  SHIP   (quality)  -gate                iterate ↻→DISCOVER
 ```
 
-For each stage, give: the plugin, its **headline command**, and the **artefact** it produces (an
-OPPORTUNITY → an IDEA package → tested code → a design-reviewed screen → a SECURITY-REPORT → an
-article/PDF). Ground the wording in `plugins/foundry/VALUE_FLOW.md` and the marketplace `README.md`
-composition diagram.
+Eight phases forming a **cycle** — OPERATE's learnings loop back to DISCOVER. **ASSURE** (foundry,
+quality V&V) and **SECURE** (sentinel, security) are **separate first-class gates**. Three concerns
+**cross-cut** every phase: usability (atelier/DESIGN), quality (foundry/ASSURE — built-in not
+inspected-in), security (sentinel/SECURE — baked in from the start). For each stage, give: the plugin,
+its **headline command**, and the **artefact** it produces (an OPPORTUNITY → an IDEA package → a
+design-reviewed screen → tested code → a quality PASS → a SECURITY-REPORT → an article/PDF → a live,
+observed product). Ground the wording in `plugins/i2p/knowledge/product-lifecycle.md` (canonical),
+`plugins/foundry/VALUE_FLOW.md`, and the marketplace `README.md` composition diagram.
 
 ## 2. Light vs dark
 
 Place only **installed** plugins as live stages. Mark each missing plugin's stage as dark:
-"▫ DISCOVER — add `market-scanner` to find what's worth building." A user should see both the path they
+"▫ DISCOVER — add `market-scanner` to find what's worth building" / "▫ OPERATE — add `mission-control`
+to observe, respond to incidents, and iterate the live product." A user should see both the path they
 have and the path they could unlock.
 
 ## 3. Trace a path (if asked)
