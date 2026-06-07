@@ -55,30 +55,60 @@ only PR metadata and `--post` are unavailable (reported as a gap, never silently
 ## 2. Fan out the adversarial panel
 
 Spawn the FOUNDRY **reviewer** agent once per role **in parallel**, each with the review packet and
-an explicit instruction to *try to break the change*. Each returns findings as
-`{severity, file, line, claim, why_it_matters, suggested_fix}` where severity ∈
-`CRITICAL | HIGH | MEDIUM | LOW | SUGGESTION`.
+an explicit instruction to *try to break the change*. The agent carries the adversarial stance,
+severity rubric, finding schema, and self-refutation pass intrinsically (see
+[`../../agents/reviewer.md`](../../agents/reviewer.md) §Adversarial stance / §Severity rubric /
+§Finding schema) — so every caller, not just this one, gets a hostile-but-fair reviewer. Each role
+returns findings as `{severity, locus (file:line), claim, why_it_matters, suggested_fix, evidence}`
+where severity ∈ `CRITICAL | HIGH | MEDIUM | LOW | SUGGESTION` and **evidence is mandatory for
+CRITICAL/HIGH** (the observed command output / line / ratio that proves it — an unproven CRITICAL/HIGH
+is downgraded by the agent).
+
+**Always-on lenses** (run on any non-trivial diff):
 
 | Role (reviewer `role=`) | Adversarial question it must answer |
 |---|---|
 | **CORRECTNESS** (DOCUMENT-REVIEWER / general) | Where is this logically wrong, inconsistent, or unhandled? What input breaks it? |
-| **SECURITY-REVIEWER** | What untrusted input, secret, or supply-chain path does this expose? |
+| **SECURITY-REVIEWER** | Where is the authz/session/business-logic flaw a scanner can't see? (Superseded by SENTINEL — below.) |
 | **REGRESSION-REVIEWER** | What existing behaviour or test could this silently break? |
 | **ARCHITECTURE-REVIEWER** | What boundary/SOLID/dependency rule does this violate? |
 | **PERFORMANCE-REVIEWER** | What gets slower, allocates more, or scales worse? |
 | **DOCUMENT-REVIEWER** | Where do docs/specs/links drift from what the code now does? |
 
+**Conditional lenses** (run only when the diff touches the surface they own — otherwise list as
+"not applicable" in the report, never as a silent skip):
+
+| Role (reviewer `role=`) | Run WHEN the diff touches… |
+|---|---|
+| **API-CONTRACT-REVIEWER** | a public API/schema/RPC/proto, library public symbols, CLI flags, event payloads, or config keys (breaking-change + semver discipline). |
+| **OBSERVABILITY-REVIEWER** | a production code path that can fail/branch/carry latency (logs/traces/metrics, SLO hooks — ties to the OPERATE phase). |
+| **LICENSING-REVIEWER** | an added or bumped dependency (licence compatibility — complements SENTINEL's dependency-audit, which checks vulns not licences). |
+| **PROMPT-INJECTION-REVIEWER** | LLM prompts, tool/agent definitions, or external data fed into a model (injection, tool-permission scope, exfiltration). |
+| **I18N-REVIEWER** | user-facing strings or locale/number/date/RTL formatting (translation readiness). |
+| **DOC-ACCESSIBILITY-REVIEWER** | a rendered document artefact (PDF/report) — tagging, reading order, contrast, alt text (hard a11y gate). |
+
 Scale the panel to the diff: a docs-only change may need only CORRECTNESS + DOCUMENT; a code change
-touching auth pulls in SECURITY + REGRESSION. **Name the roles you ran and the ones you skipped** in
-the report (no silent narrowing).
+touching auth pulls in SECURITY + REGRESSION; an API change pulls in API-CONTRACT; an agent/prompt
+change pulls in PROMPT-INJECTION. **Name the roles you ran, the conditional ones that were
+not-applicable, and any you skipped** in the report (no silent narrowing).
 
 > **If SENTINEL is installed**, also run `/security-gate` over the changed tree and fold its verdict
-> in as the authoritative security lens (it supersedes the SECURITY-REVIEWER heuristic pass).
+> in as the **authoritative security lens** — it supersedes the SECURITY-REVIEWER pass for the
+> mechanical lenses (secrets, supply-chain, SAST, PII). The SECURITY-REVIEWER then narrows to the
+> logic SENTINEL can't see (authz bypass, session/state design, business-logic abuse), cites CWE/OWASP
+> IDs, and does **not** re-report what the gate already owns (the dedup boundary in
+> [`../../agents/reviewer.md`](../../agents/reviewer.md) §SECURITY-REVIEWER). When SENTINEL is absent,
+> SECURITY-REVIEWER widens back to the OWASP floor and the report notes machine scanning did not run.
 
-## 3. (Optional) adversarially verify each non-trivial finding
+## 3. Adversarially refute every surviving HIGH/CRITICAL — MANDATORY
 
-For any HIGH/CRITICAL finding, spawn a second reviewer prompted to **refute** it ("show this is a
-false positive"). Keep the finding only if it survives. This kills plausible-but-wrong blocks.
+For **every** HIGH/CRITICAL finding, run the second-pass refutation: argue it is a **false positive**
+("show this is wrong") — looking for the guard, test, config, or sanitiser that defeats it. **Keep the
+finding only if it survives.** This is not optional: the reviewer agent already does this internally
+per finding (§Self-refutation pass), and the orchestrator confirms it for every surviving
+HIGH/CRITICAL before it can gate — a block must survive a genuine attempt to break it. This kills
+plausible-but-wrong blocks before they cost a revision cycle. Record each refutation outcome
+(survived / dropped, and why) in the report's `[verified]` column.
 
 ## 4. Synthesise the verdict
 
@@ -102,7 +132,7 @@ explicitly accepted-with-rationale (record the disposition in the report).
 **Range:** <base>..<head>   **Files:** N   **Roles run:** … (skipped: …)
 
 ## Verdict rationale         (one paragraph — why this verdict)
-## Findings                  (table: severity · file:line · claim · suggested fix · role · [verified])
+## Findings                  (table: severity · file:line · claim · evidence · suggested fix · role · [verified])
 ## Security (SENTINEL)        (gate verdict + link, or "not installed")
 ## What was NOT reviewed      (roles skipped, files excluded, metadata/CI unavailable — and why)
 ```
