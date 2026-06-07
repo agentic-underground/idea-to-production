@@ -231,10 +231,11 @@ lifecycle_widget() {
   [ -n "$proj" ] || return
   local lf="${proj}/.i2p/lifecycle.json"
   [ -r "$lf" ] || return
-  local cur phases
+  local cur phases cyc cycstr=""
   if [ -n "$_jq_ok" ]; then
     cur=$(jq -r '.current_phase // empty' "$lf" 2>/dev/null)
     phases=$(jq -r '(.phases // []) | join(" ")' "$lf" 2>/dev/null)
+    cyc=$(jq -r '.cycle // 1' "$lf" 2>/dev/null)
   fi
   [ -n "$cur" ] || return
   [ -n "$phases" ] || phases="DISCOVER IDEATE DESIGN BUILD ASSURE SECURE PUBLISH OPERATE"
@@ -251,7 +252,8 @@ lifecycle_widget() {
       track="${track}${FG_BBLACK}○${R}"
     fi
   done
-  LC_OUT="${FG_BBLACK}◆ lifecycle ${R}${track} ${BOLD}${FG_BCYAN}${cur}${R}${DIM} (${idx}/${total})${R}"
+  [ "${cyc:-1}" -gt 1 ] 2>/dev/null && cycstr=" ${FG_BMAGENTA}↻${cyc}${R}"
+  LC_OUT="${FG_BBLACK}◆ lifecycle ${R}${track} ${BOLD}${FG_BCYAN}${cur}${R}${DIM} (${idx}/${total})${R}${cycstr}"
 }
 
 # ---------------------------------------------------------------------------

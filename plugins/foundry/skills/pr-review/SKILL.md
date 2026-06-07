@@ -5,8 +5,10 @@ description: >
   (PASS / NEEDS_REVISION / BLOCK). Trigger with /foundry:pr-review [PR#|base..head] (or "review this
   PR", "adversarial review of the diff", "is this branch mergeable?"). Fans out FOUNDRY's reviewer
   agent in multiple adversarial roles (correctness, security, regression, architecture, performance,
-  docs) — each prompted to REFUTE the change, not rubber-stamp it — then synthesises their findings
-  into one verdict. Composes SENTINEL's /security-gate when installed. Writes PR_REVIEW.md.
+  docs — plus conditional API-contract, observability, licensing, prompt-injection, i18n, and
+  doc-accessibility lenses when the diff touches them) — each prompted to REFUTE the change, not
+  rubber-stamp it — then synthesises their findings into one verdict. Composes SENTINEL's
+  /security-gate when installed. Writes PR_REVIEW.md.
 metadata:
   type: orchestrator
   output: PR_REVIEW.md (verdict PASS | NEEDS_REVISION | BLOCK) + optional PR comment
@@ -68,7 +70,7 @@ is downgraded by the agent).
 
 | Role (reviewer `role=`) | Adversarial question it must answer |
 |---|---|
-| **CORRECTNESS** (DOCUMENT-REVIEWER / general) | Where is this logically wrong, inconsistent, or unhandled? What input breaks it? |
+| **CORRECTNESS-REVIEWER** | Where is this logically wrong, inconsistent, or unhandled? What input breaks it? |
 | **SECURITY-REVIEWER** | Where is the authz/session/business-logic flaw a scanner can't see? (Superseded by SENTINEL — below.) |
 | **REGRESSION-REVIEWER** | What existing behaviour or test could this silently break? |
 | **ARCHITECTURE-REVIEWER** | What boundary/SOLID/dependency rule does this violate? |

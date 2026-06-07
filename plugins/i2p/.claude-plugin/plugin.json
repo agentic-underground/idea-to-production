@@ -3,7 +3,7 @@
   "name": "i2p",
   "displayName": "IDEA-TO-PRODUCTION — Marketplace front door & meta-commands",
   "version": "1.2.0",
-  "description": "The FRONT DOOR of the idea-to-production marketplace — the marketplace-level front door the six specialist plugins never had. Adds /i2p-help (browse the whole suite's powers, grouped by the DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻ value flow), /i2p-review (a cross-plugin adversarial review that fans out EVERY installed reviewer — code, design, docs, security — into one verdict), /i2p-check (consolidated readiness across all installed plugins), and /i2p-flow (where each plugin sits in the flow and the next command to run). Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator: it delegates to the specialist plugins by capability and never re-implements them. Carries the SOLID self-improvement covenant.",
+  "description": "The FRONT DOOR of the idea-to-production marketplace — the marketplace-level front door the seven specialist plugins never had. Adds /i2p-help (browse the whole suite's powers, grouped by the DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻ value flow), /i2p-review (a cross-plugin adversarial review that fans out EVERY installed reviewer — code, design, docs, security — into one verdict), /i2p-check (consolidated readiness across all installed plugins), and /i2p-flow (where each plugin sits in the flow and the next command to run). Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator: it delegates to the specialist plugins by capability and never re-implements them. Carries the SOLID self-improvement covenant.",
   "author": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -35,6 +35,6 @@
       "security": "sentinel",
       "publishing": "pressroom"
     },
-    "note": "commands/, skills/, and hooks/hooks.json are auto-discovered from the plugin root. This plugin is a THIN orchestrator — it composes the six specialist plugins by capability and degrades cleanly when any are absent. Knowledge lives in knowledge/covenant.md; the canonical homes are in the foundry plugin's knowledge/."
+    "note": "commands/, skills/, and hooks/hooks.json are auto-discovered from the plugin root. This plugin is a THIN orchestrator — it composes the seven specialist plugins by capability and degrades cleanly when any are absent. Knowledge lives in knowledge/covenant.md; the canonical homes are in the foundry plugin's knowledge/."
   }
 }

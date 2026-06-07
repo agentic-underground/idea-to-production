@@ -10,7 +10,7 @@ description: >
 metadata:
   type: front-door
   output: a scannable capability menu (no files written)
-  composes: [all six specialist plugins, by capability — read-only]
+  composes: [all seven specialist plugins, by capability — read-only]
 model: inherit
 ---
 

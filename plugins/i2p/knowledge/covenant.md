@@ -15,7 +15,7 @@
   honest verdict (BLOCK > NEEDS_REVISION > PASS) and is never weakened to make a change look mergeable.
   A reviewer it cannot run is reported as a **gap**, never silently dropped to a green light.
 - **Waste-elimination** — remove waste in every form, *including rediscovery*. The front door **delegates,
-  never duplicates**: it composes the six specialist plugins' existing skills rather than re-implementing
+  never duplicates**: it composes the seven specialist plugins' existing skills rather than re-implementing
   their logic, so a lesson learned in one place is never re-litigated here.
 
 > **Overarching constraint — token-efficiency:** thin skills, fat references; define once, reference
