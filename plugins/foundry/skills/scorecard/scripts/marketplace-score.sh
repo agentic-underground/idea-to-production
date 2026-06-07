@@ -21,13 +21,23 @@ check_identical() {
 check_sh_ok=$(check_identical "plugins/*/skills/check/scripts/check.sh")
 core_ok=$(check_identical "plugins/*/knowledge/inspection-core.md")
 
-# ---- portability violations: live ~/.claude couplings outside the allowlisted archive ----
-# (mirrors the inspection-core portability sweep). Exclude the allowlisted archive AND the files that
-# legitimately DESCRIBE the ~/.claude policy rather than couple to it (inspection-core.md, the inspector
-# agents, and the foundry portability/policy knowledge) — those are policy text, not couplings.
+# ---- portability violations: ILLEGITIMATE live ~/.claude couplings only ----
+# Counts a coupling only where it is a real portability defect — a reference in an agent/hook/command/skill
+# that SHOULD resolve through ${CLAUDE_PLUGIN_ROOT}. Excludes the references that LEGITIMATELY use ~/.claude
+# and can never be zero:
+#   • the allowlisted archive (docs/history, examples) and the policy text that DESCRIBES the rule
+#     (inspection-core.md, inspector agents, foundry policy/protocols knowledge);
+#   • the concierge status line (install.sh/scripts + its skill/command/README/manifest) — it MUST write
+#     ~/.claude because settings.json cannot expand ${CLAUDE_PLUGIN_ROOT};
+#   • i2p instrumentation + lifecycle cost state, which live under the global ~/.claude/state/ ledger;
+#   • the scorecard's own files (this script, its SKILL/command/schema) and the glossary/self-improve prose
+#     that name the metric — self-references, not couplings.
 port_viol=$(grep -rIn '~/\.claude' plugins/ 2>/dev/null \
   | grep -vE '/(docs/HISTORY|docs/MIGRATION|docs/DEPRECATED)\.md|/examples/|/doc/historical/' \
   | grep -vE '/knowledge/inspection-core\.md|/agents/inspector\.md|/knowledge/(policy|protocols)/' \
+  | grep -vE '/concierge/(statusline/|skills/statusline-install/|commands/statusline\.md|README\.md|\.claude-plugin/plugin\.json)' \
+  | grep -vE '/i2p/knowledge/instrumentation\.md|/i2p/skills/lifecycle/scripts/cost\.sh' \
+  | grep -vE '/foundry/skills/scorecard/|/foundry/commands/scorecard\.md|/foundry/knowledge/orchestration/scorecard-schema\.md|/foundry/knowledge/glossary\.md|/foundry/skills/self-improve/SKILL\.md' \
   | wc -l | tr -d ' ')
 
 # integer-count of a header pattern in a file (grep -c prints "0" and exits 1 on no match — capture

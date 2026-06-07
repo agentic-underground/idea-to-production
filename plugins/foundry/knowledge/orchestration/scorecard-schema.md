@@ -59,7 +59,7 @@ Absent sources report `null` / `"n/a"` — honest by omission, never a fabricate
 |---|---|---|
 | `integrity.check_sh_identical` | `md5sum plugins/*/skills/check/scripts/check.sh` unique==1 | stay `true` |
 | `integrity.inspection_core_identical` | `md5sum plugins/*/knowledge/inspection-core.md` unique==1 | stay `true` |
-| `integrity.portability_violations` | live `~/.claude` couplings outside the allowlisted archive | → **0** |
+| `integrity.portability_violations` | ILLEGITIMATE live `~/.claude` couplings — refs in agents/hooks/commands/skills that should resolve via `${CLAUDE_PLUGIN_ROOT}` (excludes the concierge status line, i2p/global-state paths, and policy/self-reference prose, which legitimately use `~/.claude`) | → **0** |
 | `inspection.{critical,warning,suggestion}` | tally of `*_INSPECTION_REPORT.md` | findings-closed > findings-opened run-over-run |
 | `self_improve_prs_merged` | `gh pr list --state merged --search 'self-improve in:title'` | up |
 | `coverage_of_self.*` | `find` over `plugins/` | inspect/self-improve coverage → one per plugin |

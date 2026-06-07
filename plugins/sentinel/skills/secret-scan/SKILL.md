@@ -59,6 +59,10 @@ the same repo, deliberately kept separate so neither dilutes the other.
 Both methods defer to the **allowlist** (`references/SECRET-PATTERNS.md §Allowlist` and the
 project `.secretignore`) to suppress documented placeholders.
 
+The work here is deterministic regex/entropy triage, so `claude-haiku-4-5` is the right tier — fast and
+cheap for high-volume scanning — and any genuinely ambiguous high-entropy call is flagged for human review
+(`entropy-heuristic`, MEDIUM) rather than silently dismissed, so the security-gate never trusts a quiet PASS.
+
 ---
 
 ## Finding format (shared with SENTINEL)
@@ -87,7 +91,7 @@ re-leak into the report (which is itself committed).
   remediation, appendix of files scanned).
 - **Via `/security-gate`:** return the findings section for consolidation into `SECURITY-REPORT.md`.
 
-Remediation guidance lives in the pii-audit skill's [`references/REMEDIATION.md`](references/REMEDIATION.md) (rotate → purge
+Remediation guidance lives in the pii-audit skill's [`references/REMEDIATION.md`](../pii-audit/references/REMEDIATION.md) (rotate → purge
 history → move to a secrets manager / env var → add to `.gitignore`); secret-scan reuses it
 rather than restating.
 
