@@ -1,12 +1,17 @@
 name: verify
 
-# Two guards on the marketplace itself:
+# Three guards on the marketplace itself — two of them "cobbler's children" jobs that
+# dogfood the marketplace's OWN lenses on ITSELF, run EXTERNALLY (a self-observation lens
+# must survive the thing it observes; a crashed plugin can't observe its own crash):
 #   prereqs-contract — the PREREQUISITES ↔ plugins contract: check.sh canonical-copy
 #     parity, well-formed requirements.tsv, shipped .mcp.json ⟺ 40-mcp.md, and no
 #     Probe cell that fetches-and-executes remote code. See scripts/verify-prereqs.sh.
-#   secret-scan-self — cobbler's children: runs gitleaks (SENTINEL's secret-scan tool)
-#     over the tree + git history so the marketplace dogfoods its own secret lens.
-#     Allowlist: .gitleaks.toml.
+#   secret-scan-self (P1-11) — the SECURITY slice of the self-observation substrate: runs
+#     gitleaks (SENTINEL's secret-scan tool) over the tree + git history so the marketplace
+#     dogfoods its own secret lens. Allowlist: .gitleaks.toml.
+#   marketplace-golden-signals (P2-18) — the HEALTH slice of that SAME substrate: runs
+#     MISSION-CONTROL's observability lens (the four golden signals) over the marketplace's
+#     own runtime/health and surfaces a health summary artifact the HUD/CI can read.
 
 on:
   push:
@@ -51,3 +56,33 @@ jobs:
           gitleaks version
       - name: Scan tree + git history for committed secrets
         run: gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
+
+  # Cobbler's children (P2-18): the marketplace runs MISSION-CONTROL's own OBSERVABILITY
+  # lens on ITSELF. This is the HEALTH slice of the same self-observation substrate whose
+  # SECURITY slice is the secret-scan-self job above — together they dogfood the two lenses
+  # the marketplace ships for OPERATE. We invoke the observability skill's golden-signals
+  # script (plugins/mission-control/skills/observability/SKILL.md — the four golden signals:
+  # latency, traffic, errors, saturation) mapped onto the marketplace's own deterministic
+  # runtime surface (live plugins/skills/agents, manifest validation latency, broken-reference
+  # error rate, reference error-budget saturation). It runs EXTERNALLY — not from a session —
+  # by design: a self-observability lens must survive the thing it observes, exactly the reason
+  # the runtime self-heal detectors live in the hook substrate, not in mission-control itself.
+  # The job uploads the health summary as a CI artifact (a HUD/dashboard feed) and fails only
+  # on a hard substrate outage (an unparseable plugin.json or a non-runnable hook), not on
+  # mere drift. detect-auto.
+  marketplace-golden-signals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Observe the marketplace's own golden signals (mission-control observability dogfood)
+        run: |
+          set -euo pipefail
+          bash plugins/mission-control/skills/observability/scripts/marketplace-golden-signals.sh \
+            . --out marketplace-health.json
+      - name: Upload marketplace health summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marketplace-health
+          path: marketplace-health.json
+          if-no-files-found: warn

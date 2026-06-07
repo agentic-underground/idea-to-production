@@ -76,6 +76,28 @@ A findings section (standalone `OBSERVABILITY-FINDINGS.md`, or folded into OPERA
 present-vs-missing signals, the proposed SLI/SLO/error-budget table, proposed alert rules, and a
 **Coverage & Gaps** block naming every unmonitored surface.
 
+## Dogfood — the marketplace observes its own golden signals (P2-18)
+
+The marketplace ships this OPERATE observability lens but must also **turn it on itself** — the cobbler's
+children otherwise go unshod. [`scripts/marketplace-golden-signals.sh`](scripts/marketplace-golden-signals.sh)
+maps the four golden signals onto the marketplace's **own** deterministic runtime surface — **traffic**
+(live plugins / skills / agents / commands / hooks served), **latency** (cold-start: time to enumerate +
+`jq`-validate every plugin manifest), **errors** (broken intra-repo references + non-runnable hooks — a dead
+reference is a 404 a user hits), **saturation** (the reference error-budget consumed) — and emits a
+schema-versioned **health summary** (`marketplace-health/1.0`) the HUD or a CI artifact can read, with a
+HEALTHY / WATCH / UNHEALTHY verdict that mirrors `/operate-gate`'s rule (a hard substrate outage never reads
+HEALTHY).
+
+It runs as an **external CI job** (`.github/workflows/verify.yml :: marketplace-golden-signals`), **not**
+from inside a session — a self-observability lens must survive the thing it observes (a crashed
+mission-control cannot observe its own crash). This is the **HEALTH slice** of the same self-observation
+substrate whose **SECURITY slice** is the `secret-scan-self` gitleaks job (P1-11) in the same workflow:
+together they dogfood the two lenses the marketplace ships for OPERATE.
+
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/skills/observability/scripts/marketplace-golden-signals.sh" <repo-root> --out marketplace-health.json
+```
+
 ## Self-improvement covenant
 
 Covenant: [`../../knowledge/covenant.md`](../../knowledge/covenant.md). Every incident traced back to a

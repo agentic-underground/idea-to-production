@@ -51,6 +51,29 @@ self-correct over time**.
   "totals": { "estimate_tokens": 0, "actual_tokens": 0, "actual_usd": 0.0 } }
 ```
 
+#### Cycle-indexed cost (additive — P2-20)
+A product loops **OPERATE ↻ DISCOVER**; each new cycle must accrue its own cost without **clobbering**
+the prior cycle's. Cost is therefore **cycle-indexed**, keyed by the lifecycle's `.cycle` field
+(`.i2p/lifecycle.json`). The schema is **additive — no destructive migration**:
+
+- The flat shape above **is cycle 1.** A reader with no cycle index — an old flat file, or no
+  running lifecycle — **defaults to cycle 1** and reads it unchanged. The concierge Stop-hook
+  writer (`capture-cost.sh`) keeps writing the flat shape; that is cycle 1 and stays correct.
+- Only when a **cycle > 1 first accrues** does the file grow a top-level `cycles` map: the
+  pre-existing flat `phases`/`totals` fold **losslessly** down into `cycles["1"]`, and the new
+  cycle lands at `cycles["<n>"]`. Prior cycles are never overwritten.
+
+```json
+{ "cycles": {
+    "1": { "phases": { "DISCOVER": {"estimate_tokens": 30000, "actual_tokens": 50000, "actual_usd": 0.0}, "…": {} },
+           "totals": { "estimate_tokens": 375000, "actual_tokens": 50000, "actual_usd": 0.0 } },
+    "2": { "phases": { "DISCOVER": {"estimate_tokens": 0, "actual_tokens": 70000, "actual_usd": 0.0} },
+           "totals": { "estimate_tokens": 0, "actual_tokens": 70000, "actual_usd": 0.0 } } } }
+```
+
+`cost.sh` reads the active cycle from `lifecycle.json` (`.cycle`, default 1) and reports/accrues
+against that cycle's node; `report` labels the cycle so prior cycles are visibly preserved.
+
 ### HUD widgets (built-in, first-order)
 - `◇ <tokens> · $<usd> session` — always on. Tokens from `session.json`; **$ from the harness's
   authoritative `cost.total_cost_usd`** (the price-map figure is the fallback).

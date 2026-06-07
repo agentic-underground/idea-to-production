@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "mission-control",
   "displayName": "MISSION-CONTROL — Operate the live product",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The OPERATE phase owner — what runs a mission AFTER launch. MISSION-CONTROL keeps the live product alive and improving: it verifies operational readiness at go-live, instruments and watches the four golden signals (observability), runs incident response (triage, severity, runbooks, postmortems), keeps a maintenance cadence (dependency upkeep + tech-debt), and closes the loop by turning production signals into a new opportunity that re-enters DISCOVER (the cyclic re-entry). /operate-gate is the front door — an operational-readiness check at go-live and the steady-state health view. Runs standalone on any live project, or advances the idea-to-production lifecycle from OPERATE → DISCOVER when i2p is installed. Carries the SOLID self-improvement covenant: every incident becomes a runbook, every alert gap becomes an SLO.",
   "author": {
     "name": "whatbirdisthat",

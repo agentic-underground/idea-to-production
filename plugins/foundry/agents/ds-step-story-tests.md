@@ -117,6 +117,37 @@ Surface to the user. Do not silently skip the full-stack requirement.
 
 ---
 
+## Mock-vs-Spec Contract Drift Gate (P2-11) — detect-auto
+
+A mock that has silently drifted from the live API contract is the most dangerous kind of green:
+every test passes against a shape the real system no longer speaks. **When BOTH a mock fixture and an
+authoritative spec are present, assert the mock's schema against the spec before trusting any test that
+rides on the mock.** This is a *detect-and-disclose* step — it never edits the mock for you.
+
+**Detection.** Look for a mock/fixture *and* its governing contract in the project:
+- mock side: route-mock fixtures, recorded responses, `__mocks__/`, `*.fixture.json`, `msw` handlers,
+  `responses`/`httpx` stubs, OpenAPI example payloads used as test doubles.
+- spec side: an OpenAPI/JSON-Schema/`*.spec.{json,yaml}` document, a Pydantic/TypeScript type for the
+  payload, or the `.feature` scenario's stated response shape.
+
+When both exist for the same endpoint/payload, compare the mock's **schema** (field set, required keys,
+types, enum domains) against the spec. Flag any drift: a field the spec requires but the mock omits, a
+field the mock sends that the spec does not define, or a type/enum mismatch.
+
+**On drift — disclose, do not paper over.** Emit, and do not let a mock-only test stand in for the
+contract:
+```
+SENTINEL::CONTRACT_DRIFT::ROADMAP-{N}::{endpoint}::{mock_path}≠{spec_path}::{the_specific_field_or_type_delta}
+```
+Surface it to the user and prefer an unmocked assertion of the real shape (see the unmocked requirement
+above). If no spec is present, say so explicitly rather than asserting silence as agreement — a mock with
+no contract to check against is unverified, not verified. (Canon:
+[`../knowledge/testing/test-policy.md`](../knowledge/testing/test-policy.md) §Coordinates in practice —
+a test that mocks a boundary pins the mock, not the system; the `API-CONTRACT-REVIEWER` role gates the
+same drift at review time.)
+
+---
+
 ## What to Write
 
 For each Gherkin scenario in the `.feature` file, write at least one story test that:

@@ -122,6 +122,33 @@ is the whole-tree sweep.
 
 ---
 
+## Propose the pin — never auto-pin (human-gated)
+
+Unpinned and abandoned deps that are only **re-warned every run but never fixed** are waste:
+the same finding is rediscovered and re-litigated indefinitely. Close the loop by turning the
+warning into a **concrete, reviewable proposal** — not by editing the manifest in place.
+
+- **Detect:** a `Type: unpinned` finding (floating `^`/`~`/`*`/`latest`) or a `Type: abandoned`
+  finding the operator has not yet acted on.
+- **Propose (the safe action):** prepare the exact pinned-version change — resolve the floating
+  range against the lockfile to the concrete installed version (`name@X.Y.Z`), and stage it as a
+  **branch + PR a human merges** (e.g. `package.json` `^1.2.0` → `1.2.4`, lockfile already pins it;
+  or for an abandoned package, propose the maintained alternative named in the finding's `Fix:`).
+  Express it as the finding's `Fix:` made actionable, with the diff scoped to one concern.
+- **Never auto-pin / never auto-merge.** Pinning changes the build's resolved graph — a judgment
+  call (it can pin *past* a security patch, or freeze a transitively-needed range). This stays
+  **propose-only / human-gated** (the maturity model marks this class "no" — never safe-auto): the
+  proposal is opened, the human decides.
+
+This follows the marketplace's **merge-governance** — every change reaches `main` through an
+adversarial-reviewed PR a human merges (FOUNDRY's `pr-approval` default; run `/foundry:pr-review`
+on the branch when foundry is installed), never a self-merge. It is the same human-gated stance
+SENTINEL's own `self-improve` skill takes, and it honours quality-first
+([`../../knowledge/covenant.md`](../../knowledge/covenant.md)): the floor is raised by a reviewed
+proposal, not by a silent in-place edit.
+
+---
+
 ## Anti-patterns (never do these)
 
 | Anti-pattern | Why it fails | Do instead |

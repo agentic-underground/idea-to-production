@@ -115,6 +115,41 @@ itself degrades cleanly:
 
 ---
 
+## Chain-gap diagnostics (don't halt silently)
+
+The gate **walks a chain** — pii-audit → secret-scan → dependency-audit (→ optional SAST). When a
+link cannot run (a sub-skill is unreachable, its required tool is absent, or a scope it needs is
+missing), the old failure mode was to **halt or skip with no actionable guidance**. Instead,
+**detect the gap and emit a diagnostic the next operator can act on**, in this exact shape:
+
+```
+missing: <which lens/tool — e.g. dependency-audit (pip-audit not on PATH)>
+recent steps: <the chain links that DID run and their status — e.g. pii-audit ✓, secret-scan ✓>
+to proceed: <the one command that closes the gap — e.g. `pip install pip-audit` then re-run /security-gate>
+```
+
+This is **detect-and-report**, never an auto-install (no network side-effects mid-audit — see the
+dependency-audit anti-patterns). The gap is already reflected in the verdict (a lens that cannot
+run **cannot return PASS** for that lens; the gate returns REVIEW with the gap noted), but the
+diagnostic turns a dead halt into a next action.
+
+**Log the gap to `IN_PROGRESS.md`** (the conveyor's disaster-recovery artifact — the same ledger
+foundry's coverage-loop and phase work resume from) so a halted gate is recoverable across
+sessions and surfaces up the line. Append under a `## Security Gate — chain gap` heading:
+
+```markdown
+## Security Gate — chain gap
+- **missing:** dependency-audit (pip-audit unavailable)
+- **recent steps:** pii-audit ✓ · secret-scan ✓
+- **to proceed:** install pip-audit, then re-run `/security-gate`
+- **logged:** YYYY-MM-DD  (verdict held at REVIEW until closed)
+```
+
+This honours quality-first ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)): the gate
+is never weakened to make progress — a gap is disclosed and made actionable, not papered over.
+
+---
+
 ## When foundry invokes this
 
 foundry's release path (before the DELIVERY station, after STORY) checks for SENTINEL and, if

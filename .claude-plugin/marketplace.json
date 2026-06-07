@@ -16,7 +16,7 @@
       "source": "./plugins/i2p",
       "displayName": "IDEA-TO-PRODUCTION — Marketplace front door & meta-commands",
       "description": "The FRONT DOOR and meta-layer of the marketplace — the marketplace-level surface the six specialist plugins never had. /i2p-help browses the powers you have now, grouped by the DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸ PUBLISH value flow (listing only what is installed); /i2p-review fans out EVERY installed reviewer — code (foundry), design (atelier), rendered docs (pressroom), security (sentinel) — into ONE adversarial verdict in I2P_REVIEW.md; /i2p-check consolidates every plugin's readiness into one table; /i2p-flow maps where each plugin sits and the next command to run. Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator that delegates to the specialists by capability and never re-implements them. Carries the SOLID self-improvement covenant.",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -102,7 +102,7 @@
       "source": "./plugins/foundry",
       "displayName": "FOUNDRY — Value-Flow Production System",
       "description": "An opinionated, disciplined, quality-first software production system. A conveyor that carries value from IDEA to PRODUCTION across role-tuned agents and value-stations (IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP), governed by three pillars — knowledge parity, quality-first with a performance-delta gate, and waste elimination — under an overarching token-efficiency constraint. Emits markdown; uses the sentinel and pressroom companions automatically when present.",
-      "version": "1.3.8",
+      "version": "1.3.9",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -163,7 +163,7 @@
       "source": "./plugins/sentinel",
       "displayName": "SENTINEL — Security & Privacy Gate",
       "description": "The pre-release security gate for any repository. Catches PII, secrets/credentials, and supply-chain risk before they ship. Runs parallel, multi-agent audits across data files, git history, source, and frontend, and consolidates them into a single severity-ranked report with a PASS / REVIEW / BLOCK verdict. Stands alone, or serves as foundry's SECURITY gate when both are installed.",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -278,7 +278,7 @@
       "source": "./plugins/mission-control",
       "displayName": "MISSION-CONTROL — Operate the live product",
       "description": "The OPERATE phase owner — what runs a mission AFTER launch. MISSION-CONTROL keeps the live product alive and improving: it verifies operational readiness at go-live, instruments and watches the four golden signals (observability), runs incident response (severity, incident-command roles, mitigate-first, runbooks, blameless postmortems), keeps a maintenance cadence (dependency upkeep + CVE patching + tech-debt), and closes the build-measure-learn loop by turning production signals into a new opportunity that re-enters DISCOVER (the cyclic re-entry). /operate-gate is the front door — an operational-readiness check at go-live and the steady-state health view with a READY / WATCH / NOT-READY verdict. Grounded in named canon (SRE SLIs/SLOs/error budgets + golden signals, the Incident Command System, build-measure-learn, ITIL-lite). Stands alone on any live project, or advances the idea-to-production lifecycle OPERATE → DISCOVER (↻) when i2p is installed. Composes sentinel's dependency-audit and hands new opportunities to market-scanner/ideator by capability. Carries the SOLID self-improvement covenant: every incident becomes a runbook, every alert gap becomes an SLO.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",

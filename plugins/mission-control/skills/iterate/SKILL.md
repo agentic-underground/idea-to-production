@@ -29,7 +29,14 @@ intended outcome**. Three sources feed it:
 1. **Metrics** — an **actionable** metric (activation, retention, funnel conversion, task success) stalls,
    regresses, or contradicts the release hypothesis. (Ignore vanity metrics that move without meaning.)
 2. **Incidents** — a postmortem's contributing cause reveals a wrong assumption or a missing capability,
-   not just a bug to patch.
+   not just a bug to patch. A concrete carrier of this signal is the **action-item ledger** (written by
+   `incident`'s postmortem): run the detector to surface postmortem action items that were never landed —
+   an **un-closed / overdue** fix is exactly such a divergence and a re-entry candidate:
+   ```bash
+   bash "${CLAUDE_PLUGIN_ROOT}/skills/incident/scripts/overdue-action-items.sh" --dir <project>
+   ```
+   Weigh each overdue item below: a recurring-class fix that keeps slipping is a pivot signal, not just
+   backlog. (The detector PROPOSES; advancing the lifecycle stays a human decision.)
 3. **Feedback** — users ask for, struggle with, or work around something the product doesn't do.
 
 ## The pivot-or-persevere test

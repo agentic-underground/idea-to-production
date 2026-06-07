@@ -64,6 +64,28 @@ A **blameless** retrospective — blameless because people who fear punishment h
 Write `POSTMORTEM-<id>.md`. Every action item that adds monitoring or a runbook is a self-improvement
 signal for the `observability` and `incident` skills.
 
+### Track action items to completion — the action-item ledger
+
+A postmortem's action items are worthless if nothing follows up; "owned and dated" in prose rots
+silently. Record **each** action item to the **tracked ledger** so it is followed to closure:
+
+```bash
+# one per action item, as you write the postmortem (id = <incident>:<n>):
+bash "${CLAUDE_PLUGIN_ROOT}/skills/incident/scripts/action-items.sh" add <project> \
+  INCIDENT-<id> INCIDENT-<id>:1 "Add saturation alert on the queue" <owner> <YYYY-MM-DD> SEV2
+# when the fix lands:
+bash "${CLAUDE_PLUGIN_ROOT}/skills/incident/scripts/action-items.sh" close <project> INCIDENT-<id>:1
+```
+
+The ledger is the append-only, schema-versioned artifact `<project>/.i2p/action-items.jsonl` (record
+schema `action-items/1.0`: `{schema,id,incident,title,owner,due,severity,status,event,ts}` — the same
+append-friendly, latest-record-wins discipline as the other i2p artifact ledgers). The
+[`scripts/overdue-action-items.sh`](scripts/overdue-action-items.sh) **detector** reduces it to the
+latest state per id and **flags un-closed / overdue items** (status `open` past their `due` date) as a
+**re-entry signal** — an un-landed contributing-cause fix is a divergence the `iterate` skill turns back
+into the lifecycle (it never auto-closes or gates; `--strict` exits non-zero on an overdue item for an
+opt-in gate caller). `/operate-gate` surfaces overdue items in its Open-incidents / Next-actions view.
+
 ## Degraded capabilities (point-of-use)
 
 If a tool/MCP/telemetry source you need to triage or mitigate is unavailable **when you reach for it** (a

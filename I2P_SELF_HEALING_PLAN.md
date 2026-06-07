@@ -43,7 +43,15 @@
 >   detector → scorecard trend; real count=8) ✅ P2-14 (LSP capability probe + check M; no-download) ✅ P2-15
 >   (deployed-digest ↔ DELIVERY_COMPLETE mismatch) ✅ P2-16 (stacked-PR retarget-to-main guard) ✅ P2-17
 >   (self-improve closed-loop: per-element finding-count trend + assertion). verify-prereqs A–M green.
-> - **Remaining:** P2 commit 2 = P2-5,10,11,18,19,20 = **6 items** (46/52 shipped).
+> - **P2-B (sentinel · mission-control · i2p · foundry) — DONE:** ✅ P2-5 (sentinel-chain gap diagnostic
+>   "missing X; recent steps…; run Y" + IN_PROGRESS.md log) ✅ P2-10 (dependency-audit PROPOSES a pinned
+>   version, human-merged, never auto-pin) ✅ P2-11 (story phase asserts mock schema vs spec, CONTRACT_DRIFT)
+>   ✅ P2-18 (marketplace dogfoods mission-control golden-signals on ITSELF as external CI; verdict HEALTHY,
+>   9 plugins/60 skills/39 agents, 0 errors) ✅ P2-19 (incident action-item ledger + overdue/re-entry detector;
+>   --strict gate) ✅ P2-20 (cost.json cycle-indexed, additive — old flat reads as cycle 1, cycles preserved
+>   across OPERATE↻DISCOVER). verify-prereqs A–M green.
+> - **ALL 52 SHIPPED (52/52).** The self-healing backlog is complete; this document is `git rm`'d in the
+>   final commit per the "delete it when every item is shipped" instruction at the top.
 
 ---
 
