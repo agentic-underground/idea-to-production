@@ -30,6 +30,10 @@ break. Find where the **typesetting** fails the reader, and hand back the exact 
    - **Figure–page balance** — figures sized and placed for balance; `\clearpage` discipline; captions with
      their figures; tables ≤0.80 linewidth (Rule R-A3)?
    - **Colour & ink** — restrained, legible, consistent; code blocks/tables with adequate contrast & padding.
+   - **Document accessibility (GATE)** — PDF/UA + WCAG 2.2 AA (canon §4): tagged structure (headings/lists/
+     tables tagged, not an image of text), logical reading order, body/caption contrast **≥ 4.5:1** (cite the
+     measured ratio), alt text on every informative figure, and document title/language/outline set. An
+     untagged document or a body-contrast miss is **≥ HIGH and blocks PASS** — the lie-factor-grade honesty gate.
 3. **Hold the matrix.** Cross-check figures against `../../rich-pdf-with-diagrams/references/charting-matrix.md §6`.
 4. **Score** the design-fitness rubric (typography dimensions) and **prioritise** every finding HIGH/MED/LOW.
 

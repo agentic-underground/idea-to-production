@@ -48,7 +48,7 @@ PNG — no API key, built-in vision.
 
 | Lens | Agent | Reads | Holds |
 |---|---|---|---|
-| **Typography / DTP** | [`agents/typographic-reviewer.md`](agents/typographic-reviewer.md) | the rendered **page** | measure, leading, modular scale, baseline grid, widows/orphans, hierarchy, figure-page balance, tables ([`references/typography-canon.md`](references/typography-canon.md)) |
+| **Typography / DTP** | [`agents/typographic-reviewer.md`](agents/typographic-reviewer.md) | the rendered **page** | measure, leading, modular scale, baseline grid, widows/orphans, hierarchy, figure-page balance, tables, **document accessibility (PDF/UA + WCAG 2.2 — a hard gate)** ([`references/typography-canon.md`](references/typography-canon.md)) |
 | **Data-viz / charting** | [`agents/dataviz-reviewer.md`](agents/dataviz-reviewer.md) | each **figure/chart** | data-ink, chartjunk, the Cleveland–McGill perception ranking, Bertin's visual variables, colour-blind-safe palettes ([`references/dataviz-canon.md`](references/dataviz-canon.md)) |
 
 Both share the **4×9 charting-matrix** legibility law with the diagram producers (not forked) and feed the

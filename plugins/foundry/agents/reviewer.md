@@ -157,11 +157,11 @@ Understanding.
 
 **Evaluate EARS statements or Gherkin scenarios against the SMU:**
 
-- [ ] All terms used match definitions in SMU §4 (Core Domain Concepts)
+- [ ] All terms used match definitions in the SMU's core-domain-concepts section
 - [ ] No new term is introduced without being defined in the SMU
-- [ ] Actors named in artefacts match actors defined in SMU §2
-- [ ] Design values in SMU §5 are not violated by any statement or scenario
-- [ ] No artefact contradicts the constraints in SMU §6
+- [ ] Actors named in artefacts match actors defined in the SMU's actors section
+- [ ] Design values in the SMU's design-values section are not violated by any statement or scenario
+- [ ] No artefact contradicts the constraints in the SMU's constraints section
 - [ ] The vocabulary is consistent — same concept, same word, everywhere
 
 ---

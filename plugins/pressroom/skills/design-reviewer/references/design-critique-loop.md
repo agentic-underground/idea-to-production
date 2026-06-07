@@ -9,8 +9,9 @@
 
 The reviewer scores the rendered artefact on weighted dimensions, each tied to the canon
 ([`typography-canon.md`](typography-canon.md), [`dataviz-canon.md`](dataviz-canon.md)). Each scores **0–5**;
-the weighted total is the **fitness score** (0–100). **Honesty** (no misleading chart) and **legibility at
-target size** are *gates*, not mere weights.
+the weighted total is the **fitness score** (0–100). **Honesty** (no misleading chart), **legibility at
+target size**, and **document accessibility** (PDF/UA + WCAG 2.2 — a document everyone can read) are
+*gates*, not mere weights.
 
 | Dimension | Weight | Canon | 5 = exemplary | 0–1 = broken |
 |---|---:|---|---|---|
@@ -19,6 +20,7 @@ target size** are *gates*, not mere weights.
 | **Hierarchy & scale** | 12 | typography §1 | modular scale, clear levels | font-soup, flat |
 | **Grid & baseline** | 10 | typography §2 | aligned, on baseline | ragged, off-rhythm |
 | **Page composition** | 10 | typography §3 | balanced figures, no widows/orphans, clean breaks | stranded lines, overflowing tables |
+| **Accessibility (GATE)** | 10 | typography §4 | tagged, logical reading order, body contrast ≥ 4.5:1, alt text, title/lang set | untagged image-of-text, low contrast, no alt text |
 | **Encoding fit (charts)** | 16 | dataviz §1–2 | high-accuracy channel for the key quantity | pie/3-D/area where bars belong |
 | **Data integrity (GATE)** | 12 | dataviz §3 | lie factor ≈1, zero baseline, honest axes | truncated/exaggerated → misleads |
 | **Colour** | 8 | dataviz §4 | colour-blind-safe, ordered ramps, restrained | rainbow for ordered, colour-only |
@@ -29,8 +31,8 @@ target size** are *gates*, not mere weights.
 >
 > **Findings, prioritised** (pr-review model): each is **HIGH / MED / LOW**, naming **(a)** the principle,
 > **(b)** the violation, **(c)** the reader cost, **(d)** the concrete *source* fix (`.typ`/`.tex`/`.dot`/
-> `.mmd`), **(e)** the rubric dimension. A gate failure (misleading chart, illegible figure) is always at
-> least HIGH and blocks PASS.
+> `.mmd`), **(e)** the rubric dimension. A gate failure (misleading chart, illegible figure, inaccessible
+> document) is always at least HIGH and blocks PASS.
 
 ## The loop (bounded, measurable, terminating)
 
@@ -44,7 +46,7 @@ target size** are *gates*, not mere weights.
 2. **Apply.** The producer applies **every HIGH and MED** finding as a concrete source change and re-builds.
 3. **Re-score.** `scoreₙ`; `Δ = scoreₙ − scoreₙ₋₁`.
 4. **Stop** when **any** holds:
-   - **CONVERGED** — no HIGH, both gates clear, **and** `scoreₙ ≥ TARGET` (default **85/100**).
+   - **CONVERGED** — no HIGH, all gates clear (honesty, legibility, accessibility), **and** `scoreₙ ≥ TARGET` (default **85/100**).
    - **DIMINISHING RETURNS** — `Δ < DELTA_FLOOR` (default **+3**) with findings still open: the loop is no
      longer earning its tokens. **Halt, surface the impasse**, ask the user (accept / change approach /
      relax a constraint). Do not take another lap.

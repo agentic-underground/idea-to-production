@@ -49,9 +49,35 @@ From Robert Bringhurst, *The Elements of Typographic Style*:
 > **Engine-agnostic.** Judge the *rendered* page — Typst or LaTeX produced it; the composition rules are the
 > same. The fixes are concrete source changes (geometry, `\linespread`, a scale step, a `\clearpage`).
 
+## 4. Document accessibility (PDF/UA, WCAG 2.2) — the honesty gate
+
+A page a reader's *eye* flows through can still be one a screen reader cannot read at all. Accessibility is
+to a document what the lie factor is to a chart — a **hard honesty floor**, not a polish dimension: an
+untagged or low-contrast document is *making a claim it cannot keep* (that it is readable by everyone). Hold
+it against **PDF/UA** (ISO 14289) and **WCAG 2.2 AA** for documents:
+
+- **Tagged structure (PDF/UA §7).** The PDF carries a real tag tree — headings as headings, lists as lists,
+  tables as `<Table>` with header cells — not just visually-styled glyphs. An **untagged** document is an
+  image of text to assistive tech: a hard failure. (Typst: `pdf.tag`/document metadata; LaTeX: `tagpdf` /
+  `pdfx` / `accsupp`.)
+- **Logical reading order.** The tag/reading order matches the visual order — multi-column flow, sidebars,
+  and floated figures must not scramble what a screen reader speaks.
+- **Body-text contrast (WCAG 2.2 SC 1.4.3, AA).** Body and caption text meet **≥ 4.5:1** against their
+  background (**≥ 3:1** for large text ≥ 24 px / 18.66 px bold). Cite the *measured* ratio — light-grey body
+  on white is the common offender.
+- **Alt text for figures (WCAG SC 1.1.1).** Every informative figure, chart, and image carries a text
+  alternative; purely decorative marks are tagged as artifacts so they're skipped, not announced.
+- **Language & metadata (PDF/UA §7.1, WCAG SC 3.1.1).** Document title and primary language are set;
+  long documents carry bookmarks/outline for navigation.
+
+> A WCAG-AA / PDF/UA failure on a *rendered* document is **≥ HIGH and blocks PASS** — the same gate stance
+> PRESSROOM holds for the Tufte lie factor on a chart. This is the print-side analogue of ATELIER's screen
+> a11y gate.
+
 ---
 
 > **Sources to cite:** Bringhurst, *The Elements of Typographic Style* (measure/leading/scale/page);
 > Müller-Brockmann, *Grid Systems in Graphic Design* (grid/baseline); the Van de Graaf / Villard page
-> canons (margins); and the marketplace charting-matrix rules (R-A2, R-A3, 7, 8) for the print-fixed
-> specifics. Cite the principle by name in every finding.
+> canons (margins); **PDF/UA (ISO 14289) and WCAG 2.2 AA** (document accessibility); and the marketplace
+> charting-matrix rules (R-A2, R-A3, 7, 8) for the print-fixed specifics. Cite the principle by name in
+> every finding.

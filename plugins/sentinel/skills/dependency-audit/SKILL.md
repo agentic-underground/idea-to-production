@@ -18,7 +18,9 @@ model: claude-haiku-4-5
 # DEPENDENCY-AUDIT
 
 The third dimension of a pre-release security pass. `pii-audit` checks *your data*, `secret-scan`
-checks *your credentials*, `dependency-audit` checks *the code you didn't write but ship anyway*.
+checks *your credentials*, `dependency-audit` checks *the code you didn't write but ship anyway* —
+both whether it is **safe to run** (vulnerabilities) and whether you are **allowed to ship it**
+(licence compatibility).
 
 ---
 
@@ -41,6 +43,7 @@ checks *your credentials*, `dependency-audit` checks *the code you didn't write 
 | **Abandoned / unmaintained** | Last release age, archived flag, deprecation notice | LOW–MEDIUM |
 | **Typosquat shape** | Name is an edit-distance-1 lookalike of a popular package | HIGH (deliberate-attack signal) |
 | **Install scripts** | Does a dep run postinstall/build scripts (npm)? | MEDIUM — review surface |
+| **Licence compatibility** | Is each dep's licence compatible with how this project is distributed? | CRITICAL strong-copyleft conflict · HIGH unknown/missing licence · MEDIUM unmet attribution |
 
 ---
 
@@ -67,16 +70,45 @@ full vuln coverage when only static checks ran).
 
 ---
 
+## Licence compatibility (the second lens)
+
+The vuln audit asks *"is this dependency safe to run?"*; this lens asks *"are we allowed to **ship** it
+the way we distribute?"* — a separate failure mode that bites at release or open-source time, not at
+runtime. It **complements** the vulnerability audit and never duplicates it: a dependency can be vuln-free
+and still licence-incompatible.
+
+**Detect each dependency's licence** (the SPDX identifier) from the most authoritative source available:
+the lockfile/manifest licence field, the installed package's `LICENSE`/`COPYING` file, or the registry
+metadata (`npm view <pkg> license`, `pip show`, `cargo metadata`, `go-licenses`). Cover **transitive**
+deps, not just direct ones — most copyleft surprises arrive transitively. Then assess against the
+project's **intended distribution** (proprietary/closed binary, permissively-licensed open source,
+SaaS/network service, or internal-only — read `LICENSE`/`.sentinel` policy if present, else state the
+assumption):
+
+| Licence class | Examples | Flag when distributed as | Default risk |
+|---|---|---|---|
+| **Strong copyleft** | GPL-2.0/3.0, AGPL-3.0, SSPL | proprietary or permissive OSS (AGPL/SSPL also bite a SaaS) | CRITICAL — reciprocal source-disclosure obligation |
+| **Weak copyleft** | LGPL, MPL-2.0, EPL | proprietary, only if linkage doesn't honour the terms | HIGH/MEDIUM by linkage |
+| **Permissive (attribution)** | MIT, BSD, Apache-2.0, ISC | any — but attribution/NOTICE must ship | MEDIUM if attribution unmet |
+| **Unknown / missing** | no SPDX id, no LICENSE file, "UNLICENSED" | any | HIGH — default is all-rights-reserved, not "free" |
+
+Surface each conflict as a **finding** in the shared format below (`Type: licence`), with the SPDX id and
+the obligation it imposes as the `Detail`. This is the dependency-side analogue of FOUNDRY's
+LICENSING-REVIEWER — when that reviewer runs on a diff it defers to these findings; standalone, this lens
+is the whole-tree sweep.
+
+---
+
 ## Finding format (shared with SENTINEL)
 
 ```markdown
 **Package:** name@version  (ecosystem)
 **Manifest:** `/path/to/manifest:LINE`
-**Type:** [vuln | unpinned | no-lockfile | abandoned | typosquat | install-script]
+**Type:** [vuln | unpinned | no-lockfile | abandoned | typosquat | install-script | licence]
 **Risk:** [CRITICAL | HIGH | MEDIUM | LOW]
-**Detail:** [advisory ID + summary | "floating range ^1.2" | "last release 2019, archived" | "edit-distance-1 of <popular>"]
-**Fix:** [bump to X.Y.Z | pin + lock | replace with <maintained alt> | remove]
-**Source:** [npm-audit | pip-audit | govulncheck | static-analysis]
+**Detail:** [advisory ID + summary | "floating range ^1.2" | "last release 2019, archived" | "edit-distance-1 of <popular>" | "GPL-3.0 — reciprocal source disclosure, incompatible with proprietary distribution" | "no SPDX id / no LICENSE — defaults to all-rights-reserved"]
+**Fix:** [bump to X.Y.Z | pin + lock | replace with <maintained alt> | remove | replace with permissively-licensed alt | obtain licence clarification | satisfy attribution/NOTICE]
+**Source:** [npm-audit | pip-audit | govulncheck | static-analysis | licence-metadata]
 ```
 
 ---
@@ -84,8 +116,8 @@ full vuln coverage when only static checks ran).
 ## Output
 
 - **Standalone:** `DEPENDENCY-FINDINGS.md` — summary table (counts by severity), findings by
-  ecosystem, a prioritised remediation list (vulns first, then pinning/lockfile hygiene),
-  appendix of manifests parsed and which tools ran.
+  ecosystem, a prioritised remediation list (vulns first, then licence conflicts, then pinning/
+  lockfile hygiene), appendix of manifests parsed and which tools ran.
 - **Via `/security-gate`:** return the findings section for consolidation.
 
 ---
@@ -103,9 +135,13 @@ full vuln coverage when only static checks ran).
 
 ## Self-improvement covenant
 
-- Every new ecosystem → add it to [`references/ECOSYSTEMS.md`](references/ECOSYSTEMS.md).
+- Every new ecosystem → add it to [`references/ECOSYSTEMS.md`](references/ECOSYSTEMS.md), including how
+  to read its licence metadata (the `Native advisory tool` row's licence-detection equivalent).
 - Every new advisory source or better native tool → record the command and JSON shape.
-- Every false positive (e.g. an intentionally-pinned old package) → note the allowlist pattern.
+- Every new licence class or distribution-model nuance (e.g. a copyleft variant, a SaaS-triggering clause)
+  → record the rule so the licence lens stays current as the vuln lens does.
+- Every false positive (e.g. an intentionally-pinned old package, a dual-licensed dep allowed under its
+  permissive option) → note the allowlist pattern.
 
 ## References
 
