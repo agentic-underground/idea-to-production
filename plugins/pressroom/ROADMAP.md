@@ -6,8 +6,22 @@ The shipped v1 covers prose (writer), standalone diagrams (diagram-studio), prin
 (typography + data-viz canon, in a convergent loop). This roadmap captures the remaining expansion
 path toward a complete publishing house. Items are independently shippable.
 
+**v1.4** adds the **illustrator** — a documentation-illustration studio that ranks figure-sites by impact,
+specs each, has a graphical **value handler** (Graphviz / Mermaid / chart / hand-composition / ComfyUI) render
+two options, and runs an adversarial **A/B-until-best** review (the design-reviewer's comparative mode). Every
+figure is dark-mode and transparent by default; `/illustrate docs` trawls the whole tree under `/loop`,
+embedding and ledgering as it goes.
+
 ## Near-term
 
+- **`comfyui-mcp` — the secured generative backend.** `handler-comfyui` currently talks raw HTTP to a live
+  ComfyUI server (`$PRESSROOM_COMFYUI_URL`); the LAN is the only trust boundary (a known Phase-0 gap). The
+  [`comfyui-mcp/`](../../comfyui-mcp/ROADMAP.md) sub-project closes it: a containerised ComfyUI (with the
+  `DIFFUSION_MODELS` folder bind-mounted) fronted by a **demonstrably secure MCP server** — workflow-template
+  allowlisting, validated params, a model allowlist, a path-traversal-safe `/view` proxy, network isolation,
+  and authn. It is built by dogfooding the marketplace's own pipeline: **foundry** builds the server
+  test-first, **sentinel** runs the security gate, **pressroom** documents it; then `handler-comfyui` switches
+  from `curl` to `mcp__comfyui__*` tools.
 - **`slide-deck` skill** — generate presentation decks (Marp markdown → HTML/PDF, or Beamer for
   LaTeX users) from an article or outline. Reuses `diagram-studio` for figures sized to 16:9 and
   the writer's narrative discipline (one idea per slide, hook on every section). A natural
