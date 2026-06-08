@@ -1,0 +1,175 @@
+{
+  "categories": [
+    {
+      "id": "scenes",
+      "positive": "a bustling cyberpunk night street market, neon signs reflecting on wet pavement, dense atmosphere, volumetric light, cinematic, highly detailed",
+      "negative": "lowres, blurry, jpeg artifacts, watermark, signature, deformed, washed out"
+    },
+    {
+      "id": "landscapes",
+      "positive": "a sweeping mountain valley at golden hour, a river winding through pine forest, dramatic clouds, soft rim light, wide vista, photographic, highly detailed",
+      "negative": "lowres, blurry, jpeg artifacts, watermark, signature, oversaturated, people, buildings"
+    },
+    {
+      "id": "office",
+      "positive": "candid photograph of a diverse team of professionals collaborating around a laptop in a bright modern office, natural window light, authentic, corporate stock photography, sharp focus",
+      "negative": "lowres, blurry, jpeg artifacts, watermark, signature, deformed hands, extra fingers, cartoon, illustration"
+    },
+    {
+      "id": "line-goes-up",
+      "positive": "a clean minimal business growth chart, an upward trending green line over a subtle grid, dark dashboard background, financial data visualization, modern flat UI, crisp",
+      "negative": "lowres, blurry, jpeg artifacts, watermark, photograph, people, cluttered, messy"
+    },
+    {
+      "id": "cute-mascot",
+      "positive": "an adorable rounded robot mascot character, big friendly eyes, simple flat background, mascot logo design, clean vector-friendly shapes, centered, soft studio lighting",
+      "negative": "lowres, blurry, jpeg artifacts, watermark, scary, realistic, gritty, cluttered background"
+    }
+  ],
+  "models": [
+    {
+      "id": "dreamshaper_8",
+      "ckpt": "dreamshaper_8.safetensors",
+      "base": "sd15",
+      "family": "versatile",
+      "width": 768,
+      "height": 512,
+      "steps": 25,
+      "cfg": 7.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "epicrealism",
+      "ckpt": "epicrealism_naturalSinRC1VAE.safetensors",
+      "base": "sd15",
+      "family": "photoreal",
+      "width": 768,
+      "height": 512,
+      "steps": 25,
+      "cfg": 6.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "cyberrealistic_v31",
+      "ckpt": "cyberrealistic_v31.safetensors",
+      "base": "sd15",
+      "family": "photoreal",
+      "width": 768,
+      "height": 512,
+      "steps": 28,
+      "cfg": 6.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "realcartoon3d_v8",
+      "ckpt": "realcartoon3d_v8.safetensors",
+      "base": "sd15",
+      "family": "3d-cartoon",
+      "width": 768,
+      "height": 512,
+      "steps": 28,
+      "cfg": 7.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "cardosAnimated_v20",
+      "ckpt": "cardosAnimated_v20.safetensors",
+      "base": "sd15",
+      "family": "animated",
+      "width": 768,
+      "height": 512,
+      "steps": 28,
+      "cfg": 7.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "epicdream_lullaby",
+      "ckpt": "epicdream_lullaby.safetensors",
+      "base": "sd15",
+      "family": "artistic",
+      "width": 768,
+      "height": 512,
+      "steps": 28,
+      "cfg": 7.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "juggernautXL_v2",
+      "ckpt": "SDXL_3/juggernautXL_version2.safetensors",
+      "base": "sdxl",
+      "family": "photoreal",
+      "width": 1216,
+      "height": 832,
+      "steps": 30,
+      "cfg": 6.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "realisticStockPhoto_v10",
+      "ckpt": "SDXL_4/realisticStockPhoto_v10.safetensors",
+      "base": "sdxl",
+      "family": "stock-photo",
+      "width": 1216,
+      "height": 832,
+      "steps": 30,
+      "cfg": 5.5,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "modernDisneyXL_v11",
+      "ckpt": "SDXL_2/modernDisneyXL_v11.safetensors",
+      "base": "sdxl",
+      "family": "cartoon-mascot",
+      "width": 1216,
+      "height": 832,
+      "steps": 30,
+      "cfg": 7.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "dynavisionXL",
+      "ckpt": "SDXL_3/dynavisionXLAllInOneStylized_beta0411Bakedvae.safetensors",
+      "base": "sdxl",
+      "family": "stylized-3d",
+      "width": 1216,
+      "height": 832,
+      "steps": 30,
+      "cfg": 7.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "protovisionXL",
+      "ckpt": "SDXL_1/protovisionXLHighFidelity3D_beta0520Bakedvae.safetensors",
+      "base": "sdxl",
+      "family": "photoreal-3d",
+      "width": 1216,
+      "height": 832,
+      "steps": 30,
+      "cfg": 7.0,
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    {
+      "id": "juggernautXL_lightning",
+      "ckpt": "LIGHTNING/juggernautXL_v9Rdphoto2Lightning.safetensors",
+      "base": "sdxl-lightning",
+      "family": "photoreal-fast",
+      "width": 1216,
+      "height": 832,
+      "steps": 6,
+      "cfg": 2.0,
+      "sampler": "dpmpp_sde",
+      "scheduler": "sgm_uniform"
+    }
+  ]
+}
