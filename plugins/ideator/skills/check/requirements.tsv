@@ -8,7 +8,9 @@
 # install, no probe. The shipped Fetch MCP (.mcp.json) adds keyless URL→markdown extraction.
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled
-curl	command -v curl	recommended	apt install curl — only /ideator:name (name-search) needs it to probe npm/pypi/crates/GitHub; core ideation does not
+curl	command -v curl	recommended	apt install curl — only /ideator:name (name-search) needs it to probe npm/pypi/crates/GitHub, neighbour-search, and RDAP domains; core ideation does not
 jq	command -v jq	recommended	apt install jq — only /ideator:name (name-search) needs it to build/parse the availability JSON; core ideation does not
 gh	command -v gh	recommended	GitHub CLI (cli.github.com) — used by self-improve to open the improvement PR
+# Optional: set GITHUB_TOKEN/GH_TOKEN (not a binary, so not probed) for name-search — lifts GitHub rate
+# limits (60→5000/hr core, 10→30/min search); REQUIRED for a reliable --neighbors pass or it reports unknown.
 fetch-mcp	command -v uvx	recommended	uv (launches `uvx mcp-server-fetch` — web research: validate value/price, wedge, stack-fit against live pages)

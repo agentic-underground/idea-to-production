@@ -1,23 +1,32 @@
 # Charter protocol — distilling philosophy into a naming brief
 
 The charter steers every later phase. A weak charter yields generic names; a sharp one yields names that
-*fit*. The charter has four parts:
+*fit*. It is the output of the **discovery interview** ([`discovery-protocol.md`](discovery-protocol.md))
+and the contract generation + evaluation are measured against. Its parts:
 
 1. **Ranked values** — what the name must encode, in priority order (e.g. 1. trust, 2. free-forever,
    3. open, 4. community, 5. craft). The ranking matters: the top value drives the strongest survivors.
-2. **Tone** — the emotional register (warm? institutional? sleek? playful?) and one or two exemplar brands
-   the user admires (Snyk, Vercel, Stripe…) to anchor the feel.
-3. **Structural constraints** — syllable target/range, language/era preferences, and any must-have or
-   must-avoid sounds.
-4. **Banned / saturated stems** — the lexical neighbourhoods to stay out of. For a security/agent-tooling
-   product these are typically `skill* mcp* agent* *scan *sentry *sentinel *guard *gate *shield *audit
-   *sec *watch` — names there are both crowded and undistinctive. Add any stems already explored.
+2. **Audience & archetype** — who the name is for (a named role + how they speak) and the **1–2 Jung
+   archetypes** it must embody ([`../../../knowledge/naming/frameworks.md`](../../../knowledge/naming/frameworks.md)).
+   The archetype sets the sound palette ([`../../../knowledge/naming/phonosemantics.md`](../../../knowledge/naming/phonosemantics.md)).
+3. **Name-type strategy** — which **veins** to fire (descriptive ↔ suggestive ↔ abstract; real-word ↔
+   compound ↔ coined) and *why* ([`../../../knowledge/naming/name-types.md`](../../../knowledge/naming/name-types.md)).
+   This is the biggest lever on what the search returns.
+4. **Risk appetite + power-adjacency + humour** — safe ↔ bold; any myth/science equity to borrow; humour
+   appetite (none ↔ subtle ↔ overt). These gate the opt-in veins.
+5. **Tone & exemplars** — emotional register + one or two admired brands (Snyk, Vercel, Stripe…).
+6. **Structural constraints** — syllable target/range, language/era preferences, must-have/avoid sounds,
+   extendability needs.
+7. **Banned / saturated stems** — lexical neighbourhoods to stay out of. For a security/agent-tooling
+   product, typically `skill* mcp* agent* *scan *sentry *sentinel *guard *gate *shield *audit *sec *watch`
+   — crowded and undistinctive. Add any stems already explored.
 
 ## Inferring vs asking
 
-Infer the charter from the brief first; confirm in one line rather than interrogating. Only ask when a
-genuinely load-bearing choice is undetermined (e.g. the user said "evoke security AND playfulness" — which
-dominates?). One question, recommended answer, move on.
+Infer the charter first (from any IDEA package, the `ideate` output, or the bounded local trawl below);
+then run the discovery interview for the **load-bearing gaps only** — one question per turn, each with a
+recommended answer + multiple-choice. See [`discovery-protocol.md`](discovery-protocol.md). Don't
+interrogate what's already known; don't generate on an unfilled load-bearing field.
 
 ## Bounded local-material trawl (when the subject is a local project)
 
@@ -37,6 +46,7 @@ so. The output is the charter, not a summary of the repo.
 
 ## Output
 
-A charter block the generation veins consume directly: ranked values · tone + exemplars · structural
-constraints · banned stems. Keep it tight (under ~200 words). This is the contract the whole search is
-measured against — if a top pick doesn't trace back to a ranked value, the charter or the pick is wrong.
+A charter block the generation veins consume directly: ranked values · audience & archetype · name-type
+strategy · risk/power-adjacency/humour · tone + exemplars · structural constraints · banned stems. Keep it
+tight (under ~250 words). This is the contract the whole search is measured against — if a top pick doesn't
+trace back to a ranked value *and* the archetype, the charter or the pick is wrong.

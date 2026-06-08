@@ -1,0 +1,36 @@
+# connotation-wordlist.tsv — cross-language profanity / slang / unfortunate-meaning screen
+# Format: term<TAB>lang<TAB>severity   (term len >= 3; substring-matched against the normalized name)
+# ADVISORY ONLY — a flag is a prompt for the adversarial challenge, never a hard kill and never a
+# clearance. Non-exhaustive and curated; extend via /ideator:self-improve when a real miss surfaces.
+# Lines starting with # are ignored. Data rows are EXACTLY three tab-separated fields (no inline
+# comments). lang codes: en/es/fr/de/it/pt/sv/mul(multi). severity: low|medium|high.
+#
+# famous cross-language brand blunders
+nova	es	low
+gift	de	medium
+mist	de	medium
+pedo	es	medium
+cul	fr	low
+# excrement / embarrassment class (multi-language)
+kaka	mul	high
+caca	mul	high
+poo	en	low
+poop	en	low
+fart	en	low
+crap	en	medium
+turd	en	medium
+# profanity class (English + Romance)
+arse	en	medium
+wank	en	high
+merda	it	high
+merde	fr	high
+puta	es	high
+puto	es	high
+mierda	es	high
+# unfortunate English substrings
+slag	en	medium
+damn	en	low
+hell	en	low
+# medical / negative connotation
+dead	en	low
+toxic	en	low

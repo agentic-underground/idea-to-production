@@ -15,12 +15,21 @@
 #   --adoption                            for TAKEN names, classify CLEAR/LOW_ADOPTION/ABANDONED/TAKEN
 #                                         via GitHub stars+last-push and npm staleness/deprecation
 #   --json                                emit JSON (the only output mode; accepted for explicitness)
+#   --neighbors[=N]                       GitHub login-neighbour / typo-squat proximity per name
+#                                         (total_count==0 ⇒ no account AND no neighbours). Search API
+#                                         is RATE-LIMITED (10/min unauth, 30/min with token); a probe
+#                                         that can't complete is reported "unknown", never upgraded.
+#   --domains[=com,dev,io,ai]             domain availability via RDAP (404=available, 200=registered).
+#                                         default TLDs when bare: com,dev,io,ai
+#   --connotation                         cross-language profanity/slang screen against the bundled
+#                                         references/connotation-wordlist.tsv (advisory flags only)
 #   --max-names=N                         safety cap on list size (default 50)
 #   -h | --help                           show this help
 #
 # Env:
-#   GITHUB_TOKEN / GH_TOKEN   if set, used as Bearer auth (5000/hr vs 60/hr unauthenticated).
+#   GITHUB_TOKEN / GH_TOKEN   if set, used as Bearer auth (5000/hr core, 30/min search vs 60/hr & 10/min).
 #   NAMECHECK_PARALLEL        max concurrent name checks (default 10).
+#   NAMECHECK_WORDLIST        override path to the connotation wordlist (.tsv: term<TAB>lang<TAB>severity).
 #
 # Verdicts (per name):
 #   CLEAR        free everywhere checked            → recommendable
@@ -45,8 +54,14 @@ SYL_TARGET="2-3"
 REGISTRIES="npm,github,pypi,crates"
 ADOPTION=false
 MAX_NAMES=50
+NEIGHBORS=false
+DOMAINS=""            # empty = off; "com,dev,io,ai" etc when requested
+CONNOTATION=false
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORDLIST="${NAMECHECK_WORDLIST:-${SCRIPT_DIR}/../references/connotation-wordlist.tsv}"
 
-usage() { sed -n '2,40p' "$0" | sed 's/^# \{0,1\}//'; }
+# print the header comment block (line 2 → just before `set -uo pipefail`), as help
+usage() { sed -n '2,/^set -uo/p' "$0" | sed '/^set -uo/d; s/^# \{0,1\}//'; }
 
 # ---- GitHub auth header (optional) ----
 GH_AUTH=()
@@ -90,6 +105,76 @@ code_status() {
 
 # epoch seconds for an ISO-8601 timestamp, or empty
 iso_epoch() { [[ -n "$1" && "$1" != "null" ]] && date -d "$1" +%s 2>/dev/null || echo ""; }
+
+# ---- neighbour / typo-squat proximity (GitHub login search) ----
+# total_count==0 ⇒ no account AND no neighbours. Search API is rate-limited; an incomplete probe
+# (403/422/err) is reported "unknown" and NEVER upgraded. Emits a JSON object.
+check_neighbors() {
+  local name="$1" body total samples flag
+  body=$(http_body "${GH_AUTH[@]}" -H "Accept: application/vnd.github+json" \
+    "https://api.github.com/search/users?q=${name}+in:login&per_page=6&sort=followers")
+  total=$(echo "$body" | jq -r '.total_count // "err"' 2>/dev/null)
+  # MUST be an integer before any arithmetic: a network-derived value in `[[ x -eq y ]]` is an
+  # arithmetic/command-substitution sink. Anything non-numeric (rate-limit/err/API drift) → unknown.
+  if [[ ! "$total" =~ ^[0-9]+$ ]]; then
+    printf '{"status":"unknown","count":null,"flag":"unknown","samples":[]}'; return
+  fi
+  samples=$(echo "$body" | jq -c '[.items[]?.login][0:6]' 2>/dev/null); [[ -z "$samples" ]] && samples="[]"
+  if (( total == 0 )); then flag="clean"; else flag="neighbours"; fi
+  printf '{"status":"checked","count":%s,"flag":"%s","samples":%s}' "$total" "$flag" "$samples"
+}
+
+# RDAP probe with exponential backoff on transient/rate-limit responses. rdap.org (esp. the .com
+# Verisign endpoint) returns 429 under burst; without a retry that surfaces as a spurious "unknown".
+# Retries only the retryable codes (429 / 5xx / timeout / transport-err); 200/404 and other definitive
+# codes return immediately. Up to 3 attempts, sleeping 1s then 2s.
+rdap_code() {
+  local url="$1" code tries=0
+  while :; do
+    code=$(http_code -L "$url")
+    case "$code" in
+      200|404) echo "$code"; return ;;       # definitive
+      429|000|err|5??) : ;;                   # retryable — fall through to backoff
+      *) echo "$code"; return ;;              # non-retryable (400/403/…)
+    esac
+    tries=$(( tries + 1 ))
+    [[ $tries -ge 3 ]] && { echo "$code"; return; }
+    sleep "$tries"
+  done
+}
+
+# ---- domain availability via RDAP (404=available, 200=registered, else unknown) ----
+# Emits a JSON object keyed by TLD. rdap.org is a bootstrap redirector → follow with -L; rdap_code
+# adds backoff so a rate-limited probe isn't mistaken for "unknown".
+check_domains() {
+  local name="$1" tlds="$2" out="" tld code st first=true _tlds
+  IFS=',' read -ra _tlds <<< "$tlds"
+  for tld in "${_tlds[@]}"; do
+    tld=$(echo "$tld" | tr -d '[:space:]'); [[ -z "$tld" ]] && continue
+    code=$(rdap_code "https://rdap.org/domain/${name}.${tld}")
+    case "$code" in 404) st="available" ;; 200) st="registered" ;; *) st="unknown" ;; esac
+    [[ "$first" == true ]] && first=false || out="${out},"
+    out="${out}\"${tld}\":\"${st}\""
+  done
+  printf '{%s}' "$out"
+}
+
+# ---- cross-language connotation screen (offline; substring match against the wordlist) ----
+# Emits a JSON array of {term,lang,severity} for each wordlist term (len>=3) contained in the name.
+check_connotation() {
+  local name="$1" out="" first=true term lang sev t
+  [[ -f "$WORDLIST" ]] || { printf '[]'; return; }
+  while IFS=$'\t' read -r term lang sev _; do
+    [[ -z "$term" || "$term" == \#* ]] && continue
+    [[ ${#term} -lt 3 ]] && continue
+    t=$(echo "$term" | tr '[:upper:]' '[:lower:]')
+    if [[ "$name" == *"$t"* ]]; then
+      [[ "$first" == true ]] && first=false || out="${out},"
+      out="${out}{\"term\":$(json_str "$term"),\"lang\":$(json_str "${lang:-?}"),\"severity\":$(json_str "${sev:-flag}")}"
+    fi
+  done < "$WORDLIST"
+  printf '[%s]' "$out"
+}
 
 check_name() {
   local raw="$1"
@@ -181,7 +266,7 @@ check_name() {
     [[ -n "$epoch_push" ]] && age_years=$(( (now - epoch_push) / 31536000 ))
     if [[ "$npm_dep" == "true" || $age_years -ge $ABANDON_YEARS ]]; then
       adopt_tier="ABANDONED"
-    elif [[ "$stars" != "null" && "$stars" -lt $STARS_LOW ]]; then
+    elif [[ "$stars" =~ ^[0-9]+$ && "$stars" -lt $STARS_LOW ]]; then
       adopt_tier="LOW_ADOPTION"
     else
       adopt_tier="TAKEN"
@@ -208,6 +293,9 @@ check_name() {
   local syl syl_ok=true; syl=$(syllables "$name")
   local lo hi
   if [[ "$SYL_TARGET" == *-* ]]; then lo=${SYL_TARGET%-*}; hi=${SYL_TARGET#*-}; else lo=$SYL_TARGET; hi=$SYL_TARGET; fi
+  # numeric-guard the (CLI-derived) bounds before arithmetic — never let a flag value reach `[[ -lt ]]`
+  [[ "$lo" =~ ^[0-9]+$ ]] || lo=0
+  [[ "$hi" =~ ^[0-9]+$ ]] || hi=9999
   { [[ "$syl" -lt "$lo" ]] || [[ "$syl" -gt "$hi" ]]; } && syl_ok=false
 
   # ---- back-compat: clean mirror (old binary shape) ----
@@ -220,7 +308,14 @@ check_name() {
   local sp; [[ "$last_push" == "null" || -z "$last_push" ]] && sp="null" || sp="\"${last_push}\""
   local st; [[ "$stars" == "null" || -z "$stars" ]] && st="null" || st="$stars"
 
-  printf '{"name":%s,"normalized":%s,"syllables":%d,"syllableTarget":%s,"syllablesOk":%s,"registries":{"npmExact":{"status":%s,"code":%s},"npmHyphen":{"status":%s,"evidence":%s},"pypi":{"status":%s,"code":%s},"crates":{"status":%s,"code":%s},"github":{"status":%s,"userCode":%s,"orgCode":%s}},"adoption":{"tier":%s,"stars":%s,"lastPush":%s,"npmDeprecated":%s},"verdict":%s,"recommendable":%s,"caveats":%s,"clean":%s,"evidence":%s}' \
+  # ---- optional extra checks (opt-in; ADDITIVE — they never affect the verdict computed above) ----
+  local nb_json='{"status":"skipped"}' dm_json='{}' cn_json='[]'
+  [[ "$NEIGHBORS" == "true" ]] && nb_json=$(check_neighbors "$name")
+  [[ -n "$DOMAINS" ]] && dm_json=$(check_domains "$name" "$DOMAINS")
+  [[ "$CONNOTATION" == "true" ]] && cn_json=$(check_connotation "$name")
+
+  local base
+  base=$(printf '{"name":%s,"normalized":%s,"syllables":%d,"syllableTarget":%s,"syllablesOk":%s,"registries":{"npmExact":{"status":%s,"code":%s},"npmHyphen":{"status":%s,"evidence":%s},"pypi":{"status":%s,"code":%s},"crates":{"status":%s,"code":%s},"github":{"status":%s,"userCode":%s,"orgCode":%s}},"adoption":{"tier":%s,"stars":%s,"lastPush":%s,"npmDeprecated":%s},"verdict":%s,"recommendable":%s,"caveats":%s,"clean":%s,"evidence":%s}' \
     "$(json_str "$raw")" "$(json_str "$name")" "$syl" "$(json_str "$SYL_TARGET")" "$syl_ok" \
     "$(json_str "$npm_status")" "$(json_str "$npm_code")" \
     "$(json_str "$hyp_status")" "$(json_str "$hyp_ev")" \
@@ -229,11 +324,23 @@ check_name() {
     "$(json_str "$gh_status")" "$(json_str "$gh_user")" "$(json_str "$gh_org")" \
     "$(json_str "$adopt_tier")" "$st" "$sp" "$npm_dep" \
     "$(json_str "$verdict")" "$recommendable" "$caveats" "$clean" \
-    "$(json_str "$evidence")"
+    "$(json_str "$evidence")")
+
+  # Default invocations emit the base object byte-for-byte (back-compat). When an extra check is
+  # requested, merge its fields in (jq appends keys, preserving the original order).
+  if [[ "$NEIGHBORS" == "true" || -n "$DOMAINS" || "$CONNOTATION" == "true" ]]; then
+    printf '%s' "$base" | jq -c \
+      --argjson nb "$nb_json" --argjson dm "$dm_json" --argjson cn "$cn_json" \
+      '. + {neighbors:$nb, domains:$dm, connotationFlags:$cn}'
+  else
+    printf '%s' "$base"
+  fi
 }
 
-export -f check_name http_code http_body json_str syllables code_status iso_epoch
+export -f check_name http_code http_body json_str syllables code_status iso_epoch \
+  check_neighbors check_domains check_connotation rdap_code
 export SYL_TARGET REGISTRIES ADOPTION STARS_LOW ABANDON_YEARS
+export NEIGHBORS DOMAINS CONNOTATION WORDLIST
 export GH_AUTH 2>/dev/null || true
 
 # ---- parse args ----
@@ -243,6 +350,11 @@ for arg in "$@"; do
     --syllables=*) SYL_TARGET="${arg#*=}" ;;
     --registries=*) REGISTRIES="${arg#*=}" ;;
     --adoption) ADOPTION=true ;;
+    --neighbors|--neighbours) NEIGHBORS=true ;;
+    --neighbors=*|--neighbours=*) NEIGHBORS=true ;;
+    --domains) DOMAINS="com,dev,io,ai" ;;
+    --domains=*) DOMAINS="${arg#*=}" ;;
+    --connotation) CONNOTATION=true ;;
     --json) : ;;
     --max-names=*) MAX_NAMES="${arg#*=}" ;;
     -h|--help) usage; exit 0 ;;
@@ -250,11 +362,13 @@ for arg in "$@"; do
     *) names+=("$arg") ;;
   esac
 done
+# numeric-guard the CLI-derived cap before it reaches `[[ -gt ]]` arithmetic
+[[ "$MAX_NAMES" =~ ^[0-9]+$ ]] || MAX_NAMES=50
 # stdin names if none on argv
 if [[ ${#names[@]} -eq 0 ]]; then
   while IFS= read -r line; do [[ -n "$line" ]] && names+=("$line"); done
 fi
-export SYL_TARGET REGISTRIES ADOPTION
+export SYL_TARGET REGISTRIES ADOPTION NEIGHBORS DOMAINS CONNOTATION WORDLIST
 
 if [[ ${#names[@]} -eq 0 ]]; then echo "[]"; exit 0; fi
 if [[ ${#names[@]} -gt $MAX_NAMES ]]; then

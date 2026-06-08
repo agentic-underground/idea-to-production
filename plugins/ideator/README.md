@@ -23,13 +23,26 @@ you** until both are right, *then* handed off.
 
 ## Naming a product
 
-Need a name? **`/ideator:name`** (the `name-search` skill) runs a marketing-grade naming search: it distils
-the product's philosophy into a charter, generates a wide net of coined candidates across languages, eras,
-and techniques (portmanteau, blend, affixation, phonosemantic), verifies availability **deterministically**
-across npm / PyPI / crates.io / GitHub with an adoption tier (CLEAR / LOW_ADOPTION / ABANDONED / TAKEN) and
-**zero per-name LLM tokens**, adversarially challenges the survivors, and emits a ranked report (where it
-searched, every name kept/rejected and why, a top pick with confidence + residual risks). Honours stated
-constraints — syllable count, values to evoke. Use it to name a new product or to rename an existing one.
+Need a name? **`/ideator:name`** (the `name-search` skill) runs a marketing-grade **naming studio**:
+
+1. **Discovery interview** — infer-first, then asks only the load-bearing gaps (audience, **brand
+   archetype**, **name-type appetite**, power-adjacency, intellectual-humour appetite, risk appetite),
+   one question at a time with a recommended answer + multiple choice.
+2. **Wide-net generation** — not just coined words: the full **name-type taxonomy** (suggestive, metaphor,
+   mythological, compound, portmanteau, coined, acronym/**backronym**, scientific-taxonomic, animal, …)
+   layered with language/etymology veins, **affix hooks** (-ify, -ly, get-, …), and **phonosemantic**
+   tuning to the archetype. The art-of-naming canon lives in [`knowledge/naming/`](knowledge/naming/).
+3. **Deterministic verification** (zero per-name LLM tokens) — npm / PyPI / crates.io / GitHub with an
+   adoption tier (CLEAR / LOW_ADOPTION / ABANDONED / TAKEN), plus opt-in **neighbour / typo-squat
+   proximity** (no accidental visits), **domain availability** (RDAP: .com/.dev/.io/.ai), and a
+   **cross-language connotation** screen.
+4. **Scored challenge** — Neumeier's 7 criteria, Watkins' SMILE/SCRATCH, archetype-fit, sound-symbolism-fit
+   — availability and challenge kept as separate verdicts.
+5. **Ranked report** — where it searched, every name kept/rejected and why, the rubric scores, a top pick
+   with confidence + residual risks. Use it to name a new product, an org, or to rename one.
+
+> Tip: set `GITHUB_TOKEN` for a reliable neighbour pass (the GitHub search API is rate-limited; without a
+> token, neighbour status is reported `unknown`, never guessed).
 
 Where the challenge turns on a fact about the world — comparable **pricing**, whether an incumbent owns
 the **wedge**, the current **stack** reality — IDEATOR validates against **web research** (built-in
