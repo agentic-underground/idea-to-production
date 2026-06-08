@@ -71,8 +71,8 @@
       "name": "ideator",
       "source": "./plugins/ideator",
       "displayName": "IDEATOR — Refine an idea into a build-ready IDEA package",
-      "description": "The REFINEMENT phase of the marketplace. Takes a validated opportunity (from market-scanner) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise AGENT-FACING handoff documents (idea brief, subject-matter-understanding seed, first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (opportunity narrative, parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability — charts via pressroom, user-flows/mockups via atelier (design-reviewed) — when installed; degrades to markdown otherwise. Iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Supersedes FOUNDRY's inline ideator, which remains as a graceful-degradation fallback. Also runs /ideator:name — a marketing-grade product-naming search with a deterministic, token-free availability checker (npm/PyPI/crates/GitHub + adoption tier). Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract.",
-      "version": "1.1.2",
+      "description": "The REFINEMENT phase of the marketplace. Takes a validated opportunity (from market-scanner) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise AGENT-FACING handoff documents (idea brief, subject-matter-understanding seed, first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (opportunity narrative, parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability — charts via pressroom, user-flows/mockups via atelier (design-reviewed) — when installed; degrades to markdown otherwise. Iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Supersedes FOUNDRY's inline ideator, which remains as a graceful-degradation fallback. Also runs /ideator:name — a marketing-grade naming studio: a deep discovery interview (audience, brand archetype, name-type appetite, power-adjacency, humour, risk), wide-net generation across the full name-type taxonomy + affix hooks + phonosemantic tuning, a deterministic token-free checker (registries + neighbour/typo-squat proximity + domain/RDAP + cross-language connotation), and a scored challenge (Neumeier 7 / SMILE-SCRATCH / archetype-fit). Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract.",
+      "version": "1.2.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -94,7 +94,11 @@
         "spec",
         "discovery",
         "naming",
-        "branding"
+        "branding",
+        "name-search",
+        "phonosemantics",
+        "brand-archetype",
+        "domain-check"
       ]
     },
     {
