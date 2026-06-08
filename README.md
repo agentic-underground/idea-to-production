@@ -1,3 +1,5 @@
+![idea-to-production — carrying software from the spark of an IDEA to PRODUCTION](doc/images/readme-banner.png)
+
 # idea-to-production — a Claude Code plugin marketplace
 
 > Carry software from **the spark of an IDEA to PRODUCTION** — discover what's worth building, refine it
