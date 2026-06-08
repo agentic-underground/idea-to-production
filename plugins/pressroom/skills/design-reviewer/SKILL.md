@@ -52,7 +52,10 @@ PNG — no API key, built-in vision.
 | **Data-viz / charting** | [`agents/dataviz-reviewer.md`](agents/dataviz-reviewer.md) | each **figure/chart** | data-ink, chartjunk, the Cleveland–McGill perception ranking, Bertin's visual variables, colour-blind-safe palettes ([`references/dataviz-canon.md`](references/dataviz-canon.md)) |
 
 Both share the **4×9 charting-matrix** legibility law with the diagram producers (not forked) and feed the
-same lessons log.
+same lessons log. Both also run in a **comparative (A/B) mode** when the [`illustrator`](../illustrator/SKILL.md)
+hands them *two* options instead of one — score each, crown a winner, and refuse to call it the *best* until
+it earns it (the [`references/ab-comparative-loop.md`](references/ab-comparative-loop.md), sibling to the
+convergent loop below).
 
 ## How to run
 
