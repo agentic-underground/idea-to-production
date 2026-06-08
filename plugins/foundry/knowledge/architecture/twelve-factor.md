@@ -82,6 +82,18 @@ import os
 DB_URL = os.environ["DATABASE_URL"]  # Fails fast if unset — intentional
 ```
 
+**Anti-pattern — placeholders that break runtime (sanitization ≠ safe).** Stripping a real
+value out of committed code is only half the job; if the *placeholder* is then consumed at
+runtime, you've traded a leaked secret for a silent outage. Real incident: an IP-sanitization
+pass replaced a service's real address with a non-routable documentation IP **in a committed
+default**; fresh deploys used it verbatim and silently failed to reach the service. The rule cuts
+both ways — real env-specific values live in a **gitignored overlay / the environment** (with a
+committed `*.example` template carrying only non-routable placeholders), and a committed default
+is never silently used as if it were real. Litmus (both must hold): *could you open-source this
+repo right now without leaking a secret **and** without breaking a fresh clone?* See the
+[resilient-external-apis protocol](../protocols/resilient-external-apis.md) for the matching rule
+on tokens.
+
 **Checks:**
 - Search for hardcoded localhost, IPs, API key strings, or environment names in source
 - Verify `.env` files are in `.gitignore` (never committed)
