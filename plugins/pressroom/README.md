@@ -24,6 +24,7 @@ dependency).
 | **rich-pdf-with-diagrams** | print-quality PDF articles with embedded, A4-legible figures (Typst/LaTeX + Graphviz/Mermaid) | skill (triggers on "rich PDF", "print edition") |
 | **design-reviewer** | adversarial **visual** quality gate — typography (Bringhurst/grids) + data-viz (Tufte/Cleveland/Bertin) — scores the rendered artefact and drives a convergent loop (and a comparative A/B mode for the illustrator) | skill (triggers on "review this PDF/chart") |
 | **illustrator** | the documentation-illustration studio — ranks figure-sites by impact, specs each, has a graphical **value handler** (Graphviz / Mermaid / chart / composition / ComfyUI) render two options, and runs the A/B-until-best review; every figure dark-mode + transparent by default | skill (triggers on "illustrate this doc…", "what figures does this need") |
+| **model-survey** | a loop-driven experiment that explores the ComfyUI backend's checkpoints across five objectives, scores them (image-aesthetic lens), and writes the [`comfyui-model-guide`](knowledge/comfyui-model-guide.md) so the illustrator + `handler-comfyui` pick models on evidence | skill (run under `/loop`; no command) |
 
 ## How the pieces compose
 

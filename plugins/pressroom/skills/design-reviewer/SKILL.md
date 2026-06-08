@@ -50,6 +50,7 @@ PNG — no API key, built-in vision.
 |---|---|---|---|
 | **Typography / DTP** | [`agents/typographic-reviewer.md`](agents/typographic-reviewer.md) | the rendered **page** | measure, leading, modular scale, baseline grid, widows/orphans, hierarchy, figure-page balance, tables, **document accessibility (PDF/UA + WCAG 2.2 — a hard gate)** ([`references/typography-canon.md`](references/typography-canon.md)) |
 | **Data-viz / charting** | [`agents/dataviz-reviewer.md`](agents/dataviz-reviewer.md) | each **figure/chart** | data-ink, chartjunk, the Cleveland–McGill perception ranking, Bertin's visual variables, colour-blind-safe palettes ([`references/dataviz-canon.md`](references/dataviz-canon.md)) |
+| **Image-aesthetic / generative** | [`agents/image-aesthetic-reviewer.md`](agents/image-aesthetic-reviewer.md) | a **generative raster** (ComfyUI output / contact-sheet) | category-fit, prompt-adherence, artifact-freedom (anatomy/geometry/gibberish-text), composition, dark-mode/doc suitability ([`references/image-aesthetic-canon.md`](references/image-aesthetic-canon.md)) — feeds the [model survey](../model-survey/SKILL.md) + [`comfyui-model-guide`](../../knowledge/comfyui-model-guide.md) |
 
 Both share the **4×9 charting-matrix** legibility law with the diagram producers (not forked) and feed the
 same lessons log. Both also run in a **comparative (A/B) mode** when the [`illustrator`](../illustrator/SKILL.md)

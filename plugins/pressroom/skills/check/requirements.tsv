@@ -3,6 +3,8 @@
 # Dual-engine: at least ONE of typst / pdflatex is needed to produce a PDF.
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled
+curl	command -v curl	recommended	apt install curl  (ComfyUI REST client for handler-comfyui + model-survey)
+jq	command -v jq	recommended	apt install jq  (JSON wrangling for the ComfyUI harness + journal)
 typst	command -v typst	recommended	cargo install typst-cli  (default engine)
 pdflatex	command -v pdflatex	recommended	apt install texlive-latex-recommended texlive-latex-extra
 pdfinfo	command -v pdfinfo	recommended	apt install poppler-utils  (build verification)

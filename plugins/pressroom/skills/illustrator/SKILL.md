@@ -16,6 +16,7 @@ metadata:
   shares:
     - ../rich-pdf-with-diagrams/references/charting-matrix.md
     - references/dark-mode-canon.md
+    - ../../knowledge/comfyui-model-guide.md
 model: inherit
 ---
 
@@ -68,6 +69,12 @@ For a chosen site, pick the value handler and the diagram type:
 **Tie-break: prefer vector + deterministic over ComfyUI** — reach for `handler-comfyui` only when the intent
 is genuinely pictorial, never for anything a graph expresses. When two vector handlers both fit, that
 ambiguity *becomes* the A/B axis (A from one, B from the other) and the reviewer decides.
+
+> **Routing to ComfyUI? Consult the evidence.** When the chosen handler is `handler-comfyui`, the
+> [`comfyui-model-guide`](../../knowledge/comfyui-model-guide.md) (built by the
+> [model survey](../model-survey/SKILL.md)) says which checkpoint suits the intent and which intents
+> diffusion is **bad** at — notably charts/labelled-infographics (`line-goes-up`), which the guide routes
+> back to the vector handlers. Don't send an intent to ComfyUI that the guide flags "route to vector".
 
 ### Phase 3 — Author the SPEC
 Write the [SPEC](references/spec-schema.md): `intent`, the single `message`, `audience`, the chosen

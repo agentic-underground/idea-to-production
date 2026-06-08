@@ -54,8 +54,15 @@ curl -sf -m 3 "$COMFYUI/system_stats" >/dev/null || { echo "comfyui offline — 
 curl -sf "$COMFYUI/object_info/CheckpointLoaderSimple" \
   | jq -r '.CheckpointLoaderSimple.input.required.ckpt_name[0][]'
 ```
-Choose a checkpoint that fits the SPEC's `intent` (surface it to the orchestrator/user if the SPEC named no
-preference). The chosen name is **set** into the template's `CheckpointLoaderSimple.ckpt_name` before submit.
+Choose the checkpoint by **evidence, not guesswork**: consult the
+[`comfyui-model-guide`](../knowledge/comfyui-model-guide.md) — map the SPEC's `intent` to an intent class, take
+its top recommended model that is present in the live list, and use the guide's recommended **settings**
+(steps/cfg/sampler for that base). If the guide flags the intent **"route to vector"** (e.g. a chart /
+labelled infographic — diffusion can't render legible text), **decline** and tell the orchestrator to use a
+vector handler instead. The chosen name is **set** into the template's `CheckpointLoaderSimple.ckpt_name`
+before submit (prefer survey-confirmed-loadable names — see the guide's SDXL-subfolder note). The guide is
+populated by the [model survey](../skills/model-survey/SKILL.md); when it has no row for an intent yet, fall
+back to the SPEC's stated preference or a sensible base default and note the gap for the next survey.
 
 ### 2. Draft — fill template, submit, poll, download
 ```bash

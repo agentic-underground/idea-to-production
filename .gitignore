@@ -29,6 +29,14 @@
 *.swo
 .idea/
 
+# --- ComfyUI model-survey artifacts (generated rasters retained on disk, never in git) ---
+# catalog.md, journal.jsonl, manifest.json, and comfyui-model-survey.pdf stay TRACKED (the durable record);
+# only the large/regenerable images are ignored. Root-anchored to scope them to this one tree.
+/doc/comfyui-experiment/images/
+/doc/comfyui-experiment/thumbs/
+/doc/comfyui-experiment/contact-sheets/
+/doc/comfyui-experiment/.catalog-raw.pdf
+
 # --- Language tooling (defensive: plugins drive local node/python test runs) ---
 node_modules/
 __pycache__/

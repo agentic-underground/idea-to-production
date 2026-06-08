@@ -10,7 +10,9 @@ path toward a complete publishing house. Items are independently shippable.
 specs each, has a graphical **value handler** (Graphviz / Mermaid / chart / hand-composition / ComfyUI) render
 two options, and runs an adversarial **A/B-until-best** review (the design-reviewer's comparative mode). Every
 figure is dark-mode and transparent by default; `/illustrate docs` trawls the whole tree under `/loop`,
-embedding and ledgering as it goes.
+embedding and ledgering as it goes. It also ships the **model-survey** skill — a loop-driven experiment that
+scores the ComfyUI backend's checkpoints across five objectives and writes the evidence-based
+`comfyui-model-guide` that both the illustrator and `handler-comfyui` consult to pick models well.
 
 ## Near-term
 
