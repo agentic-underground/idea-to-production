@@ -1,0 +1,33 @@
+# comfyui-mcp — container composition.
+# ComfyUI runs on a PRIVATE network (never published); only the MCP server's port is exposed.
+# The DIFFUSION_MODELS folder (the i9's 1T_990 drive) is bind-mounted read-only as the model allowlist source.
+services:
+  comfyui:
+    image: comfyui:local                 # built from the upstream ComfyUI; see Dockerfile
+    networks: [backend]                   # private — NOT on the published network
+    volumes:
+      - type: bind
+        source: ${DIFFUSION_MODELS:?set DIFFUSION_MODELS to the host models folder}
+        target: /models/checkpoints
+        read_only: true                   # the server never writes models; remote fetch is disabled
+    # NO ports: — ComfyUI is unreachable from the host/LAN. Only comfyui-mcp talks to it.
+
+  comfyui-mcp:
+    build: { context: .., dockerfile: container/Dockerfile }
+    depends_on: [comfyui]
+    networks: [backend, frontend]
+    environment:
+      - COMFYUI_INTERNAL_URL=http://comfyui:8188   # private-network address
+      - MODEL_ALLOWLIST_DIR=/models/checkpoints
+      - MCP_AUTH_TOKEN=${MCP_AUTH_TOKEN:?set a token}   # required; no default
+    volumes:
+      - type: bind
+        source: ${DIFFUSION_MODELS:?}
+        target: /models/checkpoints
+        read_only: true
+    ports:
+      - "${MCP_PORT:-8765}:8765"           # the ONLY published port — the MCP surface
+
+networks:
+  backend:  { internal: true }             # no egress; ComfyUI cannot reach the internet (SSRF containment)
+  frontend: {}
