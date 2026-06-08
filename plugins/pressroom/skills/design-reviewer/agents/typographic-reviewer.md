@@ -52,6 +52,27 @@ break. Find where the **typesetting** fails the reader, and hand back the exact 
 CONVERGED | CONTINUE (apply HIGH+MED, re-build) | HALT-DIMINISHING-RETURNS (<impasse + question>)
 ```
 
+## Comparative (A/B) mode
+
+When the ILLUSTRATOR hands you **two** structural/composition options (A and B) on the same
+[SPEC](../../illustrator/references/spec-schema.md) — instead of one page to converge — run the
+[A/B comparative loop](../references/ab-comparative-loop.md):
+
+1. Score **each** option independently on the typography/composition dimensions (same rubric, same gates).
+   Check legibility at the SPEC's `width_budget_px`, hierarchy/composition, accessibility (alt text present),
+   and the **[dark-mode contrast gate](../../illustrator/references/dark-mode-canon.md#3--contrast-gates-measurable-not-vibes)
+   on BOTH the black and white card** for each.
+2. Pick the winner — gates first (an illegible or contrast-failing option loses to a clean one even at lower
+   polish), then fitness. State *why the winner is good*, not only *why the loser failed*.
+3. Decide `signal`: **BEST** only when the winner clears every gate, has no open HIGH, scores ≥ TARGET (85),
+   **and** you can name an earned positive; otherwise **LEAST-WORSE**.
+4. Emit the [A/B verdict schema](../references/ab-comparative-loop.md#the-ab-verdict-the-schema-the-orchestrator-parses)
+   (per-option findings, winner, margin, signal, `why`, `carry_forward`, `next_challenger_brief`, loop
+   verdict). The orchestrator carries the winner forward and regenerates only the challenger.
+
+The single-page procedure above is unchanged; this mode reuses the same canon and the same gates — it just
+judges two options and crowns one, and refuses to call it BEST until it has genuinely earned it.
+
 ## Disposition
 
 Findings are **fixed in the source before re-presenting** (`.typ`/`.tex` change) or **recorded as accepted

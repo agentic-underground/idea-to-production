@@ -196,7 +196,7 @@
       "source": "./plugins/pressroom",
       "displayName": "PRESSROOM — Publishing & Documentation",
       "description": "Turns project artefacts and markdown into publication-grade output: narrative articles mined from git history and docs, standalone diagrams (Graphviz + a Mermaid-native specialist covering the full diagram taxonomy, theming, and ELK), and print-quality PDFs with embedded, A4-legible figures — all held to standard by an adversarial design-reviewer (typography + data-viz canon) that critiques the rendered artefact in a convergent loop. The PUBLISHING companion foundry hands off to when richer-than-markdown output is wanted — or use it directly on any project.",
-      "version": "1.3.1",
+      "version": "1.4.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
