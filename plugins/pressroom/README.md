@@ -28,13 +28,7 @@ dependency).
 
 ## How the pieces compose
 
-```
-/publish ──▶ writer (prose) ──▶ diagram-studio / mermaid-specialist (figures) ──▶ render ──▶ design-reviewer
-                                                                                  ├─ markdown (+ SVG)         │ score the artefact
-                                                                                  ├─ pdf → rich-pdf-with-…    │ (typography + data-viz),
-                                                                                  └─ diagrams only            ▼ apply HIGH+MED, re-build,
-                                                                                          converge (no ping-pong) ◀── until it clears the rubric
-```
+![PRESSROOM publishing pipeline: /publish drives writer (prose) → diagram-studio / mermaid-specialist (figures) → render, which branches into three outputs (markdown + inline SVG, PDF via rich-pdf-with-diagrams, diagrams-only); the whole render→outputs stage is wrapped by the adversarial design-reviewer gate (typography + data-viz) that applies HIGH+MED and re-builds until the artefact clears the 4×9 rubric — converging, no ping-pong.](diagrams/01-pieces-compose.png)
 
 `writer` produces the words; `diagram-studio` + `mermaid-specialist` produce the figures;
 `rich-pdf-with-diagrams` produces a whole typeset document; `design-reviewer` is the adversarial gate that
