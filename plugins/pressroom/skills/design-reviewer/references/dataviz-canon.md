@@ -41,6 +41,14 @@ shape, texture** — and their perceptual properties:
 - **Chartjunk** — moiré, gratuitous 3-D, ducks (decoration masquerading as data) — remove it.
 - **The lie factor** = size of effect shown ÷ size of effect in data. Keep it ≈1: bars start at **zero**;
   don't truncate or expand axes to exaggerate; don't scale a 1-D quantity by 2-D area.
+- **Figure↔data integrity (verify the render against the numbers).** A lie factor ≠ 1 also hides in the
+  *encoding itself*: a legend/colour/bar-length that **contradicts the underlying data** (e.g. a legend
+  labelling the tall bars "after" when they are the baseline), or a series so small it is **sub-pixel** on
+  a linear axis (invisible — the comparison the chart exists to make can't be read). Checking this
+  requires the reviewer be **handed the source numbers** and compare them to the rendered figure: a render
+  reviewed with no data can confirm *aesthetics* but not *truth*. When the channel can't carry the
+  comparison (no legend, no log scale, order-of-magnitude spread), the honest fix is a **table with a
+  ratio column**, not a tuned chart.
 - **Small multiples** — repeat a small chart across a dimension instead of overloading one chart; the eye
   compares like-with-like.
 - **Above all** — show the data; tell the truth about it; let comparison be effortless.
