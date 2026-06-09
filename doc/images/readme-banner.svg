@@ -1,0 +1,115 @@
+<svg width="1280" height="240" viewBox="0 0 1280 240" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>idea-to-production — a disciplined conveyor from idea to shipped product</title>
+  <desc>Wide, short masthead. A centered wordmark "idea-to-production" over a single sweeping launch-trail that begins as a small cool-blue IDEA spark on the left and accelerates into a warm amber PRODUCTION launch-trail on the right, conveying the left-to-right journey from idea to production. Tagline beneath: from the spark of an IDEA to PRODUCTION. A Claude Code plugin marketplace.</desc>
+
+  <defs>
+    <!-- Card background: subtle vertical gradient -->
+    <linearGradient id="cardBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#13131f"/>
+      <stop offset="1" stop-color="#1b1b2b"/>
+    </linearGradient>
+
+    <!-- The launch trail gradient: cool blue/teal (idea, left) -> warm amber (production, right) -->
+    <linearGradient id="trail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0.00" stop-color="#7aa2f7" stop-opacity="0"/>
+      <stop offset="0.06" stop-color="#7aa2f7" stop-opacity="0.85"/>
+      <stop offset="0.30" stop-color="#5ad7e6"/>
+      <stop offset="0.62" stop-color="#9ece6a"/>
+      <stop offset="0.92" stop-color="#e0af68"/>
+      <stop offset="1.00" stop-color="#e0af68"/>
+    </linearGradient>
+
+    <!-- Faint underlay glow for the trail -->
+    <linearGradient id="trailGlow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0.00" stop-color="#5ad7e6" stop-opacity="0"/>
+      <stop offset="0.35" stop-color="#5ad7e6" stop-opacity="0.18"/>
+      <stop offset="0.70" stop-color="#9ece6a" stop-opacity="0.22"/>
+      <stop offset="1.00" stop-color="#e0af68" stop-opacity="0.30"/>
+    </linearGradient>
+
+    <radialGradient id="sparkGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#acc6ff" stop-opacity="0.9"/>
+      <stop offset="0.5" stop-color="#7aa2f7" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#7aa2f7" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="ignitionGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffe6b0" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#e0af68" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#e0af68" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- warm underflare: a soft amber halo behind the ignition (no longer green) -->
+    <radialGradient id="ignitionGreen" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#e0af68" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#e0af68" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Dark card with transparent margin around it (corners blend on any theme) -->
+  <rect x="8" y="8" width="1264" height="224" rx="18" ry="18" fill="url(#cardBg)" stroke="#9aa2c0" stroke-opacity="0.18" stroke-width="1"/>
+
+  <!-- ============ LAUNCH TRAIL MOTIF (idea -> production, left -> right) ============ -->
+  <!-- A single sweeping luminous track that rises and accelerates to the right -->
+  <g>
+    <!-- soft glow underlay (wide, blurred-feel via low opacity stack) -->
+    <path d="M 150 162 C 470 162, 690 150, 900 120 S 1130 70, 1180 56"
+          fill="none" stroke="url(#trailGlow)" stroke-width="20" stroke-linecap="round" opacity="0.9"/>
+
+    <!-- ignition exhaust flare near production end -->
+    <ellipse cx="1150" cy="66" rx="120" ry="40" fill="url(#ignitionGreen)"/>
+    <ellipse cx="1175" cy="58" rx="120" ry="40" fill="url(#ignitionGlow)"/>
+
+    <!-- the main luminous track -->
+    <path d="M 150 162 C 470 162, 690 150, 900 120 S 1130 70, 1180 56"
+          fill="none" stroke="url(#trail)" stroke-width="4.5" stroke-linecap="round"/>
+
+    <!-- accelerating dash ticks ABOVE the track: short+sparse at left, long+dense at right.
+         Ticks passing under the wordmark bounding box (x≈360–920) are faded so they
+         don't read as an underline artifact; ticks clear of the wordmark stay bright. -->
+    <g stroke="url(#trail)" stroke-width="3" stroke-linecap="round">
+      <line x1="300" y1="159" x2="320" y2="158" opacity="0.92"/>
+      <line x1="420" y1="156" x2="448" y2="154" opacity="0.30"/>
+      <line x1="560" y1="148" x2="600" y2="145" opacity="0.30"/>
+      <line x1="720" y1="135" x2="775" y2="130" opacity="0.30"/>
+      <line x1="880" y1="118" x2="950" y2="110" opacity="0.55"/>
+      <line x1="1010" y1="100" x2="1095" y2="88" opacity="0.92"/>
+    </g>
+
+    <!-- IDEA spark (left): small cool node -->
+    <circle cx="150" cy="162" r="26" fill="url(#sparkGlow)"/>
+    <circle cx="150" cy="162" r="6.5" fill="#acc6ff"/>
+    <circle cx="150" cy="162" r="6.5" fill="none" stroke="#7aa2f7" stroke-width="1.5"/>
+    <!-- tiny spark rays -->
+    <g stroke="#5ad7e6" stroke-width="2" stroke-linecap="round">
+      <line x1="150" y1="143" x2="150" y2="135"/>
+      <line x1="150" y1="189" x2="150" y2="181"/>
+      <line x1="131" y1="162" x2="123" y2="162"/>
+      <line x1="165" y1="148" x2="171" y2="142"/>
+      <line x1="135" y1="148" x2="129" y2="142"/>
+    </g>
+
+    <!-- PRODUCTION ignition (right): the rocket nose, warm -->
+    <circle cx="1183" cy="55" r="9" fill="#ffe6b0"/>
+    <circle cx="1183" cy="55" r="9" fill="none" stroke="#e0af68" stroke-width="2"/>
+    <!-- forward motion chevrons (igniting/launching) -->
+    <g stroke="#e0af68" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M 1200 47 l 10 8 l -10 8"/>
+      <path d="M 1216 44 l 10 11 l -10 11" opacity="0.6"/>
+    </g>
+  </g>
+
+  <!-- ============ WORDMARK (centered, dominant) ============ -->
+  <g font-family="DejaVu Sans" text-anchor="middle">
+    <!-- microline above -->
+    <text x="640" y="58" font-size="15" letter-spacing="3" fill="#b8bed0" font-weight="bold">A  CLAUDE  CODE  PLUGIN  MARKETPLACE</text>
+
+    <!-- main wordmark: idea-to-production -->
+    <text x="640" y="124" font-size="62" font-weight="bold" letter-spacing="0.5">
+      <tspan fill="#7aa2f7">idea</tspan><tspan fill="#9aa2c0">-to-</tspan><tspan fill="#e0af68">production</tspan>
+    </text>
+
+    <!-- tagline beneath -->
+    <text x="640" y="182" font-size="19" letter-spacing="1.5" fill="#e6e9f0">from the spark of an <tspan fill="#7aa2f7" font-weight="bold">IDEA</tspan> to <tspan fill="#e0af68" font-weight="bold">PRODUCTION</tspan></text>
+  </g>
+</svg>
