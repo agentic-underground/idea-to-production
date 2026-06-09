@@ -28,23 +28,7 @@ if it must, ask a question back up the line until the answer is found.
 
 ## 1 · The conveyor (the picture)
 
-```
-        ┌──────────────────────── THE IDEA (above the line) ────────────────────────┐
-        │   the user  ⇄  IDEATOR (PRODUCT_MANAGER)  — knowledge-parity before build  │
-        └───────────────────────────────────┬───────────────────────────────────────┘
-                                             │ a clear, agent-readable brief
-   ╔═════════════════════════════════════════▼═══════════════════════════════════════╗
-   ║  THE CONVEYOR  ·  three pillars + token-efficiency ride the whole carriage       ║
-   ║                                                                                   ║
-   ║  IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT(+DESIGN) ▶ STORY ▶ SHIP║
-   ║   │       │        │      │        │        │          │              │      │    ║
-   ║ ideator roadmapper plan  spec   feature   tests   builder/handlers  story  deliver║
-   ║                                                                                   ║
-   ║  cross-cutting: GOVERNANCE (reviewers · perf-delta gates · inspector)  — in foundry║
-   ║  companions (if installed): PUBLISHING → pressroom · SECURITY → sentinel · DESIGN → atelier║
-   ╚═══════════════════════════════════════════════════════════════════════════════════╝
-                          questions flow UP ▲   value flows DOWN ▼
-```
+![The FOUNDRY conveyor, three layers: THE IDEA above the line (the user ⇄ IDEATOR / PRODUCT_MANAGER, knowledge-parity before build) feeds a clear agent-readable brief DOWN into THE CONVEYOR, whose nine value-stations carry value left→right — IDEA (ideator) ▶ ROADMAP (roadmapper) ▶ PLAN ▶ EARS (spec) ▶ FEATURE ▶ TEST (tests) ▶ IMPLEMENT +DESIGN (builder/handlers) ▶ STORY ▶ SHIP (deliver) — with cross-cutting GOVERNANCE (reviewers · perf-delta gates · inspector, in foundry) and companions when installed (PUBLISHING → pressroom · SECURITY → sentinel · DESIGN → atelier) riding the whole carriage; questions flow UP, value flows DOWN.](diagrams/02-conveyor.png)
 
 Three layers:
 - **THE IDEA (above):** what we are building, and why. Owned by the PRODUCT_MANAGER.
@@ -185,14 +169,11 @@ without conversation history. Ambiguity is surfaced, never assumed.
 → `knowledge/pillars/knowledge-parity.md`
 
 ### Pillar 2 — Quality as a first-class concern
-Quality is built in across a full assurance chain, each layer strengthened by a
-**performance-delta gate** that blocks the line on a significant regression:
+Quality is built in across a full assurance chain — **EARS spec → FEATURE docs (BDD) → UNIT →
+COMPONENT → CONNECTED-SYSTEM → STORY proofs** — each layer strengthened by a **performance-delta
+gate** that blocks the line on a significant regression:
 
-```
-EARS spec ▶ FEATURE docs (BDD) ▶ UNIT assertions ▶ COMPONENT assertions
-          ▶ CONNECTED-SYSTEM assertions ▶ STORY proofs
-                        each layer ⊣ perf-delta gate
-```
+![The quality assurance chain: EARS spec → FEATURE docs (BDD) → UNIT assertions → COMPONENT assertions → CONNECTED-SYSTEM assertions → STORY proofs, an ordered chain where every transition is strengthened by a performance-delta gate; 100% coverage is the floor (not the goal), and the perf-delta gate runs with the STORY tests — a story whose performance regresses past budget does not merge.](diagrams/03-quality-chain.png)
 
 - **100% coverage is the floor, not the goal.** The only path below it is an explicit
   `# pragma: no cover` with a documented reason. 99% is a bug, not "nearly done."
