@@ -35,6 +35,7 @@ for arg in "$@"; do
 done
 
 have() { command -v "$1" >/dev/null 2>&1; }
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 shopt -s nullglob   # an unmatched glob expands to nothing, not to the literal pattern
 
 # Resolve engine ---------------------------------------------------------------
@@ -79,11 +80,24 @@ if [ -d diagrams ]; then
     echo "    Graphviz 'dot' not installed — skipping .dot render (Typst embeds .svg/.png; LaTeX needs .pdf)."
   fi
   if have mmdc; then
+    # Advisory pre-render warnings (never blocks) for the silent-but-ugly patterns mmdc renders
+    # without complaint — e.g. a shared label fanned across a node-product. mmdc itself is the
+    # authoritative parser; the render below FAILS FAST on a real parse error.
+    [ -x "$SCRIPT_DIR/mermaid-lint.sh" ] && "$SCRIPT_DIR/mermaid-lint.sh" . || true
     for f in *.mmd; do
       [ -e "$f" ] || continue
-      mmdc -i "$f" -o "${f%.mmd}.${diag_fmt}" >/dev/null 2>&1 \
-        && echo "    rendered ${f%.mmd}.${diag_fmt} (mermaid)" \
-        || echo "    ⚠ mmdc failed on ${f} — embed the source or fix the diagram."
+      # FAIL FAST on a Mermaid parse/render error (e.g. a reserved char in a label/note, F12) —
+      # surface mmdc's actual stderr instead of silently embedding a broken/missing figure.
+      if mmdc -i "$f" -o "${f%.mmd}.${diag_fmt}" 2>"${f}.mmdc.err"; then
+        echo "    rendered ${f%.mmd}.${diag_fmt} (mermaid)"
+        rm -f "${f}.mmdc.err"
+      else
+        echo "    ✗ mmdc FAILED to render ${f}:" >&2
+        sed 's/^/        /' "${f}.mmdc.err" >&2
+        rm -f "${f}.mmdc.err"
+        echo "      (reserved char in a label/note? see charting-matrix F12 / mermaid-taxonomy reserved-chars)" >&2
+        exit 1
+      fi
     done
   elif compgen -G "*.mmd" >/dev/null; then
     echo "    mermaid-cli 'mmdc' not installed — skipping .mmd render (emit the fenced source instead)."
