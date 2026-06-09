@@ -56,31 +56,23 @@ any direction.
 | **[sentinel](plugins/sentinel/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
 | **[pressroom](plugins/pressroom/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
 | **[atelier](plugins/atelier/)** | The DESIGN studio: `/ui-review` crawls any SPA's routes (screenshot + accessibility snapshot) and writes a **scored, prioritised** critique citing named canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG 2.2); `/mockup` composes polished screens and flows and runs a **convergent** designer↔reviewer loop until they clear a design-fitness rubric. | Visual work — UIs, mockups, user-flows — that is *artistic, elegant, and accessible*, not first-draft. |
+| **[mission-control](plugins/mission-control/)** | The OPERATE phase: keep the live product healthy and feed the next cycle — `/operate-gate` runs go-live + steady-state readiness, `/observability` instruments the four golden signals and SLI→SLO→alerts, `/incident` drives severity-tiered response → runbook + blameless postmortem, `/maintain` keeps dependencies/CVEs/certs current, and `/iterate` turns a production signal into a new OPPORTUNITY that re-enters DISCOVER (↻). | To run what you shipped — observe it, respond to incidents, maintain it, and loop its learnings back to discovery. |
 | **[concierge](plugins/concierge/)** | The ARRIVAL layer: a `SessionStart` hook renders a repo's maintainer-authored `.claude/welcome.md` so the agent greets whoever opens it and offers a conversational decision tree — operate the software, or evolve it — routing them to the right command, runbook, or plugin. **Smart-gated** (greets only on a cold/vague open; steps aside for a concrete task). `/concierge:define-welcome` reads a repo and writes its welcome for you. Also ships the idea-to-production **status line** — `/concierge:statusline` turns on a rich two-line bar (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). | Any repo to greet and orient whoever opens it next — plus a status bar that surfaces the whole suite at a glance. |
 
 ## How they compose
 
-```
-   "let's come up with a new idea"
-        │
-   DISCOVER ─▶ IDEATE ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ──▶ SECURE ──▶ PUBLISH ─▶ OPERATE ↻
-   market-     ideator   atelier   foundry  foundry    sentinel    pressroom  mission-
-   scanner                         (core)   (quality)  (security)             control
-        │         │         │         │        │           │           │          │
-   /goal +    IDEA pkg  /mockup   IDEA ▶ …  /pr-review  /security   /publish   observe ·
-   /market-   (2 faces) /ui-      ▶ STORY   quality     -gate       articles   respond ·
-   scan ▶ a   agent + ▏ review    ▶ SHIP    PASS        SECURITY-   / PDFs     iterate
-   kept       user-    ▏(usability)         (V&V)       REPORT.md              │
-   OPPORTUNITY facing  ▏cross-cuts          if foundry  if sentinel if press-  ↻ loops back
-        ▲                                                                       to DISCOVER
-        └──── ideation-feedback ◀── a downstream ambiguity sharpens the front end (self-improve → PR)
+![Value flow: nine plugins across an eight-phase cycle from IDEA to PRODUCTION — DISCOVER (market-scanner) ▸ IDEATE (ideator) ▸ DESIGN (atelier) ▸ BUILD (foundry) ▸ ASSURE (foundry, a separate quality gate) ▸ SECURE (sentinel, a separate security gate) ▸ PUBLISH (pressroom) ▸ OPERATE (mission-control), whose learnings loop back to DISCOVER; i2p and concierge cross-cut as front door and greeter.](doc/images/diagrams/01-value-flow.svg)
 
-   Three cross-cutting concerns ride every phase: usability (atelier — /ui-review · /mockup, the
-   convergent designer↔reviewer loop), quality (foundry — built-in not inspected-in, certified at the
-   ASSURE gate), security (sentinel — baked in from the start, certified at the SECURE gate). OPERATE
-   (mission-control) keeps the live product healthy and feeds the next cycle. ASSURE (quality) and
-   SECURE (security) are deliberately separate gates.
-```
+The next command at each phase: **DISCOVER** `/goal` · `/market-scan` → a kept OPPORTUNITY · **IDEATE** the IDEA
+package (agent + user-facing faces) · **DESIGN** `/mockup` · `/ui-review` · **BUILD** IDEA ▶ … ▶ STORY ▶ SHIP ·
+**ASSURE** `/pr-review` (quality V&V) · **SECURE** `/security-gate` → SECURITY-REPORT.md · **PUBLISH** `/publish`
+articles & PDFs · **OPERATE** observe · respond · iterate.
+
+Three cross-cutting concerns ride every phase: **usability** (atelier — `/ui-review` · `/mockup`, the convergent
+designer↔reviewer loop), **quality** (foundry — built-in not inspected-in, certified at the ASSURE gate), and
+**security** (sentinel — baked in from the start, certified at the SECURE gate). ASSURE (quality) and SECURE
+(security) are deliberately **separate gates**; OPERATE (mission-control) keeps the live product healthy and
+feeds the next cycle.
 
 No plugin *requires* another. When the `ideator` plugin is installed, foundry's IDEA station **receives
 the IDEA package by capability** (the inline `ideator` skill is the graceful fallback when it is absent);
@@ -104,6 +96,7 @@ Add the marketplace, then install whichever plugins you want:
 /plugin install sentinel@idea-to-production
 /plugin install pressroom@idea-to-production
 /plugin install atelier@idea-to-production
+/plugin install mission-control@idea-to-production
 /plugin install concierge@idea-to-production
 ```
 

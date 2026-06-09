@@ -47,3 +47,5 @@ venv/
 coverage/
 .coverage
 *.log
+.playwright-mcp/
+_render_*.html
