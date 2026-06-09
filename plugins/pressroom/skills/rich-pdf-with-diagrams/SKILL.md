@@ -134,9 +134,17 @@ Run the builder, which auto-selects (or force one): `bash scripts/build-pdf.sh [
    page-break discipline as the LaTeX path), pointing at `diagrams/NN-name.svg`.
 3. Compile once: `typst compile article.typ` — `build-pdf.sh --engine=typst` does this.
 
-4. **Either engine:** visually verify the output — scan every figure for the failure modes in
-   `references/charting-matrix.md` §6 (the failure catalogue). The composition rules are
-   engine-independent.
+4. **Either engine:** visually verify the **rendered** output — `build-pdf.sh --raster` and scan every
+   figure (the PNGs, not the source) for the failure modes in `references/charting-matrix.md` §6. Source
+   self-review is not enough: F9 (struck-through labels), F10 (invisible small series), and F11 (doubled
+   fan-out labels) are only visible in the render. The composition rules are engine-independent.
+
+   **Figure↔data integrity is a NON-SKIPPABLE gate.** When a figure encodes quantities or carries a
+   legend, the PDF is not "done" until it has been rasterised **and** run through the **`design-reviewer`**
+   skill **with the source data in hand** — so it can verify the legend/colours/bar-lengths match the
+   numbers (a lie-factor≠1 / backwards-legend failure is invisible to a source-only review; that exact
+   class once shipped). Layout/aesthetic polish remains an advisory convergent loop; the data-integrity
+   check does not get skipped.
 
 ---
 

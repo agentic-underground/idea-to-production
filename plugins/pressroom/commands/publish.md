@@ -30,7 +30,13 @@ Pipeline:
    rasterise the PDF (`build-pdf.sh --raster` → `review/page-*.png`) or read the figure images, score the
    artefact on the design-fitness rubric (typography + data-viz canon), apply the HIGH+MED findings, and
    re-build — until **CONVERGED** / **DIMINISHING-RETURNS** / **CAP** (it improves the artefact, it does not
-   ping-pong). Skip only if the user opts out.
+   ping-pong).
+   **Figure↔data integrity is NON-SKIPPABLE** whenever a figure encodes quantities or carries a legend:
+   the artefact is not "done" until it has been rasterised **and** the reviewer has visually verified the
+   render against the **source data** — hand the reviewer the numbers, because a legend/colour/bar that
+   contradicts the data is a lie-factor≠1 failure (a backwards-decoded chart legend once shipped precisely
+   because a source self-review skipped this). Layout/aesthetic polish stays advisory — the user may opt
+   out of *that*, never of the integrity check.
 5. **Commit** — follow `skills/writer/references/commit-format.md` (article commits only).
 
 Report the output path(s), word count, the design-review **fitness score** (and any accepted residual),
