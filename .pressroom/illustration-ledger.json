@@ -3,22 +3,23 @@
   "settings": { "site_floor": 7, "target": 85, "max_turns": 4 },
   "scope": "human-facing docs only",
   "embed_policy": "transparent 2x PNG embedded; SVG/DOT/MMD kept as editable source (host-font-independent)",
+  "status": "complete",
+  "budget_report": "16 docs scanned · 9 with >=1 above-floor site · 14 figures illustrated (1 banner + 13 diagrams) across 9 docs · 7 docs below-floor (restraint)",
   "docs": {
-    "README.md": { "status": "done", "figures": ["doc/images/readme-banner.png (banner, A/B BEST 87)", "doc/images/diagrams/01-value-flow.png (graphviz, A/B BEST 88)"], "doc_review": "PASS after fix: mission-control added to table+install" },
-    "plugins/pressroom/README.md": { "status": "done", "figures": ["diagrams/01-pieces-compose.png (composition, A/B BEST 87)"], "doc_review": "PASS" },
-    "plugins/market-scanner/README.md": { "status": "done", "figures": ["diagrams/01-discovery-loop.png (mermaid, A/B winner 78)"], "doc_review": "PASS after fix: loop edge -> /loop /market-scan" },
-    "plugins/ideator/README.md": { "status": "done", "figures": ["diagrams/01-idea-package-faces.png (composition, A/B winner 84)"], "doc_review": "figure integrity PASS; pre-existing /ideator:self-improve command claim flagged (not changed)" },
-    "plugins/foundry/README.md": { "status": "done", "figures": ["diagrams/01-orchestration-hierarchy.png (graphviz, A/B winner 82)"], "doc_review": "PASS" }
+    "README.md": { "status": "done", "figures": ["readme-banner.png (banner A/B BEST 87)", "01-value-flow.png (graphviz A/B BEST 88)"], "doc_review": "PASS (fixed: mission-control added to table+install)" },
+    "plugins/pressroom/README.md": { "status": "done", "figures": ["01-pieces-compose.png (composition A/B BEST 87)"], "doc_review": "PASS" },
+    "plugins/market-scanner/README.md": { "status": "done", "figures": ["01-discovery-loop.png (mermaid 78)"], "doc_review": "PASS (fixed: /loop /market-scan)" },
+    "plugins/ideator/README.md": { "status": "done", "figures": ["01-idea-package-faces.png (composition 84)"], "doc_review": "figure PASS; pre-existing /ideator:self-improve command claim flagged" },
+    "plugins/foundry/README.md": { "status": "done", "figures": ["01-orchestration-hierarchy.png (graphviz 82)"], "doc_review": "PASS" },
+    "plugins/foundry/VALUE_FLOW.md": { "status": "done", "figures": ["02-conveyor.png (composition 88)", "03-quality-chain.png (mermaid BEST 86)"], "doc_review": "PASS" },
+    "plugins/foundry/knowledge/first-principles.md": { "status": "done", "figures": ["03-three-pillars.png (composition 82)", "02-tests-coordinates.png (composition 88)", "04-pure-core.png (composition BEST 87)"], "doc_review": "PASS" },
+    "plugins/foundry/knowledge/glossary.md": { "status": "done", "figures": ["01-domain-tree.png (graphviz 84)"], "doc_review": "figure PASS; pre-existing scorecard-skill omission flagged" },
+    "doc/context-building-pipeline.md": { "status": "done", "figures": ["01-context-doors.png (composition 88)", "02-soul-sentinel.png (graphviz 82)"], "doc_review": "PASS (fixed: six->nine plugins in prose+figure)" }
   },
-  "no_figure_restraint": [
-    "plugins/i2p/README.md", "plugins/sentinel/README.md", "plugins/atelier/README.md",
-    "plugins/concierge/README.md", "plugins/mission-control/README.md",
-    "doc/comfyui-experiment/README.md", "doc/comfyui-experiment/catalog.md", "PREREQUISITES/README.md"
-  ],
-  "queued_group_b": [
-    "plugins/foundry/VALUE_FLOW.md (conveyor-picture 9, three-pillars-quality 8)",
-    "plugins/foundry/knowledge/first-principles.md (tests-are-coordinates 9, three-pillars-bindings 7, pure-core 7)",
-    "plugins/foundry/knowledge/glossary.md (conceptual-domain-tree 9)",
-    "doc/context-building-pipeline.md (context-doors-model 9, soul-dedup-sentinel 7)"
+  "no_figure_restraint": ["plugins/i2p/README.md","plugins/sentinel/README.md","plugins/atelier/README.md","plugins/concierge/README.md","plugins/mission-control/README.md","doc/comfyui-experiment/README.md","doc/comfyui-experiment/catalog.md","PREREQUISITES/README.md"],
+  "deferred_findings_pre_existing": [
+    "ideator README advertises /ideator:self-improve command with no backing commands/*.md (self-improve ships as a skill)",
+    "glossary omits the scorecard skill + /foundry:scorecard command from its lists",
+    "inject-soul.sh carries a stale '8 hooks/8x' comment across its 9 byte-identical copies (canonical-copy resync is human-gated)"
   ]
 }
