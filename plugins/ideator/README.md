@@ -21,6 +21,8 @@ opportunity (from [`market-scanner`](../market-scanner/)) or a raw idea you alre
 The two faces never disagree: a fact corrected in one is corrected in both. The package is **iterated with
 you** until both are right, *then* handed off.
 
+![The IDEA package has two faces from one shared understanding (knowledge-parity, the shared spine): the agent-facing face (precise, for the conveyor) carries the idea brief, SMU-seed, first vertical slice, and handoff contract that satisfy FOUNDRY's discovery exit criteria; the user-facing face (rich, illustrated) carries the opportunity narrative, parameter scorecard, market/pricing/competition charts, and a user-flow / mockup screen — the same facts shown to a human. The two stay in sync: a fact corrected in one face is corrected in both.](diagrams/01-idea-package-faces.png)
+
 ## Naming a product
 
 Need a name? **`/ideator:name`** (the `name-search` skill) runs a marketing-grade **naming studio**:
