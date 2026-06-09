@@ -18,6 +18,8 @@ early and cheaply** so you don't spend months on one.
 
 Output is a **validated opportunity** (a scorecard + the evidence + the verdict).
 
+![MARKET-SCANNER discovery loop: /goal sets a standing objective; /market-scan proposes 3–5 candidates, scores each on the market taxonomy (severity · demand · size · willingness-to-pay · pricing power · competition · reachability · stack-fit), KILLs the weak ones, challenges the survivors, and reaches a verdict; KILL / PARK re-propose via /loop, while KEEP — the spark — flows on to a validated opportunity (scorecard + evidence + verdict) handed to the ideator.](diagrams/01-discovery-loop.png)
+
 ## Grounded in real evidence
 
 A scorecard built only on your say-so is a guess in a table. MARKET-SCANNER uses **web research** —

@@ -1,0 +1,31 @@
+%%{init: {'theme':'base','flowchart':{'htmlLabels':false},'themeVariables':{'background':'transparent','htmlLabels':false,'primaryColor':'#1e1e2e','primaryBorderColor':'#9aa2c0','primaryTextColor':'#e6e9f0','secondaryColor':'#2a2a3c','tertiaryColor':'#2a2a3c','lineColor':'#9aa2c0','edgeLabelBackground':'#0d1117','fontFamily':'DejaVu Sans, ui-sans-serif','fontSize':'15px'}}}%%
+flowchart TD
+    accTitle: MARKET-SCANNER discovery loop
+    accDescr: The goal command sets a standing objective, then market-scan proposes candidates, scores them on the market taxonomy, kills weak ones, challenges survivors, and verdicts each KEEP, PARK, or KILL. KILL and PARK loop back via the loop command to propose again; KEEP exits as a validated opportunity handed to the ideator.
+
+    GOAL["/goal · set standing objective"]
+    PROPOSE["/market-scan · propose 3–5 candidates"]
+    SCORE["score on market taxonomy · severity · demand · size · WTP · pricing power · competition · reachability · stack-fit"]
+    KILLWEAK["KILL the weak candidates"]
+    CHALLENGE["challenge the survivors"]
+    VERDICT{"verdict?"}
+    KEEP(["KEEP — the spark"])
+    OUT[/"VALIDATED OPPORTUNITY · scorecard + evidence + verdict"/]
+    IDEATOR[["handed to ideator"]]
+
+    GOAL --> PROPOSE
+    PROPOSE --> SCORE
+    SCORE --> KILLWEAK
+    KILLWEAK --> CHALLENGE
+    CHALLENGE --> VERDICT
+    VERDICT -- "KILL / PARK → re-propose · /loop /market-scan" --> PROPOSE
+    VERDICT -- "KEEP" --> KEEP
+    KEEP --> OUT
+    OUT --> IDEATOR
+
+    classDef kill fill:#3a2230,stroke:#f7768e,stroke-width:2px,color:#f7768e;
+    classDef park fill:#3a3322,stroke:#e0af68,stroke-width:2px,color:#e0af68;
+    classDef keep fill:#26331f,stroke:#9ece6a,stroke-width:2px,color:#9ece6a;
+    class KILLWEAK kill;
+    class VERDICT park;
+    class KEEP,OUT keep;
