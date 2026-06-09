@@ -12,34 +12,7 @@ understand the *system*; read here to disambiguate a *name*.
 
 ## 1. The conceptual-domain tree
 
-```
-idea-to-production  (the MARKETPLACE — carries software from IDEA to PRODUCTION)
-│
-├── market-scanner (PLUGIN · DISCOVERY front door) — goal-setter · market-scan · /goal · /market-scan
-├── ideator   (PLUGIN · REFINEMENT) — ideate (the IDEA package: agent-facing + user-facing) · /ideate
-│
-├── foundry  (PLUGIN · the value-flow production system — the core conveyor)
-│   ├── THE CONVEYOR — value-stations, in order
-│   │   IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT (+DESIGN 6b) ▶ STORY ▶
-│   │   DELIVERY ▶ DEPLOY ▶ VERIFY        (each with an entry, a transformation, an exit certificate)
-│   ├── THE ORCHESTRATION HIERARCHY (three altitudes, one chain of command)
-│   │   founder (COO) ▶ builder-lead (cycle planner) ▶ lifecycle-orchestrator (per-item) ▶
-│   │   ds-step-* (station workers) + handler-* (value-handlers) ▶ reviewer (gate panel)
-│   ├── THE VALUE-HANDLERS (staff the stations, by stack)
-│   │   handler-{architect, python, fastapi, js, vanilla-js, react, css, playwright, rust, rust-webapp}
-│   ├── THE PILLARS (govern everything)
-│   │   knowledge-parity · quality-first (+ perf-delta gate) · waste-elimination
-│   │   (+ facets: implementation-covenant, determinism-and-pinning, solid-covenant)
-│   ├── THE KNOWLEDGE CORPUS (define-once canon — knowledge/)
-│   │   pillars/ · architecture/ · specs/ · testing/ · protocols/ · orchestration/ · policy/
-│   ├── DESIGN (station 6b) — the `frontend` design system (vanilla-JS)
-│   └── GOVERNANCE (cross-cutting, in-plugin) — code-quality, reviewer-gate, reviewer, inspector
-│
-├── sentinel   (PLUGIN · SECURE companion, security gate) — pii-audit · secret-scan · dependency-audit · /security-gate
-├── pressroom  (PLUGIN · PUBLISH companion) — writer · diagram-studio · mermaid-specialist · rich-pdf-with-diagrams · design-reviewer · /publish
-├── atelier    (PLUGIN · DESIGN companion, usability cross-cut) — ui-review · mockup · ui-design-reviewer · /ui-review · /mockup
-└── mission-control (PLUGIN · OPERATE companion — observe/respond/iterate the live product) — *add to unlock*
-```
+![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — market-scanner (DISCOVERY front door) → ideator (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — sentinel (SECURE), pressroom (PUBLISH), atelier (DESIGN/usability), mission-control (OPERATE).](diagrams/01-domain-tree.png)
 
 The companions are **cross-cutting**: foundry/ideator use them *by capability* when installed
 (graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
