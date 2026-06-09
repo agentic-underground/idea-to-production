@@ -61,7 +61,7 @@ any direction.
 
 ## How they compose
 
-![Value flow: nine plugins across an eight-phase cycle from IDEA to PRODUCTION — DISCOVER (market-scanner) ▸ IDEATE (ideator) ▸ DESIGN (atelier) ▸ BUILD (foundry) ▸ ASSURE (foundry, a separate quality gate) ▸ SECURE (sentinel, a separate security gate) ▸ PUBLISH (pressroom) ▸ OPERATE (mission-control), whose learnings loop back to DISCOVER; i2p and concierge cross-cut as front door and greeter.](doc/images/diagrams/01-value-flow.svg)
+![Value flow: nine plugins across an eight-phase cycle from IDEA to PRODUCTION — DISCOVER (market-scanner) ▸ IDEATE (ideator) ▸ DESIGN (atelier) ▸ BUILD (foundry) ▸ ASSURE (foundry, a separate quality gate) ▸ SECURE (sentinel, a separate security gate) ▸ PUBLISH (pressroom) ▸ OPERATE (mission-control), whose learnings loop back to DISCOVER; i2p and concierge cross-cut as front door and greeter.](doc/images/diagrams/01-value-flow.png)
 
 The next command at each phase: **DISCOVER** `/goal` · `/market-scan` → a kept OPPORTUNITY · **IDEATE** the IDEA
 package (agent + user-facing faces) · **DESIGN** `/mockup` · `/ui-review` · **BUILD** IDEA ▶ … ▶ STORY ▶ SHIP ·
