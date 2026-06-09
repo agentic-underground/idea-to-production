@@ -1,0 +1,24 @@
+{
+  "ledger_version": 1,
+  "settings": { "site_floor": 7, "target": 85, "max_turns": 4 },
+  "scope": "human-facing docs only",
+  "embed_policy": "transparent 2x PNG embedded; SVG/DOT/MMD kept as editable source (host-font-independent)",
+  "docs": {
+    "README.md": { "status": "done", "figures": ["doc/images/readme-banner.png (banner, A/B BEST 87)", "doc/images/diagrams/01-value-flow.png (graphviz, A/B BEST 88)"], "doc_review": "PASS after fix: mission-control added to table+install" },
+    "plugins/pressroom/README.md": { "status": "done", "figures": ["diagrams/01-pieces-compose.png (composition, A/B BEST 87)"], "doc_review": "PASS" },
+    "plugins/market-scanner/README.md": { "status": "done", "figures": ["diagrams/01-discovery-loop.png (mermaid, A/B winner 78)"], "doc_review": "PASS after fix: loop edge -> /loop /market-scan" },
+    "plugins/ideator/README.md": { "status": "done", "figures": ["diagrams/01-idea-package-faces.png (composition, A/B winner 84)"], "doc_review": "figure integrity PASS; pre-existing /ideator:self-improve command claim flagged (not changed)" },
+    "plugins/foundry/README.md": { "status": "done", "figures": ["diagrams/01-orchestration-hierarchy.png (graphviz, A/B winner 82)"], "doc_review": "PASS" }
+  },
+  "no_figure_restraint": [
+    "plugins/i2p/README.md", "plugins/sentinel/README.md", "plugins/atelier/README.md",
+    "plugins/concierge/README.md", "plugins/mission-control/README.md",
+    "doc/comfyui-experiment/README.md", "doc/comfyui-experiment/catalog.md", "PREREQUISITES/README.md"
+  ],
+  "queued_group_b": [
+    "plugins/foundry/VALUE_FLOW.md (conveyor-picture 9, three-pillars-quality 8)",
+    "plugins/foundry/knowledge/first-principles.md (tests-are-coordinates 9, three-pillars-bindings 7, pure-core 7)",
+    "plugins/foundry/knowledge/glossary.md (conceptual-domain-tree 9)",
+    "doc/context-building-pipeline.md (context-doors-model 9, soul-dedup-sentinel 7)"
+  ]
+}
