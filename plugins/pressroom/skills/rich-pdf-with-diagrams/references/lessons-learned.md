@@ -519,6 +519,72 @@ effective magnification.
 
 ---
 
+> **Batch 0020–0026 — 2026-06-09, Mermaid retrospective.** Seven lessons from one session
+> producing the FLEET *Caching Layer — Impact Report* (`knowledge-base/reference/artifact-store-impact.print/`).
+> First Mermaid-specific lessons in this log; absorbed together (like the 0001–0019 origin batch),
+> each numbered separately as the audit trail. An adversarial design review of the rendered PDF
+> caught a backwards-decoded chart legend and several diagram defects.
+
+### Lesson 0020 — 2026-06-09
+
+**Feedback received:** *"figure 4 … the title says 'compile (baseline, dark) vs store pull (after, light)' but the bar chart has the highest bars as light colour and the lowest as dark blue."* (`xychart-beta` legend decoded backwards.)
+
+**Generalised rule:** `xychart-beta` has no legend and no reliable per-series colour — never encode series identity in a colour-word; name series in the caption, or don't use xychart for a legend-dependent claim.
+
+**Charting-matrix rule affected:** strengthened the `mermaid-taxonomy.md` xychart row; new failure F11-adjacent (mis-decode) folded into R-A5 + dataviz-canon.
+
+**Diagram(s) fixed:** the per-tool chart → replaced with a table (see 0021). **Article:** FLEET caching-layer impact report.
+
+### Lesson 0021 — 2026-06-09
+
+**Feedback received:** the "after" bars (≈1 s) were invisible against a 0–280 s linear axis — the headline collapse was the one thing the eye couldn't see.
+
+**Generalised rule:** order-of-magnitude (>~10×) or legend-dependent comparisons → a table with a ratio/"×" column (or a single-series ratio chart), not an overlaid linear bar chart; `xychart-beta` has no log scale.
+
+**Charting-matrix rule affected:** **R-A5** (new) + **F10** (new). **Diagram(s) fixed:** per-tool figure → table. **Article:** FLEET caching-layer impact report.
+
+### Lesson 0022 — 2026-06-09
+
+**Feedback received:** the architecture diagram was a tangle with a doubled "byby .local name" edge label.
+
+**Generalised rule:** never fan a shared edge label across a node-product (`A & B -- "x" --> C & D`); route one group→group/hub edge and label once; cap fan-out.
+
+**Charting-matrix rule affected:** **R-A4** (new) + **F11** (new). **Diagram(s) fixed:** `architecture.mmd`. **Article:** FLEET caching-layer impact report.
+
+### Lesson 0023 — 2026-06-09
+
+**Feedback received:** key edge labels rendered struck through (the edge line ran through the text) in the Typst PDF.
+
+**Generalised rule:** the Typst-safe render uses `htmlLabels:false`, which drops edge-label backgrounds — keep edge labels short, move meaning to caption/nodes, and let the edge clear the label.
+
+**Charting-matrix rule affected:** **F9** (new) + `mermaid-theming.md` limitation. **Diagram(s) fixed:** `architecture.mmd`, `beforeafter.mmd`. **Article:** FLEET caching-layer impact report.
+
+### Lesson 0024 — 2026-06-09
+
+**Feedback received:** the before/after figure rendered AFTER-left/BEFORE-right, inverting the timeline.
+
+**Generalised rule:** Mermaid/Graphviz don't guarantee subgraph render order — pin it with an invisible link (`before ~~~ after`) or explicit ranks, and verify in the rendered image.
+
+**Charting-matrix rule affected:** **R-A6** (new). **Diagram(s) fixed:** `beforeafter.mmd`. **Article:** FLEET caching-layer impact report.
+
+### Lesson 0025 — 2026-06-09
+
+**Feedback received:** a `;` inside a `sequenceDiagram` Note hard-failed the render (`build.sh` reported a mermaid parse error).
+
+**Generalised rule:** reserved chars (`;`, unescaped `#`, unbalanced quotes) break Mermaid inside labels/notes — use commas/em-dashes; a pre-render `mmdc` parse-check catches it before compile.
+
+**Charting-matrix rule affected:** **F12** (new) + `mermaid-taxonomy.md` reserved-chars note (+ the PR-2 lint). **Diagram(s) fixed:** `sequence.mmd`. **Article:** FLEET caching-layer impact report.
+
+### Lesson 0026 — 2026-06-09
+
+**Feedback received:** *"did this go through adversarial review? … run the entire pdf through adversarial review"* — the backwards-legend figure had shipped on a self-review of the source, with no visual review of the render.
+
+**Generalised rule:** a figure that encodes quantities/a legend is not "done" until rasterised and run through the design-reviewer **with the source data** so it can verify figure↔data integrity; source self-review ≠ visual review of the output. (Process rule — lands in `publish.md` / rich-pdf SKILL + a dataviz-canon lie-factor line, PR-3.)
+
+**Charting-matrix rule affected:** n/a (process); see dataviz-canon integrity principle. **Diagram(s) fixed:** the whole report re-reviewed → CONVERGED. **Article:** FLEET caching-layer impact report.
+
+---
+
 ## Standing notes (not numbered lessons, but always true)
 
 - **Always re-read `charting-matrix.md` before composing.** It is the

@@ -92,6 +92,12 @@ A diagram without an accessible description is **not done**.
   `themeVariables` + `classDef`.
 - **Beta types** (sankey/xychart/radar/treemap/packet/architecture) evolve — verify the target supports
   them, or render with `mmdc` and embed.
+- **`htmlLabels:false` drops edge-label backgrounds.** Rendering for Typst/print needs real SVG `<text>`
+  (so labels are selectable and Typst-embeddable), which means `htmlLabels:false` /
+  `flowchart.htmlLabels:false`. That removes the white background rect behind **edge** labels, so a long
+  on-line label is **struck through** by its own edge line (charting-matrix **F9**). Design around it:
+  keep edge labels **short**, put detail in the caption or node text, and lengthen/curve the edge so the
+  label clears the line. Prefer one labelled group→group edge over many fanned labels (Rule R-A4).
 
 > **Self-improvement.** A theming or layout lesson (a variable that always needs setting, an ELK threshold)
 > belongs here; a *composition* lesson (too many nodes) generalises into the shared charting-matrix.

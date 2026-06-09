@@ -66,6 +66,16 @@ Mermaid-specific ceilings: **sequence ≤6 participants** (else `box … end` gr
 nesting. When a graph is genuinely large, switch to the **ELK** layout engine for better routing rather
 than cramming the default renderer (see [`references/mermaid-theming.md`](references/mermaid-theming.md)).
 
+**Mechanical pitfalls (don't relearn these the hard way).** Beyond density, a handful of Mermaid
+gotchas silently break or mis-decode a figure — all now codified: **xychart-beta** has no legend /
+colour-control / log scale, so an order-of-magnitude or legend-dependent comparison belongs in a
+**table with a ratio column**, not a chart (taxonomy xychart row + charting-matrix **R-A5/F10**);
+never **fan a shared edge label across a node-product** (**R-A4/F11**); **pin subgraph reading
+order** with an invisible link (**R-A6**); rendering for Typst sets `htmlLabels:false`, which
+**strikes through long edge labels** — keep them short (theming limitation + **F9**); and a
+**reserved char** (`;`, `#`, stray quote) in a label/note **fails the parse** (taxonomy reserved-
+chars note + **F12**, caught by the rich-pdf pre-render lint).
+
 ## 3. Theme it — default Mermaid looks like default Mermaid
 
 A diagram that ships with the stock theme reads as unconsidered. Theme to a disciplined palette via an
