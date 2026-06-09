@@ -36,7 +36,7 @@
 | Type | Best for | Cue | Ceiling / caveat |
 |---|---|---|---|
 | **pie** | part-to-whole, **few** slices | `pie title T` · `"A" : 40` | ≤~5 slices; often a bar is better (Cleveland) |
-| **xychart-beta** | simple bar/line trends | `xychart-beta` · `bar [..]` · `line [..]` | simple asides only — dense quant → a real charting tool |
+| **xychart-beta** | a single simple bar/line trend | `xychart-beta` · `bar [..]` · `line [..]` | **no legend, no per-series colour control, no log scale.** A *single* same-order series only; for ≥2 series, a legend-dependent claim, or an order-of-magnitude comparison use a **table with a ratio/"×" column** (charting-matrix R-A5) — a colour-word legend WILL mis-decode, and a small series vanishes on a linear axis. Dense quant → a real charting tool |
 | **quadrantChart** | 2×2 strategic positioning | `quadrantChart` · axes + points | ≤~12 points; label axes meaningfully |
 | **radar** *(beta)* | multi-axis comparison of a few items | `radar` · axes + series | ≤~3 series, ≤~8 axes |
 | **sankey-beta** | flow/throughput between stages | `sankey-beta` · `Source,Target,value` rows | keep nodes few; order by magnitude |
@@ -49,6 +49,18 @@
 | **treemap** *(beta)* | nested part-to-whole by area | `treemap` | shallow nesting; area-perception is weak (Cleveland) |
 | **packet-beta** | byte/bit field layouts (protocols) | `packet-beta` · ranges | one structure per diagram |
 | **zenuml** | sequence diagrams (alt syntax) | `zenuml` | as sequence |
+
+## Reserved characters break the parse — keep labels/notes clean
+
+Mermaid parses certain characters as syntax; placing them in node labels, edge labels, or
+`Note` text **fails the render outright** (not a cosmetic issue — the whole `.mmd` errors):
+
+- **`;`** is a statement separator — a semicolon inside a `Note` or label aborts parsing. Use a
+  comma or em-dash. (Cost a hard render-fail in a `sequenceDiagram` note.)
+- **`#`** starts an entity/clashes with directives; **unbalanced `"`** breaks label tokenising.
+- Safest fix for any rich text: wrap the label in quotes *and* avoid the reserved set, or use
+  HTML entities (`#35;` for `#`). A pre-render `mmdc` parse-check (the rich-pdf lint) catches
+  these before compile — see charting-matrix **F12**.
 
 ## Choosing well — the three questions
 

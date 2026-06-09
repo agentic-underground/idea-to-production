@@ -241,6 +241,47 @@ Mitigations, in order of preference:
 Identifier tables that violate this sub-rule are the second most
 common cause of "column overlap" feedback after Rule R-A3 itself.
 
+### Rule R-A4 — Label an edge ONCE; never fan a shared label across a node-product
+
+**Why:** in Mermaid `A & B & C -- "label" --> X & Y & Z` expands to a 3×3
+edge *product* and stamps "label" on **all nine** edges — they overprint
+into an unreadable smear (observed as a doubled "byby …" label) and the
+many-to-many crossings make the figure a tangle. The same trap exists in
+Graphviz when one label is repeated across many edges.
+
+**How to apply:** carry a shared relationship on **one** edge — route
+group→group (subgraph→subgraph, or via a single hub node) and label that
+one edge, or leave the fanned edges unlabelled and state the relationship
+in the caption. Cap fan-out per Rule 5. If every edge truly needs its own
+label, they are not the same relationship — draw them separately.
+
+### Rule R-A5 — Order-of-magnitude or legend-dependent comparison → a table or ratio, not an overlaid linear chart
+
+**Why:** two series that differ by >~10× (e.g. 269 s vs 1.3 s) on a
+**linear** axis render the small series as a sub-pixel sliver — invisible,
+so the chart hides the very comparison it exists to make. Mermaid
+`xychart-beta` has **no log scale, no legend, and no reliable per-series
+colour**, so a multi-series quantitative claim there is unreadable or, worse,
+mis-decoded (see F10/F11 and the dataviz-canon lie-factor rule).
+
+**How to apply:** for an order-of-magnitude or before/after comparison, use
+a **table with an explicit ratio / "×" column** (every value visible, no
+legend to invert) or a single-series **ratio/speed-up** bar chart. Reserve
+`xychart-beta` for a single simple same-order trend; hand dense quant to a
+real data-viz tool under the design-reviewer's rubric.
+
+### Rule R-A6 — Pin reading order; never assume declaration order renders left-to-right / top-to-bottom
+
+**Why:** Mermaid (and `dot`) do **not** guarantee that subgraphs/clusters
+render in source order. A "BEFORE / AFTER" pair declared before-then-after
+can lay out **after-then-before**, inverting the narrative timeline the
+reader decodes by position (Jakob's Law / Western reading order).
+
+**How to apply:** force the order. In Mermaid, add an invisible link
+between the anchors (`before ~~~ after`) or rank them; in Graphviz, use an
+invisible edge (`a -> b [style=invis]`) or `{rank=…}`. Verify order in the
+**rendered** image, not the source.
+
 ---
 
 ## 4. DECOMPOSITION RULES — WHEN ONE DIAGRAM SHOULD BECOME TWO
@@ -287,7 +328,7 @@ horizontal-band clusters. This is non-negotiable; see Rule R-A1.
 
 ## 6. THE FAILURE CATALOGUE
 
-Eight visible failure modes. If you see any of these in a rendered
+Twelve visible failure modes. If you see any of these in a rendered
 diagram or page, stop and fix it before delivering the article.
 
 | # | Failure mode | Root cause | Fix |
@@ -300,6 +341,10 @@ diagram or page, stop and fix it before delivering the article.
 | F6 | Caption squashed against figure | Missing `\clearpage` | Wrap figure in `\clearpage…\clearpage` |
 | F7 | Diagram is a thin horizontal ribbon with huge negative space above and below | Horizontal-band cluster pattern (LR inside, TB between) | Switch to **zig-zag panel grid** (Pattern 8); vertical panels in 2×N grid |
 | F8 | Section heading at bottom of page, content on next page | Missing `\sectionneeds` / `\clearpage` before the heading | Prepend `\sectionneeds{6cm}` or `\clearpage` per Rule R-A2 |
+| F9 | Edge label appears struck through (a line runs through the text) | Mermaid rendered with `htmlLabels:false` (the typst-safe path) drops the label's background mask; a long on-line label sits on the edge | Keep edge labels **short**; move meaning to the caption/nodes; lengthen/curve the edge so the label clears (Rule R-A4 + theming limitation) |
+| F10 | A bar/line series is invisible (flat on the axis) | Two series >~10× apart on a **linear** axis — the small one is sub-pixel; `xychart-beta` has no log scale | Use a table with a ratio/"×" column or a single-series ratio chart (Rule R-A5) |
+| F11 | An edge label is doubled/smeared ("byby …") or the graph is a many-to-many tangle | A shared label fanned across a `A & B -- "x" --> C & D` node-product | Label one group→group/hub edge once; cap fan-out (Rule R-A4) |
+| F12 | A `.mmd` fails to render at all (parse error) | A reserved char in a label/note — `;` (statement separator), unescaped `#`, or unbalanced quotes | Remove/replace the reserved char (commas, em-dashes); a pre-render `mmdc` parse-check catches it (PR-2 lint) |
 
 ---
 
