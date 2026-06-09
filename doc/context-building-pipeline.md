@@ -42,6 +42,8 @@ neither re-appended per turn nor omitted.
 
 ## The doors, ranked by how this marketplace thinks about them
 
+![The four doors text uses to reach a Claude Code agent, compared on three axes (WHEN it loads · TOKEN COST · RELIABILITY): (1) memory files (CLAUDE.md + @imports) — session start, cached one-time, always but only for that repo/machine scope; (2) SessionStart hooks (additionalContext) — session start and on resume/clear/compact, cached one-time per event, deterministic when the plugin is enabled (the plugin-native always-on door); (3) UserPromptSubmit hooks — every prompt, re-billed each turn (busts the cache), per-turn (right for dynamic state, wrong for static canon); (4) skills — frontmatter always cheap but the body loads only when invoked, on-demand, only when relevant (for large situational knowledge). Match the door to the document.](diagrams/01-context-doors.png)
+
 ### 1. Memory files — `CLAUDE.md` and `@imports`
 
 `CLAUDE.md` (user-level `~/.claude/CLAUDE.md`, project-level `./CLAUDE.md`, and nested
@@ -68,8 +70,8 @@ session start and may print JSON whose `hookSpecificOutput.additionalContext` fi
   `source`). **Cost:** lands in the cached prefix → one-time per event. **Reliability:**
   deterministic; runs whenever the plugin is enabled. (Hooks, code.claude.com →
   `/docs/en/hooks`.)
-- **The catch at marketplace scale:** if six installed plugins each ship the same
-  SessionStart hook, the canon injects **six times**. The fix is dedup — see below.
+- **The catch at marketplace scale:** if nine installed plugins each ship the same
+  SessionStart hook, the canon injects **nine times**. The fix is dedup — see below.
 
 ### 3. UserPromptSubmit hooks — inject *per prompt*
 
@@ -91,23 +93,7 @@ skill — but the contrast is the whole point: **match the door to the document.
 SOUL is small (a framing line + seven quotes) and universal (it should be present whenever
 *any* plugin is active). That profile points squarely at **door 2 with dedup**:
 
-```
-  SOUL.md  (canonical, repo root)              ← single source of truth
-     │  cp, byte-identical (CI Check E)
-     ▼
-  plugins/<each>/SOUL.md  ×6                    ← travels with each installed plugin
-     ▲
-     │  read by
-  plugins/<each>/hooks/inject-soul.sh  ×6       ← byte-identical (CI Check F)
-     │  SessionStart fires for every enabled plugin, together
-     ▼
-  atomic sentinel:  ${TMPDIR}/claude-soul/soul-<session_id>-<source>.lock
-     │  mkdir succeeds for exactly ONE caller per (session, source) event
-     ▼
-  that one hook prints { hookSpecificOutput.additionalContext: <SOUL.md> }
-     ▼
-  SOUL lands in the cached prefix — ONCE per event, never 6×, never omitted
-```
+![How SOUL.md reaches context exactly once: the canonical SOUL.md at the repo root is copied byte-identical (CI Check E) into each plugin's SOUL.md (×9, travelling with the install), each read by that plugin's inject-soul.sh hook (×9, byte-identical, CI Check F). On SessionStart every enabled plugin's hook fires together and races at an atomic sentinel — mkdir ${TMPDIR}/claude-soul/soul-<session_id>-<source>.lock — which succeeds for exactly ONE caller per (session, source) event; that one winner prints hookSpecificOutput.additionalContext = SOUL.md, so SOUL lands in the cached prefix ONCE per event — never 9×, never omitted.](diagrams/02-soul-sentinel.png)
 
 The properties this buys, mapped back to the three axes:
 
@@ -118,7 +104,7 @@ The properties this buys, mapped back to the three axes:
 - **Token cost:** one small injection per event, into the cached prefix → effectively
   one-time, not per-turn. *Not wasteful.*
 - **Reliability:** fires whenever ≥1 plugin is enabled; the atomic `mkdir` lock guarantees
-  exactly one of the six emits. *Never duplicated.*
+  exactly one of the nine emits. *Never duplicated.*
 
 ### Why these specific choices
 
