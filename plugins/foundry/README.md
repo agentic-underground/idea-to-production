@@ -22,17 +22,9 @@ performance-instrumented **test contract**. Read [`VALUE_FLOW.md`](VALUE_FLOW.md
 
 ## The orchestration hierarchy (three altitudes, one chain of command)
 
-```
-founder (COO)            — turns an idea into a value-stationed path; staffs the line
-   ▼
-builder-lead             — ingests the ROADMAP, tiers + budgets, emits FOUNDRY_PLAN.md
-   ▼
-lifecycle-orchestrator   — drives ONE item through steps 0–9 + story, enforcing gates
-   ▼
-ds-step-* + handler-*    — do the station work (the value-handlers staff stations by stack)
-   ▼
-reviewer                 — adversarial gate panel (PASS / NEEDS_REVISION / BLOCK); inspector audits the plugin itself
-```
+![Orchestration hierarchy across three altitudes, one chain of command: ORCHESTRATION — founder (COO, turns an idea into a value-stationed path) → builder-lead (ingests the ROADMAP, tiers + budgets, emits FOUNDRY_PLAN.md) → lifecycle-orchestrator (drives ONE item through steps 0–9 + story, enforcing gates); EXECUTION — ds-step-* + handler-* (do the station work; value-handlers staff stations by stack); GATE — reviewer (adversarial panel: PASS / NEEDS_REVISION / BLOCK).](diagrams/01-orchestration-hierarchy.png)
+
+(The `inspector` agent audits the plugin itself, off the production chain of command.)
 
 **Value-handlers:** [`handler-architect`](agents/handler-architect.md), `-python`, `-fastapi`,
 `-js`, [`-vanilla-js`](agents/handler-vanilla-js.md) (native handler of the `frontend` DESIGN
