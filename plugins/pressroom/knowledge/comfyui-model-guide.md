@@ -150,3 +150,29 @@ The marketplace's *measured-on-this-rig* preferences (see `doc/image-craft-study
 | SD1.5 | 768×512 (landscape) | 25–28 | 6–7 | dpmpp_2m / karras |
 | SDXL-Lightning | 1216×832 | 6 | ~2 | dpmpp_sde / sgm_uniform |
 | UltimateSDUpscale finish | tile 1024 → 4K | 32 | — | euler / normal · denoise 0.25 |
+
+## Empirical craft-study findings (controlled A/B, 2026-06-10)
+
+The [`craft-study`](../skills/craft-study/SKILL.md) ran a **controlled single-variable A/B** per objective
+(baseline vs one named stage, sharing ckpt/prompt/seed/base-res) and scored each with the adversarial image
+reviewer. The gains below are **visible, attributable, reproducible** — not seed luck. (Full evidence:
+`doc/image-craft-study/craft/catalog.md`.)
+
+| Objective (ckpt) | Stage tested | Verdict | What the evidence showed |
+|---|---|---|---|
+| **portrait** (`nightvisionXLPhotorealisticPortrait`) | latent hires-fix @0.45 denoise | **REGRESSION 72→66** | The re-detail pass **scrubbed** close-up skin/hair micro-detail into smooth "AI skin" (high-pass energy −17…−20% on eyes/beard/face). A canonical latent-hires failure on tight faces. |
+| **landscape** (`crystalClearXL_ccxl`) | latent hires-fix @0.45 | gain 79→83 | Resolves smeared mid/foreground into real micro-texture (conifers, rock facets, layered fog). Real but **incremental**; does **not** author the depth gradient (a base property). |
+| **marketing-hero** (`foddaxlPhotorealism_v51`) | latent hires-fix @0.45 | gain 68→74 | **Region-selective** lift: +12.5% micro-texture on marble veining / crema, ~0 on the flat wall (so not a placebo global sharpen). |
+| **dark-key** (`epicrealism_naturalSinRC1VAE`, SD1.5) | LoRA stack `lowkey_v1.1`@0.8 + `LowRA`@0.6 | **gain 62→81** | Converts an even mid-tone portrait into **true low-key tenebrist chiaroscuro** — background to near-black, motivated key carving form. The strongest gain. |
+| **world-axis** (`reproductionSDXL_2v12`) | regional **tricomposite** | **gain 68→92** | Coherent vertical world-axis (cosmic vortex → cracked-earth dome → warm profile figure) with a working cool→warm depth descent; three layered, feathered planes (richness 3→5). |
+
+**Actionable rules learned:**
+- **Do NOT blanket-apply latent hires-fix to close-up portraits** — at 0.45 denoise it *removes* skin/hair
+  fidelity. For faces, prefer a **lower re-detail denoise (~0.25–0.35)**, or route detail through
+  **FaceDetailer** (Impact Pack) rather than a full-frame latent upscale.
+- **Hires-fix pays on textured/atmospheric subjects** (landscape, product surfaces) where there is real
+  micro-structure to resolve — but the gain is incremental, so spend it where it shows.
+- **The dark-key LoRA stack is a genuine craft tool**, not a gimmick: reach for `lowkey_v1.1 + LowRA` when the
+  brief calls for low-key/chiaroscuro/film-noir lighting the base model renders too evenly.
+- **Tricomposite is the strongest single technique** for layered, vertical-world-axis compositions — use it
+  when the brief is compositional (a coherent top→bottom journey) rather than a single subject.

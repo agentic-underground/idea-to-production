@@ -35,6 +35,19 @@ intent ──▶ chart / labelled text? ──▶ ROUTE TO VECTOR (handler-chart
 The six recipes (A–F), their checkpoints, LoRAs, and exact settings live in the
 [model guide](../../../knowledge/comfyui-model-guide.md) decision table; this doc gives the **stage wiring**.
 
+> **Empirically validated (craft study, controlled A/B, 2026-06-10).** The decision tree is now evidence-backed
+> (full data: `doc/image-craft-study/craft/catalog.md`):
+> - **Latent hires-fix is genre-dependent, not free** — it *helps* landscapes (79→83) and product/marketing
+>   surfaces (68→74) by resolving real micro-texture, but **regresses tight close-up portraits (72→66)**: at
+>   0.45 denoise it scrubs skin/hair into smooth "AI skin" (−17…−20% high-freq detail). **For close-up faces,
+>   drop the re-detail denoise to ~0.25–0.35 or lean on FaceDetailer** rather than a full-frame latent upscale
+>   (this is why recipe E wraps FaceDetailer *around* the upscale, and why the portrait branch must not treat
+>   hires as a pure win).
+> - **The dark-key `lowkey+LowRA` stack is a real, large gain (62→81)** — reach for recipe F whenever the brief
+>   is low-key / chiaroscuro / noir; the base model renders such lighting too evenly on its own.
+> - **Tricomposite is the strongest compositional technique (68→92)** for layered vertical-world-axis scenes —
+>   prefer it over a single-region render when the brief is a coherent top→bottom journey.
+
 ## Canonical stage wiring (named nodes)
 
 **Base pass** — `CheckpointLoaderSimple` → `CLIPTextEncode` (pos/neg) → `EmptyLatentImage` → `KSampler` →
