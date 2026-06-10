@@ -23,7 +23,7 @@ do not orchestrate.**
 
 ## The endpoint (one place, env-overridable)
 ```bash
-COMFYUI="${PRESSROOM_COMFYUI_URL:-http://10.0.1.19:8188}"
+COMFYUI="${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}"
 ```
 Never hardcode the IP elsewhere — read `$PRESSROOM_COMFYUI_URL` (default the i9 workstation, ComfyUI's port
 8188). The container +
@@ -47,7 +47,7 @@ time-boxed Phase-0 gap — see that roadmap).
 
 ### 1. Research — probe, list models, set model
 ```bash
-COMFYUI="${PRESSROOM_COMFYUI_URL:-http://10.0.1.19:8188}"
+COMFYUI="${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}"
 # (a) reachability — decline if this fails
 curl -sf -m 3 "$COMFYUI/system_stats" >/dev/null || { echo "comfyui offline — declining slot"; exit 3; }
 # (b) list checkpoints (the available models)

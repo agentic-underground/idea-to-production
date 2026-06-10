@@ -19,4 +19,4 @@ rsvg-convert	command -v rsvg-convert	optional	apt install librsvg2-bin
 qpdf	command -v qpdf	optional	apt install qpdf
 inkscape	command -v inkscape	optional	apt install inkscape
 magick	command -v magick || command -v convert	optional	apt install imagemagick
-comfyui	bash -c 'curl -sf -m 3 "${PRESSROOM_COMFYUI_URL:-http://10.0.1.19:8188}/system_stats" >/dev/null'	optional	ComfyUI server reachable for handler-comfyui (set PRESSROOM_COMFYUI_URL; default http://10.0.1.19:8188)
+comfyui	bash -c 'curl -sf -m 3 "${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}/system_stats" >/dev/null'	optional	ComfyUI server reachable for handler-comfyui (set PRESSROOM_COMFYUI_URL; default http://10.10.10.163:8188)

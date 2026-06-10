@@ -7,7 +7,7 @@
 > each run appends evidence via the shared
 > [self-improvement protocol](../skills/rich-pdf-with-diagrams/references/self-improvement.md).
 >
-> **Backend:** `${PRESSROOM_COMFYUI_URL:-http://10.0.1.19:8188}`. The handler still lists checkpoints live;
+> **Backend:** `${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}`. The handler still lists checkpoints live;
 > this guide tells it *which* to pick.
 
 ## How to use it (the handler's decision)

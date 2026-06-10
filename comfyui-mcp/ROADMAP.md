@@ -5,7 +5,7 @@ Two phases: the MVP that already works, and the secured build that earns the nam
 ## Phase 0 — MVP (shipped, with an honest gap)
 
 `handler-comfyui` talks **raw HTTP** to a live ComfyUI server via `$PRESSROOM_COMFYUI_URL` (default
-`http://10.0.1.19:8188`, the i9 workstation — ComfyUI 0.3.71 on an RTX 3090). It lists checkpoints (`GET /object_info/CheckpointLoaderSimple`),
+`http://10.10.10.163:8188`, the i9 workstation — ComfyUI 0.3.71 on an RTX 3090). It lists checkpoints (`GET /object_info/CheckpointLoaderSimple`),
 sets the model into an inline `txt2img` template, submits (`POST /prompt`), polls (`GET /history/{id}`), and
 downloads (`GET /view`). It degrades gracefully — a 3s `/system_stats` probe; if unreachable it declines so the
 illustrator fills the A/B slot with a vector option.
