@@ -1,32 +1,45 @@
-# Gate 10 — broad animation rollout (Phase 10) · FLAGSHIP landed
+# Gate 10 — broad animation rollout · PASS (closed)
 
 **Date:** 2026-06-10 · **Branch:** `research/image-craft-taste`
 
-## Flagship #1 — the animated lifecycle (LANDED, embedded)
+## Delivered
 
-The marquee marketplace diagram, animated: **DISCOVER → IDEATE → DESIGN → BUILD → ASSURE → SECURE → PUBLISH
-→ OPERATE**, building up one phase at a time (teal "done" / amber "current" / dim "pending" colour-script),
-then the **return arc glows** — *OPERATE's learnings re-enter DISCOVER* — closing the cycle, then it loops.
-- Built via the Phase-8 toolchain, 0-GPU: `src/build-lifecycle-frames.sh` → `rsvg-convert` → `gifski` →
-  `gifsicle` (200-colour, lossy 40).
-- **Embedded** in the canonical lifecycle doc `plugins/i2p/knowledge/product-lifecycle.md` (the most
-  semantically-correct home — the statusline phase widget, `/i2p-help`, `/i2p-lifecycle` all read it).
-- **Budget:** `doc/images/lifecycle-cycle.gif` = **36 KB** (≤ 2 MB budget, easily). GIF renders inline on
-  GitHub. Mandatory alt-text present (names all eight phases + the loop).
-- **Self-review (Medium-richness / motion, from the frame-strip `proof/lifecycle-strip.png`):** motion is
-  **motivated** (the build-up teaches the phase *order*; the arc teaches the *cycle*), legible per frame,
-  dark-mode, ends on a complete poster frame. Passes the §9 motion bar.
+The flagship lifecycle animation **plus the full broaden set**, all built 0-GPU on the worker via the Phase-8
+toolchain (SVG frame generators → `rsvg-convert` → `gifski` → `gifsicle`):
 
-## Remaining rollout (this gate stays open until complete)
+- **Flagship #1 — lifecycle cycle** (`doc/images/lifecycle-cycle.gif`) — embedded in `plugins/i2p/knowledge/product-lifecycle.md`.
+- **Flagship #2 — animated masthead** (`doc/images/masthead-cycle.gif`) — the wide-and-short **root README front
+  door** with the dominant `idea → production` wordmark (the old banner had none) over the igniting value cycle +
+  the return loop closing. Replaces the wordmark-less hero.
+- **Broaden ×9 — one motivated animated figure per plugin README:** i2p hub-and-spoke dispatch · concierge
+  HUD/welcome assembly · foundry red→green test-first conveyor · atelier critique-loop convergence · sentinel
+  certify-before-expose gate · pressroom illustrate→review→publish press · market-scanner radar sweep · ideator
+  fragment convergence · mission-control observe→respond→loop.
 
-- **Flagship #2 — animated masthead** (raster atmosphere + the build-up, for the root README front door) —
-  pending (outward-facing; will show before wiring into the root README).
-- **Broaden ×9** — one animated figure per plugin README, via `handler-composite` + the lifecycle/blend
-  recipes, each gated on Medium-richness from a frame-strip, ≤ 2 MB, reduced-motion poster.
-- **Full adversarial Gate-10 panel** — confirm every animated asset renders on GitHub, motion is motivated
-  (not gratuitous), before/after gallery — run once the set is complete.
+Every figure: optimised GIF (**all ≤ 100 KB**, far under the 2 MB budget), a **reduced-motion poster** PNG, and
+**descriptive alt-text** naming the motion. 11 deterministic frame generators under `toolchain/src/`,
+frame-strip proofs under `toolchain/proof/`.
 
-## STEER
+## Adversarial panel (3 reviewers, prompted to REFUTE)
 
-Flagship lifecycle is live and embedded — the toolchain is proven on real, canonical repo content. Broaden
-to the per-plugin set next; keep each motivated + budgeted + poster-backed.
+Each figure was attacked on: renders-inline-on-GitHub, motion-motivated (not gratuitous), per-frame legibility,
+dark-mode canon, ≤2 MB budget, poster present, alt-text present. **All three groups returned overall PASS** —
+every figure clears every criterion. The findings were nuances, not failures:
+
+- **Strongest motivated motion:** `foundry-conveyor` (the red→green test-first spine exists *only* in motion —
+  TESTS lights RED before IMPL, flips green only when code arrives), `masthead-cycle` (the loop-close a still
+  cannot show), `atelier-critique` (converge-to-fit).
+- **Weakest (still PASS):** `concierge-welcome` (the typewriter greeting is the most decorative beat) and
+  `pressroom-press` (shortest arc; A-vs-B difference asserted via dimming + ★BEST rather than shown).
+- **Two genuine accuracy defects FIXED:** the panel caught alt-text describing motion the figure does **not**
+  perform — `sentinel-gate` ("the gate barrier lifts apart" → corrected to the label resolving to the PASS
+  stamp) and `pressroom-press` ("flies along a teal trail" → corrected to "moves along a teal arrow"). Alt-text
+  now matches the rendered frames.
+- **Minor note (left as-is):** `mission-control-operate`'s ITERATE learning-arc is the faintest element; it
+  passes because the full-frame labels (INCIDENT, MITIGATING, the captioned arc) carry the meaning.
+
+## Verdict: **PASS** — gate closed
+
+The toolchain is proven on real, canonical, **outward-facing** repo content: 11 motivated animated figures, each
+GitHub-renderable, budgeted, poster-backed, and now alt-text-accurate. Motion is motivated, not gratuitous; the
+two overstatements the panel found are corrected. The broad animation rollout is complete.
