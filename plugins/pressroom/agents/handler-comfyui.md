@@ -96,6 +96,16 @@ curl -sf "$COMFYUI/view?filename=$FN&subfolder=$SUB&type=output" -o "<doc-dir>/d
 Honour your `ab` slot via a meaningfully different model/LoRA/composition/seed, not a trivial re-roll. Try a
 few seeds and keep the best. (To set a single LoRA in `lora-detail`, leave slot-2 strengths at 0.)
 
+### 2b. Optional local finish (by capability — probe first, never block)
+The downloaded PNG can get a **subtle local finish** when the tools are present (resolve with
+`have(){ command -v "$1" >/dev/null || [ -x "$HOME/.cargo/bin/$1" ]; }`) — see the
+[raster-toolchain canon](../knowledge/raster-toolchain.md) Recipe 3. Use only **parameter-only** recipes
+(no caller text on the command line): a gentle saturation/micro-contrast pass (`magick -modulate -unsharp`),
+a flat-ground **cutout to transparent** when the figure must sit on an arbitrary host, a fast `vips thumbnail`
+downscale to the width budget, and `-strip -quality` to ship. Keep it **named and subtle** — the finish
+serves the colour-script/clean-edge bar, never a filter look. If none of the tools exist, hand back the raw
+PNG unchanged. *(Want a wordmark/frame on top, or motion? That's a `handler-composite` figure, not a finish.)*
+
 ### 3. Adversarial self-review (assume it falls short of award-tier)
 `Read` the PNG and judge it against the [award bar](../skills/design-reviewer/references/image-aesthetic-canon.md)
 — do not hand back a "competent but generated" (3-tier) result:

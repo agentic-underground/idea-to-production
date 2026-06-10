@@ -11,8 +11,8 @@ description: >
   typographic + data-viz sub-agents in a comparative (A/B) mode.
 metadata:
   type: orchestrator
-  output: an embedded figure (svg|png) + a markdown edit + a ledger entry (.pressroom/illustration-ledger.json) in loop mode
-  composes: [handler-graphviz, handler-mermaid, handler-chart, handler-composition, handler-comfyui, design-reviewer]
+  output: an embedded figure (svg|png|gif|apng|mp4) + a markdown edit + a ledger entry (.pressroom/illustration-ledger.json) in loop mode
+  composes: [handler-graphviz, handler-mermaid, handler-chart, handler-composition, handler-comfyui, handler-composite, design-reviewer]
   shares:
     - ../rich-pdf-with-diagrams/references/charting-matrix.md
     - references/dark-mode-canon.md
@@ -42,6 +42,7 @@ legible on any host.
 | [`handler-chart`](../../agents/handler-chart.md) | quantitative comparison (bar/line/dot/small-multiple) | SVG |
 | [`handler-composition`](../../agents/handler-composition.md) | concept poster, labelled illustration, annotated callout, hero | SVG |
 | [`handler-comfyui`](../../agents/handler-comfyui.md) | genuinely pictorial / generative raster | PNG |
+| [`handler-composite`](../../agents/handler-composite.md) | SVG↔raster blend (raster atmosphere + vector type/frame); animated figure (build-up / loop) | GIF·APNG·MP4·PNG/JPG |
 
 All SVG handlers honour **dark-mode + transparency by default** ([dark-mode canon](references/dark-mode-canon.md))
 and the **4×9 charting matrix** ([charting-matrix](../rich-pdf-with-diagrams/references/charting-matrix.md)).
@@ -65,10 +66,16 @@ For a chosen site, pick the value handler and the diagram type:
 | a comparison **of data** | `handler-chart` | dataviz encoding ranking |
 | a non-graph concept poster / labelled figure / callout | `handler-composition` | composition kind |
 | a genuinely pictorial / generative image | `handler-comfyui` | text-to-image |
+| a raster atmosphere **needing crisp vector type/frame/data on top** (masthead, hero with wordmark) | `handler-composite` | blend |
+| a figure that earns **motion** — a diagram that builds up, a hero that breathes/loops | `handler-composite` | motion |
 
 **Tie-break: prefer vector + deterministic over ComfyUI** — reach for `handler-comfyui` only when the intent
 is genuinely pictorial, never for anything a graph expresses. When two vector handlers both fit, that
 ambiguity *becomes* the A/B axis (A from one, B from the other) and the reviewer decides.
+**Motion/blend is a deliberate choice, not a default** — route to `handler-composite` only when motion *adds
+meaning* (a reveal that teaches structure) or a blend is genuinely needed (raster atmosphere + sharp type);
+a static vector figure is the right answer for most diagrams. `handler-composite` degrades to a static poster
+when the motion tools are absent ([raster-toolchain canon](../../knowledge/raster-toolchain.md)).
 
 > **Routing to ComfyUI? Consult the evidence.** When the chosen handler is `handler-comfyui`, the
 > [`comfyui-model-guide`](../../knowledge/comfyui-model-guide.md) (built by the

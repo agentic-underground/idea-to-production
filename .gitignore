@@ -66,3 +66,7 @@ _render_*.html
 /doc/image-craft-study/verification/old/
 /doc/image-craft-study/rig-inventory/awesome-contact.jpg
 /doc/image-craft-study/rig-inventory/awesome-recipes.txt
+# toolchain (Phase 8): track src/ scripts + the small proof/ evidence; ignore frames + heavy intermediates
+/doc/image-craft-study/toolchain/frames/
+/doc/image-craft-study/toolchain/out/
+/doc/image-craft-study/toolchain/src/*.png
