@@ -27,18 +27,54 @@ point and flat light is the *entry-level trap* (~70s), not a pass. The multi-sta
 clear that bar. The bar itself — and the hard failure modes that cap a score regardless of polish — live in
 the [image-aesthetic canon](../skills/design-reviewer/references/image-aesthetic-canon.md).
 
+## Stylized / Illustrated / Sculptural — the PRIMARY class for doc heroes & banner bands
+
+**This is the default look for every README hero and ~1920×400 banner atmosphere band.** The maintainer's
+taste is **stylized, not photoreal** — bas-relief, line-art, whimsical-3D, painterly. Clean photorealism
+("look, a lighthouse!") reads as AI-slop with no graphic voice and caps low on Composition & Art-direction
+in the [image-aesthetic canon](../skills/design-reviewer/references/image-aesthetic-canon.md). For docs,
+work that commits to a distinct visual language **outscores competent photorealism**. Pick a style row, set
+its checkpoint + LoRA, run **low CFG (3.5–4.5)** and the SDE-GPU samplers below.
+
+| Style | Checkpoints (live root names) | LoRA | Use |
+|---|---|---|---|
+| **Bas-relief / sculptural** | `oasisSDXL_v10.safetensors`, `reproductionSDXL_2v12.safetensors` | `BAS-RELIEF.safetensors`@0.8 + `xl_more_art-full_v1.safetensors`@0.4 | **maintainer signature**; timeless carved-relief look — the strongest taste signal |
+| **Line-art / ink** | `bluePencilXL_v050.safetensors`, `nijianimesdxl_v10.safetensors` | `vntg-line-art-v2.safetensors` or `zyd232_InkStyle_v1_0.safetensors`@0.6, **CFG 3.5** | precise, mono ink; reads cleanly on **both** light and dark GitHub grounds |
+| **Whimsical 3D / toy** | `LahCuteCartoonSDXL_alpha.safetensors`, `nigi3d_v20.safetensors` | `blindbox_v1_mix.safetensors`@0.4 | warm, approachable, characterful |
+| **Concept / painterly** | `dynavisionXLAllInOneStylized_beta0411Bakedvae.safetensors`, `zavychromaxl_v12.safetensors` | `CraigMullins.safetensors`@0.5 + `xl_more_art-full_v1.safetensors`@0.5 | rich texture, brushwork, **not photoreal** |
+
+> All four style checkpoints are **root-level bare names** post-reorg (see the path rule below); resolve them
+> against live `/object_info` before submit. The line-art LoRA is named generically in the plan — the rig
+> carries several (`vntg-line-art-v2`, `zyd232_InkStyle_v1_0`, `animeoutlineV4_16`, `pensketch_lora_v2.3`,
+> `Ink scenery`); pick one and keep weight ≤0.6 so the outline stays crisp.
+
+**Routing rule for doc heroes / banner bands (canonical):**
+1. **Prefer Stylized/Bas-relief** — the maintainer signature; the default first reach.
+2. **Acceptable: Concept/painterly** — when a richer, atmospheric band fits the plugin's spirit.
+3. **AVOID photoreal** — it reads as slop with no character; demote to the tertiary table below and use only
+   when a brief explicitly calls for a literal photographic subject (rare for docs/banners).
+4. **NEVER bake text** — every checkpoint renders gibberish glyphs; banners carry their wordmark in the crisp
+   SVG layer, never the raster band. The band is *atmosphere*, not the subject.
+
+**Settings for the stylized class:** **CFG 3.5–4.5** (low, per maintainer recipes), high steps (50–60 base /
+~31 refine), samplers `dpmpp_sde_gpu` or `dpmpp_3m_sde_gpu` on **karras** (upscale passes `euler`/`normal`).
+Banner-band positive/negative prompts per style: [prompt-craft](../skills/illustrator/references/prompt-craft.md).
+
 ## Intent → recommended asset (decision table)
+
+> The stylized class above is **primary** for heroes/banners. The table below covers the full intent space;
+> for a doc hero or banner band, route through the stylized class first and treat **photoreal as tertiary**.
 
 | Intent class | Examples | Top pick (live name) · backups | Settings | LoRA / stage note |
 |---|---|---|---|---|
-| **Photoreal scene** | hero shots, atmospheric environments | `juggernautXL_version2.safetensors` · `epicrealism_naturalSinRC1VAE` · `realisticStockPhoto_v10` · `cyberrealistic_v31` | 1216×832 · 30 · cfg 6 · dpmpp_2m karras | recipe A — base→latent-hires→UltraSharp; LoRA usually none |
+| **Photoreal scene** *(tertiary for docs/banners — avoid)* | literal photographic subjects only | `juggernautXL_version2.safetensors` · `epicrealism_naturalSinRC1VAE` · `realisticStockPhoto_v10` · `cyberrealistic_v31` | 1216×832 · 30 · cfg 6 · dpmpp_2m karras | recipe A — base→latent-hires→UltraSharp; LoRA usually none. **Not for heroes/banners** — reads as slop; prefer the stylized class above |
 | **Photoreal portrait / character** | faces, people, lifestyle | `nightvisionXLPhotorealisticPortrait_v0743ReleaseBakedvae` · `realisticStockPhoto_v10` · `fullyREALXL_v90Vividreal` | 832×1216 · 30 · cfg 6 · dpmpp_2m karras | recipe E — **FaceDetailer mandatory**; `perfecteyes-000007`@0.4 |
 | **Stylized / concept / game-art** | painterly, dreamy, concept | `dynavisionXLAllInOneStylized_beta0411Bakedvae` · `protovisionXLHighFidelity3D_beta0520Bakedvae` · `zavychromaxl_v12` · `crystalClearXL_ccxl` | 1344×768 · 30 · cfg 7 · dpmpp_2m karras | recipe B — `xl_more_art-full_v1`@0.6 + 1 artist anchor; **FreeU V2** |
 | **Landscape / nature** | vistas, matte, backgrounds | `juggernautXL_version2` (native res) · `realcartoon3d_v8` (SD1.5) · `epicdream_lullaby` (SD1.5) | XL 1344×768 / SD1.5 768×512 · 28–30 · cfg 6 · dpmpp_2m karras | recipe C — Remacri upscale; **no FaceDetailer**; bright-sky → §dark |
 | **Anime / stylized character** | anime, cel | `animagineXL_v10` · `counterfeitxl_v10` · `bluePencilXL_v050` · `nijianimesdxl_v10` | 832×1216 · 30 · cfg 7 · dpmpp_2m karras | tag-style prompt; `RealESRGAN_x4plus_anime_6B` upscaler |
 | **Cartoon / mascot** | logos, friendly mascots | `modernDisneyXL_v11` · `dynavisionXL…` · `samaritan3dCartoon_v40SDXL` · `realcartoonXL_v3` | 1216×832 · 28–30 · cfg 6.5 · dpmpp_2m karras | mascots bake a bright ground → cut out before embed |
 | **Fast / draft / lightning** | A/B challengers, high-iteration | `LIGHTNING/juggernautXL_v9Rdphoto2Lightning` · `LIGHTNING/RealitiesEdgeXLLIGHTNING_V7Bakedvae` | 1216×832 · **6 · cfg ~2 · dpmpp_sde sgm_uniform** | tied best-overall at 6 steps — a credible *final* for mascot/office |
-| **Dark-key hero** (README mastheads) | text-free, people-free dark assets | `dynavisionXLAllInOneStylized…` · `zavychromaxl_v12` | 1344×768 · 32 · cfg 6.5 · dpmpp_2m karras | recipe F — `lowkey_v1.1`@0.6 + `LowRA`@0.4 + void-bg steer; **the gold** |
+| **Dark-key hero** (README mastheads) | text-free, people-free dark assets | `dynavisionXLAllInOneStylized…` · `zavychromaxl_v12` | 1344×768 · 32 · cfg 6.5 · dpmpp_2m karras | recipe F — `lowkey_v1.1`@0.6 + `LowRA`@0.4 + void-bg steer; **the gold**. For doc heroes/banners, route via the **stylized class** (top of doc) and stack a dark-key LoRA for the dark ground |
 | **Inpaint / background fix** | object removal, dark-ground repaint | `LIGHTNING/dreamshaperXL_lightningInpaint` · `epicrealism_v10-inpainting` | per base | repaint a bright ground dark before keying a hero |
 | **Chart / infographic / text** | `line-goes-up`, labelled diagrams | **route to vector** (`handler-chart`/`handler-graphviz`) | — | **CONFIRMED:** best score was 72; every model baked gibberish text. Diffusion cannot render legible labels — never route here. |
 

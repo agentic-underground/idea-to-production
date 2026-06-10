@@ -26,6 +26,23 @@ and muddy colour is **not a high score** — it is the *entry-level trap*. Concr
 A reviewer that hands a "3-tier" image a 90+ is **too lenient** and has failed; that is the exact failure this
 canon exists to prevent.
 
+## The photorealism trap (and the AI-slop cap)
+
+Two calibrations of the **Composition & art-direction** dimension, because *technically-correct is not
+professionally-excellent* — a clean render of a flat idea is the single most common false-PASS.
+
+- **Photorealism trap.** Clean photorealism with correct anatomy can **still** score **≤ 3 on Composition**
+  when it lacks a **distinctive graphic voice**. "Look, a real lighthouse" is rendering, not art-direction;
+  correctness is the artifact-freedom dimension, not this one. For doc heroes and banners, **stylized /
+  illustrated / sculptural work that commits to a clear visual language OUTSCORES competent photorealism** —
+  a bas-relief, ink-line, or painterly piece with a nameable point of view reads as *authored*, where photoreal
+  reads as *captured* and easily slips into the generic. Photoreal earns the top Composition band only with a
+  genuine, nameable graphic POV (a decisive light script, a committed palette, a framing that means something).
+- **AI-slop / entry-level cap (the Dunning–Kruger cap).** Ask plainly: *would a professional designer call this
+  "AI-made" or "student-portfolio"?* If **yes** → **Composition & art-direction ≤ 3**, regardless of how clean,
+  on-prompt, or artifact-free the image is. This is the same lenience the award bar forbids, stated as a hard
+  cap the reviewer can apply on sight.
+
 ## The six dimensions (each 0–5)
 
 | Dim | Weight | 5 = award-tier | 3 = the trap | 0–1 = broken |
