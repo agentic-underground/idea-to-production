@@ -22,6 +22,12 @@ emit() {
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="#1e1e2e"/>\n'
+    printf '<defs>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
+    printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    printf '</defs>\n'
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
     printf '<text x="%d" y="48" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700" fill="#e8e8ef" text-anchor="middle">the test-first value conveyor · idea ▸ product</text>\n' "$((W/2))"
     # the conveyor rail
     printf '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="#2a2a40" stroke-width="6"/>\n' "$PAD" "$CY" "$((W-PAD))" "$CY"
@@ -58,7 +64,7 @@ emit() {
       if [ -n "$glow" ]; then
         printf '<circle cx="%d" cy="%d" r="%d" fill="none" stroke="%s" stroke-width="3" opacity="0.35"/>\n' "$x" "$CY" "$((r+9))" "$glow"
       fi
-      printf '<circle cx="%d" cy="%d" r="%d" fill="%s" opacity="%s"/>\n' "$x" "$CY" "$r" "$col" "$op"
+      printf '<circle cx="%d" cy="%d" r="%d" fill="%s" opacity="%s" filter="url(#ns)"/>\n' "$x" "$CY" "$r" "$col" "$op"
       # check-mark inside latched-teal gates
       if [ "$col" = "$TEAL" ]; then
         printf '<path d="M %d %d l %d %d l %d %d" stroke="#0f2e28" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>\n' \
@@ -84,23 +90,31 @@ emit() {
   } > "$path"
 }
 f=0
-mk(){ emit "$1" "$2" "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1)); }
-# 1) token rides IDEA → EARS (gates latch green as cleared)
-mk 0 0
-mk 1 0
-# 2) token reaches TESTS — failing test lights RED (test-first: red before code)
-mk 2 0
-mk 2 0          # hold the red beat so the "red first" reads
-# 3) token advances to IMPL — code is written against the red proof
-mk 3 0
-# 4) the spine: with IMPL in place, TESTS flips red → green
-mk 3 1          # flip beat
-mk 3 1          # hold the green-flip beat
-# 5) token rides on through GREEN → SHIP, everything latched teal
-mk 4 1
-mk 5 1
-# 6) settle: token past the end, full line complete — hold as poster (loop reads as "settled")
-mk 6 1
-mk 6 1
-mk 6 1
+: > "$OUT/TIMING.tsv"
+# mk <token_at> <tests_green> <role> <holds> — emit ONE distinct visual state and tag its
+# output-frame dwell. Each state is emitted exactly once; the holds count (consumed by reslow.sh
+# via TIMING.tsv) gives organic meter so info-dense "Ah-HA!" beats linger and pure transitions flick.
+mk(){
+  local at=$1 tg=$2 role=$3 holds=$4
+  emit "$at" "$tg" "$OUT/f$(printf '%03d' $f).svg"
+  printf '%d\t%s\t%d\n' "$f" "$role" "$holds" >> "$OUT/TIMING.tsv"
+  f=$((f+1))
+}
+# 1) token at IDEA — the spine concept is introduced (66-char teaching caption): the Ah-HA dense beat.
+mk 0 0 dense 28
+# token rides IDEA → EARS — node advances, caption unchanged: a pure transition.
+mk 1 0 transition 3
+# 2) token reaches TESTS — failing test lights RED, test-first (62-char teaching caption):
+#    the MANDATORY red Ah-HA spine beat.
+mk 2 0 dense 28
+# 3) token advances to IMPL — still red, caption unchanged: a pure transition.
+mk 3 0 transition 3
+# 4) the spine flip: with IMPL in place, TESTS flips red → green (63-char teaching caption):
+#    the MANDATORY green-flip Ah-HA spine beat.
+mk 3 1 dense 28
+# 5) token rides on through GREEN → SHIP, everything latched teal: pure transitions.
+mk 4 1 transition 3
+mk 5 1 transition 3
+# 6) settle: token past the end, full line complete — the settled poster (loop reads as "settled").
+mk 6 1 poster 48
 echo "emitted $f frames into $OUT"

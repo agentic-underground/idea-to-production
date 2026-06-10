@@ -74,3 +74,6 @@ _render_*.html
 # diagram-fail: track the runner + FINDINGS + the downsized evidence jpg; ignore raw rasters
 /doc/image-craft-study/diagram-fail/images/
 /doc/image-craft-study/workflows/reruns/
+
+# Workflow helper scripts (local, not shipped)
+.claude/wf-*.js

@@ -66,6 +66,50 @@ The reliable way to get a README-hero asset that drops onto a dark page as if tr
 - **Never rely on diffusion for text** — every checkpoint bakes gibberish glyphs. Keep heroes **text-free**;
   add any labels in the page/SVG layer. This is the single hardest rule.
 
+## Banner atmosphere-band recipes (stylized, ~1920×400, wordmark sits on top)
+
+A **banner band** is the wide-short raster *behind* a plugin's crisp SVG branding (wordmark + motif +
+tagline). It is **atmosphere, not the subject** — dimmed and blurred, it must leave **wide negative space**
+(typically a darker centre/left third) for the vector wordmark to read on, and it must **never** contain text,
+people, or photoreal sheen. Stylized is primary (see the
+[model guide](../../../knowledge/comfyui-model-guide.md) Stylized class); pick the band style per the plugin's
+spirit, run **low CFG 3.5–4.5**, `dpmpp_sde_gpu`/`dpmpp_3m_sde_gpu` · **karras**. All four share the same
+banning negative; only the positive medium changes.
+
+**Shared negative (text / people / photoreal sheen — use on every band):**
+`text, words, letters, lettering, typography, captions, watermark, signature, logo, ui, numbers, person,
+people, human, face, portrait, crowd, hands, glossy photoreal render, photographic skin, plastic sheen,
+overexposed, high-key, busy cluttered centre`.
+*(Per the non-contradiction rule: the bands are dark, so keep `dark`/`shadow`/`low-key` OUT of the negative.)*
+
+- **Bas-relief / sculptural band** *(maintainer signature — first reach)*
+  - **Positive:** `carved bas-relief stone frieze, sculptural low-relief, monochrome engraved surface, raking
+    side light grazing the carving, deep recessed shadow, vast empty dark stone field on the left, wide
+    negative space, minimalist, matte, no gloss`.
+  - **Base + LoRA:** `oasisSDXL_v10` / `reproductionSDXL_2v12` · `BAS-RELIEF.safetensors`@0.8 +
+    `xl_more_art-full_v1.safetensors`@0.4.
+- **Line-art / ink band** *(reads on both light and dark grounds)*
+  - **Positive:** `fine ink line-art, clean contour drawing, sparse hatching, single-weight pen strokes on a
+    deep ink-blue ground, generous empty space across the band, minimalist linework, low contrast, no fill`.
+  - **Base + LoRA:** `bluePencilXL_v050` / `nijianimesdxl_v10` · `vntg-line-art-v2.safetensors`@0.6 (or
+    `zyd232_InkStyle_v1_0`); keep **CFG 3.5** so the outline stays crisp.
+- **Whimsical 3D / toy band** *(warm, approachable)*
+  - **Positive:** `soft whimsical 3D toy diorama, rounded matte clay forms, gentle studio rim light, muted
+    twilight palette, a single small motif set far to one side, wide empty dark backdrop, charming,
+    uncluttered`.
+  - **Base + LoRA:** `LahCuteCartoonSDXL_alpha` / `nigi3d_v20` · `blindbox_v1_mix.safetensors`@0.4.
+- **Concept / painterly band** *(rich texture, not photoreal)*
+  - **Positive:** `atmospheric concept-art matte painting, loose visible brushwork, volumetric haze, moody
+    low-key palette, a faint distant motif at the edge, vast hazy negative space, painterly not photographic,
+    deep shadow`.
+  - **Base + LoRA:** `dynavisionXLAllInOneStylized_beta0411Bakedvae` / `zavychromaxl_v12` ·
+    `CraigMullins.safetensors`@0.5 + `xl_more_art-full_v1.safetensors`@0.5.
+
+> The wordmark, motif and tagline are **always** added in the SVG layer over the band — never prompted into
+> the raster (diffusion bakes gibberish). Dim + blur the band before compositing; it should whisper, not
+> shout. Both light- and dark-ground legibility comes from the SVG scrim, so keep the band's wordmark zone the
+> darkest, calmest region.
+
 ## Anti-patterns
 
 - **Token piles** — `8k, 4k, uhd, hyperdetailed, ultra-realistic, trending on artstation, award-winning,

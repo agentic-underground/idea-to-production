@@ -35,6 +35,12 @@ emit() {
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="%s"/>\n' "$GROUND"
+    printf '<defs>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
+    printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    printf '</defs>\n'
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
     printf '<text x="%d" y="46" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700" fill="%s" text-anchor="middle">IDEATE · scattered fragments → one build-ready IDEA package</text>\n' "$CX" "$TXTL"
 
     # the package frame: a dim scaffold that fills with teal as axes reach knowledge-parity
@@ -72,7 +78,7 @@ emit() {
       fi
       # the fragment card
       printf '<g opacity="%s">\n' "$op"
-      printf '<rect x="%d" y="%d" width="120" height="46" rx="9" fill="%s" opacity="0.16"/>\n' "$((x-60))" "$((y-23))" "$col"
+      printf '<rect x="%d" y="%d" width="120" height="46" rx="9" fill="%s" opacity="0.16" filter="url(#ns)"/>\n' "$((x-60))" "$((y-23))" "$col"
       printf '<rect x="%d" y="%d" width="120" height="46" rx="9" fill="none" stroke="%s" stroke-width="2"/>\n' "$((x-60))" "$((y-23))" "$col"
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="700" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((y-1))" "$col" "${LBL[$i]}"
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="10.5" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((y+15))" "$TXTD" "${SUB[$i]}"
@@ -107,18 +113,34 @@ emit() {
 f=0
 nf() { printf '%s/f%03d.svg' "$OUT" "$f"; }
 
-# Phase 1: each fragment travels in and docks, one at a time (eased: 3 steps of travel per fragment).
-for d in 0 1 2 3; do
-  for p in 25 60 100; do emit "$d" "$p" 0 "$(nf)"; f=$((f+1)); done
-done
-# now all four docked, no stamp yet — a beat
-emit 4 0 0 "$(nf)"; f=$((f+1))
-# Phase 2: challenger stamps READY — land (amber), then settle (teal)
-emit 4 0 1 "$(nf)"; f=$((f+1))
-emit 4 0 2 "$(nf)"; f=$((f+1))
-# Phase 3: hold the complete poster so the loop reads as settled
-emit 4 0 2 "$(nf)"; f=$((f+1))
-emit 4 0 2 "$(nf)"; f=$((f+1))
-emit 4 0 2 "$(nf)"; f=$((f+1))
+# B1 timing: emit each DISTINCT visual state ONCE and record its role + hold count in TIMING.tsv
+# (one row per emitted frame, in order: <frame_index>\t<role>\t<holds>, TAB-separated). reslow.sh reads
+# this to give pure transitions a flick and the meaning beats their "Ah-HA!" dwell — no faked repeats.
+#   transition=3 · label=7 · caption=14 · long=21 · dense=28 · poster=48
+# Ah-HA floor (≥24): the convergence-to-package beat and the READY caption are this figure's core meaning.
+TIMING="$OUT/TIMING.tsv"
+: > "$TIMING"
+# $1 docked  $2 prog  $3 stamp  $4 role  $5 holds  — emit one distinct state, log its timing row
+step() {
+  emit "$1" "$2" "$3" "$(nf)"
+  printf '%d\t%s\t%d\n' "$f" "$4" "$5" >> "$TIMING"
+  f=$((f+1))
+}
 
-echo "emitted $f frames into $OUT"
+# Phase 1: each fragment travels in (transitions, flick by) and DOCKS — the dock locks one axis to
+# knowledge-parity (a teal label reveal → label role, 7 holds, ≤20 chars).
+for d in 0 1 2 3; do
+  step "$d"  25 0 transition 3
+  step "$d"  60 0 transition 3
+  step "$d" 100 0 label      7
+done
+# all four docked, no stamp — the scattered fragments have CONVERGED into one IDEA package. This is the
+# core "Ah-HA!" of the figure → dense, 28 holds (≥24): time to see the package come together and read it.
+step 4 0 0 dense 28
+# Phase 2: the challenger's READY stamp lands (amber) — the meaning beat (knowledge-parity → hand off).
+# The 68-char teaching caption is the sequence's payoff → dense, 28 holds (≥24).
+step 4 0 1 dense 28
+# Phase 3: the stamp settles teal — the complete, build-ready poster the loop rests on → poster, 48 holds.
+step 4 0 2 poster 48
+
+echo "emitted $f frames into $OUT (TIMING.tsv: $(grep -c '' "$TIMING") rows)"

@@ -1,6 +1,6 @@
 # ATELIER — Design studio & adversarial UI review
 
-![A craftsman's drafting studio at night: an angled drafting table glowing teal at its centre, two luminous cyan wireframe blueprints on the wood-panelled walls, and warm amber desk lamps — where screens become considered, elegant interfaces.](diagrams/hero.jpg)
+![Wide dark branding banner: the "atelier" wordmark and the tagline "where screens become considered interfaces" beside a faint line-art drafting-table motif on a deep graphic band.](diagrams/banner.png)
 
 > The designer's workshop of the marketplace — where visual work is both **made** and **critiqued** to a
 > commercial-grade standard. *Artistic, elegant, powerful, excellent.*

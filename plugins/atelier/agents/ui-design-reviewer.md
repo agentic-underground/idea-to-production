@@ -46,14 +46,41 @@ controls whether the loop continues, converges, or halts** ([the loop](
 
 ## Procedure (one invocation, the assigned lens or the full panel)
 
-1. **See the artefact.** `Read` the screenshot(s) — built-in vision, no API key. When the Playwright MCP is
-   available, also read the **accessibility tree** (`mcp__playwright__*`) and run `axe-core` for the
-   automated a11y floor. The a11y tree catches what a screenshot cannot (names, roles, focus order).
-2. **Walk the canon in human-impact order:** visual-foundations → interaction-laws → accessibility. For
+> **RENDER-FIRST — the non-skippable first action.** You must **look at the actual rendered pixels** — the
+> screenshot of the running route, or the rasterised image — *before* you read any markup, SPEC, component
+> source, or generator code. A verdict reasoned from source instead of pixels is invalid: the defects this
+> reviewer exists to catch (text past a border, text on a line, crowded padding, overlap, an illegible
+> caption) are **invisible in the source** and only appear once rendered. Steps 1–3 happen before you open
+> any code.
+
+1. **RENDER to pixels — first, always.**
+   - **Running SPA / route** — drive it with the Playwright MCP and **take the screenshot** of each route
+     (`mcp__playwright__*`); the screenshot pixels are the artefact you judge.
+   - **Static screenshot / image** — `Read` the PNG directly (built-in vision, no API key).
+   - **Generated/pictorial image or SVG figure** — render it: `rsvg-convert -b "#0b0b12" fig.svg -o fig.png`,
+     then `Read` it. **For an animated figure** (`.gif`/`.apng`/`.mp4`) sample **first / 25% / 50% / 75% /
+     last** and build a **1×5 frame-strip** via `magick montage`, bg `#0b0b12` (PRESSROOM's
+     `raster-toolchain.md` Recipe 5 by capability, or `magick montage <5 frames> -tile 1x5 -geometry
+     640x150+6+6 -background "#0b0b12" strip.png`) — you score the strip, not the live file.
+2. **READ the rendered pixels (vision) — BEFORE any markup / SPEC / source.** When the Playwright MCP is
+   available, also read the **accessibility tree** (`mcp__playwright__*`) and run `axe-core` for the automated
+   a11y floor — the a11y tree catches what a screenshot cannot (names, roles, focus order). But the pixels
+   come first and ground the verdict.
+3. **LAYOUT-DEFECT CHECKLIST (run it on every rendered screenshot/frame).** **ANY** trigger → automatic
+   `NEEDS_REVISION`, citing the **specific route/frame**:
+   - **text clipped / cut at the edge**, or **crossing a border/box** it is meant to sit inside;
+   - **text overlapping** a line, arc, node, control, or other text;
+   - any **bordered element with < 10px internal padding** (crowded);
+   - a **caption/label illegible at GitHub's inline width (~640px)** for a figure — check the **downscaled
+     strip**, not just the full-res frame.
+   These are layout bugs a human spots at a glance; they gate before taste is scored.
+4. **Walk the canon in human-impact order:** visual-foundations → interaction-laws → accessibility. For
    each finding record **(a) principle · (b) violation · (c) user cost · (d) concrete fix · (e) rubric
    dimension**. Hold the **accessibility gate** absolutely (WCAG 2.2 AA — a failure is ≥HIGH and blocks PASS).
-3. **Score the design-fitness rubric** (0–100) — per-dimension 0–5 × weight. Show the math briefly.
-4. **Prioritise** every finding HIGH / MED / LOW (pr-review severity model).
+   Only **now** may you open the markup / component source / generator to confirm a cause or check spec
+   compliance.
+5. **Score the design-fitness rubric** (0–100) — per-dimension 0–5 × weight. Show the math briefly.
+6. **Prioritise** every finding HIGH / MED / LOW (pr-review severity model).
 
 ## Output
 
@@ -89,7 +116,15 @@ Read your assigned lens from context; if none, run the full panel. Do not mix le
   **pictorial images** (generated hero art, concept, illustration) this is the *primary* lens, scored against
   the full art-direction canon with the **artifact floor** capping any image with mangled anatomy, gibberish
   text, melted geometry, or broken perspective. Every finding names the principle **and a concrete exemplar**
-  that does it right (e.g. *"flat lighting — cf. Leibovitz's three-point key"*).
+  that does it right (e.g. *"flat lighting — cf. Leibovitz's three-point key"*). **Two taste caps bite here**
+  (technically-correct ≠ professionally-excellent):
+  - **AI-slop / entry-level cap (the Dunning–Kruger cap)** — *would a professional designer call this
+    "AI-made" or "student-portfolio"?* If **yes** → **Composition & art-direction ≤ 3**, regardless of how
+    clean / on-prompt / artifact-free it is.
+  - **Photorealism trap** — clean photoreal with correct anatomy can **still** score **≤ 3 on Composition**
+    when it lacks a distinctive graphic voice; for docs, **stylized / illustrated / sculptural work that
+    commits to a clear visual language OUTSCORES competent photorealism.** Photoreal tops the band only with a
+    genuine, nameable graphic point of view.
 - **CONSISTENCY-REVIEWER** — tokens, spacing scale, pattern & convention coherence; Jakob's Law.
 - **RICHNESS-MOTION-REVIEWER** — *is the figure as rich as its medium allows?* The art-direction canon's
   **§8 (medium reach)** + **§9 (motion & temporal craft)**: depth/layered planes, a crisp-vector-over-rich-raster

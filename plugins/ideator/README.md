@@ -1,5 +1,7 @@
 # IDEATOR — Refine an idea into a build-ready IDEA package
 
+![Wide dark branding banner: the "ideator" wordmark and the tagline "scattered idea, build-ready package" beside a faint line-art converging-facets motif on a deep graphic band.](diagrams/banner.png)
+
 > The bridge from *a candidate worth pursuing* to *a thing the conveyor can build*.
 
 IDEATOR is the **REFINEMENT** phase of the `idea-to-production` marketplace. It takes a validated

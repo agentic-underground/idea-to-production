@@ -1,6 +1,6 @@
 # SENTINEL — Security & Privacy Gate
 
-![A lone lighthouse standing vigilant on a dark headland at night, an amber beacon glowing at its summit and a teal scanning light sweeping over a luminous cyan shoreline below — a sentinel watching so nothing unsafe gets through.](diagrams/hero.jpg)
+![Wide dark branding banner: the "sentinel" wordmark and the tagline "certify before exposure" beside a faint line-art gate-and-shield motif on a deep graphic band.](diagrams/banner.png)
 
 > Never ship a leaked key, a real person's data, or a vulnerable dependency.
 
