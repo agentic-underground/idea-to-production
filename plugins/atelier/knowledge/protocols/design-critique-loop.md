@@ -34,7 +34,10 @@ to the [`canon/`](../canon/README.md). Each dimension scores **0–5**; the weig
 > text / melted geometry / broken perspective ⇒ cannot PASS, regardless of polish). The accessibility *gate*
 > is replaced by the artifact floor + the image's alt-text / dual-ground legibility where it embeds. For
 > award-tier pictorial work the **TARGET is raised** (the bar is "publication/gallery-ready", not merely
-> "acceptable") — "competent but clearly generated" is a finding, not a pass.
+> "acceptable") — "competent but clearly generated" is a finding, not a pass. The **RICHNESS-MOTION-REVIEWER**
+> lens (canon §8 medium-reach + §9 motion) co-scores: a flat single-layer image where a blend/depth would
+> serve, or motion that's gratuitous rather than motivated, is *"too simple / entry-level"* — also a finding,
+> not a pass. Animated artefacts are reviewed from a **frame-strip** and must ship a reduced-motion poster.
 
 ## The loop (bounded, measurable, terminating)
 

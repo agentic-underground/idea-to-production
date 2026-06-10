@@ -8,8 +8,9 @@ description: >
   art-direction canon — composition · light · colour · narrative · medium · the award bar), score it on the
   design-fitness rubric, and return prioritised findings that drive the convergent improvement loop.
   Accepts an optional lens parameter to focus a pass: HIERARCHY-REVIEWER, INTERACTION-REVIEWER,
-  ACCESSIBILITY-REVIEWER, AESTHETICS-REVIEWER, or CONSISTENCY-REVIEWER. Default is the full panel. Other
-  plugins (e.g. PRESSROOM's image-aesthetic review) compose the AESTHETICS lens by capability. Carries the
+  ACCESSIBILITY-REVIEWER, AESTHETICS-REVIEWER, CONSISTENCY-REVIEWER, or RICHNESS-MOTION-REVIEWER. Default is
+  the full panel. Other plugins (e.g. PRESSROOM's image-aesthetic review) compose the AESTHETICS +
+  RICHNESS-MOTION lenses by capability. Carries the
   SOLID self-improvement covenant.
 tools: Read, Bash, Grep, Glob, mcp__playwright__*
 model: claude-opus-4-8
@@ -90,16 +91,25 @@ Read your assigned lens from context; if none, run the full panel. Do not mix le
   text, melted geometry, or broken perspective. Every finding names the principle **and a concrete exemplar**
   that does it right (e.g. *"flat lighting — cf. Leibovitz's three-point key"*).
 - **CONSISTENCY-REVIEWER** — tokens, spacing scale, pattern & convention coherence; Jakob's Law.
+- **RICHNESS-MOTION-REVIEWER** — *is the figure as rich as its medium allows?* The art-direction canon's
+  **§8 (medium reach)** + **§9 (motion & temporal craft)**: depth/layered planes, a crisp-vector-over-rich-raster
+  **blend** where each layer plays to its medium, and — for animated figures — **motivated, eased, well-staged
+  motion** with a clean loop/final frame and a reduced-motion poster. A flat single-layer image where a blend or
+  depth would obviously serve is the *"too simple / entry-level"* tell. For an animation, score from a
+  **frame-strip montage**, not the live file. This is the lens PRESSROOM's image reviewer composes for its scored
+  **Medium-richness** dimension.
 
 ## Reviewing a pictorial image (not a screen)
 
 When the artefact is a **generated/pictorial image** rather than a UI, run the AESTHETICS lens against
 [`art-direction.md`](../knowledge/canon/art-direction.md) as the spine (composition → light → colour →
-narrative → style/medium → the award bar), and the artifact floor first (a hard fail caps the score before
-taste matters). The bar is **award-tier, not "acceptable"**: "competent but clearly generated" is a
-*finding*, not a pass — name which entry-level tell it exhibits (§6 of the canon) and the exemplar that
-shows the fix. Accessibility for an image means its alt-text and dual-ground legibility where it embeds; the
-WCAG screen gate does not apply, but the artifact floor does.
+narrative → style/medium → **medium-richness §8 → motion §9** → the award bar), and the artifact floor first
+(a hard fail caps the score before taste matters). The bar is **award-tier, not "acceptable"**: "competent but
+clearly generated" — *or* "clean but flat, leaving the medium on the table" — is a *finding*, not a pass; name
+which entry-level tell it exhibits (§6) or what richer treatment it forgoes (§8/§9), with the exemplar that
+shows the fix. For an **animated** figure, review a **frame-strip** (sampled frames in one image). Accessibility
+for an image means its alt-text and dual-ground legibility where it embeds, **plus reduced-motion respect (a
+static poster) for animation**; the WCAG screen gate does not otherwise apply, but the artifact floor does.
 
 ## The covenant
 

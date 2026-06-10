@@ -28,7 +28,7 @@
 | **Visual foundations** | [`visual-foundations.md`](visual-foundations.md) | Is the eye guided? Do the marks group, rank, and read correctly? (Gestalt · hierarchy · colour · type · grid) |
 | **Interaction laws** | [`interaction-laws.md`](interaction-laws.md) | Is it usable, learnable, *and delightful*? (Fitts · Hick · Miller · Jakob · Nielsen's heuristics · Norman) |
 | **Accessibility** | [`accessibility.md`](accessibility.md) | Can *everyone* use it, on any device, by any means? (WCAG 2.2 AA + the evaluation method) |
-| **Art direction** | [`art-direction.md`](art-direction.md) | Is the *image* award-tier or merely generated? (composition · light · colour · narrative · style/medium · the award bar) — the spine for **pictorial** work (hero art, concept, illustration), and the named theory behind the *delight* of a screen |
+| **Art direction** | [`art-direction.md`](art-direction.md) | Is the *image* award-tier or merely generated? (composition · light · colour · narrative · style/medium · **medium-richness §8 · motion §9** · the award bar) — the spine for **pictorial** work (hero art, concept, illustration, **blends & animation**), and the named theory behind the *delight* of a screen |
 
 > The first three lenses judge the **screen**; **art direction** judges the **image** — and supplies the
 > named aesthetic theory the screen's *delight* dimension leans on. For a pictorial artefact, walk

@@ -32,12 +32,19 @@ root / `knowledge/canon/art-direction.md` present — by capability, never a har
 
 1. **See it.** `Read` the PNG(s) — built-in vision. For a contact-sheet, identify each labelled cell. For a
    hero/A-B image, also rasterise/composite onto the host ground(s) it will embed on if dark-mode matters.
+   **For an animated figure** (`.gif`/`.apng`/`.mp4`), you can't watch it — build a **frame-strip** and Read
+   that: `magick montage <sampled frames> -tile 1x6 -geometry 640x150+6+6 -background "#0b0b12" strip.png`
+   (the handler usually emits one; if you only have the GIF, `magick anim.gif[0] anim.gif[3] … +append strip.png`).
 2. **Artifact floor first.** Scan for the hard caps (mangled anatomy, gibberish/baked text, melted geometry,
    broken perspective). A hard fail caps the image *before* any taste is scored — name it concretely.
-3. **Score the five dimensions** (category-fit, prompt-adherence, artifact-freedom, **composition &
-   art-direction**, doc/dark-mode) 0–5 each, per the canon's award-tier tiers (5 = award-tier, 3 = the
-   competent-but-generated trap, 0–1 = broken). The aesthetic dimension is scored against art-direction
-   theory, NOT by feel.
+3. **Score the six dimensions** (category-fit, prompt-adherence, artifact-freedom, **composition &
+   art-direction**, **medium-richness**, doc/dark-mode) 0–5 each, per the canon's award-tier tiers (5 =
+   award-tier, 3 = the competent-but-generated trap, 0–1 = broken). The two taste dimensions are scored
+   against theory, NOT by feel: composition against the art-direction canon; **medium-richness** against
+   *"is this the richest the medium allows — depth/layering, a crisp-vector-over-rich-raster blend, motion
+   that's motivated & eased — or is something obvious left on the table?"* (the canon's *Reviewing a
+   blended or animated figure* path). A flat single-layer image where a blend/depth/motion would clearly
+   serve is **richness 3** — that is the explicit answer to "too simple / entry-level".
 4. **Name failures concretely with an exemplar** — "no focal point; the eye wanders — cf. the focal hierarchy
    in an award landscape", "flat frontal light — needs a motivated key (chiaroscuro)", "muddy mid-tone soup —
    needs a limited palette + warm/cool split", "melted left hand". Never "looks off".
@@ -50,9 +57,9 @@ root / `knowledge/canon/art-direction.md` present — by capability, never a har
 ```markdown
 ## Image-aesthetic review: <name>   ·   verdict: award-tier | strong | competent-but-generated | broken
 ### Scores
-| Fit | Adher | Artifact | Comp&AD | DocFit | Overall/100 |
-|---|---|---|---|---|---|
-| 5 | 5 | 5 | 4 | 5 | 96 |
+| Fit | Adher | Artifact | Comp&AD | Rich | DocFit | Overall/100 |
+|---|---|---|---|---|---|---|
+| 5 | 5 | 5 | 4 | 4 | 5 | 94 |
 ### Findings (named principle + exemplar + fix)
 | Pri | Principle | Violation → why it's not award-tier | Fix (lift path) |
 |-----|-----------|-------------------------------------|-----------------|
@@ -69,11 +76,11 @@ BEST (award-tier, ≥ target, an earned named positive) | CONTINUE (apply HIGH+M
 ```markdown
 ## Image-aesthetic review: <model-id>  ·  base <base>  ·  family <family>
 ### Per-category scores
-| Category | Fit | Adher | Artifact | Comp&AD | DocFit | Overall/100 | Verdict | Note |
-|---|---|---|---|---|---|---|---|---|
-| scenes | 5 | 5 | 5 | 5 | 4 | 96 | award-tier | motivated key + colour script |
-| office | 4 | 4 | 1 | 3 | 3 | 47 | broken | third hand on left figure (cap) |
-| line-goes-up | 1 | 1 | 2 | 2 | 2 | 24 | broken | gibberish axis text — route to vector |
+| Category | Fit | Adher | Artifact | Comp&AD | Rich | DocFit | Overall/100 | Verdict | Note |
+|---|---|---|---|---|---|---|---|---|---|
+| scenes | 5 | 5 | 5 | 5 | 4 | 4 | 94 | award-tier | motivated key + colour script; flat single plane |
+| office | 4 | 4 | 1 | 3 | 3 | 3 | 47 | broken | third hand on left figure (cap) |
+| line-goes-up | 1 | 1 | 2 | 2 | 1 | 2 | 23 | broken | gibberish axis text — route to vector |
 ### Profile
 best_for: [scenes]
 avoid_for: [line-goes-up, office]

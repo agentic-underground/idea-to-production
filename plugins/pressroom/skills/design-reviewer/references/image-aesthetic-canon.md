@@ -26,19 +26,23 @@ and muddy colour is **not a high score** — it is the *entry-level trap*. Concr
 A reviewer that hands a "3-tier" image a 90+ is **too lenient** and has failed; that is the exact failure this
 canon exists to prevent.
 
-## The five dimensions (each 0–5)
+## The six dimensions (each 0–5)
 
 | Dim | Weight | 5 = award-tier | 3 = the trap | 0–1 = broken |
 |---|---:|---|---|---|
-| **Category-fit** | 24 | unmistakably the asked category, rendered *excellently of its kind* | recognisably the category but generic | wrong subject; unrecognisable |
-| **Prompt-adherence** | 22 | every asked element present and *integrated*, not pasted | the gist is there, specifics vague | ignores the prompt; generic filler |
+| **Category-fit** | 22 | unmistakably the asked category, rendered *excellently of its kind* | recognisably the category but generic | wrong subject; unrecognisable |
+| **Prompt-adherence** | 20 | every asked element present and *integrated*, not pasted | the gist is there, specifics vague | ignores the prompt; generic filler |
 | **Artifact-freedom** | 22 | clean anatomy/geometry/text, coherent everywhere | minor softness, nothing broken | extra limbs, fused faces, melted hands, gibberish glyphs |
-| **Composition & art-direction** | 18 | the named art-direction canon clears award-tier (focal hierarchy, motivated light, colour script, mood) | flat/centred/even/muddy — the entry-level tells | no focal point, garish or muddy, amateur |
-| **Doc/dark-mode suitability** | 14 | restrained, embeddable, sits on a dark page; cleanly subjectable | usable but slightly busy/bright | garish, busy, hard-baked bright ground that fights a dark doc |
+| **Composition & art-direction** | 16 | the named art-direction canon clears award-tier (focal hierarchy, motivated light, colour script, mood) | flat/centred/even/muddy — the entry-level tells | no focal point, garish or muddy, amateur |
+| **Medium-richness** | 10 | as rich as the medium *allows* — depth/layered planes, SVG↔raster blend where each layer plays to its medium (crisp vector type + rich raster atmosphere), motion *motivated & eased* where the figure is animated | single flat layer where depth/blend/motion would clearly serve; "could be richer" left on the table; motion present but gratuitous/flickery | medium squandered — a blend with a soft rasterised wordmark, or motion that's noise |
+| **Doc/dark-mode suitability** | 10 | restrained, embeddable, sits on a dark page; cleanly subjectable | usable but slightly busy/bright | garish, busy, hard-baked bright ground that fights a dark doc |
 
 **Weighted total = the image-fitness score (0–100).** Score per image (or per contact-sheet cell), then report
-the profile. **The "Composition & art-direction" dimension is the named-taste dimension** — it is NOT scored
-by feel; it is scored against the art-direction canon (below).
+the profile. **"Composition & art-direction" and "Medium-richness" are the two named-taste dimensions** — neither
+is scored by feel: composition is scored against the art-direction canon (below); richness asks *"is this the
+richest this medium allows, and is every layer/motion earning its place?"* — the direct answer to "too simple /
+entry-level". A flat single-layer figure where a blend or depth would obviously serve is **3-tier on richness**,
+which (with composition) keeps it out of the top band.
 
 ## The art-direction grounding (named theory, by capability)
 
@@ -77,6 +81,17 @@ an image feels "generated":
 An image that trips two or more of these tells is **competent-but-generated (3-tier)** at best on this
 dimension, however clean and on-prompt — that is the lenience this canon forbids.
 
+**Medium-richness — inline baseline** (used when atelier's §8/§9 is absent). Score against:
+1. **Layer/depth** — does the figure use the depth its medium allows (overlapping planes, atmosphere), or is
+   it a flat single plane where layering would obviously serve? *Flat-where-depth-belongs = ≤3.*
+2. **Blend fitness** (SVG↔raster) — each layer plays to its medium: vector type/frame **razor-sharp**, raster
+   atmosphere genuinely rich. *A soft/rasterised wordmark, or a vector starved of atmosphere = ≤2.*
+3. **Motion** (animated figures, scored from a **frame-strip**) — motivated (a reveal that teaches / a loop
+   that breathes), eased, legible per frame, with a clean final/loop frame **and** a static poster.
+   *Gratuitous/flickery motion = 3; jarring/strobing = ≤1.*
+A clean, on-prompt, but **flat single-layer** image where a blend/depth/motion would clearly enrich the
+message is **richness 3** — the explicit "too simple / entry-level" verdict.
+
 ## Hard caps (no amount of polish overrides)
 
 - **Mangled human anatomy** (extra/missing limbs, fused or distorted faces, broken hands) where people are
@@ -89,9 +104,26 @@ dimension, however clean and on-prompt — that is the lenience this canon forbi
 - **Melted geometry / broken perspective** (duplicated/fused/dissolved forms; impossible vanishing) caps
   **artifact-freedom 0–1**.
 
+## Reviewing a blended or animated figure (the Medium-richness path)
+
+A still reviewer can't watch a GIF, and a flat raster hides what a blend/motion would add — so score richness
+with the right artefact:
+- **Blend (SVG↔raster):** judge whether **each layer plays to its medium** — is the vector layer (wordmark,
+  frame, callouts) **razor-sharp**, or soft/rasterised (a richness *failure*)? Is the raster atmosphere adding
+  depth, or just noise behind text? Is text legible over the busy region (scrim working)? A blend whose vector
+  is crisp and whose raster is genuinely atmospheric earns richness 5; a "raster with a fuzzy wordmark" is ≤ 2.
+- **Animation:** review the **frame-strip montage** the handler emits (`magick montage` of sampled frames) —
+  you score the *strip*, not the live GIF. Ask: does the motion **read as motivated** (a build-up that teaches
+  structure, a loop that breathes), eased, and coherent in colour-script across frames? Or is it gratuitous /
+  flickery / a slideshow? Motivated, legible, eased motion = 5; motion-for-motion's-sake = 3; broken/jarring = ≤1.
+  Confirm a **static poster frame** exists (reduced-motion + inline-fallback).
+- **Static figure that *should* be richer:** a flat single-plane image where layered depth or a blend would
+  obviously serve the message is **richness 3** — "competent but leaves the medium on the table." This is the
+  dimension that answers *"too simple / entry-level."*
+
 ## The per-image / per-model profile (what review extracts)
 
-For a single image: the five scores, the weighted total, the **named** aesthetic findings (principle +
+For a single image: the six scores, the weighted total, the **named** aesthetic findings (principle +
 exemplar + fix), and an explicit award-tier verdict (award-tier / strong / competent-but-generated / broken).
 For a model's contact-sheet, additionally:
 - **best-for** — the 1–2 categories it scores ≥ 4 on (its sweet spot).

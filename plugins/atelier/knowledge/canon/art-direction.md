@@ -136,6 +136,26 @@ disciplined colour script, a felt mood, true to its style, zero artifacts. Every
 > as a raster reviewer. Vector handlers (`handler-composition`, `handler-graphviz`, `handler-mermaid`,
 > `handler-chart`) are held to §1–§6, not a lower "it's a diagram" bar.
 
+## 9. Motion & temporal craft — when a figure earns animation
+
+> *Motion is a medium, not a decoration. An animated figure earns the word **award-tier** the same way a still
+> does — by intention. The richest imaging uses motion to **reveal** (a diagram that builds up teaches its
+> structure) or to **breathe** (a hero that loops gently holds attention) — never to flicker. §8 (medium reach)
+> + §9 (motion) are the named grounding for the reviewer's scored **Medium-richness** dimension.*
+
+| Principle | Essence — exemplary vs entry-level | Exemplar that does it right |
+|---|---|---|
+| **Motivated motion** | Every movement has a reason — a reveal that sequences meaning, a loop that lives. *Broken:* motion for motion's sake; spinning logos; gratuitous drift. | a pipeline that lights up stage-by-stage so the *order* becomes the message |
+| **Easing & timing** | Movement accelerates and settles like the physical world (ease-in-out), with a rhythm that reads. *Broken:* linear robotic tweens; jarring cuts; a slideshow flicker. | Disney's *slow-in/slow-out*; a 12-principles ease on every transition |
+| **Staging & focal flow** | Motion **directs the eye** in time — one thing moves, or moves first; the composition stays legible at every frame. *Broken:* everything moving at once; no frame reads. | a single element animating in against a still ground (motion as hierarchy) |
+| **The loop & the seam** | A loop returns to its start invisibly (or holds, then resets cleanly); a reveal ends on a strong, complete final frame. *Broken:* a visible jump-cut at the loop point; ending mid-gesture. | a seamless cycle; a build-up that ends on the full, poster-worthy frame |
+| **Restraint & accessibility** | Motion is brief, purposeful, and **respects reduced-motion** — always a static poster fallback; nothing flashing >3×/s. *Broken:* relentless looping that exhausts; a seizure-risk strobe. | a 2–3 s reveal then a calm hold; `prefers-reduced-motion` honoured ([accessibility.md](accessibility.md)) |
+
+> **How the reviewer uses §9:** a still reviewer scores motion from a **frame-strip montage** (sampled frames
+> in one image) — judging motivated-ness, easing legibility, staging, and the final/loop frame. Motivated,
+> eased, well-staged motion with a clean poster = richness 5; motion-for-motion's-sake = 3; jarring/strobing
+> = ≤ 1 (and the accessibility gate bites). Pressroom's image reviewer composes this lens **by capability**.
+
 ---
 
 > **The lineage these principles name:** Cartier-Bresson (the decisive moment), Caravaggio (tenebrism), the
