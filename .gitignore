@@ -71,3 +71,5 @@ _render_*.html
 /doc/image-craft-study/toolchain/lc-frames/
 /doc/image-craft-study/toolchain/out/
 /doc/image-craft-study/toolchain/src/*.png
+# diagram-fail: track the runner + FINDINGS + the downsized evidence jpg; ignore raw rasters
+/doc/image-craft-study/diagram-fail/images/
