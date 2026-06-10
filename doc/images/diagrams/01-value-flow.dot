@@ -1,63 +1,61 @@
 digraph ValueFlow {
   bgcolor="transparent"
-  rankdir=LR
-  nodesep=0.30
-  ranksep=0.55
+  rankdir=TB
+  nodesep=0.36
+  ranksep=0.34
   splines=true
 
   node [shape=box, style="filled,rounded", fillcolor="#1e1e2e",
         color="#9aa2c0", fontcolor="#e6e9f0", fontname="DejaVu Sans",
-        penwidth=1.8, margin="0.16,0.11"]
+        fontsize=20, penwidth=1.9, margin="0.24,0.15"]
   edge [color="#9aa2c0", fontcolor="#b8bed0", fontname="DejaVu Sans",
-        penwidth=1.4, arrowsize=0.8]
+        fontsize=16, penwidth=1.7, arrowsize=0.9]
 
-  // ---- IDEA / PRODUCTION end caps (dim, not phases) ----
-  // Bold end-cap text so the accent fills clear 3:1 on a WHITE ground
-  // (thin plaintext was borderline; weight adds the contrast margin).
   idea [label=<<b>IDEA</b>>, shape=plaintext, style="", fontcolor="#5a86e0",
-        fontname="DejaVu Sans", penwidth=0]
+        fontname="DejaVu Sans", fontsize=20, penwidth=0]
   prod [label=<<b>PRODUCTION</b>>, shape=plaintext, style="", fontcolor="#c8923f",
-        fontname="DejaVu Sans", penwidth=0]
+        fontname="DejaVu Sans", fontsize=20, penwidth=0]
 
-  // ---- Eight phase nodes (cool -> warm border ramp) ----
-  // ordinary stages: rounded boxes. Gates (ASSURE/SECURE): hexagons w/ accent borders.
-  discover [label=<<b>DISCOVER</b><br/><font color="#b8bed0" point-size="10">market-scanner</font>>, color="#7aa2f7"]
-  ideate   [label=<<b>IDEATE</b><br/><font color="#b8bed0" point-size="10">ideator</font>>,        color="#82a8f0"]
-  design   [label=<<b>DESIGN</b><br/><font color="#b8bed0" point-size="10">atelier</font>>,         color="#8fb0d8"]
-  build    [label=<<b>BUILD</b><br/><font color="#b8bed0" point-size="10">foundry</font>>,          color="#a6b3c0"]
+  discover [label=<<b>DISCOVER</b><br/><font color="#b8bed0" point-size="16">market-scanner</font>>, color="#7aa2f7"]
+  ideate   [label=<<b>IDEATE</b><br/><font color="#b8bed0" point-size="16">ideator</font>>,        color="#82a8f0"]
+  design   [label=<<b>DESIGN</b><br/><font color="#b8bed0" point-size="16">atelier</font>>,         color="#8fb0d8"]
+  build    [label=<<b>BUILD</b><br/><font color="#b8bed0" point-size="16">foundry</font>>,          color="#a6b3c0"]
 
-  assure [label=<<b>ASSURE</b><br/><font color="#b8bed0" point-size="10">foundry &middot; gate</font>>,
-          shape=hexagon, fillcolor="#2a2a3c", color="#9ece6a", penwidth=2.4, margin="0.08,0.04"]
-  secure [label=<<b>SECURE</b><br/><font color="#b8bed0" point-size="10">sentinel &middot; gate</font>>,
-          shape=hexagon, fillcolor="#2a2a3c", color="#e0af68", penwidth=2.4, margin="0.08,0.04"]
+  assure [label=<<b>ASSURE</b><br/><font color="#b8bed0" point-size="16">foundry &middot; gate</font>>,
+          shape=hexagon, fillcolor="#2a2a3c", color="#9ece6a", penwidth=2.5, margin="0.16,0.08"]
+  secure [label=<<b>SECURE</b><br/><font color="#b8bed0" point-size="16">sentinel &middot; gate</font>>,
+          shape=hexagon, fillcolor="#2a2a3c", color="#e0af68", penwidth=2.5, margin="0.16,0.08"]
 
-  publish  [label=<<b>PUBLISH</b><br/><font color="#b8bed0" point-size="10">pressroom</font>>,       color="#d8b58a"]
-  operate  [label=<<b>OPERATE</b><br/><font color="#b8bed0" point-size="10">mission-control</font>>, color="#e0af68"]
+  publish  [label=<<b>PUBLISH</b><br/><font color="#b8bed0" point-size="16">pressroom</font>>,       color="#d8b58a"]
+  operate  [label=<<b>OPERATE</b><br/><font color="#b8bed0" point-size="16">mission-control</font>>, color="#e0af68"]
 
-  // ---- spine ----
-  // Heavy edge weight keeps the eight phases on one straight horizontal
-  // baseline; the constraint=false return edge below can no longer nudge
-  // ranks, so the warm gate-row sits flush with the cool chain (no jog).
-  idea -> discover [color="#7aa2f7", arrowhead=none, penwidth=2.0, weight=100]
+  // top row = 4 phases; bottom row = 4 phases (each ~half the original width)
+  { rank=same; discover; ideate; design; build }
+  { rank=same; assure; secure; publish; operate }
+
+  // IDEA sits above DISCOVER; PRODUCTION below OPERATE — vertical end-caps, off the rows
+  idea -> discover [color="#7aa2f7", arrowhead=none, penwidth=2.3]
+  operate -> prod [color="#e0af68", arrowhead=none, penwidth=2.3]
+
   discover -> ideate [weight=100]
   ideate   -> design  [weight=100]
   design   -> build   [weight=100]
-  build    -> assure  [weight=100]
+
   assure   -> secure  [weight=100]
   secure   -> publish [weight=100]
   publish  -> operate [weight=100]
-  operate  -> prod [color="#e0af68", arrowhead=none, penwidth=2.0, weight=100]
 
-  // ---- cyclic return: OPERATE loops learnings back to DISCOVER ----
+  // wrap connector BUILD -> ASSURE between the two rows
+  build -> assure [weight=1, color="#9aa2c0", penwidth=2.1]
+
+  // cyclic return OPERATE -> DISCOVER
   operate -> discover [constraint=false, style=dashed, color="#8cc153",
-                       fontcolor="#8cc153", penwidth=2.0,
+                       fontcolor="#8cc153", penwidth=2.1, fontsize=16,
                        label="&#8635; learnings", labelfloat=false]
 
-  // ---- meta note: i2p + concierge are cross-cutting, not phases ----
-  // Borderless dim aside/caption, not a 9th phase node.
+  // meta caption beneath, on its own rank, legible
   meta [shape=plaintext, style="", penwidth=0,
-        fontcolor="#b8bed0", margin="0.16,0.11",
-        label=<<font point-size="10"><b>i2p</b> (front door) &amp; <b>concierge</b> (greeter)<br/>cross-cutting &mdash; not phases</font>>]
-  { rank=sink; meta }
-  build -> meta [style=invis]
+        fontcolor="#b8bed0", margin="0.24,0.15",
+        label=<<font point-size="17"><b>i2p</b> (front door) &amp; <b>concierge</b> (greeter) &mdash; cross-cutting, not phases</font>>]
+  prod -> meta [style=invis]
 }
