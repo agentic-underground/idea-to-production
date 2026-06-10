@@ -8,7 +8,7 @@ OUT="${1:-/tmp/mission-control-operate-frames}"; mkdir -p "$OUT"
 W=1280; H=320
 DIM="#3a3a55"; TEAL="#5eead4"; AMBER="#fbbf24"; TXTD="#6b7280"; TXTL="#e8e8ef"; GRID="#2a2a40"
 # telemetry plot box
-PX=70; PY=96; PW=$((W-2*PX)); PH=150; PBOT=$((PY+PH))
+PX=70; PY=96; PW=$((W-2*PX)); PH=136; PBOT=$((PY+PH))
 BASE=$((PY+PH-46))   # calm baseline y (lower number = higher on canvas)
 
 # Build the sparkline polyline points for a given phase.
