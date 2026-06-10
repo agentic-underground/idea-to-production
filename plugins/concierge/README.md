@@ -1,5 +1,7 @@
 # CONCIERGE — repo welcome & the idea-to-production status line
 
+![A warm lantern-lit arched doorway at night — amber light spilling from hanging and wall lanterns across a teal-dark entrance hall with a wooden floor — a warm light at the door, welcoming whoever arrives.](diagrams/hero.png)
+
 > The **arrival layer** of the [idea-to-production](../../README.md) marketplace. A
 > repository should greet whoever opens it — and the suite should be visible at a glance.
 

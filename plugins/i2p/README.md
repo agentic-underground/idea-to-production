@@ -1,5 +1,7 @@
 # i2p — the idea-to-production front door
 
+![A luminous gateway arch — teal-lit with a glowing amber keystone — opening onto a constellation of softly glowing nodes receding into deep space: the single threshold into the whole production marketplace.](diagrams/hero.png)
+
 > The marketplace-level front door. Install the suite and you gain great powers across seven specialist
 > plugins — **i2p** is the plugin that tells you so, and hands you one verbatim place to drive them all.
 
