@@ -1,6 +1,6 @@
 # MISSION-CONTROL — Operate the live product
 
-![A calm, empty mission-control room: a symmetric ring of operator consoles and curved screen banks glowing with abstract teal waveforms, beneath a warm amber ceiling dome and a glowing globe — watching over the live product, ready to respond.](diagrams/hero.png)
+![A calm, empty mission-control room: a symmetric ring of operator consoles and curved screen banks glowing with abstract teal waveforms, beneath a warm amber ceiling dome and a glowing globe — watching over the live product, ready to respond.](diagrams/hero.jpg)
 
 > The mission doesn't end at launch — that's when mission control *starts*. Houston: telemetry,
 > incidents, course-corrections.

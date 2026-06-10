@@ -1,6 +1,6 @@
 # SENTINEL — Security & Privacy Gate
 
-![A lone lighthouse standing vigilant on a dark headland at night, an amber beacon glowing at its summit and a teal scanning light sweeping over a luminous cyan shoreline below — a sentinel watching so nothing unsafe gets through.](diagrams/hero.png)
+![A lone lighthouse standing vigilant on a dark headland at night, an amber beacon glowing at its summit and a teal scanning light sweeping over a luminous cyan shoreline below — a sentinel watching so nothing unsafe gets through.](diagrams/hero.jpg)
 
 > Never ship a leaked key, a real person's data, or a vulnerable dependency.
 
