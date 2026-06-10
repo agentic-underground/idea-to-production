@@ -1,0 +1,167 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 133632471276133,
+      "steps": 26,
+      "cfg": 8.0,
+      "sampler_name": "dpmpp_3m_sde_gpu",
+      "scheduler": "exponential",
+      "denoise": 1.0,
+      "model": [
+        "40",
+        0
+      ],
+      "positive": [
+        "37",
+        0
+      ],
+      "negative": [
+        "6",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "5": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "40",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "40",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage"
+  },
+  "13": {
+    "inputs": {
+      "clip_vision": [
+        "39",
+        0
+      ],
+      "image": [
+        "34",
+        0
+      ]
+    },
+    "class_type": "CLIPVisionEncode"
+  },
+  "19": {
+    "inputs": {
+      "strength": 0.7500000000000002,
+      "noise_augmentation": 0.0,
+      "conditioning": [
+        "42",
+        0
+      ],
+      "clip_vision_output": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "unCLIPConditioning"
+  },
+  "34": {
+    "inputs": {
+      "image": "mountains.png",
+      "choose file to upload": "image"
+    },
+    "class_type": "LoadImage",
+    "is_changed": [
+      "253a1595d6d4f32f5a3086b8df280c8af46fd898bb53d37835c1ceb214d88358"
+    ]
+  },
+  "36": {
+    "inputs": {
+      "clip_vision": [
+        "39",
+        0
+      ],
+      "image": [
+        "38",
+        0
+      ]
+    },
+    "class_type": "CLIPVisionEncode"
+  },
+  "37": {
+    "inputs": {
+      "strength": 0.7500000000000002,
+      "noise_augmentation": 0.0,
+      "conditioning": [
+        "19",
+        0
+      ],
+      "clip_vision_output": [
+        "36",
+        0
+      ]
+    },
+    "class_type": "unCLIPConditioning"
+  },
+  "38": {
+    "inputs": {
+      "image": "sunset.png",
+      "choose file to upload": "image"
+    },
+    "class_type": "LoadImage",
+    "is_changed": [
+      "5720259f46e3faa1eb43b5317fa38a5f126a0f4f79051a17d4ff745b273d2c0d"
+    ]
+  },
+  "39": {
+    "inputs": {
+      "clip_name": "clip_vision_g.safetensors"
+    },
+    "class_type": "CLIPVisionLoader"
+  },
+  "40": {
+    "inputs": {
+      "ckpt_name": "SDXL/sd_xl_base_1.0.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "42": {
+    "inputs": {
+      "conditioning": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut"
+  }
+}

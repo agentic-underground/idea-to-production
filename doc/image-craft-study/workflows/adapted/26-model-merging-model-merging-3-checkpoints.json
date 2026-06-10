@@ -1,0 +1,136 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 156680208700286,
+      "steps": 20,
+      "cfg": 8.0,
+      "sampler_name": "euler",
+      "scheduler": "normal",
+      "denoise": 1.0,
+      "model": [
+        "12",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "dreamshaper_8.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "5": {
+    "inputs": {
+      "width": 512,
+      "height": 512,
+      "batch_size": 4
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "text": "beautiful scenery nature glass bottle landscape, , purple galaxy bottle,",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "text": "text, watermark",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage"
+  },
+  "10": {
+    "inputs": {
+      "input": 1.0,
+      "middle": 0.7099999999999997,
+      "out": 0.7199999999999998,
+      "model1": [
+        "4",
+        0
+      ],
+      "model2": [
+        "11",
+        0
+      ]
+    },
+    "class_type": "ModelMergeBlocks"
+  },
+  "11": {
+    "inputs": {
+      "ckpt_name": "cardosAnimated_v20.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "12": {
+    "inputs": {
+      "input": 0.6399999999999997,
+      "middle": 0.7799999999999998,
+      "out": 0.7399999999999999,
+      "model1": [
+        "10",
+        0
+      ],
+      "model2": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "ModelMergeBlocks"
+  },
+  "13": {
+    "inputs": {
+      "ckpt_name": "cardosAnimated_v20.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "15": {
+    "inputs": {
+      "vae_name": "SD1.x/kl-f8-anime2.vae.pt"
+    },
+    "class_type": "VAELoader"
+  }
+}

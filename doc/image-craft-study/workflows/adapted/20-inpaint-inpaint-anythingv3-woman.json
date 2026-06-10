@@ -1,0 +1,119 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 171829914789776,
+      "steps": 20,
+      "cfg": 8.0,
+      "sampler_name": "uni_pc_bh2",
+      "scheduler": "normal",
+      "denoise": 1.0,
+      "model": [
+        "29",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "26",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "6": {
+    "inputs": {
+      "text": "(girl) blue eyes, blonde hair, in the yosemite national park mountains nature\n",
+      "clip": [
+        "31",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "text": "watermark, text\n",
+      "clip": [
+        "31",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "30",
+        0
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage"
+  },
+  "20": {
+    "inputs": {
+      "image": "yosemite_inpaint_example.png",
+      "choose file to upload": "image"
+    },
+    "class_type": "LoadImage",
+    "is_changed": "1f22079c6fa64d8abe997bf4dce5f606cd8ac81f8823dff439f39aa7e18ca278"
+  },
+  "26": {
+    "inputs": {
+      "pixels": [
+        "20",
+        0
+      ],
+      "vae": [
+        "30",
+        0
+      ],
+      "mask": [
+        "20",
+        1
+      ]
+    },
+    "class_type": "VAEEncodeForInpaint"
+  },
+  "29": {
+    "inputs": {
+      "ckpt_name": "cardosAnimated_v20.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "30": {
+    "inputs": {
+      "vae_name": "SD1.x/vae-ft-mse-840000-ema-pruned.safetensors"
+    },
+    "class_type": "VAELoader"
+  },
+  "31": {
+    "inputs": {
+      "stop_at_clip_layer": -2,
+      "clip": [
+        "29",
+        1
+      ]
+    },
+    "class_type": "CLIPSetLastLayer"
+  }
+}
