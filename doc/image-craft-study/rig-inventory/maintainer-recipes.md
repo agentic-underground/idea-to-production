@@ -11,7 +11,13 @@
   drop it. `SDXL/sd_xl_refiner_1.0.safetensors` is also used. The full SDXL **base + refiner** flow (proper
   `CLIPTextEncodeSDXL` / `CLIPTextEncodeSDXLRefiner` dual conditioning, `KSamplerAdvanced` step-split) is a
   first-class pipeline here, not a dead one.
-- Checkpoint names carry the **`SDXL/` subfolder prefix** (`SDXL/oasisSDXL_v10.safetensors`) — copy verbatim.
+- **PATH MOVE (2026-06-10) — the favourites' embedded paths are now STALE.** The rig was reorganised: every
+  fine-tune was moved to the checkpoints **root**. A recipe that records `SDXL_1/protovisionXL…`,
+  `SDXL_2/modernDisneyXL_v11`, or `SDXL/oasisSDXL_v10` must now load the **bare** root name
+  (`protovisionXL…`, `modernDisneyXL_v11.safetensors`, `oasisSDXL_v10.safetensors`). The **only** checkpoints
+  still under `SDXL/` are `sd_xl_base_1.0`, `sd_xl_refiner_1.0`, `svd_xt_1_1`; Lightning models stay under
+  `LIGHTNING/`. Verified on the rig: **75 checkpoints at root, 12 nested.** **Never copy an embedded path
+  verbatim** — resolve every `ckpt_name` against live `/object_info` and use the exact current string.
 
 ## Preferred samplers / schedulers / CFG (maintainer-measured)
 
@@ -35,13 +41,35 @@
    1024×1024**, upscale model **`SwinIR/001_classicalSR_DF2K_…x4.pth`**. This is the preferred upscale (tiled,
    low-denoise re-detail), not a bare latent-upscale.
 
-## Favoured checkpoints (by use, on this rig — copy verbatim)
+## The TRICOMPOSITE recipe — regional latent composition (mined from `~/Pictures/ComfyUI/TRICOMPOSITE_*`, 207 imgs)
 
-`SDXL/sd_xl_base_1.0` (+ `sd_xl_refiner_1.0`) · `SDXL/oasisSDXL_v10` (versatile workhorse) ·
-`SDXL/crystalClearXL_ccxl` (crisp photoreal) · `SDXL/LahCuteCartoonSDXL_alpha` & `SDXL/xlYamersCartoonArcadia_v1`
-(cute/cartoon) · `SDXL/animagineXL_v10` & `SDXL/nijianimesdxl_v10` (anime) · `nigi-cyber-umaaji` & `nigi3d_v20`
-(stylised) · `SDXL/copaxTimelessxlSDXL1_colorfulV2`. Favoured LoRA: **`BAS-RELIEF.safetensors`**,
-`SDXL/xl_more_art-full_v1` (detail/quality).
+A second signature flow, distinct from REIMAGINE. The graph (23 nodes, base `reproductionSDXL_2v12` →
+now bare at root) builds **one tall vertical image from three independently-prompted regions**:
+
+1. **3 × `EmptyLatentImage`** — three region canvases (top / middle / bottom of a portrait frame).
+2. **6 × `CLIPTextEncode`** — a *pos+neg pair per region*, so each band has its own subject and mood
+   (e.g. cosmic sky · mid landform · saturated foreground).
+3. **3 × `KSampler`** — each region sampled separately (independent composition control).
+4. **2 × `LatentComposite`** — paste the three region latents into one combined latent at fixed offsets
+   (chained: region-A ⊕ region-B ⊕ region-C).
+5. **4th `KSampler`** — a **unifying pass over the composited latent** (low-ish denoise) that knits the
+   seams into one coherent picture. Then `VAEDecode` → `SaveImage`.
+
+**Why it works / the composition lesson (read off the contact sheet):** the three registers cohere only
+when a **vertical world-axis threads them** — a tree trunk, an energy column, a lightning bolt, a tower —
+plus an **atmospheric depth gradient** (cool/hazy at the top → warm/vivid at the base). That through-line
++ gradient is the transferable craft, in raster *or* vector. **Improvements to pursue:** swap
+`LatentComposite` for `LatentCompositeMasked` with feathered masks (softer seams), or regional
+conditioning (`ConditioningSetArea`/GLIGEN) for cleaner region control, or a tile-ControlNet seam pass.
+
+## Favoured checkpoints (by use, on this rig — resolve names via `/object_info`, do not assume a subfolder)
+
+`SDXL/sd_xl_base_1.0` (+ `SDXL/sd_xl_refiner_1.0` — these two keep the prefix) · `oasisSDXL_v10` (versatile
+workhorse) · `crystalClearXL_ccxl` (crisp photoreal) · `LahCuteCartoonSDXL_alpha` & `xlYamersCartoonArcadia_v1`
+(cute/cartoon) · `animagineXL_v10` & `nijianimesdxl_v10` (anime) · `nigi-cyber-umaaji` & `nigi3d_v20`
+(stylised) · `copaxTimelessxlSDXL1_colorfulV2` · `samaritan3dCartoon_v40SDXL` · `novaPrimeXL_v10` ·
+`reproductionSDXL_2v12` (the tricomposite base). All fine-tunes are now **root-level, bare names** (see the
+PATH MOVE note above). Favoured LoRA: **`BAS-RELIEF.safetensors`**, `xl_more_art-full_v1` (detail/quality).
 
 ## Taste signal — what the maintainer's favourites have in common
 

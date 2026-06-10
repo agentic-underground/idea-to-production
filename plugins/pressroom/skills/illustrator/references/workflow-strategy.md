@@ -64,6 +64,15 @@ modest `bbox_dilation`, feather edges. High-end two-pass: pass 1 (structure) **b
 **FreeU V2** — insert between checkpoint and sampler; SDXL **b1 1.3 / b2 1.4 / s1 0.9 / s2 0.2**. Stylized /
 anime / painterly only — it over-contrasts realistic photo models.
 
+**Tricomposite (regional latent composition)** *(the maintainer's vertical-stack signature)* — for a
+**tall image built from three independently-controlled registers**: three `EmptyLatentImage` → three
+prompt pairs (`CLIPTextEncode` ×6) → three `KSampler` (one per region) → chain two `LatentComposite` nodes
+to paste the regions into one latent at fixed offsets → a **4th unifying `KSampler` at low-ish denoise**
+over the combined latent → `VAEDecode`. **Composition rule:** give the three registers a **vertical
+world-axis** (trunk/column/bolt/tower) and an **aerial→warm depth gradient** so they read as one picture,
+not three stacked tiles. Soften seams with `LatentCompositeMasked` (feathered) or a higher unify-denoise.
+Full mined graph + the taste read: `doc/image-craft-study/rig-inventory/maintainer-recipes.md`.
+
 > **SDXL base + refiner WORKS here (maintainer-preferred).** `SDXL/sd_xl_base_1.0` is the maintainer's primary
 > base; the canonical `KSamplerAdvanced` step-split (base `0→N`, refiner `N→∞`) with proper SDXL dual
 > conditioning is a first-class flow. A latent-hires pass is an equally fine, simpler alternative when a

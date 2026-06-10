@@ -115,8 +115,9 @@ the dark-key recipe: [prompt-craft](../skills/illustrator/references/prompt-craf
 - **Lightning is not just a draft engine** — `LIGHTNING/juggernautXL_v9Rdphoto2Lightning` tied best-overall at
   **6 steps**; default fast lane *and* a credible final for mascot/office.
 - **Bright grounds fight dark docs** — crop or cut out before embedding on a dark page.
-- **SDXL base+refiner works** — `sd_xl_base_1.0` is the maintainer's primary base; use the refiner or a
-  latent-hires pass for the detail finish (both are fine).
+- **SDXL base+refiner works** — `SDXL/sd_xl_base_1.0` is the maintainer's primary base; use the refiner
+  (`SDXL/sd_xl_refiner_1.0`) or a latent-hires pass for the detail finish (both are fine). The base, refiner,
+  and `svd_xt_1_1` are the **only** checkpoints still under the `SDXL/` subfolder — see the path rule below.
 
 ## Maintainer-proven recipes (mined from the curated favourites — these supersede the defaults)
 
@@ -128,10 +129,18 @@ The marketplace's *measured-on-this-rig* preferences (see `doc/image-craft-study
 - **HD finish:** `UltimateSDUpscale` with the **`SwinIR_4x`** model, tiled 1024, denoise ~0.25.
 - **The REIMAGINE flow:** `sd_xl_base_1.0` + unCLIP image-prompt (`clip_vision_g.safetensors`) → refine →
   UltimateSDUpscale (the 42-node `IRU` premium graph).
-- **Favoured checkpoints (verbatim, with `SDXL/` prefix):** `SDXL/oasisSDXL_v10` (workhorse),
-  `SDXL/crystalClearXL_ccxl` (crisp), `SDXL/LahCuteCartoonSDXL_alpha` / `SDXL/xlYamersCartoonArcadia_v1` (cute),
-  `SDXL/animagineXL_v10` / `SDXL/nijianimesdxl_v10` (anime), `nigi-cyber-umaaji` (stylised);
-  favoured LoRA **`BAS-RELIEF.safetensors`** (the sculptural-relief signature) + `SDXL/xl_more_art-full_v1`.
+- **Favoured checkpoints (now at the checkpoints *root*, no subfolder):** `oasisSDXL_v10` (workhorse),
+  `crystalClearXL_ccxl` (crisp), `LahCuteCartoonSDXL_alpha` / `xlYamersCartoonArcadia_v1` (cute),
+  `animagineXL_v10` / `nijianimesdxl_v10` (anime), `nigi-cyber-umaaji` (stylised);
+  favoured LoRA **`BAS-RELIEF.safetensors`** (the sculptural-relief signature) + `xl_more_art-full_v1`.
+
+> **⚠ Path rule — list, don't assume.** The rig was reorganised: every fine-tune was moved to the checkpoints
+> **root** (a name that *was* `SDXL_2/modernDisneyXL_v11` or `SDXL/oasisSDXL_v10` is now the **bare**
+> `modernDisneyXL_v11.safetensors` / `oasisSDXL_v10.safetensors`). The **only** survivors of the `SDXL/`
+> subfolder are `SDXL/sd_xl_base_1.0`, `SDXL/sd_xl_refiner_1.0`, `SDXL/svd_xt_1_1`; Lightning models keep the
+> `LIGHTNING/` prefix. **Never hardcode a subfolder** — the handler must read `ckpt_name` from live
+> `/object_info` (`CheckpointLoaderSimple`) and copy the exact string ComfyUI returns, so a future move can't
+> break a recipe. The names above are the *current* truth; `/object_info` is the *authoritative* one.
 
 ## Settings cheatsheet
 | Base | Resolution | Steps | CFG | Sampler / scheduler |

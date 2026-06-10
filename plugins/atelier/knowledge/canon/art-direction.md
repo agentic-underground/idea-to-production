@@ -28,6 +28,7 @@
 | **Balance (symmetry vs asymmetry)** | Weight is deliberately distributed — formal axis *or* dynamic off-balance, never accidental. *Broken:* lopsided by neglect. | axial monolith (Cassandre, *Normandie* poster); asymmetric off-centre void (Hokusai) |
 | **Figure-ground (the gestalt)** | Subject separates cleanly from ground by value/edge/colour. *Broken:* subject melts into background mush. | silhouette reads instantly against a smoky ground (Frazetta) |
 | **Depth via overlapping planes** | Stacked fore/mid/far planes build real space. *Broken:* a flat sticker with no recession. | continuous-take layered rubble (*Children of Men*) |
+| **Multi-register / vertical-stack (the tricomposite)** | A tall frame split into stacked registers (sky · mid · foreground) reads as *one* picture when a **vertical world-axis** (trunk, column, bolt, tower) threads them and an **aerial→warm depth gradient** binds them. *Broken:* three unrelated tiles stacked with a visible seam and no through-line. | a single trunk uniting canopy-sky and root-ground (predella/triptych vertical logic; the rig's `TRICOMPOSITE` flow) |
 
 ## 2. Light & shadow — where the light falls
 
@@ -115,6 +116,25 @@ disciplined colour script, a felt mood, true to its style, zero artifacts. Every
 | **Broken perspective** | impossible vanishing, warped planes, non-Euclidean architecture | Artifact-freedom **0–1** |
 
 > Clearing this floor is the *precondition* of award-tier, before any named virtue earns a place.
+
+## 8. Medium reach — vector (SVG), raster, and the blend
+
+> *This bar is **medium-agnostic**. §1–§6 judge an image by its choices, not its file format — a hand-authored
+> SVG is held to the same composition, light, colour, and narrative standard as a diffusion render. "It's only
+> vector" is never an excuse for flat, centred, sourceless work.*
+
+| Principle | Essence — exemplary vs entry-level | Exemplar that does it right |
+|---|---|---|
+| **SVG is a first-class craft surface** | Authored vector can carry real light, depth, motion, and story — gradients, layered planes, masks, filters, parallax, animation. *Broken:* a flat "complicated logo" with no focal point or depth — a diagram pretending to be art. | the **GitHub 404 page** (parallax-layered illustrative SVG) — the calibre we author *to*, not a clip-art floor |
+| **Pick the medium for the idea** | Crisp geometry, type, lines, and infinite-scale marks → **vector**; photoreal texture, organic light, painterly surface → **raster**. *Broken:* forcing diffusion to render legible text/diagrams (→ artifact floor §7), or forcing flat vector to fake photoreal atmosphere. | route legible/labelled/structural work to vector handlers; route pictorial/textured/photoreal to ComfyUI |
+| **SVG↔raster blend (the emerging capability)** | The strongest marketing pieces **compose both**: a raster hero or texture grounded behind crisp vector wordmark, callouts, frame, and data — each layer playing to its medium. *Broken:* a raster with baked gibberish text, or a vector starved of atmosphere. | a raster atmosphere + vector type/diagram overlay, each legible on both grounds (dark-mode canon) |
+| **Marketing & stock reach** | The same bar governs *stock/marketing* images the team whips up — heroes, banners, social cards, spot illustrations — not just doc figures. Stock ≠ generic: a stock image still earns a focal point, a colour script, and a motivated light. *Broken:* "it's just filler" as licence for entry-level. | a banner with one focal idea + disciplined palette, reading at thumbnail size |
+
+> **Why this section exists:** the marketplace is building a capability to **blend SVG with raster** for
+> marketing/stock output across machines. The taste bar must travel with it — so a vector reviewer cites the
+> *same* named principles (focal hierarchy, depth via planes, colour script, the tricomposite vertical-axis)
+> as a raster reviewer. Vector handlers (`handler-composition`, `handler-graphviz`, `handler-mermaid`,
+> `handler-chart`) are held to §1–§6, not a lower "it's a diagram" bar.
 
 ---
 

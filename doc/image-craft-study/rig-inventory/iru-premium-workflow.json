@@ -503,7 +503,7 @@
  },
  "120": {
   "inputs": {
-   "ckpt_name": "SDXL/oasisSDXL_v10.safetensors"
+   "ckpt_name": "oasisSDXL_v10.safetensors"
   },
   "class_type": "CheckpointLoaderSimple"
  }

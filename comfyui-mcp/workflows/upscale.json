@@ -1,7 +1,7 @@
 {
   "_meta": {
     "template_id": "upscale",
-    "description": "Allowlisted standalone upscale pass: load an image, upscale it with a model-based upscaler (e.g. 4x-UltraSharp, 4x_foolhardy_Remacri), save. For final crispness on an already-composed image. submit fills ONLY the listed nodes; _meta stripped before POST; image_name resolves under the input dir; upscale_model in allowlist. (No refiner template ships: on this rig SDXL/sd_xl_base_1.0 fails to load, so the refiner head has nothing to refine — spend the budget on hires-fix + this upscale pass instead.)",
+    "description": "Allowlisted standalone upscale pass: load an image, upscale it with a model-based upscaler (e.g. 4x-UltraSharp, 4x_foolhardy_Remacri), save. For final crispness on an already-composed image. submit fills ONLY the listed nodes; _meta stripped before POST; image_name resolves under the input dir; upscale_model in allowlist. Pairs with the maintainer's preferred HD finish: UltimateSDUpscale + SwinIR_4x at denoise ~0.25. (Note: SDXL/sd_xl_base_1.0 + SDXL/sd_xl_refiner_1.0 DO load and the base+refiner flow works — an earlier 'base fails to load' note was wrong.)",
     "fillable": {
       "1.inputs.image": "input image name (under ComfyUI input dir)",
       "2.inputs.model_name": "upscale model (in allowlist)"
