@@ -1,5 +1,7 @@
 # foundry — the value-flow production system
 
+![Wide dark branding banner: the "foundry" wordmark and the tagline "test-first, value on one slice" beside a faint line-art conveyor motif on a deep graphic band.](diagrams/banner.png)
+
 `foundry` is the core plugin of the [idea-to-production](../../README.md) marketplace: a **conveyor
 that carries value from IDEA to PRODUCTION**, one vertical slice at a time, through a fixed line of
 **value-stations** staffed by role-tuned **value-handlers**, governed by three pillars and a

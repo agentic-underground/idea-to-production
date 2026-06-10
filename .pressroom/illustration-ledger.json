@@ -16,13 +16,17 @@
     "plugins/foundry/knowledge/glossary.md": { "status": "done", "figures": ["01-domain-tree.png (graphviz 84)"], "doc_review": "figure PASS; pre-existing scorecard-skill omission flagged" },
     "doc/context-building-pipeline.md": { "status": "done", "figures": ["01-context-doors.png (composition 88)", "02-soul-sentinel.png (graphviz 82)"], "doc_review": "PASS (fixed: six->nine plugins in prose+figure)" }
   },
-  "comfyui_heroes": {
-    "note": "ComfyUI (http://10.10.10.163:8188) pictorial hero images for the 5 plugins that restraint left diagram-less — atmospheric, text-free, people-free, dark-key, teal+amber. Looped handler-comfyui <-> image-aesthetic-reviewer until each scored >95.",
-    "plugins/i2p/diagrams/hero.png": "luminous gateway/portal — protovisionXL — 100",
-    "plugins/sentinel/diagrams/hero.png": "vigilant lighthouse beacon — dreamshaper_8 — 100 (3 rounds: black-void->amber crown->clean summit)",
-    "plugins/atelier/diagrams/hero.png": "drafting studio + cyan blueprints — protovisionXL — 95.6 (3 rounds: hologram tangle->coherent chair->design tell)",
-    "plugins/concierge/diagrams/hero.png": "warm lantern doorway — dreamshaper_8 — 97",
-    "plugins/mission-control/diagrams/hero.png": "calm ops room, abstract teal screens — protovisionXL — 100 (3 rounds to kill pseudo-text on small panels)"
+  "plugin_banners": {
+    "note": "Coherent dark line-art branding banner set (1920x400) — one per plugin, the top visual of each plugin README. Crisp SVG wordmark + tagline + faint line-art motif over a dark graphic band; all stylized, non-photoreal. Replaces the obsolete square photoreal comfyui_heroes (5 hero.jpg, removed).",
+    "plugins/i2p/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art gateway/threshold motif over a dark graphic band; vector line-art",
+    "plugins/concierge/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art lantern motif over a dark graphic band; vector line-art",
+    "plugins/market-scanner/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art radar-ripples motif over a dark graphic band; rig line-art",
+    "plugins/ideator/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art converging-facets motif over a dark graphic band; rig line-art",
+    "plugins/atelier/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art drafting-table motif over a dark graphic band; vector line-art",
+    "plugins/foundry/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art conveyor motif over a dark graphic band; vector line-art",
+    "plugins/sentinel/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art gate-and-shield motif over a dark graphic band; vector line-art",
+    "plugins/pressroom/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art printing-press motif over a dark graphic band; vector line-art",
+    "plugins/mission-control/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art console-ring/telemetry motif over a dark graphic band; vector line-art"
   },
   "no_figure_restraint": ["doc/comfyui-experiment/README.md","doc/comfyui-experiment/catalog.md","PREREQUISITES/README.md"],
   "deferred_findings_pre_existing": [

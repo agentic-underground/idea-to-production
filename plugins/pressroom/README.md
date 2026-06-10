@@ -1,5 +1,7 @@
 # PRESSROOM — Publishing & Documentation
 
+![Wide dark branding banner: the "pressroom" wordmark and the tagline "illustrate, review, publish" beside a faint line-art printing-press motif on a deep graphic band.](diagrams/banner.png)
+
 > Turn a codebase into something people want to read — articles, diagrams, and print-quality PDFs.
 
 PRESSROOM mines a project's artefacts (git history, docs, code) for narrative signal and produces

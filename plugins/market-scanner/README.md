@@ -1,5 +1,7 @@
 # MARKET-SCANNER — Discover what's worth building
 
+![Wide dark branding banner: the "market-scanner" wordmark and the tagline "sweep the field, kill weak early" beside a faint line-art radar-ripples motif on a deep graphic band.](diagrams/banner.png)
+
 > *"Let's come up with a new idea."* — the spark, made disciplined.
 
 MARKET-SCANNER is the **DISCOVERY** front door of the `idea-to-production` marketplace. Before any code
