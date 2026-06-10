@@ -46,14 +46,8 @@ PNGS=("$TMP"/f*.png)
 shopt -u nullglob
 [ "${#PNGS[@]}" -gt 0 ] || { echo "build-figure: rasterise produced 0 PNGs — aborting" >&2; exit 3; }
 
-# 3. composite depth (C2) — AFTER raster, BEFORE gifski. Self-guarding; skip with a note if absent.
-DEPTH="$HERE/composite-depth.sh"
-if [ -f "$DEPTH" ]; then
-  echo "build-figure: applying composite-depth (C2)"
-  bash "$DEPTH" "$TMP" "$GROUND"
-else
-  echo "build-figure: composite-depth.sh not found — skipping depth step (frames left flat)"
-fi
+# 3. (no raster compositing) — frames stay flat SVG per the maintainer's call:
+#    the composite-depth vignette/backdrop was rejected. Frames go straight to assembly.
 
 # 4. assemble the base GIF.
 echo "build-figure: assembling base GIF → $OUT @ ${FPS}fps"

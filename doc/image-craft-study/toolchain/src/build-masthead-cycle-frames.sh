@@ -44,13 +44,11 @@ emit_kf() {
     printf '<rect width="100%%" height="100%%" fill="#1e1e2e"/>\n'
     # ---- depth layer: gradient glow + filters ----
     printf '<defs>\n'
-    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.13"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
-    printf '<radialGradient id="dgamber" cx="50%%" cy="42%%" r="42%%"><stop offset="0%%" stop-color="#fbbf24" stop-opacity="0.06"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
     printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
     printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
     printf '</defs>\n'
     printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
-    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dgamber)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*30/100))" "$((H*18/100))"
     # ---- microline + dominant WORDMARK + subtitle (static) ----
     printf '<text x="%d" y="40" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="4" fill="#9aa2c0" text-anchor="middle">A  CLAUDE  CODE  PLUGIN  MARKETPLACE</text>\n' "$((W/2))"
     printf '<text x="%d" y="96" font-family="DejaVu Sans, Arial, sans-serif" font-size="54" font-weight="700" text-anchor="middle"><tspan fill="%s">idea</tspan><tspan fill="#9aa2c0">  &#8594;  </tspan><tspan fill="%s">production</tspan></text>\n' "$((W/2))" "$IDEA" "$AMBER"
@@ -143,9 +141,7 @@ for ((i=0;i<K;i++)); do
 done
 echo "frames: $n  (keyframes $K, morph $M, fps $FPS)"
 
-# ---- composite depth: lightbox the assembled PNG frames (after morph, before gifski) ----
-# Self-guarding: cleanly skips if `magick` is absent, leaving frames flat-but-valid.
-bash "$(dirname "$0")/composite-depth.sh" "$FR" '#1e1e2e'
+# (no raster compositing — the composite-depth vignette was rejected; frames stay flat SVG)
 
 # ---- GIF (fallback ladder) + optimise ----
 if [ -x "$GIFSKI" ]; then "$GIFSKI" --fps "$FPS" --quality 90 -o "$GIF" "$FR"/*.png

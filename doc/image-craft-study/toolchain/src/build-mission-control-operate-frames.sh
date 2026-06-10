@@ -49,13 +49,11 @@ emit() { # $1 phase  $2 prog  $3 alert(0/1)  $4 respond_dot(0/1)  $5 arc(0/1)  $
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="#1e1e2e"/>\n'
     printf '<defs>\n'
-    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.13"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
-    printf '<radialGradient id="dga" cx="50%%" cy="55%%" r="45%%"><stop offset="0%%" stop-color="#fbbf24" stop-opacity="0.06"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
     printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
     printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
     printf '</defs>\n'
     printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$((PY+PH/2))" "$((W*42/100))" "$((H*22/100))"
-    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dga)" filter="url(#bgb)"/>\n' "$((W/2))" "$((PY+PH/2))" "$((W*36/100))" "$((H*18/100))"
     printf '<text x="%d" y="46" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700" fill="%s" text-anchor="middle">mission-control · OPERATE the live product</text>\n' "$((W/2))" "$TXTL"
     # plot frame + gridlines
     printf '<rect x="%d" y="%d" width="%d" height="%d" fill="#16161f" stroke="%s" stroke-width="1.5" rx="8"/>\n' "$PX" "$PY" "$PW" "$PH" "$GRID"
