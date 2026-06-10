@@ -101,12 +101,13 @@ emit() { # $1 phase  $2 prog  $3 alert(0/1)  $4 respond_dot(0/1)  $5 arc(0/1)  $
     pip "$lx" "$cO" "OBSERVE"
     pip "$((lx+330))" "$cR" "RESPOND"
     pip "$((lx+700))" "$cI" "ITERATE ↻"
-    # closing learning arc: from ITERATE pip back to OBSERVE (re-enter DISCOVER)
+    # closing learning arc: from ITERATE pip back to OBSERVE (re-enter DISCOVER).
+    # Caption sits in its own band ABOVE the dashed arc (≥10px gap, arc kept on-canvas).
     if [ "$arc" -eq 1 ]; then
       local sx=$((lx+700)); local ex=$((lx+6))
-      printf '<path d="M %d %d C %d %d, %d %d, %d %d" fill="none" stroke="%s" stroke-width="2.4" stroke-dasharray="6 6" opacity="0.9"/>\n' \
-        "$sx" "$((ly+18))" "$sx" "$((ly+26))" "$ex" "$((ly+26))" "$ex" "$((ly+18))" "$TEAL"
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="13" fill="%s" text-anchor="middle">↻ what production teaches re-enters DISCOVER</text>\n' "$(( (sx+ex)/2 ))" "$((ly+23))" "$TEAL"
+      printf '<path d="M %d %d C %d %d, %d %d, %d %d" fill="none" stroke="%s" stroke-width="2.4" stroke-dasharray="6 6" opacity="0.9"/>\n' \
+        "$sx" "$((ly+33))" "$sx" "$((ly+38))" "$ex" "$((ly+38))" "$ex" "$((ly+33))" "$TEAL"
     fi
     # caption
     printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" fill="%s" text-anchor="end">%s</text>\n' "$((W-PX))" "$((PBOT+48))" "$TXTD" "$cap"

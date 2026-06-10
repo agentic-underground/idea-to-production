@@ -8,12 +8,12 @@ OUT="${1:-sentinel-gate-frames}"; mkdir -p "$OUT"
 
 LENSES=(PII SECRETS "SUPPLY-CHAIN" SAST)
 NL=${#LENSES[@]}
-W=1300; H=320
+W=1300; H=356
 DIM="#3a3a55"; TEAL="#5eead4"; AMBER="#fbbf24"; TXTD="#6b7280"; TXTL="#e8e8ef"; GROUND="#1e1e2e"
 
 # layout: artifact box at left, four lens chips stacked at center, gate barrier at right
-ART_X=110; ART_Y=120; ART_W=150; ART_H=120     # the artifact under review
-CHIP_X=380; CHIP_W=300; CHIP_H=44; CHIP_GAP=14; CHIP_Y0=96
+ART_X=110; ART_Y=128; ART_W=150; ART_H=120     # the artifact under review
+CHIP_X=380; CHIP_W=300; CHIP_H=44; CHIP_GAP=14; CHIP_Y0=104
 GATE_X=820; GATE_W=360                          # the gate channel
 SWEEP_MIN=$((ART_X-10)); SWEEP_MAX=$((CHIP_X+CHIP_W+30))
 
@@ -71,12 +71,12 @@ emit() { # $1 sealed_count(0..NL) ; $2 sweep_x (-1 = off) ; $3 gate_lift(0..100)
     if [ "$sweep" -ge 0 ]; then
       printf '<defs><linearGradient id="sw" x1="0" y1="0" x2="1" y2="0">\n'
       printf '<stop offset="0" stop-color="%s" stop-opacity="0"/><stop offset="0.7" stop-color="%s" stop-opacity="0.35"/><stop offset="1" stop-color="%s" stop-opacity="0.9"/></linearGradient></defs>\n' "$AMBER" "$AMBER" "$AMBER"
-      printf '<rect x="%d" y="68" width="46" height="218" fill="url(#sw)"/>\n' "$((sweep-46))"
-      printf '<line x1="%d" y1="64" x2="%d" y2="290" stroke="%s" stroke-width="3"/>\n' "$sweep" "$sweep" "$AMBER"
+      printf '<rect x="%d" y="76" width="46" height="218" fill="url(#sw)"/>\n' "$((sweep-46))"
+      printf '<line x1="%d" y1="72" x2="%d" y2="298" stroke="%s" stroke-width="3"/>\n' "$sweep" "$sweep" "$AMBER"
     fi
 
     # ---- the gate (right): two barrier leaves that lift apart as lift→100 ----
-    local gcx=$((GATE_X+GATE_W/2)) gtop=86 gbot=288 gh=$((288-86))
+    local gcx=$((GATE_X+GATE_W/2)) gtop=94 gbot=296 gh=$((296-94))
     # channel frame
     printf '<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="none" stroke="#2a2a40" stroke-width="2.5"/>\n' "$GATE_X" "$gtop" "$GATE_W" "$gh"
     # barrier leaves: each retracts by lift% toward the frame edge

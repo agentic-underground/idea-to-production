@@ -7,7 +7,8 @@ set -euo pipefail
 OUT="${1:-/tmp/market-scanner-radar-frames}"; mkdir -p "$OUT"
 W=1280; H=320
 DIM="#3a3a55"; TEAL="#5eead4"; AMBER="#fbbf24"; TXTD="#6b7280"; TXTL="#e8e8ef"; GROUND="#1e1e2e"
-CX=200; CY=176; R=128   # radar centre + radius (left dial)
+CX=200; CY=180; R=108   # radar centre + radius (left dial) — dropped + shrunk so the top ring/sweep tip
+                        # clear the title baseline (y=52) by ≥12px; bottom margin stays comfortable (H=320)
 
 # Candidate field: id  x   y   angle(deg, 0=up sweeping clockwise)  fate(kill/keep)  label
 # angle is the sweep position at which the beam crosses the dot (when it gets surfaced)

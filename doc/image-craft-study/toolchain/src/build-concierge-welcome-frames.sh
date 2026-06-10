@@ -130,13 +130,18 @@ fr transition 3   3 0 0
 fr transition 3   4 0 0
 # 3) the full HUD settles — a readable medium beat before the greeting starts
 fr caption    14  4 0 0
-# 4) the greeting unfurls — typewriter character-reveal = pure transition holds (motion)
-for frac in 12 24 38 52 66 80; do
+# 4) the greeting unfurls — typewriter character-reveal = pure transition holds (motion).
+#    The reveal runs all the way to the LAST glyph so the next beat is a true settle, not a jump.
+for frac in 12 24 38 52 66 80 92; do
   c=$(( GLEN * frac / 100 ))
   fr transition 3 4 "$c" 0
 done
-# Ah-HA: the completed warm greeting lands — concierge has greeted whoever opened the repo.
-fr dense      28  4 "$GLEN" 0
-# 5) settled poster — the door is open (✓), the two routing lanes offered. The payoff dwells, then loops.
-fr poster     48  4 "$GLEN" 1
+# 5) SETTLED POSTER — the single most important beat, emitted as ONE distinct settled state. The greeting
+#    is now FULLY typed at full opacity AND the door is open (✓ at the door): a complete, legible, settled
+#    card. It is held the LONGEST of any frame (poster dwell) so the key sentence settles and reads in full
+#    BEFORE the loop restarts. (It is a SINGLE frame, not two identical ones — adjacent identical frames
+#    would be de-duplicated by gifski and break the TIMING.tsv row=frame contract.) Every sampled / held
+#    frame of this beat shows the complete greeting legibly.
+# Ah-HA → payoff: the completed warm greeting lands, settled, and dwells.
+fr poster     72  4 "$GLEN" 1
 echo "emitted $f frames"
