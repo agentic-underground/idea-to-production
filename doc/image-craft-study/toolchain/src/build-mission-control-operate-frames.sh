@@ -49,11 +49,13 @@ emit() { # $1 phase  $2 prog  $3 alert(0/1)  $4 respond_dot(0/1)  $5 arc(0/1)  $
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="#1e1e2e"/>\n'
     printf '<defs>\n'
-    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.13"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dga" cx="50%%" cy="55%%" r="45%%"><stop offset="0%%" stop-color="#fbbf24" stop-opacity="0.06"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
     printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
     printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
     printf '</defs>\n'
     printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$((PY+PH/2))" "$((W*42/100))" "$((H*22/100))"
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dga)" filter="url(#bgb)"/>\n' "$((W/2))" "$((PY+PH/2))" "$((W*36/100))" "$((H*18/100))"
     printf '<text x="%d" y="46" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700" fill="%s" text-anchor="middle">mission-control · OPERATE the live product</text>\n' "$((W/2))" "$TXTL"
     # plot frame + gridlines
     printf '<rect x="%d" y="%d" width="%d" height="%d" fill="#16161f" stroke="%s" stroke-width="1.5" rx="8"/>\n' "$PX" "$PY" "$PW" "$PH" "$GRID"
@@ -117,19 +119,35 @@ emit() { # $1 phase  $2 prog  $3 alert(0/1)  $4 respond_dot(0/1)  $5 arc(0/1)  $
 f=0
 nf() { printf '%s/f%03d.svg' "$OUT" "$f"; }
 
-# 1) OBSERVE — calm telemetry, healthy (3 frames, slight drift)
-for p in 8 20 32; do emit observe "$p" 0 0 0 "observe — golden signals nominal" "$(nf)"; f=$((f+1)); done
-# 2) RESPOND signal — an incident spikes amber + alert trips (3 frames, spike growing/holding)
-for p in 50 50 50; do emit spike "$p" 1 0 0 "respond — incident detected, alert fires" "$(nf)"; f=$((f+1)); done
-# 3) MITIGATE — response sweeps in, bump decays back toward baseline (4 frames)
-emit respond 30 1 1 0 "respond — mitigate first, then diagnose" "$(nf)"; f=$((f+1))
-emit respond 55 1 1 0 "respond — mitigation taking hold" "$(nf)"; f=$((f+1))
-emit respond 80 0 1 0 "respond — error budget recovering" "$(nf)"; f=$((f+1))
-emit respond 96 0 1 0 "respond — back inside SLO" "$(nf)"; f=$((f+1))
-# 4) HEALED + ITERATE arc closes the loop (poster), hold settled — 5 frames for long caption + arc
-emit healed 100 0 0 1 "iterate — learning re-enters the cycle ↻" "$(nf)"; f=$((f+1))   # POSTER
-emit healed 100 0 0 1 "iterate — learning re-enters the cycle ↻" "$(nf)"; f=$((f+1))
-emit healed 100 0 0 1 "iterate — learning re-enters the cycle ↻" "$(nf)"; f=$((f+1))
-emit healed 100 0 0 1 "iterate — learning re-enters the cycle ↻" "$(nf)"; f=$((f+1))
-emit healed 100 0 0 1 "iterate — learning re-enters the cycle ↻" "$(nf)"; f=$((f+1))
+# B1 organic-meter holds by role. role ∈ {transition,label,caption,long,dense,poster}.
+# transition=3 · label=7 · caption=14 · long=21 · dense=28 · poster=48.
+# Ah-HA rule: any concept/relationship/meaning-revealing beat ≥24 (use 28 = "dense").
+hold_for() { case "$1" in
+  transition) echo 3 ;; label) echo 7 ;; caption) echo 14 ;;
+  long) echo 21 ;; dense) echo 28 ;; poster) echo 48 ;; *) echo 14 ;;
+esac; }
+
+: > "$OUT/TIMING.tsv"
+# step() emits one DISTINCT visual state once, then records its TIMING row (index, role, holds).
+step() { # $1 role  rest = emit() args (phase prog alert rdot arc caption)
+  local role=$1; shift
+  emit "$@" "$(nf)"
+  printf '%d\t%s\t%s\n' "$f" "$role" "$(hold_for "$role")" >> "$OUT/TIMING.tsv"
+  f=$((f+1))
+}
+
+# 1) OBSERVE — calm telemetry, healthy. Pure sweep drift → transitions (each distinct: prog 8/20/32).
+step transition observe  8 0 0 0 "observe — golden signals nominal"
+step transition observe 20 0 0 0 "observe — golden signals nominal"
+step transition observe 32 0 0 0 "observe — golden signals nominal"
+# 2) INCIDENT — the spike trips the alert. Reveals the incident relationship → Ah-HA (dense, 28).
+step dense spike 50 1 0 0 "respond — incident detected, alert fires"
+# 3) MITIGATE — "mitigate first, then diagnose" is the teaching core of RESPOND → Ah-HA (dense, 28).
+step dense   respond 30 1 1 0 "respond — mitigate first, then diagnose"
+step caption respond 55 1 1 0 "respond — mitigation taking hold"
+step caption respond 80 0 1 0 "respond — error budget recovering"
+step label   respond 96 0 1 0 "respond — back inside SLO"
+# 4) HEALED + ITERATE arc — the watch→respond→iterate loop closes (re-enter DISCOVER). Settled poster=48
+#    (≥24, so the captioned ITERATE arc beat lands as the teaching climax).
+step poster healed 100 0 0 1 "iterate — learning re-enters the cycle ↻"
 echo "emitted $f frames into $OUT"

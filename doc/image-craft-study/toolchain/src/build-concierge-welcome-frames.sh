@@ -34,11 +34,13 @@ emit() { # $1 widgets_lit(0..4) ; $2 greet_chars(0..len) ; $3 settled(0/1) ; $4 
     printf '<rect width="100%%" height="100%%" fill="%s"/>\n' "$GROUND"
     # depth layer: radial glow gradient + blur/shadow filter definitions
     printf '<defs>\n'
-    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.13"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dga" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#fbbf24" stop-opacity="0.06"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
     printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
     printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
     printf '</defs>\n'
-    # soft blurred glow behind main content
+    # soft blurred glow behind main content — faint amber focal under the cooler teal halo (warm doorway depth)
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dga)" filter="url(#bgb)"/>\n' "$((W/2))" "$((CARD_Y + CARD_H/2))" "$((W*46/100))" "$((H*26/100))"
     printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$((CARD_Y + CARD_H/2))" "$((W*42/100))" "$((H*22/100))"
     # title
     printf '<text x="%d" y="46" font-family="%s" font-size="25" font-weight="700" fill="%s" text-anchor="middle">CONCIERGE · the repo greets whoever opens it</text>\n' "$((W/2))" "$FONT" "$TXTL"
@@ -102,28 +104,41 @@ emit() { # $1 widgets_lit(0..4) ; $2 greet_chars(0..len) ; $3 settled(0/1) ; $4 
   } > "$path"
 }
 
+# ---- explicit tagged timing (B1/B3) ----------------------------------------------------------------
+# Each DISTINCT visual state is emitted exactly ONCE; per-frame dwell comes from TIMING.tsv holds, not
+# from repeating identical calls. Roles & holds per the B1 table:
+#   transition=3 · label=7 (≤20) · caption=14 (20–40) · long=21 (40–60) · dense=28 (60–80) · poster=48
+# Ah-HA floor (≥24 → dense=28): for this figure the COMPLETED warm greeting is the meaning beat (the
+# door is open, the visitor is welcomed); the SETTLED routing payoff (✓ at the door, the two lanes
+# offered) is the poster. The typewriter character-reveal frames are pure transitions (holds=3, motion).
 f=0
-fr() { emit "$1" "$2" "$3" "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1)); }
+: > "$OUT/TIMING.tsv"
+# fr <role> <holds> <lit> <greet_chars> <settled>
+fr() {
+  local role=$1 holds=$2; shift 2
+  emit "$1" "$2" "$3" "$OUT/f$(printf '%03d' $f).svg"
+  printf '%d\t%s\t%d\n' "$f" "$role" "$holds" >> "$OUT/TIMING.tsv"
+  f=$((f+1))
+}
 
-# 1) empty card beat
-fr 0 0 0
-# 2) widgets tick into place, one per beat (4 beats)
-fr 1 0 0
-fr 2 0 0
-fr 3 0 0
-fr 4 0 0
-# 3) hold the full HUD 3 beats before the greeting starts (medium label needs ≥3 frames)
-fr 4 0 0
-fr 4 0 0
-fr 4 0 0
-# 4) greeting unfurls — sample the char-reveal in even steps
 GLEN=${#GREET}
-for frac in 12 24 38 52 66 80 100; do
+
+# 1) empty card forming — establishing beat (short, just the frame appears)
+fr label      7   0 0 0
+# 2) the four status instruments tick online, one per beat — pure transitions (motion)
+fr transition 3   1 0 0
+fr transition 3   2 0 0
+fr transition 3   3 0 0
+fr transition 3   4 0 0
+# 3) the full HUD settles — a readable medium beat before the greeting starts
+fr caption    14  4 0 0
+# 4) the greeting unfurls — typewriter character-reveal = pure transition holds (motion)
+for frac in 12 24 38 52 66 80; do
   c=$(( GLEN * frac / 100 ))
-  fr 4 "$c" 0
+  fr transition 3 4 "$c" 0
 done
-# 5) complete poster: full greeting + settled, hold 3 beats so the loop reads "settled"
-fr 4 "$GLEN" 1
-fr 4 "$GLEN" 1
-fr 4 "$GLEN" 1
+# Ah-HA: the completed warm greeting lands — concierge has greeted whoever opened the repo.
+fr dense      28  4 "$GLEN" 0
+# 5) settled poster — the door is open (✓), the two routing lanes offered. The payoff dwells, then loops.
+fr poster     48  4 "$GLEN" 1
 echo "emitted $f frames"

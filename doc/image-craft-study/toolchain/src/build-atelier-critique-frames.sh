@@ -31,10 +31,12 @@ emit() {
     printf '<rect width="100%%" height="100%%" fill="%s"/>\n' "$GROUND"
     # Depth: defs (gradients + filters) + ambient glow ellipse
     printf '<defs>\n'
-    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.13"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dga" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#fbbf24" stop-opacity="0.06"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
     printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
     printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
     printf '</defs>\n'
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dga)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*46/100))" "$((H*26/100))"
     printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
     # Title
     printf '<text x="%d" y="42" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700" fill="%s" text-anchor="middle">the design critique loop · designer ↔ reviewer · converges to fit</text>\n' "$((W/2))" "$TXTL"
@@ -129,42 +131,36 @@ emit() {
   } > "$path"
 }
 
+# ---- explicit tagged timing (B1/B3) ----------------------------------------------------------------
+# Each DISTINCT visual state is emitted exactly ONCE; per-frame dwell comes from TIMING.tsv holds, no
+# longer from repeating identical calls. Roles & holds per the B1 table:
+#   transition=3 · label=7 · caption=14 · long=21 · dense=28 · poster=48
+# Ah-HA floor (≥24): frames that teach the loop or reveal convergence/the gate message get dense(28).
 f=0
-fr() { emit "$@" "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1)); }
+: > "$OUT/TIMING.tsv"
+# fr <role> <holds> <label> <pass> <amber> <refine> <gate> <sweep>
+fr() {
+  local role=$1 holds=$2; shift 2
+  emit "$@" "$OUT/f$(printf '%03d' $f).svg"
+  printf '%d\t%s\t%d\n' "$f" "$role" "$holds" >> "$OUT/TIMING.tsv"
+  f=$((f+1))
+}
 
-# Loop iteration 1: rough wireframe, reviewer sweeps, 5 findings flag amber one-by-one (pass climbs as scan resolves)
-fr "iteration 1 · first wireframe drafted"               0 -1 0 0 0
-fr "iteration 1 · first wireframe drafted"               0 -1 0 0 0
-fr "iteration 1 · reviewer crawls the screen"            0  0 0 0 1
-fr "iteration 1 · reviewer crawls the screen"            0  0 0 0 1
-fr "iteration 1 · reviewer crawls the screen"            0  0 0 0 1
-fr "iteration 1 · finding: weak visual hierarchy"        1  1 0 0 1
-fr "iteration 1 · finding: weak visual hierarchy"        1  1 0 0 1
-fr "iteration 1 · finding: weak visual hierarchy"        1  1 0 0 1
-fr "iteration 2 · designer refines, re-renders"          2  2 1 0 0
-fr "iteration 2 · designer refines, re-renders"          2  2 1 0 0
-fr "iteration 2 · designer refines, re-renders"          2  2 1 0 0
-fr "iteration 2 · finding: contrast below WCAG AA"       2  2 1 0 1
-fr "iteration 2 · finding: contrast below WCAG AA"       2  2 1 0 1
-fr "iteration 2 · finding: contrast below WCAG AA"       2  2 1 0 1
-fr "iteration 2 · contrast fixed, target enlarged"       3  3 2 0 0
-fr "iteration 2 · contrast fixed, target enlarged"       3  3 2 0 0
-fr "iteration 2 · contrast fixed, target enlarged"       3  3 2 0 0
-fr "iteration 3 · re-review · consistency check"         3  3 2 0 1
-fr "iteration 3 · re-review · consistency check"         3  3 2 0 1
-fr "iteration 3 · re-review · consistency check"         3  3 2 0 1
-fr "iteration 3 · aligned to Jakob's law"                4  4 3 0 0
-fr "iteration 3 · aligned to Jakob's law"                4  4 3 0 0
-fr "iteration 3 · last pass · emotional polish"          4  4 3 0 1
-fr "iteration 3 · last pass · emotional polish"          4  4 3 0 1
-fr "iteration 3 · last pass · emotional polish"          4  4 3 0 1
-fr "converged · polished, accessible screen"             5 -1 3 1 0
-fr "converged · polished, accessible screen"             5 -1 3 1 0
-fr "converged · polished, accessible screen"             5 -1 3 1 0
-# hold the settled green poster so the loop reads as resolved
-fr "design-fitness gate is green — loop closes"          5 -1 3 1 0
-fr "design-fitness gate is green — loop closes"          5 -1 3 1 0
-fr "design-fitness gate is green — loop closes"          5 -1 3 1 0
-fr "design-fitness gate is green — loop closes"          5 -1 3 1 0
-fr "design-fitness gate is green — loop closes"          5 -1 3 1 0
+# Loop iteration 1: rough wireframe, reviewer sweeps, first finding flags amber.
+fr caption    14  "iteration 1 · first wireframe drafted"            0 -1 0 0 0
+fr caption    14  "iteration 1 · reviewer crawls the screen"         0  0 0 0 1
+# Ah-HA: review PRODUCES findings — the loop mechanic is revealed here.
+fr dense      28  "iteration 1 · finding: weak visual hierarchy"     1  1 0 0 1
+# Iteration 2: designer refines, re-review, finding clears as the next flags.
+fr caption    14  "iteration 2 · designer refines, re-renders"       2  2 1 0 0
+fr caption    14  "iteration 2 · finding: contrast below WCAG AA"    2  2 1 0 1
+fr caption    14  "iteration 2 · contrast fixed, target enlarged"    3  3 2 0 0
+# Iteration 3: re-review, last findings clear.
+fr caption    14  "iteration 3 · re-review · consistency check"      3  3 2 0 1
+fr caption    14  "iteration 3 · aligned to Jakob's law"             4  4 3 0 0
+fr caption    14  "iteration 3 · last pass · emotional polish"       4  4 3 0 1
+# Ah-HA: the loop CONVERGES — the screen passes the rubric, the gate goes green.
+fr dense      28  "converged · polished, accessible screen"          5 -1 3 1 0
+# Settled poster: the design-fitness gate message dwells (previously under-dwelling per the plan).
+fr poster     48  "design-fitness gate is green — loop closes"       5 -1 3 1 0
 echo "emitted $f frames"

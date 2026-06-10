@@ -26,10 +26,12 @@ emit() {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="%s"/>\n' "$GROUND"
     printf '<defs>\n'
-    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.13"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="dga" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#fbbf24" stop-opacity="0.06"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
     printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
     printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
     printf '</defs>\n'
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dga)" filter="url(#bgb)"/>\n' "$((W/2))" "$((H/2))" "$((W*46/100))" "$((H*26/100))"
     printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$((H/2))" "$((W*42/100))" "$((H*22/100))"
     printf '<text x="%d" y="40" %s font-size="24" font-weight="700" fill="%s" text-anchor="middle">PRESSROOM · illustrate → review → publish</text>\n' "$((W/2))" "$FONT" "$TXTL"
 
@@ -158,29 +160,33 @@ emit() {
   } > "$path"
 }
 
+# ---- explicit tagged timing (B1/B3) ----------------------------------------------------------------
+# Each DISTINCT visual state is emitted exactly ONCE; per-frame dwell comes from TIMING.tsv holds, no
+# longer from repeating identical calls. Roles & holds per the B1 table:
+#   transition=3 · label=7 · caption=14 · long=21 · dense=28 · poster=48
+# Ah-HA floor (≥24): for illustrate→review→publish the teaching core is the ★BEST selection (pickB)
+# and the publish payoff (land) — both get dense(28) so the reader can travel, read, and connect.
 f=0
-seqemit() { emit "$1" "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1)); }
+: > "$OUT/TIMING.tsv"
+# fr <role> <holds> <phase>
+fr() {
+  local role=$1 holds=$2 phase=$3
+  emit "$phase" "$OUT/f$(printf '%03d' $f).svg"
+  printf '%d\t%s\t%d\n' "$f" "$role" "$holds" >> "$OUT/TIMING.tsv"
+  f=$((f+1))
+}
 
-seqemit spec          # spec card lands
-seqemit spec
-seqemit optA          # option A renders
-seqemit optA
-seqemit optB          # option B renders — now two options
-seqemit optB
-seqemit scanA         # reviewer sweeps A
-seqemit scanA
-seqemit scanB         # reviewer sweeps B
-seqemit scanB
-seqemit pickB         # B clears rubric — picked BEST
-seqemit pickB
-seqemit fly1          # chosen figure flies toward doc
-seqemit fly2
-seqemit land          # figure lands in doc slot → green/published
-seqemit land
-seqemit land
-seqemit hold          # settle
-seqemit hold
-seqemit hold
-seqemit hold
-seqemit hold
+fr caption  14 spec     # spec card lands — the figure brief
+fr caption  14 optA     # option A renders
+fr caption  14 optB     # option B renders — now two options to weigh
+fr caption  14 scanA    # reviewer sweeps A
+fr caption  14 scanB    # reviewer sweeps B · scores both
+# Ah-HA: the adversarial reviewer PICKS — B clears the rubric, ★BEST, A dims. The selection is taught here.
+fr dense    28 pickB    # B clears rubric — picked BEST (teaching core)
+fr transition 3 fly1    # chosen figure flies toward the doc
+fr transition 3 fly2    # …still in flight
+# Ah-HA: the publish payoff — the chosen figure lands in the doc slot and the slot goes green/published.
+fr dense    28 land     # figure lands in doc slot → published (payoff core)
+# Settled poster: the published page dwells before the loop resets.
+fr poster   48 hold     # settle
 echo "emitted $f frames"
