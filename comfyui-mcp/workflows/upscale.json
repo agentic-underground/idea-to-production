@@ -1,0 +1,14 @@
+{
+  "_meta": {
+    "template_id": "upscale",
+    "description": "Allowlisted standalone upscale pass: load an image, upscale it with a model-based upscaler (e.g. 4x-UltraSharp, 4x_foolhardy_Remacri), save. For final crispness on an already-composed image. submit fills ONLY the listed nodes; _meta stripped before POST; image_name resolves under the input dir; upscale_model in allowlist. (No refiner template ships: on this rig SDXL/sd_xl_base_1.0 fails to load, so the refiner head has nothing to refine — spend the budget on hires-fix + this upscale pass instead.)",
+    "fillable": {
+      "1.inputs.image": "input image name (under ComfyUI input dir)",
+      "2.inputs.model_name": "upscale model (in allowlist)"
+    }
+  },
+  "1": { "class_type": "LoadImage", "inputs": { "image": "REPLACED_BY_SERVER" } },
+  "2": { "class_type": "UpscaleModelLoader", "inputs": { "model_name": "REPLACED_BY_SERVER" } },
+  "3": { "class_type": "ImageUpscaleWithModel", "inputs": { "upscale_model": ["2", 0], "image": ["1", 0] } },
+  "9": { "class_type": "SaveImage", "inputs": { "filename_prefix": "pressroom_upscale", "images": ["3", 0] } }
+}

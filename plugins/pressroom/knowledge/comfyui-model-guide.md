@@ -1,81 +1,122 @@
-# ComfyUI model guide — which checkpoint for which intent
+# ComfyUI model guide — which asset for which intent
 
-> The canonical, evidence-based model-selection reference for PRESSROOM's generative raster path. **One
+> The canonical, evidence-based asset-selection reference for PRESSROOM's generative raster path. **One
 > source, referenced not forked:** both [`handler-comfyui`](../agents/handler-comfyui.md) (which renders) and
-> the [`illustrator`](../skills/illustrator/SKILL.md) (which routes) consult this — neither hardcodes model
-> choices. Populated and sharpened by the [model survey](../skills/model-survey/SKILL.md) (run under `/loop`);
-> each run appends evidence via the shared
-> [self-improvement protocol](../skills/rich-pdf-with-diagrams/references/self-improvement.md).
+> the [`illustrator`](../skills/illustrator/SKILL.md) (which routes) consult this — neither hardcodes asset
+> choices. Names below are **verbatim live filenames** enumerated from the rig's `/object_info` (mind the
+> `LIGHTNING/` and `SDXL/` subfolder prefixes — they are part of the `ckpt_name`/`lora_name`). The handler
+> still lists assets live; this guide tells it *which* to pick, and pairs with the
+> [prompt-craft](../skills/illustrator/references/prompt-craft.md) and
+> [workflow-strategy](../skills/illustrator/references/workflow-strategy.md) references it points at.
 >
-> **Backend:** `${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}`. The handler still lists checkpoints live;
-> this guide tells it *which* to pick.
+> **Backend:** `${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}` (RTX 3090 24 GB; 89 checkpoints,
+> 239 LoRAs, 24 upscalers, Impact-Pack/IPAdapter/FreeU/LatentUpscale present).
 
 ## How to use it (the handler's decision)
-1. Read the SPEC's `intent` and map it to an **intent class** below.
-2. Pick the **top recommended model** for that class that is present in the live checkpoint list (the survey
-   validated loadability — prefer models it confirmed load; note the SDXL-subfolder quirk).
-3. Use the **recommended settings** (steps/cfg/sampler) for that model's base.
-4. If the intent class is flagged **"route to vector"**, do **not** use ComfyUI — tell the orchestrator to use
-   a vector handler instead (e.g. `line-goes-up` belongs to `handler-chart`/`handler-graphviz`, not diffusion).
+1. Read the SPEC's `intent` → map to an **intent class** below.
+2. Take the **top asset** for that class present in the live list (prefer confirmed-loadable names — see the
+   dead-path note). Set it into the template's `CheckpointLoaderSimple.ckpt_name` before submit.
+3. Use the class's **settings** (steps/cfg/sampler/res) and, where named, its **stage recipe** and **LoRAs**.
+4. If the class is flagged **"route to vector"**, do **not** use ComfyUI — tell the orchestrator to use a
+   vector handler (`handler-chart`/`handler-graphviz`). This is canonical and durable; never route here.
 
-## Intent → recommended models (decision table)
+## The award bar (scores are calibrated to it)
+Every fitness score in this marketplace is judged against **award-winning reference work**, not "good enough
+for a doc." A **95 means award-tier**, not "usable"; a clean, on-prompt, artifact-free image with no focal
+point and flat light is the *entry-level trap* (~70s), not a pass. The multi-stage recipes below exist to
+clear that bar. The bar itself — and the hard failure modes that cap a score regardless of polish — live in
+the [image-aesthetic canon](../skills/design-reviewer/references/image-aesthetic-canon.md).
 
-_Recommendations below are from the 2026-06 survey (12 models × 5 objectives; image-fitness 0–100)._
+## Intent → recommended asset (decision table)
 
-| Intent class | Examples | Recommended (best-first) | Settings | Notes |
+| Intent class | Examples | Top pick (live name) · backups | Settings | LoRA / stage note |
 |---|---|---|---|---|
-| **Photoreal scene** | hero shots, atmospheric environments | `dreamshaper_8` · `realcartoon3d_v8` (SD1.5, 100) · `juggernautXL_v2` · `protovisionXL` (SDXL, 100) | SD1.5 768×512 25–28 / SDXL 1216×832 28–30 · dpmpp_2m karras | scenes are the universal strength — even the cheapest SD1.5 nails them |
-| **Landscape / nature** | vistas, backgrounds | `realcartoon3d_v8` (100) · `epicrealism` · `cyberrealistic_v31` · `epicdream_lullaby` (97) | as above | bright skies are a "hard-baked light field" — crop/subject for a dark doc |
-| **People / marketing-stock** | candid office, team, lifestyle | `realisticStockPhoto_v10` (SDXL, 86) · `juggernautXL_lightning` (86) · `dreamshaper_8`/`epicdream_lullaby` (85) | SDXL photoreal; **inspect hands** | SD1.5 hands go mushy at scale — the artifact gate; SDXL is safer for people |
-| **Cartoon / mascot** | logos, characters, friendly mascots | `dynavisionXL` · `juggernautXL_lightning` (97) · `protovisionXL` (96) · `cardosAnimated_v20` (95) · `modernDisneyXL_v11` (94) | — | mascots ship a bright ground → subject/cut out before embed |
-| **Stylized 3D / concept** | game-art, painterly, dreamy | `dynavisionXL` · `protovisionXL` · `epicdream_lullaby` | — | — |
-| **Chart / infographic / text** | `line-goes-up`, labeled diagrams | **route to vector** (`handler-chart` / `handler-graphviz`) | — | **CONFIRMED:** best score was 72; every model baked gibberish axis text. Diffusion cannot render legible labels — never route here. |
-| **Fast / draft** | quick options, A/B challengers | `juggernautXL_lightning` | **6 steps · cfg ~2 · dpmpp_sde sgm_uniform** | standout: tied **best overall (87 avg)** at ~3× speed — not just a draft engine |
+| **Photoreal scene** | hero shots, atmospheric environments | `juggernautXL_version2.safetensors` · `epicrealism_naturalSinRC1VAE` · `realisticStockPhoto_v10` · `cyberrealistic_v31` | 1216×832 · 30 · cfg 6 · dpmpp_2m karras | recipe A — base→latent-hires→UltraSharp; LoRA usually none |
+| **Photoreal portrait / character** | faces, people, lifestyle | `nightvisionXLPhotorealisticPortrait_v0743ReleaseBakedvae` · `realisticStockPhoto_v10` · `fullyREALXL_v90Vividreal` | 832×1216 · 30 · cfg 6 · dpmpp_2m karras | recipe E — **FaceDetailer mandatory**; `perfecteyes-000007`@0.4 |
+| **Stylized / concept / game-art** | painterly, dreamy, concept | `dynavisionXLAllInOneStylized_beta0411Bakedvae` · `protovisionXLHighFidelity3D_beta0520Bakedvae` · `zavychromaxl_v12` · `crystalClearXL_ccxl` | 1344×768 · 30 · cfg 7 · dpmpp_2m karras | recipe B — `xl_more_art-full_v1`@0.6 + 1 artist anchor; **FreeU V2** |
+| **Landscape / nature** | vistas, matte, backgrounds | `juggernautXL_version2` (native res) · `realcartoon3d_v8` (SD1.5) · `epicdream_lullaby` (SD1.5) | XL 1344×768 / SD1.5 768×512 · 28–30 · cfg 6 · dpmpp_2m karras | recipe C — Remacri upscale; **no FaceDetailer**; bright-sky → §dark |
+| **Anime / stylized character** | anime, cel | `animagineXL_v10` · `counterfeitxl_v10` · `bluePencilXL_v050` · `nijianimesdxl_v10` | 832×1216 · 30 · cfg 7 · dpmpp_2m karras | tag-style prompt; `RealESRGAN_x4plus_anime_6B` upscaler |
+| **Cartoon / mascot** | logos, friendly mascots | `modernDisneyXL_v11` · `dynavisionXL…` · `samaritan3dCartoon_v40SDXL` · `realcartoonXL_v3` | 1216×832 · 28–30 · cfg 6.5 · dpmpp_2m karras | mascots bake a bright ground → cut out before embed |
+| **Fast / draft / lightning** | A/B challengers, high-iteration | `LIGHTNING/juggernautXL_v9Rdphoto2Lightning` · `LIGHTNING/RealitiesEdgeXLLIGHTNING_V7Bakedvae` | 1216×832 · **6 · cfg ~2 · dpmpp_sde sgm_uniform** | tied best-overall at 6 steps — a credible *final* for mascot/office |
+| **Dark-key hero** (README mastheads) | text-free, people-free dark assets | `dynavisionXLAllInOneStylized…` · `zavychromaxl_v12` | 1344×768 · 32 · cfg 6.5 · dpmpp_2m karras | recipe F — `lowkey_v1.1`@0.6 + `LowRA`@0.4 + void-bg steer; **the gold** |
+| **Inpaint / background fix** | object removal, dark-ground repaint | `LIGHTNING/dreamshaperXL_lightningInpaint` · `epicrealism_v10-inpainting` | per base | repaint a bright ground dark before keying a hero |
+| **Chart / infographic / text** | `line-goes-up`, labelled diagrams | **route to vector** (`handler-chart`/`handler-graphviz`) | — | **CONFIRMED:** best score was 72; every model baked gibberish text. Diffusion cannot render legible labels — never route here. |
 
-## Per-model scorecard
+## Upscale models — the 4–5 to actually reach for (24 present)
 
-Image-fitness 0–100 per category (image-aesthetic canon), from the 2026-06 survey
-(`doc/comfyui-experiment/journal.jsonl`; full notes in `catalog.md` + the PDF). **avg** across the five.
+| Live name | Best for | Note |
+|---|---|---|
+| `ESRGAN/4x-UltraSharp.pth` | **default photoreal / mixed** | community default; maximum sharpness, can over-sharpen skin |
+| `ESRGAN/4x_foolhardy_Remacri.pth` | **photoreal where UltraSharp over-sharpens** | softer, natural texture — the "less crunchy" choice for skin/landscape |
+| `ESRGAN/4x_NMKD-Superscale-SP_178000_G.pth` | **balanced general** | fewer halos; crisp without artefacts |
+| `ESRGAN/4xLSDIRplus.pth` (+ `4xLSDIRplusR.pth`) | **high-fidelity detail restore** | modern LSDIR; `…R` denoises/restores more |
+| `RealESRGAN/RealESRGAN_x4plus_anime_6B.pth` | **anime / flat illustration** | preserves line art; `realesr-animevideov3.pth` for cel |
+| `SwinIR/SwinIR_4x.pth` | **max fidelity, slow** | transformer; heavier, top scores for digital art |
 
-| Model | Base | Family | scenes | landsc | office | line↑ | mascot | avg | best-for | avoid |
-|---|---|---|--:|--:|--:|--:|--:|--:|---|---|
-| `dreamshaper_8` | sd15 | versatile | **100** | 94 | 85 | 65 | 89 | **87** | scenes, landscapes, mascot | line-goes-up |
-| `juggernautXL_lightning` | sdxl-lightning | photoreal-fast | 91 | 94 | **86** | 67 | **97** | **87** | mascot, office, fast | line-goes-up |
-| `realisticStockPhoto_v10` | sdxl | stock-photo | 100 | 89 | **86** | 69 | 80 | 85 | office/people, scenes | line-goes-up |
-| `protovisionXL` | sdxl | photoreal-3d | 100 | 92 | 70 | 65 | 96 | 85 | scenes, mascot | — |
-| `epicrealism` | sd15 | photoreal | 98 | 97 | 82 | 49 | 93 | 84 | scenes, landscapes, mascot | line-goes-up |
-| `juggernautXL_v2` | sdxl | photoreal | 100 | 92 | 76 | 68 | 84 | 84 | scenes, landscapes | — |
-| `modernDisneyXL_v11` | sdxl | cartoon-mascot | 96 | 97 | 82 | 53 | 94 | 84 | landscapes, mascot, scenes | line-goes-up |
-| `dynavisionXL` | sdxl | stylized-3d | 97 | 86 | 66 | **72** | **97** | 84 | mascot, scenes | office, line-goes-up |
-| `realcartoon3d_v8` | sd15 | 3d-cartoon | **100** | **100** | 85 | 34 | 90 | 82 | scenes, landscapes, mascot | line-goes-up |
-| `cardosAnimated_v20` | sd15 | animated | 95 | 95 | 78 | 41 | **95** | 81 | scenes, landscapes, mascot | line-goes-up |
-| `cyberrealistic_v31` | sd15 | photoreal | 96 | 97 | 73 | 51 | 88 | 81 | landscapes, scenes, mascot | line-goes-up, office hands |
-| `epicdream_lullaby` | sd15 | artistic | 96 | 97 | 85 | 36 | 80 | 79 | landscapes, scenes | line-goes-up |
+> Skip for finals: `BSRGAN.pth`, `DF2K*.pth`, `ESRGAN_4x.pth`, classical-SwinIR-M — older/noisier than the
+> picks above. The six listed cover every real need.
 
-> **`SDXL/sd_xl_base_1.0` was excluded** — it is listed by the API but fails to load (the subfolder quirk).
-> The survey records loadability; prefer the confirmed-loadable names above.
+## Notable LoRAs (live names, by intent)
+- **Dark-key / mood (the hero gold):** `lowkey_v1.1.safetensors`, `LowRA.safetensors`, `Silhouette.safetensors`,
+  `Night.safetensors`, `Dark_Novel.safetensors`, `NeonNight.safetensors`, `luts-000004.safetensors` (grade).
+- **Painterly / illustration:** `xl_more_art-full_v1.safetensors`, `greg_rutkowski_xl_2.safetensors`,
+  `ChristopherBalaskas.safetensors`, `CraigMullins.safetensors`, `ClassipeintXL2.1.safetensors`.
+- **Concept / sci-fi env:** `Sci-fi_Environments_sdxl.safetensors`, `21Stalenhag.safetensors`,
+  `Beeple(MikeWinkelmann).safetensors`, `Microverse_Creator_sdxl.safetensors`.
+- **Photo quality / detail:** `SDXL/sdxl_photorealistic_slider_v1-0.safetensors`, `perfecteyes-000007.safetensors`.
+- **3D / clay / toy (mascot):** `3DMM_V12.safetensors`, `blindbox_v1_mix.safetensors`, `nendoroid_xl_v7.safetensors`.
 
-## Base-level routing rules (the durable findings) — confirmed by the 2026-06 survey
-- **Diffusion cannot render legible chart text or axes.** Across all 12 models, `line-goes-up` peaked at **72**
-  and every result baked gibberish glyphs for axis labels/numbers. → **`line-goes-up` and any
-  labelled-infographic intent routes to the vector handlers (`handler-chart`/`handler-graphviz`), never
-  ComfyUI.** This is the single most important rule.
-- **Scenes & landscapes are the universal strength** (90–100 nearly everywhere) — even the cheapest SD1.5
-  model is excellent here; reach for SDXL only when you need the higher native resolution.
-- **People/office is where SD1.5 hands fail** — mushy/soft fingers at scale (artifact dock, occasionally the
-  ≤2 anatomy cap). → prefer SDXL photoreal (`realisticStockPhoto_v10`) for people, and **inspect hands** before
-  shipping.
-- **LIGHTNING is not just a draft engine** — `juggernautXL_lightning` tied for **best overall (87)** at **6
-  steps**. Use it as the default fast lane *and* a credible final for mascots/office.
-- **Bright grounds fight dark docs** — landscapes and mascots often bake a bright sky/background; crop or
-  subject (cut-out) before embedding on a dark page (the [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md)).
-- **SDXL subfolder quirk:** `SDXL/sd_xl_base_1.0.safetensors` is listed by `/object_info` but fails to load
-  via the API; other subfolder models (`SDXL_3/…`, `SDXL_4/…`) load fine. The survey records loadability —
-  the handler should prefer survey-confirmed names.
+> **No `lcm_lora_sdxl` on the rig** — the LCM example graph references it but it is **not** in our library.
+> Use the native `LIGHTNING/*` checkpoints for the fast lane, never an LCM-LoRA path. Filename collisions
+> exist (`MechStyle V1`/`MechStyle-V1`, several `pokemon*`) — always copy the exact live string.
+
+## Failure modes (per base / model)
+- **SD1.5 hands & eyes** — mushy/soft fingers at scale (the artifact gate). For people/portraits prefer **SDXL**
+  photoreal; if SD1.5, **inspect hands** and run FaceDetailer before shipping.
+- **The dead refiner path** — `SDXL/sd_xl_base_1.0.safetensors` is **listed but fails to load** (subfolder
+  quirk). Its paired `SDXL/sd_xl_refiner_1.0` *does* load but has nothing to refine. → **Skip the refiner**;
+  the community fine-tunes (Juggernaut/NightVision/DynaVision) already bake refiner-grade detail. Spend the
+  saved budget on **latent-hires + FaceDetailer** instead.
+- **Bright-ground landscapes/mascots** — these bake a bright sky/background that fights a dark page. Crop,
+  subject-isolate, or dark-key-steer before embedding (see §dark-key + the
+  [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md)).
+- **Lightning's micro-detail trade** — 6-step Lightning checkpoints are fast and ship-worthy for mascot/office,
+  but lose fine micro-detail vs a 30-step base→hires pass. Use Lightning for high-iteration/drafts and as a
+  *final* only where micro-texture isn't the point; reach for the full base path for photoreal heroes.
+- **Legacy SD2.x** (`512-base-ema.ckpt`, `768-v-ema.ckpt`, `v2-1_768-ema-pruned`) — present but obsolete; the
+  official demo graphs ship them only as historical defaults. Avoid for finals.
+
+## Multi-stage gains — what each stage adds, and when it's NOT worth it
+
+| Stage (nodes) | Adds | Skip when |
+|---|---|---|
+| **Latent hires-fix** (`LatentUpscaleBy` + 2nd KSampler @ denoise 0.4–0.5) | **biggest lever** — coherent higher res *and* invented micro-detail | never on a final hero; keep denoise ≤0.45 when likeness/composition must hold (details drift) |
+| **Upscale-model** (`UpscaleModelLoader` + `ImageUpscaleWithModel`) | edge crispness; **no new structure** | as the *only* upscale on a soft base (sharpens softness into crunch) — run it *after* latent hires or as a pure final resize |
+| **LoRA stack** (`LoraLoader` chaining) | style/subject control | the base already nails the look — every LoRA narrows the model and can fight the prompt; ≥3 high-weight LoRAs go incoherent |
+| **FaceDetailer** (Impact-Pack) | sharp on-model faces — **mandatory for portraits** | landscapes / abstract / dark-key heroes (no faces) — it wastes time and can hallucinate a face |
+| **FreeU V2** (b1 1.3/b2 1.4/s1 0.9/s2 0.2) | composition depth + detail, free | realistic photo models — it **over-contrasts** them; use on stylized/anime/painterly only |
+| **~~Refiner~~** (`KSamplerAdvanced` pair) | micro-detail polish on the base-1.0 path | **always, on this rig** — base 1.0 won't load and fine-tunes bake refiner-grade detail. Deprioritised; spend the budget on hires + FaceDetailer |
+
+Full per-stage node wiring and the genre→pipeline decision tree:
+[workflow-strategy](../skills/illustrator/references/workflow-strategy.md). Prompt structure, negatives, and
+the dark-key recipe: [prompt-craft](../skills/illustrator/references/prompt-craft.md).
+
+## Base-level routing rules (durable findings)
+- **Diffusion cannot render legible chart text or axes.** `line-goes-up` peaked at **72**; every model baked
+  gibberish glyphs. → labelled-infographic intent **routes to vector** (`handler-chart`/`handler-graphviz`),
+  never ComfyUI. **The single most important rule.**
+- **Scenes & landscapes are the universal strength** (90–100 nearly everywhere) — even cheap SD1.5 excels;
+  reach for SDXL only for native resolution.
+- **People/office is where SD1.5 hands fail** — prefer SDXL photoreal and **inspect hands** before shipping.
+- **Lightning is not just a draft engine** — `LIGHTNING/juggernautXL_v9Rdphoto2Lightning` tied best-overall at
+  **6 steps**; default fast lane *and* a credible final for mascot/office.
+- **Bright grounds fight dark docs** — crop or cut out before embedding on a dark page.
+- **The refiner path is effectively dead here** — base 1.0 won't load; skip the refiner, lean on latent-hires
+  + FaceDetailer.
 
 ## Settings cheatsheet
 | Base | Resolution | Steps | CFG | Sampler / scheduler |
 |---|---|---|---|---|
 | SD1.5 | 768×512 (landscape) | 25–28 | 6–7 | dpmpp_2m / karras |
-| SDXL | 1216×832 (landscape) | 28–30 | 5.5–7 | dpmpp_2m / karras |
+| SDXL | 1216×832 / 1344×768 | 28–32 | 5.5–7 | dpmpp_2m / karras |
 | SDXL-Lightning | 1216×832 | 6 | ~2 | dpmpp_sde / sgm_uniform |
