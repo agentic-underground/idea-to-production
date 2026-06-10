@@ -59,14 +59,14 @@ trap 'rm -rf "$WORK"' EXIT
 # Taglines reconciled against each README (see report); all kept short to read at ~640px inline width.
 # ---------------------------------------------------------------------------------------------------
 read -r -d '' PLUGINS <<'TABLE' || true
-i2p|idea-to-production|every plugin, one front door|#fbbf24|gateway|basrelief|11|carved bas-relief stone frieze of a single grand archway gateway, sculptural low-relief, monochrome engraved sandstone, raking side light grazing the carving, deep recessed shadow, vast empty dark stone field to the left, wide negative space, minimalist, matte, no gloss
-concierge|concierge|a warm light at the door|#fbbf24|lantern|whimsical3d|27|soft whimsical 3D toy diorama of a single small glowing lantern beside a tiny doorway, rounded matte clay forms, gentle warm studio rim light, muted twilight palette, the motif set far to the right, wide empty dark backdrop to the left, charming, uncluttered
+i2p|idea-to-production|every plugin, one front door|#fbbf24|gateway|engrave|11|woodcut engraving of a single grand stone archway gateway threshold, bold black outlines on a plain pale parchment background, clean line drawing, crisp engraved hatch lines, vintage technical illustration, flat two-tone graphic, no greyscale tone, no shading gradients, no scenery fill, generous empty space, minimalist linework
+concierge|concierge|a warm light at the door|#fbbf24|lantern|lineart|27|fine ink line-art of a single hanging lantern beside a doorway threshold, the lantern flame drawn as a deliberate clean geometric shape with radiating ray lines, crisp single-weight warm amber pen strokes on a deep near-black ground, flat graphic illustration, the motif set to the right, generous empty space on the left, minimalist linework, low contrast, no fill
 market-scanner|market-scanner|sweep the field, kill weak early|#5eead4|radar|lineart|43|fine ink line-art of concentric radar sweep rings and a single rotating scan line, clean contour drawing, sparse hatching, single-weight teal pen strokes on a deep ink-blue ground, generous empty space across the band, minimalist linework, low contrast, no fill
 ideator|ideator|scattered idea, build-ready package|#5eead4|fragments|lineart|58|fine ink line-art of scattered geometric fragments converging toward one neat assembled cluster, clean contour drawing, sparse hatching, single-weight teal pen strokes on a deep ink-blue ground, generous empty space on the left, minimalist linework, low contrast, no fill
 atelier|atelier|screens become considered interfaces|#5eead4|drafting|painterly|66|atmospheric concept-art matte painting of an angled drafting table with a faint blueprint glow, loose visible brushwork, volumetric haze, moody low-key teal and amber palette, the table set to the right edge, vast hazy negative space on the left, painterly not photographic, deep shadow
-foundry|foundry|test-first, value on one slice|#fbbf24|conveyor|basrelief|74|carved bas-relief stone frieze of an industrial conveyor belt and forge, sculptural low-relief, monochrome engraved bronze-grey stone, raking side light grazing the carving, deep recessed shadow, vast empty dark field to the left, wide negative space, minimalist, matte, no gloss
+foundry|foundry|test-first, value on one slice|#fbbf24|conveyor|engrave|74|woodcut engraving of an industrial conveyor belt with rollers gears and a forge, bold black outlines on a plain pale parchment background, clean line drawing, crisp engraved hatch lines, vintage technical illustration, flat two-tone graphic, no greyscale tone, no shading gradients, no scenery fill, generous empty space, minimalist linework
 sentinel|sentinel|certify before exposure|#5eead4|shield|lineart|82|fine monochrome ink line-art of a single tall gate with a shield emblem, clean contour drawing, sparse hatching, single-weight pale ink strokes on a near-black ground, generous empty space across the band, minimalist linework, low contrast, no fill
-pressroom|pressroom|illustrate, review, publish|#fbbf24|press|painterly|91|atmospheric concept-art matte painting of an old printing press with stacked metal plates, loose visible brushwork, volumetric haze, moody low-key amber and teal palette, the press set to the right edge, vast hazy negative space on the left, painterly not photographic, deep shadow
+pressroom|pressroom|illustrate, review, publish|#fbbf24|press|engrave|91|woodcut engraving of an old printing press with platen and stacked metal type plates, bold black outlines on a plain pale parchment background, clean line drawing, crisp engraved hatch lines, vintage technical illustration, flat two-tone graphic, no greyscale tone, no shading gradients, no scenery fill, generous empty space, minimalist linework
 mission-control|mission-control|watch, respond, iterate|#5eead4|console|painterly|99|atmospheric concept-art matte painting of a curved mission-control console ring with faint telemetry waveforms, loose visible brushwork, volumetric haze, moody low-key teal palette, the console arc to the right, vast hazy negative space on the left, painterly not photographic, deep shadow
 TABLE
 
@@ -75,6 +75,10 @@ band_recipe() {
   case "$1" in
     basrelief)   echo "oasisSDXL_v10.safetensors|BAS-RELIEF.safetensors:0.8|xl_more_art-full_v1.safetensors:0.4|4.0|dpmpp_sde_gpu";;
     lineart)     echo "bluePencilXL_v050.safetensors|vntg-line-art-v2.safetensors:0.6||3.5|dpmpp_sde_gpu";;
+    # engrave: a HARDER line-art routing for representational scene subjects (gateway/press/conveyor)
+    # that the soft lineart recipe rendered as tonal masses (read as defocused photos after the band
+    # blur). Stacks two ink/line LoRAs at high strength to force committed outline-only output.
+    engrave)     echo "bluePencilXL_v050.safetensors|vntg-line-art-v2.safetensors:0.9|pensketch_lora_v2.3.safetensors:0.5|3.2|dpmpp_sde_gpu";;
     whimsical3d) echo "LahCuteCartoonSDXL_alpha.safetensors|blindbox_v1_mix.safetensors:0.4||4.0|dpmpp_3m_sde_gpu";;
     painterly)   echo "dynavisionXLAllInOneStylized_beta0411Bakedvae.safetensors|CraigMullins.safetensors:0.5|xl_more_art-full_v1.safetensors:0.5|4.2|dpmpp_3m_sde_gpu";;
     *) echo "oasisSDXL_v10.safetensors|BAS-RELIEF.safetensors:0.8||4.0|dpmpp_sde_gpu";;
@@ -82,7 +86,9 @@ band_recipe() {
 }
 
 # Shared banning negative (text / people / photoreal sheen) — never contradicts the dark positive.
-NEG='text, words, letters, lettering, typography, captions, watermark, signature, logo, ui, numbers, person, people, human, face, portrait, crowd, hands, glossy photoreal render, photographic skin, plastic sheen, overexposed, high-key, busy cluttered centre'
+# HARD photoreal bans added after an adversarial review flagged 4 bands as defocused photographs:
+# no photo material, no bokeh blobs, no depth-of-field sheen, no 3d-render gloss.
+NEG='photo, photograph, photorealistic, realistic, photography, bokeh, depth of field, dof, blur, blurry, out of focus, defocused, lens flare, 3d render, octane render, cgi, plastic sheen, glossy photoreal render, photographic skin, film grain, vignette, overexposed, high-key, text, words, letters, lettering, typography, captions, watermark, signature, logo, ui, numbers, person, people, human, face, portrait, crowd, hands, busy cluttered centre'
 
 # ---------------------------------------------------------------------------------------------------
 # Rig: render one stylized band via the allowlisted lora-detail template (LoRA stack + latent hires).
@@ -166,12 +172,13 @@ finish_band() {
 # Produced when the rig is offline / BANNER_VECTOR_ONLY / 3 rig tries all fail. Never looks accidental.
 # ---------------------------------------------------------------------------------------------------
 vector_band_svg() {
-  local style="$1" accent="$2" svg="$3"
+  local style="$1" accent="$2" svg="$3" motif="${4:-}"
   # Per-style colour ground (dark canon). c1=deep ground, c2=mid, glow=accent tint.
   local c1 c2
   case "$style" in
     basrelief)   c1="#171410"; c2="#241d14";;
     lineart)     c1="#0b1220"; c2="#10192e";;
+    engrave)     c1="#13110c"; c2="#201a10";;
     whimsical3d) c1="#14101c"; c2="#201528";;
     painterly)   c1="#0d1116"; c2="#161b22";;
     *)           c1="#101018"; c2="#1a1a28";;
@@ -198,6 +205,15 @@ vector_band_svg() {
     <path d="M 1240 ${BH} C 1420 280, 1620 180, $BW 120"/>
     <path d="M 1380 ${BH} C 1560 300, 1760 210, $BW 180"/>
   </g>
+$( [ -n "$motif" ] && {
+     # A large, faint, intentional line-drawing of the plugin's spirit motif ghosted into the
+     # band's right half — makes the vector band SUBJECT-relevant (a drawn gateway / press /
+     # conveyor / lantern), unambiguously graphic, never accidental. ~2.6x the overlay motif,
+     # low opacity so the crisp overlay motif still reads on top.
+     echo "  <g opacity=\"0.16\" transform=\"translate(1230 200) scale(2.6)\">"
+     motif_fragment "$motif" "$accent" 0 0
+     echo "  </g>"
+   } )
   <rect width="$BW" height="$BH" filter="url(#vgrain)"/>
 </svg>
 SVG
@@ -412,7 +428,7 @@ build_one() {
     finish_band "$WORK/$key-raw.png" "$band"
   else
     local vsvg="$WORK/$key-vband.svg"
-    vector_band_svg "$bandstyle" "$accent" "$vsvg"
+    vector_band_svg "$bandstyle" "$accent" "$vsvg" "$motif"
     rsvg-convert -w "$BW" -h "$BH" "$vsvg" -o "$band"
   fi
 
