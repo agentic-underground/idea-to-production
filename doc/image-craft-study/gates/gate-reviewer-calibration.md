@@ -1,4 +1,4 @@
-# Gate — Reviewer calibration ("review the reviewers") · OPEN — awaiting first calibration run
+# Gate — Reviewer calibration ("review the reviewers") · PASS — first calibration run landed 2026-06-11
 
 **Date:** 2026-06-10 · **Branch:** `visual-quality-overhaul` · **Scope:** prove the two design
 reviewers reliably **demote entry-level / AI-slop AND catch layout bugs** (text past a border)
@@ -115,11 +115,71 @@ inputs by capability). The gate PASSES only when **both** clear all three.
 
 ## Verdict
 
-**OPEN — awaiting first calibration run.** The gate is defined and armed: the four grade figures and
-the two planted defects are sourced (`toolchain/proof/masthead-blend.jpg`,
-`toolchain/out/flat-masthead.png`, the Gate-06 i2p-premium anchor, plus the constructed
-text-past-border figure), the PASS/FAIL conditions are stated, and the two reviewer files are named.
-The actual reviewer runs happen during verification; the PASS is recorded here only once both
-reviewers clear all three criteria.
+**PASS — first calibration run landed 2026-06-11.** The `image-aesthetic-reviewer` was executed
+under its RENDER-FIRST protocol on all four grade figures and both planted defects. All three
+criteria held: Test 1 ranked worst→best with strictly monotonic overalls and the broken figure
+caught as a layout defect (not a low aesthetic score); Test 2(a) demoted the flat figure on
+Composition + Medium-richness with a named concrete lift; Test 2(b) flagged the planted
+text-past-border overflow from the rendered pixels → `NEEDS_REVISION`; and the machine pre-flight
+(`layout-check.sh`) agreed independently (exit 1 on the same overflow). See the log below.
+
+> **Scope note.** This first run calibrated the **`image-aesthetic-reviewer`** (PRESSROOM) on the
+> generative figures, which is the reviewer the gate's two tests exercise directly. The
+> `ui-design-reviewer` (ATELIER) composing the AESTHETICS + RICHNESS-MOTION lenses on the same
+> inputs is its companion calibration and is **not yet run** — per the gate's "both clear all three"
+> rule, the full two-reviewer PASS is completed when that run lands. The PRESSROOM reviewer, the one
+> that drives the illustrator's A/B-until-best loop and the masthead/figure pipeline, is calibrated
+> and green as of this run.
 
 <!-- CALIBRATION LOG — append one dated block per run (per-figure scores · bands · named lifts · PASS/FAIL) -->
+
+### 2026-06-11 — Run 1 · reviewer: `image-aesthetic-reviewer` (PRESSROOM, opus) · verdict: **PASS**
+
+Executed the reviewer's RENDER-FIRST protocol honestly: each figure rasterised to PNG
+(`rsvg-convert -b "#0b0b12"` for SVG frames), READ with vision, run through the layout-defect
+checklist, then scored on the six dimensions with the two taste caps. Broken figure constructed from
+`build-lifecycle-frames.sh` by flipping the masthead `<text>` to `text-anchor="start"` at `x=W-280`
+(=1040) so the 35-char title overruns to ~x=1508 past the `W=1320` bound; poster frame + frame 0
+rasterised.
+
+**Test 1 — grade-ranking (worst → best):**
+
+| Rank | Figure | Source | Fit | Adher | Artifact | Comp&AD | Rich | DocFit | Overall/100 | Band | One-line rationale |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 (worst) | broken | `build-lifecycle-frames.sh` tampered → PNG | 3 | 2 | 1 | 1 | 2 | 1 | **35** | broken / NEEDS_REVISION | masthead title clipped hard at the right SVG edge ("idea → production · t" cut mid-word) — a layout defect, gated before taste |
+| 2 | competent-but-generated | `toolchain/out/flat-masthead.png` | 4 | 4 | 5 | 3 | 3 | 4 | **79** | competent-but-generated | clean + legible but a single flat `#1e1e2e` ground, no blend/depth, wordmark adrift in dead space — AI-slop cap holds Comp ≤ 3, Rich = 3 |
+| 3 | strong | `toolchain/proof/masthead-blend.jpg` | 5 | 5 | 4 | 4 | 4 | 4 | **88** | strong | true SVG↔raster blend — crisp vector wordmark over a rich gold-arch / teal raster atmosphere, scrim working; focal sun a touch dead-centre keeps Comp at 4 |
+| 4 (best) | award-tier | `craft/validate/i2p-premium-test.png` (Gate-06 anchor) | 5 | 5 | 5 | 5 | 5 | 4 | **98** | award-tier | decisive focal hierarchy (crown-jewel → light-beam → portal gate), motivated volumetric key, disciplined teal-vs-gold script, real fore/mid/deep depth — reads as authored |
+
+Overalls **35 < 79 < 88 < 98** — strictly monotonic, bands map one-to-one onto the four grades, broken
+caught as a layout defect not a low score. **Test 1 PASS.**
+
+**Test 2(a) — clean-but-flat (`flat-masthead.png`):** demoted on **Composition & art-direction (3)**
+AND **Medium-richness (3)**, banded **competent-but-generated** (79, below strong). Named lift:
+*"composite the crisp vector wordmark over a generative raster atmosphere behind a working dark-blur
+scrim (the masthead-blend treatment) — and give the wordmark a focal reason to sit where it does
+rather than floating in left-third dead space."* **Test 2(a) PASS.**
+
+**Test 2(b) — text-past-border overflow (constructed broken figure):** RENDER-FIRST layout-defect
+checklist fired on the rendered pixels — checklist item *"text clipped/cut at the SVG edge"* — the
+masthead title is cut at the right border in **both** the poster frame (`f008`) and **frame 0**
+(`f000`, "idea → production · t" terminating at the canvas edge). Verdict: **`NEEDS_REVISION`**,
+citing the frame, grounded in pixels (the source-bash overflow is invisible until rasterised).
+**Test 2(b) PASS.**
+
+**Machine pre-flight cross-check:**
+`bash doc/image-craft-study/toolchain/src/layout-check.sh <broken-generator>` →
+`exit 1`, violation line: `f000.svg:text@x=1040 anchor=start fs=25: "idea → production · the value cycl…"
+extends to x=1508 > bound=1320`. The human-grade reviewer's eye and the machine pre-flight **agree**
+on the same overflow. (Sanity check: the un-tampered `build-lifecycle-frames.sh` passes
+layout-check clean — 9 frames, 82 text elements, 0 violations — so the machine is discriminating, not
+always-failing.)
+
+**Reviewer-tuning gaps found:** none that block. The protocol as written caught every planted defect
+and demoted the slop with a concrete lift. One minor observation for a future sharpening (not a
+FAIL): the broken poster frame ALSO carries a secondary crowding/overlap tell — the return-arc
+caption "↻ OPERATE's learnings re-enter DISCOVER" sits on top of the dashed arc line — which the
+checklist's "text overlapping a line/arc" item also covers; the reviewer should make a habit of
+listing *all* triggered checklist items, not stopping at the first (the gate only requires the
+overflow be caught, and it was). Recommend the ATELIER `ui-design-reviewer` companion run be
+scheduled to complete the two-reviewer PASS.
