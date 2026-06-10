@@ -1,7 +1,27 @@
 # Visual Quality Overhaul — Reviewers That See Pixels, Diagrams That Linger, Heroes That Brand
 
-> Working plan, persisted so it survives a restart. Resume from **Step 0**. Companion copy lives at
+> Working plan, persisted so it survives a restart. Companion copy lives at
 > `~/.claude/plans/the-reviewer-is-too-proud-pebble.md`.
+
+## OUTCOME (2026-06-11, branch `visual-quality-overhaul`, PR #30)
+
+- **A — Reviewers SEE pixels: SHIPPED.** RENDER-FIRST protocol + layout-defect checklist + AI-slop/photoreal
+  taste caps in both reviewers; photoreal trap in the canon; `layout-check.sh` pre-flight (passes all 10 diagram
+  generators, 0 violations); `gate-reviewer-calibration.md` authored and **armed (status OPEN — first calibration
+  run pending)**.
+- **B — Organic meter & linger: SHIPPED.** `TIMING.tsv` per generator (each distinct state emitted once, holds
+  by role, teaching beats ≥24 "Ah-HA" floor); `reslow.sh` reads it; `build-figure.sh` orchestrator. The
+  maintainer **kept** these timings.
+- **C — Composite depth: REVERTED by maintainer call.** The vignette/backdrop read BAD. Frames are flat SVG
+  ("how it was"): `composite-depth.sh` deleted, calls removed from `build-figure.sh` + masthead, `dg` glow
+  restored to 0.05, amber focal radial dropped. Real layout fixes found during the depth pass were **kept**
+  (market-scanner off-canvas DISCOVER + corner clipping; i2p caption-band height 360→408).
+- **D — Stylized art direction: SHIPPED.** `comfyui-model-guide` stylized/bas-relief class now PRIMARY for
+  heroes/banners (photoreal demoted); `prompt-craft` banner-atmosphere-band recipes per style.
+- **E — Banner heroes: BUILT, WIRING HELD.** `build-plugin-banners.sh` + 9 stylized banners generated from the
+  rig (all ≤389KB, none photoreal) exist as files; **README wiring + ledger update held at the maintainer's
+  request** pending a banner-direction decision.
+- **Verification:** layout gate PASS · all 11 GIFs ≤584KB (budget 2MB) · `verify-prereqs.sh` PASS (incl. links).
 
 ## Context
 
