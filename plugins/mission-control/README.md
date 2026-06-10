@@ -5,6 +5,8 @@
 > The mission doesn't end at launch — that's when mission control *starts*. Houston: telemetry,
 > incidents, course-corrections.
 
+![OPERATE telemetry strip animating the operate loop: a teal golden-signals sparkline ripples calmly (OBSERVE / HEALTHY) while the OBSERVE pip is lit; an incident spikes the line amber and trips a ⚠ alert (INCIDENT, RESPOND pip lights); a teal mitigation dot sweeps in and the bump decays back to baseline (MITIGATING → back inside SLO); the line settles flat teal (HEALTHY) with all three phase pips — OBSERVE, RESPOND, ITERATE ↻ — lit and a dashed learning arc curving from ITERATE back to OBSERVE, captioned "↻ what production teaches re-enters DISCOVER". The motion teaches observe → respond → iterate → loop.](../../doc/images/mission-control-operate.gif)
+
 MISSION-CONTROL owns the **OPERATE** phase of the idea-to-production lifecycle — the post-launch,
 living-in-production stage. Once a product is **realised & live**, this plugin keeps it alive and improving:
 observe it, respond when it breaks, maintain it on a cadence, and close the loop by turning what production

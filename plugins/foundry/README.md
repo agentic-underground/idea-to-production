@@ -7,6 +7,8 @@ performance-instrumented **test contract**. Read [`VALUE_FLOW.md`](VALUE_FLOW.md
 [`knowledge/glossary.md`](knowledge/glossary.md) for every name + the conceptual map (including the
 **foundry vs forge vs founder** distinction).
 
+![The test-first value conveyor: an IDEA token rides a fixed line of value-stations — IDEA ▸ EARS ▸ TESTS ▸ IMPL ▸ GREEN ▸ SHIP — each gate latching green as it clears. The motion teaches the red→green spine: when the token reaches the TESTS gate it lights RED first (a failing test written before any code exists), and only once the token advances to IMPL does the TESTS gate flip red ▸ green — proof comes first, then code turns the failing proof green. The token then rides on through GREEN to SHIP, the full line latched teal with check-marks, and holds as a settled poster.](../../doc/images/foundry-conveyor.gif)
+
 ## What's inside
 
 | Area | What it holds |

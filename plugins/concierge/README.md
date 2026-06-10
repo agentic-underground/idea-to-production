@@ -11,6 +11,8 @@ conversation: a one-line greeting and a short decision tree of the handful of th
 people actually come here to do — **operate** the software, or **evolve** it — that
 routes the user straight to the right command, runbook, or downstream plugin.
 
+![The CONCIERGE welcome card assembling, then greeting: the four status widgets tick into place one by one — ◆ lifecycle (BUILD), ◇ session (12.4k tok), ◈ life (94% est), and ⚔ caught (7) glow from dim to teal/amber — then a warm amber greeting line unfurls left-to-right beneath them, "welcome — concierge has the door. what brings you in: operate, or evolve?", and the card settles with a teal "✓ at the door". The motion teaches that CONCIERGE both renders the at-a-glance status bar and greets whoever opens the repo.](../../doc/images/concierge-welcome.gif)
+
 The engine ships in the marketplace; the **content is repo-local**, exactly like
 `CLAUDE.md`. A maintainer authors `.claude/welcome.md` once (by hand, or with
 `/concierge:define-welcome`), and every future session of that repo gets the front door.

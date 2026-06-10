@@ -1,4 +1,4 @@
-![idea-to-production — carrying software from the spark of an IDEA to PRODUCTION](doc/images/readme-banner.png)
+![idea-to-production masthead: the wordmark "idea → production" above the nine-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, sentinel, pressroom, mission), light teal left-to-right in a build-up with the current phase pulsing amber; then the dashed return loop-arc glows teal as OPERATE's learnings re-enter DISCOVER and the loop closes, framed by the i2p front door and concierge greeter, settling on the complete cycle.](doc/images/masthead-cycle.gif)
 
 # idea-to-production — a Claude Code plugin marketplace
 
