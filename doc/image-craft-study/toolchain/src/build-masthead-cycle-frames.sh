@@ -42,6 +42,13 @@ emit_kf() {
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="#1e1e2e"/>\n'
+    # ---- depth layer: gradient glow + filters ----
+    printf '<defs>\n'
+    printf '<radialGradient id="dg" cx="50%%%%" cy="55%%%%" r="50%%%%"><stop offset="0%%%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<filter id="bgb" x="-100%%%%" y="-100%%%%" width="300%%%%" height="300%%%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
+    printf '<filter id="ns" x="-40%%%%" y="-40%%%%" width="180%%%%" height="180%%%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    printf '</defs>\n'
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
     # ---- microline + dominant WORDMARK + subtitle (static) ----
     printf '<text x="%d" y="40" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="4" fill="#9aa2c0" text-anchor="middle">A  CLAUDE  CODE  PLUGIN  MARKETPLACE</text>\n' "$((W/2))"
     printf '<text x="%d" y="96" font-family="DejaVu Sans, Arial, sans-serif" font-size="54" font-weight="700" text-anchor="middle"><tspan fill="%s">idea</tspan><tspan fill="#9aa2c0">  &#8594;  </tspan><tspan fill="%s">production</tspan></text>\n' "$((W/2))" "$IDEA" "$AMBER"
@@ -91,7 +98,7 @@ emit_kf() {
       if [ "$ret" -eq 1 ] && { [ "$i" -eq 0 ] || [ "$i" -eq 7 ]; }; then
         printf '<circle cx="%d" cy="%d" r="%d" fill="none" stroke="%s" stroke-width="2" opacity="0.8"/>\n' "$x" "$CY" "$((r+6))" "$TEAL"
       fi
-      printf '<circle cx="%d" cy="%d" r="%d" fill="%s" opacity="%s"/>\n' "$x" "$CY" "$r" "$col" "$op"
+      printf '<circle cx="%d" cy="%d" r="%d" fill="%s" opacity="%s" filter="url(#ns)"/>\n' "$x" "$CY" "$r" "$col" "$op"
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="600" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((CY-34))" "$tcol" "${STAGES[$i]}"
       local ocol="$TXTD"; [ "$i" -lt "$active" ] && ocol="#8b9bb4"
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="11" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((CY+30))" "$ocol" "${OWNERS[$i]}"
@@ -117,9 +124,9 @@ for i in $(seq 0 $((N-1))); do
   addkf $((i+1)) "$i" 14 0 0  2     # Br_i (breathe peak, hold)
 done
 addkf "$N" -1 0 0 0 2               # ALLCALM — all teal, both loops dim
-addkf "$N" -1 0 1 0 4               # FEEDBACK beat (amber arc + label), linger
+addkf "$N" -1 0 1 0 14              # FEEDBACK beat (amber arc + label), linger
 addkf "$N" -1 0 0 0 2               # back to calm
-addkf "$N" -1 0 0 1 4               # RETURN beat (teal arc + label), linger
+addkf "$N" -1 0 0 1 12              # RETURN beat (teal arc + label), linger
 addkf "$N" -1 0 2 2 26              # POSTER — both loops settled, held a LOT longer before the loop resets
 K=$idx
 

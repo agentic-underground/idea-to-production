@@ -40,6 +40,12 @@ emit() { # $1 sweep_angle (0..270, or -1 = none) ; $2 phase: scan|kill|keep|hold
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="%s"/>\n' "$GROUND"
+    printf '<defs>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
+    printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    printf '</defs>\n'
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
     printf '<text x="40" y="46" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700" fill="%s">MARKET-SCANNER · sweep the field, kill weak early</text>\n' "$TXTL"
 
     # --- radar dial (concentric rings + crosshair) ---
@@ -73,11 +79,11 @@ emit() { # $1 sweep_angle (0..270, or -1 = none) ; $2 phase: scan|kill|keep|hold
         if [ "$phase" = keep ] || [ "$phase" = hold ]; then
           # KEPT: teal ring + filled + upheld
           printf '<circle cx="%d" cy="%d" r="20" fill="none" stroke="%s" stroke-width="3"/>\n' "$cx2" "$cy2" "$TEAL"
-          printf '<circle cx="%d" cy="%d" r="11" fill="%s"/>\n' "$cx2" "$cy2" "$TEAL"
+          printf '<circle cx="%d" cy="%d" r="11" fill="%s" filter="url(#ns)"/>\n' "$cx2" "$cy2" "$TEAL"
           printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="16" font-weight="700" fill="%s">%s</text>\n' "$((cx2+30))" "$((cy2+5))" "$TXTL" "$lab"
         elif [ "$surfaced" = 1 ]; then
           col="$AMBER"; r=11; op=1.0
-          printf '<circle cx="%d" cy="%d" r="%d" fill="%s" opacity="%s"/>\n' "$cx2" "$cy2" "$r" "$col" "$op"
+          printf '<circle cx="%d" cy="%d" r="%d" fill="%s" opacity="%s" filter="url(#ns)"/>\n' "$cx2" "$cy2" "$r" "$col" "$op"
           printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" fill="%s">%s</text>\n' "$((cx2+24))" "$((cy2+5))" "$TXTL" "$lab"
         else
           printf '<circle cx="%d" cy="%d" r="8" fill="%s" opacity="0.8"/>\n' "$cx2" "$cy2" "$DIM"
@@ -91,7 +97,7 @@ emit() { # $1 sweep_angle (0..270, or -1 = none) ; $2 phase: scan|kill|keep|hold
           printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="13" fill="%s" opacity="0.5" text-decoration="line-through">%s</text>\n' "$((cx2+22))" "$((cy2+5))" "$TXTD" "$lab"
         elif [ "$surfaced" = 1 ]; then
           # surfaced by the beam — momentarily amber/lit
-          printf '<circle cx="%d" cy="%d" r="10" fill="%s" opacity="0.95"/>\n' "$cx2" "$cy2" "$AMBER"
+          printf '<circle cx="%d" cy="%d" r="10" fill="%s" opacity="0.95" filter="url(#ns)"/>\n' "$cx2" "$cy2" "$AMBER"
           printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" fill="%s" opacity="0.92">%s</text>\n' "$((cx2+22))" "$((cy2+5))" "$TXTL" "$lab"
         else
           printf '<circle cx="%d" cy="%d" r="8" fill="%s" opacity="0.8"/>\n' "$cx2" "$cy2" "$DIM"
@@ -116,11 +122,14 @@ f=0
 for sa in 0 24 48 72 96 120 144 168 196 224 252; do
   emit "$sa" scan "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1))
 done
-# 2) kill the weak (struck through), beam parked
+# 2) kill the weak (struck through), beam parked — 3 frames for "5 killed — cheap, early"
 emit -1 kill "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1))
 emit -1 kill "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1))
-# 3) the keep: teal ring upheld
+emit -1 kill "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1))
+# 3) the keep: teal ring upheld — 3 frames for "KEEP — the spark → ideator"
 emit -1 keep "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1))
-# 4) hold the settled poster
-for _ in 1 2 3; do emit -1 hold "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1)); done
+emit -1 keep "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1))
+emit -1 keep "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1))
+# 4) hold the settled poster — 5 frames for settled/poster threshold
+for _ in 1 2 3 4 5; do emit -1 hold "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1)); done
 echo "emitted $f frames"

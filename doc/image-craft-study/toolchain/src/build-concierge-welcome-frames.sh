@@ -32,11 +32,19 @@ emit() { # $1 widgets_lit(0..4) ; $2 greet_chars(0..len) ; $3 settled(0/1) ; $4 
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="%s"/>\n' "$GROUND"
+    # depth layer: radial glow gradient + blur/shadow filter definitions
+    printf '<defs>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
+    printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    printf '</defs>\n'
+    # soft blurred glow behind main content
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$((CARD_Y + CARD_H/2))" "$((W*42/100))" "$((H*22/100))"
     # title
     printf '<text x="%d" y="46" font-family="%s" font-size="25" font-weight="700" fill="%s" text-anchor="middle">CONCIERGE · the repo greets whoever opens it</text>\n' "$((W/2))" "$FONT" "$TXTL"
 
     # the welcome card panel
-    printf '<rect x="%d" y="%d" width="%d" height="%d" rx="14" fill="#23233a" stroke="#2f2f48" stroke-width="2"/>\n' "$CX" "$CARD_Y" "$CW" "$CARD_H"
+    printf '<rect x="%d" y="%d" width="%d" height="%d" rx="14" fill="#23233a" stroke="#2f2f48" stroke-width="2" filter="url(#ns)"/>\n' "$CX" "$CARD_Y" "$CW" "$CARD_H"
 
     # left "door" accent bar — warms from dim to amber as the card completes (a lit doorway)
     local doorcol="$DIM" dop=0.6
@@ -104,7 +112,9 @@ fr 1 0 0
 fr 2 0 0
 fr 3 0 0
 fr 4 0 0
-# 3) hold the full HUD a beat before the greeting starts
+# 3) hold the full HUD 3 beats before the greeting starts (medium label needs ≥3 frames)
+fr 4 0 0
+fr 4 0 0
 fr 4 0 0
 # 4) greeting unfurls — sample the char-reveal in even steps
 GLEN=${#GREET}

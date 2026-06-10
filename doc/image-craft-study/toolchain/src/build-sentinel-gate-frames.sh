@@ -24,12 +24,18 @@ emit() { # $1 sealed_count(0..NL) ; $2 sweep_x (-1 = off) ; $3 gate_lift(0..100)
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="%s"/>\n' "$GROUND"
+    printf '<defs>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
+    printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    printf '</defs>\n'
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$((H/2))" "$((W*42/100))" "$((H*22/100))"
     printf '<text x="%d" y="42" font-family="DejaVu Sans, Arial, sans-serif" font-size="24" font-weight="700" fill="%s" text-anchor="middle">SENTINEL · certify before exposure</text>\n' "$((W/2))" "$TXTL"
 
     # ---- the artifact under review ----
     local art_col="#2a2a40" art_stroke="$TXTD"
     [ "$sealed" -ge "$NL" ] && art_stroke="$TEAL"
-    printf '<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="%s" stroke="%s" stroke-width="2.5"/>\n' "$ART_X" "$ART_Y" "$ART_W" "$ART_H" "$art_col" "$art_stroke"
+    printf '<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="%s" stroke="%s" stroke-width="2.5" filter="url(#ns)"/>\n' "$ART_X" "$ART_Y" "$ART_W" "$ART_H" "$art_col" "$art_stroke"
     # code-line glyphs inside the artifact
     for r in 0 1 2 3; do
       local ly=$(( ART_Y + 26 + r*22 )); local lw=$(( 60 + (r*37)%70 ))
@@ -43,7 +49,7 @@ emit() { # $1 sealed_count(0..NL) ; $2 sweep_x (-1 = off) ; $3 gate_lift(0..100)
       if [ "$i" -lt "$sealed" ]; then col="$TEAL"; tcol="$TXTL"; icon="check"; op=1.0
       elif [ "$i" -eq "$sealed" ] && [ "$sweep" -ge 0 ]; then col="$AMBER"; tcol="$TXTL"; icon="scan"; op=1.0
       else col="$DIM"; tcol="$TXTD"; icon="dot"; op=0.85; fi
-      printf '<rect x="%d" y="%d" width="%d" height="%d" rx="9" fill="#23233a" stroke="%s" stroke-width="2.5" opacity="%s"/>\n' "$CHIP_X" "$cy" "$CHIP_W" "$CHIP_H" "$col" "$op"
+      printf '<rect x="%d" y="%d" width="%d" height="%d" rx="9" fill="#23233a" stroke="%s" stroke-width="2.5" opacity="%s" filter="url(#ns)"/>\n' "$CHIP_X" "$cy" "$CHIP_W" "$CHIP_H" "$col" "$op"
       # status badge (left of chip)
       local bx=$((CHIP_X+26)) byc=$((cy+CHIP_H/2))
       if [ "$icon" = "check" ]; then
@@ -89,7 +95,7 @@ emit() { # $1 sealed_count(0..NL) ; $2 sweep_x (-1 = off) ; $3 gate_lift(0..100)
       local wv="$sealed/$NL lenses"
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="600" fill="%s" text-anchor="middle">%s</text>\n' "$gcx" "$((gtop+gh/2+5))" "$TXTD" "$wv"
     fi
-    printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="600" fill="%s" text-anchor="middle">the gate</text>\n' "$gcx" "$((gbot+22))" "$TXTD"
+    printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="600" fill="%s" text-anchor="middle">the gate</text>\n' "$gcx" "$((gbot+18))" "$TXTD"
 
     printf '</svg>\n'
   } > "$5"
@@ -113,6 +119,7 @@ for i in $(seq 0 $((NL-1))); do
 done
 
 # 3) all four sealed — verdict resolves, gate lifts (eased steps)
+frame "$NL" -1 0 0   # first sealed moment — hold extra frame so all-green registers
 frame "$NL" -1 0 0
 for l in 18 42 68 88 100; do frame "$NL" -1 "$l" 1; done
 

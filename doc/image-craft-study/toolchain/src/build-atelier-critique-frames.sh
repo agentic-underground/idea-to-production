@@ -25,15 +25,23 @@ NC=${#CRIT[@]}
 emit() {
   local label=$1 pass=$2 amber=$3 refine=$4 gate=$5 sweep=$6 path=$7
   local i cy bx col tcol icon scy
+  local CY=$(( H/2 ))
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="%s"/>\n' "$GROUND"
+    # Depth: defs (gradients + filters) + ambient glow ellipse
+    printf '<defs>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
+    printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    printf '</defs>\n'
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
     # Title
     printf '<text x="%d" y="42" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700" fill="%s" text-anchor="middle">the design critique loop · designer ↔ reviewer · converges to fit</text>\n' "$((W/2))" "$TXTL"
     printf '<text x="%d" y="68" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" fill="%s" text-anchor="middle">%s</text>\n' "$((W/2))" "$TXTD" "$label"
 
     # ---- LEFT: the screen under design (gets more refined / accessible) ----
-    printf '<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="%s" stroke="%s" stroke-width="2"/>\n' "$SX" "$SY" "$SW" "$SH" "$PANEL" "$LINE"
+    printf '<rect x="%d" y="%d" width="%d" height="%d" rx="10" fill="%s" stroke="%s" stroke-width="2" filter="url(#ns)"/>\n' "$SX" "$SY" "$SW" "$SH" "$PANEL" "$LINE"
     # window chrome dots
     printf '<circle cx="%d" cy="%d" r="4" fill="%s"/>\n' "$((SX+18))" "$((SY+18))" "$TXTD"
     printf '<circle cx="%d" cy="%d" r="4" fill="%s"/>\n' "$((SX+34))" "$((SY+18))" "$TXTD"
@@ -69,7 +77,7 @@ emit() {
     fi
     # converged badge on the screen when gate is green
     if [ "$gate" -eq 1 ]; then
-      printf '<circle cx="%d" cy="%d" r="15" fill="%s"/>\n' "$((SX+SW-26))" "$((SY+26))" "$TEAL"
+      printf '<circle cx="%d" cy="%d" r="15" fill="%s" filter="url(#ns)"/>\n' "$((SX+SW-26))" "$((SY+26))" "$TEAL"
       printf '<path d="M %d %d l 5 6 l 10 -12" fill="none" stroke="%s" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>\n' "$((SX+SW-34))" "$((SY+26))" "$GROUND"
     fi
 
@@ -126,16 +134,36 @@ fr() { emit "$@" "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1)); }
 
 # Loop iteration 1: rough wireframe, reviewer sweeps, 5 findings flag amber one-by-one (pass climbs as scan resolves)
 fr "iteration 1 · first wireframe drafted"               0 -1 0 0 0
+fr "iteration 1 · first wireframe drafted"               0 -1 0 0 0
+fr "iteration 1 · reviewer crawls the screen"            0  0 0 0 1
+fr "iteration 1 · reviewer crawls the screen"            0  0 0 0 1
 fr "iteration 1 · reviewer crawls the screen"            0  0 0 0 1
 fr "iteration 1 · finding: weak visual hierarchy"        1  1 0 0 1
+fr "iteration 1 · finding: weak visual hierarchy"        1  1 0 0 1
+fr "iteration 1 · finding: weak visual hierarchy"        1  1 0 0 1
+fr "iteration 2 · designer refines, re-renders"          2  2 1 0 0
+fr "iteration 2 · designer refines, re-renders"          2  2 1 0 0
 fr "iteration 2 · designer refines, re-renders"          2  2 1 0 0
 fr "iteration 2 · finding: contrast below WCAG AA"       2  2 1 0 1
+fr "iteration 2 · finding: contrast below WCAG AA"       2  2 1 0 1
+fr "iteration 2 · finding: contrast below WCAG AA"       2  2 1 0 1
+fr "iteration 2 · contrast fixed, target enlarged"       3  3 2 0 0
+fr "iteration 2 · contrast fixed, target enlarged"       3  3 2 0 0
 fr "iteration 2 · contrast fixed, target enlarged"       3  3 2 0 0
 fr "iteration 3 · re-review · consistency check"         3  3 2 0 1
+fr "iteration 3 · re-review · consistency check"         3  3 2 0 1
+fr "iteration 3 · re-review · consistency check"         3  3 2 0 1
+fr "iteration 3 · aligned to Jakob's law"                4  4 3 0 0
 fr "iteration 3 · aligned to Jakob's law"                4  4 3 0 0
 fr "iteration 3 · last pass · emotional polish"          4  4 3 0 1
+fr "iteration 3 · last pass · emotional polish"          4  4 3 0 1
+fr "iteration 3 · last pass · emotional polish"          4  4 3 0 1
+fr "converged · polished, accessible screen"             5 -1 3 1 0
+fr "converged · polished, accessible screen"             5 -1 3 1 0
 fr "converged · polished, accessible screen"             5 -1 3 1 0
 # hold the settled green poster so the loop reads as resolved
+fr "design-fitness gate is green — loop closes"          5 -1 3 1 0
+fr "design-fitness gate is green — loop closes"          5 -1 3 1 0
 fr "design-fitness gate is green — loop closes"          5 -1 3 1 0
 fr "design-fitness gate is green — loop closes"          5 -1 3 1 0
 fr "design-fitness gate is green — loop closes"          5 -1 3 1 0

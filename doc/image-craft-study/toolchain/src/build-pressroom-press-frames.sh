@@ -25,6 +25,12 @@ emit() {
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="%s"/>\n' "$GROUND"
+    printf '<defs>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
+    printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    printf '</defs>\n'
+    printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$((H/2))" "$((W*42/100))" "$((H*22/100))"
     printf '<text x="%d" y="40" %s font-size="24" font-weight="700" fill="%s" text-anchor="middle">PRESSROOM · illustrate → review → publish</text>\n' "$((W/2))" "$FONT" "$TXTL"
 
     # ---- column captions ----
@@ -33,7 +39,7 @@ emit() {
     printf '<text x="%d" y="76" %s font-size="14" font-weight="600" fill="%s" text-anchor="middle">DOC</text>\n' "$((DOC_X+DOC_W/2))" "$FONT" "$TXTD"
 
     # ---- SPEC card (always present once we start) ----
-    printf '<rect x="%d" y="92" width="%d" height="150" rx="10" fill="%s" stroke="%s" stroke-width="1.5"/>\n' "$SPEC_X" "$SPEC_W" "$PANEL" "$HAIR"
+    printf '<rect x="%d" y="92" width="%d" height="150" rx="10" fill="%s" stroke="%s" stroke-width="1.5" filter="url(#ns)"/>\n' "$SPEC_X" "$SPEC_W" "$PANEL" "$HAIR"
     printf '<text x="%d" y="120" %s font-size="14" font-weight="700" fill="%s">figure spec</text>\n' "$((SPEC_X+18))" "$FONT" "$TXTL"
     local sy=144
     for lbl in "subject: pipeline" "style: dark · 4×9" "must read at A4"; do
@@ -52,7 +58,7 @@ emit() {
       [ "$dimd" -eq 1 ] && op=0.32
       [ "$acc" = "win" ] && { stroke="$TEAL"; sw=3; }
       printf '<g opacity="%s">\n' "$op"
-      printf '<rect x="%d" y="%d" width="%d" height="92" rx="9" fill="%s" stroke="%s" stroke-width="%s"/>\n' "$OPT_X" "$oy" "$OPT_W" "$PANEL" "$stroke" "$sw"
+      printf '<rect x="%d" y="%d" width="%d" height="92" rx="9" fill="%s" stroke="%s" stroke-width="%s" filter="url(#ns)"/>\n' "$OPT_X" "$oy" "$OPT_W" "$PANEL" "$stroke" "$sw"
       printf '<text x="%d" y="%d" %s font-size="13" font-weight="700" fill="%s">option %s</text>\n' "$((OPT_X+14))" "$((oy+22))" "$FONT" "$TXTL" "$olbl"
       # a tiny chart glyph inside (bars) — richer for the winner
       local bx=$((OPT_X+16)) by=$((oy+78))
@@ -134,7 +140,7 @@ emit() {
     case "$phase" in
       fly1|fly2)
         printf '<g transform="translate(%d %d)" opacity="0.96">\n' "$fig_fly_x" "$fig_fly_y"
-        printf '<rect x="0" y="0" width="78" height="56" rx="7" fill="%s" stroke="%s" stroke-width="2.5"/>\n' "$PANEL" "$TEAL"
+        printf '<rect x="0" y="0" width="78" height="56" rx="7" fill="%s" stroke="%s" stroke-width="2.5" filter="url(#ns)"/>\n' "$PANEL" "$TEAL"
         local cbi=0
         for hh in 14 26 20 32; do
           printf '<rect x="%d" y="%d" width="10" height="%d" rx="2" fill="%s"/>\n' "$((12+cbi*16))" "$((46-hh))" "$hh" "$TEAL"
@@ -158,6 +164,7 @@ seqemit() { emit "$1" "$OUT/f$(printf '%03d' $f).svg"; f=$((f+1)); }
 seqemit spec          # spec card lands
 seqemit spec
 seqemit optA          # option A renders
+seqemit optA
 seqemit optB          # option B renders — now two options
 seqemit optB
 seqemit scanA         # reviewer sweeps A
@@ -169,7 +176,11 @@ seqemit pickB
 seqemit fly1          # chosen figure flies toward doc
 seqemit fly2
 seqemit land          # figure lands in doc slot → green/published
+seqemit land
+seqemit land
 seqemit hold          # settle
+seqemit hold
+seqemit hold
 seqemit hold
 seqemit hold
 echo "emitted $f frames"
