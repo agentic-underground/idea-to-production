@@ -1,0 +1,42 @@
+digraph SoulSentinelA {
+  bgcolor="transparent"
+  rankdir=TB
+  newrank=true
+  nodesep=0.45
+  ranksep=0.55
+
+  node [shape=box, style="filled,rounded", fillcolor="#1e1e2e",
+        color="#9aa2c0", fontcolor="#e6e9f0", fontname="DejaVu Sans",
+        penwidth=1.4, margin="0.22,0.15"]
+  edge [color="#9aa2c0", fontcolor="#e6e9f0", fontname="DejaVu Sans",
+        penwidth=1.3, fontsize=11]
+
+  // ── 1. canonical source ──────────────────────────────────────
+  src [label=<<font color="#7c84b8"><b>①</b></font>  <b>SOUL.md</b>  ·  canonical, repo root<br/><font point-size="10" color="#7c84b8">single source of truth — the seven all-systems-go phrases</font>>]
+
+  // ── 2. the ×6 copies (stacked multi-node, peripheries = the stack) ──
+  copies [label=<<font color="#7c84b8"><b>②</b></font>  <b>plugins/&lt;each&gt;/SOUL.md</b>   <font color="#8b93c8"><b>×9</b></font><br/><font point-size="10" color="#7c84b8">one byte-identical copy travels with each installed plugin</font>>,
+          shape=box3d, fillcolor="#1e1e2e", penwidth=1.7, color="#8b93c8"]
+
+  // ── 3. the ×6 hooks (stacked multi-node) ─────────────────────
+  hooks [label=<<font color="#7c84b8"><b>③</b></font>  <b>plugins/&lt;each&gt;/hooks/inject-soul.sh</b>   <font color="#8b93c8"><b>×9</b></font><br/><font point-size="10" color="#7c84b8">SessionStart fires for every enabled plugin, together</font>>,
+         shape=box3d, fillcolor="#1e1e2e", penwidth=1.7, color="#8b93c8"]
+
+  // ── 4. atomic sentinel — THE CRUX ────────────────────────────
+  sentinel [label=<<font color="#e0af68"><b>④</b></font>  <b>atomic sentinel</b><br/><font face="DejaVu Sans Mono" point-size="10" color="#e6e9f0">mkdir ${TMPDIR}/claude-soul/<br/>soul-&lt;session_id&gt;-&lt;source&gt;.lock</font><br/><font point-size="10" color="#e0af68">succeeds for EXACTLY ONE caller per (session, source) event</font>>,
+            fillcolor="#2a2a3c", color="#e0af68", penwidth=2.6]
+
+  // ── 5. the winning hook emits context ────────────────────────
+  emit [label=<<font color="#7c84b8"><b>⑤</b></font>  <b>the one winning hook prints</b><br/><font face="DejaVu Sans Mono" point-size="10" color="#b8bed0">{ hookSpecificOutput.additionalContext: &lt;SOUL.md&gt; }</font>>]
+
+  // ── 6. success terminal ──────────────────────────────────────
+  landed [label=<<font color="#7c84b8"><b>⑥</b></font>  <b>SOUL lands in the cached prefix</b><br/><font point-size="10" color="#a9d977">ONCE per event  —  never 9×, never omitted</font>>,
+          fillcolor="#22301c", color="#9ece6a", penwidth=2.4]
+
+  // ── spine ── edge labels ride a #1e1e2e chip so light text clears both grounds ──
+  src     -> copies   [label=<<table border="0" cellborder="0" cellpadding="3" bgcolor="#1e1e2e"><tr><td><font color="#e6e9f0">cp, byte-identical (CI Check E)</font></td></tr></table>>]
+  copies  -> hooks    [label=<<table border="0" cellborder="0" cellpadding="3" bgcolor="#1e1e2e"><tr><td><font color="#e6e9f0">read by</font></td></tr></table>>]
+  hooks   -> sentinel [label=<<table border="0" cellborder="0" cellpadding="3" bgcolor="#1e1e2e"><tr><td><font color="#e6e9f0">9 callers race;<br/>mkdir wins for ONE</font></td></tr></table>>]
+  sentinel-> emit     [label=<<table border="0" cellborder="0" cellpadding="3" bgcolor="#1e1e2e"><tr><td><font color="#e6e9f0">the winner emits</font></td></tr></table>>]
+  emit    -> landed   [label=<<table border="0" cellborder="0" cellpadding="3" bgcolor="#1e1e2e"><tr><td><font color="#e6e9f0">additionalContext</font></td></tr></table>>]
+}

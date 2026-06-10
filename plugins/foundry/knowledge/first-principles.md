@@ -38,6 +38,8 @@ The pillars govern the behaviour of **every** element. The user's phrasings are 
 > loading.* It is the hard design rule that rides the whole carriage alongside the pillars.
 > **Home:** [`token-efficiency.md`](token-efficiency.md). · **Binding:** progressive disclosure.
 
+![Three pillars govern every element — Knowledge-parity (understand the ask fully before acting; recurring questions become written answers, never asked twice), Quality-first (built in, not inspected in; engineered across the assurance chain and a perf-delta gate; a gate is never weakened to make progress), and Waste-elimination (remove waste in all seven forms, including rediscovery — a bug caught in development is far cheaper than one in production) — three columns standing under one overarching lintel: token-efficiency (thin skills/fat references · define-once/reference-many · station-scoped loading).](diagrams/03-three-pillars.png)
+
 ---
 
 ## 2. Tests are coordinates — the code philosophy
@@ -63,6 +65,8 @@ both senses at once. The *coordinate / location* reading is canonical in
 test-producing agent carries a short pointer to this framing (handlers, the `ds-step-*` test agents,
 and the reviewer's TEST-DESIGN / COVERAGE / BDD roles).
 
+![Tests are coordinates: in the space of all possible implementations (a labelled plane of input × behaviour), a well-formed failing test is a precise coordinate — a surveyor's crosshair fix — that locates the one correct implementation, eliminating the cloud of other candidates. A coordinate placed BEFORE the code is a location (the reason to write code; the code may only turn it green → PASS); a check written AFTER the code is merely a description peeled off afterward.](diagrams/02-tests-coordinates.png)
+
 ---
 
 ## 3. Pure core — the geometry that makes coordinates possible
@@ -73,6 +77,8 @@ dependencies flow **one way only, inward**. · **Aliases:** the decidable core; 
 one-way dependency. · **Metaphor:** a clean room — coordinates can only be placed where no side effect
 blurs the location. · **Why it matters:** pure ⇒ testable ⇒ coordinate-able ⇒ **maximally parallel**.
 · **Home:** [`architecture/pure-core.md`](architecture/pure-core.md).
+
+![Pure core: the decidable logic (no I/O · no UI · no platform · no panics) is extracted into a pure module — the sacred, testable centre where a coordinate can be placed without side effects blurring the location — and everything else is thin wiring (DOM, I/O adapters, network, render) that consumes it. Dependencies flow one way only, INWARD: the wiring depends on the core, the core depends on nothing. Because independent wiring+core pairs share no mutable state, the work is maximally parallel (pure ⇒ testable ⇒ coordinate-able ⇒ maximally parallel).](diagrams/04-pure-core.png)
 
 ---
 

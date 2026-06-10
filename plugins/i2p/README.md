@@ -1,7 +1,11 @@
 # i2p — the idea-to-production front door
 
+![A luminous gateway arch — teal-lit with a glowing amber keystone — opening onto a constellation of softly glowing nodes receding into deep space: the single threshold into the whole production marketplace.](diagrams/hero.jpg)
+
 > The marketplace-level front door. Install the suite and you gain great powers across seven specialist
 > plugins — **i2p** is the plugin that tells you so, and hands you one verbatim place to drive them all.
+
+![Hub-and-spoke routing animation: an amber dispatch beam sweeps clockwise around the i2p core, lighting each of the eight ringed specialist plugins — market-scanner, ideator, atelier, foundry, sentinel, pressroom, mission-control, concierge — teal in turn; when the ring is whole every spoke stays lit and the central i2p hub turns green under the caption "all powers routed — one front door, every plugin lit", teaching that i2p is the conductor that dispatches to every plugin.](../../doc/images/i2p-frontdoor.gif)
 
 The other eight plugins each stand alone and namespace their commands (`/foundry:*`, `/atelier:*`, …).
 What the marketplace lacked was a **meta surface**: somewhere to ask "what can I do now?" and a single

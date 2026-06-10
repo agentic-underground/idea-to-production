@@ -121,6 +121,21 @@ grep -Eq '<rect[^>]*width="100%?"[^>]*height="100%?"[^>]*fill="#(fff|ffffff|000|
   && echo "VIOLATION: opaque full-bleed background — remove it (ground must stay transparent)"
 ```
 
+### §5b — Raster & motion figures (handler-composite)
+
+A **blended raster** (a ComfyUI atmosphere under a vector layer) can't go transparent, so prove legibility a
+different way — composite it onto both grounds and confirm the **vector layer + scrim** still read:
+```bash
+for bg in 000000 ffffff; do magick figure.png -background "#$bg" -flatten "/tmp/check-$bg.png"; done   # vips fallback: vips flatten figure.png /tmp/check.png --background "0,0,0"
+```
+The **legibility scrim** (a bottom-up `linearGradient` rect inside the vector overlay) is what keeps text
+readable over a busy generative ground — it is the raster analogue of "every label legible on both grounds".
+
+**Animated figures:** ship a **static poster frame** beside every animation (reduced-motion hosts and the
+`![]()`-can't-animate case both fall back to it), keep loops short and **motivated** (a reveal that teaches,
+not decoration), and verify the motion by Reading a **frame-strip montage** (build it with `magick montage`).
+Full recipes: the [raster-toolchain canon](../../../knowledge/raster-toolchain.md).
+
 ## §6 — Self-improvement
 
 A recurring colour/ground failure (a host that keeps eating a hue, a stroke weight that keeps failing the

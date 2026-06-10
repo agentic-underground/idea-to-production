@@ -1,0 +1,168 @@
+<svg viewBox="0 0 820 520" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans, sans-serif">
+  <title>Tests are coordinates</title>
+  <desc>An abstract multidimensional logical space drawn as a dark grid plane with two labelled axes (input space, behaviour). A faint cloud of dots represents the space of all possible implementations. One bright crosshair coordinate pins the single correct code, labelled "a test = this coordinate". A side contrast shows BEFORE the code as a location (a bright pin that turns the test green / PASS) versus AFTER the code as a mere description (a faded peeled-off label).</desc>
+
+  <defs>
+    <radialGradient id="fixGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7aa2f7" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#7aa2f7" stop-opacity="0"/>
+    </radialGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9aa2c0"/>
+    </marker>
+  </defs>
+
+  <!-- ===================== TITLE CHIP ===================== -->
+  <g>
+    <rect x="24" y="20" width="392" height="40" rx="8" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1"/>
+    <text x="44" y="46" font-size="19" font-weight="bold" fill="#e6e9f0">Tests are coordinates</text>
+    <circle cx="33" cy="40" r="3.5" fill="#7aa2f7"/>
+  </g>
+
+  <!-- ===================== THE SPACE (grid plane) ===================== -->
+  <g>
+    <!-- plane surface -->
+    <rect x="64" y="92" width="468" height="356" rx="10" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.2"/>
+
+    <!-- inner grid lines (the multidimensional logical space) -->
+    <g stroke="#9aa2c0" stroke-width="0.6" opacity="0.30">
+      <line x1="64" y1="151" x2="532" y2="151"/>
+      <line x1="64" y1="210" x2="532" y2="210"/>
+      <line x1="64" y1="269" x2="532" y2="269"/>
+      <line x1="64" y1="328" x2="532" y2="328"/>
+      <line x1="64" y1="387" x2="532" y2="387"/>
+      <line x1="142" y1="92" x2="142" y2="448"/>
+      <line x1="220" y1="92" x2="220" y2="448"/>
+      <line x1="298" y1="92" x2="298" y2="448"/>
+      <line x1="376" y1="92" x2="376" y2="448"/>
+      <line x1="454" y1="92" x2="454" y2="448"/>
+    </g>
+
+    <!-- space label chip (accent-5 = space) -->
+    <g>
+      <rect x="380" y="104" width="142" height="24" rx="6" fill="#2a2a3c" stroke="#bb9af7" stroke-width="1"/>
+      <text x="451" y="120" font-size="12.5" fill="#bb9af7" text-anchor="middle">logical space</text>
+    </g>
+
+    <!-- THE NARROWING: faint candidate cloud being eliminated -->
+    <!-- convergence lines: scattered candidates collapse toward the one fix -->
+    <g stroke="#9aa2c0" stroke-width="0.9" opacity="0.40" fill="none">
+      <path d="M170 240 Q250 265 313 300" stroke-dasharray="3 5"/>
+      <path d="M345 260 Q335 278 313 300" stroke-dasharray="3 5"/>
+      <path d="M250 350 Q285 322 313 300" stroke-dasharray="3 5"/>
+    </g>
+    <!-- cloud of dimmed (eliminated) "possible implementations" -->
+    <g fill="#9aa2c0" opacity="0.32">
+      <circle cx="118" cy="180" r="3"/>
+      <circle cx="170" cy="240" r="3"/>
+      <circle cx="132" cy="320" r="3"/>
+      <circle cx="210" cy="160" r="3"/>
+      <circle cx="250" cy="350" r="3"/>
+      <circle cx="300" cy="190" r="3"/>
+      <circle cx="190" cy="400" r="3"/>
+      <circle cx="345" cy="260" r="3"/>
+      <circle cx="410" cy="175" r="3"/>
+      <circle cx="448" cy="330" r="3"/>
+      <circle cx="100" cy="410" r="3"/>
+      <circle cx="395" cy="395" r="3"/>
+      <circle cx="470" cy="225" r="3"/>
+      <circle cx="265" cy="430" r="3"/>
+      <circle cx="155" cy="120" r="3"/>
+    </g>
+    <text x="118" y="168" font-size="11" fill="#b8bed0" opacity="0.85">possible implementations (eliminated)</text>
+
+    <!-- AXES -->
+    <!-- X axis: input space -->
+    <line x1="64" y1="448" x2="548" y2="448" stroke="#9aa2c0" stroke-width="1.4" marker-end="url(#arrow)"/>
+    <g>
+      <rect x="178" y="462" width="240" height="24" rx="6" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1"/>
+      <text x="298" y="478" font-size="12.5" fill="#e6e9f0" text-anchor="middle">input space  (empty · max · boundary)</text>
+    </g>
+
+    <!-- Y axis: behaviour -->
+    <line x1="64" y1="448" x2="64" y2="84" stroke="#9aa2c0" stroke-width="1.4" marker-end="url(#arrow)"/>
+    <g transform="rotate(-90 40 270)">
+      <rect x="-15" y="258" width="110" height="24" rx="6" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1"/>
+      <text x="40" y="274" font-size="12.5" fill="#e6e9f0" text-anchor="middle">behaviour</text>
+    </g>
+
+    <!-- ===== THE ONE BRIGHT COORDINATE (surveyor's fix / crosshair) ===== -->
+    <g>
+      <circle cx="328" cy="300" r="46" fill="url(#fixGlow)"/>
+      <!-- crosshair extending to both axes (the "fix" lines) -->
+      <line x1="64" y1="300" x2="328" y2="300" stroke="#7aa2f7" stroke-width="1.3" stroke-dasharray="5 4" opacity="0.85"/>
+      <line x1="328" y1="448" x2="328" y2="300" stroke="#7aa2f7" stroke-width="1.3" stroke-dasharray="5 4" opacity="0.85"/>
+      <!-- crosshair ring + ticks -->
+      <circle cx="328" cy="300" r="15" fill="none" stroke="#7aa2f7" stroke-width="2.2"/>
+      <line x1="328" y1="276" x2="328" y2="324" stroke="#7aa2f7" stroke-width="2.2"/>
+      <line x1="304" y1="300" x2="352" y2="300" stroke="#7aa2f7" stroke-width="2.2"/>
+      <circle cx="328" cy="300" r="4" fill="#7aa2f7"/>
+    </g>
+
+    <!-- callout: a test = this coordinate -->
+    <g>
+      <line x1="343" y1="285" x2="392" y2="232" stroke="#7aa2f7" stroke-width="1.2"/>
+      <rect x="388" y="210" width="138" height="44" rx="8" fill="#2a2a3c" stroke="#7aa2f7" stroke-width="1.4"/>
+      <text x="400" y="229" font-size="12.5" font-weight="bold" fill="#7aa2f7">a test =</text>
+      <text x="400" y="245" font-size="12.5" fill="#e6e9f0">this coordinate</text>
+    </g>
+
+    <!-- coordinate value chip: input -> expected output -->
+    <g>
+      <rect x="248" y="318" width="172" height="22" rx="6" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1"/>
+      <text x="334" y="333" font-size="11.5" fill="#b8bed0" text-anchor="middle">input → expected output</text>
+    </g>
+  </g>
+
+  <!-- ===================== SIDE CONTRAST: before vs after ===================== -->
+  <g>
+    <!-- BEFORE = a location -->
+    <rect x="560" y="100" width="236" height="146" rx="10" fill="#2a2a3c" stroke="#7aa2f7" stroke-width="1.6"/>
+    <text x="580" y="126" font-size="14" font-weight="bold" fill="#7aa2f7">BEFORE the code</text>
+    <text x="580" y="146" font-size="13" fill="#e6e9f0">= a location</text>
+
+    <!-- bright pin glyph -->
+    <g transform="translate(596 184)">
+      <circle cx="0" cy="0" r="11" fill="none" stroke="#7aa2f7" stroke-width="2.2"/>
+      <line x1="0" y1="-15" x2="0" y2="15" stroke="#7aa2f7" stroke-width="2.2"/>
+      <line x1="-15" y1="0" x2="15" y2="0" stroke="#7aa2f7" stroke-width="2.2"/>
+      <circle cx="0" cy="0" r="3" fill="#7aa2f7"/>
+    </g>
+    <text x="624" y="180" font-size="11.5" fill="#b8bed0">place the coordinate,</text>
+    <text x="624" y="196" font-size="11.5" fill="#b8bed0">then write the one</text>
+    <text x="624" y="212" font-size="11.5" fill="#b8bed0">implementation that</text>
+    <!-- PASS (accent-2 green) -->
+    <g>
+      <rect x="624" y="220" width="78" height="20" rx="10" fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.4"/>
+      <circle cx="637" cy="230" r="3.5" fill="#9ece6a"/>
+      <text x="646" y="234" font-size="11.5" font-weight="bold" fill="#9ece6a">turns green</text>
+    </g>
+
+    <!-- AFTER = a description -->
+    <rect x="560" y="262" width="236" height="146" rx="10" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="580" y="288" font-size="14" font-weight="bold" fill="#b8bed0">AFTER the code</text>
+    <text x="580" y="308" font-size="13" fill="#b8bed0">= just a description</text>
+
+    <!-- peeling sticker-label glyph: dog-eared corner lifting off the surface -->
+    <g transform="translate(584 324)">
+      <!-- the label body, slightly tilted as it lifts -->
+      <g transform="rotate(-3 0 18)" opacity="0.62">
+        <rect x="0" y="0" width="118" height="36" rx="5" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1"/>
+        <text x="13" y="22" font-size="12" fill="#b8bed0">"it does X"</text>
+      </g>
+      <!-- dog-eared peeling corner: a curled triangle flap at lower-right -->
+      <path d="M118 36 L96 36 Q112 30 112 14 Q124 26 118 36 z"
+            fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.1" stroke-linejoin="round"/>
+      <!-- shadow cast under the lifting corner -->
+      <path d="M96 38 Q108 33 112 16" fill="none" stroke="#9aa2c0" stroke-width="0.7" opacity="0.4"/>
+    </g>
+    <text x="580" y="392" font-size="11.5" fill="#b8bed0">describes code that already exists.</text>
+  </g>
+
+  <!-- ===================== FOOTER MESSAGE (on surface chip so it clears both grounds) ===================== -->
+  <g>
+    <rect x="64" y="494" width="660" height="22" rx="6" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1"/>
+    <text x="78" y="509" font-size="12.5" fill="#e6e9f0">One coordinate narrows many possible implementations to</text>
+    <text x="534" y="509" font-size="12.5" font-weight="bold" fill="#9ece6a">the ONE correct code.</text>
+  </g>
+</svg>

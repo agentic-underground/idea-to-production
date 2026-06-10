@@ -32,7 +32,9 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 - **required** — `git`, `bash`.
 - **recommended** — at least one PDF engine (**`typst`** or **`pdflatex`**), plus `pdfinfo`, `dot`,
   `pandoc`, `gs`.
-- **optional** — `lualatex`, `mmdc`, `soffice`, `rsvg-convert`, `qpdf`, `inkscape`, `magick`.
+- **optional** — `lualatex`, `mmdc`, `soffice`, `rsvg-convert`, `qpdf`, `inkscape`, `magick`, `ffmpeg`,
+  `vips`, `gifsicle`, `gifski` (the last four power the local raster/motion finish — composite, blend,
+  animate; `handler-composite` degrades gracefully without them).
 
 ## Interpreting the result
 

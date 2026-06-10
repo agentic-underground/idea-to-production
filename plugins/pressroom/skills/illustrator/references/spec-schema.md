@@ -24,10 +24,14 @@ constraints:
   dark_mode: true                 # the dark-mode canon applies (all SVG + raster)
   transparent_bg: true            # transparent ground (vector); alpha/dark-key (raster)
   max_boxes_per_row: 4
+# --- handler-composite only (blend / motion) — omit/null for the other handlers ---
+layers: null                      # blend: [{kind: raster, src: <path>}, {kind: vector, src: <svg>}] bottom→top
+motion: null                      # animation: {kind: build-up|reveal|loop|parallax, frames: 11, fps: 4, loop: true}
 target:
   embed: markdown                 # markdown | html | print
   width_budget_px: 800            # the host's content-column width
-  format: svg                     # svg for the four vector handlers; png for handler-comfyui
+  format: svg                     # see output_format
+  output_format: svg              # svg|png (vector/comfyui) · gif|apng|mp4|webp (handler-composite motion) · png/jpg (blend)
 alt_text: "Pipeline: ideator → foundry → sentinel → pressroom, each a phase gate feeding the next."
 ab:
   axis_of_divergence: "orientation: top-to-bottom stack (A) vs staggered left-right ladder (B)"
@@ -40,11 +44,13 @@ ab:
 | `site.anchor` / `insert_after` | exact strings from the source doc, so the loop's Edit is unambiguous (single occurrence). |
 | `intent` | one sentence — what the figure conveys. If you can't state it, there is no figure to make. |
 | `message` | the **single** takeaway. A figure with two messages is two figures — decompose. |
-| `handler` | one of `handler-graphviz`, `handler-mermaid`, `handler-chart`, `handler-composition`, `handler-comfyui`. |
-| `diagram_type` | named within the handler's own taxonomy (graphviz-patterns / mermaid-taxonomy / chart type / composition kind). |
+| `handler` | one of `handler-graphviz`, `handler-mermaid`, `handler-chart`, `handler-composition`, `handler-comfyui`, `handler-composite`. |
+| `diagram_type` | named within the handler's own taxonomy (graphviz-patterns / mermaid-taxonomy / chart type / composition kind / blend|motion). |
 | `data` | **required** for `handler-chart` (the figure is *of* data), `null` otherwise. Inline small tables; reference large sources. |
+| `layers` | **`handler-composite` blend only.** Ordered bottom→top: a `raster` ground (a comfyui hero/texture path) + a `vector` overlay (an SVG with the in-SVG legibility scrim + wordmark/frame). `null` otherwise. |
+| `motion` | **`handler-composite` animation only.** `{kind, frames, fps, loop}`; numeric fields are validated as integers. `null` for any static figure. Motion must be motivated; a static poster is always emitted too. |
 | `constraints` | `charting_matrix` + `dark_mode` + `transparent_bg` are `true` for every SVG handler — they are the house law, not options. |
-| `target.format` | `svg` for the four vector handlers (crisp, themeable, transparent); `png` only for `handler-comfyui`. |
+| `target.output_format` | `svg` for the four vector handlers; `png` for `handler-comfyui`; `png`/`jpg` for a `handler-composite` blend; `gif`/`apng`/`mp4`/`webp` for a `handler-composite` animation (GIF/APNG render inline on GitHub; MP4 via `<video>`). `target.format` is kept as the legacy alias. |
 | `alt_text` | **mandatory.** States the figure's intent, not "diagram". Accessibility is a design-reviewer GATE — a missing/empty `alt_text` blocks PASS. |
 | `ab.axis_of_divergence` | names the **one meaningful way** options A and B must differ (orientation, encoding channel, decomposition, or even two different handlers when the type is genuinely ambiguous). Forces A/B to be a real choice, not two near-identical renders. |
 

@@ -6,6 +6,8 @@ MARKET-SCANNER is the **DISCOVERY** front door of the `idea-to-production` marke
 exists, it helps you find an opportunity *worth* building — and, just as importantly, **kills weak ideas
 early and cheaply** so you don't spend months on one.
 
+![MARKET-SCANNER radar sweep: an amber discovery beam rotates over a scattered market field, surfacing each candidate (thin demand, crowded space, underserved niche, no pricing power, hard to reach, weak severity) as it passes; then the five weak ideas are dimmed and struck through — killed early and cheaply — while the one strong opportunity, underserved niche, is ringed in teal and upheld with the verdict KEEP — the spark → ideator. The motion teaches DISCOVER plus kill-weak-early.](../../doc/images/market-scanner-radar.gif)
+
 ## The loop
 
 1. **`/goal`** — set a standing discovery objective (niche, builder edge, target price band, stack-fit,
@@ -17,6 +19,8 @@ early and cheaply** so you don't spend months on one.
 3. **`/loop /market-scan`** — iterate over your goal until a candidate earns a **keep** — *the spark*.
 
 Output is a **validated opportunity** (a scorecard + the evidence + the verdict).
+
+![MARKET-SCANNER discovery loop: /goal sets a standing objective; /market-scan proposes 3–5 candidates, scores each on the market taxonomy (severity · demand · size · willingness-to-pay · pricing power · competition · reachability · stack-fit), KILLs the weak ones, challenges the survivors, and reaches a verdict; KILL / PARK re-propose via /loop, while KEEP — the spark — flows on to a validated opportunity (scorecard + evidence + verdict) handed to the ideator.](diagrams/01-discovery-loop.png)
 
 ## Grounded in real evidence
 

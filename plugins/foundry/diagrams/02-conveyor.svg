@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg viewBox="0 0 860 520" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans, sans-serif">
+  <title>FOUNDRY — the three-layer conveyor (horizontal belt)</title>
+  <desc>FOUNDRY is a three-layer conveyor. THE IDEA, above the line, is the user in knowledge-parity with the IDEATOR (PRODUCT_MANAGER), emitting a clear, agent-readable brief downward into THE CONVEYOR. The conveyor is a horizontal belt carrying nine value-stations left to right from a cool IDEA end to a warm SHIP end: IDEA (ideator), ROADMAP (roadmapper), PLAN, EARS (spec), FEATURE, TEST (tests), IMPLEMENT plus DESIGN (builder/handlers), STORY, SHIP (deliver). The two ends are accented — IDEA blue, SHIP amber — to mark the cool-to-warm direction. A cross-cutting band rides within the carriage, beneath the belt, carrying GOVERNANCE (reviewers, perf-delta gates, inspector) in foundry, and companions if installed: PUBLISHING to pressroom, SECURITY to sentinel, DESIGN to atelier. Side rails mark the vertical duality: questions flow up, value flows down.</desc>
+
+  <defs>
+    <!-- value flows DOWN (left rail, into the belt) -->
+    <marker id="arrDown" viewBox="0 0 10 10" refX="5" refY="9" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L5,9 L10,0" fill="none" stroke="#7aa2f7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    </marker>
+    <!-- questions flow UP (right rail) -->
+    <marker id="arrUp" viewBox="0 0 10 10" refX="5" refY="1" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,10 L5,1 L10,10" fill="none" stroke="#b8bed0" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    </marker>
+    <!-- brief: the down feed from IDEA into the belt -->
+    <marker id="briefHead" viewBox="0 0 12 12" refX="6" refY="10" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L6,10 L12,0" fill="#7aa2f7"/>
+    </marker>
+    <!-- belt motion chevron between tiles -->
+    <marker id="flowChev" viewBox="0 0 10 10" refX="3" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L6,5 L0,10" fill="none" stroke="#7aa2f7" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    </marker>
+  </defs>
+
+  <!-- ============ TOP LAYER · THE IDEA (above the line) ============ -->
+  <g>
+    <rect x="150" y="22" width="560" height="74" rx="12" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="2"/>
+    <text x="430" y="46" text-anchor="middle" fill="#7aa2f7" font-size="13" font-weight="bold" letter-spacing="1.5">THE IDEA · above the line</text>
+    <text x="430" y="68" text-anchor="middle" fill="#e6e9f0" font-size="14">the user  &#8646;  IDEATOR (PRODUCT_MANAGER)</text>
+    <text x="430" y="86" text-anchor="middle" fill="#b8bed0" font-size="12" font-style="italic">knowledge-parity before build</text>
+  </g>
+
+  <!-- the brief feeds DOWN into the conveyor -->
+  <g>
+    <line x1="430" y1="96" x2="430" y2="128" stroke="#7aa2f7" stroke-width="2.5" marker-end="url(#briefHead)"/>
+    <rect x="486" y="100" width="218" height="22" rx="11" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="1"/>
+    <text x="595" y="115" text-anchor="middle" fill="#7aa2f7" font-size="11" font-style="italic">a clear, agent-readable brief</text>
+  </g>
+
+  <!-- ============ MIDDLE LAYER · THE CONVEYOR (the carriage / belt) ============ -->
+  <g>
+    <!-- the long rounded carriage -->
+    <rect x="40" y="138" width="780" height="278" rx="22" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="2"/>
+    <text x="60" y="162" fill="#e6e9f0" font-size="13" font-weight="bold" letter-spacing="1">THE CONVEYOR</text>
+    <text x="190" y="162" fill="#b8bed0" font-size="11" font-style="italic">three pillars + token-efficiency ride the whole carriage</text>
+
+    <!-- the belt: a track the tiles sit on, with roller end-caps -->
+    <rect x="58" y="186" width="744" height="92" rx="10" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.2"/>
+    <circle cx="58" cy="232" r="8" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+    <circle cx="802" cy="232" r="8" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+
+    <!-- 9 station tiles, left (cool IDEA) -> right (warm SHIP). Only the two ends accented;
+         middle seven on a neutral structural border so the direction reads via the anchored ends. -->
+    <!-- 1 IDEA (cool end) -->
+    <g>
+      <rect x="66" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="2.5"/>
+      <text x="105" y="222" text-anchor="middle" fill="#e6e9f0" font-size="12" font-weight="bold">IDEA</text>
+      <text x="105" y="252" text-anchor="middle" fill="#7aa2f7" font-size="10">ideator</text>
+    </g>
+    <!-- 2 ROADMAP -->
+    <g>
+      <rect x="148" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="2"/>
+      <text x="187" y="222" text-anchor="middle" fill="#e6e9f0" font-size="11" font-weight="bold">ROADMAP</text>
+      <text x="187" y="252" text-anchor="middle" fill="#b8bed0" font-size="9.5">roadmapper</text>
+    </g>
+    <!-- 3 PLAN -->
+    <g>
+      <rect x="230" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="2"/>
+      <text x="269" y="222" text-anchor="middle" fill="#e6e9f0" font-size="12" font-weight="bold">PLAN</text>
+      <text x="269" y="252" text-anchor="middle" fill="#b8bed0" font-size="10">plan</text>
+    </g>
+    <!-- 4 EARS -->
+    <g>
+      <rect x="312" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="2"/>
+      <text x="351" y="222" text-anchor="middle" fill="#e6e9f0" font-size="12" font-weight="bold">EARS</text>
+      <text x="351" y="252" text-anchor="middle" fill="#b8bed0" font-size="10">spec</text>
+    </g>
+    <!-- 5 FEATURE (mid) -->
+    <g>
+      <rect x="394" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="2"/>
+      <text x="433" y="222" text-anchor="middle" fill="#e6e9f0" font-size="11" font-weight="bold">FEATURE</text>
+      <text x="433" y="252" text-anchor="middle" fill="#b8bed0" font-size="10">feature</text>
+    </g>
+    <!-- 6 TEST -->
+    <g>
+      <rect x="476" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="2"/>
+      <text x="515" y="222" text-anchor="middle" fill="#e6e9f0" font-size="12" font-weight="bold">TEST</text>
+      <text x="515" y="252" text-anchor="middle" fill="#b8bed0" font-size="10">tests</text>
+    </g>
+    <!-- 7 IMPLEMENT (+DESIGN) -->
+    <g>
+      <rect x="558" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="2"/>
+      <text x="597" y="218" text-anchor="middle" fill="#e6e9f0" font-size="10.5" font-weight="bold">IMPLEMENT</text>
+      <text x="597" y="233" text-anchor="middle" fill="#bb9af7" font-size="9.5">+DESIGN</text>
+      <text x="597" y="255" text-anchor="middle" fill="#b8bed0" font-size="8.5">builder/handlers</text>
+    </g>
+    <!-- 8 STORY -->
+    <g>
+      <rect x="640" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="2"/>
+      <text x="679" y="222" text-anchor="middle" fill="#e6e9f0" font-size="12" font-weight="bold">STORY</text>
+      <text x="679" y="252" text-anchor="middle" fill="#b8bed0" font-size="10">story</text>
+    </g>
+    <!-- 9 SHIP (warm end) -->
+    <g>
+      <rect x="722" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#e0af68" stroke-width="2.5"/>
+      <text x="761" y="222" text-anchor="middle" fill="#e6e9f0" font-size="12" font-weight="bold">SHIP</text>
+      <text x="761" y="252" text-anchor="middle" fill="#e0af68" font-size="10">deliver</text>
+    </g>
+
+    <!-- belt motion chevrons between tiles (value left -> right) -->
+    <g>
+      <line x1="145" y1="232" x2="147" y2="232" stroke="#7aa2f7" stroke-width="0" marker-end="url(#flowChev)"/>
+      <line x1="227" y1="232" x2="229" y2="232" stroke="#7aa2f7" stroke-width="0" marker-end="url(#flowChev)"/>
+      <line x1="309" y1="232" x2="311" y2="232" stroke="#7aa2f7" stroke-width="0" marker-end="url(#flowChev)"/>
+      <line x1="391" y1="232" x2="393" y2="232" stroke="#7aa2f7" stroke-width="0" marker-end="url(#flowChev)"/>
+      <line x1="473" y1="232" x2="475" y2="232" stroke="#7aa2f7" stroke-width="0" marker-end="url(#flowChev)"/>
+      <line x1="555" y1="232" x2="557" y2="232" stroke="#7aa2f7" stroke-width="0" marker-end="url(#flowChev)"/>
+      <line x1="637" y1="232" x2="639" y2="232" stroke="#7aa2f7" stroke-width="0" marker-end="url(#flowChev)"/>
+      <line x1="719" y1="232" x2="721" y2="232" stroke="#7aa2f7" stroke-width="0" marker-end="url(#flowChev)"/>
+    </g>
+
+    <!-- cool -> warm direction label on the belt -->
+    <text x="105" y="304" text-anchor="middle" fill="#7aa2f7" font-size="10" font-weight="bold" letter-spacing="1">IDEA</text>
+    <text x="430" y="304" text-anchor="middle" fill="#b8bed0" font-size="10">value carried left &#8594; right</text>
+    <text x="761" y="304" text-anchor="middle" fill="#e0af68" font-size="10" font-weight="bold" letter-spacing="1">SHIP</text>
+
+    <!-- ===== CROSS-CUTTING band — rides WITHIN the carriage, beneath the belt =====
+         Top edge pulled up into the carriage's lower body so it reads as part of the carriage. -->
+    <g>
+      <rect x="58" y="324" width="744" height="74" rx="10" fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="430" y="346" text-anchor="middle" fill="#9ece6a" font-size="11" font-weight="bold" letter-spacing="1">CROSS-CUTTING · rides the whole carriage</text>
+      <text x="430" y="366" text-anchor="middle" fill="#e6e9f0" font-size="12">GOVERNANCE: reviewers · perf-delta gates · inspector  —  in foundry</text>
+      <text x="430" y="386" text-anchor="middle" fill="#bb9af7" font-size="11">companions if installed: PUBLISHING&#8594;pressroom · SECURITY&#8594;sentinel · DESIGN&#8594;atelier</text>
+    </g>
+  </g>
+
+  <!-- ============ VERTICAL DUALITY · side rails ============ -->
+  <!-- value flows DOWN (left) -->
+  <g>
+    <line x1="24" y1="120" x2="24" y2="416" stroke="#7aa2f7" stroke-width="2.5" marker-end="url(#arrDown)"/>
+    <text x="14" y="270" text-anchor="middle" fill="#7aa2f7" font-size="11" font-weight="bold" transform="rotate(-90 14 270)">value flows DOWN &#9660;</text>
+  </g>
+  <!-- questions flow UP (right) -->
+  <g>
+    <line x1="836" y1="416" x2="836" y2="120" stroke="#b8bed0" stroke-width="2.5" marker-end="url(#arrUp)"/>
+    <text x="846" y="270" text-anchor="middle" fill="#b8bed0" font-size="11" font-weight="bold" transform="rotate(90 846 270)">questions flow UP &#9650;</text>
+  </g>
+</svg>

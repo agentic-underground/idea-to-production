@@ -1,0 +1,40 @@
+%%{init: {'theme':'base','themeVariables':{'background':'transparent','primaryColor':'#1e1e2e','primaryBorderColor':'#9aa2c0','primaryTextColor':'#e6e9f0','secondaryColor':'#2a2a3c','tertiaryColor':'#2a2a3c','lineColor':'#9aa2c0','fontFamily':'DejaVu Sans','fontSize':'15px'}}}%%
+flowchart TD
+  accTitle: The assurance chain
+  accDescr: Quality is built in across the whole assurance chain. Six layers run top to bottom — EARS spec, FEATURE docs (BDD), UNIT assertions, COMPONENT assertions, CONNECTED-SYSTEM assertions, and STORY proofs as the proof terminal. Each transition between layers is guarded by a performance-delta gate. 100 percent coverage is the floor, not the goal, and the perf-delta gate runs with the STORY tests so a regression past budget does not merge.
+
+  E["EARS spec · requirements"]
+  F["FEATURE docs · BDD scenarios"]
+  U["UNIT assertions · pure cores"]
+  C["COMPONENT assertions · wired units"]
+  S["CONNECTED-SYSTEM assertions · integration"]
+  P["STORY proofs · real interface"]
+
+  E -- "⊣ perf-delta" --> F
+  F -- "⊣ perf-delta" --> U
+  U -- "⊣ perf-delta" --> C
+  C -- "⊣ perf-delta" --> S
+  S -- "⊣ perf-delta" --> P
+
+  FLOOR["100% coverage = the floor, not the goal"]
+  GATE["perf-delta gate runs WITH the STORY tests — a regression past budget does not merge"]
+
+  U -.- FLOOR
+  FLOOR -.- C
+  P -.-> GATE
+
+  classDef layer1 fill:#13294b,stroke:#5b8bd0,color:#dce8fb;
+  classDef layer2 fill:#163a52,stroke:#56a3c4,color:#dcf0fb;
+  classDef layer3 fill:#16453f,stroke:#4fb89a,color:#dcfbf0;
+  classDef layer4 fill:#3f4318,stroke:#b8a84f,color:#fbf6dc;
+  classDef layer5 fill:#4a3417,stroke:#c4894f,color:#fbecdc;
+  classDef terminal fill:#5a1f2a,stroke:#e06b82,color:#fbdce4,stroke-width:2.5px;
+  classDef note fill:#1e1e2e,stroke:#9aa2c0,color:#c7cdda,stroke-dasharray:4 3;
+
+  class E layer1;
+  class F layer2;
+  class U layer3;
+  class C layer4;
+  class S layer5;
+  class P terminal;
+  class FLOOR,GATE note;

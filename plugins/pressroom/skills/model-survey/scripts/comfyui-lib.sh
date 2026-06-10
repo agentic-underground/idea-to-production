@@ -7,7 +7,7 @@
 # Endpoint: $PRESSROOM_COMFYUI_URL (default the i9 workstation, ComfyUI port 8188).
 set -uo pipefail
 
-COMFYUI="${PRESSROOM_COMFYUI_URL:-http://10.0.1.19:8188}"
+COMFYUI="${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}"
 
 cu_reachable() { curl -sf -m 4 "$COMFYUI/system_stats" >/dev/null 2>&1; }
 

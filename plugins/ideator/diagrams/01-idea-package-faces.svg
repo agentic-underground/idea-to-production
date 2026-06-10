@@ -1,0 +1,108 @@
+<svg viewBox="0 0 820 470" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans">
+  <title>The IDEA package — two faces, one understanding</title>
+  <desc>One shared understanding (knowledge-parity) sits at the centre as a single core, threaded by a solid green spine. From it two faces derive: an agent-facing face on the left (precise, for FOUNDRY's conveyor — idea brief, SMU-seed, first vertical slice, handoff contract) and a user-facing face on the right (rich and illustrated — opportunity narrative, parameter scorecard, market/pricing/competition charts, user-flow, mockup screen). Two thick green arrows flow outward from the core to each face. A two-way sync binds them: a fact corrected in one face is corrected in both — the faces never disagree.</desc>
+
+  <!-- ====================== TITLE ====================== -->
+  <text x="410" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#828aaa">The IDEA package — two faces, one understanding</text>
+  <text x="410" y="51" text-anchor="middle" font-size="12.5" fill="#828aaa">two faces derive from one shared spine — and they never disagree</text>
+
+  <!-- ====================== CENTRAL CORE (shared understanding) ====================== -->
+  <g>
+    <!-- spine: SOLID green hairline threading the whole figure, full opacity -->
+    <line x1="410" y1="92" x2="410" y2="430" stroke="#9ece6a" stroke-width="2" stroke-linecap="round"/>
+    <!-- core capsule sits ON the spine as the single shared core -->
+    <rect x="338" y="206" width="144" height="78" rx="14" fill="#2a2a3c" stroke="#9ece6a" stroke-width="2.6"/>
+    <text x="410" y="234" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#9ece6a">one understanding</text>
+    <text x="410" y="253" text-anchor="middle" font-size="11" fill="#e6e9f0">knowledge-parity</text>
+    <text x="410" y="270" text-anchor="middle" font-size="10.5" fill="#b8bed0">the shared spine</text>
+  </g>
+
+  <!-- ====================== AGENT-FACING FACE (LEFT) ====================== -->
+  <g>
+    <rect x="26" y="92" width="290" height="316" rx="12" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="2"/>
+    <!-- face header chip -->
+    <rect x="42" y="106" width="120" height="24" rx="6" fill="#2a2a3c" stroke="#7aa2f7" stroke-width="1.4"/>
+    <text x="102" y="123" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#7aa2f7">AGENT-FACING</text>
+    <text x="304" y="123" text-anchor="end" font-size="11" fill="#b8bed0">precise · for the conveyor</text>
+
+    <!-- artefacts -->
+    <g font-size="12" fill="#e6e9f0">
+      <rect x="42" y="146" width="258" height="34" rx="7" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+      <text x="56" y="167.5" fill="#7aa2f7" font-weight="bold">▸</text>
+      <text x="74" y="167.5">idea brief</text>
+
+      <rect x="42" y="188" width="258" height="34" rx="7" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+      <text x="56" y="209.5" fill="#7aa2f7" font-weight="bold">▸</text>
+      <text x="74" y="209.5">SMU-seed</text>
+
+      <rect x="42" y="230" width="258" height="34" rx="7" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+      <text x="56" y="251.5" fill="#7aa2f7" font-weight="bold">▸</text>
+      <text x="74" y="251.5">first vertical slice</text>
+
+      <rect x="42" y="272" width="258" height="34" rx="7" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+      <text x="56" y="293.5" fill="#7aa2f7" font-weight="bold">▸</text>
+      <text x="74" y="293.5">handoff contract</text>
+    </g>
+    <!-- exit-criteria footnote -->
+    <text x="56" y="386" font-size="11" fill="#b8bed0">satisfies FOUNDRY's discovery exit criteria</text>
+  </g>
+
+  <!-- ====================== USER-FACING FACE (RIGHT) ====================== -->
+  <g>
+    <rect x="504" y="92" width="290" height="316" rx="12" fill="#1e1e2e" stroke="#bb9af7" stroke-width="2"/>
+    <!-- face header chip -->
+    <rect x="658" y="106" width="120" height="24" rx="6" fill="#2a2a3c" stroke="#bb9af7" stroke-width="1.4"/>
+    <text x="718" y="123" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#bb9af7">USER-FACING</text>
+    <text x="516" y="123" font-size="11" fill="#b8bed0">rich · illustrated</text>
+
+    <!-- artefacts -->
+    <g font-size="12" fill="#e6e9f0">
+      <rect x="520" y="146" width="258" height="34" rx="7" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+      <text x="534" y="167.5" fill="#bb9af7" font-weight="bold">◆</text>
+      <text x="552" y="167.5">opportunity narrative</text>
+
+      <rect x="520" y="188" width="258" height="34" rx="7" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+      <text x="534" y="209.5" fill="#bb9af7" font-weight="bold">◆</text>
+      <text x="552" y="209.5">parameter scorecard</text>
+
+      <rect x="520" y="230" width="258" height="34" rx="7" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+      <text x="534" y="251.5" fill="#bb9af7" font-weight="bold">◆</text>
+      <text x="552" y="251.5">market · pricing · competition</text>
+
+      <rect x="520" y="272" width="258" height="34" rx="7" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+      <text x="534" y="293.5" fill="#bb9af7" font-weight="bold">◆</text>
+      <text x="552" y="293.5">user-flow · mockup screen</text>
+    </g>
+    <text x="534" y="386" font-size="11" fill="#b8bed0">the same facts, shown to a human</text>
+  </g>
+
+  <!-- ====================== DERIVATION ARROWS (core → each face) ====================== -->
+  <defs>
+    <marker id="head-green" markerWidth="10" markerHeight="10" refX="7.5" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 Z" fill="#9ece6a"/>
+    </marker>
+  </defs>
+  <!-- core to left face: thicker (2.6px) and longer to make the OUT-flow unmistakable -->
+  <path d="M338 245 L308 245" fill="none" stroke="#9ece6a" stroke-width="2.6" marker-end="url(#head-green)"/>
+  <!-- core to right face -->
+  <path d="M482 245 L512 245" fill="none" stroke="#9ece6a" stroke-width="2.6" marker-end="url(#head-green)"/>
+
+  <!-- ====================== TWO-WAY SYNC BINDING (bottom) ====================== -->
+  <defs>
+    <marker id="sync-l" markerWidth="11" markerHeight="11" refX="2" refY="5" orient="auto">
+      <path d="M9,0 L1,5 L9,10 Z" fill="#9ece6a"/>
+    </marker>
+    <marker id="sync-r" markerWidth="11" markerHeight="11" refX="9" refY="5" orient="auto">
+      <path d="M2,0 L10,5 L2,10 Z" fill="#9ece6a"/>
+    </marker>
+  </defs>
+  <g>
+    <!-- two-way connector spanning under both faces -->
+    <line x1="171" y1="430" x2="345" y2="430" stroke="#9ece6a" stroke-width="2.4" marker-start="url(#sync-l)" marker-end="url(#sync-r)"/>
+    <line x1="475" y1="430" x2="649" y2="430" stroke="#9ece6a" stroke-width="2.4" marker-start="url(#sync-l)" marker-end="url(#sync-r)"/>
+    <!-- central sync badge -->
+    <rect x="346" y="416" width="128" height="28" rx="9" fill="#2a2a3c" stroke="#9ece6a" stroke-width="1.8"/>
+    <text x="410" y="434.5" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#9ece6a">⇄ in sync</text>
+  </g>
+  <text x="410" y="461" text-anchor="middle" font-size="12" fill="#828aaa">a fact corrected in one face is corrected in both — the two never disagree</text>
+</svg>

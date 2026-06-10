@@ -6,6 +6,8 @@ PRESSROOM mines a project's artefacts (git history, docs, code) for narrative si
 publication-grade output: articles that land, standalone diagrams that stay legible, and
 print-quality PDFs with embedded figures.
 
+![PRESSROOM's illustrate → review → publish craft: a figure SPEC card (subject, dark 4×9 style, A4-legible) emits TWO options A and B, each a small bar-chart figure; the adversarial design-reviewer sweeps option A then option B with an amber scan, scores both, and crowns B ★ BEST as it clears the 4×9 rubric while option A dims away; the chosen figure then moves along a teal arrow into the README's empty figure slot, which turns teal and reads "published ✓" — the whole illustrate→review→publish loop closing on a settled, published page.](../../doc/images/pressroom-press.gif)
+
 It works on **any** project, standalone. It is also the **PUBLISHING companion** the
 [`foundry`](../foundry/) plugin hands off to: foundry's value artefact is markdown, and when
 PRESSROOM is installed it can upgrade that markdown into richer published artefacts via `/publish`.
@@ -28,13 +30,7 @@ dependency).
 
 ## How the pieces compose
 
-```
-/publish ──▶ writer (prose) ──▶ diagram-studio / mermaid-specialist (figures) ──▶ render ──▶ design-reviewer
-                                                                                  ├─ markdown (+ SVG)         │ score the artefact
-                                                                                  ├─ pdf → rich-pdf-with-…    │ (typography + data-viz),
-                                                                                  └─ diagrams only            ▼ apply HIGH+MED, re-build,
-                                                                                          converge (no ping-pong) ◀── until it clears the rubric
-```
+![PRESSROOM publishing pipeline: /publish drives writer (prose) → diagram-studio / mermaid-specialist (figures) → render, which branches into three outputs (markdown + inline SVG, PDF via rich-pdf-with-diagrams, diagrams-only); the whole render→outputs stage is wrapped by the adversarial design-reviewer gate (typography + data-viz) that applies HIGH+MED and re-builds until the artefact clears the 4×9 rubric — converging, no ping-pong.](diagrams/01-pieces-compose.png)
 
 `writer` produces the words; `diagram-studio` + `mermaid-specialist` produce the figures;
 `rich-pdf-with-diagrams` produces a whole typeset document; `design-reviewer` is the adversarial gate that

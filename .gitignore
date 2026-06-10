@@ -47,3 +47,30 @@ venv/
 coverage/
 .coverage
 *.log
+.playwright-mcp/
+_render_*.html
+
+# image-craft-study: track ledgers/catalogs/curated-JSON; ignore large/regenerable rasters
+/doc/image-craft-study/corpus/genres/
+/doc/image-craft-study/corpus/styles/
+/doc/image-craft-study/corpus/scenes/
+/doc/image-craft-study/corpus/diagrams/
+/doc/image-craft-study/corpus/landscapes/
+/doc/image-craft-study/corpus/action/
+/doc/image-craft-study/workflows/raw/
+/doc/image-craft-study/craft/images/
+/doc/image-craft-study/craft/thumbs/
+/doc/image-craft-study/craft/contact-sheets/
+/doc/image-craft-study/craft/validate/
+/doc/image-craft-study/verification/new/
+/doc/image-craft-study/verification/old/
+/doc/image-craft-study/rig-inventory/awesome-contact.jpg
+/doc/image-craft-study/rig-inventory/awesome-recipes.txt
+# toolchain (Phase 8): track src/ scripts + the small proof/ evidence; ignore frames + heavy intermediates
+/doc/image-craft-study/toolchain/frames/
+/doc/image-craft-study/toolchain/lc-frames/
+/doc/image-craft-study/toolchain/out/
+/doc/image-craft-study/toolchain/src/*.png
+# diagram-fail: track the runner + FINDINGS + the downsized evidence jpg; ignore raw rasters
+/doc/image-craft-study/diagram-fail/images/
+/doc/image-craft-study/workflows/reruns/

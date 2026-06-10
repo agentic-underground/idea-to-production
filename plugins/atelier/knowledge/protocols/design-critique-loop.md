@@ -20,12 +20,24 @@ to the [`canon/`](../canon/README.md). Each dimension scores **0–5**; the weig
 | **Usability (heuristics + laws)** | 18 | interaction-laws §1,§2 | Nielsen-clean; laws respected | hidden affordances; Hick/Fitts failures |
 | **Consistency** | 10 | interaction-laws §2.4 | tokens & patterns coherent; Jakob's Law | one-off styles; convention breaks |
 | **Accessibility (GATE)** | 10 | accessibility.md | WCAG 2.2 AA clean | **any AA failure ⇒ cannot PASS** |
-| **Delight** | 5 | interaction-laws §3 | a purposeful, harm-free moment | none / gratuitous, harmful |
+| **Delight** | 5 | interaction-laws §3 · [`art-direction.md`](../canon/art-direction.md) | a purposeful, harm-free moment grounded in named art-direction (composition/light/colour) | none / gratuitous, harmful, or "AI sheen" |
 
 > **Findings, prioritised** (like `pr-review`): every gap is **HIGH / MED / LOW**, each naming **(a)** the
 > canon principle, **(b)** the violation, **(c)** the user cost, **(d)** the concrete fix, **(e)** the
 > rubric dimension it scores. A WCAG-AA failure is always at least HIGH **and** trips the accessibility
 > gate.
+
+> **Pictorial / image artefacts (not screens).** When the artefact is a generated or pictorial image (hero
+> art, concept, illustration), the **AESTHETICS-REVIEWER** lens scores it against the full
+> [`art-direction.md`](../canon/art-direction.md) canon (composition · light · colour · narrative ·
+> style/medium · the **award bar**), with the **artifact floor** as a hard cap (mangled anatomy / gibberish
+> text / melted geometry / broken perspective ⇒ cannot PASS, regardless of polish). The accessibility *gate*
+> is replaced by the artifact floor + the image's alt-text / dual-ground legibility where it embeds. For
+> award-tier pictorial work the **TARGET is raised** (the bar is "publication/gallery-ready", not merely
+> "acceptable") — "competent but clearly generated" is a finding, not a pass. The **RICHNESS-MOTION-REVIEWER**
+> lens (canon §8 medium-reach + §9 motion) co-scores: a flat single-layer image where a blend/depth would
+> serve, or motion that's gratuitous rather than motivated, is *"too simple / entry-level"* — also a finding,
+> not a pass. Animated artefacts are reviewed from a **frame-strip** and must ship a reduced-motion poster.
 
 ## The loop (bounded, measurable, terminating)
 

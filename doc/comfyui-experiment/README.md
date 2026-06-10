@@ -24,4 +24,4 @@ It runs under `/loop` (self-paced), resumable via the journal — only un-done c
 To widen, add models/categories in
 [`manifest.example.json`](../../plugins/pressroom/skills/model-survey/references/manifest.example.json) and
 re-loop. The harness lives in `plugins/pressroom/skills/model-survey/scripts/` (deterministic bash/Typst; only
-scoring spends model tokens). Backend: `${PRESSROOM_COMFYUI_URL:-http://10.0.1.19:8188}`.
+scoring spends model tokens). Backend: `${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}`.

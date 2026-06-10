@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "template_id": "txt2img-hires-fix",
+    "description": "Allowlisted two-pass txt2img with latent hires-fix. Pass 1 (KSampler, node 3) renders at base res; the latent is upscaled (LatentUpscaleBy, node 10) and re-detailed by a low-denoise pass (KSampler, node 11). submit fills ONLY the listed nodes; no node added/removed; _meta is stripped before POST.",
+    "fillable": {
+      "4.inputs.ckpt_name": "model (in allowlist)",
+      "6.inputs.text": "positive prompt (length-capped)",
+      "7.inputs.text": "negative prompt (length-capped)",
+      "5.inputs.width": "base width (bounded 512..1536, step 8)",
+      "5.inputs.height": "base height (bounded 512..1536, step 8)",
+      "3.inputs.seed": "seed (bounded)",
+      "3.inputs.steps": "pass-1 steps (bounded 1..50)",
+      "3.inputs.cfg": "cfg (bounded 1..12)",
+      "3.inputs.sampler_name": "sampler (in allowlist)",
+      "3.inputs.scheduler": "scheduler (in allowlist)",
+      "10.inputs.scale_by": "hires scale (bounded 1.0..2.0)",
+      "11.inputs.denoise": "hires re-detail denoise (bounded 0.2..0.6)",
+      "11.inputs.steps": "pass-2 steps (bounded 1..40)"
+    }
+  },
+  "4": { "class_type": "CheckpointLoaderSimple", "inputs": { "ckpt_name": "REPLACED_BY_SERVER" } },
+  "5": { "class_type": "EmptyLatentImage", "inputs": { "width": 1216, "height": 832, "batch_size": 1 } },
+  "6": { "class_type": "CLIPTextEncode", "inputs": { "text": "REPLACED_BY_SERVER", "clip": ["4", 1] } },
+  "7": { "class_type": "CLIPTextEncode", "inputs": { "text": "REPLACED_BY_SERVER", "clip": ["4", 1] } },
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 0, "steps": 30, "cfg": 6.5, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 1.0,
+      "model": ["4", 0], "positive": ["6", 0], "negative": ["7", 0], "latent_image": ["5", 0]
+    }
+  },
+  "10": { "class_type": "LatentUpscaleBy", "inputs": { "upscale_method": "nearest-exact", "scale_by": 1.5, "samples": ["3", 0] } },
+  "11": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 0, "steps": 20, "cfg": 6.5, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 0.45,
+      "model": ["4", 0], "positive": ["6", 0], "negative": ["7", 0], "latent_image": ["10", 0]
+    }
+  },
+  "8": { "class_type": "VAEDecode", "inputs": { "samples": ["11", 0], "vae": ["4", 2] } },
+  "9": { "class_type": "SaveImage", "inputs": { "filename_prefix": "pressroom_hires", "images": ["8", 0] } }
+}

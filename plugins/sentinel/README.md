@@ -1,10 +1,14 @@
 # SENTINEL — Security & Privacy Gate
 
+![A lone lighthouse standing vigilant on a dark headland at night, an amber beacon glowing at its summit and a teal scanning light sweeping over a luminous cyan shoreline below — a sentinel watching so nothing unsafe gets through.](diagrams/hero.jpg)
+
 > Never ship a leaked key, a real person's data, or a vulnerable dependency.
 
 SENTINEL is the pre-release security gate for any repository. It runs three parallel audit lenses
 and consolidates them into a single severity-ranked report with one verdict — **PASS / REVIEW /
 BLOCK**.
+
+![Animated security gate: a teal-titled "SENTINEL · certify before exposure" panel shows an artifact at left, four stacked lens chips in the centre (PII, SECRETS, SUPPLY-CHAIN, SAST), and a closed gate at right reading "0/4 lenses". An amber scan sweep marches across the chips; as it reaches each lens the chip flips from dim "pending" to amber "scanning…" to a green-checked teal "sealed". When all four are sealed the gate's "0/4 lenses" label resolves to a large teal "PASS · cleared to expose →" stamp, then holds — teaching certify-before-exposure: nothing is cleared until every lens seals green.](../../doc/images/sentinel-gate.gif)
 
 It works on **any** project, standalone. It also serves as the **SECURITY value-station** for the
 [`foundry`](../foundry/) plugin: when both are installed, foundry runs `/security-gate` before

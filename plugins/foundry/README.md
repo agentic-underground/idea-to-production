@@ -7,6 +7,8 @@ performance-instrumented **test contract**. Read [`VALUE_FLOW.md`](VALUE_FLOW.md
 [`knowledge/glossary.md`](knowledge/glossary.md) for every name + the conceptual map (including the
 **foundry vs forge vs founder** distinction).
 
+![The test-first value conveyor: an IDEA token rides a fixed line of value-stations — IDEA ▸ EARS ▸ TESTS ▸ IMPL ▸ GREEN ▸ SHIP — each gate latching green as it clears. The motion teaches the red→green spine: when the token reaches the TESTS gate it lights RED first (a failing test written before any code exists), and only once the token advances to IMPL does the TESTS gate flip red ▸ green — proof comes first, then code turns the failing proof green. The token then rides on through GREEN to SHIP, the full line latched teal with check-marks, and holds as a settled poster.](../../doc/images/foundry-conveyor.gif)
+
 ## What's inside
 
 | Area | What it holds |
@@ -22,17 +24,9 @@ performance-instrumented **test contract**. Read [`VALUE_FLOW.md`](VALUE_FLOW.md
 
 ## The orchestration hierarchy (three altitudes, one chain of command)
 
-```
-founder (COO)            — turns an idea into a value-stationed path; staffs the line
-   ▼
-builder-lead             — ingests the ROADMAP, tiers + budgets, emits FOUNDRY_PLAN.md
-   ▼
-lifecycle-orchestrator   — drives ONE item through steps 0–9 + story, enforcing gates
-   ▼
-ds-step-* + handler-*    — do the station work (the value-handlers staff stations by stack)
-   ▼
-reviewer                 — adversarial gate panel (PASS / NEEDS_REVISION / BLOCK); inspector audits the plugin itself
-```
+![Orchestration hierarchy across three altitudes, one chain of command: ORCHESTRATION — founder (COO, turns an idea into a value-stationed path) → builder-lead (ingests the ROADMAP, tiers + budgets, emits FOUNDRY_PLAN.md) → lifecycle-orchestrator (drives ONE item through steps 0–9 + story, enforcing gates); EXECUTION — ds-step-* + handler-* (do the station work; value-handlers staff stations by stack); GATE — reviewer (adversarial panel: PASS / NEEDS_REVISION / BLOCK).](diagrams/01-orchestration-hierarchy.png)
+
+(The `inspector` agent audits the plugin itself, off the production chain of command.)
 
 **Value-handlers:** [`handler-architect`](agents/handler-architect.md), `-python`, `-fastapi`,
 `-js`, [`-vanilla-js`](agents/handler-vanilla-js.md) (native handler of the `frontend` DESIGN

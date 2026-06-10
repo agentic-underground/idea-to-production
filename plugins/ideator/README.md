@@ -6,6 +6,8 @@ IDEATOR is the **REFINEMENT** phase of the `idea-to-production` marketplace. It 
 opportunity (from [`market-scanner`](../market-scanner/)) or a raw idea you already have, refines it to
 **knowledge-parity** through an adversarially-challenged dialogue, and emits the **IDEA package**.
 
+![IDEATE animated: four scattered fragments — PROBLEM (the pain, sharp), USERS (named actors), CRITERIA (testable success), and SCOPE (explicit edges) — drift in from the corners and dock one-by-one into a central IDEA-package frame, each turning from dim to amber in-flight to teal as it locks and the knowledge-parity meter fills; once all four axes are locked the challenger's READY stamp lands amber and settles teal, captioned "challenger signs off · knowledge-parity reached → hand off to FOUNDRY". The motion teaches IDEATE: a scattered idea is refined axis-by-axis to knowledge-parity until the package is unambiguous and signed off.](../../doc/images/ideator-converge.gif)
+
 ## The IDEA package — two faces, one understanding
 
 - **Agent-facing** (precise, high-clarity, for the conveyor): an **idea brief**, an **SMU-seed**, the
@@ -20,6 +22,8 @@ opportunity (from [`market-scanner`](../market-scanner/)) or a raw idea you alre
 
 The two faces never disagree: a fact corrected in one is corrected in both. The package is **iterated with
 you** until both are right, *then* handed off.
+
+![The IDEA package has two faces from one shared understanding (knowledge-parity, the shared spine): the agent-facing face (precise, for the conveyor) carries the idea brief, SMU-seed, first vertical slice, and handoff contract that satisfy FOUNDRY's discovery exit criteria; the user-facing face (rich, illustrated) carries the opportunity narrative, parameter scorecard, market/pricing/competition charts, and a user-flow / mockup screen — the same facts shown to a human. The two stay in sync: a fact corrected in one face is corrected in both.](diagrams/01-idea-package-faces.png)
 
 ## Naming a product
 

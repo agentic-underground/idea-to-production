@@ -1,0 +1,194 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 251225068430076,
+      "steps": 12,
+      "cfg": 8.0,
+      "sampler_name": "dpmpp_sde",
+      "scheduler": "normal",
+      "denoise": 1.0,
+      "model": [
+        "25",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "5": {
+    "inputs": {
+      "width": 768,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "text": "masterpiece HDR victorian portrait painting of woman, blonde hair, mountain nature, blue sky\n",
+      "clip": [
+        "25",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "text": "bad hands, text, watermark\n",
+      "clip": [
+        "25",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "25",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage"
+  },
+  "11": {
+    "inputs": {
+      "seed": 783745448521451,
+      "steps": 14,
+      "cfg": 8.0,
+      "sampler_name": "uni_pc_bh2",
+      "scheduler": "normal",
+      "denoise": 0.5,
+      "model": [
+        "25",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "20",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "12": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "SaveImage"
+  },
+  "13": {
+    "inputs": {
+      "samples": [
+        "11",
+        0
+      ],
+      "vae": [
+        "25",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "20": {
+    "inputs": {
+      "pixels": [
+        "24",
+        0
+      ],
+      "vae": [
+        "25",
+        2
+      ]
+    },
+    "class_type": "VAEEncode"
+  },
+  "21": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "25",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "22": {
+    "inputs": {
+      "upscale_model": [
+        "23",
+        0
+      ],
+      "image": [
+        "21",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel"
+  },
+  "23": {
+    "inputs": {
+      "model_name": "RealESRGAN/RealESRGAN_x4plus.pth"
+    },
+    "class_type": "UpscaleModelLoader"
+  },
+  "24": {
+    "inputs": {
+      "upscale_method": "bilinear",
+      "width": 1536,
+      "height": 1536,
+      "crop": "disabled",
+      "image": [
+        "22",
+        0
+      ]
+    },
+    "class_type": "ImageScale"
+  },
+  "25": {
+    "inputs": {
+      "ckpt_name": "v2-1_768-ema-pruned.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  }
+}

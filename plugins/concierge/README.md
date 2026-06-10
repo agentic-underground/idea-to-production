@@ -1,5 +1,7 @@
 # CONCIERGE — repo welcome & the idea-to-production status line
 
+![A warm lantern-lit arched doorway at night — amber light spilling from hanging and wall lanterns across a teal-dark entrance hall with a wooden floor — a warm light at the door, welcoming whoever arrives.](diagrams/hero.jpg)
+
 > The **arrival layer** of the [idea-to-production](../../README.md) marketplace. A
 > repository should greet whoever opens it — and the suite should be visible at a glance.
 
@@ -8,6 +10,8 @@ files and have to *guess* where to start. CONCIERGE turns the opening moment int
 conversation: a one-line greeting and a short decision tree of the handful of things
 people actually come here to do — **operate** the software, or **evolve** it — that
 routes the user straight to the right command, runbook, or downstream plugin.
+
+![The CONCIERGE welcome card assembling, then greeting: the four status widgets tick into place one by one — ◆ lifecycle (BUILD), ◇ session (12.4k tok), ◈ life (94% est), and ⚔ caught (7) glow from dim to teal/amber — then a warm amber greeting line unfurls left-to-right beneath them, "welcome — concierge has the door. what brings you in: operate, or evolve?", and the card settles with a teal "✓ at the door". The motion teaches that CONCIERGE both renders the at-a-glance status bar and greets whoever opens the repo.](../../doc/images/concierge-welcome.gif)
 
 The engine ships in the marketplace; the **content is repo-local**, exactly like
 `CLAUDE.md`. A maintainer authors `.claude/welcome.md` once (by hand, or with

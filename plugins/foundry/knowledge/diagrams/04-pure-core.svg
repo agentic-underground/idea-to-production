@@ -1,0 +1,90 @@
+<svg viewBox="0 0 820 470" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans">
+  <title>Pure core, layered left to right with one-way inward dependencies</title>
+  <desc>A layered architecture read left to right. On the left, a thin WIRING layer (DOM, IO, network, render adapters, in blue) carries no decidable logic. On the right, a prominent green PURE CORE box holds the decidable logic with no I/O, no UI, no platform, no panics, where coordinates are placed. Amber dependency arrows point one way only, inward from wiring toward the core; no arrow leaves the core. A second disjoint wiring-and-core pair below illustrates that independent units make work maximally parallel. Payoff: pure implies testable implies coordinate-able implies maximally parallel.</desc>
+
+  <defs>
+    <marker id="arrowIn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#e0af68"/>
+    </marker>
+  </defs>
+
+  <!-- ===== Title ===== -->
+  <text x="36" y="34" font-size="20" font-weight="bold" fill="#9ece6a">Extract the decidable core — wiring depends on it, not the reverse</text>
+  <text x="36" y="56" font-size="13" fill="#9aa2c0">Layered left → right · dependencies flow ONE WAY ONLY, inward</text>
+
+  <!-- direction legend -->
+  <g transform="translate(36,76)">
+    <line x1="0" y1="6" x2="40" y2="6" stroke="#e0af68" stroke-width="2.5" marker-end="url(#arrowIn)"/>
+    <text x="50" y="10" font-size="12" fill="#9aa2c0">wiring → core (core depends on nothing)</text>
+  </g>
+
+  <!-- ================= PRIMARY UNIT ================= -->
+  <!-- Wiring layer band (left) -->
+  <rect x="36" y="104" width="262" height="206" rx="12" fill="#2a2a3c" stroke="#7aa2f7" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="50" y="128" font-size="14" font-weight="bold" fill="#7aa2f7">THIN WIRING</text>
+  <text x="50" y="146" font-size="11" fill="#b8bed0">no decidable logic · validated at story / system level</text>
+
+  <!-- wiring adapter chips -->
+  <g font-size="13" fill="#e6e9f0">
+    <rect x="56" y="160" width="100" height="30" rx="6" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="1.4"/>
+    <text x="106" y="180" text-anchor="middle">DOM</text>
+    <rect x="170" y="160" width="100" height="30" rx="6" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="1.4"/>
+    <text x="220" y="180" text-anchor="middle">IO</text>
+    <rect x="56" y="200" width="100" height="30" rx="6" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="1.4"/>
+    <text x="106" y="220" text-anchor="middle">network</text>
+    <rect x="170" y="200" width="100" height="30" rx="6" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="1.4"/>
+    <text x="220" y="220" text-anchor="middle">render</text>
+  </g>
+  <text x="167" y="262" text-anchor="middle" font-size="11" fill="#b8bed0">adapters only — substitutable</text>
+
+  <!-- Inward dependency arrows: wiring -> core -->
+  <g>
+    <line x1="300" y1="188" x2="372" y2="188" stroke="#e0af68" stroke-width="3" marker-end="url(#arrowIn)"/>
+    <line x1="300" y1="226" x2="372" y2="226" stroke="#e0af68" stroke-width="3" marker-end="url(#arrowIn)"/>
+  </g>
+
+  <!-- PURE CORE box (right, prominent) -->
+  <rect x="380" y="104" width="404" height="206" rx="14" fill="#1e1e2e" stroke="#9ece6a" stroke-width="3"/>
+  <rect x="380" y="104" width="404" height="40" rx="14" fill="#9ece6a"/>
+  <rect x="380" y="124" width="404" height="20" fill="#9ece6a"/>
+  <text x="582" y="131" text-anchor="middle" font-size="17" font-weight="bold" fill="#15301a">THE PURE CORE</text>
+
+  <text x="582" y="172" text-anchor="middle" font-size="13" fill="#9ece6a">the decidable logic that must be correct</text>
+
+  <!-- core constraint chips -->
+  <g font-size="13" fill="#e6e9f0">
+    <rect x="402" y="188" width="172" height="32" rx="6" fill="#2a2a3c" stroke="#9ece6a" stroke-width="1.4"/>
+    <text x="488" y="209" text-anchor="middle">no I/O</text>
+    <rect x="590" y="188" width="172" height="32" rx="6" fill="#2a2a3c" stroke="#9ece6a" stroke-width="1.4"/>
+    <text x="676" y="209" text-anchor="middle">no UI</text>
+    <rect x="402" y="228" width="172" height="32" rx="6" fill="#2a2a3c" stroke="#9ece6a" stroke-width="1.4"/>
+    <text x="488" y="249" text-anchor="middle">no platform</text>
+    <rect x="590" y="228" width="172" height="32" rx="6" fill="#2a2a3c" stroke="#9ece6a" stroke-width="1.4"/>
+    <text x="676" y="249" text-anchor="middle">no panics</text>
+  </g>
+  <text x="582" y="286" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#9ece6a">◎ coordinates placed here · depends on nothing</text>
+
+  <!-- ================= PARALLEL: second disjoint unit ================= -->
+  <!-- mini unit -->
+  <g>
+    <rect x="36" y="364" width="150" height="58" rx="8" fill="#2a2a3c" stroke="#7aa2f7" stroke-width="1.4" stroke-dasharray="5 4"/>
+    <text x="111" y="388" text-anchor="middle" font-size="12" fill="#7aa2f7">wiring</text>
+    <text x="111" y="406" text-anchor="middle" font-size="10.5" fill="#b8bed0">adapters</text>
+
+    <line x1="188" y1="393" x2="232" y2="393" stroke="#e0af68" stroke-width="2.5" marker-end="url(#arrowIn)"/>
+
+    <rect x="240" y="364" width="130" height="58" rx="8" fill="#1e1e2e" stroke="#9ece6a" stroke-width="2"/>
+    <text x="305" y="389" text-anchor="middle" font-size="12" font-weight="bold" fill="#9ece6a">core ②</text>
+    <text x="305" y="407" text-anchor="middle" font-size="10.5" fill="#b8bed0">disjoint</text>
+  </g>
+
+  <!-- payoff chain -->
+  <g transform="translate(414,364)" font-size="13">
+    <rect x="0" y="0" width="370" height="58" rx="8" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.2"/>
+    <text x="185" y="25" text-anchor="middle" font-weight="bold" fill="#e6e9f0">pure ⇒ testable ⇒ coordinate-able</text>
+    <text x="185" y="45" text-anchor="middle" fill="#9ece6a">⇒ maximally parallel</text>
+  </g>
+
+  <!-- aliases footer -->
+  <text x="36" y="452" font-size="11" fill="#9aa2c0">aliases: the decidable core · the sacred core · one-way dependency</text>
+</svg>

@@ -1,0 +1,113 @@
+<svg viewBox="0 0 860 620" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans">
+  <title>PRESSROOM publishing pipeline — top-down branching tree</title>
+  <desc>/publish drives prose (writer), then figures (diagram-studio / mermaid-specialist), then render. Render branches downward into three outputs: markdown plus SVG, PDF via rich-pdf-with-diagrams, and diagrams only. The adversarial design-reviewer gate wraps the render-to-output stage in a convergence loop: critique typography and data-viz, apply HIGH and MED, re-build until the artefact clears the 4x9 rubric.</desc>
+
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#9aa2c0"/>
+    </marker>
+    <marker id="arV" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#bb9af7"/>
+    </marker>
+  </defs>
+
+  <!-- ===================== SPINE: top-down stages ===================== -->
+
+  <!-- /publish (root) -->
+  <g>
+    <rect x="335" y="24" width="190" height="48" rx="10" fill="#2a2a3c" stroke="#7aa2f7" stroke-width="2"/>
+    <text x="430" y="46" text-anchor="middle" font-size="19" font-weight="bold" fill="#e6e9f0" font-family="DejaVu Sans Mono">/publish</text>
+    <text x="430" y="64" text-anchor="middle" font-size="11" fill="#b8bed0">drives the pipeline</text>
+  </g>
+
+  <!-- connector publish -> writer -->
+  <line x1="430" y1="72" x2="430" y2="100" stroke="#9aa2c0" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- writer (prose) -->
+  <g>
+    <rect x="320" y="100" width="220" height="50" rx="9" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.5"/>
+    <text x="430" y="122" text-anchor="middle" font-size="16" font-weight="bold" fill="#e6e9f0" font-family="DejaVu Sans Mono">writer</text>
+    <text x="430" y="140" text-anchor="middle" font-size="11.5" fill="#b8bed0">prose · the words</text>
+  </g>
+
+  <line x1="430" y1="150" x2="430" y2="178" stroke="#9aa2c0" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- figures -->
+  <g>
+    <rect x="290" y="178" width="280" height="56" rx="9" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.5"/>
+    <text x="430" y="200" text-anchor="middle" font-size="13" font-weight="bold" fill="#e6e9f0" font-family="DejaVu Sans Mono">diagram-studio / mermaid-specialist</text>
+    <text x="430" y="221" text-anchor="middle" font-size="11.5" fill="#b8bed0">figures · the diagrams</text>
+  </g>
+
+  <line x1="430" y1="234" x2="430" y2="262" stroke="#9aa2c0" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- ===================== REVIEWER GATE container wraps render->outputs ===================== -->
+  <g>
+    <rect x="40" y="262" width="780" height="318" rx="14" fill="none" stroke="#bb9af7" stroke-width="1.6" stroke-dasharray="7 5"/>
+    <rect x="60" y="252" width="232" height="22" rx="6" fill="#2a2a3c" stroke="#bb9af7" stroke-width="1.2"/>
+    <text x="74" y="267" font-size="12" font-weight="bold" fill="#bb9af7">design-reviewer · adversarial gate</text>
+  </g>
+
+  <!-- render node -->
+  <g>
+    <rect x="335" y="288" width="190" height="48" rx="9" fill="#2a2a3c" stroke="#7aa2f7" stroke-width="2"/>
+    <text x="430" y="310" text-anchor="middle" font-size="16" font-weight="bold" fill="#e6e9f0" font-family="DejaVu Sans Mono">render</text>
+    <text x="430" y="328" text-anchor="middle" font-size="11" fill="#b8bed0">branches into 3 outputs</text>
+  </g>
+
+  <!-- branching connectors render -> three output leaves -->
+  <!-- bus line -->
+  <path d="M430 336 L430 360" stroke="#9aa2c0" stroke-width="2" fill="none"/>
+  <path d="M165 360 L695 360" stroke="#9aa2c0" stroke-width="2" fill="none"/>
+  <path d="M165 360 L165 392" stroke="#9aa2c0" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M430 360 L430 392" stroke="#9aa2c0" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <path d="M695 360 L695 392" stroke="#9aa2c0" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+
+  <!-- leaf a: markdown + SVG -->
+  <g>
+    <rect x="70" y="392" width="190" height="58" rx="9" fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.6"/>
+    <text x="165" y="414" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#e6e9f0">markdown</text>
+    <text x="165" y="434" text-anchor="middle" font-size="12" fill="#9ece6a">+ inline SVG</text>
+  </g>
+
+  <!-- leaf b: PDF -->
+  <g>
+    <rect x="335" y="392" width="190" height="58" rx="9" fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.6"/>
+    <text x="430" y="412" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#e6e9f0">PDF</text>
+    <text x="430" y="431" text-anchor="middle" font-size="10.5" fill="#9ece6a">rich-pdf-with-diagrams</text>
+    <text x="430" y="445" text-anchor="middle" font-size="10.5" fill="#b8bed0">typeset document</text>
+  </g>
+
+  <!-- leaf c: diagrams only -->
+  <g>
+    <rect x="600" y="392" width="190" height="58" rx="9" fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.6"/>
+    <text x="695" y="414" text-anchor="middle" font-size="14.5" font-weight="bold" fill="#e6e9f0">diagrams</text>
+    <text x="695" y="434" text-anchor="middle" font-size="12" fill="#9ece6a">figures only</text>
+  </g>
+
+  <!-- ===================== convergence loop ===================== -->
+  <!-- outputs feed up into critique -->
+  <path d="M165 450 L165 492" stroke="#bb9af7" stroke-width="2" fill="none"/>
+  <path d="M430 450 L430 492" stroke="#bb9af7" stroke-width="2" fill="none"/>
+  <path d="M695 450 L695 492" stroke="#bb9af7" stroke-width="2" fill="none"/>
+  <path d="M165 492 L695 492" stroke="#bb9af7" stroke-width="2" fill="none"/>
+
+  <!-- critique bar -->
+  <g>
+    <rect x="250" y="492" width="360" height="44" rx="9" fill="#2a2a3c" stroke="#bb9af7" stroke-width="1.8"/>
+    <text x="430" y="510" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#e6e9f0">critique — typography + data-viz</text>
+    <text x="430" y="527" text-anchor="middle" font-size="11.5" fill="#bb9af7">apply HIGH + MED · re-build</text>
+  </g>
+
+  <!-- re-build arrow back up to render (left return path) -->
+  <path d="M250 514 L120 514 L120 312 L335 312" stroke="#bb9af7" stroke-width="2" fill="none" marker-end="url(#arV)"/>
+  <text x="111" y="442" font-size="11" font-weight="bold" fill="#bb9af7" letter-spacing="0.5" transform="rotate(-90 111 442)">re-build until it converges</text>
+
+  <!-- converge / clears rubric (exit down) -->
+  <path d="M610 514 L740 514 L740 558" stroke="#9ece6a" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+  <g>
+    <rect x="615" y="558" width="190" height="40" rx="9" fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.8"/>
+    <text x="710" y="575" text-anchor="middle" font-size="12.5" font-weight="bold" fill="#9ece6a">clears the 4×9 rubric</text>
+    <text x="710" y="590" text-anchor="middle" font-size="10.5" fill="#b8bed0">no ping-pong · converged</text>
+  </g>
+</svg>

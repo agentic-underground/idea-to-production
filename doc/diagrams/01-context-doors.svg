@@ -1,0 +1,172 @@
+<svg viewBox="0 0 860 580" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans, sans-serif">
+  <title>Four doors text reaches a Claude Code agent through</title>
+  <desc>Four labelled door panels — memory files, SessionStart hooks, UserPromptSubmit hooks, and skills — each drawn as a door with a coloured L-frame jamb (left edge + top lintel), a handle ring on the strike side, and a transom line under its header band. Each door is profiled on three axes: when it loads, its token cost, and its reliability. Colour grades cost: memory and SessionStart are one-time cached (green), UserPromptSubmit re-bills every turn (red), skills load on demand (blue). Footer: match the door to the document, keep always-on content small and stable so the cache turns "always present" into "paid once".</desc>
+
+  <!-- ============ TITLE (dark backing plate so light text reads on white ground too) ============ -->
+  <rect x="18" y="10" width="824" height="56" rx="8" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.5"/>
+  <text x="430" y="36" text-anchor="middle" font-size="21" font-weight="bold" fill="#e6e9f0">The four doors into an agent's context</text>
+  <text x="430" y="56" text-anchor="middle" font-size="13" fill="#b8bed0">each differs in WHEN it loads &#183; its TOKEN COST &#183; its RELIABILITY &#8212; match the door to the document</text>
+
+  <!--
+    Door panel template (drawn 4x via translate).
+    Panel: 188 wide. Doors start at x=18, gap 24 -> 18,230,442,654.
+    Door frame top y=82. DOOR SIGNIFIERS: coloured L-frame (left jamb 7px + top lintel 7px),
+    transom line under the 64px header band, a handle RING on the strike (right) side
+    at handle height (y=240). Then three axis rows on a shared y-rhythm.
+    accentN sets the cost-grade colour for the L-frame + cost row.
+    Shared RELIABILITY y-rhythm: 17 / 33 / 51 (sub-label) — identical across all four doors.
+  -->
+
+  <!-- ====== DOOR 1: Memory files — one-time cached (green accent-2) ====== -->
+  <g transform="translate(18,82)">
+    <!-- door slab -->
+    <rect x="0" y="0" width="188" height="372" rx="8" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.5"/>
+    <!-- header band -->
+    <rect x="0" y="0" width="188" height="64" rx="8" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="40" width="188" height="24" fill="#2a2a3c"/>
+    <!-- transom line under header band -->
+    <line x1="10" y1="69" x2="178" y2="69" stroke="#9aa2c0" stroke-width="0.75" opacity="0.55"/>
+    <line x1="0" y1="64" x2="188" y2="64" stroke="#9aa2c0" stroke-width="1.5"/>
+    <!-- colour-graded L-frame: left jamb + top lintel -->
+    <rect x="0" y="0" width="7" height="372" rx="3" fill="#9ece6a"/>
+    <rect x="0" y="0" width="188" height="7" rx="3" fill="#9ece6a"/>
+    <!-- handle ring on the strike (right) side at handle height -->
+    <circle cx="172" cy="240" r="5" fill="none" stroke="#9aa2c0" stroke-width="2"/>
+    <!-- door number badge -->
+    <circle cx="26" cy="32" r="13" fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.5"/>
+    <text x="26" y="37" text-anchor="middle" font-size="14" font-weight="bold" fill="#9ece6a">1</text>
+    <!-- header label -->
+    <text x="48" y="28" font-size="14" font-weight="bold" fill="#e6e9f0">Memory files</text>
+    <text x="48" y="46" font-size="10.5" fill="#b8bed0">CLAUDE.md + @imports</text>
+
+    <!-- axis rows -->
+    <g transform="translate(16,90)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9aa2c0" letter-spacing="1">WHEN</text>
+      <text x="0" y="17" font-size="11.5" fill="#e6e9f0">Session start</text>
+    </g>
+    <line x1="16" y1="182" x2="172" y2="182" stroke="#2a2a3c" stroke-width="1"/>
+    <g transform="translate(16,196)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9ece6a" letter-spacing="1">COST</text>
+      <text x="0" y="17" font-size="11.5" font-weight="bold" fill="#9ece6a">One-time</text>
+      <text x="0" y="33" font-size="10.5" fill="#b8bed0">cached prefix</text>
+    </g>
+    <line x1="16" y1="266" x2="172" y2="266" stroke="#2a2a3c" stroke-width="1"/>
+    <g transform="translate(16,280)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9aa2c0" letter-spacing="1">RELIABILITY</text>
+      <text x="0" y="17" font-size="11.5" fill="#e6e9f0">Always &#8212; but only</text>
+      <text x="0" y="33" font-size="11.5" fill="#e6e9f0">in repo/machine scope</text>
+      <text x="0" y="51" font-size="10.5" fill="#c5cadb">(plugins can't auto-load)</text>
+    </g>
+  </g>
+
+  <!-- ====== DOOR 2: SessionStart hooks — one-time cached (green accent-2) ====== -->
+  <g transform="translate(230,82)">
+    <rect x="0" y="0" width="188" height="372" rx="8" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="0" width="188" height="64" rx="8" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="40" width="188" height="24" fill="#2a2a3c"/>
+    <line x1="10" y1="69" x2="178" y2="69" stroke="#9aa2c0" stroke-width="0.75" opacity="0.55"/>
+    <line x1="0" y1="64" x2="188" y2="64" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="0" width="7" height="372" rx="3" fill="#9ece6a"/>
+    <rect x="0" y="0" width="188" height="7" rx="3" fill="#9ece6a"/>
+    <circle cx="172" cy="240" r="5" fill="none" stroke="#9aa2c0" stroke-width="2"/>
+    <circle cx="26" cy="32" r="13" fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.5"/>
+    <text x="26" y="37" text-anchor="middle" font-size="14" font-weight="bold" fill="#9ece6a">2</text>
+    <text x="48" y="28" font-size="14" font-weight="bold" fill="#e6e9f0">SessionStart</text>
+    <text x="48" y="46" font-size="10.5" fill="#b8bed0">additionalContext hook</text>
+
+    <g transform="translate(16,90)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9aa2c0" letter-spacing="1">WHEN</text>
+      <text x="0" y="17" font-size="11.5" fill="#e6e9f0">Session start</text>
+      <text x="0" y="33" font-size="10.5" fill="#b8bed0">+ resume/clear/compact</text>
+    </g>
+    <line x1="16" y1="182" x2="172" y2="182" stroke="#2a2a3c" stroke-width="1"/>
+    <g transform="translate(16,196)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9ece6a" letter-spacing="1">COST</text>
+      <text x="0" y="17" font-size="11.5" font-weight="bold" fill="#9ece6a">One-time</text>
+      <text x="0" y="33" font-size="10.5" fill="#b8bed0">per event, cached</text>
+    </g>
+    <line x1="16" y1="266" x2="172" y2="266" stroke="#2a2a3c" stroke-width="1"/>
+    <g transform="translate(16,280)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9aa2c0" letter-spacing="1">RELIABILITY</text>
+      <text x="0" y="17" font-size="11.5" fill="#e6e9f0">Deterministic when</text>
+      <text x="0" y="33" font-size="11.5" fill="#e6e9f0">plugin is enabled</text>
+      <text x="0" y="51" font-size="10.5" font-weight="bold" fill="#9ece6a">the always-on door</text>
+    </g>
+  </g>
+
+  <!-- ====== DOOR 3: UserPromptSubmit — per-turn, cache-busting (red accent-4) ====== -->
+  <g transform="translate(442,82)">
+    <rect x="0" y="0" width="188" height="372" rx="8" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="0" width="188" height="64" rx="8" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="40" width="188" height="24" fill="#2a2a3c"/>
+    <line x1="10" y1="69" x2="178" y2="69" stroke="#9aa2c0" stroke-width="0.75" opacity="0.55"/>
+    <line x1="0" y1="64" x2="188" y2="64" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="0" width="7" height="372" rx="3" fill="#f7768e"/>
+    <rect x="0" y="0" width="188" height="7" rx="3" fill="#f7768e"/>
+    <circle cx="172" cy="240" r="5" fill="none" stroke="#9aa2c0" stroke-width="2"/>
+    <circle cx="26" cy="32" r="13" fill="#1e1e2e" stroke="#f7768e" stroke-width="1.5"/>
+    <text x="26" y="37" text-anchor="middle" font-size="14" font-weight="bold" fill="#f7768e">3</text>
+    <text x="48" y="28" font-size="14" font-weight="bold" fill="#e6e9f0">UserPrompt</text>
+    <text x="48" y="46" font-size="10.5" fill="#b8bed0">Submit hook</text>
+
+    <g transform="translate(16,90)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9aa2c0" letter-spacing="1">WHEN</text>
+      <text x="0" y="17" font-size="11.5" font-weight="bold" fill="#e0af68">Every prompt</text>
+    </g>
+    <line x1="16" y1="182" x2="172" y2="182" stroke="#2a2a3c" stroke-width="1"/>
+    <g transform="translate(16,196)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#f7768e" letter-spacing="1">COST</text>
+      <text x="0" y="17" font-size="11.5" font-weight="bold" fill="#f7768e">Re-billed</text>
+      <text x="0" y="33" font-size="11.5" fill="#f7768e">each turn</text>
+      <text x="0" y="49" font-size="10.5" fill="#f7768e">busts the cache</text>
+    </g>
+    <line x1="16" y1="266" x2="172" y2="266" stroke="#2a2a3c" stroke-width="1"/>
+    <g transform="translate(16,280)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9aa2c0" letter-spacing="1">RELIABILITY</text>
+      <text x="0" y="17" font-size="11.5" fill="#e6e9f0">Per-turn &#8212; right for</text>
+      <text x="0" y="33" font-size="11.5" fill="#e6e9f0">DYNAMIC state,</text>
+      <text x="0" y="51" font-size="10.5" fill="#c5cadb">wrong for static canon</text>
+    </g>
+  </g>
+
+  <!-- ====== DOOR 4: Skills — on-demand (blue accent-1) ====== -->
+  <g transform="translate(654,82)">
+    <rect x="0" y="0" width="188" height="372" rx="8" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="0" width="188" height="64" rx="8" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="40" width="188" height="24" fill="#2a2a3c"/>
+    <line x1="10" y1="69" x2="178" y2="69" stroke="#9aa2c0" stroke-width="0.75" opacity="0.55"/>
+    <line x1="0" y1="64" x2="188" y2="64" stroke="#9aa2c0" stroke-width="1.5"/>
+    <rect x="0" y="0" width="7" height="372" rx="3" fill="#7aa2f7"/>
+    <rect x="0" y="0" width="188" height="7" rx="3" fill="#7aa2f7"/>
+    <circle cx="172" cy="240" r="5" fill="none" stroke="#9aa2c0" stroke-width="2"/>
+    <circle cx="26" cy="32" r="13" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="1.5"/>
+    <text x="26" y="37" text-anchor="middle" font-size="14" font-weight="bold" fill="#7aa2f7">4</text>
+    <text x="48" y="28" font-size="14" font-weight="bold" fill="#e6e9f0">Skills</text>
+    <text x="48" y="46" font-size="10.5" fill="#b8bed0">invoked on demand</text>
+
+    <g transform="translate(16,90)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9aa2c0" letter-spacing="1">WHEN</text>
+      <text x="0" y="17" font-size="11.5" fill="#e6e9f0">Frontmatter: always</text>
+      <text x="0" y="33" font-size="11.5" fill="#7aa2f7">Body: only if invoked</text>
+    </g>
+    <line x1="16" y1="182" x2="172" y2="182" stroke="#2a2a3c" stroke-width="1"/>
+    <g transform="translate(16,196)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#7aa2f7" letter-spacing="1">COST</text>
+      <text x="0" y="17" font-size="11.5" font-weight="bold" fill="#7aa2f7">On-demand</text>
+      <text x="0" y="33" font-size="10.5" fill="#b8bed0">frontmatter is cheap</text>
+    </g>
+    <line x1="16" y1="266" x2="172" y2="266" stroke="#2a2a3c" stroke-width="1"/>
+    <g transform="translate(16,280)">
+      <text x="0" y="0" font-size="9.5" font-weight="bold" fill="#9aa2c0" letter-spacing="1">RELIABILITY</text>
+      <text x="0" y="17" font-size="11.5" fill="#e6e9f0">Only when relevant</text>
+      <text x="0" y="33" font-size="11.5" fill="#e6e9f0">to the task</text>
+      <text x="0" y="51" font-size="10.5" fill="#c5cadb">for large, situational</text>
+    </g>
+  </g>
+
+  <!-- ============ FOOTER THESIS ============ -->
+  <rect x="18" y="478" width="824" height="78" rx="8" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="1.5"/>
+  <text x="430" y="508" text-anchor="middle" font-size="14" font-weight="bold" fill="#e6e9f0">Match the door to the document.</text>
+  <text x="430" y="531" text-anchor="middle" font-size="12.5" fill="#b8bed0">Keep always-on content small &amp; stable &#8212; and the cache turns</text>
+  <text x="430" y="549" text-anchor="middle" font-size="12.5" fill="#b8bed0">&#8220;always present&#8221; into <tspan fill="#9ece6a" font-weight="bold">&#8220;paid once&#8221;</tspan>.</text>
+</svg>
