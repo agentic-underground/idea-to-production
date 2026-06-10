@@ -98,14 +98,15 @@ Full mined graph + the taste read: `doc/image-craft-study/rig-inventory/maintain
 
 ## Allowlisted-template tie-in
 
-These recipes map onto the `comfyui-mcp/workflows/` template set the handler fills (it sets params into a
-**known** template, never a caller-supplied graph):
+These recipes map onto the in-plugin `knowledge/comfyui-workflows/` template set the handler fills (it sets
+params into a **known** template, never a caller-supplied graph):
 
 | Template | Stages it wires | Recipes |
 |---|---|---|
 | `txt2img-hires-fix` | base → `LatentUpscaleBy` → 2nd KSampler (+ optional upscale-model) | A, C, F |
 | `lora-detail` | `LoraLoader` chain → base → hires → FaceDetailer | B, D, E |
 | `upscale` | `UpscaleModelLoader` → `ImageUpscaleWithModel` → `ImageScale` | finish pass for A/C/F |
+| `tricomposite` | 3 region `KSampler`s → 2 feathered `LatentComposite` → unify `KSampler` @ denoise ~0.5 | vertical world-axis / multi-register scenes |
 
 The handler chooses the template from the decision tree above, fills `ckpt_name`, prompts, LoRA names/weights,
 and bounded steps/denoise per the recipe, then submits. Until that MCP template set ships, the handler uses an

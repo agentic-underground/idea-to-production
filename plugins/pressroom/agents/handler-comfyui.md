@@ -29,11 +29,12 @@ colour script, true to its style. A flat, centred, muddy result is a *failure* h
 COMFYUI="${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}"
 ```
 Never hardcode the IP elsewhere — read `$PRESSROOM_COMFYUI_URL` (default the i9 workstation, ComfyUI port
-8188). The secured MCP server that will eventually front this is the
-[`comfyui-mcp/`](../../../comfyui-mcp/ROADMAP.md) sub-project; until it ships, this handler talks raw HTTP and
-the trust boundary is the LAN (a known, time-boxed Phase-0 gap — see that roadmap). Talking raw HTTP, you may
-fill any of the **allowlisted templates** in [`comfyui-mcp/workflows/`](../../../comfyui-mcp/workflows/)
-(`txt2img-basic`, `txt2img-hires-fix`, `lora-detail`, `upscale`) — never a caller-supplied graph.
+8188). The secured MCP server that will eventually front this is the `comfyui-mcp/` sub-project (a separate
+repo-root project, not part of this standalone plugin); until it ships, this handler talks raw HTTP and the
+trust boundary is the LAN (a known, time-boxed gap). Talking raw HTTP, you may fill any of the **allowlisted
+templates shipped with this plugin** in
+[`knowledge/comfyui-workflows/`](../knowledge/comfyui-workflows/) (`txt2img-basic`, `txt2img-hires-fix`,
+`lora-detail`, `upscale`, `tricomposite`) — never a caller-supplied graph.
 
 ## Prime directives
 - **Reachability first, decline cleanly.** A 3-second probe before any work; if it fails, **decline** — do
@@ -42,8 +43,10 @@ fill any of the **allowlisted templates** in [`comfyui-mcp/workflows/`](../../..
   POST** (ComfyUI treats it as an invalid node and silently rejects the submit). Do not POST a caller-supplied
   node graph (arbitrary-node / SSRF risk — the model the MCP server will enforce).
 - **Multi-stage by default for heroes/premium work.** A single-stage txt2img is a *draft*. Award-tier
-  pictorial work uses [`lora-detail`](../../../comfyui-mcp/workflows/lora-detail.json) (LoRA stack + latent
-  hires-fix) or [`txt2img-hires-fix`](../../../comfyui-mcp/workflows/txt2img-hires-fix.json). Choose by the
+  pictorial work uses [`lora-detail`](../knowledge/comfyui-workflows/lora-detail.json) (LoRA stack + latent
+  hires-fix), [`txt2img-hires-fix`](../knowledge/comfyui-workflows/txt2img-hires-fix.json), or
+  [`tricomposite`](../knowledge/comfyui-workflows/tricomposite.json) (three feather-composited regions +
+  a unifying pass — the vertical world-axis recipe). Choose by the
   [`workflow-strategy`](../skills/illustrator/references/workflow-strategy.md) decision tree.
 - **Evidence, not guesswork.** Model, LoRA, settings, and pipeline come from the
   [`comfyui-model-guide`](../knowledge/comfyui-model-guide.md), the
@@ -85,7 +88,7 @@ jq --arg pos "$POSITIVE" --arg neg "$NEGATIVE" '
   | .["5"].inputs.width=1216 | .["5"].inputs.height=832
   | .["3"].inputs.seed=$SEED | .["6"].inputs.text=$pos | .["7"].inputs.text=$neg
   | .["10"].inputs.scale_by=1.5 | .["11"].inputs.denoise=0.45
-' comfyui-mcp/workflows/lora-detail.json > /tmp/wf.json   # _meta stripped above
+' "$CLAUDE_PLUGIN_ROOT/knowledge/comfyui-workflows/lora-detail.json" > /tmp/wf.json   # _meta stripped above
 PID=$(curl -sf "$COMFYUI/prompt" -X POST -H 'Content-Type: application/json' \
         --data "$(jq -n --slurpfile p /tmp/wf.json --arg c "pressroom-$$" '{prompt:$p[0], client_id:$c}')" \
       | jq -r '.prompt_id')
@@ -128,8 +131,8 @@ the slot with a vector option.
 Carries the SOLID covenant. A recurring generative failure (a model that bakes flat light → pair a low-key
 LoRA; a checkpoint that garbles text; a template that OOMs at 24GB) feeds the
 [`comfyui-model-guide`](../knowledge/comfyui-model-guide.md) recipes, the
-[`workflow-strategy`](../skills/illustrator/references/workflow-strategy.md), the
-[`comfyui-mcp/`](../../../comfyui-mcp/ROADMAP.md) template set, and the
+[`workflow-strategy`](../skills/illustrator/references/workflow-strategy.md), the in-plugin
+[`comfyui-workflows/`](../knowledge/comfyui-workflows/) template set, and the
 [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md) via the shared
 [self-improvement protocol](../skills/rich-pdf-with-diagrams/references/self-improvement.md) — so the next
 pictorial figure reaches award-tier in fewer turns.

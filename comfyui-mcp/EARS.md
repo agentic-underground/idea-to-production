@@ -6,15 +6,24 @@ Every requirement is a test coordinate; the sum of the green tests is the server
 
 ## Glossary
 - **Allowlisted template** — a workflow JSON in `workflows/`, the only graph the server will ever submit. The
-  set is `txt2img-basic`, `txt2img-hires-fix`, `lora-detail`, `upscale` (each a *fixed* graph with a bounded
-  `_meta.fillable` schema; the multi-stage ones add latent hires-fix, a 2-slot LoRA stack, and a model-based
-  upscale pass respectively). No `refiner` template ships (on the rig `sd_xl_base_1.0` fails to load).
+  set is `txt2img-basic`, `txt2img-hires-fix`, `lora-detail`, `upscale`, `tricomposite` (each a *fixed* graph
+  with a bounded `_meta.fillable` schema; the multi-stage ones add latent hires-fix, a 2-slot LoRA stack, a
+  model-based upscale pass, and three feather-composited regions + a unify pass respectively). The live copies
+  ship **inside the PRESSROOM plugin** at `plugins/pressroom/knowledge/comfyui-workflows/` (so the handler
+  resolves them under its own `${CLAUDE_PLUGIN_ROOT}`); this project keeps a synced mirror for the future
+  server. `SDXL/sd_xl_base_1.0` **does** load and the base+refiner flow works — an earlier "fails to load"
+  note was wrong; a refiner template may be added later.
 - **Model allowlist** — checkpoint files present in the bind-mounted `DIFFUSION_MODELS`. **LoRA allowlist** and
   **upscale-model allowlist** are the analogous sets for `lora_name` (the `lora-detail` template) and
   `model_name` (the `upscale` template).
 - **Fillable schema** — per-template, the exact set of fillable paths + their bounds, from the template's
   `_meta.fillable`. The server fills ONLY these; `_meta` is stripped before POST.
 - **Caller** — an authenticated MCP client (PRESSROOM's `handler-comfyui`).
+- **Out of scope — local raster post-processing.** Compositing, SVG↔raster blends, and animation are done
+  **locally** by PRESSROOM's `handler-composite` against its own bounded, parameter-only recipe library
+  ([`raster-toolchain.md`](../plugins/pressroom/knowledge/raster-toolchain.md) — `int()`-validated, no shell
+  injection), NOT through this submit-only ComfyUI server. The two share the same allowlist *philosophy*
+  (fixed recipe, type-checked slots) but are independent surfaces.
 
 ## Ubiquitous (always true)
 - U1. The server SHALL expose exactly five MCP tools: `list_models`, `set_model`, `list_templates`,
@@ -33,7 +42,7 @@ Every requirement is a test coordinate; the sum of the green tests is the server
   template, submit it to ComfyUI, and return a `job_id`.
 - E4. WHEN `get_result` is called with a `job_id` owned by the caller, the server SHALL return status, and on
   completion the PNG bytes fetched via a path-confined `/view`.
-- E5. WHEN `submit_prompt` names a multi-stage template (`txt2img-hires-fix`, `lora-detail`, `upscale`), the
+- E5. WHEN `submit_prompt` names a multi-stage template (`txt2img-hires-fix`, `lora-detail`, `upscale`, `tricomposite`), the
   server SHALL validate every param against THAT template's `_meta.fillable` schema (its own bounds) before
   filling, and SHALL fill only the schema's paths.
 
