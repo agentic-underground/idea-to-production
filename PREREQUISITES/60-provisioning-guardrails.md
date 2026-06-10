@@ -192,6 +192,30 @@ written *after* the mistake.
 
 ---
 
+## 9. A fresh bridged VM can be live-but-invisible — the apt-proxy placeholder cascade
+
+> **GUARDRAIL:** The apt-proxy address baked into a bridged VM's cloud-init must be a REAL
+> address reachable from that VM's segment — never a sanitized/doc-range placeholder.
+
+- **Symptom:** a freshly built **bridged** VM boots (serial shows a `login:` prompt, hostname
+  set) but is **undiscoverable** — the builder can't find its IP and `<name>.local` won't
+  resolve; provisioning reports `UNREACHABLE`.
+- **Cause:** the cloud-init `Acquire::http::Proxy` was a non-routable placeholder (e.g. a
+  doc-range IP left by an IP-sanitization pass). apt can't reach the cache, so cloud-init's
+  package install of **`qemu-guest-agent` + `avahi-daemon` fails** → no agent for IP discovery,
+  no mDNS for `.local`. The VM held a LAN lease the whole time; nothing could see it.
+- **Fix:** pass the real, same-segment proxy address (`-e vm_lan_proxy_host=<ip>` / a gitignored
+  overlay), and keep real values out of committed defaults (12-Factor Config). Discover a bridged
+  guest's IP with `virsh domifaddr --source agent` (or `--source arp`) — `--source lease` only
+  works on a libvirt **NAT** network.
+
+> **ANTI-PATTERN (DO NOT):** treat "boots to a login prompt" as "provisioned". A booted VM with
+> no working apt is invisible and unconfigured. Full diagnostic toolkit (offline libguestfs reads,
+> serial pty, tcpdump DHCP, guest-agent queries) lives in the VM-debugging field package; the
+> token side of "authenticate external calls" lives in the resilient-external-apis protocol.
+
+---
+
 ## Related
 
 - [README — provisioning handoff contract](README.md) ·
