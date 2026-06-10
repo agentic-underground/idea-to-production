@@ -64,10 +64,18 @@ modest `bbox_dilation`, feather edges. High-end two-pass: pass 1 (structure) **b
 **FreeU V2** — insert between checkpoint and sampler; SDXL **b1 1.3 / b2 1.4 / s1 0.9 / s2 0.2**. Stylized /
 anime / painterly only — it over-contrasts realistic photo models.
 
-> **Refiner (`KSamplerAdvanced` pair) is deprioritised on this rig.** The canonical
-> `sdxl_sdxl_refiner_prompt_example` runs base `start 0→20` then refiner `start 20→∞`, but our
-> `SDXL/sd_xl_base_1.0` won't load and the fine-tunes already bake refiner-grade detail. **Skip it**; spend
-> the budget on latent-hires + FaceDetailer.
+> **SDXL base + refiner WORKS here (maintainer-preferred).** `SDXL/sd_xl_base_1.0` is the maintainer's primary
+> base; the canonical `KSamplerAdvanced` step-split (base `0→N`, refiner `N→∞`) with proper SDXL dual
+> conditioning is a first-class flow. A latent-hires pass is an equally fine, simpler alternative when a
+> fine-tune already bakes the detail. (This corrects an earlier "won't load / dead" note.)
+>
+> **Maintainer-proven premium flow — REIMAGINE + UltimateSDUpscale (the 42-node `IRU` graph).** Base
+> `sd_xl_base_1.0` with **unCLIP image-prompting** (`CLIPVisionLoader: clip_vision_g.safetensors` →
+> `CLIPVisionEncode` → `unCLIPConditioning`) so a reference image's *look* steers the result; **high steps
+> (50–60), low CFG (3.5–4.5), `dpmpp_3m_sde_gpu`/`dpmpp_sde_gpu` · karras**; finished with **UltimateSDUpscale**
+> (`SwinIR_4x`, tiled 1024, denoise 0.25). Resolution via `RecommendedResCalc` / `CM_NearestSDXLResolution`.
+> Full graph: `doc/image-craft-study/rig-inventory/iru-premium-workflow.json`; recipes:
+> `…/maintainer-recipes.md`.
 
 ## Cost / VRAM notes (RTX 3090 24 GB)
 

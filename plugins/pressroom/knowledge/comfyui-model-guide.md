@@ -14,8 +14,8 @@
 
 ## How to use it (the handler's decision)
 1. Read the SPEC's `intent` → map to an **intent class** below.
-2. Take the **top asset** for that class present in the live list (prefer confirmed-loadable names — see the
-   dead-path note). Set it into the template's `CheckpointLoaderSimple.ckpt_name` before submit.
+2. Take the **top asset** for that class present in the live list (copy the exact name verbatim, incl. any
+   `SDXL/` prefix). Set it into the template's `CheckpointLoaderSimple.ckpt_name` before submit.
 3. Use the class's **settings** (steps/cfg/sampler/res) and, where named, its **stage recipe** and **LoRAs**.
 4. If the class is flagged **"route to vector"**, do **not** use ComfyUI — tell the orchestrator to use a
    vector handler (`handler-chart`/`handler-graphviz`). This is canonical and durable; never route here.
@@ -73,10 +73,12 @@ the [image-aesthetic canon](../skills/design-reviewer/references/image-aesthetic
 ## Failure modes (per base / model)
 - **SD1.5 hands & eyes** — mushy/soft fingers at scale (the artifact gate). For people/portraits prefer **SDXL**
   photoreal; if SD1.5, **inspect hands** and run FaceDetailer before shipping.
-- **The dead refiner path** — `SDXL/sd_xl_base_1.0.safetensors` is **listed but fails to load** (subfolder
-  quirk). Its paired `SDXL/sd_xl_refiner_1.0` *does* load but has nothing to refine. → **Skip the refiner**;
-  the community fine-tunes (Juggernaut/NightVision/DynaVision) already bake refiner-grade detail. Spend the
-  saved budget on **latent-hires + FaceDetailer** instead.
+- **SDXL base + refiner — WORKS and is maintainer-preferred** (corrects an earlier wrong note).
+  `SDXL/sd_xl_base_1.0.safetensors` loads fine and is the maintainer's *primary* base (45× across the curated
+  favourites); `SDXL/sd_xl_refiner_1.0` is used with it. The proper SDXL dual-conditioning flow
+  (`CLIPTextEncodeSDXL` / `CLIPTextEncodeSDXLRefiner`, `KSamplerAdvanced` step-split) is a first-class
+  pipeline here. Community fine-tunes (Juggernaut/NightVision/DynaVision/oasis) also bake refiner-grade detail,
+  so a refiner is optional — but it is **not** "dead". See the maintainer-proven recipes below.
 - **Bright-ground landscapes/mascots** — these bake a bright sky/background that fights a dark page. Crop,
   subject-isolate, or dark-key-steer before embedding (see §dark-key + the
   [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md)).
@@ -95,7 +97,9 @@ the [image-aesthetic canon](../skills/design-reviewer/references/image-aesthetic
 | **LoRA stack** (`LoraLoader` chaining) | style/subject control | the base already nails the look — every LoRA narrows the model and can fight the prompt; ≥3 high-weight LoRAs go incoherent |
 | **FaceDetailer** (Impact-Pack) | sharp on-model faces — **mandatory for portraits** | landscapes / abstract / dark-key heroes (no faces) — it wastes time and can hallucinate a face |
 | **FreeU V2** (b1 1.3/b2 1.4/s1 0.9/s2 0.2) | composition depth + detail, free | realistic photo models — it **over-contrasts** them; use on stylized/anime/painterly only |
-| **~~Refiner~~** (`KSamplerAdvanced` pair) | micro-detail polish on the base-1.0 path | **always, on this rig** — base 1.0 won't load and fine-tunes bake refiner-grade detail. Deprioritised; spend the budget on hires + FaceDetailer |
+| **Refiner** (`KSamplerAdvanced` step-split, base→refiner) | micro-detail polish on the sd_xl_base_1.0 path — **maintainer-used** | when a fine-tune already bakes refiner-grade detail (Juggernaut/oasis) — then a latent-hires pass is simpler. Optional, not dead. |
+| **UltimateSDUpscale** (tiled, `SwinIR_4x`, denoise ~0.25) | **maintainer's preferred HD finish** — tiled re-detail to 4K+ without OOM | below ~2K output (a single latent-hires is simpler/cleaner) |
+| **unCLIP REIMAGINE** (`CLIPVisionLoader` g + `CLIPVisionEncode` + `unCLIPConditioning`) | steer a generation by a **reference image's look** — the maintainer's signature move | when there is no reference look to carry; a text prompt suffices |
 
 Full per-stage node wiring and the genre→pipeline decision tree:
 [workflow-strategy](../skills/illustrator/references/workflow-strategy.md). Prompt structure, negatives, and
@@ -111,12 +115,29 @@ the dark-key recipe: [prompt-craft](../skills/illustrator/references/prompt-craf
 - **Lightning is not just a draft engine** — `LIGHTNING/juggernautXL_v9Rdphoto2Lightning` tied best-overall at
   **6 steps**; default fast lane *and* a credible final for mascot/office.
 - **Bright grounds fight dark docs** — crop or cut out before embedding on a dark page.
-- **The refiner path is effectively dead here** — base 1.0 won't load; skip the refiner, lean on latent-hires
-  + FaceDetailer.
+- **SDXL base+refiner works** — `sd_xl_base_1.0` is the maintainer's primary base; use the refiner or a
+  latent-hires pass for the detail finish (both are fine).
+
+## Maintainer-proven recipes (mined from the curated favourites — these supersede the defaults)
+
+The marketplace's *measured-on-this-rig* preferences (see `doc/image-craft-study/rig-inventory/maintainer-recipes.md`):
+- **Samplers/scheduler:** `dpmpp_sde_gpu` and `dpmpp_3m_sde_gpu` on **karras** (the SDE-GPU family) — not
+  `dpmpp_2m`. Upscale passes use `euler` / `normal`.
+- **CFG is LOW for SDXL: 3.5–4.5** (naturalism), with **high steps** (50–60 for a hero base pass, ~31 for
+  refine passes) — not cfg 6–7.
+- **HD finish:** `UltimateSDUpscale` with the **`SwinIR_4x`** model, tiled 1024, denoise ~0.25.
+- **The REIMAGINE flow:** `sd_xl_base_1.0` + unCLIP image-prompt (`clip_vision_g.safetensors`) → refine →
+  UltimateSDUpscale (the 42-node `IRU` premium graph).
+- **Favoured checkpoints (verbatim, with `SDXL/` prefix):** `SDXL/oasisSDXL_v10` (workhorse),
+  `SDXL/crystalClearXL_ccxl` (crisp), `SDXL/LahCuteCartoonSDXL_alpha` / `SDXL/xlYamersCartoonArcadia_v1` (cute),
+  `SDXL/animagineXL_v10` / `SDXL/nijianimesdxl_v10` (anime), `nigi-cyber-umaaji` (stylised);
+  favoured LoRA **`BAS-RELIEF.safetensors`** (the sculptural-relief signature) + `SDXL/xl_more_art-full_v1`.
 
 ## Settings cheatsheet
 | Base | Resolution | Steps | CFG | Sampler / scheduler |
 |---|---|---|---|---|
+| **SDXL (maintainer)** | nearest-SDXL (RecommendedResCalc) | **50–60 base / ~31 refine** | **3.5–4.5** | **dpmpp_3m_sde_gpu / dpmpp_sde_gpu · karras** |
+| SDXL (generic) | 1216×832 / 1344×768 | 28–32 | 5.5–7 | dpmpp_2m / karras |
 | SD1.5 | 768×512 (landscape) | 25–28 | 6–7 | dpmpp_2m / karras |
-| SDXL | 1216×832 / 1344×768 | 28–32 | 5.5–7 | dpmpp_2m / karras |
 | SDXL-Lightning | 1216×832 | 6 | ~2 | dpmpp_sde / sgm_uniform |
+| UltimateSDUpscale finish | tile 1024 → 4K | 32 | — | euler / normal · denoise 0.25 |

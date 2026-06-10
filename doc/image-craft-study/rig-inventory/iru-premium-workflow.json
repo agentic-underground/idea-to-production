@@ -1,0 +1,510 @@
+{
+ "30": {
+  "inputs": {
+   "ckpt_name": "SDXL/sd_xl_base_1.0.safetensors"
+  },
+  "class_type": "CheckpointLoaderSimple"
+ },
+ "31": {
+  "inputs": {
+   "desiredXSIZE": 1920,
+   "desiredYSIZE": 1080
+  },
+  "class_type": "RecommendedResCalc"
+ },
+ "32": {
+  "inputs": {
+   "width": [
+    "31",
+    0
+   ],
+   "height": [
+    "31",
+    1
+   ],
+   "batch_size": 1
+  },
+  "class_type": "EmptyLatentImage"
+ },
+ "34": {
+  "inputs": {
+   "seed": 523023157037501,
+   "steps": 59,
+   "cfg": 3.5,
+   "sampler_name": "dpmpp_3m_sde_gpu",
+   "scheduler": "karras",
+   "denoise": 1.0,
+   "model": [
+    "30",
+    0
+   ],
+   "positive": [
+    "42",
+    0
+   ],
+   "negative": [
+    "45",
+    0
+   ],
+   "latent_image": [
+    "32",
+    0
+   ]
+  },
+  "class_type": "KSampler"
+ },
+ "37": {
+  "inputs": {
+   "clip_vision": [
+    "40",
+    0
+   ],
+   "image": [
+    "78",
+    0
+   ]
+  },
+  "class_type": "CLIPVisionEncode"
+ },
+ "38": {
+  "inputs": {
+   "clip_vision": [
+    "40",
+    0
+   ],
+   "image": [
+    "62",
+    0
+   ]
+  },
+  "class_type": "CLIPVisionEncode"
+ },
+ "39": {
+  "inputs": {
+   "conditioning": [
+    "43",
+    0
+   ]
+  },
+  "class_type": "ConditioningZeroOut"
+ },
+ "40": {
+  "inputs": {
+   "clip_name": "clip_vision_g.safetensors"
+  },
+  "class_type": "CLIPVisionLoader"
+ },
+ "41": {
+  "inputs": {
+   "strength": 0.77,
+   "noise_augmentation": 0.0,
+   "conditioning": [
+    "39",
+    0
+   ],
+   "clip_vision_output": [
+    "38",
+    0
+   ]
+  },
+  "class_type": "unCLIPConditioning"
+ },
+ "42": {
+  "inputs": {
+   "strength": 0.29,
+   "noise_augmentation": 0.0,
+   "conditioning": [
+    "41",
+    0
+   ],
+   "clip_vision_output": [
+    "37",
+    0
+   ]
+  },
+  "class_type": "unCLIPConditioning"
+ },
+ "43": {
+  "inputs": {
+   "text": "",
+   "clip": [
+    "30",
+    1
+   ]
+  },
+  "class_type": "CLIPTextEncode"
+ },
+ "44": {
+  "inputs": {
+   "text": "",
+   "clip": [
+    "30",
+    1
+   ]
+  },
+  "class_type": "CLIPTextEncode"
+ },
+ "45": {
+  "inputs": {
+   "conditioning": [
+    "44",
+    0
+   ]
+  },
+  "class_type": "ConditioningZeroOut"
+ },
+ "48": {
+  "inputs": {
+   "samples": [
+    "34",
+    0
+   ],
+   "vae": [
+    "30",
+    2
+   ]
+  },
+  "class_type": "VAEDecode"
+ },
+ "49": {
+  "inputs": {
+   "images": [
+    "48",
+    0
+   ]
+  },
+  "class_type": "PreviewImage"
+ },
+ "50": {
+  "inputs": {
+   "filename_prefix": "ComfyUI",
+   "images": [
+    "48",
+    0
+   ]
+  },
+  "class_type": "SaveImage"
+ },
+ "57": {
+  "inputs": {
+   "ckpt_name": "SDXL/sd_xl_base_1.0.safetensors"
+  },
+  "class_type": "CheckpointLoaderSimple"
+ },
+ "58": {
+  "inputs": {
+   "seed": 228270832358025,
+   "steps": 31,
+   "cfg": 4.5,
+   "sampler_name": "dpmpp_sde_gpu",
+   "scheduler": "karras",
+   "denoise": 1.0,
+   "model": [
+    "57",
+    0
+   ],
+   "positive": [
+    "59",
+    0
+   ],
+   "negative": [
+    "60",
+    0
+   ],
+   "latent_image": [
+    "61",
+    0
+   ]
+  },
+  "class_type": "KSampler"
+ },
+ "59": {
+  "inputs": {
+   "text": "cyborg dolphin, mechanical mask, chains, pipes",
+   "clip": [
+    "57",
+    1
+   ]
+  },
+  "class_type": "CLIPTextEncode"
+ },
+ "60": {
+  "inputs": {
+   "text": "bird",
+   "clip": [
+    "57",
+    1
+   ]
+  },
+  "class_type": "CLIPTextEncode"
+ },
+ "61": {
+  "inputs": {
+   "width": 1024,
+   "height": 1024,
+   "batch_size": 1
+  },
+  "class_type": "EmptyLatentImage"
+ },
+ "62": {
+  "inputs": {
+   "samples": [
+    "58",
+    0
+   ],
+   "vae": [
+    "57",
+    2
+   ]
+  },
+  "class_type": "VAEDecode"
+ },
+ "63": {
+  "inputs": {
+   "images": [
+    "62",
+    0
+   ]
+  },
+  "class_type": "PreviewImage"
+ },
+ "73": {
+  "inputs": {
+   "ckpt_name": "SDXL/sd_xl_base_1.0.safetensors"
+  },
+  "class_type": "CheckpointLoaderSimple"
+ },
+ "74": {
+  "inputs": {
+   "seed": 468631611979210,
+   "steps": 31,
+   "cfg": 4.5,
+   "sampler_name": "dpmpp_sde_gpu",
+   "scheduler": "karras",
+   "denoise": 1.0,
+   "model": [
+    "73",
+    0
+   ],
+   "positive": [
+    "75",
+    0
+   ],
+   "negative": [
+    "76",
+    0
+   ],
+   "latent_image": [
+    "77",
+    0
+   ]
+  },
+  "class_type": "KSampler"
+ },
+ "75": {
+  "inputs": {
+   "text": "industrial pipes, chains, clockwork",
+   "clip": [
+    "73",
+    1
+   ]
+  },
+  "class_type": "CLIPTextEncode"
+ },
+ "76": {
+  "inputs": {
+   "text": "industrial",
+   "clip": [
+    "73",
+    1
+   ]
+  },
+  "class_type": "CLIPTextEncode"
+ },
+ "77": {
+  "inputs": {
+   "width": 1024,
+   "height": 1024,
+   "batch_size": 1
+  },
+  "class_type": "EmptyLatentImage"
+ },
+ "78": {
+  "inputs": {
+   "samples": [
+    "74",
+    0
+   ],
+   "vae": [
+    "73",
+    2
+   ]
+  },
+  "class_type": "VAEDecode"
+ },
+ "79": {
+  "inputs": {
+   "images": [
+    "78",
+    0
+   ]
+  },
+  "class_type": "PreviewImage"
+ },
+ "94": {
+  "inputs": {
+   "upscale_by": [
+    "103",
+    2
+   ],
+   "seed": 591932226851257,
+   "steps": 32,
+   "cfg": 8.0,
+   "sampler_name": "euler",
+   "scheduler": "normal",
+   "denoise": 0.25,
+   "mode_type": "Linear",
+   "tile_width": 1024,
+   "tile_height": 1024,
+   "mask_blur": 8,
+   "tile_padding": 32,
+   "seam_fix_mode": "None",
+   "seam_fix_denoise": 1.0,
+   "seam_fix_width": 64,
+   "seam_fix_mask_blur": 8,
+   "seam_fix_padding": 16,
+   "force_uniform_tiles": "enable",
+   "image": [
+    "48",
+    0
+   ],
+   "model": [
+    "120",
+    0
+   ],
+   "positive": [
+    "95",
+    0
+   ],
+   "negative": [
+    "96",
+    0
+   ],
+   "vae": [
+    "120",
+    2
+   ],
+   "upscale_model": [
+    "102",
+    0
+   ]
+  },
+  "class_type": "UltimateSDUpscale"
+ },
+ "95": {
+  "inputs": {
+   "text": "",
+   "clip": [
+    "120",
+    1
+   ]
+  },
+  "class_type": "CLIPTextEncode"
+ },
+ "96": {
+  "inputs": {
+   "text": "",
+   "clip": [
+    "120",
+    1
+   ]
+  },
+  "class_type": "CLIPTextEncode"
+ },
+ "97": {
+  "inputs": {
+   "image": [
+    "48",
+    0
+   ]
+  },
+  "class_type": "CM_NearestSDXLResolution"
+ },
+ "98": {
+  "inputs": {
+   "op": "Mul",
+   "a": [
+    "97",
+    0
+   ],
+   "b": 4
+  },
+  "class_type": "CM_IntBinaryOperation"
+ },
+ "101": {
+  "inputs": {
+   "op": "Mul",
+   "a": [
+    "97",
+    1
+   ],
+   "b": 4
+  },
+  "class_type": "CM_IntBinaryOperation"
+ },
+ "102": {
+  "inputs": {
+   "model_name": "SwinIR/001_classicalSR_DF2K_s64w8_SwinIR-M_x4.pth"
+  },
+  "class_type": "UpscaleModelLoader"
+ },
+ "103": {
+  "inputs": {
+   "desiredXSIZE": [
+    "98",
+    0
+   ],
+   "desiredYSIZE": [
+    "101",
+    0
+   ]
+  },
+  "class_type": "RecommendedResCalc"
+ },
+ "111": {
+  "inputs": {
+   "filename_prefix": "IMG-REIMG-UPS",
+   "images": [
+    "94",
+    0
+   ]
+  },
+  "class_type": "SaveImage"
+ },
+ "118": {
+  "inputs": {
+   "filename_prefix": "IRU",
+   "images": [
+    "62",
+    0
+   ]
+  },
+  "class_type": "SaveImage"
+ },
+ "119": {
+  "inputs": {
+   "filename_prefix": "IRU",
+   "images": [
+    "78",
+    0
+   ]
+  },
+  "class_type": "SaveImage"
+ },
+ "120": {
+  "inputs": {
+   "ckpt_name": "SDXL/oasisSDXL_v10.safetensors"
+  },
+  "class_type": "CheckpointLoaderSimple"
+ }
+}
