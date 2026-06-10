@@ -44,9 +44,9 @@ emit_kf() {
     printf '<rect width="100%%" height="100%%" fill="#1e1e2e"/>\n'
     # ---- depth layer: gradient glow + filters ----
     printf '<defs>\n'
-    printf '<radialGradient id="dg" cx="50%%%%" cy="55%%%%" r="50%%%%"><stop offset="0%%%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
-    printf '<filter id="bgb" x="-100%%%%" y="-100%%%%" width="300%%%%" height="300%%%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
-    printf '<filter id="ns" x="-40%%%%" y="-40%%%%" width="180%%%%" height="180%%%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
+    printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
+    printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
     printf '</defs>\n'
     printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
     # ---- microline + dominant WORDMARK + subtitle (static) ----
