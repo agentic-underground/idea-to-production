@@ -50,7 +50,7 @@ any direction.
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
 | **[i2p](plugins/i2p/)** | The marketplace FRONT DOOR / meta-layer: `/i2p-help` browses every power you have (grouped by the value flow), `/i2p-review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p-check` consolidates readiness, `/i2p-flow` maps the pipeline and your next command. Introduces itself on session start. | A single front door to the whole suite — and one review that pulls in *all* the reviewers at once. |
-| **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
+| **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/discovery-goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
 | **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
 | **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |
 | **[sentinel](plugins/sentinel/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
@@ -63,7 +63,7 @@ any direction.
 
 ![Value flow: nine plugins across an eight-phase cycle from IDEA to PRODUCTION — DISCOVER (market-scanner) ▸ IDEATE (ideator) ▸ DESIGN (atelier) ▸ BUILD (foundry) ▸ ASSURE (foundry, a separate quality gate) ▸ SECURE (sentinel, a separate security gate) ▸ PUBLISH (pressroom) ▸ OPERATE (mission-control), whose learnings loop back to DISCOVER; i2p and concierge cross-cut as front door and greeter.](doc/images/diagrams/01-value-flow.png)
 
-The next command at each phase: **DISCOVER** `/goal` · `/market-scan` → a kept OPPORTUNITY · **IDEATE** the IDEA
+The next command at each phase: **DISCOVER** `/discovery-goal` · `/market-scan` → a kept OPPORTUNITY · **IDEATE** the IDEA
 package (agent + user-facing faces) · **DESIGN** `/mockup` · `/ui-review` · **BUILD** IDEA ▶ … ▶ STORY ▶ SHIP ·
 **ASSURE** `/pr-review` (quality V&V) · **SECURE** `/security-gate` → SECURITY-REPORT.md · **PUBLISH** `/publish`
 articles & PDFs · **OPERATE** observe · respond · iterate.
