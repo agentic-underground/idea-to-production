@@ -96,7 +96,10 @@ asset + source + a one-line self-critique.
 
 ### Phase 5 — A/B-until-best review loop
 Hand both options to the `design-reviewer` in comparative mode and run
-[`references/illustrate-ab-loop.md`](references/illustrate-ab-loop.md): the reviewer picks a winner, gives
+[`references/illustrate-ab-loop.md`](references/illustrate-ab-loop.md): the reviewer runs the
+[`layout-reviewer`](../design-reviewer/agents/layout-reviewer.md) **legibility gate FIRST** (edge-clip,
+overlap, inline-legibility at `width_budget_px`) and scores taste only on a clean pass — a clipped or
+illegible option is `NEEDS_REVISION` before any taste dimension is computed. Then the reviewer picks a winner, gives
 per-option feedback, and signals `LEAST-WORSE` or `BEST`. **Carry the winner forward** (apply its own
 HIGH+MED), **regenerate only the challenger** per the reviewer's brief, re-review. Stop on **BEST-REACHED**
 (celebrate), **HALT-DIMINISHING-RETURNS** (ask the user), or **CAP** (`MAX_TURNS = 4`). The whole point: ship

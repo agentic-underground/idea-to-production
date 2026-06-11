@@ -11,7 +11,7 @@ Run the marketplace-wide adversarial review. Follow the [`review` skill](../skil
    re-implement their logic:
    - code → foundry **`/pr-review`**
    - UI (a running SPA or screenshot) → atelier **`/ui-review`**
-   - rendered docs / figures → pressroom **`/pressroom:design-review`**
+   - rendered docs / figures → pressroom **`/pressroom:design-review`** (its layout/legibility gate rides inside this delegation, run before taste)
    - security → sentinel **`/security-gate`**
 3. **Adversarially verify** each HIGH/CRITICAL finding (a second pass tries to refute it).
 4. **Synthesise one verdict** with the marketplace rule (BLOCK > NEEDS_REVISION > PASS; verdict = highest

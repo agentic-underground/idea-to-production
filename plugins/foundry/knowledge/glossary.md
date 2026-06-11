@@ -117,9 +117,12 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - ideator: **ideate** (the IDEA package) · **self-improve** · **check**.
 - sentinel: **pii-audit** · **secret-scan** · **dependency-audit** · **security-gate** · **check**.
 - pressroom: **writer** · **diagram-studio** · **mermaid-specialist** (full Mermaid taxonomy + theming + ELK) ·
-  **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review) · **check**.
+  **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review; agents
+  **typographic-reviewer**, **dataviz-reviewer**, **image-aesthetic-reviewer**, **layout-reviewer** — the
+  at-a-glance legibility gate run before taste) · **check**.
 - atelier: **ui-review** (crawl + critique any SPA) · **mockup** (design + converge) · **self-improve** ·
-  **check**; agent **ui-design-reviewer**.
+  **check**; agent **ui-design-reviewer** (adds a **LAYOUT-REVIEWER** lens — the legibility gate run before
+  taste, composing PRESSROOM's layout canon by capability).
 
 ### Commands
 - foundry: **/foundry** · **/inspect** · **/coverage-loop** · **/phase-sensor** · **/rust-webapp-rollout** ·

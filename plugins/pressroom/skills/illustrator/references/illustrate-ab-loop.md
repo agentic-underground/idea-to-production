@@ -41,8 +41,10 @@
 ## "The best", not "the least-worse" — the termination
 
 The reviewer emits `signal: BEST` **only when every one of these holds** for the champion:
-- clears **every gate** — legibility (at `width_budget_px`), data-integrity (charts), accessibility (alt
-  text present + the dark-mode contrast gate on **both** grounds),
+- clears **every gate** — legibility (the
+  [`layout-reviewer`](../../design-reviewer/agents/layout-reviewer.md) gate, measured at `width_budget_px`
+  via the inline-legibility rule), data-integrity (charts), accessibility (alt text present + the dark-mode
+  contrast gate on **both** grounds),
 - has **no open HIGH** finding,
 - scores **≥ TARGET (85/100)** on the shared design-fitness rubric,
 - and the reviewer can state an **earned positive** — a specific thing the figure does *well* — that is not
