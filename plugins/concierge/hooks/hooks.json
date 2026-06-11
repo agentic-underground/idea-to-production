@@ -40,6 +40,10 @@
           },
           {
             "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/startup-report.sh 2>/dev/null || true"
+          },
+          {
+            "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/scheduler/ratelimit-snapshot.sh 2>/dev/null || true"
           }
         ]

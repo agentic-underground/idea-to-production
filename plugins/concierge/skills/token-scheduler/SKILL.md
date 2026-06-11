@@ -8,7 +8,11 @@ description: >
   130), and gates every wave against the LIVE 5-hour rate-limit window — halting and checkpointing
   before the ceiling so a paused job resumes cheaply from what's LEFT. Can run heavy work off-peak
   (22:00–08:00) while reserving a morning allowance from "what time will you log in tomorrow?".
-  Determinism lives in tested code (scheduler/*.sh); this skill is the discipline that calls it.
+  Also answers "how's the estimator doing?", "what's scheduled?", "show the convergence report" by
+  running scheduler/report.sh (scheduled jobs + the estimate:actual convergence per profile/class).
+  Durable & session-safe: jobs persist to .i2p/scheduled-jobs.json and a SessionStart report re-arms
+  them after a crash/restart. Determinism lives in tested code (scheduler/*.sh); this skill is the
+  discipline that calls it.
 metadata:
   type: orchestrator
   output: a guarded job run + a resume ledger at .i2p/jobs/<job-id>.json; no lockout, ever
@@ -118,6 +122,30 @@ never re-derive pointed-to context.
 When `remaining` is empty: report what was done, the actual vs estimated cost (the calibration has
 already learned from it), and any `failed` units. If the job cleared without tripping the meter — that's
 the green gate. *"Light is green, trap is clean."*
+
+## Durable & session-safe (survive a crash)
+
+Scheduled jobs persist to `.i2p/scheduled-jobs.json` (project) + `~/.claude/state/i2p-cost/
+scheduled-jobs.json` (machine index) via `jobs-registry.sh`; the job's prompt is stored under
+`.i2p/scheduled-jobs/<id>.prompt.txt`. Because `CronCreate` is **session-only**, after a crash or
+restart the cron is gone but the *definition* survives. The SessionStart hook (`startup-report.sh`)
+resets armed-state, reports what's pending, and asks you to **re-arm**: for each registered job, run
+`CronList` (avoid dupes), then `CronCreate` with its stored `cron` + `prompt_file`, then
+`jobs-registry.sh arm . <id>`. Nothing is ever silently lost.
+
+## "How's the estimator doing?"  (continuous improvement, made visible)
+
+When the user asks how the estimator is doing / what's scheduled / for the convergence report, run:
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/scheduler/report.sh .            # both sections
+bash ${CLAUDE_PLUGIN_ROOT}/scheduler/report.sh . --estimator   # just convergence
+```
+
+Read it back plainly: per profile/class — samples, learned mean ratio, p95 band, tier
+(SEEDING→CALIBRATING→CONVERGING→CONVERGED). The band **tightening over time** is the SOLID
+self-improvement covenant in numbers: every job that passes through makes the next estimate sharper.
+This is why **every** plan brackets `plan-open`/`plan-close` — no sample, no convergence.
 
 ## The non-negotiables
 
