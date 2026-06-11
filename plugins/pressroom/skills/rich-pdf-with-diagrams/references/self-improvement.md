@@ -121,7 +121,7 @@ charting matrix has always used, adapted to that canon's numbering:
     the next sequential id in that canon's scheme. In `charting-matrix.md`
     that is §3 EXTRA RULES ADDED BY FEEDBACK CYCLES, numbered R-A1,
     R-A2, …; other canons use their own rule ids (e.g. a `layout-canon.md`
-    checklist item, a Motion-canon verb rule).
+    checklist item, a Motion-canon motion rule).
   - Each new rule must have a *Why* line and a *How to apply* line.
 - **If extending a failure catalogue**: in `charting-matrix.md` §6, add a
   new failure mode F7, F8, … with root cause and fix; other canons take
@@ -155,7 +155,7 @@ Append a numbered lesson:
 
 **Generalised rule:** [the one-sentence principle from Step 2]
 
-**Canon rule affected:** [which canon + rule id — e.g. `charting-matrix.md` R-A1 new | `charting-matrix.md` F7 new failure | `layout-canon.md` checklist item | `raster-toolchain.md` Motion-canon verb | `graphviz-patterns.md` Pattern 8 new]
+**Canon rule affected:** [which canon + rule id — e.g. `charting-matrix.md` R-A1 new | `charting-matrix.md` F7 new failure | `layout-canon.md` checklist item | `raster-toolchain.md` Motion-canon rule | `graphviz-patterns.md` Pattern 8 new]
 
 **Figure(s)/animation(s) fixed in this round:** [list of filenames]
 
