@@ -585,6 +585,51 @@ effective magnification.
 
 ---
 
+> **Batch 0027–0028 — 2026-06-11, animated-README craft retrospective.** Two lessons from the
+> `research/image-craft-taste` session, the first to route through the *generalised* self-improvement
+> loop (Classify → Generalise → route via the Step-3 table → log). Lesson 0027 is a LAYOUT/legibility
+> finding (routes to `layout-canon.md`); lesson 0028 is an ANIMATION/motion finding (routes to the
+> `raster-toolchain.md` Motion canon) — proving the routing table sends each domain to its owning canon
+> rather than collapsing both into the charting matrix.
+
+### Lesson 0027 — 2026-06-11
+
+**Feedback received:** the inline-legibility gate caught several animated README figures shipping captions
+too small to read at embed width — atelier "review" at 5.9px inline, ideator "the pain, shared" at 5.2px,
+pressroom "published" at 5.5px — all below the 6px machine floor (and the corpus broadly sitting below the
+9px comfort target).
+
+**Generalised rule:** Author every caption/label large enough to clear the inline-legibility floor at the
+figure's embed width *before* assembly — for a ~1280px-wide figure that means `font-size ≥ ~13` (→ ≥6.5px
+inline), generally `font_size ≥ FLOOR × svg_width / 640`; never ship a sub-floor caption, and prove the
+smallest text element above the floor with `layout-check.sh` before assembly.
+
+**Canon rule affected:** `layout-canon.md` §5 — new "How to apply — author above the floor, don't fix below
+it" authoring guidance appended to the inline-legibility rule (extends, does not duplicate, the §5 detector).
+
+**Figure(s)/animation(s) fixed in this round:** `atelier-critique`, `ideator-converge`, `pressroom-press`.
+
+**Article:** `research/image-craft-taste` README animated-figure corpus.
+
+### Lesson 0028 — 2026-06-11
+
+**Feedback received:** the concierge-welcome figure's key amber greeting was only ever shown mid-typewriter /
+mid-dissolve and never settled at full opacity, so the most important sentence read as garbled ("we come —
+corcierge"); the fix held the fully-typed greeting as a settled full-opacity poster beat before any fade.
+
+**Generalised rule:** A typed or animated key (meaning-bearing) label must settle at full opacity for a held
+beat — at least its own caption/dense dwell tier — *before* it fades or the loop restarts; never present the
+meaning-bearing sentence only mid-transition. The reveal animates; the message must hold legibly.
+
+**Canon rule affected:** `raster-toolchain.md` Motion canon — new "SETTLE the key label before you fade it"
+motion rule (placed before "FADES, not hard cuts").
+
+**Figure(s)/animation(s) fixed in this round:** `concierge-welcome`.
+
+**Article:** `research/image-craft-taste` README animated-figure corpus.
+
+---
+
 ## Standing notes (not numbered lessons, but always true)
 
 - **Always re-read `charting-matrix.md` before composing.** It is the
