@@ -33,7 +33,7 @@ probe the filesystem. The plugins to look for:
 
 | Plugin | Stage | Headline commands |
 |---|---|---|
-| **market-scanner** | DISCOVER | `/goal`, `/market-scan` |
+| **market-scanner** | DISCOVER | `/discovery-goal`, `/market-scan` |
 | **ideator** | IDEATE | `/ideate` |
 | **atelier** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
 | **foundry** | BUILD + ASSURE (quality gate) | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |

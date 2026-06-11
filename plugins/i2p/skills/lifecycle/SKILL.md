@@ -54,7 +54,7 @@ Full model + schema: [`../../knowledge/instrumentation.md`](../../knowledge/inst
 
 When the user wants to start (or `/i2p-help` offered and they accepted):
 1. Run `lifecycle.sh init "<product name>"` (defaults to the repo folder name) — sets phase **DISCOVER**.
-2. **Route to the phase owner**: DISCOVER → `/market-scan` (or `/goal` first); if they already have a
+2. **Route to the phase owner**: DISCOVER → `/market-scan` (or `/discovery-goal` first); if they already have a
    validated idea, `set IDEATE` and route to `/ideate`. Name only the **installed** plugins; if a phase's
    owner is absent, say what installing it would unlock (graceful degradation, the marketplace pattern).
 3. Tell them the status line will show the phase (offer `/concierge:statusline` if not enabled).

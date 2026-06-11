@@ -3,7 +3,7 @@
 Naming begins with a brief, not a guess. This is the **discover** phase: reach knowledge-parity on
 *who* the name is for and *what* it must do, then feed the enriched charter
 ([`charter-protocol.md`](charter-protocol.md)). It mirrors the house dialogue discipline used by
-`market-scanner`'s `/goal` and `ideator`'s `ideate` challenge protocol.
+`market-scanner`'s `/discovery-goal` and `ideator`'s `ideate` challenge protocol.
 
 ## The dialogue discipline (non-negotiable)
 

@@ -23,11 +23,11 @@ carries VALUE from IDEA to PRODUCTION; this draws the map with only the parts yo
 ## 1. The stages
 
 ```
-DISCOVER ─▶ IDEATE ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
-market-     ideator   atelier   foundry  foundry   sentinel  pressroom  mission-
-scanner                         │        (quality) (security)           control
- /goal +     /ideate  /mockup   IDEA▶…▶  /pr-review /security  /publish  observe ·
- /market-scan         /ui-review  SHIP   (quality)  -gate                iterate ↻→DISCOVER
+DISCOVER ────────▶ IDEATE ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
+market-scanner     ideator   atelier   foundry  foundry   sentinel  pressroom  mission-
+                                       │        (quality) (security)           control
+ /discovery-goal +  /ideate  /mockup   IDEA▶…▶  /pr-review /security  /publish  observe ·
+ /market-scan                /ui-review  SHIP   (quality)  -gate                iterate ↻→DISCOVER
 ```
 
 Eight phases forming a **cycle** — OPERATE's learnings loop back to DISCOVER. **ASSURE** (foundry,

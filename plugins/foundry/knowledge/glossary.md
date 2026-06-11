@@ -124,7 +124,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 ### Commands
 - foundry: **/foundry** · **/inspect** · **/coverage-loop** · **/phase-sensor** · **/rust-webapp-rollout** ·
   **/foundry:pr-review** · **/foundry:self-improve** · **/foundry:check** · **/foundry:prerequisites**
-- market-scanner: **/market-scan** · **/goal** · **/market-scanner:check**
+- market-scanner: **/market-scan** · **/discovery-goal** · **/market-scanner:check**
 - ideator: **/ideate** · **/ideator:check**
 - sentinel: **/security-gate** · **/pii-audit** · **/secret-scan** · **/dependency-audit** · **/sentinel:check**
 - pressroom: **/publish** · **/pressroom:check**
