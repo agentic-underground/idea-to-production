@@ -2,7 +2,11 @@
 # build-figure.sh — the canonical per-figure pipeline, so all 11 README figures rebuild identically.
 #
 # A diagram generator (build-*-frames.sh) emits f000.svg, f001.svg, … into an output dir (and, in Wave 2,
-# a TIMING.tsv alongside them). This orchestrator carries one figure from generator to shipped GIF:
+# a TIMING.tsv alongside them). Generators compose their frames from NAMED elements (NODE/TOKEN/GATE/RAIL/ARC/
+# SWEEP/STAMP/HALO) sourced from diagram-primitives.sh, each animated with its element-specific verb and tagged
+# per the Motion canon's TIMING roles — the authoring-time bridge from element-motion to frame-timing is
+# documented in craft/motion-language.md §5 ("How a generator USES this"). This orchestrator stays element-
+# agnostic: it carries one figure from generator to shipped GIF:
 #   generate SVGs → rasterise (rsvg-convert) → composite depth (C2) → assemble base GIF (gifski) →
 #   re-time (reslow.sh, TIMING.tsv-aware) → frame-strip proof.
 # 0-GPU, deterministic. Each external tool is guarded; it fails LOUDLY if the generator emits no SVGs.
