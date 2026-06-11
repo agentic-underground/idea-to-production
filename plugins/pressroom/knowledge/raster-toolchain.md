@@ -93,6 +93,69 @@ The `scale=trunc(iw/2)*2:…` filter **auto-rounds to even dimensions** (yuv420p
 unguarded MP4 hard-crashes; this makes any frame size just work). **Motion is motivated** (a build-up reveals structure; a loop
 breathes) — never gratuitous; honour reduced-motion by always shipping a static poster frame alongside.
 Proven in `doc/image-craft-study/toolchain/` (`src/build-pipeline-frames.sh` → `out/pipeline.{gif,apng,mp4}`).
+**How an assembled animation is *paced*** — the dwell, the breathe, the linger — is governed by the
+[Motion canon](#motion-canon--the-house-motion-policy-the-linger-directive) below; a Recipe-4 figure is built
+**to** that canon (its generator emits a `TIMING.tsv`; `reslow.sh` applies it).
+
+## Motion canon — the house motion policy (the linger directive)
+
+The house policy for **how an animated figure moves in time**. Recipe 4 *assembles* frames; this canon decides
+how long each frame **lingers**, how it **breathes**, and where the eye is allowed to **rest**. It is the source
+of truth — `doc/image-craft-study/toolchain/src/reslow.sh` is its implementation (the generator-agnostic
+re-timer), and every animated README figure is built **to** this canon. A motion/timing lesson generalises
+**here**, so every future animation inherits it.
+
+**SLOWER pace · LINGER · breathe.** Animation is for *teaching*, not for showing off frame-rate. Each frame
+**lingers** — it stays long enough to be read, not flicked past. Within a frame's dwell, apply a gentle
+brightness **PULSE breathe** (a slow rise-and-fall, e.g. `100 102 104 102` via `magick -modulate`) so a held
+frame feels *alive*, not frozen — this is a breathe, **never** a per-frame flicker. **STAY much longer on the
+settled final frame** before the loop restarts: the poster dwell is what lets a loop read as "settled / done",
+not as a nervous churn.
+
+**Organic meter via `TIMING.tsv`.** Uniform timing makes a dense teaching beat and a throwaway transition feel
+the same — wrong. Instead, each generator emits **each DISTINCT visual state exactly once**, tagged with a
+**role** whose dwell-tier sets its hold count (output frames it occupies):
+
+| Role | Holds | What it is |
+|---|---|---|
+| `transition` | ≈2–3 | a node advances / a token rides, caption unchanged — flick by |
+| `label` | ≈7 | a short word/marker appears |
+| `caption` | ≈14 | a one-line caption to read |
+| `long` | ≈21 | a longer caption / a small relationship |
+| `dense` | ≈28 | an info-dense "Ah-HA!" beat (a new concept, a spine flip) |
+| `poster` | ≈44–52 | the settled final frame — the long dwell before the loop |
+
+The generator writes these as a `TIMING.tsv` (`frame ⇥ role ⇥ holds`, one row per distinct state, in emission
+order). `reslow.sh` reads the **per-frame holds** and applies the **breathe within each hold window** (PULSE
+index = position-within-hold modulo PULSE length). **Absent a `TIMING.tsv`** (not given, missing, or its row
+count ≠ the coalesced frame count) `reslow.sh` falls back to a **uniform hold** (`HOLDLEN`× every frame plus a
+`FINAL_HOLD` dwell on the last) — the same linger, just without the organic meter.
+
+**The "Ah-HA!" floor (mandatory).** Any frame that **introduces a new concept**, **teaches a relationship**, or
+**reveals the sequence's meaning** gets **≥24 holds** — enough time to travel the eye to the element, read the
+caption, and *connect the two* before the animation advances. This is a floor, not a target: the `dense` tier
+(≈28) clears it; a `transition` deliberately does not (it teaches nothing new). If a beat teaches, it lingers.
+
+**SETTLE the key label before you fade it.** A typed, dissolved, or otherwise animated meaning-bearing label
+must **come to rest at full opacity for a held beat** — at least its own caption/dense dwell tier — *before*
+it fades out or the loop restarts. The reveal may animate; the **message must hold legibly**. Never present
+the sentence the figure exists to say only mid-typewriter or mid-dissolve, where it reads as garbled — the
+transition is the approach, the settled poster beat is the point. Every key label gets a full-opacity rest
+stop.
+
+**FADES, not hard cuts.** Transitions **cross-dissolve**, they do not jump-cut. The masthead does this with
+`magick -morph` between keyframes (a clean cross-dissolve that rounds off seams). **Motion is MOTIVATED** — a
+build-up reveals structure, a loop breathes, a token rides a path that *means* something — **never gratuitous**.
+
+**Always ship a reduced-motion POSTER frame** beside the animation (the most-complete / settled frame as a
+static PNG). It honours `prefers-reduced-motion`, gives the figure a legible still for reviewers and print, and
+is the same frame whose `poster`-tier dwell ends the loop.
+
+> **Forward note (Phase 3).** This linger directive is *frame-level* — "how long does this frame hold?". Its next
+> development is the **element-level animation vocabulary**: named primitives with element-specific motion verbs
+> (`node:breathe`, `token:ride`, `gate:latch`, `sweep:rotate-surface`, `arc:glow-on`, `stamp:resolve`) — "what
+> kind of thing is this, and how does a thing of this kind move?". That lands in Phase 3's `motion-language.md`,
+> which extends this canon from frame timing to element motion.
 
 ## Recipe 5 — frame-strip montage (so a reviewer can SEE motion in one Read)
 
