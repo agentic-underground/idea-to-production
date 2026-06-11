@@ -117,9 +117,33 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - ideator: **ideate** (the IDEA package) · **self-improve** · **check**.
 - sentinel: **pii-audit** · **secret-scan** · **dependency-audit** · **security-gate** · **check**.
 - pressroom: **writer** · **diagram-studio** · **mermaid-specialist** (full Mermaid taxonomy + theming + ELK) ·
-  **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review) · **check**.
+  **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review; agents
+  **typographic-reviewer**, **dataviz-reviewer**, **image-aesthetic-reviewer**, **layout-reviewer** — the
+  at-a-glance legibility gate run before taste) · **check**. Agent **handler-composite** genuinely **owns
+  animated-diagram craft** at BOTH altitudes: the frame-level **Motion canon** — the house linger/timing policy,
+  now codified in [`raster-toolchain.md`](../../pressroom/knowledge/raster-toolchain.md) (no longer trapped as
+  script comments) — and the element-level **diagramming/animation language** (below).
+- **motion-language.md** — the element-level diagramming/animation language: a named-element registry
+  (**NODE · TOKEN · GATE · RAIL · ARC · SWEEP · STAMP · HALO**) + each element's **motion verbs** (token *rides*,
+  gate *latches*/*flips*, sweep *rotate-surfaces*, arc *glows-on*, node *arrives*/*breathes*/*dissolves*, stamp
+  *resolves*, halo *attention-pulses*) — the sibling of the frame-level Motion canon (it answers "what KIND of
+  thing is this and how does a thing of THIS kind move?", where the Motion canon answers "how long does this FRAME
+  hold?"). Owned by **handler-composite**. → study-repo
+  [`doc/image-craft-study/craft/motion-language.md`](../../../doc/image-craft-study/craft/motion-language.md).
+- **diagram-primitives.sh** — the shared **crafted-primitive library** (`prim_node`/`prim_token`/`prim_gate`/
+  `prim_rail`/`prim_arc`/`prim_sweep`/`prim_stamp`/`prim_halo` + the shared `prim_defs`/palette/geometry). The
+  single home for in-vector line-art craft: generators **source** it instead of re-hand-rolling SVG and copying
+  `<defs>`, so the craft uplift (shading, rim light, soft shadow — pure SVG, no raster) lands ONCE and every
+  generator inherits it. Names match motion-language.md's registry. → study-repo
+  [`doc/image-craft-study/toolchain/src/diagram-primitives.sh`](../../../doc/image-craft-study/toolchain/src/diagram-primitives.sh).
+- **Cost-tier doctrine** ≡ **cheap-checks-first** ≡ **vision-on-suspicion** — shared reviewer canon for every
+  graphical review: the free deterministic checks (the layout machine) run first, and an expensive pixel/vision
+  Read is spent **only when something cheap has flagged a suspect**, never by default. Specified for layout in
+  [`layout-canon.md`](../../pressroom/skills/design-reviewer/references/layout-canon.md) §3; governs all lenses
+  via the critique-loop canon.
 - atelier: **ui-review** (crawl + critique any SPA) · **mockup** (design + converge) · **self-improve** ·
-  **check**; agent **ui-design-reviewer**.
+  **check**; agent **ui-design-reviewer** (adds a **LAYOUT-REVIEWER** lens — the legibility gate run before
+  taste, composing PRESSROOM's layout canon by capability).
 
 ### Commands
 - foundry: **/foundry** · **/inspect** · **/coverage-loop** · **/phase-sensor** · **/rust-webapp-rollout** ·
@@ -203,6 +227,12 @@ however it surfaces — *formal* definition · *aliases* · *metaphor*. The dept
   [`protocols/guardrails-ledger.md`](protocols/guardrails-ledger.md).
 - **The self-improving marketplace** ≡ **fix-upstream-once** ≡ **self-cleave-and-PR** — learn from a
   mistake → fold the fix back at the source → ship to all users via PR. → [`first-principles.md`](first-principles.md) §6.
+  Its graphics arm is now the **general graphics+animation review→rule→canon loop** (no longer diagram-only):
+  every generalisable finding — *especially* an expensive vision finding — folds into the *right* canon
+  (layout → [`layout-canon.md`](../../pressroom/skills/design-reviewer/references/layout-canon.md); animation →
+  the **Motion canon** in [`raster-toolchain.md`](../../pressroom/knowledge/raster-toolchain.md); composition →
+  `charting-matrix.md`), so the bar rises once and never recurs →
+  [`../../pressroom/skills/rich-pdf-with-diagrams/references/self-improvement.md`](../../pressroom/skills/rich-pdf-with-diagrams/references/self-improvement.md).
 - **The two altitudes** ≡ **workers & orchestrators** ≡ **makers & managers** — pragmatic workers
   (exact patterns + ledgers) and aligned orchestrators (shared philosophy + language).
   → [`first-principles.md`](first-principles.md) §7, [`architecture/self-architecture.md`](architecture/self-architecture.md).

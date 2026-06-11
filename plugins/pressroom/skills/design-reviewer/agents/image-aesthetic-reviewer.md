@@ -60,14 +60,7 @@ root / `knowledge/canon/art-direction.md` present — by capability, never a har
    - For a contact-sheet, render/Read the sheet and identify each labelled cell.
 2. **READ the rendered pixels (vision) — BEFORE any SPEC or generator code.** Look at what is actually on
    screen. Do not reason from the source SVG or the generator: open the script *only* in step 5.
-3. **LAYOUT-DEFECT CHECKLIST (run it on every rendered frame).** **ANY** trigger → automatic
-   `NEEDS_REVISION`, citing the **specific frame** ("frame 3 of the strip: …"):
-   - **text clipped / cut at the SVG edge**, or **crossing a border/box** it is meant to sit inside;
-   - **text overlapping** a line, arc, node, or other text;
-   - any **bordered element with < 10px internal padding** (crowded);
-   - a **caption illegible at GitHub's inline width (~640px)** — check the **downscaled strip**, not just the
-     full-res frame.
-   These are layout bugs a human spots at a glance; they gate before taste is scored.
+3. **LAYOUT-DEFECT GATE — run the full checklist in [`../references/layout-canon.md`](../references/layout-canon.md) on every rendered frame** (its 8 items + the cost-tiered SVG-math → raster-lint → vision-on-suspicion procedure). ANY trigger → automatic `NEEDS_REVISION` (BLOCK on a hard clip), citing the frame. **Gates before taste is scored.** Where a `layout-reviewer` sibling is spawned for the figure, defer the gate to it; this step is the inline fallback.
 4. **Artifact floor.** Scan for the hard caps (mangled anatomy, gibberish/baked text, melted geometry,
    broken perspective). A hard fail caps the image *before* any taste is scored — name it concretely.
 5. **NOW read the script / SPEC** for timing & spec compliance — and **score the six dimensions** (category-fit, prompt-adherence, artifact-freedom, **composition &

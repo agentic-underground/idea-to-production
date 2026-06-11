@@ -30,6 +30,16 @@ typical Graphviz `margin="0.20,0.13"` padding without crushing.
 diagram that needs more than 9 rows fits on a page only if you sacrifice
 caption space; consider whether it should be split.
 
+> **Screen sibling — the inline-legibility rule.** This 4×9 "too-wide" law
+> fixes legibility against the **A4 page** (print). Its **screen** counterpart
+> is the **inline-legibility rule** —
+> `min_rendered_height = font_size × 640 / svg_width ≥ ~6–9px` — which fixes
+> text legibility against the **reader's ~640px inline column**, enforced by
+> `layout-check.sh` + the `layout-reviewer`. See
+> [`../../design-reviewer/references/layout-canon.md`](../../design-reviewer/references/layout-canon.md)
+> (§5). Link, don't overload: "4×9" stays the print rule; the inline rule is
+> its named screen cross-reference.
+
 ---
 
 ## 2. THE TEN INVIOLABLE RULES

@@ -8,9 +8,9 @@ description: >
   composition · light · colour · narrative · medium · the award bar), score it on the design-fitness rubric,
   and return prioritised findings that drive the convergent improvement loop. (Note: the ui-review skill
   performs inline critique for its own direct-review path; composed review by capability for other plugins.)
-  Accepts an optional lens parameter to focus a pass: HIERARCHY-REVIEWER, INTERACTION-REVIEWER,
-  ACCESSIBILITY-REVIEWER, AESTHETICS-REVIEWER, CONSISTENCY-REVIEWER, or RICHNESS-MOTION-REVIEWER. Default is
-  the full panel. Other plugins (e.g. PRESSROOM's image-aesthetic review) compose the AESTHETICS +
+  Accepts an optional lens parameter to focus a pass: LAYOUT-REVIEWER (the legibility gate, runs first),
+  HIERARCHY-REVIEWER, INTERACTION-REVIEWER, ACCESSIBILITY-REVIEWER, AESTHETICS-REVIEWER, CONSISTENCY-REVIEWER,
+  or RICHNESS-MOTION-REVIEWER. Default is the full panel. Other plugins (e.g. PRESSROOM's image-aesthetic review) compose the AESTHETICS +
   RICHNESS-MOTION lenses by capability. Carries the
   SOLID self-improvement covenant.
 tools: Read, Bash, Grep, Glob, mcp__plugin_atelier_playwright__*
@@ -124,9 +124,10 @@ review.
    If axe cannot run for any reason, state **"automated a11y floor skipped: \<reason\>"** in the report —
    omitting it silently is not acceptable; the ACCESSIBILITY-REVIEWER lens then rests on visual judgment only.
 
-3. **LAYOUT-DEFECT CHECKLIST (run it on every rendered screenshot/frame).** **ANY** trigger →
-   the pass cannot be CONVERGED; emit **CONTINUE** with the triggering item recorded as a **CRITICAL
-   finding** and a `gate: layout` marker citing the specific route/frame:
+3. **LAYOUT-DEFECT GATE (run it on every rendered screenshot/frame).** Run the layout-defect checklist —
+   PRESSROOM's `layout-canon.md` (its 8 items + the cost-tiered SVG-math → raster-lint → vision-on-suspicion
+   procedure) when present, **probed by capability**; else the inline baseline below. **ANY** trigger →
+   automatic `NEEDS_REVISION` (BLOCK on a hard clip), citing the **specific route/frame**:
    - **text clipped / cut at the edge**, or **crossing a border/box** it is meant to sit inside;
    - **text overlapping** a line, arc, node, control, or other text;
    - **text visually touching or within ~2px of its border** — padding so minimal it reads as absent
@@ -134,7 +135,8 @@ review.
      design's own spacing-scale minimum, not a fixed pixel number);
    - a **caption/label illegible at GitHub's inline width (~640px)** for a figure — check the **downscaled
      strip**, not just the full-res frame.
-   These are layout bugs a human spots at a glance; they gate before taste is scored.
+   These are layout bugs a human spots at a glance; they gate before taste is scored. Where a
+   `layout-reviewer` is spawned for the figure, defer the gate to it; this step is the inline fallback.
 
 4. **MEASURE, don't estimate.** Every dimensional or contrast claim must be grounded in a measurement, not
    eyeballed from pixels:
@@ -201,6 +203,11 @@ turn n: <score>  (Δ <+/-x> vs turn n-1)
 
 Read your assigned lens from context; if none, run the full panel. Do not mix lenses in one pass.
 
+- **LAYOUT-REVIEWER** — the at-a-glance legibility GATE (runs before the taste lenses): edge-clip, overlap,
+  crowding (<10px), vertical clipping, z-index/occlusion, min-text-size, and inline-legibility at ~640px
+  (`min_rendered_height = font_size × 640 / svg_width`; masthead self-exempts, banners/hero GIFs
+  class-whitelisted from the aspect advisory). Composes PRESSROOM's `layout-canon.md` + the `layout-reviewer`
+  by capability.
 - **HIERARCHY-REVIEWER** — focal point, scale/weight/contrast, reading path, whitespace (visual-foundations §2).
 - **INTERACTION-REVIEWER** — the UX laws + Nielsen's 10 heuristics; usability of every action (interaction-laws).
   Plus the **deception sweep** (run on every interactive review): confirmshaming, pre-ticked consent, disguised

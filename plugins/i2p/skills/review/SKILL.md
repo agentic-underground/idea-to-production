@@ -40,7 +40,7 @@ vs merge-base with `main`), decide which lenses are in scope:
 |---|---|---|
 | a code diff exists | **CODE** | foundry **`/pr-review`** |
 | a running SPA / screenshot is provided | **DESIGN** | atelier **`/ui-review`** |
-| rendered docs / figures (PDF, diagrams) changed | **DOCS** | pressroom **`/pressroom:design-review`** |
+| rendered docs / figures (PDF, diagrams) changed | **DOCS** | pressroom **`/pressroom:design-review`** (its layout/legibility gate — edge-clip, overlap, inline-legibility — rides inside this delegation, run before taste) |
 | always (any change can leak/secret/regress deps) | **SECURITY** | sentinel **`/security-gate`** |
 
 Name the lenses you will run and the ones you skip (and why) — no silent narrowing.

@@ -123,7 +123,7 @@ emit() {
         printf '<rect x="%d" y="%d" width="12" height="%d" rx="2" fill="%s"/>\n' "$((fbx+fbi*20))" "$((fby-hh))" "$hh" "$TEAL"
         fbi=$((fbi+1))
       done
-      printf '<text x="%d" y="%d" %s font-size="11" font-weight="600" fill="%s" text-anchor="end">published ✓</text>\n' "$((DOC_X+DOC_W-16))" 200 "$FONT" "$TEAL"
+      printf '<text x="%d" y="%d" %s font-size="13" font-weight="600" fill="%s" text-anchor="end">published ✓</text>\n' "$((DOC_X+DOC_W-16))" 200 "$FONT" "$TEAL"
     else
       # empty dashed figure slot waiting
       printf '<rect x="%d" y="184" width="%d" height="68" rx="7" fill="none" stroke="%s" stroke-width="2" stroke-dasharray="6 5"/>\n' "$((DOC_X+16))" "$((DOC_W-32))" "$DIM"

@@ -44,16 +44,20 @@ For a standalone diagram/chart, render it to PNG and read that (`mmdc -i fig.mmd
 `dot -Tpng -Gdpi=192`; `-s` is mermaid-cli's raster scale and applies to PNG, not SVG). Then `Read` each
 PNG — no API key, built-in vision.
 
-## The two lenses (assign one, or run both)
+## The lenses (assign one, or run several)
 
 | Lens | Agent | Reads | Holds |
 |---|---|---|---|
+| **Layout / legibility** | [`agents/layout-reviewer.md`](agents/layout-reviewer.md) | each rendered **figure** (the inline ~640px strip + full-res) | the at-a-glance **gate** — edge-clip, overlap, crowding, vertical clipping, z-index/occlusion, min-text-size, inline-legibility at ~640px — **run BEFORE taste** ([`references/layout-canon.md`](references/layout-canon.md)) |
 | **Typography / DTP** | [`agents/typographic-reviewer.md`](agents/typographic-reviewer.md) | the rendered **page** | measure, leading, modular scale, baseline grid, widows/orphans, hierarchy, figure-page balance, tables, **document accessibility (PDF/UA + WCAG 2.2 — a hard gate)** ([`references/typography-canon.md`](references/typography-canon.md)) |
 | **Data-viz / charting** | [`agents/dataviz-reviewer.md`](agents/dataviz-reviewer.md) | each **figure/chart** | data-ink, chartjunk, the Cleveland–McGill perception ranking, Bertin's visual variables, colour-blind-safe palettes ([`references/dataviz-canon.md`](references/dataviz-canon.md)) |
 | **Image-aesthetic / generative** | [`agents/image-aesthetic-reviewer.md`](agents/image-aesthetic-reviewer.md) | a **generative raster** (ComfyUI output / contact-sheet) | category-fit, prompt-adherence, artifact-freedom (anatomy/geometry/gibberish-text), composition, dark-mode/doc suitability ([`references/image-aesthetic-canon.md`](references/image-aesthetic-canon.md)) — feeds the [model survey](../model-survey/SKILL.md) + [`comfyui-model-guide`](../../knowledge/comfyui-model-guide.md) |
 
-Both share the **4×9 charting-matrix** legibility law with the diagram producers (not forked) and feed the
-same lessons log. Both also run in a **comparative (A/B) mode** when the [`illustrator`](../illustrator/SKILL.md)
+The **Layout / legibility** lens is a **gate, not graded taste**: it runs **first**, and the three taste
+lenses score a figure only after its floor passes — a clean, on-prompt image whose caption is clipped is
+*broken*, not "strong-with-a-nit", so no taste score is computed until the layout gate is clean. The taste
+lenses share the **4×9 charting-matrix** legibility law with the diagram producers (not forked) and feed the
+same lessons log. The lenses also run in a **comparative (A/B) mode** when the [`illustrator`](../illustrator/SKILL.md)
 hands them *two* options instead of one — score each, crown a winner, and refuse to call it the *best* until
 it earns it (the [`references/ab-comparative-loop.md`](references/ab-comparative-loop.md), sibling to the
 convergent loop below).

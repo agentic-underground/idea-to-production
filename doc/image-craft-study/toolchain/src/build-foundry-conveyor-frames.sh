@@ -8,6 +8,11 @@
 # Dark-mode canon: ground #1e1e2e; teal #5eead4 done/green; amber #fbbf24 current; red failing test;
 # dim #3a3a55 pending; muted #6b7280 text.
 set -euo pipefail
+# Source the shared crafted-primitive library (the home of the in-vector line-art uplift).
+# Resolve its path relative to THIS generator so it works regardless of cwd.
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=diagram-primitives.sh
+source "$HERE/diagram-primitives.sh"
 OUT="${1:-/tmp/foundry-conveyor-frames}"; mkdir -p "$OUT"
 STAGES=(IDEA EARS TESTS IMPL GREEN SHIP)
 N=${#STAGES[@]}
@@ -22,60 +27,55 @@ emit() {
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="#1e1e2e"/>\n'
-    printf '<defs>\n'
-    printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
-    printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
-    printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
-    printf '</defs>\n'
+    # shared crafted <defs> (dg/bgb/ns + the uplift shading gradients) via the library
+    prim_defs
     printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
     printf '<text x="%d" y="48" font-family="DejaVu Sans, Arial, sans-serif" font-size="25" font-weight="700" fill="#e8e8ef" text-anchor="middle">the test-first value conveyor · idea ▸ product</text>\n' "$((W/2))"
-    # the conveyor rail
-    printf '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="#2a2a40" stroke-width="6"/>\n' "$PAD" "$CY" "$((W-PAD))" "$CY"
-    # teal fill of rail up to the token (cleared track)
+    # the conveyor RAIL — base track + lit top edge, plus the teal "cleared" overlay up to
+    # the token (the lit/done track). Crafted via prim_rail (rail:lit-overlay).
     if [ "$at" -ge 1 ]; then
       local railend=$(( at < N ? PAD + at*GAP : W-PAD ))
-      printf '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="6" opacity="0.45"/>\n' "$PAD" "$CY" "$railend" "$CY" "$TEAL"
+      prim_rail "$PAD" "$CY" "$((W-PAD))" "$PRIM_RAILBASE" "$PRIM_SW_RAIL" "$railend" "$TEAL"
+    else
+      prim_rail "$PAD" "$CY" "$((W-PAD))"
     fi
     for i in $(seq 0 $((N-1))); do
       x=$((PAD + i*GAP))
-      glow=""
+      # state word (drives prim_node face colour) + the original per-state radius + an
+      # optional attention HALO colour for the active/red gate.
+      local st halo=""
       if [ "$i" -lt "$at" ]; then
-        # already cleared by the token → latched teal (done)
-        col="$TEAL"; r=18; tcol="$TXTL"; op=0.95
+        # already cleared by the token → latched teal (gate:latch — done)
+        st="done"; r=18
       elif [ "$i" -eq "$at" ]; then
-        # the gate the token currently sits on → current/amber
-        col="$AMBER"; r=23; tcol="$TXTL"; op=1.0
+        # the gate the token currently sits on → current/amber (halo: attention-pulse)
+        st="current"; r=23; halo="$AMBER"
       else
-        col="$DIM"; r=14; tcol="$TXTD"; op=0.85
+        st="pending"; r=14
       fi
-      # TESTS gate special-cases the red→green spine:
+      # TESTS gate special-cases the red→green spine (gate:flip):
       if [ "$i" -eq "$tests_idx" ]; then
         if [ "$tg" -eq 1 ]; then
           # has flipped green
-          col="$TEAL"; tcol="$TXTL"; op=0.95
+          st="done"
           [ "$i" -ge "$at" ] && r=18
+          [ "$i" -eq "$at" ] && halo="$TEAL"
         elif [ "$at" -ge "$tests_idx" ]; then
           # token has reached/passed TESTS but impl not done → failing test glows RED
-          col="$RED"; tcol="$TXTL"; op=1.0; r=23
-          glow="$RED"
+          st="failing"; r=23; halo="$RED"
         fi
       fi
-      # soft glow ring for the active / red gate
-      if [ -n "$glow" ]; then
-        printf '<circle cx="%d" cy="%d" r="%d" fill="none" stroke="%s" stroke-width="3" opacity="0.35"/>\n' "$x" "$CY" "$((r+9))" "$glow"
-      fi
-      printf '<circle cx="%d" cy="%d" r="%d" fill="%s" opacity="%s" filter="url(#ns)"/>\n' "$x" "$CY" "$r" "$col" "$op"
-      # check-mark inside latched-teal gates
-      if [ "$col" = "$TEAL" ]; then
-        printf '<path d="M %d %d l %d %d l %d %d" stroke="#0f2e28" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>\n' \
-          "$((x-7))" "$((CY+1))" "5" "6" "10" "-13"
-      fi
-      printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" font-weight="600" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((CY-42))" "$tcol" "${STAGES[$i]}"
+      # attention HALO ring for the active / red gate (kept just outside the disc edge)
+      [ -n "$halo" ] && prim_halo "$x" "$CY" "$((r+9))" "$halo"
+      # the crafted NODE — shaded disc, sheen, lit rim, soft shadow + its label
+      prim_node "$x" "$CY" "$r" "$st" "${STAGES[$i]}"
+      # check-mark inside latched / flipped-green gates (gate:latch ✓)
+      [ "$st" = "done" ] && prim_node_check "$x" "$CY" "$r"
     done
-    # the IDEA token — a bright marker riding the rail
+    # the IDEA TOKEN — a bright ringed marker riding the rail (token:ride)
     if [ "$at" -lt "$N" ]; then
       tx=$((PAD + at*GAP))
-      printf '<circle cx="%d" cy="%d" r="7" fill="#1e1e2e" stroke="#e8e8ef" stroke-width="2.5"/>\n' "$tx" "$CY"
+      prim_token "$tx" "$CY"
     fi
     # the spine caption — names what the motion teaches, changes with state
     if [ "$tg" -eq 1 ]; then
