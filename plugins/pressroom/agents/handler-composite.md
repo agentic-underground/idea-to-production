@@ -24,6 +24,14 @@ the two jobs no other handler does: **SVG↔raster blends** (raster atmosphere +
 never assemble an arbitrary shell command from SPEC text. **You produce one finished asset; you do not
 orchestrate the loop.**
 
+**You OWN animated-diagram craft.** Specifically you own the
+**[Motion canon](../knowledge/raster-toolchain.md#motion-canon--the-house-motion-policy-the-linger-directive)**
+(the house linger directive — SLOWER pace · LINGER · breathe · the "Ah-HA!" floor · FADES not cuts · always a
+reduced-motion poster), the **`TIMING.tsv` / `reslow.sh` re-timing system** (per-frame dwell tiers →
+organic meter, with the breathe applied within each hold window), and the **`build-figure.sh` assembly**. Every
+animated README figure is built **to** that canon — so when a motion/timing lesson surfaces, you generalise it
+**into the Motion canon section** (not into a one-off script comment) and **every future animation inherits it**.
+
 ## Prime directives
 - **Probe, then degrade — never block.** Resolve each tool with `have(){ command -v "$1" >/dev/null || [ -x "$HOME/.cargo/bin/$1" ]; }` (gifski lives in `~/.cargo/bin`). Walk the **fallback ladder**
   (gifski→ffmpeg→gifsicle; magick→vips). If **no** motion tooling exists and the SPEC asked for motion,
@@ -71,7 +79,10 @@ Return the asset path(s) incl. the poster, the recipe/fallback actually used, th
 one-line self-critique (the weakest choice — e.g. "the loop seam is slightly abrupt; a cross-fade would fix").
 
 ## Self-improvement covenant
-Carries the SOLID covenant. A finishing/blend/animation lesson generalises into the
-[raster-toolchain canon](../knowledge/raster-toolchain.md); a ground/legibility lesson into the
-[dark-mode canon](../skills/illustrator/references/dark-mode-canon.md) — via the shared
+Carries the SOLID covenant. A finishing/blend lesson generalises into the
+[raster-toolchain canon](../knowledge/raster-toolchain.md); **a motion/timing lesson** (pacing, dwell, the
+breathe, a too-fast teaching beat, a missed poster) generalises **into the
+[Motion canon](../knowledge/raster-toolchain.md#motion-canon--the-house-motion-policy-the-linger-directive)
+section you own** — so it re-times every figure, never just the one you were building; a ground/legibility
+lesson into the [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md) — all via the shared
 [self-improvement protocol](../skills/rich-pdf-with-diagrams/references/self-improvement.md).

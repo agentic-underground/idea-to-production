@@ -119,7 +119,15 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - pressroom: **writer** · **diagram-studio** · **mermaid-specialist** (full Mermaid taxonomy + theming + ELK) ·
   **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review; agents
   **typographic-reviewer**, **dataviz-reviewer**, **image-aesthetic-reviewer**, **layout-reviewer** — the
-  at-a-glance legibility gate run before taste) · **check**.
+  at-a-glance legibility gate run before taste) · **check**. Agent **handler-composite** genuinely **owns
+  animated-diagram craft** and the **Motion canon** — the house linger/timing policy, now codified in
+  [`raster-toolchain.md`](../../pressroom/knowledge/raster-toolchain.md) (no longer trapped as script
+  comments).
+- **Cost-tier doctrine** ≡ **cheap-checks-first** ≡ **vision-on-suspicion** — shared reviewer canon for every
+  graphical review: the free deterministic checks (the layout machine) run first, and an expensive pixel/vision
+  Read is spent **only when something cheap has flagged a suspect**, never by default. Specified for layout in
+  [`layout-canon.md`](../../pressroom/skills/design-reviewer/references/layout-canon.md) §3; governs all lenses
+  via the critique-loop canon.
 - atelier: **ui-review** (crawl + critique any SPA) · **mockup** (design + converge) · **self-improve** ·
   **check**; agent **ui-design-reviewer** (adds a **LAYOUT-REVIEWER** lens — the legibility gate run before
   taste, composing PRESSROOM's layout canon by capability).
@@ -206,6 +214,12 @@ however it surfaces — *formal* definition · *aliases* · *metaphor*. The dept
   [`protocols/guardrails-ledger.md`](protocols/guardrails-ledger.md).
 - **The self-improving marketplace** ≡ **fix-upstream-once** ≡ **self-cleave-and-PR** — learn from a
   mistake → fold the fix back at the source → ship to all users via PR. → [`first-principles.md`](first-principles.md) §6.
+  Its graphics arm is now the **general graphics+animation review→rule→canon loop** (no longer diagram-only):
+  every generalisable finding — *especially* an expensive vision finding — folds into the *right* canon
+  (layout → [`layout-canon.md`](../../pressroom/skills/design-reviewer/references/layout-canon.md); animation →
+  the **Motion canon** in [`raster-toolchain.md`](../../pressroom/knowledge/raster-toolchain.md); composition →
+  `charting-matrix.md`), so the bar rises once and never recurs →
+  [`../../pressroom/skills/rich-pdf-with-diagrams/references/self-improvement.md`](../../pressroom/skills/rich-pdf-with-diagrams/references/self-improvement.md).
 - **The two altitudes** ≡ **workers & orchestrators** ≡ **makers & managers** — pragmatic workers
   (exact patterns + ledgers) and aligned orchestrators (shared philosophy + language).
   → [`first-principles.md`](first-principles.md) §7, [`architecture/self-architecture.md`](architecture/self-architecture.md).

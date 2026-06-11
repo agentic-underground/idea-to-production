@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # reslow.sh — universal, generator-agnostic re-timer for the animated README figures.
-# Implements the house motion policy (art-direction note, 2026-06-10): SLOWER pace, LINGER on each frame with
-# the slightest pulse (a gentle brightness breathe, not a flicker), and STAY on the final frame a lot longer
-# before looping. Operates on the FINISHED gif (coalesce -> re-time -> reassemble), so it works on every figure
-# regardless of how its generator emits frames. 0-GPU, deterministic, parameter-only.
+# Implements the house Motion canon — see plugins/pressroom/knowledge/raster-toolchain.md '## Motion canon'
+# (that doc is the source of truth; this script is its implementation). In short: SLOWER pace, LINGER on each
+# frame with a gentle brightness breathe (the PULSE, never a flicker), per-frame holds from a TIMING.tsv for
+# organic meter (dense "Ah-HA!" beats linger, transitions flick), and a long settled dwell before the loop.
+# Operates on the FINISHED gif (coalesce -> re-time -> reassemble), so it works on every figure regardless of
+# how its generator emits frames. 0-GPU, deterministic, parameter-only.
 #
 # Two timing modes (B2 — organic meter & linger):
 #   * TIMING.tsv mode — when a TIMING.tsv is given as $3 (or env TIMING_TSV) AND it exists AND its row count

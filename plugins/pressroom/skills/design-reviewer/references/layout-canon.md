@@ -112,6 +112,13 @@ This is the **SCREEN** sibling of the **PRINT** law in the charting matrix: the 
 the inline-legibility rule fixes it against the **reader's column**. Link, don't overload its name — the print
 rule is the charting matrix's; this is its screen cross-reference.
 
+**How to apply — author above the floor, don't fix below it.** The §5 rule is a detector; this is the
+authoring discipline that keeps it green. Size every caption and label so it clears the floor at the figure's
+**embed width** *before* assembly — for a ~1280px-wide figure that means `font-size ≥ ~13` (→ ≥6.5px inline);
+solve `font_size ≥ FLOOR × svg_width / 640` for whatever your canvas width actually is. Never ship a sub-floor
+caption, and run `layout-check.sh` before assembly so the smallest text element is proven above the floor at
+source-time — not caught after it has already rendered as a smear.
+
 ## 6. Exemptions — measured, not vibe
 
 - **Masthead** — self-exempts via large text. The §5 maths leaves its wordmark above the floor; **no
