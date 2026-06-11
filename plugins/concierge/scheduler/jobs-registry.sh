@@ -55,15 +55,17 @@ case "$cmd" in
     jq -c --arg id "$id" '(.jobs // []) | map(select(.id == $id)) | .[0] // {}' "$PROJ"
     ;;
 
-  arm)  # mark a job armed (cron re-created) for THIS session — call after CronCreate succeeds
-    id="${3:-}"; ensure "$PROJ"
-    write_atomic "$PROJ" '.jobs = ((.jobs // []) | map(if .id == $id then .armed = true else . end))' --arg id "$id"
-    echo "jobs-registry: armed ${id}"
+  arm)  # mark a job armed; method = oscron (durable, survives restart) | session (CronCreate, ephemeral)
+    id="${3:-}"; method="${4:-session}"; ensure "$PROJ"
+    write_atomic "$PROJ" '.jobs = ((.jobs // []) | map(if .id == $id then (.armed = true | .armed_via = $m) else . end))' \
+      --arg id "$id" --arg m "$method"
+    echo "jobs-registry: armed ${id} (via ${method})"
     ;;
 
-  reset-armed)  # SessionStart calls this: a fresh session has NO live crons (CronCreate is session-only)
+  reset-armed)  # SessionStart calls this. CronCreate (session) crons die with the session; OS-cron does
+                # NOT — so keep armed_via:oscron armed, clear only ephemeral session arming.
     ensure "$PROJ"
-    write_atomic "$PROJ" '.jobs = ((.jobs // []) | map(.armed = false))'
+    write_atomic "$PROJ" '.jobs = ((.jobs // []) | map(if (.armed_via // "session") == "oscron" then . else (.armed = false) end))'
     ;;
 
   remove)

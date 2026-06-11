@@ -18,6 +18,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REG="${HERE}/jobs-registry.sh"
 CAL_SH="${HERE}/calibrate.sh"
 CAL="${I2P_CALIBRATION_FILE:-${HOME}/.claude/state/i2p-cost/calibration.json}"
+SIG="${I2P_SIGNAL_FINDINGS:-${HOME}/.claude/state/i2p-cost/signal-findings.json}"
 
 dir="."; mode="full"
 for a in "$@"; do case "$a" in
@@ -39,6 +40,7 @@ print_scheduled() {
     cron="$(printf '%s' "$j" | jq -r '.cron // "—"')"
     budget="$(printf '%s' "$j" | jq -r '.budget_total // 0')"
     armed="$(printf '%s' "$j" | jq -r '.armed // false')"
+    armed_via="$(printf '%s' "$j" | jq -r '.armed_via // "session"')"
     ledger_rel="$(printf '%s' "$j" | jq -r '.ledger // empty')"
     note="$(printf '%s' "$j" | jq -r '.note // empty')"
     lf="${dir%/}/${ledger_rel#./}"
@@ -55,8 +57,12 @@ print_scheduled() {
     printf '  • %s — cron "%s" · budget %s\n' "$id" "$cron" "$(fmt_tok "$budget")"
     printf '      %s\n' "$progress"
     [ -n "$note" ] && printf '      ↳ %s\n' "$note"
-    if [ "$armed" != "true" ]; then
-      printf '      ⚠ NOT armed this session — re-arm the cron (CronCreate) so it fires; until then it is paused.\n'
+    if [ "$armed" = "true" ] && [ "$armed_via" = "oscron" ]; then
+      printf '      ✓ OS-cron armed — fires even with Claude closed (machine awake); survives restarts.\n'
+    elif [ "$armed" = "true" ]; then
+      printf '      ✓ armed this session (in-session cron; re-arm needed after a restart).\n'
+    else
+      printf '      ⚠ NOT armed — install OS-cron (install-oscron.sh) or re-arm the in-session cron.\n'
     fi
   done
 }
@@ -68,7 +74,8 @@ print_estimator() {
     c="$(bash "$CAL_SH" confidence "$k" 2>/dev/null)"
     s="$(printf '%s' "$c" | jq -r '.samples')"; mr="$(printf '%s' "$c" | jq -r '.mean_ratio')"
     band="$(printf '%s' "$c" | jq -r '.p95_band_pct')"; tier="$(printf '%s' "$c" | jq -r '.tier')"
-    printf '  %-22s %3s samples · mean×%s · p95 ±%s%% · %s\n' "$k" "$s" "$mr" "$band" "$tier"
+    case "$(printf '%s' "$c" | jq -r '.trend')" in improving) ar="↑";; worsening) ar="↓";; *) ar="→";; esac
+    printf '  %-22s %3s samples · mean×%s · p95 ±%s%% · %s %s\n' "$k" "$s" "$mr" "$band" "$tier" "$ar"
   done
 }
 
@@ -76,16 +83,35 @@ case "$mode" in
   scheduled) print_scheduled ;;
   estimator) print_estimator ;;
   brief)
-    # Silent when there is genuinely nothing to say.
+    # Two tight key-indicator lines — a dashboard, not prose. Silent when there's nothing to say.
     [ "$n_jobs" -eq 0 ] && [ "$n_cal" -eq 0 ] && exit 0
+
+    # Line 1 — scheduler: first job's progress + how it's armed + the live-signal mode.
     if [ "$n_jobs" -gt 0 ]; then
-      unarmed="$(printf '%s' "$jobs_json" | jq '[.[] | select((.armed // false) != true)] | length')"
-      printf '🛡️ token-scheduler: %s scheduled job(s)' "$n_jobs"
-      [ "$unarmed" -gt 0 ] && printf ' — ⚠ %s need re-arming this session' "$unarmed"
-      printf '. '
+      j="$(printf '%s' "$jobs_json" | jq -c '.[0]')"
+      id="$(printf '%s' "$j" | jq -r '.id')"
+      armed="$(printf '%s' "$j" | jq -r '.armed // false')"; via="$(printf '%s' "$j" | jq -r '.armed_via // "session"')"
+      ledger_rel="$(printf '%s' "$j" | jq -r '.ledger // empty')"; lf="${dir%/}/${ledger_rel#./}"
+      prog="pending"
+      [ -n "$ledger_rel" ] && [ -r "$lf" ] && prog="$(jq -r '"\((.units.done|length))/\(.units.total) done"' "$lf" 2>/dev/null)"
+      if   [ "$armed" = "true" ] && [ "$via" = "oscron" ]; then armstr="OS-cron armed"
+      elif [ "$armed" = "true" ]; then armstr="armed (session)"
+      else armstr="⚠ NOT armed"; fi
+      sig="$( [ -r "$SIG" ] && jq -r '.guard_mode // "unknown"' "$SIG" 2>/dev/null || echo "unknown" )"
+      extra=""; [ "$n_jobs" -gt 1 ] && extra=" (+$((n_jobs-1)) more)"
+      printf '🛡️ Scheduler · %s %s · %s · signal: %s%s\n' "$id" "$prog" "$armstr" "$sig" "$extra"
     fi
-    [ "$n_cal" -gt 0 ] && printf 'Estimator: %s profile(s) calibrating. ' "$n_cal"
-    printf 'Run report.sh or ask how the estimator is doing for detail.\n'
+
+    # Line 2 — estimator: up to 2 representative profiles with band · tier · trend.
+    if [ "$n_cal" -gt 0 ]; then
+      line="$(jq -r 'keys[]' "$CAL" 2>/dev/null | sort | head -2 | while read -r k; do
+        c="$(bash "$CAL_SH" confidence "$k" 2>/dev/null)"
+        b="$(printf '%s' "$c" | jq -r '.p95_band_pct')"; t="$(printf '%s' "$c" | jq -r '.tier')"
+        case "$(printf '%s' "$c" | jq -r '.trend')" in improving) a="↑";; worsening) a="↓";; *) a="→";; esac
+        printf '%s ±%s%% %s %s · ' "$k" "$b" "$t" "$a"
+      done)"
+      printf '📈 Estimator · %s profiles · %s\n' "$n_cal" "${line% · }"
+    fi
     ;;
   *)
     print_scheduled; echo; print_estimator ;;

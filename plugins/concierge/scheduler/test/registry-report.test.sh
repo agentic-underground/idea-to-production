@@ -43,7 +43,7 @@ assert_eq "$(jq '[.jobs[] | select(.id=="job1")] | length' "$I2P_MACHINE_REGISTR
 test_case "scheduled report lists the job and flags unarmed"
 out="$(bash "$REPORT" "$TMP" --scheduled)"
 assert_contains "$out" "job2"
-assert_contains "$out" "NOT armed this session"
+assert_contains "$out" "NOT armed"
 
 test_case "estimator report shows calibration keys + tiers"
 bash "$CAL_SH" close plan:medium 1000 1100 >/dev/null
@@ -53,9 +53,10 @@ assert_contains "$out" "plan:medium"
 assert_contains "$out" "uplift-fanout"
 assert_contains "$out" "samples"
 
-test_case "brief is non-empty when a job exists"
+test_case "brief is non-empty when a job exists (key-indicator dashboard)"
 out="$(bash "$REPORT" "$TMP" --brief)"
-assert_contains "$out" "scheduled job"
+assert_contains "$out" "Scheduler ·"
+assert_contains "$out" "job2"
 
 test_case "brief is SILENT for an empty repo with no calibration"
 EMPTY="$(mktemp -d)"; export I2P_CALIBRATION_FILE="${EMPTY}/none.json"

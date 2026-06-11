@@ -38,6 +38,13 @@ case "$cmd" in
     ratio="$(awk -v a="$act" -v e="$est" 'BEGIN{ printf "%.4f", a/e }')"
     mkdir -p "$(dirname "$CAL")" 2>/dev/null
     [ -r "$CAL" ] || printf '{}\n' > "$CAL"
+    # Capture the band BEFORE this sample so the report can show a trend (tightening = improving).
+    oldn="$(jq -r --arg p "$name" '(.[$p].w_n // 0)' "$CAL" 2>/dev/null)"; case "$oldn" in (''|*[!0-9]*) oldn=0 ;; esac
+    oldmean="$(jq -r --arg p "$name" '(.[$p].w_mean // 1)' "$CAL" 2>/dev/null)"
+    oldm2="$(jq -r --arg p "$name" '(.[$p].w_m2 // 0)' "$CAL" 2>/dev/null)"
+    old_band="$(awk -v n="$oldn" -v mean="$oldmean" -v m2="$oldm2" 'BEGIN{
+      if(n+0<=0){print 60.0; exit} if(n>=2){var=m2/(n-1); if(var<0)var=0; sd=sqrt(var); b=(mean+0!=0?1.645*sd/mean*100:50)} else b=50;
+      if(n<5 && b<40)b=40; printf "%.1f", b }')"
     # EWMA ratio (legacy) PLUS Welford online mean/variance of the ratio (n, mean, m2) — additive.
     # Welford: n+=1; d=r-mean; mean+=d/n; m2+=d*(r-mean). Variance = m2/(n-1). This is what lets the
     # p95 confidence band TIGHTEN as samples accumulate (the visible convergence the user asked for).
@@ -50,7 +57,9 @@ case "$cmd" in
         | (.w_mean // 0) as $oldmean
         | ($r - $oldmean) as $delta
         | .w_mean = ($oldmean + $delta / .w_n)
-        | .w_m2 = ((.w_m2 // 0) + $delta * ($r - .w_mean)))' \
+        | .w_m2 = ((.w_m2 // 0) + $delta * ($r - .w_mean))
+        | .prev_band = $ob)' \
+      --argjson ob "$old_band" \
       "$CAL" > "${CAL}.tmp.$$" && mv -f "${CAL}.tmp.$$" "$CAL"
     jq -r --arg p "$name" '.[$p].ratio_ewma' "$CAL" 2>/dev/null || echo "1.0"
     ;;
@@ -62,15 +71,19 @@ case "$cmd" in
     n="$( [ -r "$CAL" ] && jq -r --arg p "$name" '(.[$p].w_n // 0)' "$CAL" 2>/dev/null || echo 0 )"
     mean="$( [ -r "$CAL" ] && jq -r --arg p "$name" '(.[$p].w_mean // 1)' "$CAL" 2>/dev/null || echo 1 )"
     m2="$( [ -r "$CAL" ] && jq -r --arg p "$name" '(.[$p].w_m2 // 0)' "$CAL" 2>/dev/null || echo 0 )"
+    prev="$( [ -r "$CAL" ] && jq -r --arg p "$name" '(.[$p].prev_band // -1)' "$CAL" 2>/dev/null || echo -1 )"
     case "$n" in (''|*[!0-9]*) n=0 ;; esac
-    awk -v n="$n" -v mean="$mean" -v m2="$m2" 'BEGIN{
-      if (n+0 <= 0) { printf "{\"samples\":0,\"mean_ratio\":1.0000,\"sd\":0.0000,\"p95_band_pct\":60.0,\"tier\":\"SEEDING\"}\n"; exit }
+    case "$prev" in (''|*[!0-9.-]*) prev=-1 ;; esac
+    awk -v n="$n" -v mean="$mean" -v m2="$m2" -v prev="$prev" 'BEGIN{
+      if (n+0 <= 0) { printf "{\"samples\":0,\"mean_ratio\":1.0000,\"sd\":0.0000,\"p95_band_pct\":60.0,\"tier\":\"SEEDING\",\"prev_band\":%.1f,\"trend\":\"flat\"}\n", prev; exit }
       if (n >= 2) { var = m2/(n-1); if (var < 0) var = 0; sd = sqrt(var); band = (mean+0!=0 ? 1.645*sd/mean*100 : 50) }
       else { sd = 0; band = 50 }
       if (n < 5) { tier = "CALIBRATING"; if (band < 40) band = 40 }
       else if (n >= 10 && band <= 15) tier = "CONVERGED";
       else tier = "CONVERGING";
-      printf "{\"samples\":%d,\"mean_ratio\":%.4f,\"sd\":%.4f,\"p95_band_pct\":%.1f,\"tier\":\"%s\"}\n", n, mean, sd, band, tier;
+      trend = "flat";
+      if (prev >= 0) { if (band < prev - 0.05) trend = "improving"; else if (band > prev + 0.05) trend = "worsening" }
+      printf "{\"samples\":%d,\"mean_ratio\":%.4f,\"sd\":%.4f,\"p95_band_pct\":%.1f,\"tier\":\"%s\",\"prev_band\":%.1f,\"trend\":\"%s\"}\n", n, mean, sd, band, tier, prev, trend;
     }'
     ;;
 

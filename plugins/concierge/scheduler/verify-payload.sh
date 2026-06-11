@@ -13,32 +13,9 @@ command -v jq >/dev/null 2>&1 || exit 0
 state="${I2P_COST_STATE_DIR:-${HOME}/.claude/state/i2p-cost}"
 log="${state}/payload-probe.jsonl"
 
-# --report : summarise what the probe has captured so far — the answer to the [VERIFY] questions.
+# --report : show the CONCLUDED verdict (signal-probe owns the analysis now — no manual steps).
 if [ "${1:-}" = "--report" ]; then
-  if [ ! -r "$log" ]; then
-    echo "No probe data yet at $log."
-    echo "Register the probe (it's in .claude/settings.local.json) and use Claude normally — especially"
-    echo "spawn a sub-agent or two so PreToolUse(Agent|Task) fires. Then re-run with --report."
-    exit 0
-  fi
-  echo "Payload probe — does each hook event carry the LIVE .rate_limits signal?"
-  echo "(source: $log)"
-  echo
-  jq -rs '
-    group_by([.hook_event, .tool])[]
-    | { event:(.[0].hook_event // "unknown"), tool:(.[0].tool // "—"),
-        fires:length,
-        with_rate_limits:(map(select(.has_rate_limits))|length),
-        sample_pct:((map(.five_hour_pct)|map(select(.!=null))|first) // null),
-        with_cost:(map(select(.has_cost))|length) }
-    | "  \(.event)/\(.tool): \(.fires) fires · rate_limits in \(.with_rate_limits)/\(.fires) · cost in \(.with_cost)/\(.fires)\(if .sample_pct!=null then " · e.g. five_hour=\(.sample_pct)%" else "" end)"
-  ' "$log"
-  echo
-  echo "Reading the result:"
-  echo "  • rate_limits present on PreToolUse/Agent or /Task → preflight-fanout.sh can be a HARD backstop."
-  echo "  • rate_limits absent there → rely on the orchestration discipline + the snapshot bridge."
-  echo "When done, remove the \"hooks\" block from .claude/settings.local.json to unregister the probe."
-  exit 0
+  exec bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/signal-probe.sh" report
 fi
 
 payload=""; [ -t 0 ] || payload="$(cat 2>/dev/null || true)"

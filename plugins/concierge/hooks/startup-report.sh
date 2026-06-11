@@ -25,15 +25,18 @@ bash "$REG" reset-armed "$cwd" >/dev/null 2>&1 || true
 brief="$(bash "$REPORT" "$cwd" --brief 2>/dev/null || true)"
 [ -n "$brief" ] || exit 0   # nothing scheduled, no calibration → stay silent
 
-jobs="$(bash "$REG" list "$cwd" 2>/dev/null || echo '[]')"
-njobs="$(printf '%s' "$jobs" | jq 'length' 2>/dev/null || echo 0)"
+ctx="CONCIERGE token-scheduler — session-safe startup. Durable scheduled jobs live in ${cwd}/.i2p/scheduled-jobs.json (ledgers in .i2p/jobs/). The DURABLE arming path is OS-cron (\`bash ${SCHED_DIR}/install-oscron.sh ${cwd} <id>\`, then \`jobs-registry.sh arm ${cwd} <id> oscron\`) — it survives Claude being closed (machine awake). A job shown as '⚠ NOT armed' should be offered OS-cron (or, ephemerally, an in-session CronCreate re-arm). Full picture: \`bash ${SCHED_DIR}/report.sh ${cwd}\`. When the user asks 'how's the estimator doing?', run \`bash ${SCHED_DIR}/report.sh ${cwd} --estimator\`."
 
-ctx="CONCIERGE token-scheduler — session-safe startup. Durable scheduled jobs live in ${cwd}/.i2p/scheduled-jobs.json with their ledgers in .i2p/jobs/. CronCreate is session-only, so on THIS fresh session none are armed. If the user wants them to keep running: for each job, FIRST run CronList to avoid duplicates, then CronCreate with the job's stored \`cron\` and the prompt from its \`prompt_file\`, then mark it armed via \`bash ${SCHED_DIR}/jobs-registry.sh arm ${cwd} <id>\`. To show the full picture run \`bash ${SCHED_DIR}/report.sh ${cwd}\` (scheduled jobs + estimator convergence). When the user asks 'how's the estimator doing?', run \`bash ${SCHED_DIR}/report.sh ${cwd} --estimator\`."
+# Key indicators: the (≤2) dashboard lines, verbatim.
+msg="$brief"
 
-if [ "$njobs" -gt 0 ]; then
-  msg="$(printf '%s' "$brief" | head -1)"$'\n'"   Re-arm with CronCreate to resume; I can do that for you. Ask \"how's the estimator doing?\" for convergence."
-else
-  msg="$(printf '%s' "$brief" | head -1)"
+# Periodic tip (line 3) — throttled to ~once/day so it teaches without nagging.
+tipfile="${HOME}/.claude/hook-state/scheduler-tip-last"
+now_epoch="$(date +%s 2>/dev/null || echo 0)"
+last_tip=0; [ -r "$tipfile" ] && last_tip="$(cat "$tipfile" 2>/dev/null | tr -dc '0-9')"; [ -n "$last_tip" ] || last_tip=0
+if [ $(( now_epoch - last_tip )) -ge 72000 ]; then   # 20 h
+  msg="${msg}"$'\n'"💡 ask \"how's the estimator doing?\" for the full convergence report"
+  mkdir -p "$(dirname "$tipfile")" 2>/dev/null && printf '%s' "$now_epoch" > "$tipfile" 2>/dev/null || true
 fi
 
 jq -cn --arg m "$msg" --arg c "$ctx" \

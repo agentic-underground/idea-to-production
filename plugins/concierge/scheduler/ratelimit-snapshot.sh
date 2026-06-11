@@ -31,4 +31,15 @@ now="$(date +%s 2>/dev/null || echo 0)"
 printf '%s' "$payload" | jq -c --argjson at "$now" '
   { captured_at:$at, rate_limits:(.rate_limits // {}), cost:(.cost // {}) }' \
   > "${snap}.tmp.$$" 2>/dev/null && mv -f "${snap}.tmp.$$" "$snap" 2>/dev/null
+
+# Forward-compat self-update: we just proved THIS event delivers the live signal. If the standing
+# verdict says otherwise (or is absent), flip it — so signal-probe findings never go stale if a
+# future harness build starts delivering .rate_limits on hooks. Cheap, and only runs on a real write.
+evt="$(printf '%s' "$payload" | jq -r '.hook_event_name // .hookEventName // "unknown"' 2>/dev/null)"
+findings="${state}/signal-findings.json"
+[ -r "$findings" ] || printf '{"events":{}}' > "$findings"
+jq -c --arg e "$evt" --argjson at "$now" '
+  .verdict = "hook-signal-available" | .guard_mode = "live-ceiling" | .concluded_at = $at
+  | .events[$e] = ((.events[$e] // {fires:0,with_rate_limits:0}) | .present = true)' \
+  "$findings" > "${findings}.tmp.$$" 2>/dev/null && mv -f "${findings}.tmp.$$" "$findings" 2>/dev/null
 exit 0
