@@ -87,7 +87,7 @@ emit() {
     [ "$gate" -eq 1 ] && acol="$TEAL"
     printf '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="3" opacity="0.8"/>\n' "$((SX+SW+12))" "$((SY+SH/2))" "$((RX-14))" "$((SY+SH/2))" "$acol"
     printf '<path d="M %d %d l -11 -6 l 0 12 z" fill="%s"/>\n' "$((RX-14))" "$((SY+SH/2))" "$acol"
-    printf '<text x="%d" y="%d" font-family="DejaVu Sans" font-size="12" fill="%s" text-anchor="middle">review</text>\n' "$(( SX+SW+12 + (RX-14-(SX+SW+12))/2 ))" "$((SY+SH/2-10))" "$acol"
+    printf '<text x="%d" y="%d" font-family="DejaVu Sans" font-size="14" fill="%s" text-anchor="middle">review</text>\n' "$(( SX+SW+12 + (RX-14-(SX+SW+12))/2 ))" "$((SY+SH/2-10))" "$acol"
 
     # ---- RIGHT: the design-fitness rubric, criteria resolving to green ----
     printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="700" fill="%s">design-fitness rubric</text>\n' "$RX" "$((RY+2))" "$TXTL"

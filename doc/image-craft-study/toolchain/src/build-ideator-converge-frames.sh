@@ -81,7 +81,7 @@ emit() {
       printf '<rect x="%d" y="%d" width="120" height="46" rx="9" fill="%s" opacity="0.16" filter="url(#ns)"/>\n' "$((x-60))" "$((y-23))" "$col"
       printf '<rect x="%d" y="%d" width="120" height="46" rx="9" fill="none" stroke="%s" stroke-width="2"/>\n' "$((x-60))" "$((y-23))" "$col"
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="700" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((y-1))" "$col" "${LBL[$i]}"
-      printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="10.5" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((y+15))" "$TXTD" "${SUB[$i]}"
+      printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="13" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((y+15))" "$TXTD" "${SUB[$i]}"
       printf '</g>\n'
     done
 
@@ -99,7 +99,7 @@ emit() {
       printf '<g transform="translate(%d %d) rotate(%s)">\n' "1085" "$CY" "$rot"
       printf '<rect x="-74" y="-30" width="148" height="60" rx="9" fill="none" stroke="%s" stroke-width="4"/>\n' "$scol"
       printf '<text x="0" y="9" font-family="DejaVu Sans, Arial, sans-serif" font-size="29" font-weight="800" fill="%s" text-anchor="middle" letter-spacing="2">READY</text>\n' "$scol"
-      printf '<text x="0" y="30" font-family="DejaVu Sans, Arial, sans-serif" font-size="11" font-weight="600" fill="%s" text-anchor="middle" opacity="0.85">the challenger</text>\n' "$scol"
+      printf '<text x="0" y="30" font-family="DejaVu Sans, Arial, sans-serif" font-size="13" font-weight="600" fill="%s" text-anchor="middle" opacity="0.85">the challenger</text>\n' "$scol"
       printf '</g>\n'
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="13" fill="%s" text-anchor="middle">challenger signs off · knowledge-parity reached → hand off to FOUNDRY</text>\n' "$CX" "$((H-22))" "$scol"
     else
