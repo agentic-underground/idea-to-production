@@ -26,13 +26,20 @@
 # HEURISTICS SHIPPED (tuned against real committed renders so they actually discriminate) ---------------
 #   [1] EDGE-CLIP-BY-PIXEL  (SOLID) — ink in the outermost 3px border strip of the canvas. Real figures read
 #       0.000 on every edge; a label sheared past the frame reads >0.01. Floor: EDGE_FRAC=0.01.
-#   [2] CROWDING / DENSITY  (SOLID, advisory-grade) — per-tile ink fraction on an 8×4 grid. Flags a tile so
-#       packed it implies overlap. Real dense art tops out ~0.165/tile; overlapping text hits ~0.38.
-#       Floor: CROWD_FRAC=0.28 (well above legitimate density, so it stays quiet on real figures).
+#   [2] CROWDING / DENSITY  (advisory-grade) — per-tile ink fraction on an 8×4 grid. Flags a tile packed
+#       beyond any legitimate fill. A figure's OWN solid fills (mockup placeholder blocks, filled bars) are
+#       legitimately dense — the committed corpus reaches 0.69 on such a block — and ink fraction alone
+#       cannot separate a solid fill from pathological overlap. Floor: CROWD_FRAC=0.72, above the corpus's
+#       legitimate solid-fill maximum, so only a near-solid region beyond any expected fill trips. Subtler
+#       overlap is deliberately conceded to the vision-backstop.
 #   [3] THIN-BRIGHT-LINE-THROUGH-TEXT / OCCLUSION  (SOLID for HORIZONTAL; partial for vertical) — a thin
-#       bright stroke is isolated with a long line-morphology open, then required to COINCIDE with a
-#       text-dense tile across a contiguous run (≥ RUN_MIN tiles) on a 16×8 grid. Catches a connector /
-#       underline laid across a label.
+#       bright stroke is isolated with a long line-morphology open, then required to cross a genuinely
+#       TEXT-DENSE tile (ink ≥ OCC_TEXT) while being a MINORITY of that tile's ink (line ≤ OCC_RATIO × ink)
+#       across a contiguous run (≥ OCC_RUN tiles) on a 16×8 grid. The minority rule is what discriminates a
+#       stroke laid ACROSS text (line ≈ 8–15% of local ink) from a figure's OWN structural bright element —
+#       a bar, banner, conveyor rail, radar spine, or connector arrow — which IS essentially all the ink in
+#       its tile (line ≈ 60–100% of local ink) and so reads as line+text under a naive coincidence test. A
+#       textless bright bar fails the OCC_TEXT floor outright; a bar the label sits BESIDE fails OCC_RATIO.
 #
 # WHAT STAYS VISION-ONLY (documented honestly) ----------------------------------------------------------
 #   • SUBTLE VERTICAL occlusion (a thin vertical line crossing a small label) — a single vertical stroke
@@ -40,6 +47,8 @@
 #     dense text DO trip; subtle ones are left to the reviewer's eye.
 #   • SEMANTIC overlap (two labels that touch but neither tile is fully packed), z-order where the occluder
 #     matches the background, and any "is this the RIGHT content" judgement — all the reviewer's eye.
+#   • SUBTLE crowding/overlap below the solid-fill floor — see [2]; ink fraction cannot tell it from a
+#     legitimate solid fill, so it is conceded to the vision-backstop rather than always-SUSPECTed.
 #   • CROWDING is a proxy for packing, NOT for tiny-text: tiny-but-spaced text is layout-check.sh's
 #     inline-legibility rule, not this tier.
 #
@@ -55,13 +64,22 @@ EDGE_PX="${EDGE_PX:-3}"             # width of the border strip sampled for edge
 EDGE_FRAC="${EDGE_FRAC:-0.01}"      # ink fraction in a border strip that counts as a clip
 GRID_C="${GRID_C:-8}"              # crowding grid columns
 GRID_R="${GRID_R:-4}"              # crowding grid rows
-CROWD_FRAC="${CROWD_FRAC:-0.28}"    # per-tile ink fraction that counts as packed/overlapping
+CROWD_FRAC="${CROWD_FRAC:-0.72}"    # per-tile ink fraction that counts as packed. A figure's own SOLID
+                                   # FILLS (mockup placeholder blocks, filled bars) are legitimately dense
+                                   # — the committed corpus tops out at 0.69 on such a block — and ink
+                                   # fraction alone cannot tell a solid fill from pathological overlap. So
+                                   # the floor sits ABOVE the corpus's legitimate solid-fill maximum: only
+                                   # a near-solid region beyond any expected fill trips. Subtler overlap is
+                                   # deliberately left to the vision-backstop (see WHAT STAYS VISION-ONLY).
 OCC_C="${OCC_C:-16}"               # occlusion grid columns (finer, to localise a thin stroke)
 OCC_R="${OCC_R:-8}"                # occlusion grid rows
 OCC_BRIGHT="${OCC_BRIGHT:-68%}"    # brightness threshold isolating a bright stroke from coloured ink
 OCC_KERN="${OCC_KERN:-71}"         # line-morphology kernel length (px) a stroke must survive
 OCC_LINE="${OCC_LINE:-0.02}"       # per-tile bright-line-survivor fraction counted as "line present"
-OCC_TEXT="${OCC_TEXT:-0.05}"       # per-tile ink fraction counted as "text present here"
+OCC_TEXT="${OCC_TEXT:-0.18}"       # per-tile ink fraction required to call a tile genuinely TEXT-DENSE
+OCC_RATIO="${OCC_RATIO:-0.35}"     # line-ink must be < this fraction of the tile's ink (a stroke CROSSING
+                                   # text, not a structural bar/banner that IS the ink). Genuine occlusion
+                                   # runs ~0.08–0.15; a bright bar/banner/connector runs ~0.6–1.0.
 OCC_RUN="${OCC_RUN:-5}"            # contiguous tiles a line-through-text run must span to be SUSPECT
 
 # --- magick guard (graceful — never blocks) ------------------------------------------------------------
@@ -187,26 +205,34 @@ magick "$OCCIMG" -threshold "$OCC_BRIGHT" \
 
 paste "$TMP/occ_text.txt" "$TMP/occ_line.txt" | awk \
   -v C="$OCC_C" -v R="$OCC_R" -v RUN="$OCC_RUN" \
-  -v LINE="$OCC_LINE" -v TEXT="$OCC_TEXT" \
+  -v LINE="$OCC_LINE" -v TEXT="$OCC_TEXT" -v RATIO="$OCC_RATIO" \
   -v IW="$OW" -v IH="$OH" '
   { td[$2","$1]=$3/255; bl[$2","$1]=$6/255 }
+  # A tile is "line-THROUGH-text" only when it (a) carries a surviving bright line, (b) is genuinely
+  # text-DENSE (ink ≥ TEXT — a textless bright bar fails here), and (c) the line is a MINORITY of that
+  # ink (line ≤ RATIO × ink — a structural bar/banner/rail/spine/connector, where the bright element IS
+  # the ink, fails here; only a thin stroke laid ACROSS dense text passes).
+  function hit(key,   tf,lf) {
+    tf=td[key]; lf=bl[key]
+    return (lf>LINE && tf>TEXT && lf <= RATIO*tf)
+  }
   END {
     tw=int(IW/C); th=int(IH/R)
-    # horizontal occluders: contiguous run of line+text tiles along a row
+    # horizontal occluders: contiguous run of line-through-text tiles along a row
     for (r=0;r<R;r++){
       run=0; start=-1
       for (c=0;c<=C;c++){
-        hit=(c<C && bl[r","c]>LINE && td[r","c]>TEXT)
-        if (hit){ if(run==0)start=c; run++ }
+        h=(c<C && hit(r","c))
+        if (h){ if(run==0)start=c; run++ }
         else { if(run>=RUN) printf "SUSPECT occlusion tile=%d,%d bbox=%d,%d,%d,%d (h-line-through-text run=%d)\n", r,start, start*tw, r*th, run*tw, th, run; run=0 }
       }
     }
-    # vertical occluders: contiguous run of line+text tiles along a column
+    # vertical occluders: contiguous run of line-through-text tiles along a column
     for (c=0;c<C;c++){
       run=0; start=-1
       for (r=0;r<=R;r++){
-        hit=(r<R && bl[r","c]>LINE && td[r","c]>TEXT)
-        if (hit){ if(run==0)start=r; run++ }
+        h=(r<R && hit(r","c))
+        if (h){ if(run==0)start=r; run++ }
         else { if(run>=RUN) printf "SUSPECT occlusion tile=%d,%d bbox=%d,%d,%d,%d (v-line-through-text run=%d)\n", start,c, c*tw, start*th, tw, run*th, run; run=0 }
       }
     }

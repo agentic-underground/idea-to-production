@@ -143,5 +143,3 @@ honoured the covenant.
 > [`typography-canon.md`](typography-canon.md), [`dataviz-canon.md`](dataviz-canon.md),
 > [`image-aesthetic-canon.md`](image-aesthetic-canon.md). Cite the item by name in every finding so the maker
 > can verify the fix removed it.
-</content>
-</invoke>

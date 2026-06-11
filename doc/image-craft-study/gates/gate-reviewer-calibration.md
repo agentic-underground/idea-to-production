@@ -307,13 +307,17 @@ monotonic and the meaning-destroying figure lands `BLOCK`, not a graded nit. **C
 **Criterion 2a — too-wide / tiny-text → inline-illegibility (fixture (c)):** built the value-flow-style
 too-wide case — one-line tamper shrinking the arc caption to `font-size="10"`, then widening the canvas
 to `W=2246` (the value-flow width). Rendered to the **inline ~640px strip the reader actually sees**:
-the arc caption "↻ OPERATE's learnings re-enter DISCOVER" collapses to an **unreadable teal smear** and
-the whole figure drops sub-floor. Flagged **inline-illegibility (layout-canon §4.4 / §4.8)** →
-`NEEDS_REVISION`. Machine cross-check: **`layout-check.sh` exit 1** at *both* the shipped `FLOOR=6`
-(`~4.6px @640`) and the strict target `INLINE_W=640 FLOOR=9` (`idea → production… renders ~7.1px <9`);
-`raster-lint.sh` CLEAN (inline-illegibility is the SVG-math tier's domain by design — raster-lint owns
-crowding/occlusion/edge, not tiny-but-spaced text). **Tier that caught it: `layout-check.sh`.
-Criterion 2a PASS.**
+at that width *many* of the figure's labels — the shrunk arc caption "↻ OPERATE's learnings re-enter
+DISCOVER" worst of all — collapse sub-floor into an unreadable smear, so the whole figure drops
+inline-illegible. Flagged **inline-illegibility (layout-canon §4.4 / §4.8)** → `NEEDS_REVISION`. Machine
+cross-check: **`layout-check.sh` exit 1** at *both* the shipped `FLOOR=6` and the strict target
+`INLINE_W=640 FLOOR=9`. Note `layout-check.sh` halts on the **first sub-floor `<text>` in document
+order** (awk `exit 7` on the first inline-illegible element — see `layout-check.sh` lines 300-306), which
+need not be the tamper-edited arc caption; its violation line names whichever element appears first. That
+is sufficient — the figure genuinely drops sub-floor at this width, and the machine proves it; the exact
+glyph it halts on is incidental. `raster-lint.sh` CLEAN (inline-illegibility is the SVG-math tier's
+domain by design — raster-lint owns crowding/occlusion/edge, not tiny-but-spaced text). **Tier that
+caught it: `layout-check.sh`. Criterion 2a PASS.**
 
 **Criterion 2b — planted overflow → NEEDS_REVISION/BLOCK:** exercised across two fixtures and the
 multi:
@@ -347,8 +351,24 @@ Both flagged → `NEEDS_REVISION` (the multi → `BLOCK` on the meaning-destroyi
 **Clean-figure discrimination (the tiers don't false-positive):** on the clean `f007`,
 **`layout-check.sh` exit 0** (FLOOR=6, 9 frames / 82 text elements / 0 violations) and
 **`raster-lint.sh` exit 0** (CLEAN, 0 suspect tiles → reviewer may skip vision). The backstop vision
-pass found nothing. The cheap tiers are **discriminating, not always-failing** — they passed a genuine
-clean and tripped on every real defect within their reach.
+pass found nothing. Corpus-wide, **all six committed README GIFs lint CLEAN** under the tuned
+`raster-lint.sh` — `atelier-critique`, `ideator-converge`, `pressroom-press`, `foundry-conveyor`,
+`lifecycle-cycle`, and `mission-control-operate` each `exit 0`, so the cheap tier genuinely lets the
+reviewer **skip vision on the shipped figures** (the whole cost-saving purpose). This was a real fix: an
+earlier tuning false-SUSPECTed three of those six because each figure's *own* bright structural elements
+— a filled placeholder bar, a PASS banner, the rubric bars, a connector arrow — read as
+"thin-line-through-text" beside a label. The occlusion heuristic now requires the bright line to be a
+**minority of the local ink** (a stroke *crossing* dense text, ≈8–15% of the tile's ink) rather than a
+structural element that *is* the ink (≈60–100%), and requires the tile to be genuinely **text-dense**
+(so a textless bright bar no longer trips); crowding's floor was raised above the corpus's legitimate
+solid-fill maximum. **What raster-lint reliably catches: edge-clip (content sheared past the frame),
+extreme crowding (near-solid packing), and blatant line-through-text (a thin bright stroke laid across a
+dense glyph-cluster).** **What it deliberately concedes to the vision-backstop (machine-blind *by
+design*): subtle / single-stroke vertical occlusion, semantic overlap where neither tile is fully
+packed, filled-shape (non-line) occluders, and below-floor crowding** — because over there it is better
+to MISS and let the mandatory backstop vision pass catch it than to always-SUSPECT and force a vision
+Read on every clean figure. So the cheap tiers are **discriminating, not always-failing** — they pass a
+genuine clean (and the whole clean corpus) and trip on the defect classes within their reach.
 
 **Machine cross-check summary:**
 
