@@ -36,7 +36,7 @@
 |---|---|---|---|
 | **Willingness to pay (WTP)** | The strongest signal is **pre-sale**: would 10–20 people pay (even $10–20) *before* it exists? Or a *fake-door* test (landing page → "pay / join waitlist"). Probe: "would you put money down today?" | A plan to get ≥ a few pre-commitments | "They'd use it if free but won't pay" → kill |
 | **Budget authority** | Does the target *control budget*, or must they ask a gatekeeper? B2B sells faster to budget-holders. | The buyer ≈ the user, or a clear budget-holder | Long approval chain / no budget owner → high-friction, often kill for a small build |
-| **Target price range** | The user's intended price band (from `/goal`), reconciled with the value ceiling (A: quantified pain cost) and competitor pricing (D). | A band inside the value ceiling | Price the market won't bear, or below sustainable unit economics → kill |
+| **Target price range** | The user's intended price band (from `/discovery-goal`), reconciled with the value ceiling (A: quantified pain cost) and competitor pricing (D). | A band inside the value ceiling | Price the market won't bear, or below sustainable unit economics → kill |
 | **Pricing model** | Subscription (recurring pain), usage-based (variable value), or one-time (one-off value). Must match recurrence (A). | Subscription if recurring | Model contradicts the value rhythm → revise or kill |
 
 ## D. Competition & moat — *can you win, and keep winning?*

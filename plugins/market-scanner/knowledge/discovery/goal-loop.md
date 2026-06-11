@@ -1,9 +1,9 @@
 # The goal → scan → narrow loop
 
-> The one-copy home for **how a standing discovery `/goal` drives iterative scanning**. Referenced by
+> The one-copy home for **how a standing discovery `/discovery-goal` drives iterative scanning**. Referenced by
 > the `goal-setter` and `market-scan` skills.
 
-## The `/goal` — a standing discovery objective
+## The `/discovery-goal` — a standing discovery objective
 
 A goal bounds the search space so scans are focused, not infinite. It captures the *constraints on what
 to discover* (distinct from an IDEA, which is *one chosen thing to build*). Fields (set infer-first, each
@@ -22,7 +22,7 @@ Absent ⇒ the scan asks for the minimum needed before proposing candidates.
 ## The loop
 
 ```
-/goal ──► set/refine the objective
+/discovery-goal ──► set/refine the objective
    │
    ▼
 /market-scan ──► propose candidate opportunities that fit the goal
@@ -36,7 +36,7 @@ NARROW ──► take the 1–2 survivors deeper (probe demand, WTP, channel, we
    ▼
 KEEP one (the spark) ──► hand to the ideator plugin (when installed)
    │  …or none survive ──►
-   └──────────────► refine /goal (loosen a constraint, shift the niche) and loop again
+   └──────────────► refine /discovery-goal (loosen a constraint, shift the niche) and loop again
 ```
 
 `/loop` reuses Claude Code's **built-in loop** over the goal — self-paced ideation (`/loop /market-scan`

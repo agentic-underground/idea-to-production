@@ -3,7 +3,7 @@ flowchart TD
     accTitle: MARKET-SCANNER discovery loop
     accDescr: The goal command sets a standing objective, then market-scan proposes candidates, scores them on the market taxonomy, kills weak ones, challenges survivors, and verdicts each KEEP, PARK, or KILL. KILL and PARK loop back via the loop command to propose again; KEEP exits as a validated opportunity handed to the ideator.
 
-    GOAL["/goal · set standing objective"]
+    GOAL["/discovery-goal · set standing objective"]
     PROPOSE["/market-scan · propose 3–5 candidates"]
     SCORE["score on market taxonomy · severity · demand · size · WTP · pricing power · competition · reachability · stack-fit"]
     KILLWEAK["KILL the weak candidates"]

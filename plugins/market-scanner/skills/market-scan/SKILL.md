@@ -3,7 +3,7 @@ name: market-scan
 description: >
   Discover a worth-building opportunity through an adversarially-challenged ideation dialogue. Trigger
   with /market-scan (or "let's come up with a new idea", "what should I build?", "find me a market
-  opportunity", "scan for a niche"). Proposes candidate opportunities that fit the standing /goal,
+  opportunity", "scan for a niche"). Proposes candidate opportunities that fit the standing /discovery-goal,
   scores each against the market parameter taxonomy (problem severity, demand, market size, willingness-
   to-pay, pricing power, competition, reachability, stack-fit), KILLS weak ones early, narrows to a
   survivor, and emits a validated OPPORTUNITY (scorecard + evidence + keep/park/kill verdict). Hands the
@@ -91,7 +91,7 @@ sharpens it.
   are produced by invoking pressroom's `/publish` **by capability** when pressroom is installed; degrade
   to clean markdown when it is absent, and say so.)*
 - **KILL / PARK** → state the verdict and the sinking parameter plainly, record the kill-ledger entry,
-  and (in a loop) refine the `/goal` and propose again.
+  and (in a loop) refine the `/discovery-goal` and propose again.
 
 ## Self-improvement covenant
 

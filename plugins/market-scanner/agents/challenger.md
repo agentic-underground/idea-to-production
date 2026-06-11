@@ -46,7 +46,7 @@ then the strongest case that it is wrong:
 - **Competitive moat (D).** Why hasn't an incumbent already done this? If it's easy, what stops them
   copying it the week after launch? Is the named wedge a durable edge or a temporary gap?
 - **Builder-edge fit.** Does this opportunity actually match the builder's stated edge and stack-fit in
-  the `/goal`, or was the fit narrated to make the candidate survive?
+  the `/discovery-goal`, or was the fit narrated to make the candidate survive?
 - **Rationalised kill-criteria.** Re-walk the kill-thresholds in
   [`../knowledge/discovery/scoring.md`](../knowledge/discovery/scoring.md). Did any tripped ❌ get
   *talked* back up to ⚠️ or ✅ without evidence? **Kill is on the conjunction, not the average** — find

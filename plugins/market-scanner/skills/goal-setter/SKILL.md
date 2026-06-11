@@ -1,7 +1,7 @@
 ---
 name: goal-setter
 description: >
-  Set or refine the standing DISCOVERY GOAL that scans run over. Trigger with /goal (or "set a discovery
+  Set or refine the standing DISCOVERY GOAL that scans run over. Trigger with /discovery-goal (or "set a discovery
   goal", "I want to find a SaaS in <niche>", "refine the goal", "loosen the constraints"). Captures the
   constraints on WHAT to discover (niche, builder edge, target price band, stack-fit, effort appetite,
   hard constraints) — infer-first, one question at a time with a recommended answer + multiple-choice —
@@ -14,7 +14,7 @@ model: inherit
 
 # MARKET-SCANNER — Goal-setter
 
-A `/goal` bounds the search so scans are focused, not infinite — the constraints on *what to discover*,
+A `/discovery-goal` bounds the search so scans are focused, not infinite — the constraints on *what to discover*,
 distinct from an IDEA (*one chosen thing to build*). The full field set and the loop it drives live in
 [`../../knowledge/discovery/goal-loop.md`](../../knowledge/discovery/goal-loop.md).
 

@@ -17,5 +17,5 @@ knowledge/
 └── discovery/
     ├── parameters.md      # the canonical market-scan parameter taxonomy
     ├── scoring.md         # keep/park/kill rubric + the kill ledger
-    └── goal-loop.md       # /goal → /market-scan → narrow loop
+    └── goal-loop.md       # /discovery-goal → /market-scan → narrow loop
 ```

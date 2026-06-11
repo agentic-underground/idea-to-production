@@ -12,7 +12,7 @@ early and cheaply** so you don't spend months on one.
 
 ## The loop
 
-1. **`/goal`** — set a standing discovery objective (niche, builder edge, target price band, stack-fit,
+1. **`/discovery-goal`** — set a standing discovery objective (niche, builder edge, target price band, stack-fit,
    effort appetite). Tight enough to focus, loose enough to surprise.
 2. **`/market-scan`** — an adversarially-challenged dialogue that proposes 3–5 candidates, scores each
    against a **market parameter taxonomy** (problem severity · demand evidence · market size ·
@@ -22,7 +22,7 @@ early and cheaply** so you don't spend months on one.
 
 Output is a **validated opportunity** (a scorecard + the evidence + the verdict).
 
-![MARKET-SCANNER discovery loop: /goal sets a standing objective; /market-scan proposes 3–5 candidates, scores each on the market taxonomy (severity · demand · size · willingness-to-pay · pricing power · competition · reachability · stack-fit), KILLs the weak ones, challenges the survivors, and reaches a verdict; KILL / PARK re-propose via /loop, while KEEP — the spark — flows on to a validated opportunity (scorecard + evidence + verdict) handed to the ideator.](diagrams/01-discovery-loop.png)
+![MARKET-SCANNER discovery loop: /discovery-goal sets a standing objective; /market-scan proposes 3–5 candidates, scores each on the market taxonomy (severity · demand · size · willingness-to-pay · pricing power · competition · reachability · stack-fit), KILLs the weak ones, challenges the survivors, and reaches a verdict; KILL / PARK re-propose via /loop, while KEEP — the spark — flows on to a validated opportunity (scorecard + evidence + verdict) handed to the ideator.](diagrams/01-discovery-loop.png)
 
 ## Grounded in real evidence
 
