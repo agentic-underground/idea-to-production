@@ -16,6 +16,32 @@ start at [README.md](./README.md); agents working *on the marketplace itself* st
   plugin and CI-verified) is how shared assets stay in sync — see
   `scripts/verify-prereqs.sh`.
 
+## TOKEN SAFETY — automatic scheduling (applies to EVERY plan, all work, all jobs)
+
+This marketplace ships a token-aware scheduler whose whole purpose is to protect a solo builder's
+usage meter from a lockout (CONCIERGE: `plugins/concierge/scheduler/`, canon in
+`plugins/concierge/knowledge/token-aware-scheduling.md`). It is **automatic — never a slash command.**
+Every agent working here MUST follow this protocol; it is not optional and it is not only for fan-outs.
+
+**Whenever you produce a plan** (plan mode or otherwise), before presenting it:
+1. **Classify** the plan's size — `small` · `medium` · `large` · `epic` (your judgement).
+2. **Stamp it** by running `bash plugins/concierge/scheduler/scheduler.sh plan --class <size> --now $(date +%s)`
+   (or `--profile <p> --width <n>` for a multi-agent fan-out). Paste its two-line banner into the plan —
+   **approximate cost + a p95 confidence/convergence figure + a RUN-NOW vs DEFER-off-peak decision.**
+   The estimator converges: every job sharpens the next estimate, so the band tightens over time.
+3. **Bracket it** so the actual feeds convergence: `scheduler.sh plan-open <size> <est>` at kickoff and
+   `scheduler.sh plan-close` at completion (the session-token delta is the actual). **Every plan
+   passes through — that is the only way the estimate:actual sampling improves.**
+
+**For any multi-agent fan-out**, additionally: carry an explicit `+Xk` budget directive (consent), keep
+waves throttled (≤ the profile's `max_parallel`), and gate **every** wave through
+`scheduler.sh gate` — HALT and checkpoint to the job ledger before the live ceiling; resume from
+`remaining` only. A `PreToolUse(Agent|Task)` hook auto-denies spawns at the live ceiling as a backstop.
+
+Two signals, never confused: **`rate_limits`** (live `used_percentage` + `resets_at`) is the CEILING
+guard; **`session.json`** cumulative tokens is the ACTUAL-spend measure for convergence. The monthly USD
+cap is not machine-readable — guard it via the `+Xk` budget + consent, never pretend to sense it.
+
 ## SOUL
 
 The all-systems-go phrase — the shared **soul** of this marketplace. When a green-gate

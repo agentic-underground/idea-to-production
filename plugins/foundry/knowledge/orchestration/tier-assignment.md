@@ -82,6 +82,13 @@ proceeding:
 > Adjusted estimates for SECONDARY: ~Nk (was ~Nk).
 > Proceed, or reduce scope for SECONDARY?"
 
+This between-tier reconciliation guards the *estimate*; it does not guard the **live usage
+window**. When CONCIERGE is installed, its token-aware scheduler (`/concierge:schedule`) is the
+complementary live guard: before each tier's fan-out it gates against the rolling rate-limit window
+and halts before a lockout. For a wide multi-tier run, route the fan-out through the scheduler so
+both protections apply — the estimate reconciliation here, and the live ceiling there. (Capability
+reference only — FOUNDRY does not depend on CONCIERGE's path.)
+
 ---
 
 ## Staggered Flow Diagram

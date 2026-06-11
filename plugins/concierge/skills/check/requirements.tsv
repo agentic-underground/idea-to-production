@@ -5,3 +5,5 @@
 bash	command -v bash	required	preinstalled
 jq	command -v jq	recommended	apt install jq (clean JSON for hooks + statusline; pure-bash fallback otherwise)
 git	command -v git	optional	apt install git (statusline branch field; degrades to harness-provided fields)
+awk	command -v awk	recommended	preinstalled on most systems (token-scheduler arithmetic: estimates, ceiling math, off-peak windows)
+bats	command -v bats	optional	npm i -g bats (optional convenience for the scheduler test suite; test/run.sh needs only bash+jq+awk)
