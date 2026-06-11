@@ -1,6 +1,6 @@
-# Gate — Reviewer calibration ("review the reviewers") · FULLY CLOSED — both reviewers PASS (Run 1 2026-06-11 · Run 2 2026-06-11)
+# Gate — Reviewer calibration ("review the reviewers") · FULLY CLOSED — all three reviewers PASS (Run 1 2026-06-11 · Run 2 2026-06-11 · Run 3 2026-06-11)
 
-**Date:** 2026-06-10 · **Branch:** `visual-quality-overhaul` · **Scope:** prove the two design
+**Date:** 2026-06-10 · **Branch:** `visual-quality-overhaul` · **Scope:** prove the three design
 reviewers reliably **demote entry-level / AI-slop AND catch layout bugs** (text past a border)
 *before* output reaches the user — the calibration the maintainer demanded after the reviewers
 passed figures with at-a-glance defects.
@@ -25,10 +25,24 @@ The reviewers under test (the exact files):
 
 - `plugins/pressroom/skills/design-reviewer/agents/image-aesthetic-reviewer.md`
 - `plugins/atelier/agents/ui-design-reviewer.md`
+- `plugins/pressroom/skills/design-reviewer/agents/layout-reviewer.md` — the dedicated **layout &
+  legibility GATE** (the eye the maintainer kept having to be), run with its companion
+  [`references/layout-canon.md`](../../../plugins/pressroom/skills/design-reviewer/references/layout-canon.md)
+  (the 8-item checklist + the inline-legibility rule).
 
-Each is run with its companion canon (`image-aesthetic-canon.md` ·
-`plugins/atelier/knowledge/canon/art-direction.md`). Both already carry the RENDER-FIRST first step
-and the two taste caps; this gate verifies they *fire* on graded inputs and planted defects.
+The two aesthetic reviewers are each run with their companion canon (`image-aesthetic-canon.md` ·
+`plugins/atelier/knowledge/canon/art-direction.md`); all carry the RENDER-FIRST first step, and the
+two aesthetic reviewers carry the two taste caps. This gate verifies they *fire* on graded inputs and
+planted defects.
+
+**The layout-reviewer's "three criteria" are adapted to its role — it is a GATE, not a taste-scorer
+(it disposes `PASS` / `NEEDS_REVISION` / `BLOCK`; it never emits a 0–100 score).** Its criteria are:
+(1) **grade-ranking by SEVERITY of layout defect** — clean `<` one-minor `<` one-major `<`
+multiple/meaning-destroying — in place of the aesthetic reviewers' craft-grade ranking;
+(2a) **flag a too-wide / tiny-text figure as inline-illegible**; (2b) **flag a planted overflow →
+`NEEDS_REVISION`/`BLOCK`**. All criteria are exercised through its **tiered RENDER-FIRST procedure**
+(`layout-check.sh` SVG-math → `raster-lint.sh` cheap raster → vision-on-suspicion + a backstop vision
+pass), with the two machine tiers **cross-checked** on every fixture.
 
 ---
 
@@ -96,9 +110,14 @@ A reviewer PASSES calibration only when **all** hold:
 3. **Test 2(b)** — the planted text-past-border overflow flagged as a layout defect →
    `NEEDS_REVISION`, grounded in the rendered pixels.
 
-Both reviewer files are calibrated independently (the `image-aesthetic-reviewer` on the generative
-figures; the `ui-design-reviewer` composing the AESTHETICS + RICHNESS-MOTION lenses on the same
-inputs by capability). The gate PASSES only when **both** clear all three.
+Each reviewer file is calibrated independently: the `image-aesthetic-reviewer` on the generative
+figures; the `ui-design-reviewer` composing the AESTHETICS + RICHNESS-MOTION lenses on the same inputs
+by capability; and the **`layout-reviewer`** on planted layout fixtures, with its three criteria
+**adapted to its gate role** — (1) grade-ranking by *severity of layout defect* (clean `<` one-minor
+`<` one-major `<` multiple/meaning-destroying), (2a) a too-wide/tiny-text figure flagged
+inline-illegible, (2b) a planted overflow → `NEEDS_REVISION`/`BLOCK` — all driven through its tiered
+RENDER-FIRST procedure with the machine tiers cross-checked. The gate PASSES only when **ALL THREE
+reviewers clear all three criteria.**
 
 ## Persistence & failure semantics (hard gate)
 
@@ -115,8 +134,8 @@ inputs by capability). The gate PASSES only when **both** clear all three.
 
 ## Verdict
 
-**FULLY CLOSED — both reviewers PASS.** The gate requires **both** design reviewers to clear all
-three criteria; as of Run 2 they do.
+**FULLY CLOSED — all three reviewers PASS.** The gate requires **all three** design reviewers to
+clear all three criteria; as of Run 3 they do.
 
 - **Run 1 (2026-06-11) — `image-aesthetic-reviewer` (PRESSROOM):** executed under its RENDER-FIRST
   protocol on all four grade figures and both planted defects. All three criteria held — Test 1
@@ -131,11 +150,23 @@ three criteria; as of Run 2 they do.
   on Composition + Medium-richness with a named concrete lift; Test 2(b) flagged the planted overflow
   from the rendered pixels → `NEEDS_REVISION`; machine pre-flight agreed (exit 1 on the same
   overflow). See the log below.
+- **Run 3 (2026-06-11) — `layout-reviewer` (PRESSROOM):** the dedicated layout & legibility gate, run
+  under its tiered RENDER-FIRST procedure (`layout-check.sh` → `raster-lint.sh` → vision-on-suspicion +
+  backstop). All three gate-adapted criteria held — (1) severity grade-ranking ordered correctly
+  (clean `<` one-minor `<` one-major `<` multiple/meaning-destroying); (2a) a too-wide / tiny-text
+  figure flagged inline-illegible (machine: `layout-check.sh` exit 1); (2b) a planted overflow flagged
+  → `NEEDS_REVISION`/`BLOCK`. Every planted defect class — too-wide/tiny-text **(c)**, vertical-clip
+  **(d)**, occlusion **(e)**, overlap **(f)** — was caught, each at the *right* tier: (c)/(d) by the
+  free `layout-check.sh` SVG-math, the multi-defect overflow additionally by `raster-lint.sh`, and the
+  vision-only (e)/(f) by the backstop vision pass (the machine tiers stayed clean *by design*). The
+  clean figure passed both cheap tiers (exit 0 / exit 0), proving the tiers discriminate rather than
+  always-fail. No defect slipped → no layout-canon gap to fold back. See the log below.
 
-With **both** reviewers calibrated and green — the PRESSROOM reviewer that drives the illustrator's
-A/B-until-best loop and the masthead/figure pipeline, and the ATELIER reviewer that gates `/mockup`
-and `/ui-review` — the gate's "both clear all three" rule is satisfied and the gate is **fully
-closed**. A regression in either reviewer re-opens it.
+With **all three** reviewers calibrated and green — the PRESSROOM `image-aesthetic-reviewer` that
+drives the illustrator's A/B-until-best loop and the masthead/figure pipeline, the ATELIER
+`ui-design-reviewer` that gates `/mockup` and `/ui-review`, and the PRESSROOM `layout-reviewer` that
+gates layout & legibility *before* taste is even scored — the gate's "all three clear all three" rule
+is satisfied and the gate is **fully closed**. A regression in any one reviewer re-opens it.
 
 <!-- CALIBRATION LOG — append one dated block per run (per-figure scores · bands · named lifts · PASS/FAIL) -->
 
@@ -247,5 +278,95 @@ defect from pixels, demoted the slop with a concrete named lift, and produced ov
 of the PRESSROOM run on every grade — the two reviewers are mutually consistent. One reinforcing
 observation (not a FAIL, echoing Run 1): the ATELIER checklist's "list ALL triggered items" habit was
 honoured here — the poster's secondary arc-caption overlap was reported alongside the primary edge-clip
-rather than stopping at the first trigger; worth keeping as the standard. **Both reviewers now PASS all
-three criteria — gate FULLY CLOSED.**
+rather than stopping at the first trigger; worth keeping as the standard. (Superseded by Run 3 below:
+the gate now requires **all three** reviewers.)
+
+### 2026-06-11 — Run 3 · reviewer: `layout-reviewer` (PRESSROOM, opus) · verdict: **PASS**
+
+Executed the layout-reviewer's **tiered RENDER-FIRST procedure** honestly, in the fixed cost order
+(`layout-check.sh` SVG-math → `raster-lint.sh` cheap raster → vision-on-suspicion, plus the mandatory
+one backstop vision pass), citing the `layout-canon.md` item by name on every finding. This reviewer
+**gates** — it disposes `PASS`/`NEEDS_REVISION`/`BLOCK` and emits no 0–100 score — so its three
+criteria are adapted: severity grade-ranking, inline-illegibility, and planted-overflow disposition.
+Each fixture was a **one-line tamper** of `build-lifecycle-frames.sh` (mirroring how Run-1/Run-2 built
+their broken fixture), rasterised to PNG with `rsvg-convert -b "#0b0b12"`. Fixtures lived in
+`/tmp/run3-layout/`.
+
+**Criterion 1 — grade-ranking by SEVERITY of layout defect (clean → meaning-destroying):**
+
+| Rank | Severity band | Fixture | Defect(s) seen in pixels | Disposition |
+|---|---|---|---|---|
+| 1 (cleanest) | **clean** | `build-lifecycle-frames.sh` frame `f007` (active=8, arc off) | none — title centred with margin, all 8 labels clear above their nodes, dim return arc carries no text | **PASS** |
+| 2 | **one-minor** | the clean **poster** `f008` (arc on) | ONE minor overlap — the return-arc caption rides on the dashed teal arc, but every word stays legible | NEEDS_REVISION (low severity) |
+| 3 | **one-major** | **(e)** occlusion fixture | ONE major defect — all 8 node labels half-eaten by the node fill drawn over them ("DIS⬤VER", "B⬤ILD"…); glyphs lost | NEEDS_REVISION (high severity) |
+| 4 (worst) | **multiple / meaning-destroying** | **multi** fixture (occlusion + title overflow + arc-overlap) | title sheared off the right canvas edge (most of it lost) **+** every label occluded **+** arc caption on the arc | **BLOCK** |
+
+Ranked correctly clean `<` one-minor `<` one-major `<` multiple/meaning-destroying — severity is
+monotonic and the meaning-destroying figure lands `BLOCK`, not a graded nit. **Criterion 1 PASS.**
+
+**Criterion 2a — too-wide / tiny-text → inline-illegibility (fixture (c)):** built the value-flow-style
+too-wide case — one-line tamper shrinking the arc caption to `font-size="10"`, then widening the canvas
+to `W=2246` (the value-flow width). Rendered to the **inline ~640px strip the reader actually sees**:
+the arc caption "↻ OPERATE's learnings re-enter DISCOVER" collapses to an **unreadable teal smear** and
+the whole figure drops sub-floor. Flagged **inline-illegibility (layout-canon §4.4 / §4.8)** →
+`NEEDS_REVISION`. Machine cross-check: **`layout-check.sh` exit 1** at *both* the shipped `FLOOR=6`
+(`~4.6px @640`) and the strict target `INLINE_W=640 FLOOR=9` (`idea → production… renders ~7.1px <9`);
+`raster-lint.sh` CLEAN (inline-illegibility is the SVG-math tier's domain by design — raster-lint owns
+crowding/occlusion/edge, not tiny-but-spaced text). **Tier that caught it: `layout-check.sh`.
+Criterion 2a PASS.**
+
+**Criterion 2b — planted overflow → NEEDS_REVISION/BLOCK:** exercised across two fixtures and the
+multi:
+- **(d) vertical-clip** — one-line tamper pushing the node-label `y` from `CY-32` to `H+40`. In the
+  render **all 8 node labels are clipped off the canvas bottom** — eight unlabelled nodes, the labels
+  simply not there for the reader. Flagged **vertical clipping (§4.5)** → `NEEDS_REVISION`. Cross-check:
+  **`layout-check.sh` exit 1** (`y=343 > H=300 clipped at bottom`); `raster-lint.sh` CLEAN (labels
+  entirely off-canvas → no ink in the edge strip; the maths tier owns this). **Tier: `layout-check.sh`.**
+- the **multi** fixture's **horizontal title overflow** (title anchored `start` at `x=W-200`, running
+  to `x=1588 > 1320`) → the title sheared off the right edge, a meaning-destroying clip. Cross-check:
+  **`layout-check.sh` exit 1** AND **`raster-lint.sh` SUSPECT** (edge-clip tile=right, ink_frac 0.0278
+  > 0.01 → escalation). **Tiers: both `layout-check.sh` and `raster-lint.sh`.**
+
+Both flagged → `NEEDS_REVISION` (the multi → `BLOCK` on the meaning-destroying clip). **Criterion 2b PASS.**
+
+**Vision-only classes (machine-blind by design — caught on the backstop):**
+- **(e) z-index / occlusion** — one-line-equivalent tamper drawing the node label *before* its filled
+  circle (at the node centre), so the opaque circle eats the label's middle. **`layout-check.sh`
+  exit 0** (maths sees no overflow) and **`raster-lint.sh` CLEAN** (a *filled-shape* occluder, not the
+  thin-bright-line the occlusion heuristic targets) — both machine tiers pass **by design**. Caught on
+  the **vision backstop**: every label half-eaten by its node fill (§4.6). The worst kind — source
+  review passes it; only the pixels reveal it. **Tier: vision-backstop. PASS.**
+- **(f) overlap** — one-line tamper moving the arc caption from `y=CY+82` to `y=CY`, laying it across
+  the bright teal 5px spine line and through two node circles. **`layout-check.sh` exit 0** and
+  **`raster-lint.sh` CLEAN** — honest record: the thin-line-through-text heuristic did **not** trip
+  (the caption is centred while the spine spans full-width through sparse node-gap tiles, so the
+  line∧text coincidence never reached the contiguous-run threshold; raster-lint's header documents
+  *semantic overlap* as vision-only). Caught on the **vision backstop**, not by escalation: the
+  caption's glyphs are bisected by the spine line (§4.2). **Tier: vision-backstop. PASS.**
+
+**Clean-figure discrimination (the tiers don't false-positive):** on the clean `f007`,
+**`layout-check.sh` exit 0** (FLOOR=6, 9 frames / 82 text elements / 0 violations) and
+**`raster-lint.sh` exit 0** (CLEAN, 0 suspect tiles → reviewer may skip vision). The backstop vision
+pass found nothing. The cheap tiers are **discriminating, not always-failing** — they passed a genuine
+clean and tripped on every real defect within their reach.
+
+**Machine cross-check summary:**
+
+| Class | Fixture (one-line tamper) | layout-check.sh | raster-lint.sh | Caught by tier | Verdict |
+|---|---|---|---|---|---|
+| (c) too-wide / tiny-text | caption fs 20→10, `W=1320→2246` | **exit 1** (both floors) | CLEAN | layout-check | NEEDS_REVISION |
+| (d) vertical-clip | label `y CY-32 → H+40` | **exit 1** (y>H) | CLEAN | layout-check | NEEDS_REVISION |
+| (e) z-index / occlusion | label drawn before its filled node | exit 0 | CLEAN | **vision-backstop** | NEEDS_REVISION |
+| (f) overlap | arc caption `y CY+82 → CY` (onto spine) | exit 0 | CLEAN (no escalation) | **vision-backstop** | NEEDS_REVISION |
+| multi / meaning-destroying | (e) + title overflow `x=W-200` | **exit 1** | **SUSPECT** (edge-clip) | both + vision | BLOCK |
+| clean | none (`f007`) | exit 0 | CLEAN | — | PASS |
+
+**Reviewer-tuning / canon gaps found:** **none.** Every planted class was caught at the correct tier;
+the two free machine tiers stayed clean on the vision-only classes **by design**, the backstop vision
+pass caught those, and the clean figure cleared both cheap tiers — so the cost-tier doctrine held and
+there is **no layout-canon gap to fold back** (the covenant only triggers on a *slipped* defect, and
+nothing slipped). One honest observation (not a FAIL): (f)'s text-on-line did not trip
+`raster-lint.sh`'s occlusion heuristic — but this is **already documented** in the canon and the
+script header as vision-only *semantic overlap*, and the backstop caught it, so it is a known boundary
+of the cheap tier, not a missed class. **All three reviewers now PASS all three criteria — gate
+FULLY CLOSED.**
