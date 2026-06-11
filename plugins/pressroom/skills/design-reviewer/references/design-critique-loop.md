@@ -5,6 +5,16 @@
 > the ATELIER protocol it mirrors); different rubric — typography and data-viz, not screen UI. Modelled on
 > WRITER's max-3-turn prose loop, the perf-delta gate, and the SOLID *halve-the-distance* covenant.
 
+## Cost discipline — vision is expensive
+
+Governs **every** graphical review lens, not just layout. Machine vision — a pixel Read of a render — is the
+**expensive** action; the cheap deterministic checks come **first**. Run the free machine tiers up front (the
+layout machine `layout-check.sh` + `raster-lint.sh`), and spend a vision Read **only when something cheap has
+already flagged a suspect**: *vision on suspicion, never by default.* The cost-tier doctrine is specified for
+layout — with its worked tier order — in [`layout-canon.md`](layout-canon.md) §3; the **same discipline binds
+any reviewer that would otherwise Read pixels by default** (aesthetic, typographic, motion). A reviewer that
+opens vision on every artefact has spent the budget the free tiers exist to protect.
+
 ## The design-fitness rubric (the fitness function)
 
 The reviewer scores the rendered artefact on weighted dimensions, each tied to the canon
