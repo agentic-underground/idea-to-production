@@ -134,10 +134,9 @@ DEFS
 # ---------------------------------------------------------------------------------
 prim_node() {
   local x=$1 y=$2 r=$3 state=$4 label=${5:-} ldy=${6:-42}
-  local face rim hi tcol
+  local face rim tcol
   face=$(prim_color "$state")
   rim=$(prim_shade "$face" 28)              # darker outer rim = a lit edge above a shaded one
-  hi=$(prim_shade "$face" 0)                # face tone for the highlight arc base
   case "$state" in
     pending|dim) tcol="$PRIM_TXTD" ;;
     *)           tcol="$PRIM_TXTL" ;;

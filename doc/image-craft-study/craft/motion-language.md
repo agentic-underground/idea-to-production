@@ -52,7 +52,7 @@ registry NAMES are the primitive names; the library is the implementation.
 | **NODE** | a shaded disc with a soft drop-shadow + optional check-glyph → `prim_node` | a stage / station / phase — a *place* value occupies |
 | **ARC** | a dashed cubic Bézier with an arrowhead, on its own depth plane → `prim_arc` | a relationship that *returns* — a feedback or loop-closing edge |
 | **TOKEN** | a small bright ringed marker that sits *on* the rail → `prim_token` | the unit of value in transit — the IDEA travelling the line |
-| **GATE** | a node specialised to carry a verdict (latched-teal ✓ / failing-red / pending-dim) → `prim_gate` | a checkpoint value must *clear* — a test, a quality/security gate |
+| **GATE** | a node specialised to carry a verdict (latched-teal ✓ / failing-red / pending-dim) — a *round* gate is realised with `prim_node` + `prim_node_check` (the conveyor's choice); `prim_gate` is the *plate* form | a checkpoint value must *clear* — a test, a quality/security gate |
 | **RAIL** | a base stroke + a teal "lit" overlay up to the token → `prim_rail` | the fixed path value travels — the conveyor, the lifecycle spine |
 | **SWEEP / BEAM** | a translucent wedge + a bright leading edge from a hub → `prim_sweep` | an active scan crossing a field — discovery passing over candidates |
 | **STAMP** | a label that settles into a verdict word (KEEP / SHIP / PASS) → `prim_stamp` | the moment of judgement — the decision the sequence was building to |
