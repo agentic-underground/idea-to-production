@@ -1,16 +1,5 @@
 {
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Agent|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scheduler/preflight-fanout.sh 2>/dev/null || true"
-          }
-        ]
-      }
-    ],
     "SessionStart": [
       {
         "hooks": [
@@ -33,18 +22,6 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-statusline-drift.sh 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/offer-scheduler.sh 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/startup-report.sh 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scheduler/ratelimit-snapshot.sh 2>/dev/null || true"
           }
         ]
       }
@@ -58,14 +35,6 @@
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/statusline/count-adversarial-catches.sh 2>/dev/null || true"
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scheduler/ratelimit-snapshot.sh 2>/dev/null || true"
-          }
-        ]
       }
     ],
     "Stop": [
@@ -74,10 +43,6 @@
           {
             "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/statusline/capture-cost.sh 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/scheduler/ratelimit-snapshot.sh 2>/dev/null || true"
           }
         ]
       }
