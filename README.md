@@ -1,13 +1,19 @@
-![idea-to-production masthead: the wordmark "idea → production" above the nine-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, sentinel, pressroom, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE's learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door and concierge greeter, before gently looping.](doc/images/masthead-cycle.gif)
+<div align="center">
 
-# idea-to-production — a Claude Code plugin marketplace
+<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the nine-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, sentinel, pressroom, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door and concierge greeter, before gently looping." src="doc/images/masthead-cycle.gif">
 
-> Carry software from **the spark of an IDEA to PRODUCTION** — discover what's worth building, refine it
-> to a build-ready package, build it test-first, with security and publishing that switch on when you need them.
+# idea-to-production
 
-> **Start here →** install the suite, then run **`/i2p-help`** to browse every power you have, **`/i2p-flow`**
-> to see the pipeline, and **`/i2p-review`** for one verdict from every reviewer. The **i2p** plugin is
-> the marketplace front door; the **concierge** plugin greets whoever opens the repo.
+**Carry software from the spark of an IDEA to PRODUCTION** — nine composable Claude Code plugins, one
+disciplined, **test-first** value flow: discover ▸ refine ▸ design ▸ build ▸ assure ▸ secure ▸ publish ▸ operate.
+
+</div>
+
+> **Start here →** **`/i2p-help`** browses every power you have · **`/i2p-flow`** shows the pipeline ·
+> **`/i2p-review`** gives one verdict from every reviewer. The **i2p** plugin is the front door;
+> **concierge** greets whoever opens the repo.
+
+---
 
 ## What governs everything — the three pillars
 
@@ -22,30 +28,57 @@ A disciplined, test-first conveyor that carries **VALUE** from **IDEA** to **PRO
 
 > **Overarching constraint — token-efficiency:** *thin skills, fat references; define once, reference
 > many; load only what a station needs.* And the marketplace is **self-improving**: when an element
-> learns from a mistake, it folds the fix back into itself — *self-cleaving* into smaller, sharper
-> parts where needed — and **raises a PR so every user inherits the improvement**.
-
-The philosophy is the [first-principles spine](plugins/foundry/knowledge/first-principles.md); the
-operation is [VALUE_FLOW](plugins/foundry/VALUE_FLOW.md).
+> learns from a mistake, it folds the fix back into itself — *self-cleaving* into smaller, sharper parts
+> where needed — and **raises a PR so every user inherits the improvement**.
 
 ---
 
-This marketplace ships nine composable plugins — the **i2p** front door and the **concierge** greeter,
-plus seven specialists spanning the whole arc — **DISCOVER → IDEATE → DESIGN → BUILD → ASSURE → SECURE →
-PUBLISH → OPERATE ↻** (eight phases forming a cycle; OPERATE's learnings loop back to DISCOVER). **ASSURE**
-(quality V&V, foundry) and **SECURE** (security, sentinel) are **separate first-class gates**; three
-concerns **cross-cut** every phase — usability (atelier/DESIGN), quality (foundry/ASSURE, built-in not
-inspected-in), security (sentinel/SECURE, baked in from the start). Start with **i2p** for `/i2p-help`; install **foundry** for the core production
-discipline; add **market-scanner** and **ideator** to put a discovery-and-refinement front end *upstream*
-of the build; add **atelier** to make and adversarially review the visuals; add **sentinel** and
-**pressroom** to light up security gates and publication-grade output; add **mission-control** to operate
-the live product (observe, respond to incidents, iterate, maintain) and loop its learnings back to
-discovery; add **concierge** to give any repo a conversational front door that greets and routes whoever
-opens it. Every plugin stands alone, and
-each lights up the others automatically when present (*graceful enhancement*) — no hard dependency in
-any direction.
+## ✦ Built on first principles
+
+Not decoration — these are the ideas the whole system obeys. The philosophical spine is
+[first-principles.md](plugins/foundry/knowledge/first-principles.md); the operation is
+[VALUE_FLOW.md](plugins/foundry/VALUE_FLOW.md).
+
+<div align="center">
+
+### ① Three pillars govern every element
+
+<img width="720" alt="The three pillars as three lit columns under one lintel: Knowledge-parity (understand the ask fully before acting), Quality-first (built in, not inspected in, with a perf-delta gate), and Waste-elimination (muda · mura · muri — remove waste, unevenness, and overburden), all standing under the token-efficiency lintel." src="plugins/foundry/knowledge/diagrams/03-three-pillars.png">
+
+*Knowledge-parity · quality-first · waste-elimination — under one token-efficiency constraint.*
+
+### ② Tests are coordinates, not checks
+
+<img width="720" alt="Tests are coordinates: in the space of all possible implementations, a well-formed failing test is a glowing crosshair that pins the one correct implementation. Placed BEFORE the code it is a location; written AFTER, it is merely a description peeled off afterward." src="plugins/foundry/knowledge/diagrams/02-tests-coordinates.png">
+
+*A failing test written **before** the code is a **location** in logical space; one written after is just a description.*
+
+### ③ A pure core makes it parallel
+
+<img width="720" alt="Pure core: the decidable logic (no I/O, no UI, no platform, no panics) is extracted into a glowing green core box; thin wiring adapters depend on it via one-way inward arrows. pure implies testable implies coordinate-able implies maximally parallel." src="plugins/foundry/knowledge/diagrams/04-pure-core.png">
+
+*Extract the decidable core; dependencies flow one way, inward. **pure ⇒ testable ⇒ coordinate-able ⇒ maximally parallel.***
+
+### ④ It improves itself — kaizen
+
+<img width="720" alt="The KAIZEN covenant: the prime law halve-the-distance-to-perfection shown as rising versions each closing half the remaining gap to a glowing perfection line, driven by a PDCA ring (Plan, Do, Check, Act), with a footer naming the kaizen principles and the duty to eliminate muda, mura, and muri." src="plugins/foundry/knowledge/diagrams/05-kaizen-covenant.png">
+
+*Every pass at least **halves the distance to perfection**; fix upstream once, ship to all.*
+
+### ⑤ Every piece, one map
+
+<img width="820" alt="Conceptual-domain map: upstream discovery (market-scanner → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (sentinel, pressroom, atelier, mission-control) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.png">
+
+*Upstream discovery → the foundry conveyor → cross-cutting companions. Nine plugins, one value flow.*
+
+</div>
+
+---
 
 ## The plugins
+
+Nine composable plugins span the whole arc — the **i2p** front door, the **concierge** greeter, and seven
+specialists. Each stands alone; install only what you need.
 
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
@@ -61,27 +94,42 @@ any direction.
 
 ## How they compose
 
-![Value flow: nine plugins across an eight-phase cycle from IDEA to PRODUCTION — DISCOVER (market-scanner) ▸ IDEATE (ideator) ▸ DESIGN (atelier) ▸ BUILD (foundry) ▸ ASSURE (foundry, a separate quality gate) ▸ SECURE (sentinel, a separate security gate) ▸ PUBLISH (pressroom) ▸ OPERATE (mission-control), whose learnings loop back to DISCOVER; i2p and concierge cross-cut as front door and greeter.](doc/images/diagrams/01-value-flow.png)
+The nine plugins form an **eight-phase cycle** — `DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸
+PUBLISH ▸ OPERATE ↻` — whose learnings loop back to discovery (the masthead above). **ASSURE** (quality)
+and **SECURE** (security) are deliberately **separate first-class gates**.
 
-The next command at each phase: **DISCOVER** `/discovery-goal` · `/market-scan` → a kept OPPORTUNITY · **IDEATE** the IDEA
-package (agent + user-facing faces) · **DESIGN** `/mockup` · `/ui-review` · **BUILD** IDEA ▶ … ▶ STORY ▶ SHIP ·
-**ASSURE** `/pr-review` (quality V&V) · **SECURE** `/security-gate` → SECURITY-REPORT.md · **PUBLISH** `/publish`
-articles & PDFs · **OPERATE** observe · respond · iterate.
+**The next command at each phase:**
 
-Three cross-cutting concerns ride every phase: **usability** (atelier — `/ui-review` · `/mockup`, the convergent
-designer↔reviewer loop), **quality** (foundry — built-in not inspected-in, certified at the ASSURE gate), and
-**security** (sentinel — baked in from the start, certified at the SECURE gate). ASSURE (quality) and SECURE
-(security) are deliberately **separate gates**; OPERATE (mission-control) keeps the live product healthy and
-feeds the next cycle.
+| Phase | Plugin | Next command |
+|---|---|---|
+| **DISCOVER** | market-scanner | `/discovery-goal` · `/market-scan` → a kept OPPORTUNITY |
+| **IDEATE** | ideator | refine → the **IDEA package** (agent + user-facing faces) |
+| **DESIGN** | atelier | `/mockup` · `/ui-review` |
+| **BUILD** | foundry | IDEA ▶ ROADMAP ▶ … ▶ STORY ▶ SHIP |
+| **ASSURE** | foundry | `/pr-review` (quality V&V) |
+| **SECURE** | sentinel | `/security-gate` → SECURITY-REPORT.md |
+| **PUBLISH** | pressroom | `/publish` — articles & PDFs |
+| **OPERATE** | mission-control | observe · `/incident` · `/iterate` |
 
-No plugin *requires* another. When the `ideator` plugin is installed, foundry's IDEA station **receives
-the IDEA package by capability** (the inline `ideator` skill is the graceful fallback when it is absent);
-when `sentinel` is installed, foundry's SECURITY station runs the gate before delivery; when `pressroom`
-is installed, the PUBLISHING station upgrades markdown into articles, diagrams, and PDFs; when `atelier`
-is installed, user-flows and mockups are **design-reviewed by capability** before anyone sees them, and
-any SPA can be put under `/ui-review`. Absent any companion, each stage degrades cleanly and notes that
-the richer step was skipped. And the loop closes: an ambiguity a builder hits downstream flows back as
-**ideation-feedback** that sharpens market-scanner / ideator for every future idea.
+**Three concerns cross-cut every phase:**
+
+| Concern | Owner | How |
+|---|---|---|
+| **Usability** | atelier (DESIGN) | `/ui-review` · `/mockup` — the convergent designer↔reviewer loop |
+| **Quality** | foundry (ASSURE) | built-in, not inspected-in; certified at the ASSURE gate |
+| **Security** | sentinel (SECURE) | baked in from the start; certified at the SECURE gate |
+
+**No plugin requires another — they light each other up *by capability* (graceful enhancement):**
+
+| When installed | The pipeline gains… | Fallback when absent |
+|---|---|---|
+| **ideator** | foundry's IDEA station receives the IDEA package | the inline `ideator` skill |
+| **sentinel** | the SECURE gate runs before delivery | stage skipped, and says so |
+| **pressroom** | PUBLISH upgrades markdown → articles, diagrams, PDFs | markdown as-is |
+| **atelier** | user-flows & mockups are design-reviewed before anyone sees them | stage skipped, and says so |
+
+And the loop closes: an ambiguity a builder hits downstream flows back as **ideation-feedback** that
+sharpens market-scanner / ideator for every future idea.
 
 ## Install
 

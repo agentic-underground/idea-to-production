@@ -47,6 +47,9 @@ emit_kf() {
     printf '<radialGradient id="dg" cx="50%%" cy="55%%" r="50%%"><stop offset="0%%" stop-color="#5eead4" stop-opacity="0.05"/><stop offset="100%%" stop-color="#000000" stop-opacity="0"/></radialGradient>\n'
     printf '<filter id="bgb" x="-100%%" y="-100%%" width="300%%" height="300%%"><feGaussianBlur stdDeviation="22"/></filter>\n'
     printf '<filter id="ns" x="-40%%" y="-40%%" width="180%%" height="180%%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.35"/></filter>\n'
+    # crafted-node depth (recipe ported from diagram-primitives.sh prim_node): top-left sheen + grounding pool
+    printf '<radialGradient id="sheen" cx="38%%" cy="30%%" r="74%%"><stop offset="0%%" stop-color="#ffffff" stop-opacity="0.34"/><stop offset="44%%" stop-color="#ffffff" stop-opacity="0.08"/><stop offset="100%%" stop-color="#ffffff" stop-opacity="0"/></radialGradient>\n'
+    printf '<radialGradient id="pool" cx="50%%" cy="72%%" r="62%%"><stop offset="0%%" stop-color="#000000" stop-opacity="0"/><stop offset="70%%" stop-color="#000000" stop-opacity="0"/><stop offset="100%%" stop-color="#000000" stop-opacity="0.30"/></radialGradient>\n'
     printf '</defs>\n'
     printf '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="url(#dg)" filter="url(#bgb)"/>\n' "$((W/2))" "$CY" "$((W*42/100))" "$((H*22/100))"
     # ---- microline + dominant WORDMARK + subtitle (static) ----
@@ -98,7 +101,14 @@ emit_kf() {
       if [ "$ret" -eq 1 ] && { [ "$i" -eq 0 ] || [ "$i" -eq 7 ]; }; then
         printf '<circle cx="%d" cy="%d" r="%d" fill="none" stroke="%s" stroke-width="2" opacity="0.8"/>\n' "$x" "$CY" "$((r+6))" "$TEAL"
       fi
+      # crafted-depth node stack: body (shadowed) → grounding pool → top-left sheen → lit rim arc → crisp dark rim
       printf '<circle cx="%d" cy="%d" r="%d" fill="%s" opacity="%s" filter="url(#ns)"/>\n' "$x" "$CY" "$r" "$col" "$op"
+      printf '<circle cx="%d" cy="%d" r="%d" fill="url(#pool)" opacity="%s"/>\n' "$x" "$CY" "$r" "$op"
+      printf '<circle cx="%d" cy="%d" r="%d" fill="url(#sheen)" opacity="%s"/>\n' "$x" "$CY" "$r" "$op"
+      local ri=$(( r - 2 ))
+      printf '<path d="M %d %d A %d %d 0 0 1 %d %d" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/>\n' \
+        "$(( x - ri*70/100 ))" "$(( CY - ri*70/100 ))" "$ri" "$ri" "$(( x + ri*70/100 ))" "$(( CY - ri*70/100 ))"
+      printf '<circle cx="%d" cy="%d" r="%d" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/>\n' "$x" "$CY" "$r"
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="600" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((CY-34))" "$tcol" "${STAGES[$i]}"
       local ocol="$TXTD"; [ "$i" -lt "$active" ] && ocol="#8b9bb4"
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="11" fill="%s" text-anchor="middle">%s</text>\n' "$x" "$((CY+30))" "$ocol" "${OWNERS[$i]}"
