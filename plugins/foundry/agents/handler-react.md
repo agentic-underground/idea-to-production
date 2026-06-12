@@ -5,7 +5,7 @@ description: >
   React Testing Library, user-event, Jest/Vitest, component testing patterns,
   hooks, context, and accessibility-first testing. Spawned by TEST-AGENT,
   IMPLEMENT-AGENT, and STORY-AGENT during FOUNDRY pipeline phases when the
-  project stack includes React. Carries the SOLID self-improvement covenant
+  project stack includes React. Carries the KAIZEN self-improvement covenant
   and the project's SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
 model: inherit
@@ -184,8 +184,8 @@ Missing performance assertion for a latency-sensitive component is a **blocking 
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
 At the end of your work, note any React patterns, testing utilities, or
 accessibility requirements not yet in this handler's knowledge.
-Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+Flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

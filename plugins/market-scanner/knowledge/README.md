@@ -13,7 +13,7 @@ This directory is the **define-once** home for the facts the scanner obeys. Skil
 ## Layout
 ```
 knowledge/
-├── covenant.md            # three pillars + SOLID self-improvement covenant (this plugin's anchor)
+├── covenant.md            # three pillars + KAIZEN self-improvement covenant (this plugin's anchor)
 └── discovery/
     ├── parameters.md      # the canonical market-scan parameter taxonomy
     ├── scoring.md         # keep/park/kill rubric + the kill ledger

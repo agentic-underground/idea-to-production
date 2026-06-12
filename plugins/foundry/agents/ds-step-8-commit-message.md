@@ -91,6 +91,6 @@ handoff:
     - "Update plan file with completion date and commit hash"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If commit messages consistently lack EARS references, or the diff summary consistently mismatches actual changes, the root cause is upstream — flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+This agent carries the KAIZEN self-improvement covenant. If commit messages consistently lack EARS references, or the diff summary consistently mismatches actual changes, the root cause is upstream — flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

@@ -1,10 +1,10 @@
 ---
-description: Reflect on ONE marketplace element (agent/skill/command/knowledge doc) against the SOLID covenant + pillars and improve it — usually by self-cleaving an over-broad element into smaller SOLID-adherent ones, or replacing restated knowledge with a reference. Applies on a branch → /foundry:pr-review → PR per merge governance (never self-merges).
+description: Reflect on ONE marketplace element (agent/skill/command/knowledge doc) against the KAIZEN covenant + pillars and improve it — usually by self-cleaving an over-broad element into smaller single-purpose ones, or replacing restated knowledge with a reference. Applies on a branch → /foundry:pr-review → PR per merge governance (never self-merges).
 ---
 
 Run a targeted self-improvement. Follow the [`self-improve` skill](../skills/self-improve/SKILL.md):
 
-1. **Reflect** on `$ARGUMENTS` (an element path or name) against the SOLID covenant, the three pillars,
+1. **Reflect** on `$ARGUMENTS` (an element path or name) against the KAIZEN covenant, the three pillars,
    and the inspector's lenses — focused on this one element (Single-Responsibility, knowledge-
    restatement, clarity, drift, portability).
 2. **Decide** the move: **cleave** (split an over-broad element into smaller single-purpose ones),

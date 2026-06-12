@@ -98,6 +98,6 @@ run the convergent improvement loop or to critique any pasted screenshot ad-hoc.
 
 ## Self-improvement
 
-Carries the SOLID covenant. When a shipped design proves weak in a way this review *missed*, that is a
+Carries the KAIZEN covenant. When a shipped design proves weak in a way this review *missed*, that is a
 **canon or rubric gap** — flag it for the `self-improve` skill so a PR sharpens the canon and every future
 review catches it ([`../self-improve/SKILL.md`](../self-improve/SKILL.md)).

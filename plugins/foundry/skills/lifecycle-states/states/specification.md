@@ -45,6 +45,6 @@ Once Gherkin has passed reviewer gate and the `FEATURE_COMPLETE` sentinel is iss
 
 `ds-step-3-tests` — with complete EARS IDs, approved Gherkin scenarios, and all reviewer gates passed.
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This skill carries the SOLID self-improvement covenant. If specification gaps are consistently found during implementation (spec freeze being broken by necessary corrections), the EARS question bank or Gherkin abuse-path coverage is insufficient. Flag for the self-improvement covenant ([`solid-covenant.md`](../../../knowledge/architecture/solid-covenant.md)).
+This skill carries the KAIZEN self-improvement covenant. If specification gaps are consistently found during implementation (spec freeze being broken by necessary corrections), the EARS question bank or Gherkin abuse-path coverage is insufficient. Flag for the self-improvement covenant ([`kaizen-covenant.md`](../../../knowledge/architecture/kaizen-covenant.md)).

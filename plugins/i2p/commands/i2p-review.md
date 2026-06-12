@@ -19,4 +19,4 @@ Run the marketplace-wide adversarial review. Follow the [`review` skill](../skil
 5. Present the verdict, the findings table, and **explicitly what was NOT reviewed** — including any lens
    whose plugin is not installed (a gap, never a silent PASS).
 
-This command **reports**; it does not merge. All reviewers carry the SOLID self-improvement covenant.
+This command **reports**; it does not merge. All reviewers carry the KAIZEN self-improvement covenant.

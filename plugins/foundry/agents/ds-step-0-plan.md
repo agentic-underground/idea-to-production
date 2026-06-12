@@ -128,9 +128,9 @@ handoff:
     - "Note BDD harness status — surface to user at step-3 if harness is absent"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If the same planning gaps appear
+This agent carries the KAIZEN self-improvement covenant. If the same planning gaps appear
 across multiple items (missing risk categories, incomplete resumption sections, wrong step
-scope, missing BDD/performance strategy), flag them for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+scope, missing BDD/performance strategy), flag them for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).
 Systematic issues deserve systematic fixes.

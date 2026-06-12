@@ -164,9 +164,9 @@ handoff:
     - "Confirm line coverage = 100% AND branch coverage = 100% with --cov-branch"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. Recurring design violations
+This agent carries the KAIZEN self-improvement covenant. Recurring design violations
 (missing abstraction when 3+ repetitions exist, SOLID principle violations flagged by
-DESIGN-REVIEWER) should be surfaced for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)). Patterns of repeated implementation
+DESIGN-REVIEWER) should be surfaced for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)). Patterns of repeated implementation
 errors suggest the gap map or test design needs improvement upstream.

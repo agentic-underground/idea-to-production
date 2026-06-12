@@ -17,6 +17,8 @@
 #      but must never `npx -y`/`uvx`/`pip install`/`npm install`/`curl … | sh` a package.
 #   E. SOUL.md is byte-identical across the canonical root and every plugin copy.
 #   F. inject-soul.sh is byte-identical across all plugins (the SessionStart injector).
+#   N. KAIZEN.md is byte-identical across the canonical root and every plugin copy.
+#   O. inject-kaizen.sh is byte-identical across all plugins (the lean SessionStart injector).
 #   H. marketplace.json ⟺ plugins/ — every plugins/<name>/ dir has a matching
 #      marketplace.json[].name entry and vice-versa (no orphan dir, no orphan entry), and each
 #      plugin's plugin.json.version equals its marketplace.json entry version.
@@ -52,8 +54,9 @@
 #
 # Flag:
 #   --fix  guarded canonical re-sync — when the canonical-copy parity checks (A check.sh, E SOUL.md,
-#          F inject-soul.sh) FAIL, re-sync each drifted copy FROM its named canonical source (root
-#          SOUL.md for E; the most-common copy for A/F). GUARDS: refuses on a dirty git tree, prints
+#          F inject-soul.sh, N KAIZEN.md, O inject-kaizen.sh) FAIL, re-sync each drifted copy FROM its
+#          named canonical source (root SOUL.md for E, root KAIZEN.md for N; the most-common copy for
+#          A/F/O). GUARDS: refuses on a dirty git tree, prints
 #          the diff before writing, and operates ONLY on the canonical-copy sets these checks track
 #          (never a file the user intentionally diverged elsewhere). Without --fix: detect-only.
 set -uo pipefail
@@ -278,6 +281,42 @@ else
   else
     fail "inject-soul.sh copies diverge across plugins:"; md5sum "${injectors[@]}" | sed 's/^/      /'
     register_drift "$(canonical_of "${injectors[@]}")" "${injectors[@]}"
+  fi
+fi
+
+# ── N. KAIZEN.md byte-identical (canonical root + every plugin copy) ─────────
+# The KAIZEN always-aware banner — the lean sibling of SOUL.md (check E). Same canonical-copy
+# contract: edits start at the repo-root KAIZEN.md and are mirrored outward.
+section "N. KAIZEN.md canonical-copy parity"
+mapfile -t kaizens < <(find plugins -path '*/KAIZEN.md' | sort)
+if [ ! -f KAIZEN.md ]; then
+  fail "canonical root KAIZEN.md is missing"
+elif [ "${#kaizens[@]}" -lt 1 ]; then
+  fail "expected ≥1 plugin KAIZEN.md copy, found ${#kaizens[@]}"
+else
+  kaizens=("KAIZEN.md" "${kaizens[@]}")
+  sums="$(md5sum "${kaizens[@]}" | awk '{print $1}' | sort -u)"
+  if [ "$(printf '%s\n' "$sums" | wc -l)" -eq 1 ]; then
+    pass "${#kaizens[@]} copies identical incl. root ($sums)"
+  else
+    fail "KAIZEN.md copies diverge (root vs plugins):"; md5sum "${kaizens[@]}" | sed 's/^/      /'
+    register_drift "KAIZEN.md" "${kaizens[@]}"   # named canonical source = root KAIZEN.md
+  fi
+fi
+
+# ── O. inject-kaizen.sh byte-identical across all plugins ─────────────────────
+# The SessionStart injector for the KAIZEN banner — the lean sibling of inject-soul.sh (check F).
+section "O. inject-kaizen.sh canonical-copy parity"
+mapfile -t kinjectors < <(find plugins -path '*/hooks/inject-kaizen.sh' | sort)
+if [ "${#kinjectors[@]}" -lt 2 ]; then
+  fail "expected ≥2 inject-kaizen.sh copies, found ${#kinjectors[@]}"
+else
+  sums="$(md5sum "${kinjectors[@]}" | awk '{print $1}' | sort -u)"
+  if [ "$(printf '%s\n' "$sums" | wc -l)" -eq 1 ]; then
+    pass "${#kinjectors[@]} copies identical ($sums)"
+  else
+    fail "inject-kaizen.sh copies diverge across plugins:"; md5sum "${kinjectors[@]}" | sed 's/^/      /'
+    register_drift "$(canonical_of "${kinjectors[@]}")" "${kinjectors[@]}"
   fi
 fi
 
@@ -557,7 +596,7 @@ fi
 rm -f "$m_err"
 
 # ── --fix: guarded canonical re-sync ─────────────────────────────────────────
-# Only acts when --fix was passed. Re-syncs the drifted canonical copies registered by checks A/E/F
+# Only acts when --fix was passed. Re-syncs the drifted canonical copies registered by checks A/E/F/N/O
 # from their named canonical source. GUARDS (all mandatory): refuse on a dirty git tree; print the
 # diff of every change first; touch ONLY the registered canonical-copy set (never an unrelated or
 # intentionally-diverged file). Without --fix the registry is computed but never applied.

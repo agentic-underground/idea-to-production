@@ -46,7 +46,7 @@
 
 ### 7. [MEDIUM] Frontmatter omits the SUBJECT_MATTER_UNDERSTANDING contract that sibling handlers carry
 
-**Evidence:** handler-architect.md frontmatter (~line 11) ends "Carries the SOLID covenant and the test-first mandate." Sibling handlers state the full house contract — handler-rust.md ~line 10 and handler-ansible.md ~line 10: "Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." Reading the SMU file in Phase 0 is not the same as carrying the knowledge-parity contract in the agent's discoverable description.
+**Evidence:** handler-architect.md frontmatter (~line 11) ends "Carries the KAIZEN covenant and the test-first mandate." Sibling handlers state the full house contract — handler-rust.md ~line 10 and handler-ansible.md ~line 10: "Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." Reading the SMU file in Phase 0 is not the same as carrying the knowledge-parity contract in the agent's discoverable description.
 
 **Recommendation:** Append "and the project's SUBJECT_MATTER_UNDERSTANDING" to the description so the contract is uniform across the VALUE_HANDLER_POOL and discoverable by the spawning orchestrator.
 

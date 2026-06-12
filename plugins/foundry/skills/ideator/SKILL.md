@@ -30,15 +30,16 @@ them into the structured development system (EARS → Gherkin → TDD → commit
 > Do not reorder them. Extensions to this skill must be added as new numbered sections or as
 > sub-sections of an existing one — never by mutating the core flow.
 >
-> **SOLID alignment.** This skill follows SOLID principles:
-> - **S** — Each section has one responsibility.
-> - **O** — New behaviour is added via new sections/references, not by editing the core flow.
-> - **L** — Downstream documents produced by this skill can substitute for manual briefs without
+> **KAIZEN alignment.** This skill practises the KAIZEN covenant on itself:
+> - **One responsibility per section** — each section does one thing; an over-broad one self-cleaves.
+> - **Extend, don't mutate** — new behaviour arrives as new sections/references, never by editing the
+>   core flow (small, reversible steps over rewrites).
+> - **Substitutable output** — documents this skill produces stand in for manual briefs without
 >   breaking any downstream tool.
-> - **I** — Users who only want ideation do not need to trigger the SDLC; users who want full
->   SDLC do not need to re-answer ideation questions.
-> - **D** — Concrete output formats (README, ROADMAP entry) depend on abstractions (the brief
->   structure), not on session-specific details.
+> - **Segregated paths** — users who only want ideation do not trigger the SDLC; full-SDLC users do
+>   not re-answer ideation questions.
+> - **Standardize, then improve** — concrete output formats (README, ROADMAP entry) depend on the
+>   stable brief structure, not on session-specific details; raise the floor from there.
 
 ---
 
@@ -201,8 +202,8 @@ changes were made. Then proceed to §6.
 ### 6.2 File content
 
 Use the template at `references/project-readme-template.md`. The template must be rendered
-with the brief fields from §4 and must include the **SOLID Replication Fragment** (the
-covenant block in `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md`) verbatim
+with the brief fields from §4 and must include the **KAIZEN Replication Fragment** (the
+covenant block in `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md`) verbatim
 in the designated section.
 
 Key sections of the output file:
@@ -214,7 +215,7 @@ Key sections of the output file:
 6. **Architecture sketch** (high-level, 3–5 bullet points; do not over-specify)
 7. **Roadmap entry** (formatted for ROADMAPPER, ready to paste)
 8. **SDLC next steps** (a numbered checklist pointing to the development system steps 0–9)
-9. **SOLID Replication Fragment** (verbatim from `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md`)
+9. **KAIZEN Replication Fragment** (verbatim from `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md`)
 
 ### 6.3 Delivery
 
@@ -275,7 +276,7 @@ delivered.
    `SKILL.md` itself, note the section number and change inline; do not restructure
    the document.
 
-### 8.3 SOLID compliance check for improvements
+### 8.3 covenant compliance check for improvements
 
 Before applying any self-improvement, verify:
 - [ ] The change has a single responsibility (S)
@@ -290,17 +291,17 @@ If any box is unchecked, revise the proposed change until all boxes pass.
 
 ## 9. DOWNSTREAM REPLICATION
 
-Every project file produced by IDEATOR (§6) **must** carry the SOLID Replication Fragment.
+Every project file produced by IDEATOR (§6) **must** carry the KAIZEN Replication Fragment.
 This fragment travels with all documents generated in the project and instructs future
 documents/agents to continue the self-improvement discipline.
 
-The fragment is the covenant block in `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md`
-(between its `SOLID REPLICATION FRAGMENT` markers). It is inserted verbatim into section 9 of every
+The fragment is the covenant block in `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md`
+(between its `KAIZEN REPLICATION FRAGMENT` markers). It is inserted verbatim into section 9 of every
 output file. Do not summarise or paraphrase it — copy it exactly.
 
 The effect: every README, spec, plan, and feature file generated downstream will contain a
 pointer back to this discipline, keeping the entire project's document ecosystem aligned
-with the SOLID self-improvement model initiated by IDEATOR.
+with the KAIZEN self-improvement model initiated by IDEATOR.
 
 ---
 
@@ -309,7 +310,7 @@ with the SOLID self-improvement model initiated by IDEATOR.
 | File | Purpose | When to read |
 |---|---|---|
 | `references/project-readme-template.md` | Template for §6 output | Before generating any project file |
-| `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md` | SOLID replication fragment | When generating any project file |
+| `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md` | KAIZEN replication fragment | When generating any project file |
 | `references/dev-system.md` | Full SDLC Steps 0–9 | When performing §7 SDLC handoff without ROADMAPPER |
 | `references/self-improvement-review-prompt.md` | Sub-agent prompt for §8 | When triggering self-improvement |
 | `references/question-bank-extended.md` | Extended question library | When §3.2 bank is exhausted |

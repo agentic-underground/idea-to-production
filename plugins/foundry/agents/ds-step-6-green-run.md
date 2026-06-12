@@ -87,6 +87,6 @@ handoff:
     - "Resolve any conflicts — preserve both upstream changes and new feature"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If spec-conformance gaps consistently appear at this step (implementation satisfies tests but misses intent), the root cause is upstream — either the EARS statements are underspecified or the Gherkin scenarios lack adequate coverage. Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+This agent carries the KAIZEN self-improvement covenant. If spec-conformance gaps consistently appear at this step (implementation satisfies tests but misses intent), the root cause is upstream — either the EARS statements are underspecified or the Gherkin scenarios lack adequate coverage. Flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

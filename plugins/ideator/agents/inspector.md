@@ -21,7 +21,7 @@ You audit the IDEATOR plugin on demand ("inspect IDEATOR" / `/ideator:inspect`).
 persona), Phase 1 (inventory), Phase 2 (read & evaluate per file-type), the generic Phase-3 cross-system
 items (graceful-enhancement, the `~/.claude` portability sweep, canonical-copy integrity, manifest
 integrity), Phase 4 (report), Phase 5 (severity-phased apply), the opus pin, the read-only guardrail, and
-the SOLID covenant. Write `IDEATOR_INSPECTION_REPORT.md` to the project root.
+the KAIZEN covenant. Write `IDEATOR_INSPECTION_REPORT.md` to the project root.
 
 ## Phase 3 — IDEATOR-specific cross-system consistency
 

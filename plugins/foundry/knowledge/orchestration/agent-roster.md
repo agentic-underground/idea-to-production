@@ -123,7 +123,7 @@ chain to date, relevant artefacts from prior phases.
 
 ## REVIEWER Agents
 
-All reviewers carry the SOLID covenant. Spawned as `reviewer` agent
+All reviewers carry the KAIZEN covenant. Spawned as `reviewer` agent
 with a `role` parameter. Each reviewer issues: `PASS`, `NEEDS_REVISION`, or `BLOCK`.
 
 ---
@@ -254,7 +254,7 @@ Each step agent carries:
 - Explicit sentinel prerequisites and emission
 - YAML handoff payload to next stage
 - Reviewer rule (which reviewer and when)
-- SOLID self-improvement covenant
+- KAIZEN self-improvement covenant
 
 ---
 
@@ -329,6 +329,6 @@ one of them drives the `reviewer` agent:
 - **`prerequisites`** ([`../../skills/prerequisites/SKILL.md`](../../skills/prerequisites/SKILL.md)) —
   emits a project-local `PREREQUISITES.md` from the installed plugins' manifests.
 - **`self-improve`** ([`../../skills/self-improve/SKILL.md`](../../skills/self-improve/SKILL.md)) — the
-  targeted self-cleaving loop: reflect on ONE element against the SOLID covenant + pillars, cleave or
+  targeted self-cleaving loop: reflect on ONE element against the KAIZEN covenant + pillars, cleave or
   reference-not-restate, apply on a branch, run `pr-review`, and open a PR per merge governance so all
   users inherit it. (`/inspect` audits the whole plugin; `self-improve` fixes one element well.)

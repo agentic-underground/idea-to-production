@@ -19,8 +19,8 @@ machinery left running is inventory waste.
     (a station with no handler is a defect FOUNDER reports) in `VALUE_FLOW.md §4–5`.
   - *Questions route to the right specialist; escalate when unanswered* → preserved as
     "questions flow up" in `knowledge/pillars/knowledge-parity.md`.
-  - *Escalate a recurring learning into a durable doc* → preserved as the SOLID
-    self-improvement covenant (`knowledge/architecture/solid-covenant.md`) and the `inspector`.
+  - *Escalate a recurring learning into a durable doc* → preserved as the KAIZEN
+    self-improvement covenant (`knowledge/architecture/kaizen-covenant.md`) and the `inspector`.
 - **Disposition:** kept at repo root with a deprecation banner; no longer part of the workflow.
 
 ## forge-sync.sh + the Stop hook (SUNSET)

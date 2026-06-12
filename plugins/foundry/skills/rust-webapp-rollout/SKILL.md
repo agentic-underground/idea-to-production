@@ -161,4 +161,4 @@ version drift becomes a matrix update in `references/00-MANIFEST.md`; every recu
 becomes a sharper knowledge-parity prompt. Each iteration must **at least halve the remaining
 distance to a flawless, zero-trial-and-error rollout.** A recurring gap signals an upstream fix —
 make it once, here, so no future build pays for it. See
-`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md`.
+`${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md`.

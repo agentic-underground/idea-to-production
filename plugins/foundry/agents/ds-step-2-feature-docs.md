@@ -133,6 +133,6 @@ handoff:
     - "Do NOT write implementation code — tests must be RED at end of this step"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If the same Gherkin anti-patterns appear across items (missing abuse paths, compound scenarios, code-language leaking into Given-When-Then), flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)). A recurring BDD anti-pattern in the feature files warrants a template fix.
+This agent carries the KAIZEN self-improvement covenant. If the same Gherkin anti-patterns appear across items (missing abuse paths, compound scenarios, code-language leaking into Given-When-Then), flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)). A recurring BDD anti-pattern in the feature files warrants a template fix.

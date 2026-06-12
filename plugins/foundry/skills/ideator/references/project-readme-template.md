@@ -1,8 +1,8 @@
 # Project README Template
 
 > **Instructions for IDEATOR**: Replace all `{{FIELD}}` tokens with values from the populated
-> brief (§4). The SOLID Replication Fragment in §9 must be copied verbatim from the covenant block in
-> `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md` — do not paraphrase.
+> brief (§4). The KAIZEN Replication Fragment in §9 must be copied verbatim from the covenant block in
+> `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md` — do not paraphrase.
 
 ---
 
@@ -124,6 +124,6 @@ When ready to implement, work through the development system in order:
 
 ---
 
-## 9. SOLID Replication Fragment
+## 9. KAIZEN Replication Fragment
 
-<!-- INSERT the SOLID REPLICATION FRAGMENT block from knowledge/architecture/solid-covenant.md VERBATIM BELOW THIS LINE -->
+<!-- INSERT the KAIZEN REPLICATION FRAGMENT block from knowledge/architecture/kaizen-covenant.md VERBATIM BELOW THIS LINE -->

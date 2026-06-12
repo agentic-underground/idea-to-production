@@ -89,6 +89,6 @@ convergent loop below).
 
 ## Self-improvement covenant
 
-Carries the SOLID covenant. A figure that passed this review yet still misled a reader is a **canon or
+Carries the KAIZEN covenant. A figure that passed this review yet still misled a reader is a **canon or
 rubric gap** — generalise it (a tighter typography rule, a re-weighted data-viz dimension) and land it via
 the shared self-improvement protocol, so every future review catches it.

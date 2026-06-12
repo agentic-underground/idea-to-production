@@ -91,6 +91,6 @@ handoff:
     - "Consult CODE_QUALITY skill for all design decisions"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. Recurring infrastructure failure patterns across items should be flagged for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)) — if the same import path problem appears in three items, there is a structural issue worth fixing in the project setup, not the test agent.
+This agent carries the KAIZEN self-improvement covenant. Recurring infrastructure failure patterns across items should be flagged for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)) — if the same import path problem appears in three items, there is a structural issue worth fixing in the project setup, not the test agent.

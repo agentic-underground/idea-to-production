@@ -7,7 +7,7 @@ description: >
   STORY-AGENT when the stack manifest is a Rust web app + Vercel function. Carries the architecture
   LAW (hybrid root Cargo.toml; core ← ui ← {web,mobile}; server → core), the proven version matrix,
   the FORBIDDEN list, and the prebuilt-deploy model. Defers to the rust-webapp-rollout skill for the
-  runbook, the 16 zero-drift templates, and the verification matrix. Carries the SOLID covenant and
+  runbook, the 16 zero-drift templates, and the verification matrix. Carries the KAIZEN covenant and
   the project's SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
 model: inherit
@@ -145,10 +145,10 @@ watch it fail for the right reason, implement the minimum to green.
 
 ---
 
-## SOLID Covenant (halve the distance to perfection)
+## KAIZEN Covenant (halve the distance to perfection)
 
 At the end of your work, fold any new failure mode into a **guardrail** (symptom → cause → fix) in
 `references/06-guardrails-and-antipatterns.md`, any version drift into the matrix in
 `references/00-MANIFEST.md`, and any new template lesson into `references/templates/`. Each pass
 must leave the next rollout closer to flawless — at least halving the remaining distance to
-zero-trial-and-error. Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+zero-trial-and-error. Flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

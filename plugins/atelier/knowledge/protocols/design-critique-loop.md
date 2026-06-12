@@ -3,7 +3,7 @@
 > The one-copy home for **how ATELIER's designer and reviewer iterate so the design genuinely improves**
 > and the loop *terminates*. A critique that sends the maker in circles is the most expensive waste there
 > is. This protocol turns "back-and-forth" into **measured convergence**, modelled on the marketplace's
-> writer↔reviewer loop, the perf-delta gate, and the SOLID *halve-the-distance* covenant.
+> writer↔reviewer loop, the perf-delta gate, and the KAIZEN *halve-the-distance* covenant.
 
 ## The design-fitness rubric (the fitness function)
 

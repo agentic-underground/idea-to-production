@@ -58,7 +58,7 @@
 
 ### 9. [MEDIUM] Covenant is present but thinner than the house contract — no SUBJECT_MATTER_UNDERSTANDING, no halving clause
 
-**Evidence:** ~line 73: "Carries the SOLID covenant." — one sentence plus lesson-routing. The marketplace contract is that every agent carries the SOLID covenant AND the project's SUBJECT_MATTER_UNDERSTANDING; compare foundry handler-ansible.md ~line 10: "Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." Neither SUBJECT_MATTER_UNDERSTANDING nor the knowledge-parity obligation appears anywhere in handler-graphviz.md (this gap is shared by all pressroom handlers — handler-mermaid.md ~line 73 is identically thin).
+**Evidence:** ~line 73: "Carries the KAIZEN covenant." — one sentence plus lesson-routing. The marketplace contract is that every agent carries the KAIZEN covenant AND the project's SUBJECT_MATTER_UNDERSTANDING; compare foundry handler-ansible.md ~line 10: "Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." Neither SUBJECT_MATTER_UNDERSTANDING nor the knowledge-parity obligation appears anywhere in handler-graphviz.md (this gap is shared by all pressroom handlers — handler-mermaid.md ~line 73 is identically thin).
 
 **Recommendation:** Extend the covenant section: state SUBJECT_MATTER_UNDERSTANDING explicitly — the handler must reach parity with the SPEC's subject (read the `site.doc` section being illustrated, not just the SPEC fields) before drafting, since a structurally-correct diagram of a misunderstood system is a confident lie. Note this should be fixed plugin-wide, not only here.
 

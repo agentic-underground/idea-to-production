@@ -52,7 +52,7 @@
 
 ### 8. [MEDIUM] Missing the SUBJECT_MATTER_UNDERSTANDING contract that project law requires of every agent
 
-**Evidence:** grep shows every FOUNDRY value-handler (handler-python.md, handler-react.md, handler-ansible.md, handler-rust-webapp.md, …) carries SUBJECT_MATTER_UNDERSTANDING; zero files under plugins/pressroom/ reference it, including this newly created handler. The SOLID covenant section (lines 65–70) is present but the understanding contract is absent.
+**Evidence:** grep shows every FOUNDRY value-handler (handler-python.md, handler-react.md, handler-ansible.md, handler-rust-webapp.md, …) carries SUBJECT_MATTER_UNDERSTANDING; zero files under plugins/pressroom/ reference it, including this newly created handler. The KAIZEN covenant section (lines 65–70) is present but the understanding contract is absent.
 
 **Recommendation:** Add the SUBJECT_MATTER_UNDERSTANDING commitment (reach parity with the SPEC's domain — what the data measures, its units, and what comparison the message claims — before drafting; surface a misunderstanding rather than render through it). This is plugin-wide drift in pressroom, but the newest handler should set the standard rather than copy the gap.
 

@@ -97,7 +97,7 @@ The pipeline: **discover ▸ charter ▸ generate (select veins) ▸ verify ▸ 
 
 ## Self-improvement covenant
 
-Carries the SOLID covenant ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)). When a name that
+Carries the KAIZEN covenant ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)). When a name that
 passed the search later proves to collide or fall flat, that is not a one-off — it has a named home to be
 folded back into, via `/ideator:self-improve`: a missing **name-type** → a vein in
 [`../../knowledge/naming/name-types.md`](../../knowledge/naming/name-types.md); a missing **hook** →

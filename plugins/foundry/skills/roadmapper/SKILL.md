@@ -709,7 +709,7 @@ Quick reference — mode hooks:
 
 ## 12. SELF-IMPROVEMENT PROTOCOL
 
-ROADMAPPER carries the SOLID self-improvement covenant. Trigger this protocol
+ROADMAPPER carries the KAIZEN self-improvement covenant. Trigger this protocol
 when you observe any of the following:
 
 - A user correction that reveals a gap in the question bank or mode hooks
@@ -735,7 +735,7 @@ when you observe any of the following:
    > "Proposed addition to §7 Status Legend: BLOCKED — item cannot progress
    > due to external dependency. Rationale: two sessions surfaced this case."
 
-3. **Verify SOLID compliance before applying:**
+3. **Verify covenant compliance before applying:**
    - [ ] Single responsibility (S) — the change does one thing
    - [ ] Open/Closed (O) — extends, does not rewrite existing sections
    - [ ] No downstream documents break (L)

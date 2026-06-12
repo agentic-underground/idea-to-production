@@ -28,7 +28,7 @@
 
 ### 4. [MEDIUM] Description claims it carries SUBJECT_MATTER_UNDERSTANDING; the body never operationalises it
 
-**Evidence:** Lines 8–9 (frontmatter description): "Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body contains zero further mentions — no instruction to read `SUBJECT_MATTER_UNDERSTANDING.md` (a named FOUNDRY cycle artifact per `knowledge/glossary.md` ~line 162), no path, no fallback when it is absent. The contract is asserted in metadata and unimplemented in the prompt the agent actually executes.
+**Evidence:** Lines 8–9 (frontmatter description): "Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body contains zero further mentions — no instruction to read `SUBJECT_MATTER_UNDERSTANDING.md` (a named FOUNDRY cycle artifact per `knowledge/glossary.md` ~line 162), no path, no fallback when it is absent. The contract is asserted in metadata and unimplemented in the prompt the agent actually executes.
 
 **Recommendation:** Add to the startup block (next to the implementation-covenant read at line 31): "Read the cycle's `SUBJECT_MATTER_UNDERSTANDING.md` (project root or as directed by the phase agent) before writing any test or component; if it does not exist, ask the phase agent for the domain context rather than inventing domain assumptions."
 
@@ -46,13 +46,13 @@
 
 ### 7. [MEDIUM] No output/completion contract — the handler never says what to report back to the phase agent
 
-**Evidence:** The file ends at the SOLID Covenant (lines 187–191) with no completion protocol: nothing specifies returning files touched, test command + results, coverage numbers, or a11y findings to the spawning agent. House criterion (inspection-core, Agent definitions): "output/completion protocol precise". The Prime Directive (line 39) demands "100% line coverage AND 100% branch coverage" yet no instruction ever produces or transmits the coverage evidence that would prove it.
+**Evidence:** The file ends at the KAIZEN Covenant (lines 187–191) with no completion protocol: nothing specifies returning files touched, test command + results, coverage numbers, or a11y findings to the spawning agent. House criterion (inspection-core, Agent definitions): "output/completion protocol precise". The Prime Directive (line 39) demands "100% line coverage AND 100% branch coverage" yet no instruction ever produces or transmits the coverage evidence that would prove it.
 
 **Recommendation:** Add a "Completion Report" section: on finishing, report (1) files created/modified, (2) the exact test command run and its pass/fail tally, (3) the coverage summary lines proving 100/100 (or the named uncovered lines and why), (4) any flagged covenant items — in the handoff-protocol schema when invoked within a station handoff.
 
-### 8. [LOW] SOLID covenant present but weakened relative to current canon — missing the halving obligation
+### 8. [LOW] KAIZEN covenant present but weakened relative to current canon — missing the halving obligation
 
-**Evidence:** Lines 189–191: "note any React patterns, testing utilities, or accessibility requirements not yet in this handler's knowledge. Flag for the self-improvement covenant." The canon (first-principles / inspection-core Prime Directive) requires "each pass at least halving the remaining distance to perfection", and the newest handler already carries it (handler-ansible: "## SOLID Covenant (halve the distance to perfection) … Each pass should leave this handler measurably closer to flawless — at least halving the remaining distance."). handler-react's covenant records gaps but imposes no improvement-rate obligation.
+**Evidence:** Lines 189–191: "note any React patterns, testing utilities, or accessibility requirements not yet in this handler's knowledge. Flag for the self-improvement covenant." The canon (first-principles / inspection-core Prime Directive) requires "each pass at least halving the remaining distance to perfection", and the newest handler already carries it (handler-ansible: "## KAIZEN Covenant (halve the distance to perfection) … Each pass should leave this handler measurably closer to flawless — at least halving the remaining distance."). handler-react's covenant records gaps but imposes no improvement-rate obligation.
 
 **Recommendation:** Adopt the handler-ansible covenant phrasing verbatim, adapted to React: include the halving obligation and add "any recurring gap that signals an upstream fix" so systemic findings route to the producing template, not the instance.
 

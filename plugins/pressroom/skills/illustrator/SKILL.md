@@ -143,7 +143,7 @@ grounds; `handler-comfyui` needs `$PRESSROOM_COMFYUI_URL` reachable. When a hand
 ILLUSTRATOR routes around it (another vector handler for the A/B slot) and says so — it never blocks the loop.
 
 ## Self-improvement covenant
-Carries the SOLID covenant. A *site-selection* lesson tunes [site-ranking](references/site-ranking.md); a
+Carries the KAIZEN covenant. A *site-selection* lesson tunes [site-ranking](references/site-ranking.md); a
 *composition* lesson the shared [charting-matrix](../rich-pdf-with-diagrams/references/charting-matrix.md); a
 *colour/ground* lesson the [dark-mode canon](references/dark-mode-canon.md); a *comparative* lesson the
 [A/B loop](../design-reviewer/references/ab-comparative-loop.md) — all via the shared

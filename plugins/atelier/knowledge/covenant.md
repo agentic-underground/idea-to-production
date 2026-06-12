@@ -1,7 +1,7 @@
-# ATELIER — pillars & the SOLID self-improvement covenant
+# ATELIER — pillars & the KAIZEN self-improvement covenant
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
-> plugin, ATELIER is bound by the **three pillars** and the **SOLID self-improvement covenant**. (The
+> plugin, ATELIER is bound by the **three pillars** and the **KAIZEN self-improvement covenant**. (The
 > canonical, in-depth homes live in the `foundry` plugin's `knowledge/`; this is the local copy a
 > standalone install carries — referenced by concept, not by a cross-plugin path.)
 
@@ -17,7 +17,7 @@
   ([`protocols/design-critique-loop.md`](protocols/design-critique-loop.md)): a mockup or screen is not
   "done" because the user is impatient — it is done when it clears the rubric, or its residual is
   *explicitly accepted*. Accessibility (WCAG 2.2 AA) is a floor, never traded away.
-- **Waste-elimination** — remove waste in every form, *including rediscovery and ping-pong*. The
+- **Waste-elimination** (≡ *muda · mura · muri*) — remove waste in every form, *including rediscovery and ping-pong*. The
   convergent loop **must measurably improve each turn or halt** — a reviewer that sends the designer in
   circles is the most expensive waste there is. Every resolved critique is written into the canon so the
   same flaw is never re-litigated.
@@ -26,7 +26,7 @@
 > many; load only the canon a given critique needs. The reviewer reads the screenshot + the relevant
 > canon slice, not the whole library.
 
-## The SOLID self-improvement covenant
+## The KAIZEN self-improvement covenant
 
 Every element of this plugin continuously asks how it can improve, and each iteration must at least
 **halve the remaining distance to perfection**; an element that grows to do more than one thing

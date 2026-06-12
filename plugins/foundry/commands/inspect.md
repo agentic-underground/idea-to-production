@@ -9,4 +9,4 @@ Invoke the **inspector** agent to run an independent, critical audit of the plug
 critical-analysis persona; and produce a severity-ranked report (SUGGESTION / WARNING /
 CRITICAL) of what is wrong, missing, drifted, or improvable. Apply unambiguous CRITICAL fixes
 directly; capture the rest for the next self-improvement pass. This is the system embodying its
-own waste-elimination pillar and SOLID self-improvement covenant.
+own waste-elimination pillar and KAIZEN self-improvement covenant.

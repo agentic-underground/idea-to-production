@@ -31,7 +31,7 @@ The pillars govern the behaviour of **every** element. The user's phrasings are 
 |---|---|---|---|
 | **Knowledge-parity** | **knowledge-alignment** | The agent fully and clearly understands the ask **before** it acts; recurring questions become written answers, never asked twice. | [`pillars/knowledge-parity.md`](pillars/knowledge-parity.md) |
 | **Quality-first** | **quality-confidence** | Quality is **built in, not inspected in** — engineered across the whole assurance chain and strengthened by a performance-delta gate; a gate is never weakened to make progress. | [`pillars/quality-first.md`](pillars/quality-first.md) |
-| **Waste-elimination** | (waste-elimination) | The systematic identification and removal of waste in all seven forms — *including rediscovery*: a bug found in development is far less wasteful than one found in production. | [`pillars/waste-elimination.md`](pillars/waste-elimination.md) |
+| **Waste-elimination** | **muda · mura · muri** | The systematic identification and removal of waste in all seven forms — *including rediscovery*: a bug found in development is far less wasteful than one found in production. The three Ms: *muda* (waste), *mura* (unevenness), *muri* (overburden). | [`pillars/waste-elimination.md`](pillars/waste-elimination.md) |
 
 > **The overarching constraint — token-efficiency.** Passing context to a model is a potentially
 > wasteful operation. *Thin skills, fat references · define-once, reference-many · station-scoped
@@ -82,16 +82,17 @@ blurs the location. · **Why it matters:** pure ⇒ testable ⇒ coordinate-able
 
 ---
 
-## 4. The SOLID covenant — SOLID applied to *agent documents*
+## 4. The KAIZEN covenant — continuous improvement applied to the marketplace itself
 
-**Formal:** the marketplace applies the SOLID rules of **code** design to its own **documents** —
-Single-Responsibility, Open/Closed, Liskov-substitution, Interface-segregation, Dependency-inversion —
-so an agent file is engineered like a well-formed module. · **Prime law:** each iteration must at
-least **halve the remaining distance to perfection**. · **Self-cleaving:** when the defect is
-*breadth* (an element does more than one thing), it **cleaves** into smaller, more SOLID-adherent
-elements and rewrites itself — shipping the improvement to all users via PR (§6). · **Aliases:** the
-covenant; halve-the-distance; self-cleaving. · **Home:**
-[`architecture/solid-covenant.md`](architecture/solid-covenant.md).
+**Formal:** every document the marketplace ships practises **kaizen** — *continuous improvement* —
+on itself: PDCA (change against a measured hypothesis), standardize-then-improve, small reversible
+steps, gemba (improve from the real artifact and real feedback), and the elimination of *muda · mura
+· muri* from its own ecosystem. · **Prime law:** each iteration must at least **halve the remaining
+distance to perfection**. · **Self-cleaving:** when the defect is *breadth / muri* (an element does
+more than one thing), it **cleaves** into smaller, single-purpose elements and rewrites itself —
+shipping the improvement to all users via PR (§6). · **Aliases:** the covenant; halve-the-distance;
+self-cleaving; kaizen. · **Home:**
+[`architecture/kaizen-covenant.md`](architecture/kaizen-covenant.md).
 
 ---
 
@@ -116,7 +117,8 @@ This is the **worker tier's memory**: the record of *what works and what does no
 **self-cleave** — so no future build pays for it again; the change lands via branch →
 **`/foundry:pr-review`** (always-on adversarial gate) → **PR under merge-governance**, so **every user
 of the marketplace inherits the enhancement**. · **Aliases:** fix-upstream-once; self-cleave-and-PR;
-the self-improving marketplace. · **Homes:** [`architecture/solid-covenant.md`](architecture/solid-covenant.md)
+the self-improving marketplace. This is **kaizen at the marketplace scale**. · **Homes:**
+[`architecture/kaizen-covenant.md`](architecture/kaizen-covenant.md)
 · [`protocols/merge-governance.md`](protocols/merge-governance.md) · the `pr-review` skill and the
 `inspector` agent · the `self-improve` skill (the targeted self-cleave loop).
 

@@ -39,7 +39,7 @@ Both degrade silently if anything goes wrong — they never block a prompt.
 
 ## Philosophy
 
-i2p carries the marketplace's three pillars and the SOLID self-improvement covenant
+i2p carries the marketplace's three pillars and the KAIZEN self-improvement covenant
 ([`knowledge/covenant.md`](knowledge/covenant.md)). When a user can't find a power they have, the fix is
 upstream — a sharper `/i2p-help` line or a new tip, landed via PR so every future session inherits it.
 

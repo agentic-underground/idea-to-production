@@ -88,7 +88,7 @@ naming exercise gets the full marketing-grade search rather than an ad-hoc check
 
 ## Self-improvement covenant
 
-Carries the SOLID self-improvement covenant ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)).
+Carries the KAIZEN self-improvement covenant ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)).
 When a downstream builder hits an ambiguity this package *should* have resolved, that is not a per-idea
 slip but a **challenge axis or package field that needs sharpening** — flag it for the `self-improve`
 skill so a PR lands the fix for every future ideation.

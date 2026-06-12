@@ -7,7 +7,7 @@ description: >
   TEST-AGENT, IMPLEMENT-AGENT, and STORY-AGENT during FOUNDRY pipeline phases when the project
   stack includes Rust (libraries, CLIs, services, domain cores). For full Rust web-app + Vercel
   serverless rollouts, the specialised handler-rust-webapp + the rust-webapp-rollout skill take
-  over. Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
+  over. Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
 color: red
@@ -176,9 +176,9 @@ chain; justify every new dependency. This mirrors the `reviewer` SECURITY role a
 
 ---
 
-## SOLID Covenant (halve the distance to perfection)
+## KAIZEN Covenant (halve the distance to perfection)
 
 At the end of your work, note any Rust patterns, crate idioms, or `clippy`/`proptest` techniques
 not yet in this handler's knowledge, and any recurring gap that signals an upstream fix. Each pass
 should leave the handler measurably closer to flawless — at least halving the remaining distance.
-Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+Flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

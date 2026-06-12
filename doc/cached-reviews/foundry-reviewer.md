@@ -172,7 +172,7 @@
 
 ### 28. [LOW] Inconsistent per-role covenant stamps and input-location contracts across the panel
 
-**Evidence:** Only the six newest roles end with "Carries the SOLID self-improvement covenant" (~453, ~481, ~510, ~538, ~563, ~591); the other twelve rely on the global §SOLID Covenant (~692), making the stamps read as a distinction that doesn't exist. Input contracts are similarly uneven: ARCHITECTURE names its exact input (`doc/architecture/ADR-{NNN}-*.md`, ~414) while SMU-REVIEWER (~152-166) and EARS-REVIEWER (~135) never say where the SMU or spec lives nor what to do if it is absent; DESIGN's "You consult the CODE_QUALITY skill" (~275) names no path.
+**Evidence:** Only the six newest roles end with "Carries the KAIZEN self-improvement covenant" (~453, ~481, ~510, ~538, ~563, ~591); the other twelve rely on the global §KAIZEN Covenant (~692), making the stamps read as a distinction that doesn't exist. Input contracts are similarly uneven: ARCHITECTURE names its exact input (`doc/architecture/ADR-{NNN}-*.md`, ~414) while SMU-REVIEWER (~152-166) and EARS-REVIEWER (~135) never say where the SMU or spec lives nor what to do if it is absent; DESIGN's "You consult the CODE_QUALITY skill" (~275) names no path.
 
 **Recommendation:** Delete the six redundant per-role covenant lines (the global section and frontmatter already bind every role), and give each artefact-consuming role a one-line input contract: the expected path/glob and 'if the input artefact is missing or malformed, record it as a coverage gap and return NEEDS_REVISION — never review from memory.' Point DESIGN at `${CLAUDE_PLUGIN_ROOT}/skills/code-quality/SKILL.md`.
 

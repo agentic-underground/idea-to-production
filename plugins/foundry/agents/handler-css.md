@@ -5,7 +5,7 @@ description: >
   CSS custom properties, BEM, responsive design, accessibility (WCAG 2.1),
   CSS-in-JS patterns, and visual regression testing. Spawned by TEST-AGENT,
   IMPLEMENT-AGENT, and STORY-AGENT during FOUNDRY pipeline phases when the
-  project stack includes CSS or styling work. Carries the SOLID self-improvement
+  project stack includes CSS or styling work. Carries the KAIZEN self-improvement
   covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
 model: inherit
@@ -179,8 +179,8 @@ expect(styles.display).toBe('flex')
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
 At the end of your work, note any CSS patterns, design system decisions,
 or accessibility requirements not yet in this handler's knowledge.
-Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+Flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

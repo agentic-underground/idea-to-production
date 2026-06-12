@@ -83,6 +83,6 @@ Use with:
 - `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` — specialized FOUNDRY reviewer (preferred)
 - `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` — general-purpose reviewer
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This skill carries the SOLID self-improvement covenant. If the same types of findings recur across items (missing EARS IDs, incomplete Gherkin coverage, vague commit messages), the issue is upstream in the producing agent's instructions. Flag recurring patterns for the self-improvement covenant ([`solid-covenant.md`](../../knowledge/architecture/solid-covenant.md)) — fix the template, not the instance.
+This skill carries the KAIZEN self-improvement covenant. If the same types of findings recur across items (missing EARS IDs, incomplete Gherkin coverage, vague commit messages), the issue is upstream in the producing agent's instructions. Flag recurring patterns for the self-improvement covenant ([`kaizen-covenant.md`](../../knowledge/architecture/kaizen-covenant.md)) — fix the template, not the instance.

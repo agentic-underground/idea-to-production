@@ -1,7 +1,7 @@
-# MISSION-CONTROL — pillars & the SOLID self-improvement covenant
+# MISSION-CONTROL — pillars & the KAIZEN self-improvement covenant
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
-> plugin, MISSION-CONTROL is bound by the **three pillars** and the **SOLID self-improvement covenant**.
+> plugin, MISSION-CONTROL is bound by the **three pillars** and the **KAIZEN self-improvement covenant**.
 > (The canonical, in-depth homes live in the `foundry` plugin's `knowledge/`; this is the local copy a
 > standalone install carries — referenced by concept, not by a cross-plugin path.)
 
@@ -15,7 +15,7 @@
   operational-readiness gate is never weakened to make go-live**. An SLO is earned by a real SLI, not a
   guessed number. Error budgets gate change; a depleted budget stops feature work until reliability is
   restored. Raise the reliability floor instead of lowering the bar.
-- **Waste-elimination** — remove waste in every form, *including the rediscovery of operational knowledge*.
+- **Waste-elimination** (≡ *muda · mura · muri*) — remove waste in every form, *including the rediscovery of operational knowledge*.
   Every incident produces a blameless postmortem and a runbook so the next like incident is recognised on
   sight and resolved without re-litigation. Toil that recurs is automated away, not endured.
 
@@ -23,7 +23,7 @@
 > load only what a task needs. Deterministic probes (HTTP health checks, log/metric queries) do the heavy
 > lifting; the model triages, correlates, and explains.
 
-## The SOLID self-improvement covenant
+## The KAIZEN self-improvement covenant
 
 Every element of this plugin — each skill, command, and knowledge doc — continuously asks how it can
 improve, and each iteration must at least **halve the remaining distance to perfection**. When an element

@@ -64,7 +64,7 @@ false READY.
 
 ## ♻️ Self-improvement covenant — halve the distance to perfection
 
-Every component of MISSION-CONTROL carries the SOLID self-improvement covenant: each iteration must **at
+Every component of MISSION-CONTROL carries the KAIZEN self-improvement covenant: each iteration must **at
 least halve the remaining distance to perfection** — every incident that surprised us becomes a runbook and
 a signal, every noisy alert becomes a tightened threshold, every upkeep emergency becomes a scheduled
 cadence item — so the next operate cycle catches more, sooner, and is quieter. This is the shared discipline

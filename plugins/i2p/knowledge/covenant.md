@@ -1,9 +1,9 @@
-# i2p — pillars & the SOLID self-improvement covenant
+# i2p — pillars & the KAIZEN self-improvement covenant
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
-> plugin, the **i2p** front door is bound by the **three pillars** and the **SOLID self-improvement
+> plugin, the **i2p** front door is bound by the **three pillars** and the **KAIZEN self-improvement
 > covenant**. (The canonical, in-depth homes live in the `foundry` plugin's `knowledge/` —
-> `architecture/solid-covenant.md` and `pillars/`; this is the local copy a standalone install carries,
+> `architecture/kaizen-covenant.md` and `pillars/`; this is the local copy a standalone install carries,
 > referenced by concept, not by a cross-plugin path.)
 
 ## The three pillars
@@ -14,7 +14,7 @@
 - **Quality-first** (≡ *quality-confidence*) — `/i2p-review` is a **gate**, not a summary: it returns one
   honest verdict (BLOCK > NEEDS_REVISION > PASS) and is never weakened to make a change look mergeable.
   A reviewer it cannot run is reported as a **gap**, never silently dropped to a green light.
-- **Waste-elimination** — remove waste in every form, *including rediscovery*. The front door **delegates,
+- **Waste-elimination** (≡ *muda · mura · muri*) — remove waste in every form, *including rediscovery*. The front door **delegates,
   never duplicates**: it composes the seven specialist plugins' existing skills rather than re-implementing
   their logic, so a lesson learned in one place is never re-litigated here.
 
@@ -22,7 +22,7 @@
 > many; load only what a command needs. The four i2p skills are deliberately thin front-ends that hand
 > off to the specialists.
 
-## The SOLID self-improvement covenant
+## The KAIZEN self-improvement covenant
 
 Every element of this plugin continuously asks how it can improve, and each iteration must at least
 **halve the remaining distance to perfection**; an element that grows to do more than one thing

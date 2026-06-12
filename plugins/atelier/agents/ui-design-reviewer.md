@@ -12,7 +12,7 @@ description: >
   HIERARCHY-REVIEWER, INTERACTION-REVIEWER, ACCESSIBILITY-REVIEWER, AESTHETICS-REVIEWER, CONSISTENCY-REVIEWER,
   or RICHNESS-MOTION-REVIEWER. Default is the full panel. Other plugins (e.g. PRESSROOM's image-aesthetic review) compose the AESTHETICS +
   RICHNESS-MOTION lenses by capability. Carries the
-  SOLID self-improvement covenant.
+  KAIZEN self-improvement covenant.
 tools: Read, Bash, Grep, Glob, mcp__plugin_atelier_playwright__*
 model: opus
 color: magenta
@@ -259,7 +259,7 @@ the artifact floor does.
 
 ## The covenant
 
-Carries the SOLID self-improvement covenant. If you find yourself unable to name a fix that would raise the
+Carries the KAIZEN self-improvement covenant. If you find yourself unable to name a fix that would raise the
 score, that is a **reviewer failure** — record it for `self-improve` (a missing canon rule or rubric
 weight), so the next review converges. A reviewer that sends the maker in circles has not honoured the
 covenant.

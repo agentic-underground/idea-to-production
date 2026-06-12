@@ -1,15 +1,29 @@
 # Pillar 3 — Waste Elimination
 
-> **Bindings:** *waste-elimination* (incl. *rediscovery* waste). (See the core language in [`../glossary.md`](../glossary.md) and [`../first-principles.md`](../first-principles.md) §1.)
+> **Bindings:** *waste-elimination* ≡ *muda · mura · muri* (incl. *rediscovery* waste). (See the core language in [`../glossary.md`](../glossary.md) and [`../first-principles.md`](../first-principles.md) §1.)
 
 The persistent, rigorous, **systematic** identification and elimination of waste in all its
-forms. FOUNDRY applies the **seven wastes** of lean production to software development. The
+forms. FOUNDRY applies the lean / Toyota Production System discipline to software development. The
 governing intuition:
 
 > **A bug found in development is far less wasteful than a bug found in production.**
 > Therefore more (cheap, early) testing is *less* waste, not more work.
 
-## The seven wastes, applied to software
+## The three Ms — muda · mura · muri
+
+Lean names **three** kinds of loss, and they compound: uneven flow (*mura*) creates overburden
+(*muri*), and overburden breeds outright waste (*muda*). FOUNDRY attacks all three.
+
+| The M | What it is | In software it looks like | FOUNDRY's countermeasure |
+|---|---|---|---|
+| **Muda** (waste) | activity that adds no value | the **seven wastes**, tabled below | the whole pillar — see below |
+| **Mura** (unevenness) | irregular flow, bursty load, inconsistent depth | erratic batch sizes; a lumpy work graph (some stations starved, others swamped); reviews of wildly different rigour; knowledge docs at uneven depth | **even flow** — one vertical slice at a time; tiering by token budget; tests-as-coordinates so disjoint work runs at a steady, parallel cadence |
+| **Muri** (overburden) | straining a person, agent, or part beyond its sane limit | an over-scoped agent doing more than one thing; a context window stuffed past its budget; a station carrying work that belongs upstream | **token-efficiency** (thin skills, fat references; station-scoped loading) and **self-cleaving** (`architecture/kaizen-covenant.md`) — an element that strains splits into single-purpose parts |
+
+*Muda* is the largest surface, so it gets the detailed treatment: FOUNDRY applies the **seven
+wastes** of lean production to software development.
+
+## The seven wastes (muda), applied to software
 
 | Waste | In software it looks like | FOUNDRY's countermeasure |
 |---|---|---|
@@ -36,8 +50,8 @@ FOUNDRY is aggressively averse to skipping a gate to "save time": the saving is 
 defect just moves to a more expensive station.
 
 ## A standing duty, not a phase
-Waste elimination is continuous. The `inspector` audits FOUNDRY itself for accumulated waste
-(drift, duplication, dead skills). The SOLID self-improvement covenant
-(`architecture/solid-covenant.md`) makes every document responsible for noticing and removing
-its own waste over time. Recurring waste of one kind is a signal to fix the upstream process,
-not just the instance.
+Waste elimination is continuous — this is **kaizen**. The `inspector` audits FOUNDRY itself for
+accumulated waste (drift, duplication, dead skills). The KAIZEN self-improvement covenant
+(`architecture/kaizen-covenant.md`) makes every document responsible for noticing and removing
+its own muda, mura, and muri over time. Recurring waste of one kind is a signal to fix the
+upstream process, not just the instance.

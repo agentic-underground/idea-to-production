@@ -128,7 +128,7 @@ naming the strongest art-direction choice. If you declined (offline), say so pla
 the slot with a vector option.
 
 ## Self-improvement covenant
-Carries the SOLID covenant. A recurring generative failure (a model that bakes flat light → pair a low-key
+Carries the KAIZEN covenant. A recurring generative failure (a model that bakes flat light → pair a low-key
 LoRA; a checkpoint that garbles text; a template that OOMs at 24GB) feeds the
 [`comfyui-model-guide`](../knowledge/comfyui-model-guide.md) recipes, the
 [`workflow-strategy`](../skills/illustrator/references/workflow-strategy.md), the in-plugin

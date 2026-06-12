@@ -1,7 +1,7 @@
-# MARKET-SCANNER — pillars & the SOLID self-improvement covenant
+# MARKET-SCANNER — pillars & the KAIZEN self-improvement covenant
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
-> plugin, MARKET-SCANNER is bound by the **three pillars** and the **SOLID self-improvement covenant**.
+> plugin, MARKET-SCANNER is bound by the **three pillars** and the **KAIZEN self-improvement covenant**.
 > (The canonical, in-depth homes live in the `foundry` plugin's `knowledge/`; this is the local copy a
 > standalone install carries — referenced by concept, not by a cross-plugin path.)
 
@@ -13,14 +13,14 @@
 - **Quality-first** (≡ *quality-confidence*) — quality is built in, not inspected in; a gate is never
   weakened to make progress. In discovery the gate is the **kill rubric**: weak ideas are killed early,
   not waved through to spare feelings.
-- **Waste-elimination** — remove waste in every form, *including rediscovery*. A killed-idea reason is
+- **Waste-elimination** (≡ *muda · mura · muri*) — remove waste in every form, *including rediscovery*. A killed-idea reason is
   recorded once (the kill ledger) so a like candidate is recognised on sight. Killing a bad idea here is
   far cheaper than building it.
 
 > **Overarching constraint — token-efficiency:** thin skills, fat references; define once, reference
 > many; load only what a task needs. This is itself a form of waste-elimination.
 
-## The SOLID self-improvement covenant
+## The KAIZEN self-improvement covenant
 
 Every element of this plugin — each skill, command, and knowledge doc — continuously asks how it can
 improve, and each iteration must at least **halve the remaining distance to perfection**. When an

@@ -18,7 +18,7 @@ A disciplined, test-first conveyor that carries **VALUE** from **IDEA** to **PRO
 |---|---|---|
 | 🧭 **Knowledge-parity** | knowledge-alignment | understand the ask **completely before acting** — recurring questions become written answers, asked once. |
 | 🛡️ **Quality-first** | quality-confidence | quality is **built in, not inspected in** — every station, strengthened by a performance-delta gate; a gate is never weakened to make progress. |
-| ♻️ **Waste-elimination** | — | remove waste in every form, *including rediscovery* — a bug caught in development is far cheaper than one in production. |
+| ♻️ **Waste-elimination** | muda · mura · muri | remove waste in every form, *including rediscovery* — a bug caught in development is far cheaper than one in production. The three Ms: *muda* (waste), *mura* (unevenness), *muri* (overburden). |
 
 > **Overarching constraint — token-efficiency:** *thin skills, fat references; define once, reference
 > many; load only what a station needs.* And the marketplace is **self-improving**: when an element

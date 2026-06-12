@@ -75,7 +75,7 @@ ideation, for all users, asks the missing question by default. The spark gets sh
 ## Governed by the marketplace covenant
 
 IDEATOR holds the **three pillars** (knowledge-parity, quality-first, waste-elimination) under the
-**token-efficiency** constraint, and the **SOLID self-improvement covenant**
+**token-efficiency** constraint, and the **KAIZEN self-improvement covenant**
 ([`knowledge/covenant.md`](knowledge/covenant.md)). Refinement to knowledge-parity *is* its whole job.
 
 **Commands:** `/ideate` (refine an idea), **`/ideator:name`** (name a product), **`/ideator:inspect`**

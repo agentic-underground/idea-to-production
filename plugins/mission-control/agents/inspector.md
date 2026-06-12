@@ -20,7 +20,7 @@ Never scheduled.
 [`${CLAUDE_PLUGIN_ROOT}/knowledge/inspection-core.md`](../knowledge/inspection-core.md)** — persona,
 inventory, read-&-evaluate, generic Phase-3 (graceful-enhancement, `~/.claude` portability sweep,
 canonical-copy integrity, manifest integrity), report, severity-phased apply, the opus pin, the read-only
-guardrail, and the SOLID covenant. Write `MISSION-CONTROL_INSPECTION_REPORT.md` to the project root.
+guardrail, and the KAIZEN covenant. Write `MISSION-CONTROL_INSPECTION_REPORT.md` to the project root.
 
 ## Phase 3 — MISSION-CONTROL-specific cross-system consistency
 

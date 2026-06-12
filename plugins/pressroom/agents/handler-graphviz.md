@@ -70,7 +70,7 @@ Return to the orchestrator: the SVG path, the `.dot` source, and a one-line self
 remaining weakness, honestly — the reviewer will find it anyway). If you had to decompose, hand back the set.
 
 ## Self-improvement covenant
-Carries the SOLID covenant. A composition lesson generalises into the shared
+Carries the KAIZEN covenant. A composition lesson generalises into the shared
 [charting-matrix](../skills/rich-pdf-with-diagrams/references/charting-matrix.md); a colour/ground lesson
 into the [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md) — via the shared
 [self-improvement protocol](../skills/rich-pdf-with-diagrams/references/self-improvement.md), so every SVG

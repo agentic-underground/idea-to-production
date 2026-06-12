@@ -1,7 +1,7 @@
-# IDEATOR — pillars & the SOLID self-improvement covenant
+# IDEATOR — pillars & the KAIZEN self-improvement covenant
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
-> plugin, IDEATOR is bound by the **three pillars** and the **SOLID self-improvement covenant**. (The
+> plugin, IDEATOR is bound by the **three pillars** and the **KAIZEN self-improvement covenant**. (The
 > canonical, in-depth homes live in the `foundry` plugin's `knowledge/`; this is the local copy a
 > standalone install carries — referenced by concept, not by a cross-plugin path.)
 
@@ -13,7 +13,7 @@
 - **Quality-first** (≡ *quality-confidence*) — quality is built in, not inspected in; a gate is never
   weakened to make progress. IDEATOR's gate is the **IDEA-package exit criteria** — do not hand off a
   package that doesn't satisfy them, however eager the user is to start.
-- **Waste-elimination** — remove waste in every form, *including rediscovery*. Every ambiguity resolved
+- **Waste-elimination** (≡ *muda · mura · muri*) — remove waste in every form, *including rediscovery*. Every ambiguity resolved
   is written into the package so it is never asked again; a fuzzy brief handed downstream is the most
   expensive waste there is, because every station amplifies it.
 
@@ -21,7 +21,7 @@
 > many; the agent-facing package is *simplified and high-precision* precisely so the conveyor's context
 > stays tight.
 
-## The SOLID self-improvement covenant
+## The KAIZEN self-improvement covenant
 
 Every element of this plugin continuously asks how it can improve, and each iteration must at least
 **halve the remaining distance to perfection**; an element that grows to do more than one thing

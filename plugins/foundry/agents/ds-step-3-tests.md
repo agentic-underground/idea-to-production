@@ -265,8 +265,8 @@ handoff:
     - "Document the failure surface as the gap map"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If recurring test design failures
+This agent carries the KAIZEN self-improvement covenant. If recurring test design failures
 appear — vacuous assertions, missing boundary tests, missing error-path tests, test
-isolation problems — flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)) and the TEST-DESIGN-REVIEWER checklist update.
+isolation problems — flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)) and the TEST-DESIGN-REVIEWER checklist update.

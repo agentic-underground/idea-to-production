@@ -34,4 +34,4 @@ distinct from an IDEA (*one chosen thing to build*). The full field set and the 
 > scan (only already-killed shapes appear); under-constrained goals scatter it. When a loop keeps
 > returning killed shapes, the fix is usually here — loosen one constraint or shift the niche.
 
-Carries the SOLID self-improvement covenant ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)).
+Carries the KAIZEN self-improvement covenant ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)).

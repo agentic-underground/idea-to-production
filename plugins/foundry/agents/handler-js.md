@@ -5,7 +5,7 @@ description: >
   Node.js 18+, ES2022+, TypeScript 5+, Jest, Vitest, Testing Library, ESM,
   and standard JS/TS testing patterns. Spawned by TEST-AGENT, IMPLEMENT-AGENT,
   and STORY-AGENT during FOUNDRY pipeline phases when the project stack
-  includes JavaScript or TypeScript (non-React, non-CSS). Carries the SOLID
+  includes JavaScript or TypeScript (non-React, non-CSS). Carries the KAIZEN
   self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
 model: inherit
@@ -232,8 +232,8 @@ Missing performance assertion for a latency-sensitive path is a **blocking defec
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
 At the end of your work, note any TypeScript patterns, Jest/Vitest plugins,
 or project-specific conventions not yet in this handler's knowledge.
-Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+Flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

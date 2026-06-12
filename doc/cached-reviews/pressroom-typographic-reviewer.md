@@ -26,9 +26,9 @@
 
 **Recommendation:** Add the same directive block the image-aesthetic sibling carries, immediately after the title: "> **Opus work.** Typographic gate verdicts (accessibility BLOCK, CONVERGED) are review-class judgments; per the model-selection policy, run this reviewer on the opus tier — never downgrade to save tokens."
 
-### 4. [HIGH] SOLID self-improvement covenant missing from the agent — and unreachable in its declared spawn context
+### 4. [HIGH] KAIZEN self-improvement covenant missing from the agent — and unreachable in its declared spawn context
 
-**Evidence:** The only self-improvement language is ~L80-81: "A recurring failure feeds the shared charting-matrix / lessons log." — a one-line feedback note, not the covenant (no obligation to propose uplift to canon/rubric/this file when the reviewer itself misses a defect class). The parent SKILL.md does carry it ("## Self-improvement covenant … Carries the SOLID covenant", ~L86-88), but the target defines its own minimal context at ~L3-5 ("Spawn with a small context: this file + …typography-canon… + …design-critique-loop… It needs nothing else."), which excludes SKILL.md — so at runtime the spawned reviewer carries no covenant at all. House law: every agent carries the SOLID covenant.
+**Evidence:** The only self-improvement language is ~L80-81: "A recurring failure feeds the shared charting-matrix / lessons log." — a one-line feedback note, not the covenant (no obligation to propose uplift to canon/rubric/this file when the reviewer itself misses a defect class). The parent SKILL.md does carry it ("## Self-improvement covenant … Carries the KAIZEN covenant", ~L86-88), but the target defines its own minimal context at ~L3-5 ("Spawn with a small context: this file + …typography-canon… + …design-critique-loop… It needs nothing else."), which excludes SKILL.md — so at runtime the spawned reviewer carries no covenant at all. House law: every agent carries the KAIZEN covenant.
 
 **Recommendation:** Add a covenant section to this file (it must travel in the spawned context): when a typographic defect reaches a reader that this reviewer reviewed, or a defect class recurs across documents, the reviewer's mandate includes proposing the canon/rubric/agent-file change (via the plugin's self-improve path) — fix the template, not the instance.
 

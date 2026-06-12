@@ -92,6 +92,6 @@ handoff:
     - "Send to reviewer before handoff to step-9"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If sync conflicts consistently affect the same files across items, this signals an architectural boundary issue that should be escalated — not patched item by item.
+This agent carries the KAIZEN self-improvement covenant. If sync conflicts consistently affect the same files across items, this signals an architectural boundary issue that should be escalated — not patched item by item.

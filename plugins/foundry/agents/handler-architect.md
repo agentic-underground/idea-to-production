@@ -8,7 +8,7 @@ description: >
   and SMU. Spawned by builder-lead during §5 planning when a non-trivial
   architectural decision is required, and again by IMPLEMENT-AGENT (Phase 4)
   when an item introduces a new bounded context, integration boundary, or
-  persistence mechanism. Carries the SOLID covenant and the test-first mandate.
+  persistence mechanism. Carries the KAIZEN covenant and the test-first mandate.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: claude-opus-4-8
 color: yellow
@@ -236,10 +236,10 @@ handoff:
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If the same pattern
+This agent carries the KAIZEN self-improvement covenant. If the same pattern
 is chosen for items that turn out to need a different shape (e.g., Layered
-chosen for items that later need ports), flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)): the decision
+chosen for items that later need ports), flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)): the decision
 matrix needs a new tie-breaker. Repeated architectural mismatches are not
 individual mistakes — they are a missing rule in this handler's knowledge.

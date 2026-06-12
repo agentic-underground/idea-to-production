@@ -32,11 +32,11 @@
 
 **Recommendation:** Add per-item severity tags to the PRIORITY CHANGES format: '1. [CRITICAL|HIGH|MEDIUM|LOW] [Specific, actionable change]', using the marketplace rubric vocabulary (reviewer-gate), and define them for prose (CRITICAL = factual error or claim a domain expert would call wrong; HIGH = clarity failure forcing a re-read or register breach; MEDIUM = punchiness/structure; LOW = polish). Then SKILL.md's 'marked as critical' resolves deterministically.
 
-### 5. [HIGH] Missing SOLID self-improvement covenant
+### 5. [HIGH] Missing KAIZEN self-improvement covenant
 
-**Evidence:** House law: 'Every agent carries the SOLID self-improvement covenant.' grep -ni 'covenant|SOLID|self-improve' over /home/user/Code/idea-to-production/plugins/pressroom/skills/writer/agents/reviewer.md returns zero matches (exit 1) — the file (116 lines, '# REVIEWER — Adversarial Subagent' through the inputs list) contains no covenant, no recurring-pattern escalation, no obligation to feed systemic findings upstream. Contrast foundry's reviewer-gate SKILL.md (~line 88): 'If the same types of findings recur across items... the issue is upstream in the producing agent's instructions... fix the template, not the instance.'
+**Evidence:** House law: 'Every agent carries the KAIZEN self-improvement covenant.' grep -ni 'covenant|SOLID|self-improve' over /home/user/Code/idea-to-production/plugins/pressroom/skills/writer/agents/reviewer.md returns zero matches (exit 1) — the file (116 lines, '# REVIEWER — Adversarial Subagent' through the inputs list) contains no covenant, no recurring-pattern escalation, no obligation to feed systemic findings upstream. Contrast foundry's reviewer-gate SKILL.md (~line 88): 'If the same types of findings recur across items... the issue is upstream in the producing agent's instructions... fix the template, not the instance.'
 
-**Recommendation:** Append a SOLID Covenant section: the reviewer carries the self-improvement covenant; when the same defect class recurs across sections or turns (e.g., the WRITER repeatedly produces weak openers), it must say so explicitly in the review — 'RECURRING: [pattern] — fix the WRITER's instructions, not this instance' — so pressroom's self-improve loop can fold the fix into SKILL.md's Writing Principles rather than re-litigating per section.
+**Recommendation:** Append a KAIZEN Covenant section: the reviewer carries the self-improvement covenant; when the same defect class recurs across sections or turns (e.g., the WRITER repeatedly produces weak openers), it must say so explicitly in the review — 'RECURRING: [pattern] — fix the WRITER's instructions, not this instance' — so pressroom's self-improve loop can fold the fix into SKILL.md's Writing Principles rather than re-litigating per section.
 
 ### 6. [MEDIUM] No prompt-injection defense — draft_text and brief content are not fenced as data
 

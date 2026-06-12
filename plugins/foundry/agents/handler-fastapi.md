@@ -5,7 +5,7 @@ description: >
   SQLAlchemy 2.0, Alembic, httpx, pytest-asyncio, and Python async API testing
   patterns. Spawned by TEST-AGENT, IMPLEMENT-AGENT, and STORY-AGENT during
   FOUNDRY pipeline phases when the project stack includes FastAPI. Carries the
-  SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
+  KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
 color: green
@@ -222,8 +222,8 @@ Missing performance assertion for a latency-sensitive endpoint is a **blocking d
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
 At the end of your work, note any FastAPI patterns, Pydantic validators,
 SQLAlchemy patterns, or async testing conventions not yet in this handler's knowledge.
-Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+Flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

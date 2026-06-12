@@ -64,7 +64,7 @@
 
 ### 10. [LOW] Inconsistent path resolution: one ${CLAUDE_PLUGIN_ROOT} reference, three runtime-dead relative links
 
-**Evidence:** Line 24 correctly uses "${CLAUDE_PLUGIN_ROOT}/knowledge/pillars/implementation-covenant.md", but lines 43-44 and 229 use "../knowledge/first-principles.md", "../knowledge/testing/test-policy.md", "(../knowledge/architecture/solid-covenant.md)". They stay inside the plugin root (so not a self-containment violation), but at runtime the agent's cwd is the project, so a handler that tries to Read those paths gets ENOENT — only the line-24 form is actionable.
+**Evidence:** Line 24 correctly uses "${CLAUDE_PLUGIN_ROOT}/knowledge/pillars/implementation-covenant.md", but lines 43-44 and 229 use "../knowledge/first-principles.md", "../knowledge/testing/test-policy.md", "(../knowledge/architecture/kaizen-covenant.md)". They stay inside the plugin root (so not a self-containment violation), but at runtime the agent's cwd is the project, so a handler that tries to Read those paths gets ENOENT — only the line-24 form is actionable.
 
 **Recommendation:** Normalise every load-bearing knowledge reference to the ${CLAUDE_PLUGIN_ROOT}/knowledge/... form (keep relative markdown links only where they are purely navigational for humans, and say so). Also fix the cosmetic `cat pyproject.toml | grep` (line 81) to `grep -E ... pyproject.toml` while touching the file.
 
