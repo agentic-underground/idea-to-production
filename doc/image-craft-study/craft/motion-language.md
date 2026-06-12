@@ -52,6 +52,7 @@ registry NAMES are the primitive names; the library is the implementation.
 | **NODE** | a shaded disc with a soft drop-shadow + optional check-glyph → `prim_node` | a stage / station / phase — a *place* value occupies |
 | **ARC** | a dashed cubic Bézier with an arrowhead, on its own depth plane → `prim_arc` | a relationship that *returns* — a feedback or loop-closing edge |
 | **TOKEN** | a small bright ringed marker that sits *on* the rail → `prim_token` | the unit of value in transit — the IDEA travelling the line |
+| **SPARK** | a **light-throwing** bead — hot core + ring + a wide blurred **bloom** — that travels a path (a luminous TOKEN; hand-authored or `prim_token` + glow) | the live pulse of value *moving* — energy travelling the rail/loop, **lighting each NODE it passes** |
 | **GATE** | a node specialised to carry a verdict (latched-teal ✓ / failing-red / pending-dim) — a *round* gate is realised with `prim_node` + `prim_node_check` (the conveyor's choice); `prim_gate` is the *plate* form | a checkpoint value must *clear* — a test, a quality/security gate |
 | **RAIL** | a base stroke + a teal "lit" overlay up to the token → `prim_rail` | the fixed path value travels — the conveyor, the lifecycle spine |
 | **SWEEP / BEAM** | a translucent wedge + a bright leading edge from a hub → `prim_sweep` | an active scan crossing a field — discovery passing over candidates |
@@ -87,6 +88,28 @@ role/holds it wants, and **(c)** the `reslow.sh` / `magick -morph` treatment tha
 
 > The token never lingers *mid-rail* — the motivated motion is "depart, travel quickly, settle on the next
 > meaningful stop." The teaching happens **at** the gate, not in the gap.
+
+### SPARK — sweep-and-light · ride-back
+
+The SPARK is how a **fully-vector (SMIL) loop** carries value (raster-toolchain Recipe 4b). It is a TOKEN
+that *throws light*, and its passing **changes the diagram**.
+
+| Verb | (a) Communicates | (b) Role · holds | (c) Treatment |
+|---|---|---|---|
+| **sweep-and-light** | value flows along the spine, and each NODE *ignites* (dim→glossy) as the spark passes — **and stays lit** | the forward beat (≈half the loop), eased | `<animateMotion>` along the RAIL with `keyPoints`/`keyTimes` + `calcMode="spline"` easing; each NODE's lit-overlay `opacity` rises at its **pass-fraction** `f_i` and **holds** to the reset (`values="0;0;1;1;0;0"`) — never a per-cycle re-flicker |
+| **ride-back** | on the feedback/return beat the spark travels **backward** along the curved ARC (SECURE→DESIGN; OPERATE→DISCOVER) | each loop its own beat (`long`/`dense`), as ARC:glow-on | a second/third `<animateMotion>` on the cubic arc `path`, gated visible only during its beat by an `opacity` `<animate>`; recolour the spark to the arc's hue (amber feedback, teal return) |
+
+> **Throw light, don't slide a sticker.** A SPARK is a wide blurred **bloom + ring + hot core** — it must read
+> as *luminous energy*, not a flat moving dot (the 2D tell). And it must be **eased** (`keySplines "0.42 0 0.2 1"`),
+> never a linear robotic tween.
+
+### NODE — arrive · breathe · dissolve · settle-out (reset wave)
+
+(See the NODE table above for arrive/breathe/dissolve.) For a **looping** figure, the loop seam needs one more:
+
+| Verb | (a) Communicates | (b) Role · holds | (c) Treatment |
+|---|---|---|---|
+| **settle-out (reset wave)** | the loop is *settling*, about to repeat — lit nodes release in a **staggered wave** (e.g. OPERATE→DISCOVER), **never a snap** | the loop's last ~7% (a quiet release into the seam) | each NODE's lit-overlay `opacity` fades 1→0 at a **staggered keyTime** (`fade0_i = 0.90 + (N-1-i)·δ`) so the seam reads "settled, then repeats" — a hard cut from all-lit to all-dim is the jarring tell to avoid |
 
 ### GATE — latch · flip
 

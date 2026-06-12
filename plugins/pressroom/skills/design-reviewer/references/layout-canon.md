@@ -64,6 +64,11 @@ raster-lint / vision). Items 1–3 are the original step-3 checklist; 4–8 exte
 4. **Inline-illegibility** — a caption/label illegible at GitHub's ~640px inline width; check the
    **downscaled strip**, not the full-res frame. *Why:* the reader sees the inline render, not your 2246px
    canvas. *Detect:* **machine** — the inline-legibility rule (§5).
+4b. **Downscale-depth survival** — for a figure with layered depth (shadow, gradients, a dark card), the
+   depth/contrast must still read when downscaled to ~520px (a banner's real embed), not flatten to mud.
+   *Why:* subtle transitions that evaporate at downscale are invisible to the reader. *Detect:* **machine**
+   (downscale to ~520px) → **vision** (do shadows/gradients still read as depth?). Craft bar: art-direction
+   §8 + `dark-mode-canon.md` (the Medium-richness "downscale survival" gate).
 5. **Vertical clipping** — text whose `y` falls outside `[0, H]` (cut at top or bottom). *Why:* a label
    pushed off the bottom of the canvas simply isn't there for the reader. *Detect:* **machine** (vertical
    bounds). Exemplar it must catch: the market-scanner DISCOVER label pushed off the canvas bottom.

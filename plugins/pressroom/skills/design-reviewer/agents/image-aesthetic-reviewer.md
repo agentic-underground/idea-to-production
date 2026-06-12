@@ -70,7 +70,13 @@ root / `knowledge/canon/art-direction.md` present — by capability, never a har
    *"is this the richest the medium allows — depth/layering, a crisp-vector-over-rich-raster blend, motion
    that's motivated & eased — or is something obvious left on the table?"* (the canon's *Reviewing a
    blended or animated figure* path). A flat single-layer image where a blend/depth/motion would clearly
-   serve is **richness 3** — that is the explicit answer to "too simple / entry-level".
+   serve is **richness 3** — that is the explicit answer to "too simple / entry-level". Named medium-richness
+   checks (each caps richness when failed):
+     - **Depth from shadow, not wash** — broad areas read dark; a white sheen lightening a broad fill = ≤3.
+     - **Downscale survival** — depth/shadows/contrast still read at ~520px (downscale the strip and Read it); evaporates at downscale = ≤3.
+     - **Eased, not mechanical** — linear motion tweens = ≤3.
+     - **Graceful loop, not snap** — a hard cut / all-at-once state-snap at the seam = ≤2.
+     - **Light-throwing spark, not flat sticker** — a moving highlight that doesn't bloom/glow = 3.
 6. **Name failures concretely with an exemplar** — "no focal point; the eye wanders — cf. the focal hierarchy
    in an award landscape", "flat frontal light — needs a motivated key (chiaroscuro)", "muddy mid-tone soup —
    needs a limited palette + warm/cool split", "melted left hand". Never "looks off".

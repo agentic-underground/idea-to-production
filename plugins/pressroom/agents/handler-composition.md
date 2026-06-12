@@ -32,6 +32,14 @@ orchestrate.**
   [dark-mode canon §2/§4](../skills/illustrator/references/dark-mode-canon.md); the figure reads on black
   **and** white.
 - **Meaning never by colour alone** — pair colour with shape, label, or position.
+- **Depth that is DARK, not washed.** Make the figure *pop* with in-SVG depth (the `diagram-primitives.sh`
+  recipe — `ns` drop-shadow, a faint top-light `sheen`, a grounding `pool`), but keep broad areas **dark**:
+  depth comes from **shadow + dark gradients**, with only a faint top-light hint. A white sheen over a broad
+  fill *lightens* it into a washed grey — the #1 flat tell; reserve bright sheen for *small* focal elements,
+  keep background detail lines **faded**, and give the figure **one** focal glow (several blur into mud).
+- **The framed-card look is in-SVG, never raster.** For background depth, draw an inset rounded **dark
+  vignette card** (`prim_card` / a `bgvig` radial) so the corners stay transparent — vector, not a composite.
+  (See dark-mode canon "Hand SVG" + the `diagram-primitives.sh` `bgvig`/`prim_card`/`colcyl` defs.)
 
 ## Research → Draft → Self-review → Hand-back
 
@@ -56,6 +64,10 @@ Validate it parses: `rsvg-convert -o /dev/null "<doc-dir>/diagrams/NN-name.svg"`
 - **Dual-ground gate** — `rsvg-convert -b "#000000"` and `-b "#ffffff"`, `Read` both; every element and label
   legible on both grounds (dark-mode canon §5).
 - **Composition** — one clear focal point, legible type, balanced negative space, nothing touching the edge.
+- **Depth & downscale survival** — broad areas read dark (not a white wash); the figure has real depth
+  (shadow/dark-card), not a flat single plane. Downscale to ~520px (`rsvg-convert -w 1040 … | magick -resize
+  520x`) and `Read` — do the depth, contrast, and the one focal glow still read, or flatten? (dark-mode canon
+  downscale gate.)
 - Fix in the SVG source and re-validate before hand-back.
 
 ### 4. Hand-back

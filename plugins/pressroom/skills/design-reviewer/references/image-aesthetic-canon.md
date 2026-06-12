@@ -26,6 +26,11 @@ and muddy colour is **not a high score** — it is the *entry-level trap*. Concr
 A reviewer that hands a "3-tier" image a 90+ is **too lenient** and has failed; that is the exact failure this
 canon exists to prevent.
 
+> **Hero / marketing figures converge at award-tier only.** For a pictorial hero, masthead, or banner (not a
+> routine doc figure), the bar is **≥90/100 with zero HIGH findings** — not the doc-figure baseline of ≥85. A
+> strong-but-not-perfect hero (4.5/5 medium-richness, one MED motion/composition finding) cannot ship; it keeps
+> looping. (Precedent: the README masthead ran 78→87→91 across three review passes before shipping.)
+
 ## The photorealism trap (and the AI-slop cap)
 
 Two calibrations of the **Composition & art-direction** dimension, because *technically-correct is not
