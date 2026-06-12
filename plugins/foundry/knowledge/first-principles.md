@@ -38,7 +38,7 @@ The pillars govern the behaviour of **every** element. The user's phrasings are 
 > loading.* It is the hard design rule that rides the whole carriage alongside the pillars.
 > **Home:** [`token-efficiency.md`](token-efficiency.md). · **Binding:** progressive disclosure.
 
-![Three pillars govern every element — Knowledge-parity (understand the ask fully before acting; recurring questions become written answers, never asked twice), Quality-first (built in, not inspected in; engineered across the assurance chain and a perf-delta gate; a gate is never weakened to make progress), and Waste-elimination (remove waste in all seven forms, including rediscovery — a bug caught in development is far cheaper than one in production) — three columns standing under one overarching lintel: token-efficiency (thin skills/fat references · define-once/reference-many · station-scoped loading).](diagrams/03-three-pillars.png)
+![Three pillars govern every element — Knowledge-parity (understand the ask fully before acting; recurring questions become written answers, never asked twice), Quality-first (built in, not inspected in; engineered across the assurance chain and a perf-delta gate; a gate is never weakened to make progress), and Waste-elimination (alias: muda · mura · muri — waste, unevenness, overburden; remove waste in all seven forms, including rediscovery — a bug caught in development is far cheaper than one in production) — three columns standing under one overarching lintel: token-efficiency (thin skills/fat references · define-once/reference-many · station-scoped loading).](diagrams/03-three-pillars.png)
 
 ---
 
@@ -93,6 +93,8 @@ more than one thing), it **cleaves** into smaller, single-purpose elements and r
 shipping the improvement to all users via PR (§6). · **Aliases:** the covenant; halve-the-distance;
 self-cleaving; kaizen. · **Home:**
 [`architecture/kaizen-covenant.md`](architecture/kaizen-covenant.md).
+
+![The KAIZEN covenant in two linked motifs. LEFT — the prime law "halve the distance to perfection": a row of rising versions (v1…v5), each closing at least half of the remaining gap up to a dashed perfection line it never quite reaches, because the duty is the rate of approach, not the arrival; a version no closer than the last has not honoured the covenant. RIGHT — the PDCA engine that drives each pass (Plan ▸ Do ▸ Check ▸ Act, clockwise): change against a measured hypothesis, not a hunch — standardise the win, or revert and try again. A footer names the kaizen principles (standardize-then-improve · small reversible steps · gemba/go-and-see · fix-upstream-once · self-cleaving) and the duty to eliminate the three losses: muda (waste), mura (unevenness), and muri (overburden).](diagrams/05-kaizen-covenant.png)
 
 ---
 

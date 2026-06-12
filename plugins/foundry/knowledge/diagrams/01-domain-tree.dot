@@ -56,7 +56,7 @@ digraph DomainArchB {
                  fillcolor="#1e1e2e", color="#9ece6a"]
       cell_handlers [label=<<b>VALUE-HANDLERS</b><br/><font point-size="9" color="#b9d595">handler-{architect, python, &hellip;, rust-webapp}</font>>,
                      fillcolor="#1e1e2e", color="#9ece6a"]
-      cell_pillars [label=<<b>THE PILLARS</b><br/><font point-size="9" color="#b9d595">knowledge-parity &middot; quality-first<br/>+ perf-delta &middot; waste-elimination</font>>,
+      cell_pillars [label=<<b>THE PILLARS</b><br/><font point-size="9" color="#b9d595">knowledge-parity &middot; quality-first<br/>+ perf-delta &middot; waste-elimination<br/>(muda &middot; mura &middot; muri)</font>>,
                     fillcolor="#1e1e2e", color="#9ece6a"]
       cell_corpus [label=<<b>KNOWLEDGE CORPUS</b><br/><font point-size="9" color="#b9d595">pillars/ architecture/ specs/ testing/<br/>protocols/ orchestration/ policy/</font>>,
                    fillcolor="#1e1e2e", color="#9ece6a"]
