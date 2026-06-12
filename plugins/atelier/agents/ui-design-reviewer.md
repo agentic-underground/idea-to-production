@@ -199,6 +199,8 @@ turn n: <score>  (Δ <+/-x> vs turn n-1)
 
 **CONVERGED conditions (all three must hold):** no CRITICAL or HIGH findings; accessibility gate PASS; score ≥ TARGET (85). If any condition fails, the verdict is CONTINUE or HALT-DIMINISHING-RETURNS — never CONVERGED.
 
+> **Hero / marketing figures clear a higher bar.** For a pictorial hero, masthead, banner, or marketing image (not a routine doc figure), the target is **≥90 with zero HIGH** — heroes converge at award-tier only. A "strong but not perfect" hero (one MED motion/richness finding) keeps looping. Precedent: the README masthead converged 78→87→91 across three passes before it shipped.
+
 ## Lenses (optional focus)
 
 Read your assigned lens from context; if none, run the full panel. Do not mix lenses in one pass.
@@ -240,9 +242,16 @@ Read your assigned lens from context; if none, run the full panel. Do not mix le
   **§8 (medium reach)** + **§9 (motion & temporal craft)**: depth/layered planes, a crisp-vector-over-rich-raster
   **blend** where each layer plays to its medium, and — for animated figures — **motivated, eased, well-staged
   motion** with a clean loop/final frame and a reduced-motion poster. A flat single-layer image where a blend or
-  depth would obviously serve is the *"too simple / entry-level"* tell. For an animation, score from a
-  **frame-strip montage**, not the live file. This is the lens PRESSROOM's image reviewer composes for its scored
-  **Medium-richness** dimension.
+  depth would obviously serve is the *"too simple / entry-level"* tell. Test these named checks explicitly:
+  - **Depth from shadow, not wash** — broad areas read dark; a white sheen lightening a broad fill is a flat tell (§2).
+  - **Downscale survival** — depth/shadows/contrast must still read at the real embed (~520px); subtle gradients that evaporate at banner size are a finding (§8). Score from a downscaled strip, not just full-res.
+  - **Eased, not mechanical** — linear tweens read robotic; require ease-in-out / `keySplines`.
+  - **Graceful reset, not snap** — a loop must fade/stagger/hold at the seam, never hard-cut all elements at once.
+  - **Light-throwing spark, not flat sticker** — a moving highlight must bloom/glow and light what it passes.
+  - **One focal** — two equal hot points fighting is a §1 dual-focal failure; demote one.
+  For an animation, score from a **frame-strip montage** (and a ~520px downscale of it), not the live file; for a
+  fully-vector (SMIL) figure, seek beats deterministically via `svg.setCurrentTime()`. This is the lens PRESSROOM's
+  image reviewer composes for its scored **Medium-richness** dimension.
 
 ## Reviewing a pictorial image (not a screen)
 

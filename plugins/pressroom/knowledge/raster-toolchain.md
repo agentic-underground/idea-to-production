@@ -97,6 +97,44 @@ Proven in `doc/image-craft-study/toolchain/` (`src/build-pipeline-frames.sh` →
 [Motion canon](#motion-canon--the-house-motion-policy-the-linger-directive) below; a Recipe-4 figure is built
 **to** that canon (its generator emits a `TIMING.tsv`; `reslow.sh` applies it).
 
+## Recipe 4b — animated SVG via SMIL (the vector-native loop)
+
+The **fully-vector** motion path — a single `.svg` that animates itself, no raster framebuffer, no GIF. Use it
+for crisp **README hero / diagram** motion (sharp at any zoom, tiny on disk, deterministic). GitHub renders
+repo `.svg` via `<img>` **including gradients, filters, AND SMIL animation** — so an animated SVG plays inline.
+Proven exemplar: `doc/image-craft-study/toolchain/src/build-masthead-svg.sh` → `doc/images/masthead.svg`
+(78→87→91/100 across three design-review passes).
+
+**The shape of a loop.** One master period (`dur="14s" repeatCount="indefinite"`); every element animates over
+that same clock via `<animate>` (state/opacity) or `<animateMotion>` (path travel), sliced with `values` +
+`keyTimes` into **beats**. The masthead's three beats — *forward sweep · feedback · return* — are a good model:
+
+- **Sequential reveal that HOLDS** — a node lights as the action passes it and **stays lit**: lit-overlay
+  `opacity` `values="0;0;1;1;0;0"` with `keyTimes` placing the rise at the pass-fraction `f_i` and the hold
+  out to the reset (not a per-cycle re-flicker).
+- **A light-throwing spark** that *travels* — `<animateMotion>` along a `path` with `keyPoints`/`keyTimes`
+  (ride during its beat, hold off-beat) + an `opacity` `<animate>` gating visibility. The spark THROWS light
+  (wide blurred bloom + ring + hot core), it is never a flat moving dot (see motion-language §SPARK).
+- **The spark rides BACK on feedback/return** — a second/third `<animateMotion>` group follows the *curved*
+  feedback/return path (cubic `C…`), visible only during its beat.
+- **EASED, not mechanical** — `calcMode="spline"` + `keySplines="0.42 0 0.2 1"` (ease-in-out) on motion;
+  linear tweens read robotic. Linear is acceptable only for an instant reset segment (`0 0 1 1`).
+- **GRACEFUL reset, never a snap** — at the loop seam the lit state fades out in a **staggered wave** (e.g.
+  nodes dim right→left over the last ~1s) so the loop reads "settled, then repeats", not a jarring jump.
+- **Coherent static fallback** — author the `t=0` state to be legible and meaningful (a dormant "start" frame),
+  because **`prefers-reduced-motion` cannot be gated inside pure SMIL** and a few readers strip animation. State
+  this limitation; the alt-text must describe the motion.
+
+**Verify each beat DETERMINISTICALLY** (Chrome `--virtual-time-budget` mis-seeks SMIL — do not trust it).
+Serve the SVG over `http://` and seek with the Playwright MCP:
+```js
+const s = document.querySelector('svg'); s.pauseAnimations(); s.setCurrentTime(8.0);   // → screenshot
+```
+Screenshot at each beat, on **light AND dark**, and at **README downscale** (~520px, Recipe 1 + the
+downscale-survival gate in `dark-mode-canon.md`). Build the SVG from a committed generator (a Python-in-bash
+emitter like `build-masthead-svg.sh`), never hand-maintained — the per-element `keyTimes`/`keySplines` math is
+generator work.
+
 ## Motion canon — the house motion policy (the linger directive)
 
 The house policy for **how an animated figure moves in time**. Recipe 4 *assembles* frames; this canon decides

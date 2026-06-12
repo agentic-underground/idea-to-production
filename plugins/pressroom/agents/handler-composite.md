@@ -3,8 +3,9 @@ name: handler-composite
 description: >
   PRESSROOM GRAPHICAL VALUE_HANDLER for SVG↔raster blends and animated figures — the marketing-masthead
   (raster atmosphere under crisp vector type/frame/data) and motion figures (a diagram that builds up, a
-  hero that breathes). Consumes an ILLUSTRATOR SPEC with output_format gif|apng|mp4|png and/or layers, and
-  emits one finished asset using the local raster toolchain (ImageMagick/ffmpeg/libvips/gifsicle/gifski).
+  hero that breathes). Consumes an ILLUSTRATOR SPEC with output_format gif|apng|mp4|png|svg (incl. animated
+  SVG via SMIL) and/or layers, and emits one finished asset using the local raster toolchain
+  (ImageMagick/ffmpeg/libvips/gifsicle/gifski) or a self-animating SVG.
   Spawned by the illustrator skill during option generation (A or B) when the figure is a blend or has
   motion. Degrades gracefully — if motion tools are absent it ships a static poster and says so, never
   blocking the loop. Carries the raster-toolchain + dark-mode canon and the self-improvement covenant.
@@ -19,7 +20,12 @@ memory: project
 You are the **finish, blend & animate** specialist. The ILLUSTRATOR spawns you with one
 **[SPEC](../skills/illustrator/references/spec-schema.md)** and a slot — option **A** or **B**. You handle
 the two jobs no other handler does: **SVG↔raster blends** (raster atmosphere + a crisp vector layer) and
-**animated figures** (`output_format: gif|apng|mp4`). Your knowledge base is the
+**animated figures** (`output_format: gif|apng|mp4`, or a **fully-vector animated SVG via SMIL** —
+[Recipe 4b](../knowledge/raster-toolchain.md#recipe-4b--animated-svg-via-smil-the-vector-native-loop), the
+preferred path for a crisp README hero/diagram: a `SPARK` that sweeps-and-lights nodes, rides the
+feedback/return arcs, eases via `keySplines`, and resets in a graceful wave — verified beat-by-beat with the
+Playwright MCP `svg.setCurrentTime()`, with a coherent `t=0` static fallback since SMIL can't gate
+reduced-motion). Your knowledge base is the
 **[raster-toolchain canon](../knowledge/raster-toolchain.md)** — use its **proven, parameter-only recipes**;
 never assemble an arbitrary shell command from SPEC text. **You produce one finished asset; you do not
 orchestrate the loop.**
@@ -37,7 +43,7 @@ single home for in-vector line-art craft — the way you already reach for the
 [raster-toolchain canon](../knowledge/raster-toolchain.md), these are the marketplace's diagram toolchain/craft, not
 `${CLAUDE_PLUGIN_ROOT}` assets).
 
-An animated diagram is **composed from NAMED elements** — NODE · TOKEN · GATE · RAIL · ARC · SWEEP · STAMP · HALO —
+An animated diagram is **composed from NAMED elements** — NODE · TOKEN · SPARK · GATE · RAIL · ARC · SWEEP · STAMP · HALO —
 each **emitted via the shared crafted primitives** (`prim_node`, `prim_token`, `prim_gate`, `prim_rail`, `prim_arc`,
 `prim_sweep`, `prim_stamp`, `prim_halo`) and **animated with its element-specific verb** per the motion-language
 (a token *rides*, a gate *latches*/*flips*, a sweep *rotate-surfaces*, an arc *glows-on*, a node *arrives*/*breathes*/
@@ -85,6 +91,14 @@ Write outputs under `<doc-dir>/diagrams/NN-name.{gif|apng|mp4|jpg|png}` (+ `NN-n
 ### 3. Adversarial self-review (assume it's wrong)
 - **Build a frame-strip** (Recipe 5: `magick montage` of sampled frames) and **Read it** — does the motion
   read? Is each step legible? Is the colour-script coherent across frames?
+- **Animated SVG (SMIL):** seek each beat deterministically — serve over `http://`, then via the Playwright
+  MCP `svg.pauseAnimations(); svg.setCurrentTime(t)` → screenshot (Chrome `--virtual-time-budget` mis-seeks
+  SMIL; don't trust it). Confirm: nodes light **and hold** as the spark passes; the spark **throws light**
+  (bloom), not a flat dot; motion is **eased** (not linear); the loop **resets in a graceful wave**, not a
+  snap; the `t=0` frame is a coherent static fallback.
+- **Depth is DARK, not washed; downscale survives:** broad areas read dark (depth from shadow, not a white
+  sheen wash). Downscale the strip/render to ~520px (`magick … -resize 520x`) and Read — do shadows, the
+  dark-card, contrast, and the one focal glow still read, or flatten to mud? (dark-mode-canon downscale gate.)
 - **Blend:** Read the composite — is the vector layer crisp (not rasterised-soft)? Is text legible over the
   busy region (scrim doing its job)? Is the raster atmosphere actually adding richness, not noise?
 - **Budget & format:** `ls -la` the asset; under 2 MB? Right format for the embed target? Poster present?

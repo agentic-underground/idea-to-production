@@ -16,11 +16,19 @@
 #   · thin inner-highlight arcs / bevel edges (a lit rim)
 #   · layered strokes (a soft wide stroke under a crisp thin one)
 #   · soft drop-shadows (the `ns` filter — the element sits *above* the ground)
-# It is NOT a full-frame raster effect. A raster composite-depth / vignette pass was
+# It is NOT a full-frame RASTER effect. A *raster* composite-depth / vignette pass was
 # TRIED and REJECTED by the maintainer ("the vignette is BAD — no background, no
-# composite, just SVG"). So every gram of depth here lives in the SVG itself.
-# House look is preserved: FLAT dark-mode, #1e1e2e ground, teal #5eead4, amber #fbbf24,
+# composite, just SVG"). So every gram of depth here lives in the SVG itself — but
+# IN-SVG depth is wanted, including an in-SVG dark "card" (a rounded dark panel inset so
+# corners stay transparent — `prim_card`): vector, not raster, is the approved way to get
+# the framed-card look.
+# DARK, NOT WASHED: broad areas read dark — depth comes from SHADOW + dark gradients, with
+# only a FAINT top-light hint. A bright `sheen`/`plate` laid over a BROAD fill *lightens*
+# it into a washed grey (the #1 flat tell) — reserve the bright sheen for SMALL focal
+# elements; broad fills use `colcyl`/`plate` (dark) and keep detail lines faded.
+# House look is preserved: dark-mode, #1e1e2e ground, teal #5eead4, amber #fbbf24,
 # legible, TASTEFUL (subtle, premium — not muddy, not heavy, not a glow-bomb).
+# All of it must survive README DOWNSCALE (~520px) — keep shadows/contrast strong enough.
 #
 # === ELEMENT REGISTRY (names match motion-language.md) ===
 #   NODE · TOKEN · GATE · RAIL · ARC · SWEEP · STAMP · HALO
@@ -119,8 +127,34 @@ prim_defs() {
   <stop offset="84%" stop-color="#ffffff" stop-opacity="0.34"/>
   <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
 </radialGradient>
+<!-- bgvig: the in-SVG dark CARD vignette (centre lifted, edges sunk) — depth that is DARK,
+     not washed. Fill a rounded rect inset from the edges with this (corners stay transparent). -->
+<radialGradient id="bgvig" cx="50%" cy="42%" r="80%">
+  <stop offset="0%" stop-color="#1a1a26"/>
+  <stop offset="62%" stop-color="#11111b"/>
+  <stop offset="100%" stop-color="#0b0b12"/>
+</radialGradient>
+<!-- colcyl: horizontal cylinder shade for a BROAD upright fill (column/bar) — dark edges,
+     near-neutral centre, NO white wash. Round form via shadow, not highlight. -->
+<linearGradient id="colcyl" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0%" stop-color="#000000" stop-opacity="0.44"/>
+  <stop offset="20%" stop-color="#000000" stop-opacity="0.12"/>
+  <stop offset="50%" stop-color="#ffffff" stop-opacity="0.03"/>
+  <stop offset="80%" stop-color="#000000" stop-opacity="0.12"/>
+  <stop offset="100%" stop-color="#000000" stop-opacity="0.44"/>
+</linearGradient>
 </defs>
 DEFS
+}
+
+# ---------------------------------------------------------------------------------
+# prim_card — an in-SVG dark "card" background (the approved framed-card depth, in vector).
+# A rounded dark vignette panel inset from the viewBox edges so the CORNERS STAY TRANSPARENT
+# (it is NOT a full-bleed background rect; it is NOT a raster composite). Draw it FIRST.
+# Args: x y width height [radius]
+prim_card() {
+  local x=$1 y=$2 w=$3 h=$4 r=${5:-22}
+  printf '<rect x="%s" y="%s" width="%s" height="%s" rx="%s" fill="url(#bgvig)"/>\n' "$x" "$y" "$w" "$h" "$r"
 }
 
 # ---------------------------------------------------------------------------------

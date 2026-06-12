@@ -82,8 +82,17 @@ set `background:'transparent'`. Do **not** use the built-in `dark` theme: it pai
 a dark host, failing on a white one.
 
 ### Hand SVG (`handler-composition`)
-- No `<rect width="100%" height="100%" fill="…"/>` backdrop. The root `<svg>` ground stays transparent.
+- No `<rect width="100%" height="100%" fill="…"/>` **full-bleed** backdrop. The root `<svg>` ground stays transparent.
 - Explicit fills from §2; text uses `text`/`text-dim`; strokes use `stroke`.
+- **Depth is DARK, not washed.** In-SVG depth (the `diagram-primitives.sh` recipe — drop-shadow `ns`, a faint
+  top-light `sheen`, a grounding `pool`) reads as *crafted* only when broad areas stay **dark** and depth comes
+  from **shadow + dark gradients**. A white "plate" sheen laid over a broad fill *lightens* it into a washed
+  grey — the #1 flat tell. Reserve the bright sheen for **small focal** elements; broad fills get a faint
+  top-light *hint* then a strong **bottom shade**; keep background detail lines (flutes, grids) **faded**.
+- **In-SVG dark card (the composite look, done in vector).** When a figure wants the framed "card" depth, draw
+  a **rounded dark panel inset from the edges** (so the *corners stay transparent*) as the first element — a
+  `radialGradient` vignette (e.g. centre `#1a1a26` → edge `#0d0d15`), NOT a raster composite. This is the
+  approved way to get background depth: fully vector, transparent corners, dark — and it pops on both grounds.
 - Optional progressive enhancement: a `<style>` with `@media (prefers-color-scheme: light)` may nudge a few
   values for light hosts — but the **base** colours must already clear both gates (don't rely on the media
   query, many renderers ignore it).
@@ -115,6 +124,16 @@ must be legible in both.** A stroke that disappears on white, or text that disap
 finding (it trips the §3 gate) — the design-reviewer treats it exactly like a legibility/accessibility gate
 failure. A cheap structural lint catches the most common miss:
 
+> **Downscale survival (the second gate).** Dual-ground proves *colour*; this proves *depth*. The reader sees
+> the figure **downscaled** to its README embed width (~520–640px), where subtle gradients and thin shadows
+> **evaporate** and the figure flattens. So also rasterise at 2× and downscale, then Read:
+> ```bash
+> rsvg-convert -w 1040 -b "#0d1117" figure.svg -o /tmp/d.png && magick /tmp/d.png -resize 520x /tmp/d520.png
+> ```
+> If shadows, the dark-card vignette, value contrast, or a focal glow stop reading at ~520px, the depth is too
+> subtle — deepen the shadow/contrast (don't add a white wash). One focal glow per figure (several blur into
+> mud at downscale). This is the **Medium-richness** craft bar; the design-reviewer scores it.
+
 ```bash
 # flag an opaque full-bleed background rect (the #1 transparency violation)
 grep -Eq '<rect[^>]*width="100%?"[^>]*height="100%?"[^>]*fill="#(fff|ffffff|000|000000)' figure.svg \
@@ -135,6 +154,13 @@ readable over a busy generative ground — it is the raster analogue of "every l
 `![]()`-can't-animate case both fall back to it), keep loops short and **motivated** (a reveal that teaches,
 not decoration), and verify the motion by Reading a **frame-strip montage** (build it with `magick montage`).
 Full recipes: the [raster-toolchain canon](../../../knowledge/raster-toolchain.md).
+
+**Fully-vector motion (animated SVG / SMIL):** GitHub renders repo `.svg` via `<img>` including gradients,
+filters, **and SMIL animation** — so a self-animating `.svg` is a first-class hero/diagram format (crisp,
+tiny, deterministic). Author the `t=0` frame to be a coherent static fallback (pure SMIL **cannot** gate
+`prefers-reduced-motion`), and verify each beat deterministically via the Playwright MCP
+(`svg.pauseAnimations(); svg.setCurrentTime(t)`) on both grounds + at downscale. Recipe: raster-toolchain
+**Recipe 4b**.
 
 ## §6 — Self-improvement
 
