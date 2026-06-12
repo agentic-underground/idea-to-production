@@ -8,6 +8,7 @@
  viewBox="12.96 12.96 991.96 640.96" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(16.96 636.96)">
 <title>DomainArchB</title>
+<polygon fill="#12121b" stroke="transparent" points="-4,4 -4,-624 975,-624 975,4 -4,4"/>
 <g id="clust1" class="cluster">
 <title>cluster_upstream</title>
 <path fill="transparent" stroke="#7aa2f7" stroke-width="2" d="M20,-475C20,-475 419,-475 419,-475 425,-475 431,-481 431,-487 431,-487 431,-600 431,-600 431,-606 425,-612 419,-612 419,-612 20,-612 20,-612 14,-612 8,-606 8,-600 8,-600 8,-487 8,-487 8,-481 14,-475 20,-475"/>

@@ -1,5 +1,5 @@
 digraph DomainArchB {
-  bgcolor="transparent"
+  bgcolor="#12121b"
   rankdir=TB
   compound=true
   newrank=true
