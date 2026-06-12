@@ -62,7 +62,7 @@ scanning).
 
 ## ♻️ Self-improvement covenant — halve the distance to perfection
 
-Every component of SENTINEL carries the SOLID self-improvement covenant: each iteration must **at
+Every component of SENTINEL carries the KAIZEN self-improvement covenant: each iteration must **at
 least halve the remaining distance to perfection** — every missed pattern becomes a rule, every
 false positive a narrow exclusion, every new failure mode a guardrail — so the next scan starts
 stricter than the last and recurring gaps are fixed *upstream, once*. This is the shared discipline

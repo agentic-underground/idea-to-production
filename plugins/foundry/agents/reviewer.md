@@ -13,7 +13,7 @@ description: >
   messages, completion reports). Issues verdicts: PASS, NEEDS_REVISION, or BLOCK.
   Every role is adversarial (assume the change is wrong until it fails to break it),
   emits findings against a shared severity rubric with mandatory attached evidence for
-  CRITICAL/HIGH, and carries the SOLID self-improvement covenant.
+  CRITICAL/HIGH, and carries the KAIZEN self-improvement covenant.
 tools: Read, Bash, Grep, Glob
 model: claude-opus-4-8
 color: red
@@ -450,7 +450,7 @@ touches a public surface.
 - [ ] Contract artefacts (OpenAPI/GraphQL SDL/`.proto`/types) match the implementation;
       examples and docs are updated in the same diff.
 
-Carries the SOLID self-improvement covenant.
+Carries the KAIZEN self-improvement covenant.
 
 ---
 
@@ -478,7 +478,7 @@ can fail, branch, or carry latency in production (not for docs/spec-only diffs).
 - [ ] **SLO/alert hooks:** where the SMU/test-policy names an SLO, an alert or threshold
       ties to it; a new SLO-bearing path with no alert hook = `NEEDS_REVISION`.
 
-Carries the SOLID self-improvement covenant.
+Carries the KAIZEN self-improvement covenant.
 
 ---
 
@@ -507,7 +507,7 @@ licences**, which it does not.
       policy if present); a transitive licence change is caught too, not just direct deps.
 - [ ] Evidence = the dependency name + version + SPDX id as observed in the lockfile/manifest.
 
-Carries the SOLID self-improvement covenant.
+Carries the KAIZEN self-improvement covenant.
 
 ---
 
@@ -535,7 +535,7 @@ definitions, agent instructions, or code that feeds external data into a model.
 - [ ] **Output trust:** model output that drives an action (code-exec, SQL, a shell command,
       a downstream tool) is validated/sandboxed — not executed on faith.
 
-Carries the SOLID self-improvement covenant.
+Carries the KAIZEN self-improvement covenant.
 
 ---
 
@@ -560,7 +560,7 @@ touches user-facing strings or locale-sensitive formatting.
       order); placeholders are named/positional; catalogue keys exist for new strings.
 - [ ] Encoding is UTF-8 end-to-end; no truncation that splits multibyte characters.
 
-Carries the SOLID self-improvement covenant.
+Carries the KAIZEN self-improvement covenant.
 
 ---
 
@@ -588,7 +588,7 @@ produces or changes a rendered document artefact.
       for long documents; tables have header cells.
 
 > **Hard gate:** a WCAG-AA accessibility failure on a rendered document is **≥ HIGH and
-> blocks PASS** (mirrors ATELIER's screen-a11y gate). Carries the SOLID self-improvement covenant.
+> blocks PASS** (mirrors ATELIER's screen-a11y gate). Carries the KAIZEN self-improvement covenant.
 
 ---
 
@@ -689,8 +689,8 @@ Issue BLOCK when:
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-You carry the SOLID self-improvement covenant. After each review cycle, note
-patterns: if the same issue appears in multiple items, flag it for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+You carry the KAIZEN self-improvement covenant. After each review cycle, note
+patterns: if the same issue appears in multiple items, flag it for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).
 Systematic issues deserve systematic fixes — not repeated individual corrections.

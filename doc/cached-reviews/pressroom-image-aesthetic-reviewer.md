@@ -50,11 +50,11 @@
 
 **Recommendation:** Add an UNREVIEWABLE outcome to both output contracts: `verdict: UNREVIEWABLE — reason: missing-file | render-tool-absent (run /pressroom:check) | sheet/category mismatch | unreadable`, returned as structured output so journals record the gap instead of dropping the model. Instruct: "never guess a cell's category; if labels and the category list disagree, stop and report the mismatch."
 
-### 8. [MEDIUM] SOLID self-improvement covenant absent — only an oblique gesture survives into the spawned context
+### 8. [MEDIUM] KAIZEN self-improvement covenant absent — only an oblique gesture survives into the spawned context
 
-**Evidence:** House rule: every agent carries the SOLID self-improvement covenant. The target's only nod is Disposition (~line 134–135): "the same self-improvement discipline as the other lenses, so the bar rises once and every future review inherits it." The parent SKILL.md carries the covenant (~line 86–90: "Carries the SOLID covenant…") but the target is spawned "with a small context: this file + [canon] + the PNG(s) … It needs nothing else" (~line 5–6), so the covenant never reaches the sub-agent. Siblings (typographic-reviewer.md, dataviz-reviewer.md) share this gap — family-wide drift.
+**Evidence:** House rule: every agent carries the KAIZEN self-improvement covenant. The target's only nod is Disposition (~line 134–135): "the same self-improvement discipline as the other lenses, so the bar rises once and every future review inherits it." The parent SKILL.md carries the covenant (~line 86–90: "Carries the KAIZEN covenant…") but the target is spawned "with a small context: this file + [canon] + the PNG(s) … It needs nothing else" (~line 5–6), so the covenant never reaches the sub-agent. Siblings (typographic-reviewer.md, dataviz-reviewer.md) share this gap — family-wide drift.
 
-**Recommendation:** Add a short covenant section to the target (and siblings): "Carries the SOLID self-improvement covenant: when you cannot name the fix that would raise a score, or a defect class recurs across reviews, that is a canon gap — record it for the shared self-improvement protocol so the rubric, not the instance, is fixed." This also makes the canon's own line 160–161 ("that is a reviewer failure — record it for self-improvement") actionable from inside the spawned context.
+**Recommendation:** Add a short covenant section to the target (and siblings): "Carries the KAIZEN self-improvement covenant: when you cannot name the fix that would raise a score, or a defect class recurs across reviews, that is a canon gap — record it for the shared self-improvement protocol so the rubric, not the instance, is fixed." This also makes the canon's own line 160–161 ("that is a reviewer failure — record it for self-improvement") actionable from inside the spawned context.
 
 ### 9. [LOW] ATELIER capability probe is unspecified — 'by capability' with no detection recipe invites sibling-plugin path groping
 

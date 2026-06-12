@@ -18,7 +18,7 @@ layer to reach the clearest picture of the shippable value, and every value-stat
 if it must, ask a question back up the line until the answer is found.
 
 > This document is the **operational** spine (*how* value moves). The **philosophical** spine (*why*
-> the system is shaped this way — the pillars, tests-as-coordinates, the SOLID covenant, the two
+> the system is shaped this way — the pillars, tests-as-coordinates, the KAIZEN covenant, the two
 > altitudes, the self-improving loop, each with its bindings) is
 > [`knowledge/first-principles.md`](knowledge/first-principles.md). The marketplace's **own**
 > architecture (a deliberate hybrid, distinct from the hexagonal form it builds *with*) is
@@ -74,7 +74,7 @@ they are referenced from `knowledge/` so they are defined **once** and obeyed **
 - **The implementation covenant** — `knowledge/pillars/implementation-covenant.md`: think
   before coding, simplicity first, surgical changes, tests are the contract, spirit not just
   letter.
-- **The SOLID self-improvement covenant** — `knowledge/architecture/solid-covenant.md`:
+- **The KAIZEN self-improvement covenant** — `knowledge/architecture/kaizen-covenant.md`:
   every artefact is designed to improve itself; recurring gaps signal an upstream fix.
 
 ---
@@ -149,7 +149,7 @@ station's references** (token efficiency, §6). The house's handlers:
   `handler-rust` staffs general Rust; `handler-rust-webapp` staffs the full Rust/WASM + Vercel
   one-shot rollout (governed by the `rust-webapp-rollout` skill).
 - **`handler-architect`** — selects the architectural pattern when a non-trivial decision
-  arises; writes the ADR; carries the SOLID covenant.
+  arises; writes the ADR; carries the KAIZEN covenant.
 - **`reviewer`** — the adversarial gate-keeper, parametrised by role (EARS, SMU, BDD,
   COVERAGE, TEST-DESIGN, DESIGN, SECURITY, REGRESSION, PERFORMANCE, ARCHITECTURE, DOCUMENT).
 - **`inspector`** — audits FOUNDRY itself; finds drift, gaps, and improvable patterns.

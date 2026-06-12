@@ -1,7 +1,7 @@
-# PRESSROOM — pillars & the SOLID self-improvement covenant
+# PRESSROOM — pillars & the KAIZEN self-improvement covenant
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
-> plugin, PRESSROOM is bound by the **three pillars** and the **SOLID self-improvement covenant**.
+> plugin, PRESSROOM is bound by the **three pillars** and the **KAIZEN self-improvement covenant**.
 > (The canonical, in-depth homes live in the `foundry` plugin's `knowledge/`; this is the local copy a
 > standalone install carries — referenced by concept, not by a cross-plugin path.)
 
@@ -12,14 +12,14 @@
 - **Quality-first** (≡ *quality-confidence*) — quality is built in, not inspected in; **the design-fitness
   bar (typography + data-viz) is never weakened to ship**. A figure that fails the legibility law or a page
   with widows/orphans does not pass — raise the craft, don't lower the rubric.
-- **Waste-elimination** — remove waste in every form, *including rediscovery*. A rendering lesson (an
+- **Waste-elimination** (≡ *muda · mura · muri*) — remove waste in every form, *including rediscovery*. A rendering lesson (an
   illegible chart at A4, a broken engine fallback) is recorded once in the lessons log so the next build
   doesn't relearn it.
 
 > **Overarching constraint — token-efficiency:** thin skills, fat references; define once, reference many;
 > the shared charting-matrix and templates are the single source the diagram/PDF skills draw from.
 
-## The SOLID self-improvement covenant
+## The KAIZEN self-improvement covenant
 
 Every element of this plugin — each skill, agent, and knowledge doc — continuously asks how it can improve,
 and each iteration must at least **halve the remaining distance to perfection**. When an element grows to do

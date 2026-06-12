@@ -28,9 +28,9 @@
 
 ### 4. [MEDIUM] Missing SUBJECT_MATTER_UNDERSTANDING contract that every marketplace agent must carry
 
-**Evidence:** Frontmatter description (lines 3-9) ends "Carries the charting-matrix + dark-mode canon and the self-improvement covenant"; covenant section (line ~65) says only "Carries the SOLID covenant." Compare /home/user/Code/idea-to-production/plugins/foundry/agents/handler-react.md line ~9: "Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING."
+**Evidence:** Frontmatter description (lines 3-9) ends "Carries the charting-matrix + dark-mode canon and the self-improvement covenant"; covenant section (line ~65) says only "Carries the KAIZEN covenant." Compare /home/user/Code/idea-to-production/plugins/foundry/agents/handler-react.md line ~9: "Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING."
 
-**Recommendation:** House law states every agent carries both the SOLID covenant and the SUBJECT_MATTER_UNDERSTANDING contract; all FOUNDRY value-handlers state it, no PRESSROOM handler does (grep confirms zero hits under plugins/pressroom/). Add the contract line to the description and a sentence in the covenant section stating the handler reaches knowledge-parity with the doc/section it illustrates before drafting (which is also operationally true — a composition that misstates the subject fails the reviewer).
+**Recommendation:** House law states every agent carries both the KAIZEN covenant and the SUBJECT_MATTER_UNDERSTANDING contract; all FOUNDRY value-handlers state it, no PRESSROOM handler does (grep confirms zero hits under plugins/pressroom/). Add the contract line to the description and a sentence in the covenant section stating the handler reaches knowledge-parity with the doc/section it illustrates before drafting (which is also operationally true — a composition that misstates the subject fails the reviewer).
 
 ### 5. [MEDIUM] "Type at legible sizes; align to an implicit grid" is unactionable — no measurable floor, no grid
 

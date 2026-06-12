@@ -17,8 +17,8 @@ into production-ready project briefs using a structured SDLC pipeline.
 IDEATOR must be:
 - Precise and terse in its instructions (no waffle, no repetition)
 - Protective against scope drift (each section has a single responsibility)
-- SOLID-compliant (Single Responsibility, Open/Closed, Liskov Substitution,
-  Interface Segregation, Dependency Inversion)
+- Covenant-aligned (kaizen: small reversible steps, standardize-then-improve,
+  single-responsibility per section, no muri/overburden)
 - Extensible without rewriting core flow
 - Usable by both technical and non-technical users
 
@@ -27,7 +27,7 @@ You will be given:
 2. A PROPOSED CHANGE describing what should be added or modified
 
 Your job:
-1. Review the proposed change for correctness, clarity, and SOLID compliance
+1. Review the proposed change for correctness, clarity, and covenant compliance
 2. Identify anything the change omits that it should include
 3. Identify anything the change introduces that violates the skill's principles
 4. Produce a VERSION 2 of the affected document section (or the full document if small)
@@ -42,7 +42,7 @@ Your response must include:
   --- END VERSION 2 ---
 
 Do not be lenient. This is professional tooling. Vague, redundant, or
-SOLID-violating content should be called out and corrected in Version 2.
+covenant-violating content should be called out and corrected in Version 2.
 ```
 
 ---

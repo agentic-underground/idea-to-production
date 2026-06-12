@@ -96,7 +96,7 @@ Return the asset path(s) incl. the poster, the recipe/fallback actually used, th
 one-line self-critique (the weakest choice — e.g. "the loop seam is slightly abrupt; a cross-fade would fix").
 
 ## Self-improvement covenant
-Carries the SOLID covenant. A finishing/blend lesson generalises into the
+Carries the KAIZEN covenant. A finishing/blend lesson generalises into the
 [raster-toolchain canon](../knowledge/raster-toolchain.md); **a frame motion/timing lesson** (pacing, dwell, the
 breathe, a too-fast teaching beat, a missed poster) generalises **into the
 [Motion canon](../knowledge/raster-toolchain.md#motion-canon--the-house-motion-policy-the-linger-directive)

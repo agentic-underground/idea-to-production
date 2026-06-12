@@ -62,7 +62,7 @@ Validate it parses: `rsvg-convert -o /dev/null "<doc-dir>/diagrams/NN-name.svg"`
 Return the SVG path, the SVG source, and a one-line self-critique (the weakest compositional choice, honestly).
 
 ## Self-improvement covenant
-Carries the SOLID covenant. A composition lesson generalises into the
+Carries the KAIZEN covenant. A composition lesson generalises into the
 [charting-matrix](../skills/rich-pdf-with-diagrams/references/charting-matrix.md); a colour/ground/transparency
 lesson into the [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md) — via the shared
 [self-improvement protocol](../skills/rich-pdf-with-diagrams/references/self-improvement.md).

@@ -28,7 +28,7 @@
 
 ### 4. [MEDIUM] Missing SUBJECT_MATTER_UNDERSTANDING contract (carried by every foundry handler, absent from every pressroom agent)
 
-**Evidence:** Marketplace convention: every agent carries the SOLID covenant AND the SUBJECT_MATTER_UNDERSTANDING contract. Foundry handlers state it explicitly — plugins/foundry/agents/handler-ansible.md line 10: "Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." `grep -rl SUBJECT_MATTER plugins/pressroom/` returns nothing — handler-comfyui (and its six pressroom siblings) carry only the covenant (lines 130–138).
+**Evidence:** Marketplace convention: every agent carries the KAIZEN covenant AND the SUBJECT_MATTER_UNDERSTANDING contract. Foundry handlers state it explicitly — plugins/foundry/agents/handler-ansible.md line 10: "Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." `grep -rl SUBJECT_MATTER plugins/pressroom/` returns nothing — handler-comfyui (and its six pressroom siblings) carry only the covenant (lines 130–138).
 
 **Recommendation:** Add the SUBJECT_MATTER_UNDERSTANDING line to the description and a body sentence binding it (the handler must reach understanding-parity with the SPEC's intent before generating). Note for the orchestrating improver: this is plugin-wide across pressroom, not unique to this file.
 

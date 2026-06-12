@@ -57,6 +57,6 @@ handoff:
   contract defines what "done" means at the station boundary.
 
 ## Self-improvement
-Carries the SOLID covenant (`../architecture/solid-covenant.md`). If handoff validation
+Carries the KAIZEN covenant (`../architecture/kaizen-covenant.md`). If handoff validation
 failures recur (missing paths, `critical_open > 0` advancing anyway, vague instructions),
 strengthen the validation rules here — each failure is evidence a rule needs tightening.

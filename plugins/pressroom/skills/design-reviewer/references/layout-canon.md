@@ -131,7 +131,7 @@ source-time — not caught after it has already rendered as a smear.
 
 ## 7. The self-improvement covenant
 
-Carries the SOLID self-improvement covenant, as the sibling canons do. **A layout bug that slipped this
+Carries the KAIZEN self-improvement covenant, as the sibling canons do. **A layout bug that slipped this
 checklist is a CANON GAP** — the failure is not "the reviewer missed it" but "this canon did not yet name the
 class." Do not patch the one figure and move on: **generalise the rule HERE**, in one sentence, so every future
 review inherits the catch. Especially for an **expensive (vision) finding** — the budget that found it is only

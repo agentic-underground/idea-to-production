@@ -46,7 +46,7 @@
 
 ### 7. [MEDIUM] SUBJECT_MATTER_UNDERSTANDING is claimed in the description but never operationalised in the body
 
-**Evidence:** Lines 8-9: "Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body never instructs the agent to locate or read it. The builder skill establishes the artefact at a known path (`skills/builder/SKILL.md` line 77: "Check for `doc/SUBJECT_MATTER_UNDERSTANDING.md`"), so a cold-start handler has no instruction connecting the claim to the file.
+**Evidence:** Lines 8-9: "Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body never instructs the agent to locate or read it. The builder skill establishes the artefact at a known path (`skills/builder/SKILL.md` line 77: "Check for `doc/SUBJECT_MATTER_UNDERSTANDING.md`"), so a cold-start handler has no instruction connecting the claim to the file.
 
 **Recommendation:** Add one line after the implementation-covenant instruction (line 31): "Read `doc/SUBJECT_MATTER_UNDERSTANDING.md` in the target project if it exists; if absent, ask the spawning phase agent for the domain context before styling decisions that encode domain meaning (status colours, severity scales, density)."
 
@@ -64,7 +64,7 @@
 
 ### 10. [LOW] No output/completion contract — the handler never says what it hands back to the spawning phase agent
 
-**Evidence:** The file ends at the SOLID Covenant note (lines 183-187) with no section defining the completion report: which files changed, which coordinates (state × breakpoint × a11y axes) were added, what a11y evidence accompanies the work. The inspection criteria for agent definitions require an "output/completion protocol precise", and the marketplace ships a handoff schema (`skills/handoff-protocol/SKILL.md`) this handler never references.
+**Evidence:** The file ends at the KAIZEN Covenant note (lines 183-187) with no section defining the completion report: which files changed, which coordinates (state × breakpoint × a11y axes) were added, what a11y evidence accompanies the work. The inspection criteria for agent definitions require an "output/completion protocol precise", and the marketplace ships a handoff schema (`skills/handoff-protocol/SKILL.md`) this handler never references.
 
 **Recommendation:** Add a "Completion report" section: list of styles touched, the coordinate table (state/breakpoint/a11y axis → test file), axe results summary, screenshot baselines added/updated, and any flagged covenant items — formatted per the handoff-protocol schema so the phase agent can populate `reviewer_status` without re-deriving it.
 

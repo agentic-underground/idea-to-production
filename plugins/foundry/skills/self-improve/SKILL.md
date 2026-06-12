@@ -1,11 +1,11 @@
 ---
 name: self-improve
 description: >
-  Reflect on ONE marketplace element (an agent, skill, command, or knowledge doc) against the SOLID
+  Reflect on ONE marketplace element (an agent, skill, command, or knowledge doc) against the KAIZEN
   covenant and the three pillars, and improve it — most often by SELF-CLEAVING an over-broad element
-  into smaller, more SOLID-adherent ones, or by replacing restated knowledge with a reference. Trigger
+  into smaller, more single-purpose ones, or by replacing restated knowledge with a reference. Trigger
   with /foundry:self-improve <path|name> (or "self-improve the X agent", "this skill does too much —
-  cleave it", "make this more SOLID"). Applies the change on a branch, runs /foundry:pr-review, and —
+  cleave it", "make this single-purpose"). Applies the change on a branch, runs /foundry:pr-review, and —
   under pr-approval governance — opens a PR for the human to merge, so every marketplace user inherits
   the improvement. Targeted at one element; for a whole-plugin audit use /foundry:inspect.
 metadata:
@@ -19,8 +19,8 @@ model: inherit
 
 The marketplace is **self-improving**: when an element learns it could be better, it folds the fix
 back into itself and ships it to all users. This skill is that loop, **targeted at one element**. It
-is the operational form of the SOLID covenant's *self-cleaving* clause
-([`../../knowledge/architecture/solid-covenant.md`](../../knowledge/architecture/solid-covenant.md))
+is the operational form of the KAIZEN covenant's *self-cleaving* clause
+([`../../knowledge/architecture/kaizen-covenant.md`](../../knowledge/architecture/kaizen-covenant.md))
 and the §6 self-improving principle
 ([`../../knowledge/first-principles.md`](../../knowledge/first-principles.md) §6).
 
@@ -121,4 +121,4 @@ defect class as a guardrail so the next element of that class is born without it
 This skill is itself subject to the covenant it runs. If `/foundry:self-improve` ever finds it is
 doing more than one thing — say, *reflection* and *delivery* have grown into two jobs — it should
 **cleave itself**, the same way it cleaves any other element. Flag recurring patterns for the
-self-improvement covenant ([`../../knowledge/architecture/solid-covenant.md`](../../knowledge/architecture/solid-covenant.md)).
+self-improvement covenant ([`../../knowledge/architecture/kaizen-covenant.md`](../../knowledge/architecture/kaizen-covenant.md)).

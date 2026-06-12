@@ -65,4 +65,4 @@ thing are the same thing.
 Every version drift discovered becomes a matrix update; every hand-authoring mistake becomes a new
 or improved template; every inconsistent-substitution break becomes a tightened placeholder legend.
 Each pass leaves the next build more deterministic than the last — at least halving the remaining
-chance of an "it worked yesterday." See `architecture/solid-covenant.md`.
+chance of an "it worked yesterday." See `architecture/kaizen-covenant.md`.

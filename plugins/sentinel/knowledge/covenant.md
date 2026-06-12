@@ -1,7 +1,7 @@
-# SENTINEL — pillars & the SOLID self-improvement covenant
+# SENTINEL — pillars & the KAIZEN self-improvement covenant
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
-> plugin, SENTINEL is bound by the **three pillars** and the **SOLID self-improvement covenant**.
+> plugin, SENTINEL is bound by the **three pillars** and the **KAIZEN self-improvement covenant**.
 > (The canonical, in-depth homes live in the `foundry` plugin's `knowledge/`; this is the local copy a
 > standalone install carries — referenced by concept, not by a cross-plugin path.)
 
@@ -13,14 +13,14 @@
 - **Quality-first** (≡ *quality-confidence*) — quality is built in, not inspected in; **the security gate
   is never weakened to make progress**. A PASS/REVIEW/BLOCK verdict is earned, never granted to spare
   effort. Raise the floor instead of lowering the bar.
-- **Waste-elimination** — remove waste in every form, *including rediscovery*. A confirmed finding-class
+- **Waste-elimination** (≡ *muda · mura · muri*) — remove waste in every form, *including rediscovery*. A confirmed finding-class
   (and its false-positive boundary) is recorded once so the next like case is recognised on sight, with no
   re-litigation.
 
 > **Overarching constraint — token-efficiency:** thin skills, fat references; define once, reference many;
 > load only what a task needs. Deterministic scanners do the heavy lifting; the model judges and explains.
 
-## The SOLID self-improvement covenant
+## The KAIZEN self-improvement covenant
 
 Every element of this plugin — each skill, command, and knowledge doc — continuously asks how it can
 improve, and each iteration must at least **halve the remaining distance to perfection**. When an element

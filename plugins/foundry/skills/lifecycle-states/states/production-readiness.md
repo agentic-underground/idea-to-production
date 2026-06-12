@@ -82,6 +82,6 @@ If a gate cannot be fully satisfied (external constraint, deferral decision):
 
 Project closure — next roadmap pull from ROADMAPPER. FOUNDRY cost record appended.
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This skill carries the SOLID self-improvement covenant. If the same DoD gate consistently fails across items, the failure is systemic — the gate's owning stage agent or skill needs strengthening. Surface recurring failures in the the self-improvement covenant ([`solid-covenant.md`](../../../knowledge/architecture/solid-covenant.md)) cycle with proposed fixes to the owning stage agent's SOLID Covenant section.
+This skill carries the KAIZEN self-improvement covenant. If the same DoD gate consistently fails across items, the failure is systemic — the gate's owning stage agent or skill needs strengthening. Surface recurring failures in the the self-improvement covenant ([`kaizen-covenant.md`](../../../knowledge/architecture/kaizen-covenant.md)) cycle with proposed fixes to the owning stage agent's KAIZEN Covenant section.

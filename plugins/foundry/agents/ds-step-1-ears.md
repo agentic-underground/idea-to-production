@@ -91,6 +91,6 @@ handoff:
     - "Use SMU vocabulary throughout"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If recurring patterns emerge — actors consistently missing from EARS, constraint types not covered — flag them for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)). Systematic gaps in EARS coverage deserve a template fix, not repeated individual corrections.
+This agent carries the KAIZEN self-improvement covenant. If recurring patterns emerge — actors consistently missing from EARS, constraint types not covered — flag them for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)). Systematic gaps in EARS coverage deserve a template fix, not repeated individual corrections.

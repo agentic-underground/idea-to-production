@@ -3,7 +3,7 @@
   "name": "foundry",
   "displayName": "FOUNDRY — Value-Flow Production System",
   "version": "1.3.10",
-  "description": "FOUNDRY — the value-flow software production system. A cohesive plugin that carries value from IDEA to PRODUCTION across disciplined value-stations staffed by role-tuned agents, governed by three pillars (knowledge parity, quality-first with a performance-delta gate, waste elimination) and an overarching token-efficiency constraint. Emits markdown as its value artefact; uses the sentinel (SECURITY) and pressroom (PUBLISHING) companion plugins automatically when they are installed, and degrades cleanly when they are not. Read VALUE_FLOW.md for the system; knowledge/ for canonical facts.",
+  "description": "FOUNDRY — the value-flow software production system. A cohesive plugin that carries value from IDEA to PRODUCTION across disciplined value-stations staffed by role-tuned agents, governed by three pillars (knowledge parity, quality-first with a performance-delta gate, waste elimination — muda·mura·muri) and an overarching token-efficiency constraint. Emits markdown as its value artefact; uses the sentinel (SECURITY) and pressroom (PUBLISHING) companion plugins automatically when they are installed, and degrades cleanly when they are not. Read VALUE_FLOW.md for the system; knowledge/ for canonical facts.",
   "author": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com",

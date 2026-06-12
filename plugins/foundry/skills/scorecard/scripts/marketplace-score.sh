@@ -66,7 +66,7 @@ done < <(find . -maxdepth 2 -name '*_INSPECTION_REPORT.md' 2>/dev/null)
 #   • model-tier  — a markdown TABLE ROW inlining a hardcoded model id (claude-haiku/sonnet/opus-*),
 #                   the canon of which lives in knowledge/orchestration/tier-assignment.md;
 #   • SOLID       — three or more of the five SOLID principle names spelled out as definitions,
-#                   the canon of which lives in knowledge/architecture/solid-covenant.md;
+#                   the canon of which lives in knowledge/architecture/solid.md;
 #   • test-contract — the five-level performance-instrumented test-contract prose,
 #                   the canon of which lives in knowledge/testing/test-policy.md.
 # A file that NAMES the canonical doc (or marks the fact with a certainty marker) is referencing, not
@@ -79,14 +79,14 @@ while IFS= read -r f; do
   # Does this file cite the canon (a knowledge path) or mark the fact? Then its inlined facts are
   # references-with-context, not drift — skip the file's signals that have a matching citation.
   cites_tier=$(grep -cE 'knowledge/orchestration/tier-assignment|certainty-markers' "$f" 2>/dev/null); cites_tier=${cites_tier:-0}
-  cites_solid=$(grep -cE 'knowledge/architecture/solid-covenant|knowledge/architecture/clean-code' "$f" 2>/dev/null); cites_solid=${cites_solid:-0}
+  cites_solid=$(grep -cE 'knowledge/architecture/solid\.md|knowledge/architecture/clean-code' "$f" 2>/dev/null); cites_solid=${cites_solid:-0}
   cites_test=$(grep -cE 'knowledge/testing/test-policy|knowledge/testing/test-contract' "$f" 2>/dev/null); cites_test=${cites_test:-0}
   hit=0
   # model-tier table row with a hardcoded model id, and no tier-assignment citation
   if [[ "$cites_tier" -eq 0 ]] && grep -qE '^\|.*claude-(haiku|sonnet|opus)-[0-9]' "$f" 2>/dev/null; then
     hit=$(( hit + 1 ))
   fi
-  # SOLID definitions inlined (≥3 of the 5 principle names), no solid-covenant citation
+  # SOLID definitions inlined (≥3 of the 5 principle names), no solid.md citation
   if [[ "$cites_solid" -eq 0 ]]; then
     solid_n=$(grep -oiE 'single.responsibility|open.closed|liskov|interface.segregation|dependency.inversion' "$f" 2>/dev/null | sort -u | wc -l | tr -d ' ')
     [[ "$solid_n" -ge 3 ]] && hit=$(( hit + 1 ))

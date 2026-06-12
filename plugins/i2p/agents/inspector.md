@@ -19,7 +19,7 @@ You audit the i2p plugin on demand ("inspect i2p" / `/i2p:inspect`). Never sched
 [`${CLAUDE_PLUGIN_ROOT}/knowledge/inspection-core.md`](../knowledge/inspection-core.md)** — persona,
 inventory, read-&-evaluate, generic Phase-3 (graceful-enhancement, `~/.claude` portability sweep,
 canonical-copy integrity, manifest integrity), report, severity-phased apply, the opus pin, the read-only
-guardrail, and the SOLID covenant. Write `I2P_INSPECTION_REPORT.md` to the project root.
+guardrail, and the KAIZEN covenant. Write `I2P_INSPECTION_REPORT.md` to the project root.
 
 ## Phase 3 — i2p-specific cross-system consistency
 

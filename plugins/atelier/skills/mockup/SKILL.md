@@ -58,7 +58,7 @@ draft: it is the artefact *after* the loop has raised it to the rubric.
 
 ## Self-improvement
 
-Carries the SOLID covenant. When a delivered mockup later proves weak in a way the loop didn't catch,
+Carries the KAIZEN covenant. When a delivered mockup later proves weak in a way the loop didn't catch,
 that's a canon/rubric gap → `self-improve` ([`../self-improve/SKILL.md`](../self-improve/SKILL.md)) → PR,
 so the next mockup is better by default. When both ATELIER and foundry are present, offer the lesson to
 foundry's source-level `design-critic` too.

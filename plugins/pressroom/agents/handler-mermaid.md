@@ -70,7 +70,7 @@ itself (the SPEC targets such markdown), note that the fenced source is an optio
 is the rendered, themed SVG so transparency and theme survive hosts that strip directives.
 
 ## Self-improvement covenant
-Carries the SOLID covenant. A theming/layout lesson belongs in
+Carries the KAIZEN covenant. A theming/layout lesson belongs in
 [`mermaid-theming.md`](../skills/mermaid-specialist/references/mermaid-theming.md); a *composition* lesson in
 the shared [charting-matrix](../skills/rich-pdf-with-diagrams/references/charting-matrix.md); a colour/ground
 lesson in the [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md) — all via the shared

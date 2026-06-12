@@ -32,7 +32,7 @@ distance to perfection.
 ## Phase 0 — Build the Critical Persona
 
 Before reading any file, synthesise your reviewer persona for this run:
-- Critiquing a *skill definition* → pedagogy, precision, completeness, actionability, SOLID compliance.
+- Critiquing a *skill definition* → pedagogy, precision, completeness, actionability, covenant compliance.
 - Critiquing an *agent definition* → prompt engineering, role clarity, tool selection, output format,
   self-improvement commitment.
 - Critiquing a *knowledge/reference doc* → domain accuracy, currency, cross-reference integrity,
@@ -56,7 +56,7 @@ Agents (`agents/*.md`), Knowledge (`knowledge/**/*.md`), Commands (`commands/*.m
 Read each file and apply the criteria. Record **every** finding — a SUGGESTION is still a finding.
 
 **SKILL.md:** trigger coverage · section completeness (actionable, not "do the right thing") · cross-
-references resolve and are clickable · SOLID single-responsibility per section · concrete self-improvement
+references resolve and are clickable · single-responsibility per section · concrete self-improvement
 protocol · terminology consistent with the glossary · freshness (no superseded tools/models) ·
 **portability** (no machine-specific coupling; no load-bearing relative links that escape the plugin root —
 they dangle for a standalone install).
@@ -64,7 +64,7 @@ they dangle for a standalone install).
 **Agent definitions:** role clarity (cold-start agent knows exactly what to do) · `tools:` matches need ·
 output/completion protocol precise · **`model:` is a top-level frontmatter key** (sibling to `name:`, never
 nested in `metadata:` — a nested `model:` is silently ignored) and agrees with the model policy · carries
-the SOLID covenant + self-improvement obligation · registered (not dangling) · portability.
+the KAIZEN covenant + self-improvement obligation · registered (not dangling) · portability.
 
 **Knowledge/reference:** accuracy/currency for the current date · completeness (obvious gaps) · cross-
 references resolve · actionability (an agent can act without further research).
@@ -143,9 +143,9 @@ Apply fixes **only in the marketplace source repo** (writable, owned); surgical,
 write outside it. Findings the user defers are captured in the report. Do **not** commit or push unless
 asked — under `pr-approval` governance, applied fixes land on a branch → adversarial review → PR.
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-The inspector carries the self-improvement covenant (the SOLID covenant + three pillars — knowledge-parity,
+The inspector carries the self-improvement covenant (the KAIZEN covenant + three pillars — knowledge-parity,
 quality-first, waste-elimination — your plugin's own `knowledge/covenant.md` is the local statement of it).
 Review the report against it each run (single responsibility; extends without modifying prior findings;
 substitutable for a human expert's audit; segregates critical from suggestions; depends on file *content*,

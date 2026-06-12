@@ -84,7 +84,7 @@ Spawn these named agents (each defined in `${CLAUDE_PLUGIN_ROOT}/agents/`):
    `NEEDS_REVISION`: emit a **root-cause diagnostic** ("reviewer `{role}` rejected `{stage}` twice on the
    same finding `{summary}`; the revision did not move it — the cause is likely upstream / a spec
    ambiguity / a reviewer-criterion mismatch") and **escalate** to the user (and, if the cause looks
-   systemic, flag it for the self-improvement covenant per the SOLID Covenant note below). Two identical
+   systemic, flag it for the self-improvement covenant per the KAIZEN Covenant note below). Two identical
    rejections are a signal, not a retry; surface it. This sits *before* rule 5's blind 3-strike BLOCK —
    an identical 2nd rejection escalates with a diagnostic rather than spending a third silent attempt.
 
@@ -242,6 +242,6 @@ When operating inside a FOUNDRY cycle:
 - Sentinel chain accumulates through both layers: FOUNDRY sentinels wrap DS sentinels
 - On `DELIVERY_COMPLETE` (with prior `STORY_PROVEN` in the chain), FOUNDRY records `IDEA_COST.jsonl` entry
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If the same DoD gate consistently fails across items (e.g., reviewer compliance always has open findings, or commit messages always lack EARS references), the root cause is upstream in the pipeline design. Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+This agent carries the KAIZEN self-improvement covenant. If the same DoD gate consistently fails across items (e.g., reviewer compliance always has open findings, or commit messages always lack EARS references), the root cause is upstream in the pipeline design. Flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

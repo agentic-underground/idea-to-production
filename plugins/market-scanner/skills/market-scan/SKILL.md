@@ -95,7 +95,7 @@ sharpens it.
 
 ## Self-improvement covenant
 
-Carries the SOLID self-improvement covenant ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)).
+Carries the KAIZEN self-improvement covenant ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)).
 When the same *kind* of weak candidate keeps surviving to step 5, that is not a per-scan slip but a
 **parameter or kill-threshold that needs sharpening** — flag it for the `self-improve` skill so a PR
 lands the fix for every future scan.

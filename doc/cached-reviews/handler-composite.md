@@ -52,7 +52,7 @@
 
 ### 8. [MEDIUM] Missing SUBJECT_MATTER_UNDERSTANDING contract carried by every other VALUE_HANDLER class
 
-**Evidence:** The marketplace contract requires every agent to carry the SOLID covenant and the SUBJECT_MATTER_UNDERSTANDING contract. FOUNDRY value handlers do — e.g. plugins/foundry/agents/handler-ansible.md line 10: "Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." handler-composite.md carries only the SOLID covenant (lines 73-77); `grep -r SUBJECT_MATTER plugins/pressroom/agents/` returns nothing — the omission is pressroom-wide, but this file is still in breach for itself.
+**Evidence:** The marketplace contract requires every agent to carry the KAIZEN covenant and the SUBJECT_MATTER_UNDERSTANDING contract. FOUNDRY value handlers do — e.g. plugins/foundry/agents/handler-ansible.md line 10: "Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." handler-composite.md carries only the KAIZEN covenant (lines 73-77); `grep -r SUBJECT_MATTER plugins/pressroom/agents/` returns nothing — the omission is pressroom-wide, but this file is still in breach for itself.
 
 **Recommendation:** Add the SUBJECT_MATTER_UNDERSTANDING line to the description/covenant section (the handler's subject matter: the doc being illustrated and the figure's intent/message — it must reach knowledge-parity with the SPEC's intent before drafting). Flag the same gap on the five sibling pressroom handlers via their self-improve loop.
 

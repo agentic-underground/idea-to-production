@@ -3,7 +3,7 @@
 > How PRESSROOM's producer and design-reviewer iterate so the artefact **measurably improves** and the loop
 > *terminates*. Same shape as the marketplace's other design loops (carried by concept, not by path — see
 > the ATELIER protocol it mirrors); different rubric — typography and data-viz, not screen UI. Modelled on
-> WRITER's max-3-turn prose loop, the perf-delta gate, and the SOLID *halve-the-distance* covenant.
+> WRITER's max-3-turn prose loop, the perf-delta gate, and the KAIZEN *halve-the-distance* covenant.
 
 ## Cost discipline — vision is expensive
 

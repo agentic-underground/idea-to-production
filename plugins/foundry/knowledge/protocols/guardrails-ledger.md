@@ -65,4 +65,4 @@ plugin's gates both consult the relevant FORBIDDEN list.)*
 > **IMPORTANT — THE ONLY WAY:** Every new failure mode discovered in real work becomes a new ledger
 > entry **before** the slice that hit it is closed. The ledger is the project's memory; unmaintained,
 > the same bug returns. With it, the build compounds toward first-time-every-time — each entry at
-> least halves the chance that class of failure ever recurs. See `architecture/solid-covenant.md`.
+> least halves the chance that class of failure ever recurs. See `architecture/kaizen-covenant.md`.

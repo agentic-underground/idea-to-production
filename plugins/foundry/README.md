@@ -75,8 +75,8 @@ plugin boundary. See [`VALUE_FLOW.md §4`](VALUE_FLOW.md). (`frontend`/DESIGN re
 ## ♻️ Self-improvement covenant — halve the distance to perfection
 
 Every component of this marketplace — every plugin, skill, agent, command, and knowledge doc —
-carries the SOLID self-improvement covenant: it continuously asks how it can improve and each
+carries the KAIZEN self-improvement covenant: it continuously asks how it can improve and each
 iteration must **at least halve the remaining distance to perfection** — eliminating waste
 aggressively, holding quality-first absolutely, deepening knowledge-parity with the user, and
 fixing recurring gaps *upstream, once* so no future build pays for them again. Canonical text:
-[`knowledge/architecture/solid-covenant.md`](knowledge/architecture/solid-covenant.md).
+[`knowledge/architecture/kaizen-covenant.md`](knowledge/architecture/kaizen-covenant.md).

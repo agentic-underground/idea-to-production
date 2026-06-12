@@ -12,7 +12,7 @@ This directory is the **define-once** home for the facts IDEATOR obeys. Skills r
 ## Layout
 ```
 knowledge/
-├── covenant.md              # three pillars + SOLID self-improvement covenant (this plugin's anchor)
+├── covenant.md              # three pillars + KAIZEN self-improvement covenant (this plugin's anchor)
 └── ideation/
     ├── idea-package.md      # the deliverable contract: agent-facing + user-facing + the exit gate
     └── challenge-protocol.md # the adversarial pressure-test of the emergent IDEA

@@ -55,7 +55,7 @@ another wasteful lap). Every turn must measurably improve or the loop halts.
 ## Governed by the marketplace covenant
 
 ATELIER holds the **three pillars** (knowledge-parity, quality-first, waste-elimination) under the
-**token-efficiency** constraint, and the **SOLID self-improvement covenant**
+**token-efficiency** constraint, and the **KAIZEN self-improvement covenant**
 ([`knowledge/covenant.md`](knowledge/covenant.md)) — when a shipped design proves weak in a way a review
 missed, the canon or the rubric is **sharpened via a PR**, so every future review, for all users, catches
 it by default.

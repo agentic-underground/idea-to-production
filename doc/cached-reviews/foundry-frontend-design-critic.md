@@ -26,11 +26,11 @@
 
 **Recommendation:** Add a short 'Spawn contract' block: 'When spawned as a sub-agent, request the review tier (opus) per ${CLAUDE_PLUGIN_ROOT}/knowledge/policy/model-selection.md — state the tier, never a hardcoded model ID. Minimal tools: Read (artifact + definition-of-good); optionally the Playwright MCP browser tools when render-verification is wanted.' If inline self-critique on the builder's model is intentionally acceptable, say so explicitly and bound it (inline = advisory; spawned gate = opus).
 
-### 4. [HIGH] SOLID self-improvement covenant is absent
+### 4. [HIGH] KAIZEN self-improvement covenant is absent
 
-**Evidence:** House law: every agent carries the SOLID self-improvement covenant (cf. reviewer-gate SKILL.md line 88: "This skill carries the SOLID self-improvement covenant... fix the template, not the instance."). design-critic.md (lines 1-43, the whole file) contains no covenant, no SOLID reference, and no obligation to route recurring findings upstream. Its only improvement channel is artifact-local (`improve?` markers, lines 38-39, 43) — it improves the artifact, never the system that produced it or itself.
+**Evidence:** House law: every agent carries the KAIZEN self-improvement covenant (cf. reviewer-gate SKILL.md line 88: "This skill carries the KAIZEN self-improvement covenant... fix the template, not the instance."). design-critic.md (lines 1-43, the whole file) contains no covenant, no SOLID reference, and no obligation to route recurring findings upstream. Its only improvement channel is artifact-local (`improve?` markers, lines 38-39, 43) — it improves the artifact, never the system that produced it or itself.
 
-**Recommendation:** Append a covenant section: 'SOLID covenant — when the same non-negotiable or strong-tier failure recurs across artifacts (e.g., repeated colour-only signalling, repeated missing render-trigger declarations), the defect is upstream: file a finding against the producing element page in resources/elements/ or the SKILL.md workflow, not just the instance. If this procedure itself missed a defect a customer later hit, that gap becomes a new line in the Procedure via the self-improve flow.'
+**Recommendation:** Append a covenant section: 'KAIZEN covenant — when the same non-negotiable or strong-tier failure recurs across artifacts (e.g., repeated colour-only signalling, repeated missing render-trigger declarations), the defect is upstream: file a finding against the producing element page in resources/elements/ or the SKILL.md workflow, not just the instance. If this procedure itself missed a defect a customer later hit, that gap becomes a new line in the Procedure via the self-improve flow.'
 
 ### 5. [MEDIUM] Severity and verdict vocabulary diverges from the reviewer-gate rubric with no defined semantics or mapping
 

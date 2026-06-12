@@ -47,7 +47,7 @@ open questions, never silent guesses. Offline, it reasons from you and says so. 
 ## Governed by the marketplace covenant
 
 Like every `idea-to-production` plugin, MARKET-SCANNER holds the **three pillars** (knowledge-parity,
-quality-first, waste-elimination) under the **token-efficiency** constraint, and the **SOLID
+quality-first, waste-elimination) under the **token-efficiency** constraint, and the **KAIZEN
 self-improvement covenant** ([`knowledge/covenant.md`](knowledge/covenant.md)). It is **self-improving**:
 when the conveyor later learns an approved opportunity was actually weak, that feedback sharpens the
 parameters and the kill ledger via a PR — so every future scan, for all users, gets sharper.

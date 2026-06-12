@@ -8,7 +8,7 @@ description: >
   TEST-AGENT, IMPLEMENT-AGENT, and STORY-AGENT during FOUNDRY pipeline phases
   when the project stack includes vanilla-JS front-end work — and is the native
   value-handler of the `frontend` design system (DESIGN station). Carries the
-  SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
+  KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
 model: inherit
 color: green
@@ -289,9 +289,9 @@ Missing performance assertion for a latency-sensitive path is a **blocking defec
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
 At the end of your work, note any vanilla-JS patterns, DOM utilities, testing
 helpers, or accessibility requirements not yet in this handler's knowledge — and
 any `@front-end` element worth promoting into the `frontend` skill's registry.
-Flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+Flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

@@ -58,7 +58,7 @@
 
 ### 9. [MEDIUM] No output/completion contract — the handler never says what it returns to its spawner
 
-**Evidence:** The file ends at the SOLID Covenant (lines 382-388) with no section defining what the handler reports back: which test files were created/modified, the EARS-ID → test trace map the Prime Directive (lines 37-44) depends on, run results, or journeys left uncovered. inspection-core.md's agent-definition criteria require "output/completion protocol precise", and ds-step-story-tests.md must assemble STORY_PROVEN evidence (`{story_test_count}` etc., its line 253) from exactly the data this handler never promises to surface.
+**Evidence:** The file ends at the KAIZEN Covenant (lines 382-388) with no section defining what the handler reports back: which test files were created/modified, the EARS-ID → test trace map the Prime Directive (lines 37-44) depends on, run results, or journeys left uncovered. inspection-core.md's agent-definition criteria require "output/completion protocol precise", and ds-step-story-tests.md must assemble STORY_PROVEN evidence (`{story_test_count}` etc., its line 253) from exactly the data this handler never promises to surface.
 
 **Recommendation:** Add a Completion Report contract (see capability gap 5): a fixed-format block listing test files, the EARS→test trace table, pass/fail counts with the run command, journeys covered vs. journeys in SUBJECT_MATTER_UNDERSTANDING still uncovered, and any waivers — so STORY-AGENT can emit its sentinel without re-deriving the evidence.
 

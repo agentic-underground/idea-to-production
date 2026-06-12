@@ -22,7 +22,7 @@ restate them. If a fact lives here, there is exactly one copy of it.
 | BDD/Gherkin scenario model (happy/unhappy/abuse) | [`specs/bdd-gherkin.md`](specs/bdd-gherkin.md) |
 | Coverage as the floor, coverage **density**, the test pyramid + perf-delta gate, tests-as-coordinates | [`testing/test-policy.md`](testing/test-policy.md) |
 | How to run coverage per stack | [`testing/coverage-commands.md`](testing/coverage-commands.md) |
-| SOLID + the self-improvement covenant (halve the distance to perfection) | [`architecture/solid-covenant.md`](architecture/solid-covenant.md) |
+| The KAIZEN covenant — continuous improvement (halve the distance to perfection) | [`architecture/kaizen-covenant.md`](architecture/kaizen-covenant.md) |
 | The SOLID *principles* reference (engineering, with examples + smell checklist) | [`architecture/solid.md`](architecture/solid.md) |
 | The pure-core / one-way-dependency geometry that makes coordinates possible | [`architecture/pure-core.md`](architecture/pure-core.md) |
 | Clean Architecture / Hexagonal / DDD / etc. (forms we **build with**) | [`clean-architecture`](architecture/clean-architecture.md) · [`hexagonal`](architecture/hexagonal.md) · [`ddd`](architecture/ddd.md) · [`dry-yagni`](architecture/dry-yagni.md) · [`clean-code`](architecture/clean-code.md) · [`pragmatic`](architecture/pragmatic.md) · [`twelve-factor`](architecture/twelve-factor.md) · [`untestable-patterns`](architecture/untestable-patterns.md) |
@@ -49,7 +49,7 @@ knowledge/
 ├── policy/         # model-selection (role → model)
 ├── specs/          # ears, bdd-gherkin
 ├── testing/        # test-policy (coordinates, pyramid, perf-delta gate), coverage-commands
-├── architecture/   # solid-covenant, pure-core + the quality lenses
+├── architecture/   # kaizen-covenant, pure-core + the quality lenses
 ├── protocols/      # certainty-markers, guardrails-ledger, context-sentinel, handoff-schema, commit-message, definition-of-done
 └── orchestration/  # orchestration-loop, tier-assignment, agent-roster, idea-cost-schema, SMU
 ```

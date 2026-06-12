@@ -59,6 +59,6 @@ Every link in this chain must be explicit in the commit message. An auditor read
 
 `lifecycle-orchestrator` (global DoD audit) — with delivery evidence, closure updates, and reviewer status.
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This skill carries the SOLID self-improvement covenant. Traceability failures at delivery state (commit messages missing EARS IDs, roadmap not updated, coverage not reported) indicate a systemic gap in the step-8 or step-9 agent instructions. Flag for the self-improvement covenant ([`solid-covenant.md`](../../../knowledge/architecture/solid-covenant.md)).
+This skill carries the KAIZEN self-improvement covenant. Traceability failures at delivery state (commit messages missing EARS IDs, roadmap not updated, coverage not reported) indicate a systemic gap in the step-8 or step-9 agent instructions. Flag for the self-improvement covenant ([`kaizen-covenant.md`](../../../knowledge/architecture/kaizen-covenant.md)).

@@ -63,7 +63,7 @@ Return the SVG path, the chart source (spec/script), and a one-line self-critiqu
 so the reviewer can weigh it against the alternative option.
 
 ## Self-improvement covenant
-Carries the SOLID covenant. A data-viz lesson (an encoding that keeps misleading, a palette that keeps
+Carries the KAIZEN covenant. A data-viz lesson (an encoding that keeps misleading, a palette that keeps
 failing colour-blind safety) generalises into the
 [dataviz canon](../skills/design-reviewer/references/dataviz-canon.md) or the
 [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md) via the shared

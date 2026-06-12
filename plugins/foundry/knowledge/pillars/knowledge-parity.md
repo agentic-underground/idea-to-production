@@ -41,7 +41,7 @@ upstream `ideator` plugin) was ambiguous where it should have been precise. When
    again *here*.
 2. **Cross-project ideation-feedback** — record a structured entry (*symptom → which IDEA-doc field was
    unclear → what would have prevented it*) routed to the `ideator` / `market-scanner` **self-improve**
-   intake. Their SOLID self-improvement loop turns recurring entries into a sharpened challenge-protocol
+   intake. Their KAIZEN self-improvement loop turns recurring entries into a sharpened challenge-protocol
    axis or package field **via a PR**, so every future ideation for *all* users asks the missing question
    by default. The IDEA station's receiver wires this (`skills/ideator/SKILL.md §0.5.1`); the LEARN
    station carries it (`skills/value-station-handoff/SKILL.md`, LEARN). When the `ideator` plugin is

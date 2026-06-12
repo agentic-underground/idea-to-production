@@ -202,7 +202,7 @@ and the on-disk agents (`${CLAUDE_PLUGIN_ROOT}/agents/`). On a miss:
 
 - A missing **VALUE_HANDLER** → degrade: note the gap, route the item to the nearest registered handler
   (or flag the item as blocked on a new handler), and record it under `## Missing Handlers` for the
-  self-improvement covenant (§14 of FOUNDRY SKILL.md / [`../knowledge/architecture/solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+  self-improvement covenant (§14 of FOUNDRY SKILL.md / [`../knowledge/architecture/kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).
 - A missing **reviewer role** → WARN loudly in the plan: a phase that names a non-existent reviewer would
   silently skip its gate. Name the missing role and the transition it guards; do not let the plan claim a
   gate that cannot run.
@@ -317,7 +317,7 @@ After cycle completion, compute accuracy and report in the tier summary.
 
 ## Self-Improvement Obligations
 
-At the end of the deep dive, flag for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)):
+At the end of the deep dive, flag for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)):
 
 - Any VALUE_HANDLER that was needed but doesn't exist (new agent required)
 - Any recurring pattern in IDEA_COST history (e.g., SECURITY-REVIEWER always
@@ -330,9 +330,9 @@ Record flags in `doc/FOUNDRY_PLAN.md` under `## Self-Improvement Flags`.
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. Every output — the
+This agent carries the KAIZEN self-improvement covenant. Every output — the
 FOUNDRY plan, the SMU, the shared infrastructure map — is a living document.
 At the end of each cycle, review your plan against actuals from IDEA_COST.jsonl
-and propose improvements via the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+and propose improvements via the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

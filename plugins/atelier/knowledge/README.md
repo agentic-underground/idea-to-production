@@ -12,7 +12,7 @@ reference these via `${CLAUDE_PLUGIN_ROOT}/knowledge/...`; they never restate th
 ## Layout
 ```
 knowledge/
-├── covenant.md                 # three pillars + SOLID self-improvement covenant (this plugin's anchor)
+├── covenant.md                 # three pillars + KAIZEN self-improvement covenant (this plugin's anchor)
 ├── canon/                      # the screen design canon — what makes the reviewer an EXPERT, not generic
 │   ├── README.md               #   the canon index + how to wield it (cite the principle, not "looks off")
 │   ├── visual-foundations.md   #   Gestalt · visual hierarchy · colour · type · spacing/grid

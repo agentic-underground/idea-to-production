@@ -26,7 +26,7 @@
 
 **Recommendation:** Add a Security posture section specific to this stack: hostile query/body parsing through core's parse-don't-validate types; `cargo audit`/`cargo deny` in the GATE; the WASM-is-public rule (no secrets, no privileged logic in `web`); response-header hygiene; and the sentinel security-gate composition when installed.
 
-### 4. [HIGH] SOLID covenant instructs the handler to write into installed-plugin files, which are read-only outside the marketplace source repo
+### 4. [HIGH] KAIZEN covenant instructs the handler to write into installed-plugin files, which are read-only outside the marketplace source repo
 
 **Evidence:** Lines 150-154: "fold any new failure mode into a **guardrail** (symptom → cause → fix) in `references/06-guardrails-and-antipatterns.md`, any version drift into the matrix in `references/00-MANIFEST.md`, and any new template lesson into `references/templates/`". Those paths live under `${CLAUDE_PLUGIN_ROOT}/skills/rust-webapp-rollout/`, i.e. the installed plugin. inspection-core.md's GUARDRAIL states "The installed plugin is normally read-only... never write outside the marketplace source" — yet this handler is granted Write/Edit and is told, in a user project, to mutate plugin assets. handler-rust's covenant uses the safe form ("note any... patterns... Flag for the self-improvement covenant") with no write instruction.
 
@@ -46,7 +46,7 @@
 
 ### 7. [MEDIUM] SUBJECT_MATTER_UNDERSTANDING is claimed in the description but no mechanism exists in the body
 
-**Evidence:** Description lines 10-11: "Carries the SOLID covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body never mentions SMU — no instruction to load `doc/SUBJECT_MATTER_UNDERSTANDING.md`, no `SMU::LOADED` sentinel per knowledge/orchestration/subject-matter-understanding.md and knowledge/protocols/context-sentinel.md (which define the load-and-attest protocol). The claim is unbacked: a cold-start instance has no idea the contract exists.
+**Evidence:** Description lines 10-11: "Carries the KAIZEN covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body never mentions SMU — no instruction to load `doc/SUBJECT_MATTER_UNDERSTANDING.md`, no `SMU::LOADED` sentinel per knowledge/orchestration/subject-matter-understanding.md and knowledge/protocols/context-sentinel.md (which define the load-and-attest protocol). The claim is unbacked: a cold-start instance has no idea the contract exists.
 
 **Recommendation:** Add a one-paragraph SMU clause: "Before implementing, Read `doc/SUBJECT_MATTER_UNDERSTANDING.md` in the project (protocol: `${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/subject-matter-understanding.md`) and emit the SMU::LOADED sentinel; if absent, surface the gap to the phase agent instead of guessing domain intent."
 
@@ -64,7 +64,7 @@
 
 ### 10. [MEDIUM] No completion/handoff contract — the handler never says what it returns to the phase agent
 
-**Evidence:** The file ends at the SOLID Covenant (line 154) with no output protocol. inspection-core.md's agent criteria require "output/completion protocol precise", and the marketplace ships a dedicated handoff-protocol skill ("package artifacts, risks, review status, and next instructions in a strict schema"). For a handler whose done-condition is "the matrix passes against production" (line 106-107), nothing tells it to hand back the production URL, deployment ID, verification-matrix results, or gate evidence — the phase agent must re-derive proof.
+**Evidence:** The file ends at the KAIZEN Covenant (line 154) with no output protocol. inspection-core.md's agent criteria require "output/completion protocol precise", and the marketplace ships a dedicated handoff-protocol skill ("package artifacts, risks, review status, and next instructions in a strict schema"). For a handler whose done-condition is "the matrix passes against production" (line 106-107), nothing tells it to hand back the production URL, deployment ID, verification-matrix results, or gate evidence — the phase agent must re-derive proof.
 
 **Recommendation:** Add a Completion Protocol section: report the prod alias URL + deployment ID, the verification-matrix table with per-row PASS/FAIL, the GATE command output summary, files created/modified, and any proposed guardrails — formatted per `${CLAUDE_PLUGIN_ROOT}/skills/handoff-protocol/SKILL.md`.
 

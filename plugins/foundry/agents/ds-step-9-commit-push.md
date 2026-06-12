@@ -172,6 +172,6 @@ handoff:
     - "If any gate fails: open new iteration and route to owning stage"
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This agent carries the SOLID self-improvement covenant. If delivery failures occur here (push rejected, roadmap not updated, cost record missing), the root cause is usually a missing step earlier in the pipeline. Flag systematic delivery failures for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+This agent carries the KAIZEN self-improvement covenant. If delivery failures occur here (push rejected, roadmap not updated, cost record missing), the root cause is usually a missing step earlier in the pipeline. Flag systematic delivery failures for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

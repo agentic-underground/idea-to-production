@@ -43,8 +43,8 @@ completion in `IDEA_COST.jsonl` so the system gets smarter with every cycle.
 > must account for token budget. Tiering, parallelisation, and batching are all
 > in service of maximising FEATURE value per token spent.
 >
-> **SOLID applies to all documents, agents, and artefacts produced by FOUNDRY.**
-> The covenant in `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md` travels with everything.
+> **KAIZEN applies to all documents, agents, and artefacts produced by FOUNDRY.**
+> The covenant in `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md` travels with everything.
 
 ---
 
@@ -406,7 +406,7 @@ SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{commit_hash}
 ## 8. VALUE_HANDLER_POOL
 
 Stack-specific agents spawned on demand by IMPLEMENT-AGENT and STORY-AGENT.
-Each handler carries: STACK knowledge, SUBJECT_MATTER_UNDERSTANDING, SOLID covenant.
+Each handler carries: STACK knowledge, SUBJECT_MATTER_UNDERSTANDING, KAIZEN covenant.
 
 Extend the pool without modifying this file — add new handlers as agent files
 in `${CLAUDE_PLUGIN_ROOT}/agents/handler-{stack}.md`.
@@ -435,7 +435,7 @@ will formalise it into an agent file.
 
 A REVIEWER panel is invoked at every phase transition. Panels are composable —
 each transition uses a specific subset of reviewers. All reviewers carry the
-SOLID covenant. Spawn using `reviewer` agent with a role parameter.
+KAIZEN covenant. Spawn using `reviewer` agent with a role parameter.
 
 ### 9.1 Panel compositions per transition
 
@@ -564,8 +564,8 @@ See [`agents/inspector.md`](../../agents/inspector.md) for full behaviour. In su
 
 1. Reads the installed FOUNDRY plugin (`${CLAUDE_PLUGIN_ROOT}`) — skills, agents, knowledge,
    commands, hooks, manifests — and the companion plugins (`sentinel`/`pressroom`) if present.
-2. Builds a fresh critical-analysis persona (domain expert + SOLID auditor).
-3. Analyses each document against: clarity, accuracy, SOLID compliance, coverage **density**,
+2. Builds a fresh critical-analysis persona (domain expert + covenant auditor).
+3. Analyses each document against: clarity, accuracy, covenant compliance, coverage **density**,
    outdated patterns, and **portability** (zero machine-specific home/config-dir coupling).
 4. Produces `FOUNDRY_INSPECTION_REPORT.md` in the **current project** (never outside it) with
    severity-ranked findings.
@@ -579,7 +579,7 @@ See [`agents/inspector.md`](../../agents/inspector.md) for full behaviour. In su
 
 ## 14. SELF-IMPROVEMENT PROTOCOL
 
-FOUNDRY carries the SOLID self-improvement covenant. At the end of any full
+FOUNDRY carries the KAIZEN self-improvement covenant. At the end of any full
 roadmap cycle, or when the daily inspector surfaces proposals:
 
 1. **Review IDEA_COST.jsonl** for patterns: which items took most tokens?
@@ -595,7 +595,7 @@ roadmap cycle, or when the daily inspector surfaces proposals:
    git commit -m "skill: <description of improvement>"
    ```
    (Never modify or push any repo that is not the marketplace source; improvements land in the plugin's source repo.)
-6. The SOLID compliance check from IDEATOR §8.3 applies to all improvements.
+6. The covenant compliance check from IDEATOR §8.3 applies to all improvements.
 
 ---
 
@@ -643,7 +643,7 @@ bug. IDEA_COST.jsonl is written only when both are present in the chain.
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/context-sentinel.md` | Sentinel format and accumulation protocol | Before §10 |
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/testing/test-policy.md` | Test pyramid + coverage standards + enforcement | Before §11 |
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/agent-roster.md` | All agent roles, capabilities, spawn conditions | Before §7–§9 |
-| `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md` | SOLID replication covenant | Carried by all artefacts |
+| `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md` | KAIZEN replication covenant | Carried by all artefacts |
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/definition-of-done.md` | Project DoD template — copy to project root | Before §7 (per-item) |
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/orchestration-loop.md` | Per-item loop state model + stage routing table | Before §7 (per-item) |
 | `${CLAUDE_PLUGIN_ROOT}/skills/lifecycle-states/states/discovery.md` | Pre-step-0 readiness exit criteria | Before spawning step-0 |
@@ -654,23 +654,24 @@ bug. IDEA_COST.jsonl is written only when both are present in the chain.
 
 ---
 
-<!-- SOLID REPLICATION FRAGMENT v1.0 -->
+<!-- KAIZEN REPLICATION FRAGMENT v2.0 -->
 <!-- This skill is part of the idea-to-production marketplace. -->
 <!-- All documents, agents, and artefacts it produces carry the covenant below. -->
 
-## ♻️ SOLID Self-Improvement Covenant
+## ♻️ KAIZEN Self-Improvement Covenant
 
 This document is part of the **FOUNDRY** skill in the idea-to-production marketplace.
 All artefacts produced by FOUNDRY — plans, specs, feature files, test files,
-cost records, and inspection reports — carry this covenant.
+cost records, and inspection reports — carry this covenant. Its spirit is **kaizen** —
+continuous improvement, never finished.
 
-1. **Single Responsibility** — Each agent, each phase, each reviewer does one thing.
-2. **Open for Extension** — New handlers, reviewers, and tiers extend without modifying the core.
-3. **Liskov Substitution** — Any agent can be replaced by a better one without breaking the pipeline.
-4. **Interface Segregation** — Agents receive only the context they need via sentinels.
-5. **Dependency Inversion** — The pipeline depends on phase abstractions, not on specific implementations.
+1. **Halve the distance** — each pass moves every agent, phase, and reviewer measurably closer to perfection.
+2. **PDCA** — change against a measured hypothesis: plan, do, check, act.
+3. **Standardize, then improve** — capture the current best as the standard, then raise the floor in small, reversible steps.
+4. **Eliminate muda · mura · muri** — waste, unevenness, and overburden across the pipeline's artefacts.
+5. **Fix upstream, once** — a recurring gap is repaired at its source, so no future build pays for it again.
 
-*Skill: FOUNDRY v1.0 — idea-to-production marketplace*
+*Skill: FOUNDRY — idea-to-production marketplace*
 
 ## Product lifecycle (by capability)
 

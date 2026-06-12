@@ -34,9 +34,9 @@
 
 ### 5. [MEDIUM] Load-bearing knowledge references use agent-file-relative paths a spawned handler cannot resolve — inconsistently with the file's own ${CLAUDE_PLUGIN_ROOT} usage
 
-**Evidence:** Line 21 `(../knowledge/tooling/live-feedback.md)`, lines 49–50 `(../knowledge/first-principles.md … ../knowledge/testing/test-policy.md)`, line 239 `(../knowledge/architecture/solid-covenant.md)` — all relative to agents/. A spawned subagent's working directory is the project, not the plugin's agents/ dir, so these `../` paths dangle at runtime; the same file proves it knows the correct form at lines 30 and 223 (`${CLAUDE_PLUGIN_ROOT}/knowledge/...`). The self-containment law says plugin files resolve paths only through ${CLAUDE_PLUGIN_ROOT}.
+**Evidence:** Line 21 `(../knowledge/tooling/live-feedback.md)`, lines 49–50 `(../knowledge/first-principles.md … ../knowledge/testing/test-policy.md)`, line 239 `(../knowledge/architecture/kaizen-covenant.md)` — all relative to agents/. A spawned subagent's working directory is the project, not the plugin's agents/ dir, so these `../` paths dangle at runtime; the same file proves it knows the correct form at lines 30 and 223 (`${CLAUDE_PLUGIN_ROOT}/knowledge/...`). The self-containment law says plugin files resolve paths only through ${CLAUDE_PLUGIN_ROOT}.
 
-**Recommendation:** Rewrite all four references as `${CLAUDE_PLUGIN_ROOT}/knowledge/...` paths so the canon (test-policy, first-principles, solid-covenant, live-feedback) is actually reachable by the running handler, not just by a human browsing the repo.
+**Recommendation:** Rewrite all four references as `${CLAUDE_PLUGIN_ROOT}/knowledge/...` paths so the canon (test-policy, first-principles, kaizen-covenant, live-feedback) is actually reachable by the running handler, not just by a human browsing the repo.
 
 ### 6. [MEDIUM] Stale runtime floor: 'Node.js 18+' claims expertise anchored to an EOL runtime
 
@@ -62,11 +62,11 @@
 
 **Recommendation:** Sharpen the exclusion to "(non-React, non-CSS, non-vanilla-DOM-front-end — DOM/front-end vanilla JS routes to handler-vanilla-js; this handler owns Node services, CLIs, libraries, and shared TS logic)" and drop or qualify "Testing Library" to "Testing Library (for the rare DOM-adjacent unit)".
 
-### 10. [LOW] Weakened SOLID covenant section and a duplicated section divider
+### 10. [LOW] Weakened KAIZEN covenant section and a duplicated section divider
 
-**Evidence:** Lines 237–239: the SOLID Covenant section opens "At the end of your work, note any TypeScript patterns…" — it never states the covenant-carrying declaration sibling handler-python.md leads with ("You carry the SOLID self-improvement covenant.") nor python's project-memory bullet ("this project uses a custom fixture pattern — add to memory", which is what `memory: project` at line 13 exists to feed). Separately, lines 115–116 are two consecutive `---` dividers — a stray empty section left by a past edit.
+**Evidence:** Lines 237–239: the KAIZEN Covenant section opens "At the end of your work, note any TypeScript patterns…" — it never states the covenant-carrying declaration sibling handler-python.md leads with ("You carry the KAIZEN self-improvement covenant.") nor python's project-memory bullet ("this project uses a custom fixture pattern — add to memory", which is what `memory: project` at line 13 exists to feed). Separately, lines 115–116 are two consecutive `---` dividers — a stray empty section left by a past edit.
 
-**Recommendation:** Open the section with "You carry the SOLID self-improvement covenant." and add the project-memory bullet so the `memory: project` frontmatter key has an explicit write-side instruction; delete the duplicate `---` at line 116.
+**Recommendation:** Open the section with "You carry the KAIZEN self-improvement covenant." and add the project-memory bullet so the `memory: project` frontmatter key has an explicit write-side instruction; delete the duplicate `---` at line 116.
 
 ## Capability-uplift proposals
 
@@ -102,6 +102,6 @@
 
 ### 6. No machine-readable completion contract — the handler's output to the phase agent is undefined beyond the UI-handoff snippet
 
-**Proposal:** Add an '## Completion Report — Required Shape' section: "End every assignment with a fenced report the phase agent can parse without interpretation: `STATUS: COMPLETE|BLOCKED|NEEDS_REVISION` · `FILES: <created/modified list>` · `TESTS: <n> added, <n> passing, RED-confirmed: yes/no (you ran each new test and saw it fail first)` · `COVERAGE: lines <x>% branches <y>% (command + exact output line)` · `TYPECHECK: tsc --noEmit exit <code>` · `PLAYWRIGHT INTERACTION TESTS REQUIRED: <block or 'none'>` · `RESIDUAL RISKS: <list or 'none'>` · `SELF-IMPROVEMENT: <patterns to flag per the SOLID covenant or 'none'>`. A report missing any field is an incomplete handoff — the phase agent must bounce it."
+**Proposal:** Add an '## Completion Report — Required Shape' section: "End every assignment with a fenced report the phase agent can parse without interpretation: `STATUS: COMPLETE|BLOCKED|NEEDS_REVISION` · `FILES: <created/modified list>` · `TESTS: <n> added, <n> passing, RED-confirmed: yes/no (you ran each new test and saw it fail first)` · `COVERAGE: lines <x>% branches <y>% (command + exact output line)` · `TYPECHECK: tsc --noEmit exit <code>` · `PLAYWRIGHT INTERACTION TESTS REQUIRED: <block or 'none'>` · `RESIDUAL RISKS: <list or 'none'>` · `SELF-IMPROVEMENT: <patterns to flag per the KAIZEN covenant or 'none'>`. A report missing any field is an incomplete handoff — the phase agent must bounce it."
 
 **Rationale:** FOUNDRY's pipeline quality depends on what phase agents can verify from handler output. Today the file mandates outcomes (coverage, TDD, perf assertions) but never makes the handler attest to them in a checkable shape, so a spawn can claim completion without evidence and the reviewer gate has nothing concrete to audit.

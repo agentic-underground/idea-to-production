@@ -24,7 +24,7 @@
 
 **Evidence:** Line 13: `memory: project`. Lines 23-26: "you carry **no conversation history** — which is exactly the test. The IDEA package's promise is that *a fresh agent with no history can act on it without guessing*. **You are that fresh agent.**" Project memory persists across runs, so on a re-challenge (the NEEDS_REVISION loop at line 94 explicitly sends packages back to "re-challenge") the agent may carry its own prior reading of the same package — no longer a cold read. The file gives zero instructions on what to record or exclude from memory.
 
-**Recommendation:** Keep memory (it is what makes the SOLID-covenant recurring-gap detection at lines 112-116 workable) but govern it: "Memory discipline: record only gap-KIND tallies for the self-improve loop (e.g., 'untestable success metric — 3rd occurrence'). Never record a package's content or your prior reading of it; each challenge must be performed cold from the text in front of you."
+**Recommendation:** Keep memory (it is what makes the KAIZEN-covenant recurring-gap detection at lines 112-116 workable) but govern it: "Memory discipline: record only gap-KIND tallies for the self-improve loop (e.g., 'untestable success metric — 3rd occurrence'). Never record a package's content or your prior reading of it; each challenge must be performed cold from the text in front of you."
 
 ### 4. [MEDIUM] No failure-mode handling for absent, partial, or unreadable input
 

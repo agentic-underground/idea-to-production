@@ -16,9 +16,9 @@
 
 ### 2. [HIGH] Self-containment violations — three load-bearing relative `../knowledge/` paths instead of ${CLAUDE_PLUGIN_ROOT}
 
-**Evidence:** Line 22: "See [`live-feedback.md`](../knowledge/tooling/live-feedback.md)"; line 107-108: "(canon: [`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2"; line 184: "([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md))". The house law is that a plugin file resolves paths only through ${CLAUDE_PLUGIN_ROOT}. The same file proves the convention is known — lines 31, 36, 51, 109, and 152 all use `${CLAUDE_PLUGIN_ROOT}/knowledge/...`. An agent definition is consumed as a spawned subagent's system prompt with cwd set to the user's project, not the agents/ directory — `../knowledge/tooling/live-feedback.md` will dangle (or resolve against an unrelated project directory) at runtime.
+**Evidence:** Line 22: "See [`live-feedback.md`](../knowledge/tooling/live-feedback.md)"; line 107-108: "(canon: [`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2"; line 184: "([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md))". The house law is that a plugin file resolves paths only through ${CLAUDE_PLUGIN_ROOT}. The same file proves the convention is known — lines 31, 36, 51, 109, and 152 all use `${CLAUDE_PLUGIN_ROOT}/knowledge/...`. An agent definition is consumed as a spawned subagent's system prompt with cwd set to the user's project, not the agents/ directory — `../knowledge/tooling/live-feedback.md` will dangle (or resolve against an unrelated project directory) at runtime.
 
-**Recommendation:** Replace all three relative links with `${CLAUDE_PLUGIN_ROOT}/knowledge/tooling/live-feedback.md`, `${CLAUDE_PLUGIN_ROOT}/knowledge/first-principles.md`, and `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/solid-covenant.md`, matching the file's own dominant convention.
+**Recommendation:** Replace all three relative links with `${CLAUDE_PLUGIN_ROOT}/knowledge/tooling/live-feedback.md`, `${CLAUDE_PLUGIN_ROOT}/knowledge/first-principles.md`, and `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md`, matching the file's own dominant convention.
 
 ### 3. [HIGH] Spawning Model Policy hardcodes concrete model IDs, contradicting the canonical model-selection policy
 
@@ -34,7 +34,7 @@
 
 ### 5. [MEDIUM] SUBJECT_MATTER_UNDERSTANDING is claimed in the description but never operationalized in the body
 
-**Evidence:** Line 10 (frontmatter description): "Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body never mentions SUBJECT_MATTER_UNDERSTANDING again — no instruction to locate or read it. Every ds-step agent operationalizes it (e.g., ds-step-3-tests.md line 40: "Load `doc/SUBJECT_MATTER_UNDERSTANDING.md` if present."; ds-step-5-implementation.md line 25 likewise). The handler promises a contract it gives the spawned agent no way to honour.
+**Evidence:** Line 10 (frontmatter description): "Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body never mentions SUBJECT_MATTER_UNDERSTANDING again — no instruction to locate or read it. Every ds-step agent operationalizes it (e.g., ds-step-3-tests.md line 40: "Load `doc/SUBJECT_MATTER_UNDERSTANDING.md` if present."; ds-step-5-implementation.md line 25 likewise). The handler promises a contract it gives the spawned agent no way to honour.
 
 **Recommendation:** Add to the body (near the implementation-covenant instruction at line 31): "If `doc/SUBJECT_MATTER_UNDERSTANDING.md` exists in the project, read it before writing any code — domain terms, invariants, and constraints there bind your type design and error taxonomy."
 

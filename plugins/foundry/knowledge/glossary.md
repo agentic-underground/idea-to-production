@@ -206,7 +206,8 @@ however it surfaces — *formal* definition · *aliases* · *metaphor*. The dept
   → [`pillars/knowledge-parity.md`](pillars/knowledge-parity.md).
 - **Quality-first** ≡ **quality-confidence** — quality built in, not inspected in; gates never weakened.
   → [`pillars/quality-first.md`](pillars/quality-first.md).
-- **Waste-elimination** — remove waste in every form, *including rediscovery*.
+- **Waste-elimination** ≡ **muda · mura · muri** — remove waste in every form, *including
+  rediscovery*; the three Ms are *muda* (waste), *mura* (unevenness), *muri* (overburden).
   → [`pillars/waste-elimination.md`](pillars/waste-elimination.md).
 - **Token-efficiency** ≡ **progressive disclosure** — thin skills, fat references; define once,
   reference many; station-scoped loading. The overarching constraint. → [`token-efficiency.md`](token-efficiency.md).
@@ -218,9 +219,10 @@ however it surfaces — *formal* definition · *aliases* · *metaphor*. The dept
   in both senses. → [`first-principles.md`](first-principles.md) §2.
 - **Pure core** ≡ **decidable core** ≡ **the sacred core** ≡ **one-way dependency** — the geometry that
   makes coordinates (and parallelism) possible. → [`architecture/pure-core.md`](architecture/pure-core.md).
-- **The SOLID covenant** ≡ **halve-the-distance** ≡ **self-cleaving** — SOLID applied to *agent
-  documents*; each pass at least halves the distance to perfection; an over-broad element cleaves into
-  smaller SOLID-adherent ones. → [`architecture/solid-covenant.md`](architecture/solid-covenant.md).
+- **The KAIZEN covenant** ≡ **halve-the-distance** ≡ **self-cleaving** ≡ *kaizen* — continuous
+  improvement applied to *agent documents* (PDCA · standardize-then-improve · small steps · gemba ·
+  eliminate muda/mura/muri); each pass at least halves the distance to perfection; an over-broad
+  element cleaves into smaller single-purpose ones. → [`architecture/kaizen-covenant.md`](architecture/kaizen-covenant.md).
 - **Reasoning travels with the rule** — certainty markers (`THE ONLY WAY`/`GUARDRAIL`/`ANTI-PATTERN`/
   `WORKED EXAMPLE`) + the guardrails ledger (symptom→cause→fix; pay-the-cost-once). The worker tier's
   memory. → [`protocols/certainty-markers.md`](protocols/certainty-markers.md),

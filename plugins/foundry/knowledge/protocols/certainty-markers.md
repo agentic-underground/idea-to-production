@@ -64,4 +64,4 @@ marked form for any statement whose violation has a real cost.
 When a rule is violated despite being written down, the fix is usually not a louder rule but a
 *better-articulated* one: upgrade it to the correct marker, add the missing why/why-not, or attach
 a worked example. Each pass should make the rule harder to misread than the last. See
-`architecture/solid-covenant.md`.
+`architecture/kaizen-covenant.md`.

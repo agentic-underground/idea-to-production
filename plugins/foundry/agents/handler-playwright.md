@@ -5,7 +5,7 @@ description: >
   Playwright (npx playwright test), page object model, accessibility testing,
   visual regression, and cross-browser testing. Spawned by STORY-AGENT during
   FOUNDRY Phase 5 when the project has a web UI, REST API surface, or any
-  user-facing interface requiring story-level validation. Carries the SOLID
+  user-facing interface requiring story-level validation. Carries the KAIZEN
   self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
 model: inherit
@@ -379,10 +379,10 @@ export default defineConfig({
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-You carry the SOLID self-improvement covenant. After writing story tests:
+You carry the KAIZEN self-improvement covenant. After writing story tests:
 - Note any UI patterns (modals, multi-step forms, dynamic content) that needed
   special handling — add to a project-specific Playwright reference if repeated
 - Note any Playwright APIs used that aren't yet in this handler's knowledge
-- Flag these for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md))
+- Flag these for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md))

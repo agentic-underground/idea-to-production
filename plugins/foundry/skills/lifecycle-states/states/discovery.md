@@ -40,6 +40,6 @@ An item that enters the Development System with an unclear problem statement, un
 
 This state skill is called before the FOUNDRY PHASE_POOL begins processing an item. The LEAD ENGINEER or FOUNDRY orchestrator should apply this check when reviewing items for tier assignment.
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This skill carries the SOLID self-improvement covenant. If items consistently fail Discovery exit criteria in the same way (e.g., actors always underspecified, success metrics always vague), the IDEATOR question bank needs enrichment. Flag for the self-improvement covenant ([`solid-covenant.md`](../../../knowledge/architecture/solid-covenant.md)).
+This skill carries the KAIZEN self-improvement covenant. If items consistently fail Discovery exit criteria in the same way (e.g., actors always underspecified, success metrics always vague), the IDEATOR question bank needs enrichment. Flag for the self-improvement covenant ([`kaizen-covenant.md`](../../../knowledge/architecture/kaizen-covenant.md)).

@@ -46,13 +46,13 @@
 
 ### 7. [MEDIUM] Mixed path-resolution scheme: two load-bearing knowledge refs are runtime-unresolvable relative links
 
-**Evidence:** Lines 111-112 cite canon as "[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2" and line 170 cites "[`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)", while lines 31, 36, 57, 63, 135 correctly use `${CLAUDE_PLUGIN_ROOT}/knowledge/...`. At runtime the agent's cwd is the project, not `plugins/foundry/agents/`, so a `Read("../knowledge/first-principles.md")` dangles. (Siblings share the flaw; that makes it fleet drift, not an excuse.)
+**Evidence:** Lines 111-112 cite canon as "[`../knowledge/first-principles.md`](../knowledge/first-principles.md) §2" and line 170 cites "[`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)", while lines 31, 36, 57, 63, 135 correctly use `${CLAUDE_PLUGIN_ROOT}/knowledge/...`. At runtime the agent's cwd is the project, not `plugins/foundry/agents/`, so a `Read("../knowledge/first-principles.md")` dangles. (Siblings share the flaw; that makes it fleet drift, not an excuse.)
 
 **Recommendation:** Normalise every knowledge reference in this file to `${CLAUDE_PLUGIN_ROOT}/knowledge/...` per the self-containment law, keeping markdown-link form only as a secondary affordance.
 
 ### 8. [LOW] Description claims SUBJECT_MATTER_UNDERSTANDING but the body never operationalizes it
 
-**Evidence:** Line 10: "Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body contains a SOLID Covenant section (lines 164-170) but no instruction to read, acquire, or maintain SUBJECT_MATTER_UNDERSTANDING — the claim is unbacked in this file.
+**Evidence:** Line 10: "Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING." The body contains a KAIZEN Covenant section (lines 164-170) but no instruction to read, acquire, or maintain SUBJECT_MATTER_UNDERSTANDING — the claim is unbacked in this file.
 
 **Recommendation:** Either add one line in the body telling the handler where the project's SUBJECT_MATTER_UNDERSTANDING lives and when to read it, or drop the claim from the description.
 

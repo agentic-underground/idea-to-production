@@ -93,7 +93,7 @@ When the ILLUSTRATOR hands you **two** options (A and B) on the same
 never traded for prettiness. Emit the loop's per-option findings + winner, with the explicit rule that the
 winner must clear this gate before the taste lenses are even consulted; an illegible champion is no champion.
 
-## Disposition & self-improvement (the SOLID covenant)
+## Disposition & self-improvement (the KAIZEN covenant)
 
 Findings are **fixed in the source before re-presenting** (the generator / `.svg` change) or **recorded as
 accepted residual** with a reason. Never present a triggered floor unfixed.

@@ -5,7 +5,7 @@ description: >
   pytest-bdd, pytest-cov, FastAPI, Django, Flask, SQLAlchemy, Pydantic, and
   standard Python testing patterns. Spawned by TEST-AGENT, IMPLEMENT-AGENT,
   and STORY-AGENT during FOUNDRY pipeline phases when the project stack
-  includes Python. Carries the SOLID self-improvement covenant and the project's
+  includes Python. Carries the KAIZEN self-improvement covenant and the project's
   SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
@@ -299,10 +299,10 @@ defect** — surface it rather than silently shipping.
 
 ---
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-You carry the SOLID self-improvement covenant. At the end of your work:
+You carry the KAIZEN self-improvement covenant. At the end of your work:
 - Note any patterns in the project that would benefit from a project-specific
   reference (e.g., "this project uses a custom fixture pattern — add to memory")
 - Note any pytest plugins or patterns not yet in this handler's knowledge
-- Flag these for the self-improvement covenant ([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md))
+- Flag these for the self-improvement covenant ([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md))

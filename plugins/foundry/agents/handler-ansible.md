@@ -7,7 +7,7 @@ description: >
   privilege-boundary and authenticated-external-call disciplines that keep provisioning safe and
   repeatable. Spawned by TEST-AGENT, IMPLEMENT-AGENT, and STORY-AGENT during FOUNDRY pipeline
   phases when the project stack includes Ansible (provisioning, config management, cloud-init/VM
-  fleets). Carries the SOLID self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
+  fleets). Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
 color: magenta
@@ -161,10 +161,10 @@ gate when installed.
 
 ---
 
-## SOLID Covenant (halve the distance to perfection)
+## KAIZEN Covenant (halve the distance to perfection)
 
 At the end of your work, note any Ansible idioms, lint rules, Molecule patterns, or provisioning
 gotchas not yet captured here or in the guardrails ledger, and any recurring gap that signals an
 upstream fix. Each pass should leave this handler measurably closer to flawless — at least halving
 the remaining distance. Flag for the self-improvement covenant
-([`solid-covenant.md`](../knowledge/architecture/solid-covenant.md)).
+([`kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).

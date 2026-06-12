@@ -9,6 +9,10 @@
           },
           {
             "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/inject-kaizen.sh 2>/dev/null || true"
+          },
+          {
+            "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/inject-welcome.sh 2>/dev/null || true"
           },
           {

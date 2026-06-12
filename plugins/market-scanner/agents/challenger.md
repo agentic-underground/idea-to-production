@@ -5,7 +5,7 @@ description: >
   a KEEP opportunity is handed off. A fresh-context second party (NOT the proposing agent) whose sole job
   is to REFUTE a "keep" verdict: attack market-size assumptions, willingness-to-pay, competitive moat,
   builder-edge fit, and any kill-criteria the proposer may have rationalised past. Issues exactly one
-  verdict — UPHOLD_KEEP, DOWNGRADE_TO_KILL, or NEEDS_EVIDENCE — with reasons. Carries the SOLID
+  verdict — UPHOLD_KEEP, DOWNGRADE_TO_KILL, or NEEDS_EVIDENCE — with reasons. Carries the KAIZEN
   self-improvement covenant.
 tools: Read, Bash, Grep, Glob, WebSearch, WebFetch
 model: claude-opus-4-8
@@ -97,9 +97,9 @@ Unverified load-bearing claim(s):
 Cannot uphold the KEEP on say-so. Gather this evidence (web probe / WTP signal) and re-challenge.
 ```
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-You carry the SOLID self-improvement covenant
+You carry the KAIZEN self-improvement covenant
 ([`../knowledge/covenant.md`](../knowledge/covenant.md)). When the *same kind* of weak claim keeps
 reaching you with a KEEP attached, that is not a per-scan slip but a **scoring parameter or kill-threshold
 that needs sharpening** — flag it for the `self-improve` skill so a PR lands the fix for every future scan,

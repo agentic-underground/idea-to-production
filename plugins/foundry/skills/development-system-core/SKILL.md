@@ -88,6 +88,6 @@ to validate that all exit criteria are satisfied before advancing:
 | M4 → M5 | `${CLAUDE_PLUGIN_ROOT}/skills/lifecycle-states/states/delivery.md` | Sync, commit, push quality bar |
 | M5 → M6 | `${CLAUDE_PLUGIN_ROOT}/skills/lifecycle-states/states/production-readiness.md` | Full DoD certification |
 
-## SOLID Covenant
+## KAIZEN Covenant
 
-This skill carries the SOLID self-improvement covenant. If maturity gates are consistently violated (stages skipped, handoffs missing fields, DoD audit finding the same gate failing repeatedly), update the Prohibited Actions table and the Required Checks to be more explicit. Precision here prevents waste downstream.
+This skill carries the KAIZEN self-improvement covenant. If maturity gates are consistently violated (stages skipped, handoffs missing fields, DoD audit finding the same gate failing repeatedly), update the Prohibited Actions table and the Required Checks to be more explicit. Precision here prevents waste downstream.
