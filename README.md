@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the nine-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, sentinel, pressroom, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door and concierge greeter, before gently looping." src="doc/images/masthead-cycle.gif">
+<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the nine-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, sentinel, pressroom, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door and concierge greeter, before gently looping." src="doc/images/masthead.svg">
 
 # idea-to-production
 
@@ -43,31 +43,31 @@ Not decoration — these are the ideas the whole system obeys. The philosophical
 
 ### ① Three pillars govern every element
 
-<img width="720" alt="The three pillars as three lit columns under one lintel: Knowledge-parity (understand the ask fully before acting), Quality-first (built in, not inspected in, with a perf-delta gate), and Waste-elimination (muda · mura · muri — remove waste, unevenness, and overburden), all standing under the token-efficiency lintel." src="plugins/foundry/knowledge/diagrams/03-three-pillars.png">
+<img width="720" alt="The three pillars as three lit columns under one lintel: Knowledge-parity (understand the ask fully before acting), Quality-first (built in, not inspected in, with a perf-delta gate), and Waste-elimination (muda · mura · muri — remove waste, unevenness, and overburden), all standing under the token-efficiency lintel." src="plugins/foundry/knowledge/diagrams/03-three-pillars.svg">
 
 *Knowledge-parity · quality-first · waste-elimination — under one token-efficiency constraint.*
 
 ### ② Tests are coordinates, not checks
 
-<img width="720" alt="Tests are coordinates: in the space of all possible implementations, a well-formed failing test is a glowing crosshair that pins the one correct implementation. Placed BEFORE the code it is a location; written AFTER, it is merely a description peeled off afterward." src="plugins/foundry/knowledge/diagrams/02-tests-coordinates.png">
+<img width="720" alt="Tests are coordinates: in the space of all possible implementations, a well-formed failing test is a glowing crosshair that pins the one correct implementation. Placed BEFORE the code it is a location; written AFTER, it is merely a description peeled off afterward." src="plugins/foundry/knowledge/diagrams/02-tests-coordinates.svg">
 
 *A failing test written **before** the code is a **location** in logical space; one written after is just a description.*
 
 ### ③ A pure core makes it parallel
 
-<img width="720" alt="Pure core: the decidable logic (no I/O, no UI, no platform, no panics) is extracted into a glowing green core box; thin wiring adapters depend on it via one-way inward arrows. pure implies testable implies coordinate-able implies maximally parallel." src="plugins/foundry/knowledge/diagrams/04-pure-core.png">
+<img width="720" alt="Pure core: the decidable logic (no I/O, no UI, no platform, no panics) is extracted into a glowing green core box; thin wiring adapters depend on it via one-way inward arrows. pure implies testable implies coordinate-able implies maximally parallel." src="plugins/foundry/knowledge/diagrams/04-pure-core.svg">
 
 *Extract the decidable core; dependencies flow one way, inward. **pure ⇒ testable ⇒ coordinate-able ⇒ maximally parallel.***
 
 ### ④ It improves itself — kaizen
 
-<img width="720" alt="The KAIZEN covenant: the prime law halve-the-distance-to-perfection shown as rising versions each closing half the remaining gap to a glowing perfection line, driven by a PDCA ring (Plan, Do, Check, Act), with a footer naming the kaizen principles and the duty to eliminate muda, mura, and muri." src="plugins/foundry/knowledge/diagrams/05-kaizen-covenant.png">
+<img width="720" alt="The KAIZEN covenant: the prime law halve-the-distance-to-perfection shown as rising versions each closing half the remaining gap to a glowing perfection line, driven by a PDCA ring (Plan, Do, Check, Act), with a footer naming the kaizen principles and the duty to eliminate muda, mura, and muri." src="plugins/foundry/knowledge/diagrams/05-kaizen-covenant.svg">
 
 *Every pass at least **halves the distance to perfection**; fix upstream once, ship to all.*
 
 ### ⑤ Every piece, one map
 
-<img width="820" alt="Conceptual-domain map: upstream discovery (market-scanner → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (sentinel, pressroom, atelier, mission-control) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.png">
+<img width="820" alt="Conceptual-domain map: upstream discovery (market-scanner → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (sentinel, pressroom, atelier, mission-control) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.svg">
 
 *Upstream discovery → the foundry conveyor → cross-cutting companions. Nine plugins, one value flow.*
 

@@ -3,15 +3,22 @@
   <desc>The KAIZEN self-improvement covenant, illustrated in two linked motifs. LEFT — the prime law "halve the distance to perfection": a row of rising bars (v1…v5), each closing half of the remaining gap up to a dashed "perfection" line it never quite reaches, because the obligation is the rate of approach. RIGHT — the PDCA engine that drives each pass: a clockwise ring of Plan, Do, Check, Act, meaning change against a measured hypothesis rather than a hunch. A footer band names the kaizen principles — standardize-then-improve, small reversible steps, gemba (go and see), fix-upstream-once, self-cleaving — and the duty to eliminate the three losses: muda (waste), mura (unevenness), and muri (overburden). Dark-mode, transparent background, in the house accent palette.</desc>
 
   <defs>
-    <!-- crafted-depth defs (ported from diagram-primitives.sh) -->
-    <filter id="ns" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.42"/></filter>
+    <!-- crafted-depth defs (ported from diagram-primitives.sh) — DARK, not washed -->
+    <filter id="ns" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.5"/></filter>
+    <radialGradient id="bgvig" cx="50%" cy="40%" r="78%">
+      <stop offset="0%" stop-color="#191926"/>
+      <stop offset="100%" stop-color="#0d0d15"/>
+    </radialGradient>
     <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.14"/>
-      <stop offset="16%" stop-color="#ffffff" stop-opacity="0.05"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.24"/>
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.05"/>
+      <stop offset="14%" stop-color="#000000" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.40"/>
     </linearGradient>
     <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="5"/></filter>
   </defs>
+
+  <!-- dark background card (in-SVG; corners stay transparent) -->
+  <rect x="10" y="10" width="880" height="580" rx="22" fill="url(#bgvig)"/>
 
   <!-- ===== TITLE BAND ===== -->
   <g>

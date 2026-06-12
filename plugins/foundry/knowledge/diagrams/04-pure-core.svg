@@ -6,20 +6,27 @@
     <marker id="arrowIn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#e0af68"/>
     </marker>
-    <!-- crafted-depth defs (ported from diagram-primitives.sh) -->
-    <filter id="ns" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.42"/></filter>
+    <!-- crafted-depth defs (ported from diagram-primitives.sh) — DARK, not washed -->
+    <filter id="ns" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.5"/></filter>
+    <radialGradient id="bgvig" cx="50%" cy="40%" r="82%">
+      <stop offset="0%" stop-color="#191926"/>
+      <stop offset="100%" stop-color="#0d0d15"/>
+    </radialGradient>
     <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
-      <stop offset="14%" stop-color="#ffffff" stop-opacity="0.04"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.045"/>
+      <stop offset="12%" stop-color="#000000" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.40"/>
     </linearGradient>
     <radialGradient id="sheen" cx="38%" cy="30%" r="74%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.34"/>
-      <stop offset="44%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="44%" stop-color="#ffffff" stop-opacity="0.05"/>
       <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
     </radialGradient>
     <filter id="glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="7"/></filter>
   </defs>
+
+  <!-- dark background card (in-SVG; corners stay transparent) -->
+  <rect x="10" y="10" width="800" height="450" rx="22" fill="url(#bgvig)"/>
 
   <!-- ===== Title ===== -->
   <text x="36" y="34" font-size="20" font-weight="bold" fill="#9ece6a">Extract the decidable core — wiring depends on it, not the reverse</text>

@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 405" font-family="DejaVu Sans, Arial, sans-serif">
+  <title>idea → production — a Claude Code plugin marketplace</title>
+  <desc>The wordmark "idea → production" over a dark banner, above the nine-plugin value conveyor: eight glossy teal phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE) on a lit rail, each labelled with its owning plugin. A bright value-pulse sweeps the line; an amber feedback arc (ASSURE &amp; SECURE send work back to DESIGN &amp; BUILD) and a teal return loop-arc (OPERATE's learnings re-enter DISCOVER) glow in turn. Framed by the i2p front door and concierge greeter. Animated (SMIL).</desc>
+
+  <defs>
+    <radialGradient id="bgvig" cx="50%" cy="44%" r="78%">
+      <stop offset="0%" stop-color="#1a1a28"/>
+      <stop offset="100%" stop-color="#0c0c14"/>
+    </radialGradient>
+    <radialGradient id="sheen" cx="38%" cy="30%" r="74%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.34"/>
+      <stop offset="44%" stop-color="#ffffff" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pool" cx="50%" cy="72%" r="62%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="70%" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.30"/>
+    </radialGradient>
+    <filter id="ns" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.5"/></filter>
+    <filter id="glow" x="-120%" y="-120%" width="340%" height="340%"><feGaussianBlur stdDeviation="7"/></filter>
+  </defs>
+
+  <!-- rich dark banner background (not a flat band): vignette + faded vertical lines -->
+  <rect x="0" y="0" width="1320" height="405" rx="14" fill="#0c0c14"/>
+  <rect x="0" y="0" width="1320" height="405" rx="14" fill="url(#bgvig)"/>
+  <g stroke="#5eead4" stroke-width="1" opacity="0.05">
+    <line x1="110" y1="40" x2="110" y2="365"/><line x1="267" y1="40" x2="267" y2="365"/>
+    <line x1="424" y1="40" x2="424" y2="365"/><line x1="581" y1="40" x2="581" y2="365"/>
+    <line x1="739" y1="40" x2="739" y2="365"/><line x1="896" y1="40" x2="896" y2="365"/>
+    <line x1="1053" y1="40" x2="1053" y2="365"/><line x1="1210" y1="40" x2="1210" y2="365"/>
+  </g>
+
+  <!-- microline + wordmark + subtitle -->
+  <text x="660" y="36" font-size="14" font-weight="700" letter-spacing="4" fill="#9aa2c0" text-anchor="middle">A  CLAUDE  CODE  PLUGIN  MARKETPLACE</text>
+  <text x="660" y="92" font-size="52" font-weight="700" text-anchor="middle"><tspan fill="#7aa2f7">idea</tspan><tspan fill="#9aa2c0">  &#8594;  </tspan><tspan fill="#fbbf24">production</tspan></text>
+  <text x="660" y="126" font-size="16" letter-spacing="1" fill="#cdd2e3" text-anchor="middle">nine composable plugins carry VALUE from the spark of an idea to a shipped product</text>
+
+  <!-- front-door / greeter framing -->
+  <text x="64" y="175" font-size="12" font-weight="600" fill="#8b93ab" text-anchor="start">i2p · front door</text>
+  <text x="1256" y="175" font-size="12" font-weight="600" fill="#8b93ab" text-anchor="end">concierge · greeter</text>
+
+  <!-- rail (dim base + lit teal) -->
+  <line x1="110" y1="235" x2="1210" y2="235" stroke="#2a2a40" stroke-width="5"/>
+  <line x1="110" y1="235" x2="1210" y2="235" stroke="#5eead4" stroke-width="5" opacity="0.45"/>
+
+  <!-- feedback arc: ASSURE & SECURE -> DESIGN & BUILD (amber, shallow, below rail) -->
+  <g>
+    <path d="M 896 247 C 896 292, 424 292, 424 247" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="6 6">
+      <animate attributeName="opacity" values="0.28;0.28;0.95;0.95;0.28" keyTimes="0;0.70;0.76;0.85;0.92" dur="11s" repeatCount="indefinite"/>
+    </path>
+    <path d="M 419 248 l 9 5 l -9 5 z" fill="#fbbf24">
+      <animate attributeName="opacity" values="0.28;0.28;0.95;0.95;0.28" keyTimes="0;0.70;0.76;0.85;0.92" dur="11s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- return loop: OPERATE -> DISCOVER (teal, deep, full width) -->
+  <path d="M 1210 248 C 1268 350, 52 350, 110 248" fill="none" stroke="#5eead4" stroke-width="3.5" stroke-dasharray="7 7">
+    <animate attributeName="opacity" values="0.26;0.26;0.9;0.9;0.26" keyTimes="0;0.85;0.90;0.97;1" dur="11s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- the eight glossy phase nodes (static, lit teal) -->
+  <g>
+    <!-- DISCOVER -->
+    <g><circle cx="110" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="110" cy="235" r="18" fill="url(#pool)"/><circle cx="110" cy="235" r="18" fill="url(#sheen)"/><path d="M97.4 222.4 A18 18 0 0 1 122.6 222.4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="110" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/></g>
+    <text x="110" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">DISCOVER</text>
+    <text x="110" y="268" font-size="11" fill="#8b9bb4" text-anchor="middle">scanner</text>
+    <!-- IDEATE -->
+    <g><circle cx="267" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="267" cy="235" r="18" fill="url(#pool)"/><circle cx="267" cy="235" r="18" fill="url(#sheen)"/><path d="M254.4 222.4 A18 18 0 0 1 279.6 222.4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="267" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/></g>
+    <text x="267" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">IDEATE</text>
+    <text x="267" y="268" font-size="11" fill="#8b9bb4" text-anchor="middle">ideator</text>
+    <!-- DESIGN -->
+    <g><circle cx="424" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="424" cy="235" r="18" fill="url(#pool)"/><circle cx="424" cy="235" r="18" fill="url(#sheen)"/><path d="M411.4 222.4 A18 18 0 0 1 436.6 222.4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="424" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/></g>
+    <text x="424" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">DESIGN</text>
+    <text x="424" y="268" font-size="11" fill="#8b9bb4" text-anchor="middle">atelier</text>
+    <!-- BUILD -->
+    <g><circle cx="581" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="581" cy="235" r="18" fill="url(#pool)"/><circle cx="581" cy="235" r="18" fill="url(#sheen)"/><path d="M568.4 222.4 A18 18 0 0 1 593.6 222.4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="581" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/></g>
+    <text x="581" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">BUILD</text>
+    <text x="581" y="268" font-size="11" fill="#8b9bb4" text-anchor="middle">foundry</text>
+    <!-- ASSURE -->
+    <g><circle cx="739" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="739" cy="235" r="18" fill="url(#pool)"/><circle cx="739" cy="235" r="18" fill="url(#sheen)"/><path d="M726.4 222.4 A18 18 0 0 1 751.6 222.4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="739" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/></g>
+    <text x="739" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">ASSURE</text>
+    <text x="739" y="268" font-size="11" fill="#8b9bb4" text-anchor="middle">foundry</text>
+    <!-- SECURE -->
+    <g><circle cx="896" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="896" cy="235" r="18" fill="url(#pool)"/><circle cx="896" cy="235" r="18" fill="url(#sheen)"/><path d="M883.4 222.4 A18 18 0 0 1 908.6 222.4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="896" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/></g>
+    <text x="896" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">SECURE</text>
+    <text x="896" y="268" font-size="11" fill="#8b9bb4" text-anchor="middle">sentinel</text>
+    <!-- PUBLISH -->
+    <g><circle cx="1053" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="1053" cy="235" r="18" fill="url(#pool)"/><circle cx="1053" cy="235" r="18" fill="url(#sheen)"/><path d="M1040.4 222.4 A18 18 0 0 1 1065.6 222.4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="1053" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/></g>
+    <text x="1053" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">PUBLISH</text>
+    <text x="1053" y="268" font-size="11" fill="#8b9bb4" text-anchor="middle">pressroom</text>
+    <!-- OPERATE -->
+    <g><circle cx="1210" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="1210" cy="235" r="18" fill="url(#pool)"/><circle cx="1210" cy="235" r="18" fill="url(#sheen)"/><path d="M1197.4 222.4 A18 18 0 0 1 1222.6 222.4" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="1210" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/></g>
+    <text x="1210" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">OPERATE</text>
+    <text x="1210" y="268" font-size="11" fill="#8b9bb4" text-anchor="middle">mission</text>
+  </g>
+
+  <!-- the value-pulse that sweeps the line (the conveyor running) -->
+  <g>
+    <animateTransform attributeName="transform" type="translate" values="0 0;1100 0;1100 0" keyTimes="0;0.68;1" dur="11s" repeatCount="indefinite"/>
+    <g>
+      <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.04;0.64;0.70;1" dur="11s" repeatCount="indefinite"/>
+      <circle cx="110" cy="235" r="30" fill="#fbbf24" opacity="0.3" filter="url(#glow)"/>
+      <circle cx="110" cy="235" r="9" fill="#ffe6a6"/>
+      <circle cx="110" cy="235" r="22" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.7"/>
+    </g>
+  </g>
+
+  <!-- settled caption -->
+  <text x="660" y="392" font-size="13" fill="#9aa2c0" text-anchor="middle">a cycle <tspan fill="#fbbf24">with feedback</tspan> — gates send work back, operation reopens discovery</text>
+</svg>

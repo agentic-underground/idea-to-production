@@ -10,15 +10,22 @@
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#9aa2c0"/>
     </marker>
-    <!-- crafted-depth defs (ported from diagram-primitives.sh) -->
-    <filter id="ns" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.42"/></filter>
+    <!-- crafted-depth defs (ported from diagram-primitives.sh) — DARK, not washed -->
+    <filter id="ns" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#000000" flood-opacity="0.5"/></filter>
+    <radialGradient id="bgvig" cx="50%" cy="40%" r="80%">
+      <stop offset="0%" stop-color="#191926"/>
+      <stop offset="100%" stop-color="#0d0d15"/>
+    </radialGradient>
     <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12"/>
-      <stop offset="14%" stop-color="#ffffff" stop-opacity="0.04"/>
-      <stop offset="100%" stop-color="#000000" stop-opacity="0.22"/>
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.045"/>
+      <stop offset="12%" stop-color="#000000" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.40"/>
     </linearGradient>
     <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="5"/></filter>
   </defs>
+
+  <!-- dark background card (in-SVG; corners stay transparent) -->
+  <rect x="10" y="10" width="800" height="500" rx="22" fill="url(#bgvig)"/>
 
   <!-- ===================== TITLE CHIP ===================== -->
   <g>
