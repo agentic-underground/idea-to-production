@@ -167,7 +167,7 @@
       "source": "./plugins/sentinel",
       "displayName": "SENTINEL — Security & Privacy Gate",
       "description": "The pre-release security gate for any repository. Catches PII, secrets/credentials, and supply-chain risk before they ship. Runs parallel, multi-agent audits across data files, git history, source, and frontend, and consolidates them into a single severity-ranked report with a PASS / REVIEW / BLOCK verdict. Stands alone, or serves as foundry's SECURITY gate when both are installed.",
-      "version": "1.2.2",
+      "version": "1.2.3",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",

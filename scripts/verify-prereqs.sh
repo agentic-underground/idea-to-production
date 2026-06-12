@@ -466,6 +466,14 @@ else
     # Emit one "<server>\t<command>\t<arg1> <arg2> …" line per server.
     while IFS=$'\t' read -r srv cmd args; do
       [ -n "$srv" ] || continue
+      # Only EPHEMERAL runners (npx/uvx/bunx/…) re-resolve a package on each launch and so
+      # must pin @<version>. A RESIDENT-binary command (e.g. `semgrep-mcp`) is whatever is
+      # installed on the host — there is no package spec to pin, and its args are runtime
+      # flags (e.g. `-t stdio`), so exempt it from this check.
+      case "$cmd" in
+        npx|uvx|bunx|pnpm|dlx) ;;   # ephemeral runner — must pin (fall through)
+        *) continue ;;              # resident binary — nothing to pin
+      esac
       # The package spec = first non-flag, non-runner token in args.
       spec=""
       for a in $args; do
@@ -495,7 +503,7 @@ else
       fi
     done < <(jq -r '.mcpServers | to_entries[] | [.key, (.value.command // ""), ((.value.args // []) | join(" "))] | @tsv' "$f")
   done
-  [ "$k_ok" -eq 1 ] && pass "every .mcp.json server pins an explicit @<version> (no @latest / bare package)"
+  [ "$k_ok" -eq 1 ] && pass "every ephemeral-runner .mcp.json server pins an explicit @<version> (resident-binary servers exempt)"
 fi
 
 # ── L. hooks smoke-exec (P1-8) ───────────────────────────────────────────────

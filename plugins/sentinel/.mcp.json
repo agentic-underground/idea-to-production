@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "semgrep": {
-      "command": "uvx",
-      "args": ["semgrep-mcp@0.9.0"],
+      "command": "semgrep-mcp",
+      "args": ["-t", "stdio"],
       "env": {}
     }
   }
