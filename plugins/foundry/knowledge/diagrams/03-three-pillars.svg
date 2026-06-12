@@ -2,10 +2,30 @@
   <title>The three pillars under the token-efficiency constraint</title>
   <desc>Three classical architectural pillars standing side by side — Knowledge-parity, Quality-first, and Waste-elimination (alias: muda · mura · muri — waste, unevenness, overburden) — each carrying its one-line essence and alias, and each tinted toward its own accent colour (blue, green, amber). A single horizontal lintel beam, labelled "token-efficiency — the overarching constraint", rests across the top of all three, so the three pillars hold up the one constraint they all ride under.</desc>
 
+  <defs>
+    <!-- crafted-depth defs (ported from diagram-primitives.sh) -->
+    <filter id="ns" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.42"/></filter>
+    <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.13"/>
+      <stop offset="14%" stop-color="#ffffff" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.24"/>
+    </linearGradient>
+    <!-- column-shade: horizontal cylinder lighting (lit centre, shaded edges) -->
+    <linearGradient id="colcyl" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.30"/>
+      <stop offset="22%" stop-color="#ffffff" stop-opacity="0.10"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.30"/>
+    </linearGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+
   <!-- ===== THE LINTEL / BEAM : token-efficiency (overarching constraint) ===== -->
   <g>
-    <!-- beam body -->
-    <rect x="60" y="56" width="700" height="62" rx="6" fill="#2a2a3c" stroke="#bb9af7" stroke-width="2.5"/>
+    <g filter="url(#ns)">
+      <rect x="60" y="56" width="700" height="62" rx="6" fill="#2a2a3c" stroke="#bb9af7" stroke-width="2.5"/>
+    </g>
+    <rect x="60" y="56" width="700" height="62" rx="6" fill="url(#plate)"/>
     <!-- accent band along the underside so the beam reads as a distinct member -->
     <rect x="60" y="110" width="700" height="8" rx="3" fill="#bb9af7"/>
     <text x="410" y="83" text-anchor="middle" font-size="20" font-weight="bold" fill="#e6e9f0">token-efficiency — the overarching constraint</text>
@@ -14,15 +34,21 @@
 
   <!-- ===== PILLAR 1 : Knowledge-parity (accent-1 #7aa2f7) ===== -->
   <g>
-    <!-- capital / abacus : accent-coloured so the key reaches the whole column -->
-    <rect x="92" y="124" width="176" height="20" rx="3" fill="#27314d" stroke="#7aa2f7" stroke-width="2"/>
-    <!-- shaft : faint blue-tinted fill -->
-    <rect x="94" y="144" width="172" height="316" fill="#212436" stroke="#7aa2f7" stroke-width="2.5"/>
+    <g filter="url(#ns)">
+      <rect x="92" y="124" width="176" height="20" rx="3" fill="#27314d" stroke="#7aa2f7" stroke-width="2"/>
+      <rect x="94" y="144" width="172" height="316" fill="#212436" stroke="#7aa2f7" stroke-width="2.5"/>
+      <rect x="92" y="460" width="176" height="20" rx="3" fill="#27314d" stroke="#7aa2f7" stroke-width="2"/>
+    </g>
+    <!-- cylinder shading + top-light sheen over the shaft -->
+    <rect x="94" y="144" width="172" height="316" fill="url(#colcyl)"/>
+    <rect x="94" y="144" width="172" height="316" fill="url(#plate)"/>
     <!-- two thin low-opacity flutes -->
     <line x1="158" y1="150" x2="158" y2="454" stroke="#7aa2f7" stroke-width="1" opacity="0.18"/>
     <line x1="202" y1="150" x2="202" y2="454" stroke="#7aa2f7" stroke-width="1" opacity="0.18"/>
-    <!-- colour key chip at the head of the shaft -->
+    <!-- colour key chip at the head of the shaft (lit) -->
+    <circle cx="180" cy="172" r="11" fill="#7aa2f7" opacity="0.5" filter="url(#glow)"/>
     <circle cx="180" cy="172" r="9" fill="#7aa2f7"/>
+    <circle cx="177" cy="169" r="3" fill="#ffffff" opacity="0.55"/>
     <text x="180" y="200" text-anchor="middle" font-size="16" font-weight="bold" fill="#e6e9f0">Knowledge-parity</text>
     <text x="180" y="220" text-anchor="middle" font-size="11.5" fill="#7aa2f7">alias: knowledge-alignment</text>
     <!-- essence -->
@@ -30,17 +56,22 @@
     <text x="180" y="280" text-anchor="middle" font-size="12" fill="#e6e9f0">BEFORE acting; recurring</text>
     <text x="180" y="298" text-anchor="middle" font-size="12" fill="#e6e9f0">questions become written</text>
     <text x="180" y="316" text-anchor="middle" font-size="12" fill="#e6e9f0">answers, never asked twice.</text>
-    <!-- base -->
-    <rect x="92" y="460" width="176" height="20" rx="3" fill="#27314d" stroke="#7aa2f7" stroke-width="2"/>
   </g>
 
   <!-- ===== PILLAR 2 : Quality-first (accent-2 #9ece6a) ===== -->
   <g>
-    <rect x="322" y="124" width="176" height="20" rx="3" fill="#2c3526" stroke="#9ece6a" stroke-width="2"/>
-    <rect x="324" y="144" width="172" height="316" fill="#232a1f" stroke="#9ece6a" stroke-width="2.5"/>
+    <g filter="url(#ns)">
+      <rect x="322" y="124" width="176" height="20" rx="3" fill="#2c3526" stroke="#9ece6a" stroke-width="2"/>
+      <rect x="324" y="144" width="172" height="316" fill="#232a1f" stroke="#9ece6a" stroke-width="2.5"/>
+      <rect x="322" y="460" width="176" height="20" rx="3" fill="#2c3526" stroke="#9ece6a" stroke-width="2"/>
+    </g>
+    <rect x="324" y="144" width="172" height="316" fill="url(#colcyl)"/>
+    <rect x="324" y="144" width="172" height="316" fill="url(#plate)"/>
     <line x1="388" y1="150" x2="388" y2="454" stroke="#9ece6a" stroke-width="1" opacity="0.18"/>
     <line x1="432" y1="150" x2="432" y2="454" stroke="#9ece6a" stroke-width="1" opacity="0.18"/>
+    <circle cx="410" cy="172" r="11" fill="#9ece6a" opacity="0.5" filter="url(#glow)"/>
     <circle cx="410" cy="172" r="9" fill="#9ece6a"/>
+    <circle cx="407" cy="169" r="3" fill="#ffffff" opacity="0.55"/>
     <text x="410" y="200" text-anchor="middle" font-size="16" font-weight="bold" fill="#e6e9f0">Quality-first</text>
     <text x="410" y="220" text-anchor="middle" font-size="11.5" fill="#9ece6a">alias: quality-confidence</text>
     <text x="410" y="262" text-anchor="middle" font-size="12" fill="#e6e9f0">quality is built in, not</text>
@@ -48,16 +79,22 @@
     <text x="410" y="298" text-anchor="middle" font-size="12" fill="#e6e9f0">across the assurance chain</text>
     <text x="410" y="316" text-anchor="middle" font-size="12" fill="#e6e9f0">+ a perf-delta gate — a</text>
     <text x="410" y="334" text-anchor="middle" font-size="12" fill="#e6e9f0">gate is never weakened.</text>
-    <rect x="322" y="460" width="176" height="20" rx="3" fill="#2c3526" stroke="#9ece6a" stroke-width="2"/>
   </g>
 
   <!-- ===== PILLAR 3 : Waste-elimination (accent-3 #e0af68) ===== -->
   <g>
-    <rect x="552" y="124" width="176" height="20" rx="3" fill="#352f24" stroke="#e0af68" stroke-width="2"/>
-    <rect x="554" y="144" width="172" height="316" fill="#2a261e" stroke="#e0af68" stroke-width="2.5"/>
+    <g filter="url(#ns)">
+      <rect x="552" y="124" width="176" height="20" rx="3" fill="#352f24" stroke="#e0af68" stroke-width="2"/>
+      <rect x="554" y="144" width="172" height="316" fill="#2a261e" stroke="#e0af68" stroke-width="2.5"/>
+      <rect x="552" y="460" width="176" height="20" rx="3" fill="#352f24" stroke="#e0af68" stroke-width="2"/>
+    </g>
+    <rect x="554" y="144" width="172" height="316" fill="url(#colcyl)"/>
+    <rect x="554" y="144" width="172" height="316" fill="url(#plate)"/>
     <line x1="618" y1="150" x2="618" y2="454" stroke="#e0af68" stroke-width="1" opacity="0.18"/>
     <line x1="662" y1="150" x2="662" y2="454" stroke="#e0af68" stroke-width="1" opacity="0.18"/>
+    <circle cx="640" cy="172" r="11" fill="#e0af68" opacity="0.5" filter="url(#glow)"/>
     <circle cx="640" cy="172" r="9" fill="#e0af68"/>
+    <circle cx="637" cy="169" r="3" fill="#ffffff" opacity="0.55"/>
     <text x="640" y="200" text-anchor="middle" font-size="16" font-weight="bold" fill="#e6e9f0">Waste-elimination</text>
     <text x="640" y="220" text-anchor="middle" font-size="11.5" fill="#e0af68">alias: muda · mura · muri</text>
     <text x="640" y="262" text-anchor="middle" font-size="12" fill="#e6e9f0">waste (muda), unevenness</text>
@@ -65,13 +102,16 @@
     <text x="640" y="298" text-anchor="middle" font-size="12" fill="#e6e9f0">remove all seven wastes, incl.</text>
     <text x="640" y="316" text-anchor="middle" font-size="12" fill="#e6e9f0">rediscovery — a bug caught in</text>
     <text x="640" y="334" text-anchor="middle" font-size="12" fill="#e6e9f0">dev is cheaper than in prod.</text>
-    <rect x="552" y="460" width="176" height="20" rx="3" fill="#352f24" stroke="#e0af68" stroke-width="2"/>
   </g>
 
   <!-- ===== PLINTH : a single base spanning all three pillars ===== -->
   <g>
-    <rect x="72" y="480" width="676" height="22" rx="4" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="2"/>
-    <rect x="56" y="502" width="708" height="14" rx="4" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="2"/>
+    <g filter="url(#ns)">
+      <rect x="72" y="480" width="676" height="22" rx="4" fill="#2a2a3c" stroke="#9aa2c0" stroke-width="2"/>
+      <rect x="56" y="502" width="708" height="14" rx="4" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="2"/>
+    </g>
+    <rect x="72" y="480" width="676" height="22" rx="4" fill="url(#plate)"/>
+    <rect x="56" y="502" width="708" height="14" rx="4" fill="url(#plate)"/>
   </g>
 
   <!-- ===== CAPTION : seated on a surface chip so the dim ink clears both grounds ===== -->

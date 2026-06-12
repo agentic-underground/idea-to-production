@@ -10,30 +10,42 @@
 <title>DomainArchB</title>
 <g id="clust1" class="cluster">
 <title>cluster_upstream</title>
-<path fill="transparent" stroke="#7aa2f7" stroke-width="1.8" d="M20,-475C20,-475 419,-475 419,-475 425,-475 431,-481 431,-487 431,-487 431,-600 431,-600 431,-606 425,-612 419,-612 419,-612 20,-612 20,-612 14,-612 8,-606 8,-600 8,-600 8,-487 8,-487 8,-481 14,-475 20,-475"/>
+<path fill="transparent" stroke="#7aa2f7" stroke-width="2" d="M20,-475C20,-475 419,-475 419,-475 425,-475 431,-481 431,-487 431,-487 431,-600 431,-600 431,-606 425,-612 419,-612 419,-612 20,-612 20,-612 14,-612 8,-606 8,-600 8,-600 8,-487 8,-487 8,-481 14,-475 20,-475"/>
 </g>
 <g id="clust3" class="cluster">
 <title>cluster_core</title>
-<path fill="transparent" stroke="#9ece6a" stroke-width="2.2" d="M112,-8C112,-8 554,-8 554,-8 560,-8 566,-14 566,-20 566,-20 566,-436 566,-436 566,-442 560,-448 554,-448 554,-448 112,-448 112,-448 106,-448 100,-442 100,-436 100,-436 100,-20 100,-20 100,-14 106,-8 112,-8"/>
+<path fill="transparent" stroke="#9ece6a" stroke-width="2.4" d="M112,-8C112,-8 554,-8 554,-8 560,-8 566,-14 566,-20 566,-20 566,-436 566,-436 566,-442 560,-448 554,-448 554,-448 112,-448 112,-448 106,-448 100,-442 100,-436 100,-436 100,-20 100,-20 100,-14 106,-8 112,-8"/>
 </g>
 <g id="clust4" class="cluster">
 <title>cluster_core_cells</title>
-<path fill="transparent" stroke="#6f8f4e" stroke-width="1.2" d="M126,-22C126,-22 540,-22 540,-22 546,-22 552,-28 552,-34 552,-34 552,-334 552,-334 552,-340 546,-346 540,-346 540,-346 126,-346 126,-346 120,-346 114,-340 114,-334 114,-334 114,-34 114,-34 114,-28 120,-22 126,-22"/>
+<path fill="transparent" stroke="#6f8f4e" stroke-width="1.3" d="M126,-22C126,-22 540,-22 540,-22 546,-22 552,-28 552,-34 552,-34 552,-334 552,-334 552,-340 546,-346 540,-346 540,-346 126,-346 126,-346 120,-346 114,-340 114,-334 114,-334 114,-34 114,-34 114,-28 120,-22 126,-22"/>
 </g>
 <g id="clust8" class="cluster">
 <title>cluster_companions</title>
-<path fill="transparent" stroke="#e0af68" stroke-width="1.8" d="M578,-386C578,-386 862,-386 862,-386 868,-386 874,-392 874,-398 874,-398 874,-600 874,-600 874,-606 868,-612 862,-612 862,-612 578,-612 578,-612 572,-612 566,-606 566,-600 566,-600 566,-398 566,-398 566,-392 572,-386 578,-386"/>
+<path fill="transparent" stroke="#e0af68" stroke-width="2" d="M578,-386C578,-386 862,-386 862,-386 868,-386 874,-392 874,-398 874,-398 874,-600 874,-600 874,-606 868,-612 862,-612 862,-612 578,-612 578,-612 572,-612 566,-606 566,-600 566,-600 566,-398 566,-398 566,-392 572,-386 578,-386"/>
 </g>
 <!-- up_title -->
 <g id="node1" class="node">
 <title>up_title</title>
-<path fill="#27314d" stroke="#7aa2f7" stroke-width="1.6" d="M255.5,-600C255.5,-600 32.5,-600 32.5,-600 26.5,-600 20.5,-594 20.5,-588 20.5,-588 20.5,-576 20.5,-576 20.5,-570 26.5,-564 32.5,-564 32.5,-564 255.5,-564 255.5,-564 261.5,-564 267.5,-570 267.5,-576 267.5,-576 267.5,-588 267.5,-588 267.5,-594 261.5,-600 255.5,-600"/>
+<defs>
+<linearGradient id="l_0" gradientUnits="userSpaceOnUse" x1="144" y1="-600" x2="144" y2="-564" >
+<stop offset="0" style="stop-color:#2f3a5c;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#1f2840;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_0)" stroke="#7aa2f7" stroke-width="1.8" d="M255.5,-600C255.5,-600 32.5,-600 32.5,-600 26.5,-600 20.5,-594 20.5,-588 20.5,-588 20.5,-576 20.5,-576 20.5,-570 26.5,-564 32.5,-564 32.5,-564 255.5,-564 255.5,-564 261.5,-564 267.5,-570 267.5,-576 267.5,-576 267.5,-588 267.5,-588 267.5,-594 261.5,-600 255.5,-600"/>
 <text text-anchor="middle" x="144" y="-578.9" font-family="DejaVu Sans" font-size="12.00" fill="#cdd9f6">UPSTREAM &#160;(discovery → refinement)</text>
 </g>
 <!-- scanner -->
 <g id="node2" class="node">
 <title>scanner</title>
-<path fill="#222a3f" stroke="#7aa2f7" stroke-width="1.4" d="M132,-523C132,-523 32,-523 32,-523 26,-523 20,-517 20,-511 20,-511 20,-499 20,-499 20,-493 26,-487 32,-487 32,-487 132,-487 132,-487 138,-487 144,-493 144,-499 144,-499 144,-511 144,-511 144,-517 138,-523 132,-523"/>
+<defs>
+<linearGradient id="l_1" gradientUnits="userSpaceOnUse" x1="82" y1="-523" x2="82" y2="-487" >
+<stop offset="0" style="stop-color:#2a3450;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#19202f;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_1)" stroke="#7aa2f7" stroke-width="1.6" d="M132,-523C132,-523 32,-523 32,-523 26,-523 20,-517 20,-511 20,-511 20,-499 20,-499 20,-493 26,-487 32,-487 32,-487 132,-487 132,-487 138,-487 144,-493 144,-499 144,-499 144,-511 144,-511 144,-517 138,-523 132,-523"/>
 <text text-anchor="start" x="33.5" y="-507.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">market&#45;scanner</text>
 <text text-anchor="start" x="32" y="-497.8" font-family="DejaVu Sans" font-size="9.00" fill="#9fb6ee">DISCOVERY front door</text>
 </g>
@@ -41,7 +53,13 @@
 <!-- ideator -->
 <g id="node3" class="node">
 <title>ideator</title>
-<path fill="#222a3f" stroke="#7aa2f7" stroke-width="1.4" d="M406.5,-523C406.5,-523 257.5,-523 257.5,-523 251.5,-523 245.5,-517 245.5,-511 245.5,-511 245.5,-499 245.5,-499 245.5,-493 251.5,-487 257.5,-487 257.5,-487 406.5,-487 406.5,-487 412.5,-487 418.5,-493 418.5,-499 418.5,-499 418.5,-511 418.5,-511 418.5,-517 412.5,-523 406.5,-523"/>
+<defs>
+<linearGradient id="l_2" gradientUnits="userSpaceOnUse" x1="332" y1="-523" x2="332" y2="-487" >
+<stop offset="0" style="stop-color:#2a3450;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#19202f;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_2)" stroke="#7aa2f7" stroke-width="1.6" d="M406.5,-523C406.5,-523 257.5,-523 257.5,-523 251.5,-523 245.5,-517 245.5,-511 245.5,-511 245.5,-499 245.5,-499 245.5,-493 251.5,-487 257.5,-487 257.5,-487 406.5,-487 406.5,-487 412.5,-487 418.5,-493 418.5,-499 418.5,-499 418.5,-511 418.5,-511 418.5,-517 412.5,-523 406.5,-523"/>
 <text text-anchor="start" x="309.5" y="-507.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">ideator</text>
 <text text-anchor="start" x="257.5" y="-497.8" font-family="DejaVu Sans" font-size="9.00" fill="#9fb6ee">REFINEMENT · the IDEA package</text>
 </g>
@@ -55,7 +73,13 @@
 <!-- core_title -->
 <g id="node4" class="node">
 <title>core_title</title>
-<path fill="#2c3a22" stroke="#9ece6a" stroke-width="1.8" d="M422.5,-434C422.5,-434 241.5,-434 241.5,-434 235.5,-434 229.5,-428 229.5,-422 229.5,-422 229.5,-410 229.5,-410 229.5,-404 235.5,-398 241.5,-398 241.5,-398 422.5,-398 422.5,-398 428.5,-398 434.5,-404 434.5,-410 434.5,-410 434.5,-422 434.5,-422 434.5,-428 428.5,-434 422.5,-434"/>
+<defs>
+<linearGradient id="l_3" gradientUnits="userSpaceOnUse" x1="332" y1="-434" x2="332" y2="-398" >
+<stop offset="0" style="stop-color:#36471f;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#222e18;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_3)" stroke="#9ece6a" stroke-width="2" d="M422.5,-434C422.5,-434 241.5,-434 241.5,-434 235.5,-434 229.5,-428 229.5,-422 229.5,-422 229.5,-410 229.5,-410 229.5,-404 235.5,-398 241.5,-398 241.5,-398 422.5,-398 422.5,-398 428.5,-398 434.5,-404 434.5,-410 434.5,-410 434.5,-422 434.5,-422 434.5,-428 428.5,-434 422.5,-434"/>
 <text text-anchor="start" x="241.5" y="-413.9" font-family="DejaVu Sans" font-weight="bold" font-size="12.00" fill="#d4e7b0">foundry</text>
 <text text-anchor="start" x="293.5" y="-413.9" font-family="DejaVu Sans" font-size="12.00" fill="#d4e7b0"> — the core conveyor</text>
 </g>
@@ -69,7 +93,13 @@
 <!-- cell_conveyor -->
 <g id="node5" class="node">
 <title>cell_conveyor</title>
-<path fill="#2a2a3c" stroke="#9ece6a" stroke-width="1.4" d="M313.5,-332.5C313.5,-332.5 168.5,-332.5 168.5,-332.5 162.5,-332.5 156.5,-326.5 156.5,-320.5 156.5,-320.5 156.5,-308.5 156.5,-308.5 156.5,-302.5 162.5,-296.5 168.5,-296.5 168.5,-296.5 313.5,-296.5 313.5,-296.5 319.5,-296.5 325.5,-302.5 325.5,-308.5 325.5,-308.5 325.5,-320.5 325.5,-320.5 325.5,-326.5 319.5,-332.5 313.5,-332.5"/>
+<defs>
+<linearGradient id="l_4" gradientUnits="userSpaceOnUse" x1="241" y1="-332.5" x2="241" y2="-296.5" >
+<stop offset="0" style="stop-color:#33334a;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#1d1d2a;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_4)" stroke="#9ece6a" stroke-width="1.8" d="M313.5,-332.5C313.5,-332.5 168.5,-332.5 168.5,-332.5 162.5,-332.5 156.5,-326.5 156.5,-320.5 156.5,-320.5 156.5,-308.5 156.5,-308.5 156.5,-302.5 162.5,-296.5 168.5,-296.5 168.5,-296.5 313.5,-296.5 313.5,-296.5 319.5,-296.5 325.5,-302.5 325.5,-308.5 325.5,-308.5 325.5,-320.5 325.5,-320.5 325.5,-326.5 319.5,-332.5 313.5,-332.5"/>
 <text text-anchor="start" x="193.5" y="-316.7" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">THE CONVEYOR</text>
 <text text-anchor="start" x="168.5" y="-307.3" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">IDEA ▶ ROADMAP ▶ … ▶ VERIFY</text>
 </g>
@@ -77,7 +107,13 @@
 <!-- cell_orch -->
 <g id="node6" class="node">
 <title>cell_orch</title>
-<path fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.4" d="M515,-336C515,-336 363,-336 363,-336 357,-336 351,-330 351,-324 351,-324 351,-305 351,-305 351,-299 357,-293 363,-293 363,-293 515,-293 515,-293 521,-293 527,-299 527,-305 527,-305 527,-324 527,-324 527,-330 521,-336 515,-336"/>
+<defs>
+<linearGradient id="l_5" gradientUnits="userSpaceOnUse" x1="439" y1="-336" x2="439" y2="-293" >
+<stop offset="0" style="stop-color:#26263a;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#15151f;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_5)" stroke="#9ece6a" stroke-width="1.6" d="M515,-336C515,-336 363,-336 363,-336 357,-336 351,-330 351,-324 351,-324 351,-305 351,-305 351,-299 357,-293 363,-293 363,-293 515,-293 515,-293 521,-293 527,-299 527,-305 527,-305 527,-324 527,-324 527,-330 521,-336 515,-336"/>
 <text text-anchor="start" x="387.5" y="-321.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">ORCHESTRATION</text>
 <text text-anchor="start" x="364" y="-311.8" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">founder ▶ builder&#45;lead ▶ lifecycle</text>
 <text text-anchor="start" x="363" y="-302.8" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">▶ ds&#45;step&#45;* / handler&#45;* ▶ reviewer</text>
@@ -86,7 +122,13 @@
 <!-- cell_handlers -->
 <g id="node7" class="node">
 <title>cell_handlers</title>
-<path fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.4" d="M342,-244C342,-244 136,-244 136,-244 130,-244 124,-238 124,-232 124,-232 124,-220 124,-220 124,-214 130,-208 136,-208 136,-208 342,-208 342,-208 348,-208 354,-214 354,-220 354,-220 354,-232 354,-232 354,-238 348,-244 342,-244"/>
+<defs>
+<linearGradient id="l_6" gradientUnits="userSpaceOnUse" x1="239" y1="-244" x2="239" y2="-208" >
+<stop offset="0" style="stop-color:#26263a;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#15151f;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_6)" stroke="#9ece6a" stroke-width="1.6" d="M342,-244C342,-244 136,-244 136,-244 130,-244 124,-238 124,-232 124,-232 124,-220 124,-220 124,-214 130,-208 136,-208 136,-208 342,-208 342,-208 348,-208 354,-214 354,-220 354,-220 354,-232 354,-232 354,-238 348,-244 342,-244"/>
 <text text-anchor="start" x="184" y="-228.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">VALUE&#45;HANDLERS</text>
 <text text-anchor="start" x="136" y="-218.8" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">handler&#45;{architect, python, …, rust&#45;webapp}</text>
 </g>
@@ -94,7 +136,13 @@
 <!-- cell_pillars -->
 <g id="node8" class="node">
 <title>cell_pillars</title>
-<path fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.4" d="M530,-252C530,-252 388,-252 388,-252 382,-252 376,-246 376,-240 376,-240 376,-212 376,-212 376,-206 382,-200 388,-200 388,-200 530,-200 530,-200 536,-200 542,-206 542,-212 542,-212 542,-240 542,-240 542,-246 536,-252 530,-252"/>
+<defs>
+<linearGradient id="l_7" gradientUnits="userSpaceOnUse" x1="459" y1="-252" x2="459" y2="-200" >
+<stop offset="0" style="stop-color:#2c3322;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#181d12;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_7)" stroke="#9ece6a" stroke-width="1.8" d="M530,-252C530,-252 388,-252 388,-252 382,-252 376,-246 376,-240 376,-240 376,-212 376,-212 376,-206 382,-200 388,-200 388,-200 530,-200 530,-200 536,-200 542,-206 542,-212 542,-212 542,-240 542,-240 542,-246 536,-252 530,-252"/>
 <text text-anchor="start" x="419.5" y="-237.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">THE PILLARS</text>
 <text text-anchor="start" x="389.5" y="-227.8" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">knowledge&#45;parity · quality&#45;first</text>
 <text text-anchor="start" x="388" y="-218.8" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">+ perf&#45;delta · waste&#45;elimination</text>
@@ -104,7 +152,13 @@
 <!-- cell_corpus -->
 <g id="node9" class="node">
 <title>cell_corpus</title>
-<path fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.4" d="M314,-159C314,-159 154,-159 154,-159 148,-159 142,-153 142,-147 142,-147 142,-128 142,-128 142,-122 148,-116 154,-116 154,-116 314,-116 314,-116 320,-116 326,-122 326,-128 326,-128 326,-147 326,-147 326,-153 320,-159 314,-159"/>
+<defs>
+<linearGradient id="l_8" gradientUnits="userSpaceOnUse" x1="234" y1="-159" x2="234" y2="-116" >
+<stop offset="0" style="stop-color:#26263a;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#15151f;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_8)" stroke="#9ece6a" stroke-width="1.6" d="M314,-159C314,-159 154,-159 154,-159 148,-159 142,-153 142,-147 142,-147 142,-128 142,-128 142,-122 148,-116 154,-116 154,-116 314,-116 314,-116 320,-116 326,-122 326,-128 326,-128 326,-147 326,-147 326,-153 320,-159 314,-159"/>
 <text text-anchor="start" x="167.5" y="-144.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">KNOWLEDGE CORPUS</text>
 <text text-anchor="start" x="154" y="-134.8" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">pillars/ architecture/ specs/ testing/</text>
 <text text-anchor="start" x="162.5" y="-125.8" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">protocols/ orchestration/ policy/</text>
@@ -113,7 +167,13 @@
 <!-- cell_design -->
 <g id="node10" class="node">
 <title>cell_design</title>
-<path fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.4" d="M529.5,-155.5C529.5,-155.5 360.5,-155.5 360.5,-155.5 354.5,-155.5 348.5,-149.5 348.5,-143.5 348.5,-143.5 348.5,-131.5 348.5,-131.5 348.5,-125.5 354.5,-119.5 360.5,-119.5 360.5,-119.5 529.5,-119.5 529.5,-119.5 535.5,-119.5 541.5,-125.5 541.5,-131.5 541.5,-131.5 541.5,-143.5 541.5,-143.5 541.5,-149.5 535.5,-155.5 529.5,-155.5"/>
+<defs>
+<linearGradient id="l_9" gradientUnits="userSpaceOnUse" x1="445" y1="-155.5" x2="445" y2="-119.5" >
+<stop offset="0" style="stop-color:#26263a;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#15151f;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_9)" stroke="#9ece6a" stroke-width="1.6" d="M529.5,-155.5C529.5,-155.5 360.5,-155.5 360.5,-155.5 354.5,-155.5 348.5,-149.5 348.5,-143.5 348.5,-143.5 348.5,-131.5 348.5,-131.5 348.5,-125.5 354.5,-119.5 360.5,-119.5 360.5,-119.5 529.5,-119.5 529.5,-119.5 535.5,-119.5 541.5,-125.5 541.5,-131.5 541.5,-131.5 541.5,-143.5 541.5,-143.5 541.5,-149.5 535.5,-155.5 529.5,-155.5"/>
 <text text-anchor="start" x="360.5" y="-135.7" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">DESIGN 6b</text>
 <text text-anchor="start" x="426.5" y="-135.7" font-family="DejaVu Sans" font-size="11.00" fill="#e6e9f0"> · </text>
 <text text-anchor="start" x="438.5" y="-135.7" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">frontend (vanilla&#45;JS)</text>
@@ -122,7 +182,13 @@
 <!-- sentinel -->
 <g id="node13" class="node">
 <title>sentinel</title>
-<path fill="#33291a" stroke="#e0af68" stroke-width="1.4" d="M675,-523C675,-523 625,-523 625,-523 619,-523 613,-517 613,-511 613,-511 613,-499 613,-499 613,-493 619,-487 625,-487 625,-487 675,-487 675,-487 681,-487 687,-493 687,-499 687,-499 687,-511 687,-511 687,-517 681,-523 675,-523"/>
+<defs>
+<linearGradient id="l_10" gradientUnits="userSpaceOnUse" x1="650" y1="-523" x2="650" y2="-487" >
+<stop offset="0" style="stop-color:#3f3320;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#241c10;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_10)" stroke="#e0af68" stroke-width="1.6" d="M675,-523C675,-523 625,-523 625,-523 619,-523 613,-517 613,-511 613,-511 613,-499 613,-499 613,-493 619,-487 625,-487 625,-487 675,-487 675,-487 681,-487 687,-493 687,-499 687,-499 687,-511 687,-511 687,-517 681,-523 675,-523"/>
 <text text-anchor="start" x="625" y="-507.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">sentinel</text>
 <text text-anchor="start" x="631.5" y="-497.8" font-family="DejaVu Sans" font-size="9.00" fill="#e8c98f">SECURE</text>
 </g>
@@ -137,7 +203,13 @@
 <!-- cell_gov -->
 <g id="node11" class="node">
 <title>cell_gov</title>
-<path fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.4" d="M403,-75C403,-75 277,-75 277,-75 271,-75 265,-69 265,-63 265,-63 265,-44 265,-44 265,-38 271,-32 277,-32 277,-32 403,-32 403,-32 409,-32 415,-38 415,-44 415,-44 415,-63 415,-63 415,-69 409,-75 403,-75"/>
+<defs>
+<linearGradient id="l_11" gradientUnits="userSpaceOnUse" x1="340" y1="-75" x2="340" y2="-32" >
+<stop offset="0" style="stop-color:#26263a;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#15151f;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_11)" stroke="#9ece6a" stroke-width="1.6" d="M403,-75C403,-75 277,-75 277,-75 271,-75 265,-69 265,-63 265,-63 265,-44 265,-44 265,-38 271,-32 277,-32 277,-32 403,-32 403,-32 409,-32 415,-38 415,-44 415,-44 415,-63 415,-63 415,-69 409,-75 403,-75"/>
 <text text-anchor="start" x="297.5" y="-60.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">GOVERNANCE</text>
 <text text-anchor="start" x="277" y="-50.8" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">code&#45;quality · reviewer&#45;gate</text>
 <text text-anchor="start" x="295" y="-41.8" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">reviewer · inspector</text>
@@ -147,14 +219,26 @@
 <!-- co_title -->
 <g id="node12" class="node">
 <title>co_title</title>
-<path fill="#3a2f1c" stroke="#e0af68" stroke-width="1.6" d="M849.5,-600C849.5,-600 590.5,-600 590.5,-600 584.5,-600 578.5,-594 578.5,-588 578.5,-588 578.5,-576 578.5,-576 578.5,-570 584.5,-564 590.5,-564 590.5,-564 849.5,-564 849.5,-564 855.5,-564 861.5,-570 861.5,-576 861.5,-576 861.5,-588 861.5,-588 861.5,-594 855.5,-600 849.5,-600"/>
+<defs>
+<linearGradient id="l_12" gradientUnits="userSpaceOnUse" x1="720" y1="-600" x2="720" y2="-564" >
+<stop offset="0" style="stop-color:#473a22;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#2a2114;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_12)" stroke="#e0af68" stroke-width="1.8" d="M849.5,-600C849.5,-600 590.5,-600 590.5,-600 584.5,-600 578.5,-594 578.5,-588 578.5,-588 578.5,-576 578.5,-576 578.5,-570 584.5,-564 590.5,-564 590.5,-564 849.5,-564 849.5,-564 855.5,-564 861.5,-570 861.5,-576 861.5,-576 861.5,-588 861.5,-588 861.5,-594 855.5,-600 849.5,-600"/>
 <text text-anchor="middle" x="720" y="-578.9" font-family="DejaVu Sans" font-size="12.00" fill="#f0d6a4">COMPANIONS &#160;(cross&#45;cutting, by capability)</text>
 </g>
 <!-- co_title&#45;&gt;sentinel -->
 <!-- pressroom -->
 <g id="node14" class="node">
 <title>pressroom</title>
-<path fill="#33291a" stroke="#e0af68" stroke-width="1.4" d="M818,-523C818,-523 752,-523 752,-523 746,-523 740,-517 740,-511 740,-511 740,-499 740,-499 740,-493 746,-487 752,-487 752,-487 818,-487 818,-487 824,-487 830,-493 830,-499 830,-499 830,-511 830,-511 830,-517 824,-523 818,-523"/>
+<defs>
+<linearGradient id="l_13" gradientUnits="userSpaceOnUse" x1="785" y1="-523" x2="785" y2="-487" >
+<stop offset="0" style="stop-color:#3f3320;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#241c10;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_13)" stroke="#e0af68" stroke-width="1.6" d="M818,-523C818,-523 752,-523 752,-523 746,-523 740,-517 740,-511 740,-511 740,-499 740,-499 740,-493 746,-487 752,-487 752,-487 818,-487 818,-487 824,-487 830,-493 830,-499 830,-499 830,-511 830,-511 830,-517 824,-523 818,-523"/>
 <text text-anchor="start" x="752" y="-507.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">pressroom</text>
 <text text-anchor="start" x="765" y="-497.8" font-family="DejaVu Sans" font-size="9.00" fill="#e8c98f">PUBLISH</text>
 </g>
@@ -162,7 +246,13 @@
 <!-- atelier -->
 <g id="node15" class="node">
 <title>atelier</title>
-<path fill="#2c2740" stroke="#bb9af7" stroke-width="1.4" d="M691,-434C691,-434 609,-434 609,-434 603,-434 597,-428 597,-422 597,-422 597,-410 597,-410 597,-404 603,-398 609,-398 609,-398 691,-398 691,-398 697,-398 703,-404 703,-410 703,-410 703,-422 703,-422 703,-428 697,-434 691,-434"/>
+<defs>
+<linearGradient id="l_14" gradientUnits="userSpaceOnUse" x1="650" y1="-434" x2="650" y2="-398" >
+<stop offset="0" style="stop-color:#352f50;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#1f1b2e;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_14)" stroke="#bb9af7" stroke-width="1.6" d="M691,-434C691,-434 609,-434 609,-434 603,-434 597,-428 597,-422 597,-422 597,-410 597,-410 597,-404 603,-398 609,-398 609,-398 691,-398 691,-398 697,-398 703,-404 703,-410 703,-410 703,-422 703,-422 703,-428 697,-434 691,-434"/>
 <text text-anchor="start" x="629.5" y="-418.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">atelier</text>
 <text text-anchor="start" x="609" y="-408.8" font-family="DejaVu Sans" font-size="9.00" fill="#cbb6f0">DESIGN · usability</text>
 </g>
@@ -170,7 +260,13 @@
 <!-- mission -->
 <g id="node16" class="node">
 <title>mission</title>
-<path fill="#2c2740" stroke="#bb9af7" stroke-width="1.4" d="M833,-434C833,-434 737,-434 737,-434 731,-434 725,-428 725,-422 725,-422 725,-410 725,-410 725,-404 731,-398 737,-398 737,-398 833,-398 833,-398 839,-398 845,-404 845,-410 845,-410 845,-422 845,-422 845,-428 839,-434 833,-434"/>
+<defs>
+<linearGradient id="l_15" gradientUnits="userSpaceOnUse" x1="785" y1="-434" x2="785" y2="-398" >
+<stop offset="0" style="stop-color:#352f50;stop-opacity:1.;"/>
+<stop offset="1" style="stop-color:#1f1b2e;stop-opacity:1.;"/>
+</linearGradient>
+</defs>
+<path fill="url(#l_15)" stroke="#bb9af7" stroke-width="1.6" d="M833,-434C833,-434 737,-434 737,-434 731,-434 725,-428 725,-422 725,-422 725,-410 725,-410 725,-404 731,-398 737,-398 737,-398 833,-398 833,-398 839,-398 845,-404 845,-410 845,-410 845,-422 845,-422 845,-428 839,-434 833,-434"/>
 <text text-anchor="start" x="737" y="-418.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">mission&#45;control</text>
 <text text-anchor="start" x="764.5" y="-408.8" font-family="DejaVu Sans" font-size="9.00" fill="#cbb6f0">OPERATE</text>
 </g>

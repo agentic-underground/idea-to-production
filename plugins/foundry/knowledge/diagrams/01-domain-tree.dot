@@ -8,9 +8,11 @@ digraph DomainArchB {
   margin=0.18
   fontname="DejaVu Sans"
 
-  node [shape=box, style="filled,rounded", fillcolor="#1e1e2e", color="#9aa2c0",
-        fontcolor="#e6e9f0", fontname="DejaVu Sans", fontsize=11,
-        penwidth=1.4, margin="0.16,0.10"]
+  // node default carries a top-lit vertical gradient (lighter top → darker bottom) so every
+  // filled box reads as a raised plate (graphviz-native depth; gradientangle=270 = top→bottom).
+  node [shape=box, style="filled,rounded", fillcolor="#26263a:#15151f", gradientangle=270,
+        color="#9aa2c0", fontcolor="#e6e9f0", fontname="DejaVu Sans", fontsize=11,
+        penwidth=1.6, margin="0.16,0.10"]
   edge [color="#9aa2c0", fontcolor="#b8bed0", fontname="DejaVu Sans",
         fontsize=10, penwidth=1.3]
 
@@ -20,15 +22,15 @@ digraph DomainArchB {
   // ================= UPSTREAM lane (top) =================
   subgraph cluster_upstream {
     label=""
-    style="rounded"; color="#7aa2f7"; penwidth=1.8; bgcolor="transparent"; margin=12
+    style="rounded"; color="#7aa2f7"; penwidth=2.0; bgcolor="transparent"; margin=12
 
     up_title [label="UPSTREAM  (discovery → refinement)", shape=box,
-              style="filled,rounded", fillcolor="#27314d", color="#7aa2f7",
-              fontcolor="#cdd9f6", fontsize=12, penwidth=1.6]
+              style="filled,rounded", fillcolor="#2f3a5c:#1f2840", color="#7aa2f7",
+              fontcolor="#cdd9f6", fontsize=12, penwidth=1.8]
     scanner [label=<<b>market-scanner</b><br/><font point-size="9" color="#9fb6ee">DISCOVERY front door</font>>,
-             fillcolor="#222a3f", color="#7aa2f7"]
+             fillcolor="#2a3450:#19202f", color="#7aa2f7"]
     ideator [label=<<b>ideator</b><br/><font point-size="9" color="#9fb6ee">REFINEMENT &middot; the IDEA package</font>>,
-             fillcolor="#222a3f", color="#7aa2f7"]
+             fillcolor="#2a3450:#19202f", color="#7aa2f7"]
 
     // scan → ideate: market-scanner LEFT, ideator RIGHT, arrow points right (reading order)
     { rank=same; scanner; ideator }
@@ -40,30 +42,30 @@ digraph DomainArchB {
   // ================= CORE foundry (middle) =================
   subgraph cluster_core {
     label=""
-    style="rounded"; color="#9ece6a"; penwidth=2.2; bgcolor="transparent"; margin=14
+    style="rounded"; color="#9ece6a"; penwidth=2.4; bgcolor="transparent"; margin=14
 
     core_title [label=<<b>foundry</b> &mdash; the core conveyor>, shape=box,
-                style="filled,rounded", fillcolor="#2c3a22", color="#9ece6a",
-                fontcolor="#d4e7b0", fontsize=12, penwidth=1.8]
+                style="filled,rounded", fillcolor="#36471f:#222e18", color="#9ece6a",
+                fontcolor="#d4e7b0", fontsize=12, penwidth=2.0]
 
     subgraph cluster_core_cells {
       label=""
-      style="rounded"; color="#6f8f4e"; penwidth=1.2; bgcolor="transparent"; margin=10
+      style="rounded"; color="#6f8f4e"; penwidth=1.3; bgcolor="transparent"; margin=10
 
       cell_conveyor [label=<<b>THE CONVEYOR</b><br/><font point-size="9" color="#b9d595">IDEA ▶ ROADMAP ▶ … ▶ VERIFY</font>>,
-                     fillcolor="#2a2a3c", color="#9ece6a"]
+                     fillcolor="#33334a:#1d1d2a", color="#9ece6a", penwidth=1.8]
       cell_orch [label=<<b>ORCHESTRATION</b><br/><font point-size="9" color="#b9d595">founder ▶ builder-lead ▶ lifecycle<br/>▶ ds-step-* / handler-* ▶ reviewer</font>>,
-                 fillcolor="#1e1e2e", color="#9ece6a"]
+                 fillcolor="#26263a:#15151f", color="#9ece6a"]
       cell_handlers [label=<<b>VALUE-HANDLERS</b><br/><font point-size="9" color="#b9d595">handler-{architect, python, &hellip;, rust-webapp}</font>>,
-                     fillcolor="#1e1e2e", color="#9ece6a"]
+                     fillcolor="#26263a:#15151f", color="#9ece6a"]
       cell_pillars [label=<<b>THE PILLARS</b><br/><font point-size="9" color="#b9d595">knowledge-parity &middot; quality-first<br/>+ perf-delta &middot; waste-elimination<br/>(muda &middot; mura &middot; muri)</font>>,
-                    fillcolor="#1e1e2e", color="#9ece6a"]
+                    fillcolor="#2c3322:#181d12", color="#9ece6a", penwidth=1.8]
       cell_corpus [label=<<b>KNOWLEDGE CORPUS</b><br/><font point-size="9" color="#b9d595">pillars/ architecture/ specs/ testing/<br/>protocols/ orchestration/ policy/</font>>,
-                   fillcolor="#1e1e2e", color="#9ece6a"]
+                   fillcolor="#26263a:#15151f", color="#9ece6a"]
       cell_design [label=<<b>DESIGN 6b</b> &middot; <font point-size="9" color="#b9d595">frontend (vanilla-JS)</font>>,
-                   fillcolor="#1e1e2e", color="#9ece6a"]
+                   fillcolor="#26263a:#15151f", color="#9ece6a"]
       cell_gov [label=<<b>GOVERNANCE</b><br/><font point-size="9" color="#b9d595">code-quality &middot; reviewer-gate<br/>reviewer &middot; inspector</font>>,
-                fillcolor="#1e1e2e", color="#9ece6a"]
+                fillcolor="#26263a:#15151f", color="#9ece6a"]
 
       // fold the 7 cells into a 2-wide grid so the core box stays compact
       { rank=same; cell_conveyor;  cell_orch }
@@ -84,19 +86,19 @@ digraph DomainArchB {
   // ================= COMPANIONS lane (bottom) =================
   subgraph cluster_companions {
     label=""
-    style="rounded"; color="#e0af68"; penwidth=1.8; bgcolor="transparent"; margin=12
+    style="rounded"; color="#e0af68"; penwidth=2.0; bgcolor="transparent"; margin=12
 
     co_title [label="COMPANIONS  (cross-cutting, by capability)", shape=box,
-              style="filled,rounded", fillcolor="#3a2f1c", color="#e0af68",
-              fontcolor="#f0d6a4", fontsize=12, penwidth=1.6]
+              style="filled,rounded", fillcolor="#473a22:#2a2114", color="#e0af68",
+              fontcolor="#f0d6a4", fontsize=12, penwidth=1.8]
     sentinel [label=<<b>sentinel</b><br/><font point-size="9" color="#e8c98f">SECURE</font>>,
-              fillcolor="#33291a", color="#e0af68"]
+              fillcolor="#3f3320:#241c10", color="#e0af68"]
     pressroom [label=<<b>pressroom</b><br/><font point-size="9" color="#e8c98f">PUBLISH</font>>,
-               fillcolor="#33291a", color="#e0af68"]
+               fillcolor="#3f3320:#241c10", color="#e0af68"]
     atelier [label=<<b>atelier</b><br/><font point-size="9" color="#cbb6f0">DESIGN &middot; usability</font>>,
-             fillcolor="#2c2740", color="#bb9af7"]
+             fillcolor="#352f50:#1f1b2e", color="#bb9af7"]
     mission [label=<<b>mission-control</b><br/><font point-size="9" color="#cbb6f0">OPERATE</font>>,
-             fillcolor="#2c2740", color="#bb9af7"]
+             fillcolor="#352f50:#1f1b2e", color="#bb9af7"]
 
     // clean 2×2 grid DIRECTLY beneath the title bar (no L-shaped spill)
     { rank=same; sentinel;  pressroom }
