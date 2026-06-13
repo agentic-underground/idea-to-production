@@ -137,7 +137,7 @@ surface** of the human element of the software value system.
 ---
 
 ## [1] Flow server — HTTP + WebSocket + MCP in one Rust binary
-> STATUS: PENDING
+> STATUS: IN PROGRESS
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > DEPENDS ON: — (atomic; foundation for the epic)
