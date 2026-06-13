@@ -51,8 +51,14 @@ why: "<one sentence: what the winner does WELL — the earned positive — not j
 carry_forward: "<winner's source>; apply to it: [winner's own open HIGH/MED findings]"
 next_challenger_brief: "<how the regenerated challenger should diverge to beat the winner>"
 ### Loop verdict
-CONTINUE (improve winner, regenerate challenger) | BEST-REACHED (celebrate) | HALT-DIMINISHING-RETURNS (<impasse + question>)
+CONTINUE (improve winner, regenerate challenger) | BEST-REACHED (celebrate) | HALT-DIMINISHING-RETURNS (<impasse + question>) | CAP (MAX_TURNS reached — ship best-scoring champion + residual)
 ```
+
+**Early-accept.** Emit `BEST-REACHED` as soon as the winner clears the termination test below **OR** its
+score meets `TARGET (85/100)` — the loop does not keep racing a champion that is already good enough.
+**On the cap** (`MAX_TURNS = 4` without `BEST`), emit `CAP`: the orchestrator ships the best-scoring champion
+(monotonic, so the carried winner *is* the best draft) and logs the single top residual finding. The loop is
+bounded — it always terminates within four rounds and always ships the best draft it has.
 
 ## Termination — the test for `signal: BEST`
 

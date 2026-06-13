@@ -63,6 +63,27 @@ Resolve `CRAFT_DIR=doc/image-craft-study/craft`; `SCRIPTS=${CLAUDE_PLUGIN_ROOT}/
 | **E · CATALOG** | `CRAFT_DIR=$CRAFT_DIR bash $SCRIPTS/build-catalog.sh` — regenerate `catalog.md` from the journal. | 0 |
 | **F · SYNTHESIZE** | Fold every **proven** gain (verdict = gain) into [`comfyui-model-guide.md`](../../knowledge/comfyui-model-guide.md) (per-objective: best ckpt + the stage that pays) and [`workflow-strategy.md`](../illustrator/references/workflow-strategy.md) (when to reach for hires / LoRA / tricomposite). Non-gains are noted as "tested, no gain". | synthesis only |
 
+## Model tiering — how this study staffs the illustration craft ladder
+
+The craft this study discovers is what the per-completed-item illustration pipeline reaches for at its
+**craft (opus) stage**. Tie the phases to the same tiers the
+[ILLUSTRATOR uses](../illustrator/SKILL.md#per-stage-model-tiering) (**sonnet concept → opus review → opus
+craft**, where sonnet = `claude-sonnet-4-6`, opus = `claude-opus-4-8`):
+
+- **Generation/sheets/catalog** are **deterministic bash (0 model tokens)** — no tier applies; they are the
+  cheap mechanical substrate beneath the concept stage.
+- **Scoring (Phase D)** is the **opus review tier** — the [image-aesthetic-reviewer](../design-reviewer/agents/image-aesthetic-reviewer.md),
+  spawned one agent per A/B sheet, runs on opus because deciding whether a stage is a *real, named,
+  reproducible* gain is the taste call the expensive tier exists for. A per-job override may force a cheaper
+  tier for a throwaway sweep, exactly as the value handlers' *Spawning Model Policy* allows.
+- **Synthesize (Phase F)** folds the proven recipes into [`workflow-strategy.md`](../illustrator/references/workflow-strategy.md)
+  so the illustration **craft stage starts from the stage that pays** — the study is how the opus craft tier
+  gets sharper between cycles.
+
+Like the illustration A/B loop, this study is **per-item-class, not per-commit**, and — when present — is
+**dispatched through the [token-fairness scheduler](../../../../CLAUDE.md)** off-peak by default (the operator
+may consent to run now), since a full sweep is token-intensive in its scoring fan-out.
+
 ## Adversarial gate (Gate 3)
 
 The study's claims face the steering panel: every promoted gain must survive a reviewer **prompted to refute it**

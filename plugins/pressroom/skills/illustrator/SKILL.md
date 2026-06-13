@@ -92,18 +92,29 @@ and B must differ.
 ### Phase 4 — Generate two options A/B
 Spawn the chosen handler **twice** on the same SPEC, forcing the named divergence — a real choice, not two
 near-identical renders. Each handler renders, rasterises onto both grounds, self-reviews, and hands back its
-asset + source + a one-line self-critique.
+asset + source + a one-line self-critique. The illustration tier runs **sonnet concept → opus review → opus
+craft** (see [model tiers](#per-stage-model-tiering) below): the cheap tier explores the concept and renders
+the first A/B pair, the expensive tier reviews and crafts the winner to the award bar.
 
-### Phase 5 — A/B-until-best review loop
+### Phase 5 — A/B-until-best review loop (bounded, ship-best-on-cap)
 Hand both options to the `design-reviewer` in comparative mode and run
 [`references/illustrate-ab-loop.md`](references/illustrate-ab-loop.md): the reviewer runs the
 [`layout-reviewer`](../design-reviewer/agents/layout-reviewer.md) **legibility gate FIRST** (edge-clip,
 overlap, inline-legibility at `width_budget_px`) and scores taste only on a clean pass — a clipped or
 illegible option is `NEEDS_REVISION` before any taste dimension is computed. Then the reviewer picks a winner, gives
 per-option feedback, and signals `LEAST-WORSE` or `BEST`. **Carry the winner forward** (apply its own
-HIGH+MED), **regenerate only the challenger** per the reviewer's brief, re-review. Stop on **BEST-REACHED**
-(celebrate), **HALT-DIMINISHING-RETURNS** (ask the user), or **CAP** (`MAX_TURNS = 4`). The whole point: ship
-a figure that is *good*, not one that beat a worse sibling.
+HIGH+MED), **regenerate only the challenger** per the reviewer's brief, re-review.
+
+The loop is **bounded to `MAX_TURNS = 4` rounds** and **accepts early** the moment either the reviewer's
+fitness score meets `TARGET` (85/100) **OR** the verdict is `BEST` (`PASS`). Stop on the first of:
+- **BEST-REACHED** — `signal: BEST` (or score ≥ `TARGET`): celebrate, emit.
+- **HALT-DIMINISHING-RETURNS** — the best-of-pair score gains stall (`< +3` over two turns): ask the user.
+- **CAP** — `MAX_TURNS = 4` reached without `BEST`: **ship the best-scoring draft seen so far** (the carried
+  champion, which is monotonic) and **log a cap note** in the ledger (`signal: CAP`, the champion's
+  `final_score`, and the top residual finding). The loop never returns nothing and never exceeds the bound.
+
+The whole point: ship a figure that is *good*, not one that beat a worse sibling — and when the bound is
+reached, ship the best we have with the residual recorded honestly, rather than spinning.
 
 ### Phase 6 — Emit (and, in loop mode, embed + ledger)
 Write the asset to `<doc-dir>/diagrams/NN-name.{svg,png}`. In **single-shot** mode, show it to the user and
@@ -135,6 +146,33 @@ The whole-tree trawl is `/loop`-driven and **idempotent/resumable** via
   SPEC's `insert_after` line via Edit (exact-string, single occurrence); record `embedded_line`.
 - **Selectivity** — `SITE_FLOOR` + the per-doc cap + the skip-list ([site-ranking](references/site-ranking.md))
   keep the trawl and its token cost tractable. Report the funnel every pass.
+
+## Per-stage model tiering
+
+The per-completed-item pipeline runs on **parallel sub-agents with explicit model tiers**, so the cheap
+model does the cheap work and the expensive model only does the work that demands taste. Each lane has a
+default ladder; both ladders climb **draft/concept (cheap) → review → final/craft (expensive)**:
+
+| Lane | Concept / draft | Review | Final / craft |
+|---|---|---|---|
+| **Illustration** (this skill) | sonnet concept | opus review | opus craft |
+| **Documentation text** ([writer](../writer/SKILL.md)) | sonnet draft | opus review | opus final |
+
+where **sonnet = `claude-sonnet-4-6`** and **opus = `claude-opus-4-8`**. This is the same
+**model-override** idea the value handlers already carry (a per-job model can be set on the spawning call —
+see the handlers' *Spawning Model Policy*): the table above is the **default tier per stage**, and any job
+may override it (e.g. force opus for a hero on the front page, or sonnet-only for a throwaway internal note).
+The concept stage renders the first A/B pair cheaply; the review and craft stages — where the award bar is
+defended — run on opus.
+
+## Cadence & token budget — per completed item, scheduled
+
+This pipeline runs **per completed roadmap item — never per commit.** When an item reaches DONE, one
+documentation+illustration pass is dispatched for it; intermediate commits do not trigger it. When the
+[token-fairness scheduler](../../../../CLAUDE.md) (`scheduler@token-fairness`) is present, the pass is
+**dispatched through it** with a **per-item budget**: it runs **off-peak by default** so it never competes
+with interactive work, but the operator may **consent to run it now**. Absent the scheduler, the pass runs
+inline and the `MAX_TURNS` bound is the only token guard.
 
 ## Prerequisites & graceful degradation
 Run `/pressroom:check` first. The vector handlers need `dot` (Graphviz) and/or `mmdc` (Mermaid); `handler-chart`

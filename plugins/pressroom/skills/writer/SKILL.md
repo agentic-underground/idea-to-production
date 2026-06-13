@@ -231,6 +231,54 @@ of verdict. This is a hard cap — no exceptions. Note `[WRITER WINS — MAX TUR
 
 ---
 
+## Roadmap-item documentation pipeline (per completed item)
+
+When WRITER is driven by PRESSROOM to **document a completed roadmap item** (not a free-form article), it runs
+as one bounded, parallelised pass with explicit model tiers — the documentation-text sibling of the
+[ILLUSTRATOR](../illustrator/SKILL.md)'s illustration pipeline. The two lanes run as **parallel sub-agents**
+for the same item and converge into one document.
+
+### Per-stage model tiering
+
+Documentation text climbs **draft (cheap) → review → final (expensive)**:
+
+| Stage | Model | Does |
+|---|---|---|
+| **Draft** | sonnet (`claude-sonnet-4-6`) | mine the source, structure the doc, write the first pass |
+| **Review** | opus (`claude-opus-4-8`) | the adversarial `reviewer` pass (clarity, accuracy, punchiness) |
+| **Final** | opus (`claude-opus-4-8`) | apply the review, craft the final copy to the bar |
+
+This is the same **model-override** idea the value handlers carry (a per-job model can be set on the spawning
+call): the table is the **default tier per stage**, and any job may override it. The matching illustration
+ladder — **sonnet concept → opus review → opus craft** — is in the
+[ILLUSTRATOR's model-tiering section](../illustrator/SKILL.md#per-stage-model-tiering). The per-section
+prose `reviewer` loop above (`MAX_TURNS = 3`) is unchanged; the tiering says *which model* staffs each stage.
+
+### Adaptive doc scope — one document, sections earned by the item
+
+Each item's documentation is **one adaptive document**, not a fixed template. It always has a how-to; the
+other two sections appear **only when the item warrants them**:
+
+| Section | Always / conditional | Include when |
+|---|---|---|
+| **How-to** | **always** | every item — what it does and how to use it, in task order |
+| **UI / usage** | conditional | the item **has a UI** (a screen, a CLI surface, a command, a visible interaction) |
+| **Technical / architecture** | conditional | the item **introduces structure** (a new module, boundary, data shape, or non-obvious design) |
+
+A pure internal refactor with no UI and no new structure ships a how-to only; a new screen backed by a new
+bounded context ships all three. Decide the scope from the item's artefacts (its diff, EARS, feature files)
+before drafting — don't pad a doc with an empty architecture section to fill the template.
+
+### Cadence & token budget
+
+This pass runs **per completed roadmap item — never per commit.** It fires once when an item reaches DONE;
+intermediate commits do not trigger it. When the [token-fairness scheduler](../../../../CLAUDE.md)
+(`scheduler@token-fairness`) is present, the pass is **dispatched through it** with a **per-item budget** —
+**off-peak by default**, but the operator may **consent to run it now**. Absent the scheduler it runs inline,
+bounded only by the per-section `MAX_TURNS`.
+
+---
+
 ## Phase 5 — Output
 
 ### File naming
