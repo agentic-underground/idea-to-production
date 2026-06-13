@@ -7,7 +7,7 @@ Orchestrate the PRESSROOM pipeline to turn project material into publication-gra
 Parse `$ARGUMENTS` for **source** and **target format**:
 - **source** — a topic/angle, an existing markdown file path, or nothing (then discover from the
   project: git history, docs/, README — per the WRITER skill's Phase 1).
-- **format** — `markdown` (default), `pdf` (print-quality), or `diagrams` (figures only).
+- **format** — `markdown` (default), `pdf` (print-quality), `docx` (Microsoft Word), or `diagrams` (figures only).
 
 Pipeline:
 
@@ -25,6 +25,10 @@ Pipeline:
    - `pdf` → defer to **rich-pdf-with-diagrams**: typeset the article with embedded figures via
      `scripts/build-pdf.sh [--engine=auto|typst|latex]` (dual-engine — Typst single-pass, or LaTeX
      three-pass; it also renders `*.mmd` via `mmdc`), output `doc/articles/<slug>.pdf`.
+   - `docx` → defer to the **`handler-docx`** value-handler: convert the article markdown to a
+     Microsoft Word `.docx` (pandoc-first with a reference-doc template, python-docx for fine control),
+     validate the produced OOXML structurally (styles, heading outline, tables, metadata, alt text)
+     before hand-back, output `doc/articles/<slug>.docx`.
    - `diagrams` → deliver the figures only.
 4. **Design review (convergent loop)** — for `pdf` or `diagrams`, run the **design-reviewer** skill:
    rasterise the PDF (`build-pdf.sh --raster` → `review/page-*.png`) or read the figure images, score the

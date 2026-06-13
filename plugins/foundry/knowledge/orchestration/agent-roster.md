@@ -307,9 +307,14 @@ stack. The canonical, extensible list is the VALUE_HANDLER_POOL in
 
 `handler-architect`, `handler-python`, `handler-fastapi`, `handler-js`, `handler-vanilla-js`
 (native handler of the `frontend` DESIGN system), `handler-react`, `handler-css`,
-`handler-playwright`, `handler-rust`, and `handler-rust-webapp` (the RUST_WEBAPP_API one-shot,
-governed by the `rust-webapp-rollout` skill). Each carries `model: inherit` and is spawned at the
-phase tier per [`../policy/model-selection.md`](../policy/model-selection.md).
+`handler-playwright`, `handler-rust`, `handler-rust-webapp` (the RUST_WEBAPP_API one-shot,
+governed by the `rust-webapp-rollout` skill), `handler-rust-tauri` (the Tauri desktop shell over a
+pure Rust core), `handler-github-actions` (CI/CD-as-code on GitHub Actions), and
+`handler-roadmap-decomposition` (the atomic-job-breakdown specialist spawned by the LEAD ENGINEER
+during §5 decomposition — it plans, it does not orchestrate). Each carries `model: inherit` and is
+spawned at the phase tier per [`../policy/model-selection.md`](../policy/model-selection.md). The
+`.docx` publishing-output handler (`handler-docx`) lives in the **pressroom** plugin, reachable from
+`/pressroom:publish`.
 
 ---
 

@@ -201,6 +201,12 @@ LEAD ENGINEER is responsible for producing `doc/FOUNDRY_PLAN.md` containing:
 LEAD ENGINEER also creates `doc/SUBJECT_MATTER_UNDERSTANDING.md` if absent.
 See `${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/subject-matter-understanding.md` for the template.
 
+> **Heavy items — delegate the breakdown.** When a roadmap item is too large to decompose into atomic
+> vertical slices by hand, the LEAD ENGINEER may spawn the `handler-roadmap-decomposition` value-handler
+> to produce the INVEST-sized, dependency-ordered, phase-mapped job list that fills the **Work
+> Decomposition** and **Build Order** sections above. That handler **plans only** — it returns the job
+> breakdown; the LEAD ENGINEER remains the orchestrator that sequences and dispatches.
+
 ---
 
 ## 6. TIERED PRODUCTION
@@ -423,6 +429,9 @@ in `${CLAUDE_PLUGIN_ROOT}/agents/handler-{stack}.md`.
 | PLAYWRIGHT-AGENT | Playwright (npx playwright test) | E2E story tests |
 | RUST-AGENT | Rust + thiserror + proptest + clippy -D warnings | Rust libraries, CLIs, services, domain cores |
 | RUST-WEBAPP-AGENT | Rust/WASM (Dioxus) + Vercel official Rust runtime | Full Rust web app + serverless API one-shot rollout (via the `rust-webapp-rollout` skill) |
+| handler-rust-tauri | Tauri v2 desktop shell over a pure Rust core (IPC, capability ACL, webview) | A `src-tauri/` crate / `tauri.conf.json` desktop app |
+| handler-github-actions | GitHub Actions CI/CD-as-code (workflow YAML, matrix, OIDC, SHA-pinned actions) | `.github/workflows/*.yml`, composite/reusable actions |
+| handler-roadmap-decomposition | Atomic-job breakdown of a ROADMAP item (INVEST slices, dependency graph, phase mapping) | LEAD ENGINEER §5 when a heavy roadmap item must be split into parallelisable jobs — it plans, it does not orchestrate |
 
 When the LEAD ENGINEER identifies a stack not in the pool above, note it in
 `doc/FOUNDRY_PLAN.md` under `## VALUE_HANDLER_POOL Required` with a description

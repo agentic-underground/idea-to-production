@@ -158,7 +158,10 @@ assignment (§4 of FOUNDRY SKILL.md) regardless of their PRIORITY_STATUS.
 
 ## Phase 4 — Work Decomposition
 
-For each pending roadmap item, produce a decomposition:
+For each pending roadmap item, produce a decomposition. When an item is too large to break into
+atomic vertical slices by hand, **spawn `handler-roadmap-decomposition`** — the atomic-job-breakdown
+specialist — to return the INVEST-sized, dependency-ordered, phase-mapped job list that fills the
+template below. It plans only; you remain the orchestrator that sequences and dispatches.
 
 ```markdown
 ### Item #N — [TITLE]
