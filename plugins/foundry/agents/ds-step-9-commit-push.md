@@ -58,9 +58,13 @@ Before beginning:
     - **Raise the tracking issue** if this item has none yet, mirroring the `gh` style in
       `gather-diff.sh`:
       `gh issue create --title "<roadmap-item title>" --body "<one-line intent + ROADMAP #N>"` — capture
-      the issue number `#N` for the commit's `GITHUB_ISSUE: #N` trailer
-      ([`../knowledge/protocols/commit-message.md`](../knowledge/protocols/commit-message.md) §2) and for
-      the PR body below. If the item already carries an issue number, reuse it (do **not** open a duplicate).
+      the issue number `#N`. If the item already carries an issue number, reuse it (do **not** open a duplicate).
+    - **Stamp the trailer onto the (not-yet-pushed) commit.** The commit from step 3 was written
+      before this issue existed, so it cannot yet carry the number. Insert it now with
+      `git commit --amend` to add the `GITHUB_ISSUE: #N` trailer
+      ([`../knowledge/protocols/commit-message.md`](../knowledge/protocols/commit-message.md) §2) — the
+      commit has not been pushed (step 5), so amending is safe and re-runs nothing. Reuse the same `#N`
+      in the PR body below.
     - **Graceful skip (no halt).** If the owner is **not** allowlisted, or `gh` is missing/unauthenticated:
       **skip** issue + PR automation, **report the gap** in the completion report ("origin `<owner>` not
       allowlisted" / "`gh` unavailable — commits + local docs only"), and continue. Never block delivery on this.

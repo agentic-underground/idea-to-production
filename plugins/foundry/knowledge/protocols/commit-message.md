@@ -78,8 +78,17 @@ GITHUB_ISSUE: #142
 
 This is a Conventional Commits footer (§11.8 — `word-token: value`) sitting alongside `ROADMAP:`.
 It traces the commit to its tracking issue; the **PR body** (not the commit) carries the
-`Closes #N` reference that closes the issue on merge (see `merge-governance.md`). Omit the trailer
-entirely on non-allowlisted origins — there is no issue, so there is nothing to reference.
+`Closes #<issue>` reference that closes the issue on merge (see `merge-governance.md`). Omit the
+trailer entirely on non-allowlisted origins — there is no issue, so there is nothing to reference.
+
+> **Two number spaces — do not let the roadmap number close a GitHub issue.** `GITHUB_ISSUE: #N`
+> and the PR's `Closes #N` use the **GitHub issue** number; the `ROADMAP:` footer's `#N` is the
+> **roadmap item** number — a *different* space. GitHub treats `closes #N` in a merged commit as a
+> closing keyword on *its* issue numbering, so on an allowlisted github origin a literal
+> `ROADMAP: closes #7` would wrongly close GitHub issue #7. **On allowlisted github origins, write
+> the roadmap footer in a non-closing form** — `ROADMAP: item #N` (or `Refs roadmap #N`) — so the
+> *only* thing that closes an issue is the PR body's `Closes #<issue>`. On non-github / non-allowlisted
+> origins the existing `ROADMAP: closes #N` form is unchanged.
 
 ---
 

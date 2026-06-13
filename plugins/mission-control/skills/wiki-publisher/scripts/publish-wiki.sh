@@ -80,7 +80,15 @@ while IFS= read -r md; do
   srcdir="$(dirname "$md")"
   while IFS= read -r asset; do
     [ -n "$asset" ] || continue
-    case "$asset" in http*|/*|*'<'*) continue ;; esac
+    # Reject remote/absolute/markup AND any path-traversal token before reading.
+    case "$asset" in http*|/*|*'<'*|*..*) continue ;; esac
+    # Confine the SOURCE read to the docs tree ($SRC): realpath-resolve and require it
+    # stay under $SRC, so a crafted link can never exfiltrate a repo-adjacent file
+    # (e.g. ../../.env) into the world-readable wiki. Fail closed on any miss.
+    case "$(realpath -m "$srcdir/$asset" 2>/dev/null)" in
+      "$SRC"/*) : ;;
+      *) continue ;;
+    esac
     if [ -f "$srcdir/$asset" ]; then
       base="$(basename "$asset")"
       cp "$srcdir/$asset" "$dst/$base" 2>/dev/null || true

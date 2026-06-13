@@ -81,9 +81,17 @@ branch on anything other than `main`, **stop and ask first**.
 ## Org allowlist — when issues + PRs are raised at all
 
 The two modes above decide *who merges*; the **org allowlist** decides *whether the change is
-governed through GitHub issues and PRs at all*. It is a configurable list of origin-owner globs
-(**default `agentic-underground/*`**) matched against the **owner parsed from the git `origin`
-remote** (e.g. `git@github.com:agentic-underground/foo.git` → owner `agentic-underground`).
+governed through GitHub issues and PRs at all*. It is a configurable list of anchored `owner/repo`
+globs (**default `agentic-underground/*`**) matched against the **full `owner/repo` slug parsed from
+the git `origin` remote** (e.g. `git@github.com:agentic-underground/foo.git` → slug
+`agentic-underground/foo`).
+
+> **Match the full slug, anchored — never a bare-owner prefix.** The glob `agentic-underground/*`
+> matches any repo under *exactly* that owner because the literal `/` anchors the owner segment:
+> `agentic-underground/foo` matches; **`agentic-underground-evil/foo` does NOT** (it lacks the
+> `agentic-underground/` prefix). Implement this as a glob/`case` match on the whole `owner/repo`
+> string — do **not** prefix-match the bare owner, or a look-alike org would be wrongly allowlisted
+> (a Broken-Access-Control bug). If `git`/`gh` cannot resolve the slug, treat it as **not matched**.
 
 - **Origin owner matches the allowlist** → full Commit→Issue→PR governance:
   1. The value system **raises a GitHub issue per completed work item** (one issue, one item) if
