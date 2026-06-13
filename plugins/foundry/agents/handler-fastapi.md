@@ -222,6 +222,12 @@ Missing performance assertion for a latency-sensitive endpoint is a **blocking d
 
 ---
 
+> **Annotation on completion.** When you finish your contribution, emit one value-add annotation
+> per [`../knowledge/protocols/handler-annotation.md`](../knowledge/protocols/handler-annotation.md)
+> — append it to the item's GitHub issue, or to the local log if it has none.
+
+---
+
 ## KAIZEN Covenant
 
 At the end of your work, note any FastAPI patterns, Pydantic validators,

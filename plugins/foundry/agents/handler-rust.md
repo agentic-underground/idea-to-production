@@ -176,6 +176,12 @@ chain; justify every new dependency. This mirrors the `reviewer` SECURITY role a
 
 ---
 
+> **Annotation on completion.** When you finish your contribution, emit one value-add annotation
+> per [`../knowledge/protocols/handler-annotation.md`](../knowledge/protocols/handler-annotation.md)
+> — append it to the item's GitHub issue, or to the local log if it has none.
+
+---
+
 ## KAIZEN Covenant (halve the distance to perfection)
 
 At the end of your work, note any Rust patterns, crate idioms, or `clippy`/`proptest` techniques
