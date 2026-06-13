@@ -600,6 +600,295 @@ gains awesome, double-reviewed screenshots of the UI. If the screenshots are not
 
 ---
 
+## Dependency tree (the EPIC, #9)
+
+```
+EPIC #9 Process-Documentation & Git Governance — docs emerge as we build
+ ├─ #10 Commit→Issue→PR governance (emoji conv-commits · issue-per-completed-item · PR closes issues)  → blocks on: gh, merge-governance
+ ├─ #11 Issues-as-process-documentation (per-handler value-add annotation)                              → blocks on #10
+ ├─ #12 Roadmap-item doc + illustration pipeline (per completed item · parallel sub-agents)             [atomic · pressroom]
+ ├─ #13 GitHub wiki construction (opt-in, any github origin · opus finals + #12 diagrams)               → blocks on #10, #12
+ └─ #14 Onboarding alert — "from now on, items are documented this way"                                 [atomic · concierge]
+```
+
+This is a **standing process change** for every project using the idea-to-production system, implemented
+across FOUNDRY (commit/governance + orchestrator), PRESSROOM (doc + illustration pipeline), CONCIERGE (the
+onboarding alert), and surfaced in the flow UI (#0) as issue links/annotations on cards. The cheap layer
+(emoji commits + per-handler issue annotation) is **always-on**; the expensive opus doc + illustration
+pipeline runs **per completed roadmap item**, gated by the token-fairness scheduler — never per commit.
+
+---
+
+## [9] EPIC — Process-Documentation & Git Governance (docs emerge as we build)
+> STATUS: PENDING
+> ADDED: 2026-06-13
+> PRIORITY: HIGH
+> BRANCH: flow-tracking-ui (carried with the flow epic; this is the value system's governance + online-docs behaviour)
+
+**Brief Description**
+As value passes between phases, the system documents the *process itself* online and keeps git tidy. Commits
+are emoji Conventional Commits (the existing FOUNDRY standard); when a repo's origin is in the org allowlist
+(default `agentic-underground/*`) the orchestrator raises a GitHub issue per completed work item, annotates
+that issue as each handler adds value (activities + value-add — "issues as process documentation"), and the
+parcel's pull request references and closes those issues on merge. Separately, each completed roadmap item is
+documented by a PRESSROOM pipeline (sonnet draft → opus review → opus final, plus an illustration loop) whose
+output also feeds the issues and an opt-in GitHub wiki. Every new or newly-onboarded project is told, up
+front, that its roadmap items will be documented this way.
+
+### User Stories
+- AS the maintainer I WANT every completed item to leave a GitHub issue annotated with what each handler did
+  SO THAT the build's process is self-documenting and auditable online.
+- AS the maintainer I WANT the PR to reference and close those issues on merge SO THAT git history, issues,
+  and the roadmap stay in lock-step.
+- AS a reader I WANT professional, illustrated documentation to emerge as the project is built SO THAT the
+  product is explained without a separate documentation phase.
+- AS the maintainer I WANT to be told, when a project onboards, that this is how it will now work SO THAT the
+  behaviour is never a surprise.
+
+### EARS Specification (epic-level; per-child EARS live in #10–#14)
+**Ubiquitous**
+- The system SHALL write every commit as an emoji Conventional Commit per the FOUNDRY commit standard.
+**Event-driven**
+- WHEN a work item completes AND the repo origin is in the configured org allowlist THE SYSTEM SHALL raise a
+  GitHub issue for it; WHEN a parcel's PR merges THE SYSTEM SHALL close the referenced issues.
+- WHEN a roadmap item completes THE SYSTEM SHALL commission its documentation + illustrations (per #12),
+  scheduled under the token-fairness gate.
+- WHEN a project is created or newly onboarded to idea-to-production THE SYSTEM SHALL alert the user that
+  roadmap items will be documented this way.
+**Unwanted behaviour**
+- IF the origin is not in the allowlist THEN THE SYSTEM SHALL NOT raise issues (commits + local docs only).
+- IF running the opus documentation pipeline per commit would breach the token-fairness window THEN THE
+  SYSTEM SHALL run it per completed item, off-peak, never per commit.
+
+### Acceptance Criteria
+1. Given an allowlisted origin, When an item completes, Then a GitHub issue exists for it, annotated with the
+   handlers' value-add, and the parcel PR closes it on merge.
+2. Given any completed item, Then professional documentation + at least one reviewed illustration exist for it.
+3. Given a github origin, When the project onboards, Then the user is offered the professional wiki and told
+   how items will be documented.
+
+### Implementation Notes
+- **Cross-plugin** — FOUNDRY (governance/orchestration), PRESSROOM (doc + art pipeline), CONCIERGE (alert),
+  MISSION-CONTROL flow UI (issue/annotation surfacing). Each degrades gracefully when a partner is absent.
+- **Reuse, don't reinvent:** `foundry/knowledge/protocols/commit-message.md` (emoji conv-commits) and
+  `merge-governance.md` (pr-approval, one-branch-one-PR) already exist — extend them with issue linkage.
+- **Token safety is load-bearing:** the opus doc + illustration pipeline is expensive and recurring; it MUST
+  be scheduled through the `tf` token-fairness gate, per completed item, off-peak — never per commit.
+
+### Development Plan Reference
+`doc/PROCESS_DOC_GIT_GOVERNANCE_PLAN.md` (master epic plan; each child gets its own `doc/<TITLE>_PLAN.md`).
+
+---
+
+## [10] Commit → Issue → PR governance (org-allowlisted)
+> STATUS: PENDING
+> ADDED: 2026-06-13
+> PRIORITY: HIGH
+> DEPENDS ON: — (extends existing FOUNDRY commit + merge governance; needs the `gh` CLI)
+
+**Brief Description**
+Standardises git flow for all idea-to-production projects: emoji Conventional Commits (existing FOUNDRY
+standard); when the origin is in the configured org allowlist (default `agentic-underground/*`), raise a
+GitHub issue per completed work item; the parcel's pull request references those issues and closes them on
+merge. Non-allowlisted origins keep commits + local docs only.
+
+### User Stories
+- AS the orchestrator I WANT to raise an issue per completed item on allowlisted origins SO THAT each unit of
+  value has a durable online record.
+- AS the maintainer I WANT the PR to close the referenced issues on merge SO THAT nothing is left dangling.
+
+### EARS Specification
+**Ubiquitous**
+- The system SHALL format every commit as an emoji Conventional Commit per the FOUNDRY commit standard.
+- The system SHALL read the org allowlist from configuration (default `agentic-underground/*`).
+**Event-driven**
+- WHEN a work item completes AND `origin` matches the allowlist THE SYSTEM SHALL create a GitHub issue
+  titled and linked to that item, recording its roadmap ID.
+- WHEN a parcel of items is complete THE SYSTEM SHALL open one PR whose body references each item's issue with
+  a closing keyword (`Closes #N`), so merging closes them.
+**Unwanted behaviour**
+- IF `origin` is not in the allowlist THEN THE SYSTEM SHALL skip all GitHub issue/PR automation and proceed
+  with commits + local docs only.
+- IF the `gh` CLI is unavailable or unauthenticated THEN THE SYSTEM SHALL report the gap and continue without
+  blocking the build.
+
+### Acceptance Criteria
+1. Given an allowlisted origin and a completed item, Then a GitHub issue exists carrying its roadmap ID.
+2. Given a parcel PR, When it merges, Then every referenced issue is closed automatically.
+3. Given a non-allowlisted origin, Then no issues/PRs are auto-created and the build still completes.
+
+### Implementation Notes
+- `gh issue create` / `gh pr create`; allowlist match on the parsed `origin` host/owner. Extends
+  `merge-governance.md` (pr-approval already opens one PR to main) and `commit-message.md` (already emoji
+  conv-commits) — add the issue-linkage layer; do not duplicate either standard.
+- "Parcel" = a set of completed roadmap items released together (typically the epic's PR, per #0/#7 model).
+
+### Development Plan Reference
+`doc/COMMIT_ISSUE_PR_GOVERNANCE_PLAN.md`
+
+---
+
+## [11] Issues as process-documentation — per-handler annotation
+> STATUS: PENDING
+> ADDED: 2026-06-13
+> PRIORITY: HIGH
+> DEPENDS ON: #10
+
+**Brief Description**
+As an item passes through each handler/value-station, the system annotates its GitHub issue with commentary
+stating the activities performed and the value-add achieved — turning the issue into a live, ordered log of
+how the work was actually done ("issues as documentation" — of the process). This is the always-on, cheap
+layer (no opus pipeline).
+
+### User Stories
+- AS the maintainer I WANT each handler to append what it did and the value it added to the item's issue SO
+  THAT the issue becomes a faithful, timestamped record of the build process.
+
+### EARS Specification
+**Event-driven**
+- WHEN a handler finishes its contribution to an item THE SYSTEM SHALL append a comment to that item's issue
+  naming the handler, the activity, and the value-add.
+**Unwanted behaviour**
+- IF the item has no associated issue (non-allowlisted origin) THEN THE SYSTEM SHALL record the same
+  commentary to the local JSONL/system-message log instead, losing nothing.
+
+### Acceptance Criteria
+1. Given an item with an issue, When a handler completes, Then a new annotation appears on that issue naming
+   handler + activity + value-add.
+2. Given the item reaches DONE, Then its issue reads top-to-bottom as the ordered story of its construction.
+
+### Implementation Notes
+- `gh issue comment`; the annotation source is the same carriage/handler telemetry as flow-UI #3 — one event,
+  two sinks (issue comment + JSONL). Cheap: plain text, no model fan-out.
+
+### Development Plan Reference
+`doc/ISSUES_AS_PROCESS_DOC_PLAN.md`
+
+---
+
+## [12] Roadmap-item documentation + illustration pipeline (PRESSROOM)
+> STATUS: PENDING
+> ADDED: 2026-06-13
+> PRIORITY: HIGH
+> DEPENDS ON: — (atomic; PRESSROOM; token-fairness-gated)
+
+**Brief Description**
+For each **completed** roadmap item, the orchestrator commissions a PRESSROOM documentation pipeline on
+parallel sub-agents: a **sonnet** pass collects and synthesises the raw information and drafts the
+documentation; an **opus** pass adversarially reviews it; an **opus** pass produces the final draft. In
+parallel, the illustrator mines the content for figures and commissions each: a **sonnet** agent draws the
+initial concept art, an **opus** adversarial reviewer critiques it, and an **opus** craft-handler polishes —
+the reviewer and craft-handler passing the work back and forth until the illustration reaches peak "stunning"
+and "highly informative" before inclusion. The whole pipeline is scheduled through the token-fairness gate.
+
+### User Stories
+- AS a reader I WANT professional, illustrated how-to / technical / UI documentation for each item SO THAT the
+  product explains itself as it is built.
+- AS the maintainer I WANT the heavy opus work tiered and parallelised SO THAT quality is high and the token
+  meter stays safe.
+
+### EARS Specification
+**Event-driven**
+- WHEN a roadmap item completes THE SYSTEM SHALL commission its documentation: sonnet collect+draft → opus
+  adversarial review → opus final, run on parallel sub-agents.
+- WHEN the documentation is drafted THE SYSTEM SHALL commission illustrations: sonnet concept → opus review ↔
+  opus craft-handler, looping until the figure is judged "stunning" and "highly informative".
+**Unwanted behaviour**
+- IF dispatching this pipeline would breach the live token-fairness window THEN THE SYSTEM SHALL defer it
+  off-peak via the scheduler rather than run it inline.
+**Optional feature**
+- WHERE per-job model selection (#8) is available THE SYSTEM SHALL honour any per-item model overrides for
+  these sub-agents.
+
+### Acceptance Criteria
+1. Given a completed item, Then a documentation artefact exists that passed an opus adversarial review.
+2. Given the documentation, Then at least one illustration exists that survived the opus review↔craft loop to
+   a "stunning / highly informative" verdict.
+3. Given the token-fairness window is near its ceiling, Then the pipeline is scheduled off-peak, not run inline.
+
+### Implementation Notes
+- Reuse PRESSROOM `illustrator` (A/B-until-best), `design-reviewer`, and `craft-study` craft-handler; set the
+  agent model tiers explicitly (sonnet vs opus) per stage — the same model-override mechanism as #8.
+- Output is reused three ways: the item's docs, the issue annotations (#11), and the wiki (#13).
+- Token safety: dispatch only through the `tf` scheduler; cadence is per completed item, never per commit.
+
+### Development Plan Reference
+`doc/ROADMAP_ITEM_DOC_PIPELINE_PLAN.md`
+
+---
+
+## [13] GitHub wiki construction (opt-in, any github origin)
+> STATUS: PENDING
+> ADDED: 2026-06-13
+> PRIORITY: MEDIUM
+> DEPENDS ON: #10, #12
+
+**Brief Description**
+If a repository has a github origin, the system asks the user whether to construct a fully professional wiki
+(and/or Pages), with opus-class models writing the final drafts and information-rich illustrations from #12.
+The wiki emerges and updates as the project is built.
+
+### User Stories
+- AS the maintainer of a github repo I WANT to opt into a professional, illustrated wiki SO THAT the project
+  has first-class public documentation that grows with the build.
+
+### EARS Specification
+**Event-driven**
+- WHEN a repo has a github origin THE SYSTEM SHALL ask the user whether to construct the professional wiki.
+- WHEN the user opts in AND an item's documentation (#12) is ready THE SYSTEM SHALL publish/refresh the
+  corresponding wiki page using opus-class final drafts and the reviewed illustrations.
+**Unwanted behaviour**
+- IF the user declines THEN THE SYSTEM SHALL not create or modify the wiki, and SHALL not ask again unless asked.
+
+### Acceptance Criteria
+1. Given a github origin, When onboarding, Then the user is offered the professional wiki (one clear yes/no).
+2. Given opt-in, When an item is documented, Then its wiki page is created/updated with opus finals + #12 art.
+3. Given opt-out, Then no wiki content is created.
+
+### Implementation Notes
+- Wiki via the repo's `.wiki.git` (or the Pages branch); content sourced from #12; gating reuses the #10
+  origin check (github) but is opt-in for ANY github origin, not just the allowlist.
+
+### Development Plan Reference
+`doc/GITHUB_WIKI_CONSTRUCTION_PLAN.md`
+
+---
+
+## [14] Onboarding alert — "items will be documented this way"
+> STATUS: PENDING
+> ADDED: 2026-06-13
+> PRIORITY: MEDIUM
+> DEPENDS ON: — (atomic; CONCIERGE)
+
+**Brief Description**
+For every new project — or one newly onboarded to idea-to-production — the system alerts the user that, from
+now on, roadmapper items will be documented in this way (emoji commits, issues-as-process-log on allowlisted
+origins, per-item professional documentation, and the opt-in wiki).
+
+### User Stories
+- AS a user onboarding a project I WANT a clear up-front notice of the new documentation behaviour SO THAT it
+  is never a surprise and I know where the docs will appear.
+
+### EARS Specification
+**Event-driven**
+- WHEN a project is created or newly onboarded to idea-to-production THE SYSTEM SHALL alert the user, once,
+  that roadmap items will now be documented via emoji commits, process-issues, per-item docs, and the opt-in wiki.
+**Unwanted behaviour**
+- IF the project has already been alerted THEN THE SYSTEM SHALL NOT repeat the alert on later sessions.
+
+### Acceptance Criteria
+1. Given a newly onboarded project, When the first session opens, Then the documentation-behaviour alert is shown once.
+2. Given a project already alerted, Then the alert does not recur.
+
+### Implementation Notes
+- CONCIERGE SessionStart/welcome hook (alongside `offer-welcome.sh`); one-shot state under
+  `~/.claude/hook-state/` (never written into the user's repo).
+
+### Development Plan Reference
+`doc/ONBOARDING_DOC_ALERT_PLAN.md`
+
+---
+
 ## Principles guiding expansion
 
 Every surface here (a) keeps mission-control self-contained (`${CLAUDE_PLUGIN_ROOT}` only, no assumption
