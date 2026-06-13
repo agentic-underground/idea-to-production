@@ -78,6 +78,35 @@ branch on anything other than `main`, **stop and ask first**.
 
 ---
 
+## Org allowlist — when issues + PRs are raised at all
+
+The two modes above decide *who merges*; the **org allowlist** decides *whether the change is
+governed through GitHub issues and PRs at all*. It is a configurable list of origin-owner globs
+(**default `agentic-underground/*`**) matched against the **owner parsed from the git `origin`
+remote** (e.g. `git@github.com:agentic-underground/foo.git` → owner `agentic-underground`).
+
+- **Origin owner matches the allowlist** → full Commit→Issue→PR governance:
+  1. The value system **raises a GitHub issue per completed work item** (one issue, one item) if
+     the item does not already have one. Its commit carries the `GITHUB_ISSUE: #N` trailer
+     ([`commit-message.md` §2](commit-message.md)).
+  2. The **PR body MUST carry `Closes #N`** for each item's issue, so the human's merge closes
+     those issues automatically. This obeys the active mode — under `pr-approval` (default) the PR
+     is opened and **the human merges**; under `direct-merge` the same `Closes #N` references ride
+     the merge commit.
+- **Origin owner does NOT match** → **commits + local docs only**. No GitHub issue is raised and no
+  PR automation runs; delivery records the item in the roadmap/plan as usual. The always-on
+  adversarial gate still runs, and the agent **still never self-merges**.
+
+The allowlist is configured project-locally (default applies when unset). `gh` being unavailable or
+unauthenticated is treated the same as a non-match: skip the issue/PR steps, report the gap,
+continue (see [`../../agents/ds-step-9-commit-push.md`](../../agents/ds-step-9-commit-push.md)).
+
+> The org allowlist is **orthogonal to the merge mode**: it gates GitHub issue/PR *automation*; the
+> mode gates *who merges* a PR once it exists. The "agent never self-merges / a human merges" rule
+> holds on every allowlisted origin regardless of mode.
+
+---
+
 ## How the mode is set, stored, and changed
 
 - **Asked up-front.** On first setup of a project's production line, **FOUNDER asks the user which

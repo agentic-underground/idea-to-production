@@ -66,6 +66,21 @@ All 779 tests pass. Coverage: 94%. No regressions.
 ROADMAP: closes #7
 ```
 
+### GitHub issue linkage (allowlisted origins only)
+
+When the work item's git `origin` owner is on the **org allowlist** (default `agentic-underground/*`
+— see [`merge-governance.md`](merge-governance.md)), the value system raises a GitHub issue per
+completed item, and the commit carries that issue number as a footer trailer:
+
+```
+GITHUB_ISSUE: #142
+```
+
+This is a Conventional Commits footer (§11.8 — `word-token: value`) sitting alongside `ROADMAP:`.
+It traces the commit to its tracking issue; the **PR body** (not the commit) carries the
+`Closes #N` reference that closes the issue on merge (see `merge-governance.md`). Omit the trailer
+entirely on non-allowlisted origins — there is no issue, so there is nothing to reference.
+
 ---
 
 ## 3. Summary Line — Conventional Commits Integration

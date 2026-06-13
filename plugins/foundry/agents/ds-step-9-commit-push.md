@@ -48,12 +48,31 @@ Before beginning:
    not already been run and recorded for this exact diff) and require a **PASS**
    (see [`../skills/pr-review/SKILL.md`](../skills/pr-review/SKILL.md)). A `NEEDS_REVISION`/`BLOCK`
    verdict halts delivery — loop back to revision; do not proceed.
+4b. **Org-allowlist gate for GitHub issue/PR automation (Commit→Issue→PR governance).** Parse the
+    `origin` remote owner (`git remote get-url origin` → owner before `/`, mirroring the github-remote
+    resolution in [`../skills/pr-review/scripts/gather-diff.sh`](../skills/pr-review/scripts/gather-diff.sh))
+    and test it against the **org allowlist** (default `agentic-underground/*` —
+    [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md), *"Org
+    allowlist"*). If the owner matches **and** `gh` is installed + authenticated (`command -v gh` and
+    `gh auth status`):
+    - **Raise the tracking issue** if this item has none yet, mirroring the `gh` style in
+      `gather-diff.sh`:
+      `gh issue create --title "<roadmap-item title>" --body "<one-line intent + ROADMAP #N>"` — capture
+      the issue number `#N` for the commit's `GITHUB_ISSUE: #N` trailer
+      ([`../knowledge/protocols/commit-message.md`](../knowledge/protocols/commit-message.md) §2) and for
+      the PR body below. If the item already carries an issue number, reuse it (do **not** open a duplicate).
+    - **Graceful skip (no halt).** If the owner is **not** allowlisted, or `gh` is missing/unauthenticated:
+      **skip** issue + PR automation, **report the gap** in the completion report ("origin `<owner>` not
+      allowlisted" / "`gh` unavailable — commits + local docs only"), and continue. Never block delivery on this.
 5. **Branch on merge governance** — read `.foundry/governance.md` (absent ⇒ default `pr-approval`;
    see [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md)):
    - **`pr-approval`**: `git push` the feature branch and **open a PR targeting `main`** (stacked PRs
      are opt-in and need prior user approval — see the PR-base policy in `merge-governance.md`) whose
-     body carries the review verdict + findings. **Stop here — the human merges and closes.** Do not
-     merge to `main`.
+     body carries the review verdict + findings. **On an allowlisted origin (step 4b), the PR body MUST
+     also carry `Closes #N` for each completed item's issue** so the human's merge closes them —
+     `gh pr create --base main --title "<summary line>" --body "<verdict + findings + Closes #N …>"`
+     (same `gh` style as `gather-diff.sh`). **Stop here — the human merges and closes.** Do not
+     merge to `main`. **Never self-merge** — even on an allowlisted origin, the agent only opens the PR.
      - **Stacked-PR retarget-to-main guard (P2-16).** If this item's branch is part of an **approved
        stacked strategy** (its PR is based on another feature branch, not `main`), guard against stranded
        PRs: when a base PR/branch **merges**, any PR still based on that now-merged branch must be
@@ -65,7 +84,9 @@ Before beginning:
        (*"Stacked-PR retargeting guard — THE ONLY WAY"*): retarget the directly-stacked PR(s), re-confirm
        the diff is only the PR's own commits, and after merge **verify it landed on `main`**
        (`git cat-file -e main:<a-changed-file>`). This is a detect-and-guard step at delivery time.
-   - **`direct-merge`**: merge the branch to `main` and `git push` (the granted-autonomy path).
+   - **`direct-merge`**: merge the branch to `main` and `git push` (the granted-autonomy path). On an
+     allowlisted origin (step 4b), the merge commit / PR carries `Closes #N` for each item's issue so
+     the merge closes them.
 6. Capture the commit hash from the push/merge output.
 6b. **Deployed-digest ↔ DELIVERY_COMPLETE consistency (P2-15).** The `DELIVERY_COMPLETE` sentinel asserts
     *"the change is on `main`"* (see Sentinel Emission below and
