@@ -4,9 +4,9 @@
 
 use std::sync::Arc;
 
-use flow_server::api::build_router;
-use flow_server::auth::Token;
-use flow_server::store::Store;
+use crate::api::build_router;
+use crate::auth::Token;
+use crate::store::Store;
 
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
@@ -28,7 +28,7 @@ async fn seeded() -> (axum::Router, Arc<Store>) {
     for s in ["a", "b"] {
         store
             .upsert_item(
-                flow_server::domain::ItemId::new(s).unwrap(),
+                crate::domain::ItemId::new(s).unwrap(),
                 s.to_uppercase(),
                 "claude-sonnet-4-6".into(),
             )

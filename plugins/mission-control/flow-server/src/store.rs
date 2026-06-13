@@ -85,6 +85,13 @@ impl Store {
         self.tx.subscribe()
     }
 
+    /// Number of live delta subscribers (one per connected WS client). A
+    /// read-only observability accessor: it lets a caller (and tests) tell when
+    /// a client's stream has ended without reaching into the broadcast channel.
+    pub fn subscriber_count(&self) -> usize {
+        self.tx.receiver_count()
+    }
+
     /// A consistent clone of the current flow. Mutating the clone cannot affect
     /// the store — there is no shared mutable handle.
     pub async fn snapshot(&self) -> Flow {
@@ -203,22 +210,50 @@ impl Store {
     /// Append the event to the JSONL log, re-render the markdown view, and
     /// broadcast the delta — all while holding the single lock.
     async fn commit(&self, guard: &mut Inner, event: Event) -> Result<(), StoreError> {
-        let line = event.to_jsonl()?;
-        let mut file = tokio::fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open(&guard.jsonl_path)
-            .await?;
-        file.write_all(line.as_bytes()).await?;
-        file.write_all(b"\n").await?;
-        file.flush().await?;
-
+        // Serialize first, then append. `into_store_line` is non-generic and maps
+        // BOTH arms of the serde result (an `Event` always serializes, but a
+        // crafted bad result drives the Err mapping in tests), so the mapping is
+        // honest rather than dead code.
+        let line = into_store_line(serde_json::to_string(&event))?;
+        append_line(&guard.jsonl_path, &line).await?;
         write_markdown(&guard.markdown_path, &guard.flow).await?;
 
         // A send error only means no subscribers; that is not a write failure.
         let _ = self.tx.send(event);
         Ok(())
     }
+}
+
+/// Map a `serde_json` serialization result into the store's error type. A single
+/// non-generic body so both arms (Ok line through, Err → `StoreError::Serialize`)
+/// are exercisable in a test without per-type monomorphization.
+fn into_store_line(result: Result<String, serde_json::Error>) -> Result<String, StoreError> {
+    Ok(result?)
+}
+
+/// Append one JSONL line (plus a newline, flushed) to the log file. The open `?`
+/// is exercised by pointing `path` at a directory.
+async fn append_line(path: &Path, line: &str) -> Result<(), StoreError> {
+    let mut file = tokio::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .await?;
+    write_to(&mut file, line).await
+}
+
+/// Write `line` and a trailing newline to an open sink, then flush. Takes a
+/// `&mut dyn AsyncWrite` (one compiled body, no per-type monomorphization) so
+/// each of the write/flush error arms is exercisable through a faulting test
+/// sink while production writes a real file through the same single body.
+async fn write_to(
+    writer: &mut (dyn tokio::io::AsyncWrite + Unpin + Send),
+    line: &str,
+) -> Result<(), StoreError> {
+    writer.write_all(line.as_bytes()).await?;
+    writer.write_all(b"\n").await?;
+    writer.flush().await?;
+    Ok(())
 }
 
 /// Replay one event onto a flow during restart (best-effort; the JSONL is the
@@ -277,4 +312,149 @@ async fn write_markdown(path: &Path, flow: &Flow) -> Result<(), StoreError> {
     }
     tokio::fs::write(path, out).await?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::BTreeMap;
+
+    fn unique(tag: &str) -> PathBuf {
+        use std::sync::atomic::{AtomicU64, Ordering};
+        static N: AtomicU64 = AtomicU64::new(0);
+        let n = N.fetch_add(1, Ordering::Relaxed);
+        std::env::temp_dir().join(format!("flow-store-u-{tag}-{}-{n}", std::process::id()))
+    }
+
+    /// The Err arm: a serialization failure maps to `StoreError::Serialize`. A
+    /// map with a non-string key is rejected by `serde_json::to_string`, giving a
+    /// real `serde_json::Error` to feed in.
+    #[test]
+    fn into_store_line_maps_serialize_error() {
+        let mut bad: BTreeMap<(u8, u8), u8> = BTreeMap::new();
+        bad.insert((1, 2), 3);
+        let serde_result = serde_json::to_string(&bad);
+        let err = into_store_line(serde_result).unwrap_err();
+        // StoreError has no PartialEq (it wraps io/serde errors), so pin the
+        // variant via its Display prefix rather than a `matches!` (whose dead
+        // fail-arm would read as an uncovered region).
+        assert!(err.to_string().starts_with("serialize error"));
+    }
+
+    /// The Ok arm: a successful serde result passes the line straight through —
+    /// the same path `commit` takes for an `Event`.
+    #[test]
+    fn into_store_line_passes_ok_through() {
+        let ev = Event::SysMsg { text: "x".into() };
+        let line = into_store_line(serde_json::to_string(&ev)).unwrap();
+        assert_eq!(line, ev.to_jsonl().unwrap());
+    }
+
+    #[tokio::test]
+    async fn append_line_appends_two_lines() {
+        let dir = unique("appok");
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("events.jsonl");
+        append_line(&path, "one").await.unwrap();
+        append_line(&path, "two").await.unwrap();
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), "one\ntwo\n");
+    }
+
+    #[tokio::test]
+    async fn append_line_fails_when_path_is_a_directory() {
+        // Opening a directory for append fails, exercising append_line's open `?`.
+        let dir = unique("appdir");
+        std::fs::create_dir_all(&dir).unwrap();
+        assert!(append_line(&dir, "x").await.is_err());
+    }
+
+    #[tokio::test]
+    async fn write_to_succeeds_into_a_buffer() {
+        // A Vec<u8> is an AsyncWrite that never faults: the happy path.
+        let mut buf: Vec<u8> = Vec::new();
+        write_to(&mut buf, "hi").await.unwrap();
+        assert_eq!(buf, b"hi\n");
+    }
+
+    /// An async sink that succeeds for `ok_writes` `write_all`s, then faults; the
+    /// flush faults iff `fail_flush`. Drives every `?` arm of `write_to` through
+    /// the same single (dyn-dispatched) body production uses.
+    struct FaultSink {
+        ok_writes: usize,
+        fail_flush: bool,
+    }
+
+    impl tokio::io::AsyncWrite for FaultSink {
+        fn poll_write(
+            mut self: std::pin::Pin<&mut Self>,
+            _cx: &mut std::task::Context<'_>,
+            buf: &[u8],
+        ) -> std::task::Poll<io::Result<usize>> {
+            if self.ok_writes == 0 {
+                return std::task::Poll::Ready(Err(io::Error::other("write fault")));
+            }
+            self.ok_writes -= 1;
+            std::task::Poll::Ready(Ok(buf.len()))
+        }
+
+        fn poll_flush(
+            self: std::pin::Pin<&mut Self>,
+            _cx: &mut std::task::Context<'_>,
+        ) -> std::task::Poll<io::Result<()>> {
+            if self.fail_flush {
+                std::task::Poll::Ready(Err(io::Error::other("flush fault")))
+            } else {
+                std::task::Poll::Ready(Ok(()))
+            }
+        }
+
+        fn poll_shutdown(
+            self: std::pin::Pin<&mut Self>,
+            _cx: &mut std::task::Context<'_>,
+        ) -> std::task::Poll<io::Result<()>> {
+            std::task::Poll::Ready(Ok(()))
+        }
+    }
+
+    #[tokio::test]
+    async fn write_to_fails_on_payload_write() {
+        let mut s = FaultSink {
+            ok_writes: 0,
+            fail_flush: false,
+        };
+        assert!(write_to(&mut s, "x").await.is_err());
+    }
+
+    #[tokio::test]
+    async fn write_to_fails_on_newline_write() {
+        // The payload write_all succeeds; the newline write_all faults.
+        let mut s = FaultSink {
+            ok_writes: 1,
+            fail_flush: false,
+        };
+        assert!(write_to(&mut s, "x").await.is_err());
+    }
+
+    #[tokio::test]
+    async fn write_to_fails_on_flush() {
+        // Both write_alls succeed; the flush faults.
+        let mut s = FaultSink {
+            ok_writes: 2,
+            fail_flush: true,
+        };
+        assert!(write_to(&mut s, "x").await.is_err());
+    }
+
+    #[tokio::test]
+    async fn faultsink_success_flush_and_shutdown() {
+        use tokio::io::AsyncWriteExt;
+        // A fully successful write drives poll_flush's Ok (else) arm…
+        let mut s = FaultSink {
+            ok_writes: 5,
+            fail_flush: false,
+        };
+        write_to(&mut s, "ok").await.unwrap();
+        // …and an explicit shutdown drives poll_shutdown.
+        s.shutdown().await.unwrap();
+    }
 }

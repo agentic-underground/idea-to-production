@@ -285,3 +285,58 @@ fn graph_error_response(err: GraphError) -> Response {
 fn error_response(status: StatusCode, code: &str, message: &str) -> Response {
     (status, Json(json!({ "error": code, "message": message }))).into_response()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::domain::ItemId;
+
+    fn id(s: &str) -> ItemId {
+        ItemId::new(s).unwrap()
+    }
+
+    /// The IO/Serialize store error renders a 500 internal error. This path is
+    /// not reachable through a normal request (a write only fails on a real disk
+    /// fault), so the renderer is pinned directly.
+    #[test]
+    fn store_io_error_renders_500() {
+        let err = StoreError::Io(std::io::Error::other("disk"));
+        assert_eq!(
+            store_error_response(err).status(),
+            StatusCode::INTERNAL_SERVER_ERROR
+        );
+    }
+
+    #[test]
+    fn store_serialize_error_renders_500() {
+        // A serde_json error wrapped as a Serialize store error.
+        let serde_err = serde_json::from_str::<serde_json::Value>("{").unwrap_err();
+        let err = StoreError::Serialize(serde_err);
+        assert_eq!(
+            store_error_response(err).status(),
+            StatusCode::INTERNAL_SERVER_ERROR
+        );
+    }
+
+    /// A `FlowError::Graph` cannot arise from a carriage-advance verb (only the
+    /// connection verbs raise graph errors, and they surface as `StoreError::Graph`
+    /// directly), but the renderer handles it defensively: delegate to the graph
+    /// renderer. Pin that delegation directly.
+    #[test]
+    fn flow_graph_error_delegates_to_graph_renderer() {
+        let err = FlowError::Graph(GraphError::Unknown { id: id("z") });
+        // Unknown graph endpoint → 404, matching graph_error_response.
+        assert_eq!(flow_error_response(err).status(), StatusCode::NOT_FOUND);
+    }
+
+    /// The graph BrokenDep variant renders 409 with the broken_dep code (the
+    /// non-Unknown, non-Cycle status arm).
+    #[test]
+    fn graph_broken_dep_renders_409() {
+        let err = GraphError::BrokenDep {
+            from: id("a"),
+            to: id("b"),
+        };
+        assert_eq!(graph_error_response(err).status(), StatusCode::CONFLICT);
+    }
+}

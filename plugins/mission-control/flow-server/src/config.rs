@@ -145,6 +145,18 @@ mod tests {
     }
 
     #[test]
+    fn missing_value_errors_for_every_flag() {
+        // Each value-taking flag reports MissingValue when its value is absent.
+        for flag in ["--host", "--port", "--token", "--static", "--data"] {
+            assert_eq!(
+                Config::from_args(argv(&[flag])),
+                Err(ConfigError::MissingValue { flag: flag.into() }),
+                "flag {flag} should require a value"
+            );
+        }
+    }
+
+    #[test]
     fn bad_value_errors() {
         assert_eq!(
             Config::from_args(argv(&["--port", "notnum"])),

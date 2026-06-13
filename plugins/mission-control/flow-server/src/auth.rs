@@ -25,8 +25,7 @@ impl Token {
 
     /// Load the token from `path`, generating and persisting a fresh one if the
     /// file is absent.
-    pub async fn load_or_create(path: impl AsRef<Path>) -> std::io::Result<Self> {
-        let path = path.as_ref();
+    pub async fn load_or_create(path: &Path) -> std::io::Result<Self> {
         if let Ok(existing) = tokio::fs::read_to_string(path).await {
             let trimmed = existing.trim().to_string();
             if !trimmed.is_empty() {
@@ -136,6 +135,30 @@ mod tests {
         // Re-loading yields the same token.
         let second = Token::load_or_create(&path).await.unwrap();
         assert!(second.matches(first.0.as_str()));
+    }
+
+    #[tokio::test]
+    async fn load_or_create_errors_when_path_has_no_parent_and_is_unwritable() {
+        // The empty path has no parent (so create_dir_all is skipped) and cannot
+        // be written, so the write `?` propagates an error.
+        let err = Token::load_or_create(std::path::Path::new("")).await;
+        assert!(err.is_err(), "writing the empty path must fail");
+    }
+
+    #[tokio::test]
+    async fn load_or_create_errors_when_parent_dir_cannot_be_created() {
+        // Place the token under a path whose ancestor is an existing *file*, so
+        // create_dir_all fails and the `?` propagates.
+        let base = std::env::temp_dir().join(format!("flow-auth-file-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&base);
+        let _ = std::fs::remove_file(&base);
+        std::fs::create_dir_all(&base).unwrap();
+        let file = base.join("not-a-dir");
+        std::fs::write(&file, "x").unwrap();
+        // `file` is a regular file; treating it as a directory must fail.
+        let path = file.join("sub").join("token");
+        let err = Token::load_or_create(&path).await;
+        assert!(err.is_err(), "create_dir_all under a file must fail");
     }
 
     #[tokio::test]

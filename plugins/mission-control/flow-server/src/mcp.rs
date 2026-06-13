@@ -220,3 +220,60 @@ fn graph_error(id: Value, err: GraphError) -> Response {
     };
     rpc_error(id, -32000, &err.to_string(), json!({ "error": code }))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::body::to_bytes;
+
+    fn id_val() -> Value {
+        json!(1)
+    }
+
+    /// Collect a `Response` body into parsed JSON.
+    async fn body_json(resp: Response) -> Value {
+        let bytes = to_bytes(resp.into_body(), usize::MAX).await.unwrap();
+        serde_json::from_slice(&bytes).unwrap()
+    }
+
+    /// IO/Serialize store errors render the -32603 internal error. Not reachable
+    /// through a normal request (only a real disk fault triggers it), so the
+    /// renderer is pinned directly.
+    #[tokio::test]
+    async fn store_io_error_is_internal() {
+        let err = StoreError::Io(std::io::Error::other("disk"));
+        let v = body_json(store_error(id_val(), err)).await;
+        assert_eq!(v["error"]["code"], -32603);
+        assert_eq!(v["error"]["data"]["error"], "io");
+    }
+
+    #[tokio::test]
+    async fn store_serialize_error_is_internal() {
+        let serde_err = serde_json::from_str::<Value>("{").unwrap_err();
+        let v = body_json(store_error(id_val(), StoreError::Serialize(serde_err))).await;
+        assert_eq!(v["error"]["code"], -32603);
+    }
+
+    /// A `FlowError::Graph` cannot arise from a carriage-advance verb, but the
+    /// renderer delegates defensively to the graph renderer. Pin that.
+    #[tokio::test]
+    async fn flow_graph_error_delegates_to_graph() {
+        let inner = GraphError::Unknown {
+            id: ItemId::new("z").unwrap(),
+        };
+        let v = body_json(flow_error(id_val(), FlowError::Graph(inner))).await;
+        assert_eq!(v["error"]["code"], -32000);
+        assert_eq!(v["error"]["data"]["error"], "unknown");
+    }
+
+    /// The graph BrokenDep variant renders the broken_dep code (the middle arm).
+    #[tokio::test]
+    async fn graph_broken_dep_code() {
+        let err = GraphError::BrokenDep {
+            from: ItemId::new("a").unwrap(),
+            to: ItemId::new("b").unwrap(),
+        };
+        let v = body_json(graph_error(id_val(), err)).await;
+        assert_eq!(v["error"]["data"]["error"], "broken_dep");
+    }
+}

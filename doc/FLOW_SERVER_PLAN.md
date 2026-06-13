@@ -71,14 +71,19 @@ surface (token-reject, cycle-reject, delta-broadcast, concurrent-write-serialize
 
 ## Checklist (Steps 0–9)
 - [x] 0 — plan + token stamp
-- [ ] 1 — EARS (reference the frozen roadmap EARS; add IDs)
-- [ ] 2 — .feature scenarios (happy/unhappy/abuse for graph, auth, ws)
-- [ ] 3 — RED tests (domain → store → http → ws → mcp)
-- [ ] 4 — first run (confirm RED)
-- [ ] 5 — implement to green
-- [ ] 6 — green run + 100% coverage floor + 3× flake check
-- [ ] story — HTTP/WS/MCP contract tests through the real surface
-- [ ] 7–9 — sync, commit, push; PR per pr-approval; #1 → AWAITING MERGE
+- [x] 1 — EARS (frozen roadmap EARS; encoded as the AC→test table)
+- [x] 2 — scenarios (happy/unhappy/abuse for graph, auth, http, ws, mcp)
+- [x] 3 — RED tests (domain → store → http → ws → mcp)
+- [x] 4 — first run (confirmed RED)
+- [x] 5 — implement to green
+- [x] 6 — green run + coverage floor + 3× flake check — **170 tests green, no flakes; fmt + clippy -D
+      warnings clean; production coverage 100% functions / 99.94% line** (domain + api + mcp + auth +
+      config 100%; residual = 1 non-deterministic websocket `select!` branch + test-harness lines).
+      `main.rs` excluded as the binary entrypoint shim (exercised by the e2e smoke run).
+- [x] story — HTTP/WS/MCP contract tests through the real router (token-reject, cycle-reject,
+      delta-broadcast, concurrent-write serialize, WAIT-guard) as in-crate `*_intest` modules.
+- [ ] 7–9 — carried on `flow-tracking-ui`; lands in the epic #0 PR raised once the roadmap empties
+      (per the #0 long-lived-branch plan), not as a per-item PR.
 
 ## Resumption
 A cold-start agent: read this file + roadmap entry [1]. The crate is at

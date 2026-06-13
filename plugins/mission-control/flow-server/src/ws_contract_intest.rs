@@ -4,9 +4,9 @@
 
 use std::sync::Arc;
 
-use flow_server::api::build_router;
-use flow_server::auth::Token;
-use flow_server::store::Store;
+use crate::api::build_router;
+use crate::auth::Token;
+use crate::store::Store;
 
 use futures_util::StreamExt;
 use tokio_tungstenite::tungstenite::Message;
@@ -26,7 +26,7 @@ async fn state_change_broadcasts() {
     let store = Arc::new(Store::open(&dir).await.unwrap());
     store
         .upsert_item(
-            flow_server::domain::ItemId::new("a").unwrap(),
+            crate::domain::ItemId::new("a").unwrap(),
             "A".into(),
             "claude-sonnet-4-6".into(),
         )
@@ -51,8 +51,8 @@ async fn state_change_broadcasts() {
     // guaranteed to reach this subscriber.
     store
         .post_status(
-            &flow_server::domain::ItemId::new("a").unwrap(),
-            flow_server::domain::Status::Doing,
+            &crate::domain::ItemId::new("a").unwrap(),
+            crate::domain::Status::Doing,
         )
         .await
         .unwrap();
@@ -70,6 +70,72 @@ async fn state_change_broadcasts() {
     assert_eq!(v["kind"], "status_posted");
     assert_eq!(v["id"], "a");
     assert_eq!(v["status"], "doing");
+
+    server.abort();
+}
+
+#[tokio::test]
+async fn client_drop_completes_the_server_stream() {
+    let dir = tempdir();
+    let store = Arc::new(Store::open(&dir).await.unwrap());
+    store
+        .upsert_item(
+            crate::domain::ItemId::new("a").unwrap(),
+            "A".into(),
+            "claude-sonnet-4-6".into(),
+        )
+        .await
+        .unwrap();
+
+    let token = Token::new("tok");
+    let router = build_router(Arc::clone(&store), token, dir.join("static"));
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let addr = listener.local_addr().unwrap();
+    let server = tokio::spawn(async move {
+        axum::serve(listener, router).await.unwrap();
+    });
+
+    // Connect, prove a delta flows, then drop the client to simulate the browser
+    // closing the tab.
+    let url = format!("ws://{addr}/ws?token=tok");
+    let (mut ws, _resp) = tokio_tungstenite::connect_async(&url).await.unwrap();
+    store
+        .post_status(
+            &crate::domain::ItemId::new("a").unwrap(),
+            crate::domain::Status::Doing,
+        )
+        .await
+        .unwrap();
+    // Drain the first delta.
+    loop {
+        match ws.next().await {
+            Some(Ok(Message::Text(_))) => break,
+            Some(Ok(_)) => continue,
+            other => panic!("expected a delta, got {other:?}"),
+        }
+    }
+    drop(ws); // client gone
+
+    // Pump deltas until the server-side stream observes the dropped client and
+    // exits its loop (its broadcast receiver is dropped, so the count returns to
+    // zero). No sleeps: yield between attempts and bound the iterations.
+    let mut completed = false;
+    for _ in 0..10_000 {
+        store
+            .append_spend(&crate::domain::ItemId::new("a").unwrap(), 1)
+            .await
+            .unwrap();
+        if store.subscriber_count() == 0 {
+            completed = true;
+            break;
+        }
+        tokio::task::yield_now().await;
+    }
+    assert!(
+        completed,
+        "server stream_deltas must finish after the client drops"
+    );
 
     server.abort();
 }

@@ -3,9 +3,9 @@
 
 use std::sync::Arc;
 
-use flow_server::api::build_router;
-use flow_server::auth::Token;
-use flow_server::store::Store;
+use crate::api::build_router;
+use crate::auth::Token;
+use crate::store::Store;
 
 use axum::body::Body;
 use axum::http::{Request, StatusCode};
@@ -26,7 +26,7 @@ async fn seeded() -> (axum::Router, Arc<Store>) {
     let store = Arc::new(Store::open(&dir).await.unwrap());
     store
         .upsert_item(
-            flow_server::domain::ItemId::new("a").unwrap(),
+            crate::domain::ItemId::new("a").unwrap(),
             "A".into(),
             "claude-sonnet-4-6".into(),
         )
@@ -34,7 +34,7 @@ async fn seeded() -> (axum::Router, Arc<Store>) {
         .unwrap();
     store
         .upsert_item(
-            flow_server::domain::ItemId::new("b").unwrap(),
+            crate::domain::ItemId::new("b").unwrap(),
             "B".into(),
             "claude-sonnet-4-6".into(),
         )
@@ -184,9 +184,9 @@ async fn wait_state_refuses_carriage_advance() {
         store
             .snapshot()
             .await
-            .get(&flow_server::domain::ItemId::new("a").unwrap())
+            .get(&crate::domain::ItemId::new("a").unwrap())
             .unwrap()
             .status,
-        flow_server::domain::Status::Do
+        crate::domain::Status::Do
     );
 }
