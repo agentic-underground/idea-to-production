@@ -1,0 +1,287 @@
+//! The axum router: static-serve + the REST verb surface, the WS upgrade, and
+//! the MCP JSON-RPC endpoint — all behind the shared bearer-token gate.
+
+use std::path::PathBuf;
+use std::sync::Arc;
+
+use axum::extract::{Path, State};
+use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
+use axum::routing::{get, post};
+use axum::{Json, Router};
+use serde::Deserialize;
+use serde_json::{json, Value};
+use tower_http::services::ServeDir;
+
+use crate::auth::{require_token, Token};
+use crate::domain::graph::Mutation;
+use crate::domain::{FlowError, GraphError, ItemId, Status, WaitGate};
+use crate::store::{Store, StoreError};
+use crate::{mcp, ws};
+
+/// Shared application state handed to every handler.
+#[derive(Clone)]
+pub struct AppState {
+    /// The single serialized writer.
+    pub store: Arc<Store>,
+    /// The shared bearer token (also used by the WS handshake check).
+    pub token: Token,
+}
+
+/// Build the full router: static assets, REST verbs, WS, and MCP, all gated.
+pub fn build_router(store: Arc<Store>, token: Token, static_dir: PathBuf) -> Router {
+    let state = AppState {
+        store,
+        token: token.clone(),
+    };
+
+    // The gated surfaces (REST verbs + MCP) sit behind the auth middleware.
+    let gated = Router::new()
+        .route("/api/items", get(list_items))
+        .route("/api/items/:id", get(get_item))
+        .route("/api/items/:id/gate", post(set_wait_go))
+        .route("/api/items/:id/status", post(post_status))
+        .route("/api/items/:id/spend", post(append_spend))
+        .route("/api/items/:id/model", post(set_item_model))
+        .route("/api/connection/validate", post(validate_connection))
+        .route("/api/connection/mutate", post(mutate_connection))
+        .route("/api/sysmsg", post(append_sysmsg))
+        .route("/mcp", post(mcp::handle))
+        .layer(axum::middleware::from_fn_with_state(
+            token.clone(),
+            require_token,
+        ))
+        .with_state(state.clone());
+
+    // The WS route checks the token itself (the handshake cannot use the
+    // Authorization header from a browser, so it accepts `?token=`).
+    let ws_route = Router::new()
+        .route("/ws", get(ws::upgrade))
+        .with_state(state);
+
+    Router::new()
+        .merge(gated)
+        .merge(ws_route)
+        .fallback_service(ServeDir::new(static_dir))
+}
+
+// --- request bodies -------------------------------------------------------
+
+#[derive(Deserialize)]
+struct GateBody {
+    gate: WaitGate,
+}
+
+#[derive(Deserialize)]
+struct StatusBody {
+    status: Status,
+}
+
+#[derive(Deserialize)]
+struct SpendBody {
+    delta: u64,
+}
+
+#[derive(Deserialize)]
+struct ModelBody {
+    model: String,
+}
+
+#[derive(Deserialize)]
+struct ValidateBody {
+    from: String,
+    to: String,
+}
+
+#[derive(Deserialize)]
+struct MutateBody {
+    op: String,
+    from: String,
+    to: String,
+}
+
+#[derive(Deserialize)]
+struct SysMsgBody {
+    text: String,
+}
+
+// --- handlers -------------------------------------------------------------
+
+async fn list_items(State(state): State<AppState>) -> Response {
+    let flow = state.store.snapshot().await;
+    let items: Vec<Value> = flow.items_in_order().iter().map(|i| item_json(i)).collect();
+    Json(items).into_response()
+}
+
+async fn get_item(State(state): State<AppState>, Path(id): Path<String>) -> Response {
+    let id = match parse_id(&id) {
+        Ok(id) => id,
+        Err(e) => return id_error_response(e),
+    };
+    let flow = state.store.snapshot().await;
+    match flow.get(&id) {
+        Some(item) => Json(item_json(item)).into_response(),
+        None => error_response(StatusCode::NOT_FOUND, "unknown", "no such item"),
+    }
+}
+
+async fn set_wait_go(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    Json(body): Json<GateBody>,
+) -> Response {
+    let id = match parse_id(&id) {
+        Ok(id) => id,
+        Err(e) => return id_error_response(e),
+    };
+    map_store(state.store.set_gate(&id, body.gate).await)
+}
+
+async fn post_status(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    Json(body): Json<StatusBody>,
+) -> Response {
+    let id = match parse_id(&id) {
+        Ok(id) => id,
+        Err(e) => return id_error_response(e),
+    };
+    map_store(state.store.post_status(&id, body.status).await)
+}
+
+async fn append_spend(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    Json(body): Json<SpendBody>,
+) -> Response {
+    let id = match parse_id(&id) {
+        Ok(id) => id,
+        Err(e) => return id_error_response(e),
+    };
+    match state.store.append_spend(&id, body.delta).await {
+        Ok(total) => Json(json!({ "total": total })).into_response(),
+        Err(e) => store_error_response(e),
+    }
+}
+
+async fn set_item_model(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    Json(body): Json<ModelBody>,
+) -> Response {
+    let id = match parse_id(&id) {
+        Ok(id) => id,
+        Err(e) => return id_error_response(e),
+    };
+    map_store(state.store.set_item_model(&id, body.model).await)
+}
+
+async fn validate_connection(
+    State(state): State<AppState>,
+    Json(body): Json<ValidateBody>,
+) -> Response {
+    let (from, to) = match (parse_id(&body.from), parse_id(&body.to)) {
+        (Ok(f), Ok(t)) => (f, t),
+        (Err(e), _) | (_, Err(e)) => return id_error_response(e),
+    };
+    match state.store.validate_connection(&from, &to).await {
+        Ok(()) => Json(json!({ "ok": true })).into_response(),
+        Err(e) => graph_error_response(e),
+    }
+}
+
+async fn mutate_connection(
+    State(state): State<AppState>,
+    Json(body): Json<MutateBody>,
+) -> Response {
+    let mutation = match body.op.as_str() {
+        "add" => Mutation::Add,
+        "remove" => Mutation::Remove,
+        other => {
+            return error_response(
+                StatusCode::BAD_REQUEST,
+                "bad_op",
+                &format!("unknown op {other:?}"),
+            )
+        }
+    };
+    let (from, to) = match (parse_id(&body.from), parse_id(&body.to)) {
+        (Ok(f), Ok(t)) => (f, t),
+        (Err(e), _) | (_, Err(e)) => return id_error_response(e),
+    };
+    map_store(state.store.mutate_connection(mutation, from, to).await)
+}
+
+async fn append_sysmsg(State(state): State<AppState>, Json(body): Json<SysMsgBody>) -> Response {
+    map_store(state.store.append_sysmsg(body.text).await)
+}
+
+// --- shared rendering -----------------------------------------------------
+
+/// Render an item as the canonical JSON the REST + MCP surfaces both return.
+pub(crate) fn item_json(item: &crate::domain::Item) -> Value {
+    json!({
+        "id": item.id.as_str(),
+        "title": item.title,
+        "status": item.status,
+        "gate": item.gate,
+        "tokens": item.tokens,
+        "model": item.model,
+    })
+}
+
+fn parse_id(raw: &str) -> Result<ItemId, crate::domain::IdError> {
+    ItemId::new(raw)
+}
+
+fn id_error_response(err: crate::domain::IdError) -> Response {
+    error_response(StatusCode::BAD_REQUEST, "bad_id", &err.to_string())
+}
+
+fn map_store(result: Result<(), StoreError>) -> Response {
+    match result {
+        Ok(()) => Json(json!({ "ok": true })).into_response(),
+        Err(e) => store_error_response(e),
+    }
+}
+
+fn store_error_response(err: StoreError) -> Response {
+    match err {
+        StoreError::Graph(g) => graph_error_response(g),
+        StoreError::Flow(f) => flow_error_response(f),
+        StoreError::Io(_) | StoreError::Serialize(_) => error_response(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "io",
+            "internal store error",
+        ),
+    }
+}
+
+fn flow_error_response(err: FlowError) -> Response {
+    match err {
+        FlowError::Waiting { .. } => {
+            error_response(StatusCode::CONFLICT, "waiting", &err.to_string())
+        }
+        FlowError::Unknown { .. } => {
+            error_response(StatusCode::NOT_FOUND, "unknown", &err.to_string())
+        }
+        FlowError::Graph(g) => graph_error_response(g),
+    }
+}
+
+fn graph_error_response(err: GraphError) -> Response {
+    let code = match err {
+        GraphError::Cycle { .. } => "cycle",
+        GraphError::BrokenDep { .. } => "broken_dep",
+        GraphError::Unknown { .. } => "unknown",
+    };
+    let status = match err {
+        GraphError::Unknown { .. } => StatusCode::NOT_FOUND,
+        _ => StatusCode::CONFLICT,
+    };
+    error_response(status, code, &err.to_string())
+}
+
+fn error_response(status: StatusCode, code: &str, message: &str) -> Response {
+    (status, Json(json!({ "error": code, "message": message }))).into_response()
+}

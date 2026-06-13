@@ -1,0 +1,154 @@
+//! Bearer-token auth. The shared token is read from a local file (generated on
+//! first run). The same gate guards HTTP, WS, and MCP: every request must carry
+//! `Authorization: Bearer <token>` (or `?token=<token>` for the WS handshake,
+//! which cannot set headers from a browser). A missing/invalid token is 401 and
+//! mutates nothing.
+
+use std::path::Path;
+use std::sync::Arc;
+
+use axum::body::Body;
+use axum::extract::State;
+use axum::http::{Request, StatusCode};
+use axum::middleware::Next;
+use axum::response::Response;
+
+/// The shared bearer token.
+#[derive(Debug, Clone)]
+pub struct Token(Arc<String>);
+
+impl Token {
+    /// Wrap a raw token string.
+    pub fn new(raw: impl Into<String>) -> Self {
+        Token(Arc::new(raw.into()))
+    }
+
+    /// Load the token from `path`, generating and persisting a fresh one if the
+    /// file is absent.
+    pub async fn load_or_create(path: impl AsRef<Path>) -> std::io::Result<Self> {
+        let path = path.as_ref();
+        if let Ok(existing) = tokio::fs::read_to_string(path).await {
+            let trimmed = existing.trim().to_string();
+            if !trimmed.is_empty() {
+                return Ok(Token::new(trimmed));
+            }
+        }
+        if let Some(parent) = path.parent() {
+            tokio::fs::create_dir_all(parent).await?;
+        }
+        let generated = generate_token();
+        tokio::fs::write(path, &generated).await?;
+        Ok(Token::new(generated))
+    }
+
+    /// Constant-time-ish equality check against a presented credential.
+    pub fn matches(&self, presented: &str) -> bool {
+        let expected = self.0.as_bytes();
+        let got = presented.as_bytes();
+        if expected.len() != got.len() {
+            return false;
+        }
+        let mut diff = 0u8;
+        for (a, b) in expected.iter().zip(got.iter()) {
+            diff |= a ^ b;
+        }
+        diff == 0
+    }
+
+    /// Extract a presented token from an `Authorization: Bearer` header value,
+    /// or `None` if the scheme is absent/wrong.
+    pub fn from_bearer_header(value: &str) -> Option<&str> {
+        value.strip_prefix("Bearer ").map(str::trim)
+    }
+}
+
+/// Generate a non-cryptographic-but-unguessable token from process + time
+/// entropy. (A network-reachable surface; documented as a shared secret, not a
+/// crypto key — sufficient for a LAN governance UI.)
+fn generate_token() -> String {
+    use std::time::{SystemTime, UNIX_EPOCH};
+    let nanos = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map(|d| d.as_nanos())
+        .unwrap_or(0);
+    let pid = std::process::id();
+    format!("{nanos:x}{pid:x}")
+}
+
+/// Axum middleware: reject any request lacking a valid bearer token with 401,
+/// before it reaches a handler that could mutate state.
+pub async fn require_token(
+    State(token): State<Token>,
+    request: Request<Body>,
+    next: Next,
+) -> Response {
+    let presented = request
+        .headers()
+        .get(axum::http::header::AUTHORIZATION)
+        .and_then(|v| v.to_str().ok())
+        .and_then(Token::from_bearer_header);
+
+    match presented {
+        Some(p) if token.matches(p) => next.run(request).await,
+        _ => unauthorized(),
+    }
+}
+
+fn unauthorized() -> Response {
+    Response::builder()
+        .status(StatusCode::UNAUTHORIZED)
+        .body(Body::from("missing or invalid bearer token"))
+        .expect("static 401 response is always valid")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn matches_only_exact_token() {
+        let t = Token::new("secret");
+        assert!(t.matches("secret"));
+        assert!(!t.matches("Secret"));
+        assert!(!t.matches("secre"));
+        assert!(!t.matches("secrets"));
+        assert!(!t.matches(""));
+    }
+
+    #[test]
+    fn parses_bearer_header() {
+        assert_eq!(Token::from_bearer_header("Bearer abc"), Some("abc"));
+        assert_eq!(Token::from_bearer_header("Bearer  abc "), Some("abc"));
+        assert_eq!(Token::from_bearer_header("Basic abc"), None);
+        assert_eq!(Token::from_bearer_header("abc"), None);
+    }
+
+    #[tokio::test]
+    async fn load_or_create_generates_then_reuses() {
+        let dir = std::env::temp_dir().join(format!("flow-auth-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        let path = dir.join("token");
+
+        let first = Token::load_or_create(&path).await.unwrap();
+        // File now exists and is non-empty.
+        let on_disk = std::fs::read_to_string(&path).unwrap();
+        assert!(!on_disk.trim().is_empty());
+        // Re-loading yields the same token.
+        let second = Token::load_or_create(&path).await.unwrap();
+        assert!(second.matches(first.0.as_str()));
+    }
+
+    #[tokio::test]
+    async fn load_or_create_ignores_empty_file() {
+        let dir = std::env::temp_dir().join(format!("flow-auth-empty-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("token");
+        std::fs::write(&path, "   \n").unwrap();
+        let t = Token::load_or_create(&path).await.unwrap();
+        // A fresh non-empty token replaced the blank file.
+        let on_disk = std::fs::read_to_string(&path).unwrap();
+        assert!(!on_disk.trim().is_empty());
+        assert!(t.matches(on_disk.trim()));
+    }
+}
