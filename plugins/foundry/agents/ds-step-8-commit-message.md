@@ -39,6 +39,13 @@ Produce a commit message that satisfies every quality rule and exit criterion in
 The structure is WHY/WHAT/TESTING/ROADMAP. The summary line MUST include a Conventional Commits
 type prefix: `[emoji] type(scope): short imperative summary (≤72 chars total)`.
 
+If the item **already** has an associated GitHub issue on an **allowlisted origin** (default
+`agentic-underground/*` — see the GitHub issue linkage rule in
+`${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/commit-message.md §2`), include the `GITHUB_ISSUE: #N`
+footer trailer alongside `ROADMAP:`. On a **first** delivery the issue does not exist yet — leave the
+trailer **out**; step-9 raises the issue and stamps the trailer via `git commit --amend`. Omit it
+entirely on non-allowlisted origins (no issue ⇒ no trailer).
+
 ## Quality Rules
 
 > Full quality rules and exit criteria: **`${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/commit-message.md §5–§6`**

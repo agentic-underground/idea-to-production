@@ -60,7 +60,11 @@ lenses share the **4×9 charting-matrix** legibility law with the diagram produc
 same lessons log. The lenses also run in a **comparative (A/B) mode** when the [`illustrator`](../illustrator/SKILL.md)
 hands them *two* options instead of one — score each, crown a winner, and refuse to call it the *best* until
 it earns it (the [`references/ab-comparative-loop.md`](references/ab-comparative-loop.md), sibling to the
-convergent loop below).
+convergent loop below). That comparative loop is **bounded to `MAX_TURNS = 4` rounds**: it **accepts early**
+when the champion's fitness score meets `TARGET (85/100)` **OR** the verdict is `BEST` (`PASS`), and **on the
+cap ships the best-scoring draft** with a logged `CAP` note rather than spinning past the bound. The reviewer
+owns the score and the verdict; the orchestrator owns the carry-forward and the cap — see the loop reference
+for the exact `signal: BEST | LEAST-WORSE | CAP` schema.
 
 ## How to run
 

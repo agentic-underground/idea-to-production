@@ -26,6 +26,7 @@ and simply emits markdown.
 | **incident** | severity, ICS roles, mitigate-first, runbook, blameless postmortem | `/incident [declare\|runbook\|postmortem]` |
 | **iterate** | build-measure-learn → a new OPPORTUNITY re-enters DISCOVER (↻) | `/iterate` |
 | **maintain** | dependency upkeep, CVE patching, rotation, restore drills, tech-debt | `/maintain [path]` |
+| **wiki-publisher** | opt-in: publish PRESSROOM's per-item docs + illustrations to the origin's GitHub `.wiki.git` | `/wiki-publisher [path]` |
 
 `/operate-gate` is the front door — it certifies a product is **ready to operate** at go-live and gives the
 **steady-state health view** once it's live, composing the other lenses into one report.

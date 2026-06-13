@@ -236,6 +236,12 @@ handoff:
 
 ---
 
+> **Annotation on completion.** When you finish your contribution, emit one value-add annotation
+> per [`../knowledge/protocols/handler-annotation.md`](../knowledge/protocols/handler-annotation.md)
+> — append it to the item's GitHub issue, or to the local log if it has none.
+
+---
+
 ## KAIZEN Covenant
 
 This agent carries the KAIZEN self-improvement covenant. If the same pattern

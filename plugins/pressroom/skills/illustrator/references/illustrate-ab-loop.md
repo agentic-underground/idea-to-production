@@ -32,11 +32,18 @@
    - **Regenerate ONLY the challenger** per `next_challenger_brief` — a fresh attempt aimed at *beating* the
      current champion, exploring a different point in the design space.
    - Re-review winner vs new-challenger.
-4. **Stop** on the first of:
-   - **BEST-REACHED** — `signal: BEST` (the champion earns it; see the termination rule below). Celebrate, emit.
+4. **Stop** on the first of (the loop is **bounded to `MAX_TURNS = 4` rounds** and **accepts early**):
+   - **BEST-REACHED** — `signal: BEST` (the champion earns it; see the termination rule below) **OR** the
+     champion's fitness score meets `TARGET (85/100)`. Celebrate, emit. This is the early-accept gate: the
+     loop does not keep racing once the champion is already good enough.
    - **HALT-DIMINISHING-RETURNS** — the best-of-pair score gains `< +3` across turns with no BEST: surface the
      impasse and the residual, ask the user (accept the champion / change approach / relax a constraint).
-   - **CAP** — `MAX_TURNS = 4` (baseline + 3, matching the prose and convergent loops).
+   - **CAP** — `MAX_TURNS = 4` (baseline + 3, matching the prose and convergent loops) reached without `BEST`.
+     **On the cap, do not return empty and do not take another lap: ship the best-scoring draft seen so far** —
+     the carried champion, whose score is monotonic (§ Anti-ping-pong), so the best-scoring draft *is* the
+     current champion. Record a **cap note**: `signal: CAP`, the champion's `final_score`, `turns: 4`, and the
+     single highest-priority residual finding, so the ledger shows the figure shipped under the bound with its
+     known gap rather than as a clean `BEST`.
 
 ## "The best", not "the least-worse" — the termination
 
@@ -65,8 +72,10 @@ declaring victory the moment one option edges out a poor sibling.
 
 ## On emit (loop / `docs` mode)
 
-When `BEST-REACHED`, the orchestrator: writes the asset to `<doc-dir>/diagrams/NN-name.{svg,png}`; embeds
-`![<alt_text>](diagrams/NN-name.ext)` after the SPEC's `insert_after` line (idempotently — see the SKILL's
-ledger section); appends the site's outcome (`winner`, `final_score`, `signal: BEST`, `turns`) to
-`.pressroom/illustration-ledger.json`. In single-shot mode it stops at "emit the asset" and shows it to the
+When `BEST-REACHED` **or `CAP`**, the orchestrator: writes the asset to `<doc-dir>/diagrams/NN-name.{svg,png}`;
+embeds `![<alt_text>](diagrams/NN-name.ext)` after the SPEC's `insert_after` line (idempotently — see the
+SKILL's ledger section); appends the site's outcome (`winner`, `final_score`, `signal: BEST | CAP`, `turns`,
+and on `CAP` the residual `cap_note`) to `.pressroom/illustration-ledger.json`. A `CAP` outcome ships the
+best-scoring champion under the bound and records the gap; it is *not* re-attempted on a later resumable pass
+unless the doc's `content_hash` changes. In single-shot mode it stops at "emit the asset" and shows it to the
 user without editing the doc, unless asked.
