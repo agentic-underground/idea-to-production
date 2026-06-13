@@ -674,7 +674,8 @@ pipeline runs **per completed roadmap item**, gated by the token-fairness schedu
 ---
 
 ## [9] EPIC — Process-Documentation & Git Governance (docs emerge as we build)
-> STATUS: AWAITING MERGE
+> STATUS: COMPLETE
+> COMPLETED: 2026-06-13 (PR #42)
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > BRANCH: flow-tracking-ui (carried with the flow epic; this is the value system's governance + online-docs behaviour)
@@ -735,7 +736,8 @@ front, that its roadmap items will be documented this way.
 ---
 
 ## [10] Commit → Issue → PR governance (org-allowlisted)
-> STATUS: AWAITING MERGE
+> STATUS: COMPLETE
+> COMPLETED: 2026-06-13 (PR #42)
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > DEPENDS ON: — (extends existing FOUNDRY commit + merge governance; needs the `gh` CLI)
@@ -783,7 +785,8 @@ merge. Non-allowlisted origins keep commits + local docs only.
 ---
 
 ## [11] Issues as process-documentation — per-handler annotation
-> STATUS: AWAITING MERGE
+> STATUS: COMPLETE
+> COMPLETED: 2026-06-13 (PR #42)
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > DEPENDS ON: #10
@@ -821,7 +824,8 @@ layer (no opus pipeline).
 ---
 
 ## [12] Roadmap-item documentation + illustration pipeline (PRESSROOM)
-> STATUS: AWAITING MERGE
+> STATUS: COMPLETE
+> COMPLETED: 2026-06-13 (PR #42)
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > DEPENDS ON: — (atomic; PRESSROOM; token-fairness-gated)
@@ -893,7 +897,8 @@ off-peak job through the token-fairness gate.
 ---
 
 ## [13] GitHub wiki construction (opt-in, any github origin)
-> STATUS: AWAITING MERGE
+> STATUS: COMPLETE
+> COMPLETED: 2026-06-13 (PR #42)
 > ADDED: 2026-06-13
 > PRIORITY: MEDIUM
 > DEPENDS ON: #10, #12
@@ -930,7 +935,8 @@ The wiki emerges and updates as the project is built.
 ---
 
 ## [14] Onboarding alert — "items will be documented this way"
-> STATUS: AWAITING MERGE
+> STATUS: COMPLETE
+> COMPLETED: 2026-06-13 (PR #42)
 > ADDED: 2026-06-13
 > PRIORITY: MEDIUM
 > DEPENDS ON: — (atomic; CONCIERGE)
