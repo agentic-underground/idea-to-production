@@ -620,7 +620,7 @@ pipeline runs **per completed roadmap item**, gated by the token-fairness schedu
 ---
 
 ## [9] EPIC — Process-Documentation & Git Governance (docs emerge as we build)
-> STATUS: PENDING
+> STATUS: IN PROGRESS
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > BRANCH: flow-tracking-ui (carried with the flow epic; this is the value system's governance + online-docs behaviour)
