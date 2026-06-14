@@ -113,6 +113,8 @@ export function renderCard(item, pos, { onToggleGate, onPickModel } = {}) {
   })
 
   g.appendChild(el('rect', { width: CARD_W, height: CARD_H, rx: 14, ry: 14, class: 'card-bg' }))
+  // glowing left accent bar — recoloured by the card's status in app.css (DO/DOING/DONE)
+  g.appendChild(el('rect', { x: 1, y: 14, width: 5, height: CARD_H - 28, rx: 2.5, ry: 2.5, class: 'card-accent' }))
   g.appendChild(el('text', { x: 16, y: 30, class: 'card-title' }, item.title))
 
   // badge row
