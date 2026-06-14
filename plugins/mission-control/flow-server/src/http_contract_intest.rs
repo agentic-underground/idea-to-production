@@ -285,6 +285,140 @@ async fn annotate_happy_unknown_and_bad_body() {
 }
 
 #[tokio::test]
+async fn events_is_token_gated_and_returns_the_log() {
+    let (router, store) = seeded().await;
+
+    // Token-gated: no token → 401, and nothing is read out.
+    let resp = router
+        .clone()
+        .oneshot(
+            Request::builder()
+                .uri("/api/events")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+
+    // Append a couple of events through the verbs so the log is non-trivial.
+    let (status, _) = post_json(&router, "/api/sysmsg", serde_json::json!({"text":"hello"})).await;
+    assert_eq!(status, StatusCode::OK);
+    let (status, _) = post_json(
+        &router,
+        "/api/items/a/annotate",
+        serde_json::json!({"text":"note"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+
+    // With the token, the full event log comes back, newest-last (append order):
+    // two seed upserts, then the sysmsg, then the annotation.
+    let resp = router
+        .clone()
+        .oneshot(
+            Request::builder()
+                .uri("/api/events")
+                .header("Authorization", "Bearer test-token")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let bytes = resp.into_body().collect().await.unwrap().to_bytes();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    let events = v.as_array().unwrap();
+    // The same count and order the store replays.
+    let logged = store.read_events().await.unwrap();
+    assert_eq!(events.len(), logged.len());
+    assert_eq!(events[0]["kind"], "item_upserted");
+    assert_eq!(events[events.len() - 2]["kind"], "sys_msg");
+    assert_eq!(events[events.len() - 1]["kind"], "annotated");
+    assert_eq!(events[events.len() - 1]["text"], "note");
+}
+
+#[tokio::test]
+async fn events_read_error_renders_500() {
+    // A malformed JSONL line makes `read_events` fail; the handler surfaces it as
+    // a 500 internal store error (the only non-happy arm of `list_events`).
+    let dir = tempdir("everr");
+    let store = Arc::new(Store::open(&dir).await.unwrap());
+    store
+        .upsert_item(
+            crate::domain::ItemId::new("a").unwrap(),
+            "A".into(),
+            "claude-sonnet-4-6".into(),
+        )
+        .await
+        .unwrap();
+    let mut log = std::fs::read_to_string(dir.join("events.jsonl")).unwrap();
+    log.push_str("{not valid json}\n");
+    std::fs::write(dir.join("events.jsonl"), log).unwrap();
+
+    let router = build_router(
+        Arc::clone(&store),
+        Token::new("test-token"),
+        dir.join("static"),
+    );
+    let resp = router
+        .oneshot(
+            Request::builder()
+                .uri("/api/events")
+                .header("Authorization", "Bearer test-token")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::INTERNAL_SERVER_ERROR);
+}
+
+#[tokio::test]
+async fn events_filters_by_kind() {
+    let (router, _store) = seeded().await;
+    // Append one sysmsg amid the seed upserts.
+    let (status, _) = post_json(&router, "/api/sysmsg", serde_json::json!({"text":"x"})).await;
+    assert_eq!(status, StatusCode::OK);
+
+    // ?kind=sys_msg returns only the system message(s).
+    let resp = router
+        .clone()
+        .oneshot(
+            Request::builder()
+                .uri("/api/events?kind=sys_msg")
+                .header("Authorization", "Bearer test-token")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let bytes = resp.into_body().collect().await.unwrap().to_bytes();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    let events = v.as_array().unwrap();
+    assert_eq!(events.len(), 1);
+    assert_eq!(events[0]["kind"], "sys_msg");
+    assert_eq!(events[0]["text"], "x");
+
+    // A kind that matches nothing yields an empty array (not an error).
+    let resp = router
+        .oneshot(
+            Request::builder()
+                .uri("/api/events?kind=connection_added")
+                .header("Authorization", "Bearer test-token")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let bytes = resp.into_body().collect().await.unwrap().to_bytes();
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+    assert!(v.as_array().unwrap().is_empty());
+}
+
+#[tokio::test]
 async fn rewrite_happy_unknown_and_bad_body() {
     let (router, store) = seeded().await;
     // Happy: request a rewrite → draft increments to 1.

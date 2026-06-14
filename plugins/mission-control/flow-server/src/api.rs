@@ -4,7 +4,7 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
@@ -49,6 +49,7 @@ pub fn build_router(store: Arc<Store>, token: Token, static_dir: PathBuf) -> Rou
         .route("/api/connection/validate", post(validate_connection))
         .route("/api/connection/mutate", post(mutate_connection))
         .route("/api/sysmsg", post(append_sysmsg))
+        .route("/api/events", get(list_events))
         .route("/mcp", post(mcp::handle))
         .layer(axum::middleware::from_fn_with_state(
             token.clone(),
@@ -116,6 +117,12 @@ struct AnnotateBody {
 #[derive(Deserialize)]
 struct RewriteBody {
     comment: String,
+}
+
+#[derive(Deserialize)]
+struct EventsQuery {
+    /// Optional `kind` filter (the event's serde tag, e.g. `sys_msg`).
+    kind: Option<String>,
 }
 
 // --- handlers -------------------------------------------------------------
@@ -229,6 +236,17 @@ async fn append_sysmsg(State(state): State<AppState>, Json(body): Json<SysMsgBod
     map_store(state.store.append_sysmsg(body.text).await)
 }
 
+/// Return the full event log (append order, newest-last) as a JSON array, each
+/// event in its canonical jsonl/serde shape. `?kind=<tag>` filters to one event
+/// kind (the serde `kind` tag, e.g. `sys_msg`). Feeds the frontend's
+/// system-message feed (#6), which loads past events on connect.
+async fn list_events(State(state): State<AppState>, Query(q): Query<EventsQuery>) -> Response {
+    match state.store.read_events().await {
+        Ok(events) => Json(events_json(&events, q.kind.as_deref())).into_response(),
+        Err(e) => store_error_response(e),
+    }
+}
+
 async fn annotate(
     State(state): State<AppState>,
     Path(id): Path<String>,
@@ -284,6 +302,22 @@ pub(crate) fn item_json(item: &crate::domain::Item) -> Value {
         "tokens": item.tokens,
         "model": item.model,
     })
+}
+
+/// Render the event log as the JSON array both the REST and MCP surfaces return.
+/// Each event is serialized in its canonical serde shape (the same `kind`-tagged
+/// form as the jsonl log). When `kind` is `Some`, only events whose serde `kind`
+/// tag equals it are kept; the events already carry that tag, so the filter reads
+/// the rendered value rather than re-deriving it.
+pub(crate) fn events_json(events: &[crate::domain::Event], kind: Option<&str>) -> Vec<Value> {
+    events
+        .iter()
+        .map(|e| json!(e))
+        .filter(|v| match kind {
+            Some(want) => v.get("kind").and_then(Value::as_str) == Some(want),
+            None => true,
+        })
+        .collect()
 }
 
 fn parse_id(raw: &str) -> Result<ItemId, crate::domain::IdError> {

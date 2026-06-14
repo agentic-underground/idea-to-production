@@ -1,7 +1,7 @@
-//! Exhaustive MCP JSON-RPC surface contract: tools/list, every one of the twelve
-//! `tools/call` verbs (happy + error/abuse/malformed-params), the unknown-tool
-//! and unknown-method envelopes, and the 401/no-token gate. Drives the real
-//! axum router via `oneshot`.
+//! Exhaustive MCP JSON-RPC surface contract: tools/list, every one of the
+//! thirteen `tools/call` verbs (happy + error/abuse/malformed-params), the
+//! unknown-tool and unknown-method envelopes, and the 401/no-token gate. Drives
+//! the real axum router via `oneshot`.
 
 use std::sync::Arc;
 
@@ -76,7 +76,7 @@ fn call(id: i64, name: &str, args: Value) -> Value {
 // --- envelopes ------------------------------------------------------------
 
 #[tokio::test]
-async fn tools_list_enumerates_the_twelve_verbs() {
+async fn tools_list_enumerates_the_thirteen_verbs() {
     let (router, _store) = seeded("list").await;
     let (status, v) = rpc(
         &router,
@@ -85,13 +85,69 @@ async fn tools_list_enumerates_the_twelve_verbs() {
     .await;
     assert_eq!(status, StatusCode::OK);
     let tools = v["result"]["tools"].as_array().unwrap();
-    // Nine original verbs plus roadmap #15 (render_roadmap) and roadmap #4
-    // (annotate, request_rewrite).
-    assert_eq!(tools.len(), 12);
+    // Nine original verbs plus roadmap #15 (render_roadmap), roadmap #4
+    // (annotate, request_rewrite), and the event-log reader (list_events).
+    assert_eq!(tools.len(), 13);
     assert!(tools.iter().any(|t| t == "append_sysmsg"));
     assert!(tools.iter().any(|t| t == "render_roadmap"));
     assert!(tools.iter().any(|t| t == "annotate"));
     assert!(tools.iter().any(|t| t == "request_rewrite"));
+    assert!(tools.iter().any(|t| t == "list_events"));
+}
+
+// --- list_events ----------------------------------------------------------
+
+#[tokio::test]
+async fn list_events_returns_the_log_newest_last() {
+    let (router, store) = seeded("le-ok").await;
+    let (_s, _) = rpc(&router, call(1, "append_sysmsg", json!({"text":"go"}))).await;
+    let (_s, v) = rpc(&router, call(2, "list_events", json!({}))).await;
+    let events = v["result"]["events"].as_array().unwrap();
+    // Two seed upserts plus the sysmsg, in append order.
+    let logged = store.read_events().await.unwrap();
+    assert_eq!(events.len(), logged.len());
+    assert_eq!(events[0]["kind"], "item_upserted");
+    assert_eq!(events[events.len() - 1]["kind"], "sys_msg");
+    assert_eq!(events[events.len() - 1]["text"], "go");
+}
+
+#[tokio::test]
+async fn list_events_read_error_is_internal() {
+    // A malformed JSONL line makes `read_events` fail; the verb surfaces it as the
+    // -32603 internal store error (the only non-happy arm of `list_events`).
+    let dir = tempdir("le-err");
+    let store = Arc::new(Store::open(&dir).await.unwrap());
+    store
+        .upsert_item(
+            ItemId::new("a").unwrap(),
+            "A".into(),
+            "claude-sonnet-4-6".into(),
+        )
+        .await
+        .unwrap();
+    let mut log = std::fs::read_to_string(dir.join("events.jsonl")).unwrap();
+    log.push_str("{not valid json}\n");
+    std::fs::write(dir.join("events.jsonl"), log).unwrap();
+
+    let router = build_router(Arc::clone(&store), Token::new(TOK), dir.join("static"));
+    let (_s, v) = rpc(&router, call(1, "list_events", json!({}))).await;
+    assert_eq!(v["error"]["code"], -32603);
+    assert_eq!(v["error"]["data"]["error"], "io");
+}
+
+#[tokio::test]
+async fn list_events_filters_by_kind() {
+    let (router, _store) = seeded("le-filter").await;
+    let (_s, _) = rpc(&router, call(1, "append_sysmsg", json!({"text":"x"}))).await;
+    let (_s, v) = rpc(&router, call(2, "list_events", json!({"kind":"sys_msg"}))).await;
+    let events = v["result"]["events"].as_array().unwrap();
+    assert_eq!(events.len(), 1);
+    assert_eq!(events[0]["kind"], "sys_msg");
+
+    // A non-string `kind` is ignored (returns the full log), not an error.
+    let (_s, v) = rpc(&router, call(3, "list_events", json!({"kind":42}))).await;
+    let events = v["result"]["events"].as_array().unwrap();
+    assert_eq!(events.len(), 3);
 }
 
 #[tokio::test]

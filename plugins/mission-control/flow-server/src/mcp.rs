@@ -8,7 +8,7 @@ use axum::response::{IntoResponse, Response};
 use axum::Json;
 use serde_json::{json, Value};
 
-use crate::api::{item_json, AppState};
+use crate::api::{events_json, item_json, AppState};
 use crate::domain::graph::Mutation;
 use crate::domain::{FlowError, GraphError, ItemId, Status, WaitGate};
 use crate::store::StoreError;
@@ -27,6 +27,7 @@ pub const TOOLS: &[&str] = &[
     "render_roadmap",
     "annotate",
     "request_rewrite",
+    "list_events",
 ];
 
 /// Handle a single JSON-RPC request.
@@ -174,6 +175,15 @@ async fn call_tool(state: &AppState, id: Value, name: &str, args: Value) -> Resp
             };
             match state.store.request_rewrite(&item_id, comment).await {
                 Ok(draft) => ok(id, json!({ "draft": draft })),
+                Err(e) => store_error(id, e),
+            }
+        }
+        "list_events" => {
+            // Optional `kind` filter; a non-string `kind` is simply ignored
+            // (returns the full log) rather than erroring.
+            let kind = args.get("kind").and_then(Value::as_str);
+            match state.store.read_events().await {
+                Ok(events) => ok(id, json!({ "events": events_json(&events, kind) })),
                 Err(e) => store_error(id, e),
             }
         }
