@@ -614,6 +614,103 @@ html, body {
 .detail-top::-webkit-scrollbar-thumb:hover,
 .detail-bottom::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
 
+/* --- REDO badge (item [30]) — coral badge rendered top-right of card when item.redo is true --- */
+.badge.redo {
+  fill: var(--redo);
+  font: 700 10px/1 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* --- REDO comment modal (item [30]) — required-comment <dialog> for backward moves --- */
+.redo-modal {
+  border: 1px solid var(--redo);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  backdrop-filter: blur(12px);
+  color: var(--ink);
+  padding: 1.5rem;
+  max-width: 28rem;
+  width: calc(100vw - 4rem);
+  box-shadow: var(--shadow);
+}
+
+.redo-modal::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.redo-title {
+  margin: 0 0 0.4rem;
+  font: 700 1.1rem/1.3 var(--font-head);
+  color: var(--redo);
+}
+
+.redo-subtitle {
+  margin: 0 0 0.9rem;
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+}
+
+.redo-input {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  padding: 0.5rem;
+  resize: vertical;
+  display: block;
+  box-sizing: border-box;
+}
+
+.redo-input:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -1px;
+  border-color: var(--redo);
+}
+
+.redo-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.redo-submit {
+  background: var(--redo);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+  padding: 0 1.2rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--motion);
+}
+
+.redo-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.redo-cancel {
+  background: var(--bg-card);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+  padding: 0 1.2rem;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color var(--motion);
+}
+
+.redo-cancel:hover { border-color: var(--redo); }
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }

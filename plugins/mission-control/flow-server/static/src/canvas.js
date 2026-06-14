@@ -36,6 +36,7 @@ import {
 } from './layout.js'
 import { SVG_NS, renderCard } from './card.js'
 import { MODEL_ALLOWLIST, modelLabel, resolveModel } from './model.js'
+import { mountRedoModal } from './redo.js'
 
 const COLUMN_LABELS = { do: 'DO', doing: 'DOING', done: 'DONE' }
 const BOARD_TOP = 8
@@ -112,6 +113,9 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
   alignBtn.textContent = 'Auto-align'
   toolbar.appendChild(alignBtn)
   root.appendChild(toolbar)
+
+  // --- REDO modal (item [30]): required-comment overlay for backward moves ---
+  const redoModal = mountRedoModal(root)
 
   // --- svg scaffold: <svg><g.world><g.boards/><g.edges/><g.cards/></g></svg> ---
   const svg = svgEl('svg', { class: 'flow-canvas', width: '100%', height: '100%', role: 'application', 'aria-label': 'Flow canvas' })
@@ -343,9 +347,57 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
 
         const newStatus = STATUS_FOR_COL[targetCol]
         const prevStatus = item.status
+        const prevRedo = item.redo
 
-        // Optimistic update: change status + re-render immediately
+        // Snapshot the pre-drag position for the cancel rollback.
+        const preDropPos = { ...origin }
+
+        // BACKWARD MOVE (DONE → DO or DONE → DOING): require a comment first.
+        if (prevStatus === 'done' && targetCol !== 'done') {
+          // Card is already at the dropped position (from onMove). Show modal.
+          redoModal.open(
+            async (comment) => {
+              // onConfirm: commit the move with the supplied comment.
+              item.status = newStatus
+              item.redo = true
+              rerenderCard(id)
+              const aligned = autoAlign(items)
+              positions[id] = aligned[id]
+              placeCard(id)
+              rerouteEdgesFor(id)
+              try {
+                await api.annotate(id, comment)
+                await api.postStatus(id, newStatus)
+                announce('')
+              } catch (err) {
+                // Rollback: undo status + redo flag on API failure.
+                item.status = prevStatus
+                item.redo = prevRedo
+                rerenderCard(id)
+                const rolledBack = autoAlign(items)
+                positions[id] = rolledBack[id]
+                placeCard(id)
+                rerouteEdgesFor(id)
+                announce(`Could not move ${id}: ${err.message}`)
+              }
+            },
+            () => {
+              // onCancel: snap card back to its original (pre-drag) position.
+              positions[id] = preDropPos
+              placeCard(id)
+              rerouteEdgesFor(id)
+            }
+          )
+          return
+        }
+
+        // FORWARD MOVE (or any non-backward move): existing optimistic path.
         item.status = newStatus
+        // Clear the REDO badge on any forward or lateral move (the badge marks an
+        // unresolved regression; moving the item forward resolves the visual signal).
+        if (prevRedo) {
+          item.redo = false
+        }
         rerenderCard(id)
         // Snap to the target column
         const aligned = autoAlign(items)
@@ -359,6 +411,7 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
         } catch (err) {
           // Rollback on failure
           item.status = prevStatus
+          item.redo = prevRedo
           rerenderCard(id)
           const rolledBack = autoAlign(items)
           positions[id] = rolledBack[id]

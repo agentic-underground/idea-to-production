@@ -598,16 +598,17 @@ describe('mountCanvas — drag to a different column posts status', () => {
     const api = makeApi()
     const handle = await mountCanvas(root, { api, token: 'tok' })
     stubGeometry(handle.svg)
-    // flow-server is in "done" (x≈40). Drag it far right into "do" (x≈760).
-    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
-    const card = handle.svg.querySelector('[data-id="flow-server"]')
+    // svg-flow-canvas is in "doing" (x≈400). Drag it left into "done" (x≈40): -360px.
+    // This is a forward move (doing→done) and does NOT trigger the REDO modal.
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="svg-flow-canvas"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="svg-flow-canvas"]')
 
-    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
-    // +720px to cross from done into do column
-    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 500, clientY: 100, button: 0, bubbles: true }))
+    // -360px to cross from doing into done column
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 140, clientY: 100, bubbles: true }))
     window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
 
-    await waitFor(() => expect(api.postStatus).toHaveBeenCalledWith('flow-server', 'do'))
+    await waitFor(() => expect(api.postStatus).toHaveBeenCalledWith('svg-flow-canvas', 'done'))
   })
 
   it('dragging a card within its own column does NOT call api.postStatus', async () => {
@@ -631,17 +632,18 @@ describe('mountCanvas — drag to a different column posts status', () => {
     })
     const handle = await mountCanvas(root, { api, token: 'tok' })
     stubGeometry(handle.svg)
-    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
-    const card = handle.svg.querySelector('[data-id="flow-server"]') // status: done
+    // svg-flow-canvas: status doing (x≈400). Drag left to done (x≈40): forward move.
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="svg-flow-canvas"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="svg-flow-canvas"]') // status: doing
 
-    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
-    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 500, clientY: 100, button: 0, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 140, clientY: 100, bubbles: true }))
     window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
 
     // Optimistic update: data-status changes before the API resolves
     await waitFor(() => {
-      const updated = handle.svg.querySelector('[data-id="flow-server"]')
-      expect(updated.getAttribute('data-status')).toBe('do')
+      const updated = handle.svg.querySelector('[data-id="svg-flow-canvas"]')
+      expect(updated.getAttribute('data-status')).toBe('done')
     })
   })
 
@@ -651,16 +653,17 @@ describe('mountCanvas — drag to a different column posts status', () => {
     })
     const handle = await mountCanvas(root, { api, token: 'tok' })
     stubGeometry(handle.svg)
-    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
-    const card = handle.svg.querySelector('[data-id="flow-server"]') // status: done
+    // svg-flow-canvas: status doing (x≈400). Drag left to done: forward move, no modal.
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="svg-flow-canvas"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="svg-flow-canvas"]') // status: doing
 
-    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
-    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 500, clientY: 100, button: 0, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 140, clientY: 100, bubbles: true }))
     window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
 
     await waitFor(() => {
-      const updated = handle.svg.querySelector('[data-id="flow-server"]')
-      expect(updated.getAttribute('data-status')).toBe('done')
+      const updated = handle.svg.querySelector('[data-id="svg-flow-canvas"]')
+      expect(updated.getAttribute('data-status')).toBe('doing')
     })
     await waitFor(() => {
       expect(screen.getByRole('alert').textContent).toMatch(/postStatus|status/i)
@@ -729,6 +732,222 @@ describe('mountCanvas — drop-zone glow during drag', () => {
     expect(doneCol.classList.contains('board--drop-active')).toBe(false)
 
     window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+  })
+})
+
+// ---------------------------------------------------------------------------
+// REDO modal — backward drag interception (item [30])
+// ---------------------------------------------------------------------------
+// Layout reminder:
+//   COL_X = { done: 40, doing: 400, do: 760 }  CARD_W = 240
+//   flow-server: status=done (x≈40)
+//   svg-flow-canvas: status=doing (x≈400)
+//   Drag done→do: +720px; done→doing: +360px; doing→done: -360px
+// ---------------------------------------------------------------------------
+
+describe('mountCanvas — REDO modal: backward-drag (done → other) (item [30])', () => {
+  afterEach(() => vi.useRealTimers())
+
+  it('DONE→DO drag opens the REDO modal instead of calling postStatus immediately', async () => {
+    const api = makeApi({ annotate: vi.fn().mockResolvedValue({ ok: true }) })
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // status: done
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    // +720px → do column
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    // postStatus must NOT have been called yet (modal intercepts)
+    expect(api.postStatus).not.toHaveBeenCalled()
+    // A dialog must be present in the DOM
+    await waitFor(() => {
+      expect(document.querySelector('dialog[open]')).toBeTruthy()
+    })
+  })
+
+  it('DONE→DOING drag also opens the REDO modal', async () => {
+    const api = makeApi({ annotate: vi.fn().mockResolvedValue({ ok: true }) })
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // status: done
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    // +360px → doing column
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 460, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    await waitFor(() => {
+      expect(document.querySelector('dialog[open]')).toBeTruthy()
+    })
+    expect(api.postStatus).not.toHaveBeenCalled()
+  })
+
+  it('DOING→DONE drag does NOT open the REDO modal (forward move)', async () => {
+    const api = makeApi({ annotate: vi.fn().mockResolvedValue({ ok: true }) })
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="svg-flow-canvas"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="svg-flow-canvas"]') // status: doing
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 500, clientY: 100, button: 0, bubbles: true }))
+    // -360px → done column
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 140, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    // Should NOT open modal for a forward move
+    expect(document.querySelector('dialog[open]')).toBeNull()
+    await waitFor(() => expect(api.postStatus).toHaveBeenCalledWith('svg-flow-canvas', 'done'))
+  })
+
+  it('REDO modal submit: calls annotate + postStatus, sets item.redo = true, shows badge', async () => {
+    const api = makeApi({ annotate: vi.fn().mockResolvedValue({ ok: true }) })
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // done
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    // Wait for dialog
+    const dialog = await waitFor(() => {
+      const d = document.querySelector('dialog[open]')
+      expect(d).toBeTruthy()
+      return d
+    })
+
+    // Fill in the comment
+    const textarea = dialog.querySelector('textarea')
+    textarea.value = 'Regression in deploy pipeline'
+    textarea.dispatchEvent(new Event('input'))
+
+    // Submit
+    const submit = dialog.querySelector('.redo-submit')
+    submit.click()
+
+    // API calls
+    await waitFor(() => {
+      expect(api.annotate).toHaveBeenCalledWith('flow-server', 'Regression in deploy pipeline')
+      expect(api.postStatus).toHaveBeenCalledWith('flow-server', 'do')
+    })
+
+    // REDO badge on the card
+    await waitFor(() => {
+      const updatedCard = handle.svg.querySelector('[data-id="flow-server"]')
+      expect(updatedCard.querySelector('[data-badge="redo"]')).toBeTruthy()
+    })
+  })
+
+  it('REDO modal cancel: snaps card back to DONE, no API calls made', async () => {
+    const api = makeApi({ annotate: vi.fn().mockResolvedValue({ ok: true }) })
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // done
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    const dialog = await waitFor(() => {
+      const d = document.querySelector('dialog[open]')
+      expect(d).toBeTruthy()
+      return d
+    })
+
+    dialog.querySelector('.redo-cancel').click()
+
+    // No API calls
+    expect(api.annotate).not.toHaveBeenCalled()
+    expect(api.postStatus).not.toHaveBeenCalled()
+
+    // Card status remains done
+    await waitFor(() => {
+      const updatedCard = handle.svg.querySelector('[data-id="flow-server"]')
+      expect(updatedCard.getAttribute('data-status')).toBe('done')
+    })
+  })
+
+  it('REDO modal submit with API failure: rollback status and redo flag, announce error', async () => {
+    const api = makeApi({
+      annotate: vi.fn().mockRejectedValue(new Error('annotate failed: 500'))
+    })
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // done
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    const dialog = await waitFor(() => {
+      const d = document.querySelector('dialog[open]')
+      expect(d).toBeTruthy()
+      return d
+    })
+
+    const textarea = dialog.querySelector('textarea')
+    textarea.value = 'regression note'
+    textarea.dispatchEvent(new Event('input'))
+    dialog.querySelector('.redo-submit').click()
+
+    // Rollback: status should revert to 'done', redo badge should not appear
+    await waitFor(() => {
+      const updatedCard = handle.svg.querySelector('[data-id="flow-server"]')
+      expect(updatedCard.getAttribute('data-status')).toBe('done')
+      expect(updatedCard.querySelector('[data-badge="redo"]')).toBeNull()
+    })
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/annotate|move/i)
+    })
+  })
+
+  it('forward move clears the REDO badge (item.redo set to false)', async () => {
+    // Start with flow-server in "do" with redo=true (simulate post-REDO state)
+    const api = makeApi({
+      annotate: vi.fn().mockResolvedValue({ ok: true }),
+      getItems: vi.fn().mockResolvedValue([
+        // flow-server: status do, redo=true (already moved back, has badge)
+        { id: 'flow-server', title: 'Flow server', status: 'do', gate: 'go', tokens: 250000, model: 'claude-opus-4-8', draft: 6, deps: [], annotations: [], commits: [], pr: null },
+        ...FIXTURE_ITEMS.slice(1)
+      ])
+    })
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+
+    // Manually set redo=true on the working copy via updateItemStatus path
+    const items = handle.getItems()
+    const item = items.find(i => i.id === 'flow-server')
+    item.redo = true
+    // Force re-render by calling the internal path (drag done column from do column)
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // now in do
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 820, clientY: 100, button: 0, bubbles: true }))
+    // Drag to done column (-720px)
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 100, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    await waitFor(() => expect(api.postStatus).toHaveBeenCalledWith('flow-server', 'done'))
+
+    await waitFor(() => {
+      const updatedCard = handle.svg.querySelector('[data-id="flow-server"]')
+      expect(updatedCard.querySelector('[data-badge="redo"]')).toBeNull()
+    })
   })
 })
 
