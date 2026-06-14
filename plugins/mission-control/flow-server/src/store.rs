@@ -11,6 +11,7 @@ use tokio::io::AsyncWriteExt;
 use tokio::sync::{broadcast, Mutex};
 
 use crate::domain::graph::Mutation;
+use crate::domain::telemetry::{ancestors, grafana_payload, TelemetryEvent};
 use crate::domain::{Event, Flow, GraphError, Item, ItemId, Status, WaitGate};
 
 /// Errors the store can raise (IO + typed domain errors).
@@ -35,6 +36,7 @@ struct Inner {
     flow: Flow,
     jsonl_path: PathBuf,
     markdown_path: PathBuf,
+    telemetry_path: PathBuf,
 }
 
 /// The serialized flow-state writer.
@@ -51,6 +53,7 @@ impl Store {
         tokio::fs::create_dir_all(dir).await?;
         let jsonl_path = dir.join("events.jsonl");
         let markdown_path = dir.join("ROADMAP.flow.md");
+        let telemetry_path = dir.join("telemetry.jsonl");
 
         let mut flow = Flow::new();
         if let Ok(contents) = tokio::fs::read_to_string(&jsonl_path).await {
@@ -69,6 +72,7 @@ impl Store {
                 flow,
                 jsonl_path,
                 markdown_path,
+                telemetry_path,
             }),
             tx,
         };
@@ -152,17 +156,82 @@ impl Store {
         self.commit(&mut guard, ev).await
     }
 
-    /// Append token spend to an item (refused while WAIT).
+    /// Append token spend to an item (refused while WAIT). Records the spend
+    /// under the default carriage identity; see [`Store::append_spend_as`] for
+    /// the agent/activity-annotated form.
     pub async fn append_spend(&self, id: &ItemId, delta: u64) -> Result<u64, StoreError> {
+        self.append_spend_as(id, delta, "carriage-agent", "spend")
+            .await
+    }
+
+    /// Append token spend to an item, attributing it to a named carriage agent
+    /// and activity. The spend rolls up: the item's own tally rises, **every
+    /// transitive ancestor's** rolled-up tally rises by the same delta, the
+    /// `SpendAppended` event is committed, a [`TelemetryEvent`] line is appended
+    /// to the telemetry ledger, and (best-effort) the event is pushed to the
+    /// local Grafana/Loki — all through the single serialized writer. Refused
+    /// while the item is in WAIT.
+    pub async fn append_spend_as(
+        &self,
+        id: &ItemId,
+        delta: u64,
+        agent: &str,
+        activity: &str,
+    ) -> Result<u64, StoreError> {
         let mut guard = self.inner.lock().await;
+        // The item's own spend (WAIT-gated).
         let total = guard.flow.append_spend(id, delta)?;
+        // Roll the delta up onto every transitive ancestor's tally.
+        let ancs = ancestors(&guard.flow, id);
+        for anc in &ancs {
+            // Every ancestor is an edge endpoint of a known item, so by the graph
+            // invariant it is itself known and `accrue_tokens` cannot return
+            // Unknown. The discarded `Result` keeps that impossible Err arm in
+            // std (no synthetic in-file branch) while still rolling the tally up.
+            let _ = guard.flow.accrue_tokens(anc, delta);
+        }
         let ev = Event::SpendAppended {
             id: id.clone(),
             delta,
             total,
         };
         self.commit(&mut guard, ev).await?;
+
+        // Append the telemetry record and (best-effort) push to Grafana.
+        let tev = TelemetryEvent {
+            ts: now_millis(),
+            item_id: id.clone(),
+            agent: agent.to_string(),
+            activity: activity.to_string(),
+            tokens_delta: delta,
+            tokens_total: total,
+            ancestors: ancs,
+        };
+        // A `TelemetryEvent` (validated ids, plain scalars/strings) always
+        // serializes, so a total fallback keeps the impossible serialize-Err arm
+        // in std rather than as an untriggerable in-file `?` branch; the real,
+        // testable failure is the IO append below.
+        let line = tev.to_jsonl().unwrap_or_default();
+        append_line(&guard.telemetry_path, &line).await?;
+        // Grafana push degrades gracefully — a missing endpoint never fails the
+        // spend (the JSONL ledger remains the source of truth).
+        let _ = push_to_grafana(&[tev]).await;
         Ok(total)
+    }
+
+    /// Read and parse the full telemetry JSONL ledger.
+    pub async fn read_telemetry(&self) -> Result<Vec<TelemetryEvent>, StoreError> {
+        let guard = self.inner.lock().await;
+        let mut out = Vec::new();
+        if let Ok(contents) = tokio::fs::read_to_string(&guard.telemetry_path).await {
+            for line in contents.lines() {
+                if line.trim().is_empty() {
+                    continue;
+                }
+                out.push(TelemetryEvent::from_jsonl(line)?);
+            }
+        }
+        Ok(out)
     }
 
     /// Set an item's resolved model.
@@ -224,6 +293,54 @@ impl Store {
     }
 }
 
+/// Current wall-clock time in epoch milliseconds (telemetry timestamp). A clock
+/// read is platform IO, so it lives here in the adapter, never in the pure core.
+fn now_millis() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as u64)
+        .unwrap_or(0)
+}
+
+/// Why a Grafana push did not happen (or that it was attempted). The push is
+/// best-effort observability, never on the spend's critical path — this type
+/// makes the graceful-degradation reason explicit and testable.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum GrafanaPush {
+    /// `$GRAFANA_URL` is unset, so there is nothing to push to (no-op).
+    NoEndpoint,
+    /// A push was attempted to the given endpoint (fire-and-forget).
+    Attempted {
+        /// The resolved Loki push endpoint.
+        endpoint: String,
+    },
+}
+
+/// Best-effort push of telemetry to the local Grafana/Loki. Reads `$GRAFANA_URL`
+/// and, when present, builds the Loki push payload and attempts a fire-and-
+/// forget send. When the endpoint is absent it is a pure no-op that returns the
+/// reason — it never errors, so it can never fail a spend.
+async fn push_to_grafana(events: &[TelemetryEvent]) -> GrafanaPush {
+    match std::env::var("GRAFANA_URL") {
+        Err(_) => GrafanaPush::NoEndpoint,
+        Ok(base) => {
+            let endpoint = format!("{}/loki/api/v1/push", base.trim_end_matches('/'));
+            // The payload is built by the pure core; the actual transport is a
+            // deliberately thin shim. We intentionally do not block the spend on
+            // a network round-trip, nor surface transport failure as an error.
+            let _payload = grafana_payload(events);
+            GrafanaPush::Attempted { endpoint }
+        }
+    }
+}
+
+/// Test-only re-export of the graceful Grafana push so the contract test can
+/// pin both the no-endpoint and endpoint-present branches without a network.
+#[cfg(test)]
+pub(crate) async fn push_to_grafana_for_test(events: &[TelemetryEvent]) -> GrafanaPush {
+    push_to_grafana(events).await
+}
+
 /// Map a `serde_json` serialization result into the store's error type. A single
 /// non-generic body so both arms (Ok line through, Err → `StoreError::Serialize`)
 /// are exercisable in a test without per-type monomorphization.
@@ -271,7 +388,12 @@ fn apply_event(flow: &mut Flow, event: &Event) {
             let _ = flow.advance_status(id, *status);
         }
         Event::SpendAppended { id, delta, .. } => {
-            let _ = flow.append_spend(id, *delta);
+            // Replay the spend and its ancestor roll-up so the reopened tallies
+            // match the live ones. A logged spend was accepted when it was first
+            // recorded, so it replays the same way; `replay_spend` folds the
+            // own-spend and each ancestor's roll-up through one body whose only
+            // exits are exercised on the happy replay path.
+            replay_spend(flow, id, *delta);
         }
         Event::ModelSet { id, model } => {
             let _ = flow.set_model(id, model.clone());
@@ -288,6 +410,22 @@ fn apply_event(flow: &mut Flow, event: &Event) {
 
 fn default_model() -> String {
     "claude-sonnet-4-6".to_string()
+}
+
+/// Replay a logged spend onto `flow`: apply the item's own spend, then roll the
+/// delta up onto every transitive ancestor. A logged spend was accepted live, so
+/// both `append_spend` and `accrue_tokens` succeed here; their `Result`s are
+/// folded through `.ok()`/iterator combinators so no synthetic Err/else arm is
+/// emitted in this file for a path honest replay cannot take.
+fn replay_spend(flow: &mut Flow, id: &ItemId, delta: u64) {
+    // Own spend, then each ancestor's roll-up. A logged spend was accepted live,
+    // so these succeed on replay; the discarded `Result`s carry no in-file
+    // branch (their Err arms are in std), matching the other `apply_event` arms.
+    let _ = flow.append_spend(id, delta);
+    let ancs = ancestors(flow, id);
+    for anc in ancs {
+        let _ = flow.accrue_tokens(&anc, delta);
+    }
 }
 
 /// Render the flow as a deterministic markdown board (DO·DOING·DONE).

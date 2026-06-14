@@ -187,6 +187,20 @@ impl Flow {
         Ok(item.tokens)
     }
 
+    /// Roll a token tally up onto an item unconditionally — used to accrue a
+    /// child's spend onto each composite ancestor. Unlike [`Flow::append_spend`]
+    /// this is **not** a carriage-advance action, so it is *not* refused while
+    /// the ancestor is in WAIT: WAIT gates an item's own carriage agent, not the
+    /// derived sub-tree total it carries. Returns the unknown error if absent.
+    pub fn accrue_tokens(&mut self, id: &ItemId, delta: u64) -> Result<u64, FlowError> {
+        let item = self
+            .items
+            .get_mut(id)
+            .ok_or_else(|| FlowError::Unknown { id: id.clone() })?;
+        item.tokens = item.tokens.saturating_add(delta);
+        Ok(item.tokens)
+    }
+
     /// Set the resolved model on an item.
     pub fn set_model(&mut self, id: &ItemId, model: impl Into<String>) -> Result<(), FlowError> {
         let item = self
@@ -413,6 +427,31 @@ mod tests {
         assert_eq!(f.append_spend(&id("a"), 5).unwrap(), u64::MAX);
         assert_eq!(
             f.append_spend(&id("z"), 1),
+            Err(FlowError::Unknown { id: id("z") })
+        );
+    }
+
+    #[test]
+    fn accrue_tokens_bumps_unconditionally_even_while_wait() {
+        let mut f = Flow::new();
+        f.upsert_item(item("a"));
+        // A normal spend accrues…
+        assert_eq!(f.accrue_tokens(&id("a"), 100).unwrap(), 100);
+        // …and a roll-up still accrues even when the item is in WAIT, because a
+        // roll-up is a derived sub-tree total, not the item's own carriage work.
+        f.set_gate(&id("a"), WaitGate::Wait).unwrap();
+        assert_eq!(f.accrue_tokens(&id("a"), 50).unwrap(), 150);
+        assert_eq!(f.get(&id("a")).unwrap().tokens, 150);
+    }
+
+    #[test]
+    fn accrue_tokens_saturates_and_reports_unknown() {
+        let mut f = Flow::new();
+        f.upsert_item(item("a"));
+        f.accrue_tokens(&id("a"), u64::MAX).unwrap();
+        assert_eq!(f.accrue_tokens(&id("a"), 5).unwrap(), u64::MAX);
+        assert_eq!(
+            f.accrue_tokens(&id("z"), 1),
             Err(FlowError::Unknown { id: id("z") })
         );
     }

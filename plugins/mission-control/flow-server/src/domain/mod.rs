@@ -7,9 +7,11 @@ pub mod event;
 pub mod graph;
 pub mod ids;
 pub mod model;
+pub mod telemetry;
 
 pub use error::{FlowError, GraphError, IdError};
 pub use event::Event;
 pub use graph::{mutate_connection, validate_connection, Mutation};
 pub use ids::{ItemId, MAX_ID_LEN};
 pub use model::{Edge, Flow, Item, Status, WaitGate};
+pub use telemetry::{ancestors, grafana_payload, rollup, CostReport, TelemetryEvent};

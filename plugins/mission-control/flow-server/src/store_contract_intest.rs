@@ -303,6 +303,166 @@ async fn commit_fails_when_jsonl_becomes_a_directory() {
     );
 }
 
+#[tokio::test]
+async fn spend_on_child_rolls_up_to_ancestor_and_writes_telemetry() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    // epic depends on nothing; parent depends on epic; child depends on parent.
+    // Edge direction is `from -> to` = "from depends on to", so child's
+    // ancestors are parent and epic.
+    for s in ["epic", "parent", "child"] {
+        store
+            .upsert_item(id(s), s.into(), "claude-sonnet-4-6".into())
+            .await
+            .unwrap();
+    }
+    store
+        .mutate_connection(crate::domain::Mutation::Add, id("child"), id("parent"))
+        .await
+        .unwrap();
+    store
+        .mutate_connection(crate::domain::Mutation::Add, id("parent"), id("epic"))
+        .await
+        .unwrap();
+
+    // 1000 tokens on the atomic child.
+    let total = store
+        .append_spend_as(&id("child"), 1000, "carriage-agent", "implement")
+        .await
+        .unwrap();
+    assert_eq!(total, 1000);
+
+    let snap = store.snapshot().await;
+    // The child's own tally…
+    assert_eq!(snap.get(&id("child")).unwrap().tokens, 1000);
+    // …and every ancestor composite's rolled-up tally rose by 1000.
+    assert_eq!(snap.get(&id("parent")).unwrap().tokens, 1000);
+    assert_eq!(snap.get(&id("epic")).unwrap().tokens, 1000);
+
+    // A telemetry line was appended carrying the schema + the ancestors.
+    let tev = store.read_telemetry().await.unwrap();
+    assert_eq!(tev.len(), 1);
+    assert_eq!(tev[0].item_id, id("child"));
+    assert_eq!(tev[0].agent, "carriage-agent");
+    assert_eq!(tev[0].activity, "implement");
+    assert_eq!(tev[0].tokens_delta, 1000);
+    assert_eq!(tev[0].tokens_total, 1000);
+    assert_eq!(tev[0].ancestors, vec![id("epic"), id("parent")]);
+}
+
+#[tokio::test]
+async fn default_append_spend_still_works_and_records_telemetry() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("a"), "A".into(), "claude-sonnet-4-6".into())
+        .await
+        .unwrap();
+    // The legacy verb keeps its signature and now also leaves a telemetry line.
+    assert_eq!(store.append_spend(&id("a"), 42).await.unwrap(), 42);
+    let tev = store.read_telemetry().await.unwrap();
+    assert_eq!(tev.len(), 1);
+    assert_eq!(tev[0].agent, "carriage-agent");
+    assert_eq!(tev[0].activity, "spend");
+    assert_eq!(tev[0].tokens_delta, 42);
+    assert!(tev[0].ancestors.is_empty());
+}
+
+#[tokio::test]
+async fn reopen_replays_rolled_up_ancestor_tallies() {
+    let dir = tempdir();
+    {
+        let store = Store::open(&dir).await.unwrap();
+        for s in ["parent", "child"] {
+            store
+                .upsert_item(id(s), s.into(), "claude-sonnet-4-6".into())
+                .await
+                .unwrap();
+        }
+        store
+            .mutate_connection(crate::domain::Mutation::Add, id("child"), id("parent"))
+            .await
+            .unwrap();
+        store.append_spend(&id("child"), 250).await.unwrap();
+    }
+    // Reopen: the event-log replay must reconstruct the roll-up onto `parent`.
+    let reopened = Store::open(&dir).await.unwrap();
+    let snap = reopened.snapshot().await;
+    assert_eq!(snap.get(&id("child")).unwrap().tokens, 250);
+    assert_eq!(snap.get(&id("parent")).unwrap().tokens, 250);
+}
+
+#[tokio::test]
+async fn read_telemetry_on_missing_ledger_is_empty() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    assert!(store.read_telemetry().await.unwrap().is_empty());
+}
+
+#[tokio::test]
+async fn read_telemetry_surfaces_malformed_line() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("a"), "A".into(), "claude-sonnet-4-6".into())
+        .await
+        .unwrap();
+    store.append_spend(&id("a"), 1).await.unwrap();
+    let path = dir.join("telemetry.jsonl");
+    let mut contents = std::fs::read_to_string(&path).unwrap();
+    // A trailing blank line is skipped (the trim().is_empty() guard)…
+    contents.push('\n');
+    std::fs::write(&path, &contents).unwrap();
+    assert_eq!(store.read_telemetry().await.unwrap().len(), 1);
+    // …a malformed line surfaces the Serialize error.
+    contents.push_str("not telemetry json\n");
+    std::fs::write(&path, contents).unwrap();
+    assert!(store.read_telemetry().await.is_err());
+}
+
+#[tokio::test]
+async fn spend_commit_fails_when_telemetry_path_is_a_directory() {
+    // Replace telemetry.jsonl with a directory so the append-open faults after
+    // the spend commit, exercising the telemetry append `?` propagation.
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("a"), "A".into(), "claude-sonnet-4-6".into())
+        .await
+        .unwrap();
+    std::fs::create_dir_all(dir.join("telemetry.jsonl")).unwrap();
+    assert!(store.append_spend(&id("a"), 1).await.is_err());
+}
+
+#[tokio::test]
+async fn grafana_push_no_endpoint_when_unset() {
+    // With GRAFANA_URL unset, the push is a graceful no-op carrying the reason.
+    // (Serialized: this test mutates a process-global env var.)
+    let _g = ENV_LOCK.lock().await;
+    std::env::remove_var("GRAFANA_URL");
+    assert_eq!(
+        crate::store::push_to_grafana_for_test(&[]).await,
+        crate::store::GrafanaPush::NoEndpoint
+    );
+}
+
+#[tokio::test]
+async fn grafana_push_attempted_when_endpoint_present() {
+    let _g = ENV_LOCK.lock().await;
+    std::env::set_var("GRAFANA_URL", "http://localhost:3100/");
+    let got = crate::store::push_to_grafana_for_test(&[]).await;
+    std::env::remove_var("GRAFANA_URL");
+    assert_eq!(
+        got,
+        crate::store::GrafanaPush::Attempted {
+            endpoint: "http://localhost:3100/loki/api/v1/push".into()
+        }
+    );
+}
+
+/// Serializes the two tests that mutate the process-global `GRAFANA_URL`.
+static ENV_LOCK: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
+
 /// Minimal unique temp dir (no external crate); cleaned by the OS on reboot.
 fn tempdir() -> std::path::PathBuf {
     use std::sync::atomic::{AtomicU64, Ordering};
