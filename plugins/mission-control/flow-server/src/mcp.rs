@@ -8,7 +8,7 @@ use axum::response::{IntoResponse, Response};
 use axum::Json;
 use serde_json::{json, Value};
 
-use crate::api::{events_json, item_json, AppState};
+use crate::api::{annotations_for, deps_for, events_json, item_json, AppState};
 use crate::domain::graph::Mutation;
 use crate::domain::{FlowError, GraphError, ItemId, Status, WaitGate};
 use crate::store::StoreError;
@@ -59,14 +59,34 @@ async fn call_tool(state: &AppState, id: Value, name: &str, args: Value) -> Resp
     match name {
         "list_items" => {
             let flow = state.store.snapshot().await;
-            let items: Vec<Value> = flow.items_in_order().iter().map(|i| item_json(i)).collect();
+            let events = match state.store.read_events().await {
+                Ok(e) => e,
+                Err(e) => return store_error(id, e),
+            };
+            let items: Vec<Value> = flow
+                .items_in_order()
+                .iter()
+                .map(|i| {
+                    let deps = deps_for(i, flow.edges());
+                    let annotations = annotations_for(i, &events);
+                    item_json(i, &deps, &annotations)
+                })
+                .collect();
             ok(id, json!({ "items": items }))
         }
         "get_item" => match arg_id(&args, "id") {
             Ok(item_id) => {
                 let flow = state.store.snapshot().await;
+                let events = match state.store.read_events().await {
+                    Ok(e) => e,
+                    Err(e) => return store_error(id, e),
+                };
                 match flow.get(&item_id) {
-                    Some(item) => ok(id, json!({ "item": item_json(item) })),
+                    Some(item) => {
+                        let deps = deps_for(item, flow.edges());
+                        let annotations = annotations_for(item, &events);
+                        ok(id, json!({ "item": item_json(item, &deps, &annotations) }))
+                    }
                     None => rpc_error(id, -32004, "unknown item", json!({ "error": "unknown" })),
                 }
             }
