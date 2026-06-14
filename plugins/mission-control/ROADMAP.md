@@ -44,7 +44,7 @@ nodes, blocking edges, and boards-within-boards — because the tree it draws is
 ---
 
 ## [0] EPIC — Flow-Tracking Governance UI
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > BRANCH: flow-tracking-ui (single feature branch for the whole epic; the issue/PR is raised from it once the roadmap is empty)
@@ -137,7 +137,7 @@ surface** of the human element of the software value system.
 ---
 
 ## [1] Flow server — HTTP + WebSocket + MCP in one Rust binary
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > DEPENDS ON: — (atomic; foundation for the epic)
@@ -216,7 +216,7 @@ JSONL event log; no client ever writes those files directly.
 ---
 
 ## [2] SVG flow-canvas — cards, curved connectors, nested boards, pan/zoom/drag
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > DEPENDS ON: #1
@@ -279,7 +279,7 @@ badges (token cost, state, draft#, error-catches, child-tasks like red-green-ref
 ---
 
 ## [3] Carriage agent + token telemetry (JSONL ledger → Grafana)
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > DEPENDS ON: #1
@@ -332,7 +332,7 @@ work item and sub-item — for each atomic item and up the dependency tree of co
 ---
 
 ## [4] Comment / pause / annotate / rewrite loop
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > DEPENDS ON: #2, #3
@@ -383,7 +383,7 @@ which re-drafts the item.
 ---
 
 ## [5] Roadmap history + git-log proxy synthesis
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: MEDIUM
 > DEPENDS ON: — (atomic)
@@ -430,7 +430,7 @@ project's whole arc, with a done/not-done toggle view.
 ---
 
 ## [6] Masthead progress bar + pac-man completion gauge + system-message feed
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: MEDIUM
 > DEPENDS ON: #3
@@ -477,7 +477,7 @@ feed: a mini-blog of orchestrator updates on what's been happening in the value 
 ---
 
 ## [8] Per-job model selection — default shown, per-card override
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: MEDIUM
 > DEPENDS ON: #1, #2, #3
@@ -556,7 +556,7 @@ for the hard slice) while watching the live token tally that #3 records.
 ---
 
 ## [15] "What's on the roadmap" → MCP list_items, rendered by local compute
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: MEDIUM
 > DEPENDS ON: #1
@@ -609,7 +609,7 @@ the board uses). If the server is unreachable, it falls back to reading the mark
 ---
 
 ## [7] The finale — stunning PR, README tree, double-reviewed screenshots
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-13
 > PRIORITY: MEDIUM
 > DEPENDS ON: #1, #2, #3, #4, #5, #6, #8

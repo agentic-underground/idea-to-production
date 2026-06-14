@@ -1,0 +1,22 @@
+[package]
+name = "flow-server"
+version = "0.1.0"
+edition = "2021"
+description = "Flow server — sole writer of flow state; serves the governance UI over HTTP, broadcasts deltas over WebSocket, and exposes an MCP verb surface (roadmap #1)."
+license = "MIT"
+
+[dependencies]
+axum = { version = "0.7", features = ["ws"] }
+tokio = { version = "1.40", features = ["rt-multi-thread", "sync", "macros", "net", "fs", "io-util"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+tower-http = { version = "0.5", features = ["fs"] }
+
+[dev-dependencies]
+proptest = "1.5"
+tokio = { version = "1.40", features = ["rt-multi-thread", "sync", "macros", "net", "fs", "io-util", "time"] }
+tokio-tungstenite = "0.23"
+futures-util = "0.3"
+tower = { version = "0.5", features = ["util"] }
+http-body-util = "0.1"
