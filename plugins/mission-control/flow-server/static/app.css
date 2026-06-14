@@ -576,29 +576,80 @@ html, body {
   font-size: 0.88rem;
 }
 
-/* Commit list (plain list — upgraded to graph in [31]) */
-.detail-commit-list {
-  margin: 0;
-  padding: 0;
+/* --- Commit-graph (dot-and-line list) — item [31] --- */
+.commit-graph-list {
   list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 2px solid var(--line-strong);
 }
-.detail-commit-item {
+
+.commit-graph-list li {
+  position: relative;
+  padding: 0 0 0.6rem 1.6rem;
+}
+
+.commit-row {
   display: flex;
-  gap: 0.5rem;
-  padding: 0.35rem 0;
-  border-bottom: 1px solid var(--line);
-  font-size: 0.85rem;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
-.detail-commit-hash {
-  font: 600 0.82rem/1 var(--mono);
-  color: var(--accent);
+
+.commit-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  cursor: pointer;
+  position: absolute;
+  left: -7px;
+  top: 4px;
   flex-shrink: 0;
 }
-.detail-commit-msg {
+
+.commit-dot:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.commit-hash {
+  font: 600 0.72rem/1 var(--mono);
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+
+.commit-summary {
+  font-size: 0.85rem;
   color: var(--ink-dim);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.commit-body {
+  display: none;
+  margin-top: 0.4rem;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.commit-body.open {
+  display: block;
+}
+
+.commit-body pre {
+  font: 0.78rem/1.6 var(--mono);
+  color: var(--ink-dim);
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-left: 2px solid var(--accent);
+  background: var(--surface);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 /* When the detail panel is open, the canvas should shrink.

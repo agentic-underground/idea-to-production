@@ -1,4 +1,6 @@
-// detail.js — the RHS detail panel for item [28].
+// detail.js — the RHS detail panel for items [28] and [31].
+// [28] built the panel structure; [31] upgrades renderItemBottom to use
+// the dot-and-line commit graph from commit-graph.js.
 // Renders item details (PR info for EPICs, annotations + commits for items)
 // in an <aside> panel beside the SVG canvas.
 //
@@ -25,6 +27,8 @@
  *     <section class="detail-bottom" aria-label="Secondary content"></section>
  *   </aside>
  */
+import { renderCommitGraph } from './commit-graph.js'
+
 export function mountDetailPanel(root) {
   const aside = document.createElement('aside')
   aside.className = 'detail-panel'
@@ -181,32 +185,7 @@ export function mountDetailPanel(root) {
   }
 
   function renderItemBottom(item, container) {
-    const commits = item.commits || []
-
-    if (commits.length === 0) {
-      const placeholder = document.createElement('p')
-      placeholder.className = 'detail-placeholder'
-      placeholder.textContent = 'No commits yet.'
-      container.appendChild(placeholder)
-      return
-    }
-
-    const list = document.createElement('ul')
-    list.className = 'detail-commit-list'
-    for (const commit of commits) {
-      const li = document.createElement('li')
-      li.className = 'detail-commit-item'
-      const hash = document.createElement('code')
-      hash.className = 'detail-commit-hash'
-      hash.textContent = commit.hash ? commit.hash.slice(0, 7) : ''
-      const msg = document.createElement('span')
-      msg.className = 'detail-commit-msg'
-      msg.textContent = commit.message ? commit.message.split('\n')[0] : ''
-      li.appendChild(hash)
-      li.appendChild(msg)
-      list.appendChild(li)
-    }
-    container.appendChild(list)
+    renderCommitGraph(container, item.commits || [])
   }
 
   return { show, hide }

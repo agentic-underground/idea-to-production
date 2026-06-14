@@ -245,6 +245,42 @@ describe('mountDetailPanel — aria-expanded', () => {
 })
 
 // ---------------------------------------------------------------------------
+// show() — ITEM mode commit-graph integration ([31])
+// ---------------------------------------------------------------------------
+
+describe('mountDetailPanel — show() commit-graph integration', () => {
+  it('renders .commit-graph-list in bottom section when commits are present', () => {
+    const { show } = mountDetailPanel(root)
+    show(ITEM_WITH_COMMITS, [ITEM_WITH_COMMITS])
+    const bottom = root.querySelector('.detail-bottom')
+    expect(bottom.querySelector('.commit-graph-list')).toBeTruthy()
+  })
+
+  it('does not render .commit-graph-list when commits is empty', () => {
+    const { show } = mountDetailPanel(root)
+    show(ITEM_WITH_ANNOTATIONS, [ITEM_WITH_ANNOTATIONS])
+    const bottom = root.querySelector('.detail-bottom')
+    expect(bottom.querySelector('.commit-graph-list')).toBeNull()
+  })
+
+  it('renders a .commit-dot for each commit', () => {
+    const { show } = mountDetailPanel(root)
+    show(ITEM_WITH_COMMITS, [ITEM_WITH_COMMITS])
+    const dots = root.querySelectorAll('.commit-dot')
+    expect(dots.length).toBe(2)
+  })
+
+  it('clicking a commit dot in the detail panel expands its body', () => {
+    const { show } = mountDetailPanel(root)
+    show(ITEM_WITH_COMMITS, [ITEM_WITH_COMMITS])
+    const dot = root.querySelector('.commit-dot')
+    dot.click()
+    const body = root.querySelector('.commit-body')
+    expect(body.classList.contains('open')).toBe(true)
+  })
+})
+
+// ---------------------------------------------------------------------------
 // Branch coverage — defensive/fallback paths
 // ---------------------------------------------------------------------------
 
@@ -282,19 +318,19 @@ describe('mountDetailPanel — branch coverage', () => {
       commits: [{ hash: undefined, message: 'some message' }]
     }
     expect(() => show(item, [item])).not.toThrow()
-    const hash = root.querySelector('.detail-commit-hash')
+    const hash = root.querySelector('.commit-hash')
     expect(hash.textContent).toBe('')
   })
 
-  it('commit with no message renders empty message', () => {
+  it('commit with no message renders empty summary', () => {
     const { show } = mountDetailPanel(root)
     const item = {
       ...ITEM_WITH_COMMITS,
       commits: [{ hash: 'abc1234', message: undefined }]
     }
     expect(() => show(item, [item])).not.toThrow()
-    const msg = root.querySelector('.detail-commit-msg')
-    expect(msg.textContent).toBe('')
+    const summary = root.querySelector('.commit-summary')
+    expect(summary.textContent).toBe('')
   })
 
   it('EPIC with pr.body absent does not crash', () => {
