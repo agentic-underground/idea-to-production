@@ -116,6 +116,16 @@ export function createApi(token) {
     },
 
     /**
+     * POST a status change for an item (drag-to-column or REDO flow). Throws on a
+     * non-ok response so the caller can rollback the optimistic update.
+     */
+    async postStatus(id, status) {
+      const res = await postJson(`/api/items/${id}/status`, { status })
+      if (!res.ok) throw new Error(`postStatus failed: ${res.status}`)
+      return res.json()
+    },
+
+    /**
      * GET the orchestrator event array (the system-message feed source). Throws on
      * a non-ok response so the feed can degrade gracefully (empty feed, no crash).
      */

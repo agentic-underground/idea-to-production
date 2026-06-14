@@ -445,6 +445,14 @@ html, body {
 .model-listbox::-webkit-scrollbar-thumb:hover,
 .comment-input::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
 
+/* --- drop-zone glow during cross-column drag (item [29]) --- */
+.board--drop-active .board-bg {
+  stroke: var(--accent);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 12px var(--done-glow));
+  transition: filter var(--motion), stroke var(--motion);
+}
+
 /* --- RHS detail panel (item [28]) --- */
 .detail-panel {
   position: absolute;

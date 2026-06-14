@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { screen, within, waitFor } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
 import { mountCanvas } from '../src/canvas.js'
@@ -10,6 +10,7 @@ function makeApi(overrides = {}) {
     setGate: vi.fn().mockResolvedValue({ ok: true }),
     setModel: vi.fn().mockResolvedValue({ ok: true }),
     validateConnection: vi.fn().mockResolvedValue({ ok: true }),
+    postStatus: vi.fn().mockResolvedValue({ ok: true }),
     ...overrides
   }
 }
@@ -577,5 +578,187 @@ describe('mountCanvas — per-job model selection (#8)', () => {
     // 5 options; selected = Sonnet (1). Down x4 → index 5 wraps to 0 (Haiku).
     await user.keyboard('{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}{Enter}')
     expect(api.setModel).toHaveBeenCalledWith('svg-flow-canvas', 'claude-haiku-4-5')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Drag-column: detectColumn + postStatus + drop-glow (item [29])
+// ---------------------------------------------------------------------------
+// Layout constants (mirrored from layout.js for test reference):
+//   COL_X = { done: 40, doing: 400, do: 760 }  CARD_W = 240
+// A card at x=40 is in "done", x=400 in "doing", x=760 in "do".
+// The drag delta is in client pixels at scale=1, so
+//   dragging from done (x=40) to do (x=760) needs a +720px pointermove.
+// ---------------------------------------------------------------------------
+
+describe('mountCanvas — drag to a different column posts status', () => {
+  afterEach(() => vi.useRealTimers())
+
+  it('dragging a card to a new column calls api.postStatus with the new status', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+    // flow-server is in "done" (x≈40). Drag it far right into "do" (x≈760).
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]')
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    // +720px to cross from done into do column
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    await waitFor(() => expect(api.postStatus).toHaveBeenCalledWith('flow-server', 'do'))
+  })
+
+  it('dragging a card within its own column does NOT call api.postStatus', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // status: done, x=40
+
+    // Small drag — stays in the done column
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 110, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    expect(api.postStatus).not.toHaveBeenCalled()
+  })
+
+  it('card data-status reflects the optimistic update immediately', async () => {
+    const api = makeApi({
+      postStatus: vi.fn().mockImplementation(() => new Promise(() => {})) // never resolves
+    })
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // status: done
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    // Optimistic update: data-status changes before the API resolves
+    await waitFor(() => {
+      const updated = handle.svg.querySelector('[data-id="flow-server"]')
+      expect(updated.getAttribute('data-status')).toBe('do')
+    })
+  })
+
+  it('api.postStatus failure reverts data-status and announces error', async () => {
+    const api = makeApi({
+      postStatus: vi.fn().mockRejectedValue(new Error('postStatus failed: 500'))
+    })
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // status: done
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    await waitFor(() => {
+      const updated = handle.svg.querySelector('[data-id="flow-server"]')
+      expect(updated.getAttribute('data-status')).toBe('done')
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/postStatus|status/i)
+    })
+  })
+})
+
+describe('mountCanvas — drop-zone glow during drag', () => {
+  it('adds board--drop-active class to the target column during a cross-column drag', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+    // flow-server is in done (x=40). Drag it toward do (x=760).
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]')
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    // Move into "do" column zone
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+
+    await waitFor(() => {
+      const doCol = handle.svg.querySelector('.board-do')
+      expect(doCol.classList.contains('board--drop-active')).toBe(true)
+    })
+    // Other columns must NOT have the class
+    const doneCol = handle.svg.querySelector('.board-done')
+    const doingCol = handle.svg.querySelector('.board-doing')
+    expect(doneCol.classList.contains('board--drop-active')).toBe(false)
+    expect(doingCol.classList.contains('board--drop-active')).toBe(false)
+  })
+
+  it('removes board--drop-active from all columns on pointerup', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]')
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 820, clientY: 100, bubbles: true }))
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+
+    await waitFor(() => {
+      const doCol = handle.svg.querySelector('.board-do')
+      expect(doCol.classList.contains('board--drop-active')).toBe(false)
+    })
+  })
+
+  it('does NOT add board--drop-active when dragging within the same column', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api, token: 'tok' })
+    stubGeometry(handle.svg)
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="flow-server"]') // in done (x=40)
+
+    card.dispatchEvent(new MouseEvent('pointerdown', { clientX: 100, clientY: 100, button: 0, bubbles: true }))
+    // Small move — stays in done column
+    window.dispatchEvent(new MouseEvent('pointermove', { clientX: 110, clientY: 100, bubbles: true }))
+
+    // No column should have the drop-active class when dragging in-column
+    const doCol = handle.svg.querySelector('.board-do')
+    const doingCol = handle.svg.querySelector('.board-doing')
+    const doneCol = handle.svg.querySelector('.board-done')
+    expect(doCol.classList.contains('board--drop-active')).toBe(false)
+    expect(doingCol.classList.contains('board--drop-active')).toBe(false)
+    expect(doneCol.classList.contains('board--drop-active')).toBe(false)
+
+    window.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+  })
+})
+
+describe('mountCanvas — handle exposes getItems() and updateItemStatus()', () => {
+  it('getItems() returns the current items array', async () => {
+    const handle = await mountCanvas(root, { api: makeApi(), token: 'tok' })
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    const items = handle.getItems()
+    expect(Array.isArray(items)).toBe(true)
+    expect(items.length).toBe(FIXTURE_ITEMS.length)
+    expect(items.find((i) => i.id === 'flow-server')).toBeTruthy()
+  })
+
+  it('updateItemStatus() changes the item status and re-renders the card', async () => {
+    const handle = await mountCanvas(root, { api: makeApi(), token: 'tok' })
+    stubGeometry(handle.svg)
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="svg-flow-canvas"]')).toBeTruthy())
+
+    handle.updateItemStatus('svg-flow-canvas', 'done')
+
+    await waitFor(() => {
+      const card = handle.svg.querySelector('[data-id="svg-flow-canvas"]')
+      expect(card.getAttribute('data-status')).toBe('done')
+    })
+  })
+
+  it('updateItemStatus() for an unknown id is a safe no-op', async () => {
+    const handle = await mountCanvas(root, { api: makeApi(), token: 'tok' })
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="flow-server"]')).toBeTruthy())
+    // Should not throw
+    expect(() => handle.updateItemStatus('ghost', 'done')).not.toThrow()
   })
 })
