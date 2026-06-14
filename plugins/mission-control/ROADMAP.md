@@ -1501,8 +1501,9 @@ EPIC #32 — FOUNDRY lifecycle delivery hardening
 ---
 
 ## [33] Interactive "Merge PR now?" — `gh pr merge` on user approval
-> STATUS: AWAITING MERGE
+> STATUS: COMPLETE
 > ADDED: 2026-06-14
+> COMPLETED: 2026-06-14
 > PRIORITY: HIGH
 > DEPENDS ON: — (atomic; epic #32)
 
