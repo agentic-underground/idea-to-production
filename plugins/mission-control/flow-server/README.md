@@ -52,3 +52,29 @@ truth is the roadmap markdown + the append-only JSONL log; the UI is a view.
   verbs, cycle-reject, REST+MCP through the one writer, board renders all 16 items — see the screenshot).
 
 ← back to the [mission-control plugin](../README.md) · the [marketplace root](../../../README.md)
+
+## MCP registration (stdio transport)
+
+The flow-server speaks the [MCP stdio transport](https://modelcontextprotocol.io/docs/concepts/transports)
+when started with `--mcp`. This repo's `.claude/settings.json` registers it so the tools
+(`list_items`, `render_roadmap`, `post_status`, `set_wait_go`, `append_spend`) appear automatically
+in every Claude Code session opened from the repo root.
+
+**First run** — `cargo run` will compile the binary on first invocation (30-60 seconds). Subsequent
+calls reuse the compiled artifact.
+
+**Production mode** (faster startup after `cargo build --release`):
+Update the `args` in `.claude/settings.json` to point at the compiled binary:
+```json
+{
+  "mcpServers": {
+    "flow-server": {
+      "command": "plugins/mission-control/flow-server/target/release/flow-server",
+      "args": ["--mcp"]
+    }
+  }
+}
+```
+
+The binary reads `.flow/` from the **current working directory** when invoked by the MCP harness.
+Run Claude Code from the repo root so the store path resolves correctly.

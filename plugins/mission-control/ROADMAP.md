@@ -1765,7 +1765,7 @@ undifferentiated list.
 ---
 
 ## [37] Flow-server: stdio MCP transport (`--mcp` flag)
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-14
 > PRIORITY: HIGH
 
@@ -1823,7 +1823,7 @@ set. This makes it registerable in `.claude/settings.json` like any other stdio 
 ---
 
 ## [38] Register flow-server MCP in project settings
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-14
 > PRIORITY: HIGH
 > DEPENDS ON: #37

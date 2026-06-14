@@ -20,6 +20,8 @@ mod http_surface_intest;
 #[cfg(test)]
 mod mcp_contract_intest;
 #[cfg(test)]
+mod mcp_dispatch_intest;
+#[cfg(test)]
 mod mcp_surface_intest;
 #[cfg(test)]
 mod store_contract_intest;
