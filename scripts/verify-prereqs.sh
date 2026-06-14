@@ -375,7 +375,7 @@ fi
 # semantic command-token resolution is noisy and out of scope here; add it as a separate check later.
 section "I. internal doc links resolve"
 broken_links="$(
-  { find plugins -name '*.md'; ls PREREQUISITES/*.md 2>/dev/null; ls ./*.md 2>/dev/null; } | sort -u | while IFS= read -r f; do
+  { find plugins \( -name node_modules -o -name target -o -name .venv \) -prune -o -name '*.md' -print; ls PREREQUISITES/*.md 2>/dev/null; ls ./*.md 2>/dev/null; } | sort -u | while IFS= read -r f; do
     dir="$(dirname "$f")"
     # awk emits one link target per line, after blanking inline-code spans so links inside `…` are skipped.
     awk '
