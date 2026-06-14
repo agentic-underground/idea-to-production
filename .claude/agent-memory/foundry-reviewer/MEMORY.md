@@ -7,3 +7,5 @@
 - [KAIZEN covenant rename](project_kaizen-covenant-rename.md) — SOLID covenant→KAIZEN (reframe); preserve code-SOLID (solid.md/code-quality/DESIGN-REVIEWER); CI N/O = KAIZEN parity
 - [Model-id drift](project_model-id-drift.md) — literal model ids restated inline in ~45 files vs reference-don't-pin canon; KAIZEN systemic flag, NOT a per-PR gate
 - [Wiki-publisher asset exfil](project_wiki-publisher-exfil.md) — publish-wiki.sh guard blocklists http/abs/< but misses ../; blocklist-not-allowlist sanitiser class recurs marketplace-wide
+- [flow-server stdio transport](project_flow-server-stdio-transport.md) — --mcp stdio loop: LIVE risk is unbounded read_line (OOM); IO-disclosure/auth/traversal/injection already mitigated, don't re-flag
+- [flow-server tool-naming drift](project_flow-server-tool-naming-drift.md) — MCP gate tool is set_wait_go in code; EARS/README/feature docs wrongly call it set_gate (= store method); tests are right
