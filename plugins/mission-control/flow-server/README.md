@@ -57,7 +57,7 @@ truth is the roadmap markdown + the append-only JSONL log; the UI is a view.
 
 The flow-server speaks the [MCP stdio transport](https://modelcontextprotocol.io/docs/concepts/transports)
 when started with `--mcp`. This repo's `.claude/settings.json` registers it so the tools
-(`list_items`, `render_roadmap`, `post_status`, `set_gate`, `append_spend`) appear automatically
+(`list_items`, `render_roadmap`, `post_status`, `set_wait_go`, `append_spend`) appear automatically
 in every Claude Code session opened from the repo root.
 
 **First run** — `cargo run` will compile the binary on first invocation (30-60 seconds). Subsequent

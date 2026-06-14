@@ -11,6 +11,10 @@ pub struct Config {
     pub host: IpAddr,
     /// Bind port.
     pub port: u16,
+    /// True when `--port` was explicitly supplied by the caller; false when
+    /// defaulted. Used to suppress the "port is ignored" warning in `--mcp`
+    /// mode unless the caller actually passed `--port`.
+    pub port_explicit: bool,
     /// Path to the shared bearer-token file (created on first run).
     pub token_path: PathBuf,
     /// Directory holding the static frontend assets.
@@ -30,6 +34,7 @@ impl Default for Config {
         Config {
             host: IpAddr::V4(Ipv4Addr::UNSPECIFIED),
             port: 7421,
+            port_explicit: false,
             token_path: PathBuf::from(".flow/token"),
             static_dir: PathBuf::from("static"),
             data_dir: PathBuf::from(".flow"),
@@ -61,6 +66,7 @@ impl Config {
                         flag: "--port".into(),
                         value: v,
                     })?;
+                    cfg.port_explicit = true;
                 }
                 "--token" => {
                     let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
@@ -219,6 +225,25 @@ mod tests {
             Err(ConfigError::UnknownFlag {
                 flag: "--nope".into()
             })
+        );
+    }
+
+    // T37-4: port_explicit tracking tests
+    #[test]
+    fn port_explicit_when_supplied() {
+        let cfg = Config::from_args(argv(&["--port", "9000"])).unwrap();
+        assert!(
+            cfg.port_explicit,
+            "--port supplied must set port_explicit to true"
+        );
+    }
+
+    #[test]
+    fn port_not_explicit_when_absent() {
+        let cfg = Config::from_args(argv(&[])).unwrap();
+        assert!(
+            !cfg.port_explicit,
+            "--port absent must leave port_explicit as false"
         );
     }
 

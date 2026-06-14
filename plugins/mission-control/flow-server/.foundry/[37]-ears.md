@@ -56,8 +56,8 @@ request on stdin, THEN it SHALL:
    a single newline-terminated line to stdout.
 4. Flush stdout after each response.
 
-The five tools exposed MUST be: `list_items`, `render_roadmap`, `post_status`, `set_gate`,
-`append_spend`. All other existing tools (`get_item`, `set_wait_go`, `set_item_model`,
+The five tools exposed MUST be: `list_items`, `render_roadmap`, `post_status`, `set_wait_go`,
+`append_spend`. All other existing tools (`get_item`, `set_item_model`,
 `validate_connection`, `mutate_connection`, `append_sysmsg`, `annotate`, `request_rewrite`,
 `list_events`) MUST also be dispatched correctly (they share the same dispatch function).
 

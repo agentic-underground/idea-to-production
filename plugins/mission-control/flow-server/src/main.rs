@@ -18,9 +18,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cfg = Config::from_args(std::env::args().skip(1))?;
 
     if cfg.mcp {
-        // T37-4: stdio MCP mode. --port is ignored; log a warning to stderr
-        // so operators know the TCP listener will not be started.
-        eprintln!("flow-server: --mcp mode active; --port is ignored");
+        // T37-4: stdio MCP mode. Log a warning only when --port was explicitly
+        // supplied, since the TCP listener will not be started.
+        if cfg.port_explicit {
+            eprintln!("flow-server: --mcp mode active; --port is ignored");
+        }
 
         let store = Arc::new(Store::open(&cfg.data_dir).await?);
 

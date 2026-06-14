@@ -92,10 +92,11 @@ Feature: flow-server stdio MCP transport
     Then the response has a "result" field
     And the process exits with code 0
 
-  Scenario: --mcp only (no --port) — no warning emitted
+  Scenario: --mcp only (no --port) — no warning emitted to stderr
     Given the binary is started with "--mcp --data <tempdir>"
     When the process starts and stdin is closed immediately
     Then the process exits with code 0
+    And stderr does not contain "--port is ignored"
 
   # -----------------------------------------------------------------------
   # UNWANTED-37-5: HTTP+WebSocket behaviour unchanged without --mcp
