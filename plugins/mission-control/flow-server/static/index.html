@@ -1,0 +1,31 @@
+<!doctype html>
+<!--@front-end
+element: flow-canvas-page
+philosophy: instrument-panel
+paradigm: dashboard-explorative
+intent: the standing governance/observability surface — render the live roadmap as
+        a navigable SVG graph the solo builder steers value through
+customer: solo-builder
+binding: one-way
+a11y: wcag-2.1-aa
+style: operation
+improve?: "add a masthead progress bar + pac-man gauge region (roadmap #6) above #app"
+breadcrumbs: ["served by the flow-server at /", "ES modules, no build step",
+              "dark mode is the default; prefers-color-scheme:light overrides tokens"]
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Flow canvas — mission control</title>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#app">Skip to the flow canvas</a>
+    <main id="app" aria-label="Flow canvas">
+      <p class="loading">Loading the board…</p>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+// api.js — the thin transport layer between the canvas and the flow-server.
+// Bearer-token resolution/persistence and typed fetch wrappers for the REST
+// verbs the canvas uses. Data flows down (responses) and intents flow up (the
+// POST verbs); nothing here touches the DOM.
+//
+// @front-end
+// element: flow-api-client
+// intent: let the canvas read items and post governance intents (WAIT/GO, draw a
+//         connection) over the server's token-gated REST surface
+// customer: solo-builder
+// binding: one-way
+// a11y: n/a (transport)
+// privacy: token lives only in this browser's localStorage; never transmitted
+//          except as the Authorization bearer the server itself issued
+// improve?: "add an AbortController + retry/backoff once the WS delta stream lands
+//            (roadmap #1 broadcasts deltas; this client currently pulls)"
+// breadcrumbs: ["server returns typed {error,message} JSON on 4xx",
+//               "validate_connection: 200 ⇒ ok, 409 cycle/broken_dep, 404 unknown"]
+
+/** localStorage key for the persisted bearer token. */
+export const TOKEN_KEY = 'flow.token'
+
+/**
+ * Resolve the bearer token: a non-empty `?token=` query value wins (and is
+ * persisted); otherwise fall back to the stored value; otherwise the empty string.
+ */
+export function resolveToken(search) {
+  const params = new URLSearchParams(search)
+  const fromQuery = params.get('token')
+  if (fromQuery) {
+    saveToken(fromQuery)
+    return fromQuery
+  }
+  return localStorage.getItem(TOKEN_KEY) ?? ''
+}
+
+/** Persist (or, given an empty value, clear) the bearer token. */
+export function saveToken(token) {
+  if (token) {
+    localStorage.setItem(TOKEN_KEY, token)
+  } else {
+    localStorage.removeItem(TOKEN_KEY)
+  }
+}
+
+/** Build a token-bound API client. */
+export function createApi(token) {
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  }
+
+  const postJson = async (url, body) => {
+    const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) })
+    return res
+  }
+
+  return {
+    /** GET the item array (throws on a non-ok response). */
+    async getItems() {
+      const res = await fetch('/api/items', { headers })
+      if (!res.ok) throw new Error(`getItems failed: ${res.status}`)
+      return res.json()
+    },
+
+    /** POST a WAIT/GO gate change (throws on a non-ok response). */
+    async setGate(id, gate) {
+      const res = await postJson(`/api/items/${id}/gate`, { gate })
+      if (!res.ok) throw new Error(`setGate failed: ${res.status}`)
+      return res.json()
+    },
+
+    /**
+     * POST a proposed connection for validation. Resolves {ok:true} on 200, or
+     * {ok:false, error, message} on a typed rejection (cycle / broken_dep / unknown).
+     */
+    async validateConnection(from, to) {
+      const res = await postJson('/api/connection/validate', { from, to })
+      if (res.ok) return { ok: true }
+      const body = await res.json()
+      return { ok: false, error: body.error, message: body.message }
+    }
+  }
+}

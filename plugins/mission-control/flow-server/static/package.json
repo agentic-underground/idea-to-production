@@ -1,0 +1,19 @@
+{
+  "name": "flow-canvas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "SVG flow-canvas — the vanilla-JS governance UI served by the flow-server (mission-control roadmap #2).",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@vitest/coverage-v8": "^2.1.8",
+    "jsdom": "^25.0.1",
+    "vitest": "^2.1.8"
+  }
+}
