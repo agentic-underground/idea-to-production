@@ -126,6 +126,12 @@ export function renderCard(item, pos, { onToggleGate, onPickModel } = {}) {
   // an inert label otherwise. Marks default vs override so cost↔capability reads.
   g.appendChild(renderModelBadge(item, onPickModel))
 
+  // REDO badge — coral badge top-right of card, shown when item has been moved
+  // backward (DONE→DO/DOING) and a "why" comment was submitted. Client-only state.
+  if (item.redo) {
+    g.appendChild(badge(CARD_W - 44, 16, 'REDO', 'redo'))
+  }
+
   // WAIT/GO toggle — an SVG button-role group, keyboard operable.
   const nextGate = paused ? 'go' : 'wait'
   const toggle = el('g', {

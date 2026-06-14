@@ -31,14 +31,39 @@ import {
   COL_X,
   autoAlign,
   bezierPath,
+  columnForStatus,
   zoomAboutCursor
 } from './layout.js'
 import { SVG_NS, renderCard } from './card.js'
 import { MODEL_ALLOWLIST, modelLabel, resolveModel } from './model.js'
+import { mountRedoModal } from './redo.js'
 
 const COLUMN_LABELS = { do: 'DO', doing: 'DOING', done: 'DONE' }
 const BOARD_TOP = 8
 const BOARD_BOTTOM = 2000
+
+/** Map a column name back to the server status string. */
+const STATUS_FOR_COL = { done: 'done', doing: 'doing', do: 'do' }
+
+/**
+ * Given a world-coordinate x position, return the nearest column name.
+ * Uses the centre of each column (COL_X[col] + CARD_W/2) as the reference
+ * point — the column whose centre is closest wins.
+ * Exported for direct unit-test coverage.
+ */
+export function detectColumn(worldX) {
+  let nearest = COLUMNS[0]
+  let minDist = Infinity
+  for (const col of COLUMNS) {
+    const centre = COL_X[col] + CARD_W / 2
+    const dist = Math.abs(worldX - centre)
+    if (dist < minDist) {
+      minDist = dist
+      nearest = col
+    }
+  }
+  return nearest
+}
 
 function svgEl(name, attrs = {}, text) {
   const node = document.createElementNS(SVG_NS, name)
@@ -88,6 +113,9 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
   alignBtn.textContent = 'Auto-align'
   toolbar.appendChild(alignBtn)
   root.appendChild(toolbar)
+
+  // --- REDO modal (item [30]): required-comment overlay for backward moves ---
+  const redoModal = mountRedoModal(root)
 
   // --- svg scaffold: <svg><g.world><g.boards/><g.edges/><g.cards/></g></svg> ---
   const svg = svgEl('svg', { class: 'flow-canvas', width: '100%', height: '100%', role: 'application', 'aria-label': 'Flow canvas' })
@@ -263,6 +291,26 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
     }
   }
 
+  // --- helpers: column <g> elements and drop-glow class management ---
+  const getColEl = (col) => boardsLayer.querySelector(`.board-${col}`)
+
+  const setDropGlow = (targetCol, sourceCol) => {
+    for (const col of COLUMNS) {
+      const el = getColEl(col)
+      if (col === targetCol && col !== sourceCol) {
+        el.classList.add('board--drop-active')
+      } else {
+        el.classList.remove('board--drop-active')
+      }
+    }
+  }
+
+  const clearDropGlow = () => {
+    for (const col of COLUMNS) {
+      getColEl(col).classList.remove('board--drop-active')
+    }
+  }
+
   // --- card dragging (and distinguishing card-drag from canvas-pan) ---
   function wireCardDrag(cardEl, id) {
     cardEl.addEventListener('pointerdown', (e) => {
@@ -273,6 +321,9 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
       const startX = e.clientX
       const startY = e.clientY
       const origin = { ...positions[id] }
+      const item = items.find((i) => i.id === id)
+      const sourceCol = columnForStatus(item.status)
+
       const onMove = (m) => {
         positions[id] = {
           x: origin.x + (m.clientX - startX) / transform.scale,
@@ -280,10 +331,94 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
         }
         placeCard(id)
         rerouteEdgesFor(id)
+        // Drop-zone glow: show which column the card is hovering over
+        const targetCol = detectColumn(positions[id].x)
+        setDropGlow(targetCol, sourceCol)
       }
-      const onUp = () => {
+
+      const onUp = async () => {
         window.removeEventListener('pointermove', onMove)
         window.removeEventListener('pointerup', onUp)
+        clearDropGlow()
+
+        // Column-drop: detect where the card landed and post status if changed
+        const targetCol = detectColumn(positions[id].x)
+        if (targetCol === sourceCol) return
+
+        const newStatus = STATUS_FOR_COL[targetCol]
+        const prevStatus = item.status
+        const prevRedo = item.redo
+
+        // Snapshot the pre-drag position for the cancel rollback.
+        const preDropPos = { ...origin }
+
+        // BACKWARD MOVE (DONE → DO or DONE → DOING): require a comment first.
+        if (prevStatus === 'done' && targetCol !== 'done') {
+          // Card is already at the dropped position (from onMove). Show modal.
+          redoModal.open(
+            async (comment) => {
+              // onConfirm: commit the move with the supplied comment.
+              item.status = newStatus
+              item.redo = true
+              rerenderCard(id)
+              const aligned = autoAlign(items)
+              positions[id] = aligned[id]
+              placeCard(id)
+              rerouteEdgesFor(id)
+              try {
+                await api.annotate(id, comment)
+                await api.postStatus(id, newStatus)
+                announce('')
+              } catch (err) {
+                // Rollback: undo status + redo flag on API failure.
+                item.status = prevStatus
+                item.redo = prevRedo
+                rerenderCard(id)
+                const rolledBack = autoAlign(items)
+                positions[id] = rolledBack[id]
+                placeCard(id)
+                rerouteEdgesFor(id)
+                announce(`Could not move ${id}: ${err.message}`)
+              }
+            },
+            () => {
+              // onCancel: snap card back to its original (pre-drag) position.
+              positions[id] = preDropPos
+              placeCard(id)
+              rerouteEdgesFor(id)
+            }
+          )
+          return
+        }
+
+        // FORWARD MOVE (or any non-backward move): existing optimistic path.
+        item.status = newStatus
+        // Clear the REDO badge on any forward or lateral move (the badge marks an
+        // unresolved regression; moving the item forward resolves the visual signal).
+        if (prevRedo) {
+          item.redo = false
+        }
+        rerenderCard(id)
+        // Snap to the target column
+        const aligned = autoAlign(items)
+        positions[id] = aligned[id]
+        placeCard(id)
+        rerouteEdgesFor(id)
+
+        try {
+          await api.postStatus(id, newStatus)
+          announce('')
+        } catch (err) {
+          // Rollback on failure
+          item.status = prevStatus
+          item.redo = prevRedo
+          rerenderCard(id)
+          const rolledBack = autoAlign(items)
+          positions[id] = rolledBack[id]
+          placeCard(id)
+          rerouteEdgesFor(id)
+          announce(`Could not move ${id}: ${err.message}`)
+        }
       }
       window.addEventListener('pointermove', onMove)
       window.addEventListener('pointerup', onUp)
@@ -374,12 +509,69 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
     render()
   }
 
+  // --- updateItemStatus: update one item's status in the working copy + re-render ---
+  const updateItemStatus = (id, status) => {
+    const item = items.find((i) => i.id === id)
+    if (!item) return
+    item.status = status
+    rerenderCard(id)
+    // Snap the card to its new column
+    const aligned = autoAlign(items)
+    positions[id] = aligned[id]
+    placeCard(id)
+    rerouteEdgesFor(id)
+  }
+
+  // --- WebSocket subscription: live status updates ---
+  let ws = null
+  let reconnectTimer = null
+
+  const openWs = () => {
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:'
+    const wsUrl = `${proto}//${location.host}/ws?token=${token}`
+    ws = new WebSocket(wsUrl)
+
+    ws.onmessage = (e) => {
+      let msg
+      try { msg = JSON.parse(e.data) } catch { return }
+      if (msg.kind === 'status_posted') {
+        updateItemStatus(msg.id, msg.status)
+      }
+      // Other kinds: no-op (future extensibility)
+    }
+
+    const scheduleReconnect = () => {
+      reconnectTimer = setTimeout(() => {
+        reconnectTimer = null
+        refresh()
+      }, 2000)
+    }
+
+    ws.onclose = scheduleReconnect
+    ws.onerror = scheduleReconnect
+  }
+
+  openWs()
+
   await refresh()
 
   return {
     svg,
     getTransform: () => transform,
     tryConnect,
-    refresh
+    refresh,
+    getItems: () => items,
+    updateItemStatus,
+    disconnect: () => {
+      if (ws) {
+        ws.onclose = null
+        ws.onerror = null
+        ws.close()
+      }
+      if (reconnectTimer != null) {
+        clearTimeout(reconnectTimer)
+        reconnectTimer = null
+      }
+    }
   }
 }

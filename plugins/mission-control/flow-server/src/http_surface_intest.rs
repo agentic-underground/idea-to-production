@@ -507,3 +507,94 @@ async fn static_fallback_serves_index() {
     let bytes = resp.into_body().collect().await.unwrap().to_bytes();
     assert_eq!(&bytes[..], b"<h1>flow</h1>");
 }
+
+// --- [28] story tests: extended item_json shape (deps, annotations, commits, pr) ---
+
+/// STORY: GET /api/items returns the extended item shape with deps, annotations,
+/// commits, and pr fields for every item. This is the API contract the RHS detail
+/// panel (item [28]) reads on every canvas refresh.
+#[tokio::test]
+async fn story_list_items_returns_extended_shape() {
+    let (router, store, _) = seeded("story-list").await;
+    // Add an edge a → b so that item "a" has a dep on "b".
+    store
+        .mutate_connection(
+            crate::domain::graph::Mutation::Add,
+            ItemId::new("a").unwrap(),
+            ItemId::new("b").unwrap(),
+        )
+        .await
+        .unwrap();
+    // Annotate item "a" with a comment.
+    store
+        .annotate(&ItemId::new("a").unwrap(), "issue note".to_string())
+        .await
+        .unwrap();
+
+    let (status, v) = req(&router, "GET", "/api/items", None).await;
+    assert_eq!(status, StatusCode::OK);
+    let items = v.as_array().expect("expected array");
+
+    // Find item "a" in the response.
+    let item_a = items.iter().find(|i| i["id"] == "a").unwrap();
+
+    // deps: "a" depends on "b" (edge a→b).
+    assert!(item_a["deps"].is_array(), "deps must be an array");
+    assert_eq!(item_a["deps"], json!(["b"]));
+
+    // annotations: the annotation text we added.
+    assert!(item_a["annotations"].is_array(), "annotations must be an array");
+    assert_eq!(item_a["annotations"], json!(["issue note"]));
+
+    // commits: empty array (stub for this cycle).
+    assert_eq!(item_a["commits"], json!([]));
+
+    // pr: null (stub for this cycle).
+    assert!(item_a["pr"].is_null(), "pr must be null");
+
+    // draft field is also present (added in this cycle).
+    assert!(item_a["draft"].is_number(), "draft must be a number");
+}
+
+/// STORY: GET /api/items/:id returns the extended shape for a single item.
+#[tokio::test]
+async fn story_get_item_returns_extended_shape() {
+    let (router, store, _) = seeded("story-get").await;
+    // Annotate item "b".
+    store
+        .annotate(&ItemId::new("b").unwrap(), "first".to_string())
+        .await
+        .unwrap();
+    store
+        .annotate(&ItemId::new("b").unwrap(), "second".to_string())
+        .await
+        .unwrap();
+
+    let (status, v) = req(&router, "GET", "/api/items/b", None).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["id"], "b");
+    // annotations in log order (newest-last).
+    assert_eq!(v["annotations"], json!(["first", "second"]));
+    // no deps for item "b" in this fixture.
+    assert_eq!(v["deps"], json!([]));
+    assert_eq!(v["commits"], json!([]));
+    assert!(v["pr"].is_null());
+}
+
+/// STORY: An item with no annotations returns an empty annotations array.
+#[tokio::test]
+async fn story_item_with_no_annotations_has_empty_array() {
+    let (router, _store, _) = seeded("story-noann").await;
+    let (status, v) = req(&router, "GET", "/api/items/a", None).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["annotations"], json!([]));
+}
+
+/// STORY: An item with no deps returns an empty deps array.
+#[tokio::test]
+async fn story_item_with_no_deps_has_empty_array() {
+    let (router, _store, _) = seeded("story-nodeps").await;
+    let (status, v) = req(&router, "GET", "/api/items/a", None).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["deps"], json!([]));
+}

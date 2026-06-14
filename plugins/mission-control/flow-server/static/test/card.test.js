@@ -213,3 +213,38 @@ describe('renderCard — model badge / picker', () => {
     expect(onToggleGate).not.toHaveBeenCalled()
   })
 })
+
+describe('renderCard — REDO badge (item [30])', () => {
+  it('renders a REDO badge when item.redo is true', () => {
+    const redoItem = { ...item, redo: true }
+    const g = renderCard(redoItem, { x: 0, y: 0 }, { onToggleGate: vi.fn() })
+    svg.appendChild(g)
+    const redoBadge = g.querySelector('[data-badge="redo"]')
+    expect(redoBadge).toBeTruthy()
+    expect(redoBadge.textContent).toBe('REDO')
+  })
+
+  it('the REDO badge has class "badge redo"', () => {
+    const redoItem = { ...item, redo: true }
+    const g = renderCard(redoItem, { x: 0, y: 0 }, { onToggleGate: vi.fn() })
+    svg.appendChild(g)
+    const redoBadge = g.querySelector('[data-badge="redo"]')
+    expect(redoBadge.classList.contains('badge')).toBe(true)
+    expect(redoBadge.classList.contains('redo')).toBe(true)
+  })
+
+  it('does NOT render a REDO badge when item.redo is false', () => {
+    const noRedo = { ...item, redo: false }
+    const g = renderCard(noRedo, { x: 0, y: 0 }, { onToggleGate: vi.fn() })
+    svg.appendChild(g)
+    expect(g.querySelector('[data-badge="redo"]')).toBeNull()
+  })
+
+  it('does NOT render a REDO badge when item.redo is undefined', () => {
+    const noRedo = { ...item }
+    delete noRedo.redo
+    const g = renderCard(noRedo, { x: 0, y: 0 }, { onToggleGate: vi.fn() })
+    svg.appendChild(g)
+    expect(g.querySelector('[data-badge="redo"]')).toBeNull()
+  })
+})

@@ -445,6 +445,323 @@ html, body {
 .model-listbox::-webkit-scrollbar-thumb:hover,
 .comment-input::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
 
+/* --- drop-zone glow during cross-column drag (item [29]) --- */
+.board--drop-active .board-bg {
+  stroke: var(--accent);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 12px var(--done-glow));
+  transition: filter var(--motion), stroke var(--motion);
+}
+
+/* --- RHS detail panel (item [28]) --- */
+.detail-panel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 35%;
+  min-width: 280px;
+  background: var(--surface-2);
+  backdrop-filter: blur(12px);
+  border-left: 1px solid var(--line-strong);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 6;
+}
+
+.detail-close {
+  position: absolute;
+  top: var(--gap);
+  right: var(--gap);
+  min-height: 44px;
+  min-width: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--ink);
+  font: 700 1.1rem/1 var(--font);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--motion), background var(--motion);
+  z-index: 1;
+}
+.detail-close:hover { border-color: var(--accent); }
+
+.detail-top {
+  flex: 3;
+  overflow-y: auto;
+  padding: 3.5rem 1rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.detail-bottom {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+/* PR content */
+.detail-pr-title {
+  margin: 0 0 0.5rem;
+  font: 700 1rem/1.3 var(--font-head);
+  color: var(--ink);
+}
+.detail-pr-body {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--ink-dim);
+  line-height: 1.5;
+}
+
+/* Label and assignee chips */
+.detail-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+.detail-label {
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font: 600 0.75rem/1 var(--mono);
+  color: var(--ink-dim);
+}
+.detail-assignee {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font: 600 0.75rem/1 var(--mono);
+  color: var(--accent);
+}
+
+/* Dep list */
+.detail-dep-count {
+  margin: 0 0 0.5rem;
+  font: 700 0.85rem/1 var(--mono);
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.detail-dep-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.detail-dep-item {
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+}
+
+/* Annotation text */
+.detail-annotation {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--ink-dim);
+  line-height: 1.5;
+}
+
+/* Placeholder text */
+.detail-placeholder {
+  margin: 0;
+  color: var(--ink-faint);
+  font-style: italic;
+  font-size: 0.88rem;
+}
+
+/* --- Commit-graph (dot-and-line list) — item [31] --- */
+.commit-graph-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 2px solid var(--line-strong);
+}
+
+.commit-graph-list li {
+  position: relative;
+  padding: 0 0 0.6rem 1.6rem;
+}
+
+.commit-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.commit-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  cursor: pointer;
+  position: absolute;
+  left: -7px;
+  top: 4px;
+  flex-shrink: 0;
+}
+
+.commit-dot:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.commit-hash {
+  font: 600 0.72rem/1 var(--mono);
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+
+.commit-summary {
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.commit-body {
+  display: none;
+  margin-top: 0.4rem;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.commit-body.open {
+  display: block;
+}
+
+.commit-body pre {
+  font: 0.78rem/1.6 var(--mono);
+  color: var(--ink-dim);
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-left: 2px solid var(--accent);
+  background: var(--surface);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* When the detail panel is open, the canvas should shrink.
+   Applied by mountDetailPanel via a class on the root. */
+.has-detail .flow-canvas { right: 35%; }
+
+.detail-top::-webkit-scrollbar,
+.detail-bottom::-webkit-scrollbar { width: 7px; }
+.detail-top::-webkit-scrollbar-track,
+.detail-bottom::-webkit-scrollbar-track { background: transparent; }
+.detail-top::-webkit-scrollbar-thumb,
+.detail-bottom::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 999px; }
+.detail-top::-webkit-scrollbar-thumb:hover,
+.detail-bottom::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+
+/* --- REDO badge (item [30]) — coral badge rendered top-right of card when item.redo is true --- */
+.badge.redo {
+  fill: var(--redo);
+  font: 700 10px/1 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* --- REDO comment modal (item [30]) — required-comment <dialog> for backward moves --- */
+.redo-modal {
+  border: 1px solid var(--redo);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  backdrop-filter: blur(12px);
+  color: var(--ink);
+  padding: 1.5rem;
+  max-width: 28rem;
+  width: calc(100vw - 4rem);
+  box-shadow: var(--shadow);
+}
+
+.redo-modal::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.redo-title {
+  margin: 0 0 0.4rem;
+  font: 700 1.1rem/1.3 var(--font-head);
+  color: var(--redo);
+}
+
+.redo-subtitle {
+  margin: 0 0 0.9rem;
+  font-size: 0.88rem;
+  color: var(--ink-dim);
+}
+
+.redo-input {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  padding: 0.5rem;
+  resize: vertical;
+  display: block;
+  box-sizing: border-box;
+}
+
+.redo-input:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -1px;
+  border-color: var(--redo);
+}
+
+.redo-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.redo-submit {
+  background: var(--redo);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+  padding: 0 1.2rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--motion);
+}
+
+.redo-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.redo-cancel {
+  background: var(--bg-card);
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+  padding: 0 1.2rem;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color var(--motion);
+}
+
+.redo-cancel:hover { border-color: var(--redo); }
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }

@@ -195,4 +195,29 @@ describe('createApi', () => {
     const api = createApi('bad')
     await expect(api.getEvents()).rejects.toThrow(/503/)
   })
+
+  it('postStatus POSTs {status} to /api/items/:id/status with the bearer token', async () => {
+    fetchMock.mockResolvedValue(ok({ ok: true }))
+    const api = createApi('tok')
+    await api.postStatus('svg-flow-canvas', 'done')
+    const [url, opts] = fetchMock.mock.calls[0]
+    expect(url).toBe('/api/items/svg-flow-canvas/status')
+    expect(opts.method).toBe('POST')
+    expect(JSON.parse(opts.body)).toEqual({ status: 'done' })
+    expect(opts.headers.Authorization).toBe('Bearer tok')
+    expect(opts.headers['Content-Type']).toBe('application/json')
+  })
+
+  it('postStatus returns the parsed JSON body on success', async () => {
+    fetchMock.mockResolvedValue(ok({ id: 'svg-flow-canvas', status: 'done' }))
+    const api = createApi('tok')
+    const res = await api.postStatus('svg-flow-canvas', 'done')
+    expect(res).toEqual({ id: 'svg-flow-canvas', status: 'done' })
+  })
+
+  it('postStatus rejects (throws) on a non-ok response so the caller can rollback', async () => {
+    fetchMock.mockResolvedValue(fail(404, { error: 'not_found' }))
+    const api = createApi('tok')
+    await expect(api.postStatus('ghost', 'done')).rejects.toThrow(/404/)
+  })
 })
