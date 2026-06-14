@@ -34,6 +34,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
+    // Restore gate state from .flow/gates.json AFTER ingest_roadmap, because
+    // upsert_item resets every item's gate to Go (WaitGate default). This must
+    // run last in the startup sequence. Infallible: missing or malformed file
+    // leaves all gates at Go and logs a warning. (EARS-G36-02, EARS-G36-07)
+    store.restore_gates().await;
+
     let router = build_router(store, token, cfg.static_dir.clone());
 
     let addr = SocketAddr::new(cfg.host, cfg.port);

@@ -224,7 +224,8 @@ async fn list_items_returns_seeded() {
     let (router, _store) = seeded("li").await;
     let (status, v) = rpc(&router, call(1, "list_items", json!({}))).await;
     assert_eq!(status, StatusCode::OK);
-    assert_eq!(v["result"]["items"].as_array().unwrap().len(), 2);
+    // Response shape is now grouped; both seeded items are PENDING/GO.
+    assert_eq!(v["result"]["pending"]["go"].as_array().unwrap().len(), 2);
 }
 
 #[tokio::test]

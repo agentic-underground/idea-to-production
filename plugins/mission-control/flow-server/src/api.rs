@@ -356,9 +356,7 @@ pub(crate) fn annotations_for(
     events
         .iter()
         .filter_map(|e| match e {
-            crate::domain::Event::Annotated { id, text } if id == &item.id => {
-                Some(text.clone())
-            }
+            crate::domain::Event::Annotated { id, text } if id == &item.id => Some(text.clone()),
             _ => None,
         })
         .collect()
@@ -540,9 +538,18 @@ mod tests {
         use crate::domain::{Edge, Item};
         let item = make_item("a");
         let edges = vec![
-            Edge { from: id("a"), to: id("b") },
-            Edge { from: id("a"), to: id("c") },
-            Edge { from: id("x"), to: id("a") }, // not a dep of "a"
+            Edge {
+                from: id("a"),
+                to: id("b"),
+            },
+            Edge {
+                from: id("a"),
+                to: id("c"),
+            },
+            Edge {
+                from: id("x"),
+                to: id("a"),
+            }, // not a dep of "a"
         ];
         let deps = deps_for(&item, &edges);
         assert_eq!(deps, vec!["b".to_string(), "c".to_string()]);
@@ -552,9 +559,10 @@ mod tests {
     #[test]
     fn deps_for_no_match_returns_empty() {
         let item = make_item("z");
-        let edges = vec![
-            crate::domain::Edge { from: id("a"), to: id("b") },
-        ];
+        let edges = vec![crate::domain::Edge {
+            from: id("a"),
+            to: id("b"),
+        }];
         let deps = deps_for(&item, &edges);
         assert!(deps.is_empty());
     }
@@ -567,13 +575,25 @@ mod tests {
         use crate::domain::Event;
         let item = make_item("a");
         let events = vec![
-            Event::Annotated { id: id("a"), text: "note one".into() },
-            Event::Annotated { id: id("b"), text: "other item".into() },
-            Event::Annotated { id: id("a"), text: "note two".into() },
+            Event::Annotated {
+                id: id("a"),
+                text: "note one".into(),
+            },
+            Event::Annotated {
+                id: id("b"),
+                text: "other item".into(),
+            },
+            Event::Annotated {
+                id: id("a"),
+                text: "note two".into(),
+            },
             Event::SysMsg { text: "sys".into() },
         ];
         let annotations = annotations_for(&item, &events);
-        assert_eq!(annotations, vec!["note one".to_string(), "note two".to_string()]);
+        assert_eq!(
+            annotations,
+            vec!["note one".to_string(), "note two".to_string()]
+        );
     }
 
     /// annotations_for returns empty when no events match.
@@ -581,7 +601,10 @@ mod tests {
     fn annotations_for_no_match_returns_empty() {
         use crate::domain::Event;
         let item = make_item("z");
-        let events = vec![Event::Annotated { id: id("a"), text: "for a".into() }];
+        let events = vec![Event::Annotated {
+            id: id("a"),
+            text: "for a".into(),
+        }];
         let annotations = annotations_for(&item, &events);
         assert!(annotations.is_empty());
     }
@@ -591,7 +614,9 @@ mod tests {
     fn annotations_for_empty_log_returns_empty() {
         use crate::domain::Event;
         let item = make_item("a");
-        let events = vec![Event::SysMsg { text: "hello".into() }];
+        let events = vec![Event::SysMsg {
+            text: "hello".into(),
+        }];
         let annotations = annotations_for(&item, &events);
         assert!(annotations.is_empty());
     }

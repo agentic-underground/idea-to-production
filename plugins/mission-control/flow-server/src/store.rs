@@ -4,6 +4,7 @@
 //! there is no direct-write path, and the same lock serializes all writers so
 //! the files never interleave or corrupt.
 
+use std::collections::BTreeMap;
 use std::io;
 use std::path::{Path, PathBuf};
 
@@ -37,6 +38,10 @@ struct Inner {
     jsonl_path: PathBuf,
     markdown_path: PathBuf,
     telemetry_path: PathBuf,
+    /// Human-readable gate sidecar: a JSON object mapping item-id → "wait"|"go".
+    /// Written atomically on every `set_gate` call; read on startup by
+    /// `restore_gates()`. Serves as the fast restore path alongside JSONL replay.
+    gates_path: PathBuf,
     /// Where `doc/<TITLE>_PLAN.md` plan documents live (the repo's `doc/`).
     doc_dir: PathBuf,
     /// Fallback per-item annotations ledger dir, used when no plan doc exists.
@@ -58,6 +63,7 @@ impl Store {
         let jsonl_path = dir.join("events.jsonl");
         let markdown_path = dir.join("ROADMAP.flow.md");
         let telemetry_path = dir.join("telemetry.jsonl");
+        let gates_path = dir.join("gates.json");
         // Plan docs live in the repo's `doc/` (beside the `.flow` data dir);
         // fall back to a `doc/` under the data dir when there is no parent.
         let doc_dir = dir.parent().unwrap_or(dir).join("doc");
@@ -81,6 +87,7 @@ impl Store {
                 jsonl_path,
                 markdown_path,
                 telemetry_path,
+                gates_path,
                 doc_dir,
                 annotations_dir,
             }),
@@ -145,6 +152,11 @@ impl Store {
     }
 
     /// Set the WAIT/GO gate on an item.
+    ///
+    /// After updating in-memory state and committing the JSONL event, the full
+    /// id→gate map is written atomically to `.flow/gates.json`. A sidecar write
+    /// failure is **non-fatal** (warn-and-continue, EARS-G36-08): the JSONL log
+    /// is the authoritative record; the sidecar is a fast restore convenience.
     pub async fn set_gate(&self, id: &ItemId, gate: WaitGate) -> Result<(), StoreError> {
         let mut guard = self.inner.lock().await;
         guard.flow.set_gate(id, gate)?;
@@ -152,7 +164,49 @@ impl Store {
             id: id.clone(),
             gate,
         };
-        self.commit(&mut guard, ev).await
+        self.commit(&mut guard, ev).await?;
+        // Persist the sidecar after the authoritative JSONL commit succeeds.
+        // A sidecar write failure is non-fatal: warn and continue.
+        if let Err(e) = persist_gates(&guard.flow, &guard.gates_path).await {
+            eprintln!("flow-server: warning — could not write .flow/gates.json: {e}");
+        }
+        Ok(())
+    }
+
+    /// Restore gate state from `.flow/gates.json`.
+    ///
+    /// This is the fast restore path on startup. It is **infallible**:
+    /// - A missing file → all gates remain at their current value (default Go).
+    /// - A malformed file → log a warning, leave all gates at Go.
+    /// - An item ID in the file that no longer exists → silently skipped.
+    ///
+    /// MUST be called in `main.rs` AFTER `ingest_roadmap()` returns, because
+    /// `upsert_item()` inside `ingest_roadmap()` resets every item's gate to
+    /// `WaitGate::Go` (the `Item::new` default). Calling `restore_gates()` before
+    /// `ingest_roadmap()` would have its work overwritten. Sequencing:
+    ///   `Store::open()` → `ingest_roadmap()` → `restore_gates()`.
+    pub async fn restore_gates(&self) {
+        let mut guard = self.inner.lock().await;
+        let path = guard.gates_path.clone();
+        let text = match tokio::fs::read_to_string(&path).await {
+            Err(_) => return, // missing file → all gates default to Go, no error
+            Ok(t) => t,
+        };
+        let map: BTreeMap<String, WaitGate> = match serde_json::from_str(&text) {
+            Err(_) => {
+                eprintln!(
+                    "flow-server: warning — .flow/gates.json is malformed; all gates default to go"
+                );
+                return;
+            }
+            Ok(m) => m,
+        };
+        for (id_str, gate) in map {
+            if let Ok(id) = ItemId::new(&id_str) {
+                // Unknown item → silently discard (stale entry, EARS-G36-05).
+                let _ = guard.flow.set_gate(&id, gate);
+            }
+        }
     }
 
     /// Advance an item's carriage status (refused while WAIT).
@@ -404,6 +458,29 @@ impl Store {
         let _ = self.tx.send(event);
         Ok(())
     }
+}
+
+/// Write the full id→gate map to `gates_path` atomically (tmp + rename).
+///
+/// Serialises all items' gate values as a `BTreeMap<String, WaitGate>` so the
+/// output is deterministic (sorted by key) and human-readable. Writes to a
+/// `.tmp` sibling first, then renames — atomic on Linux when source and
+/// destination share the same filesystem (guaranteed here because both live in
+/// `.flow/`). Returns `Err` on IO or serialize failure; the caller decides
+/// whether to propagate or warn-and-continue (EARS-G36-08: warn-and-continue).
+async fn persist_gates(flow: &Flow, gates_path: &Path) -> Result<(), io::Error> {
+    let map: BTreeMap<&str, WaitGate> = flow
+        .items_in_order()
+        .iter()
+        .map(|i| (i.id.as_str(), i.gate))
+        .collect();
+    let json =
+        serde_json::to_string(&map).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
+    // Write to a tmp sibling, then atomically rename.
+    let tmp = gates_path.with_extension("json.tmp");
+    tokio::fs::write(&tmp, json.as_bytes()).await?;
+    tokio::fs::rename(&tmp, gates_path).await?;
+    Ok(())
 }
 
 /// Current wall-clock time in epoch milliseconds (telemetry timestamp). A clock

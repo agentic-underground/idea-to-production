@@ -1,0 +1,10 @@
+TESTS_WRITTEN::RED
+item: item-36-gate-persist
+date: 2026-06-14
+artifacts:
+  - plugins/mission-control/flow-server/src/store_contract_intest.rs (11 new tests appended)
+  - plugins/mission-control/flow-server/src/mcp_contract_intest.rs (3 new + 1 updated test)
+reviewer: TEST-DESIGN-REVIEWER
+verdict: PASS
+red_reason: restore_gates method not found on Store (correct — not yet implemented)
+ears_coverage: EARS-G36-01 through EARS-G36-08

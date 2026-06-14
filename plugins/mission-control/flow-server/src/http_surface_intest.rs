@@ -543,7 +543,10 @@ async fn story_list_items_returns_extended_shape() {
     assert_eq!(item_a["deps"], json!(["b"]));
 
     // annotations: the annotation text we added.
-    assert!(item_a["annotations"].is_array(), "annotations must be an array");
+    assert!(
+        item_a["annotations"].is_array(),
+        "annotations must be an array"
+    );
     assert_eq!(item_a["annotations"], json!(["issue note"]));
 
     // commits: empty array (stub for this cycle).

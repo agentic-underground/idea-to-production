@@ -63,16 +63,38 @@ async fn call_tool(state: &AppState, id: Value, name: &str, args: Value) -> Resp
                 Ok(e) => e,
                 Err(e) => return store_error(id, e),
             };
-            let items: Vec<Value> = flow
-                .items_in_order()
-                .iter()
-                .map(|i| {
-                    let deps = deps_for(i, flow.edges());
-                    let annotations = annotations_for(i, &events);
-                    item_json(i, &deps, &annotations)
-                })
-                .collect();
-            ok(id, json!({ "items": items }))
+            // Group items by status and (for PENDING) by gate.
+            // EARS-G36-06: {"pending":{"wait":[...],"go":[...]},"in_progress":[...],"done":[...]}
+            let mut pending_wait: Vec<Value> = Vec::new();
+            let mut pending_go: Vec<Value> = Vec::new();
+            let mut in_progress: Vec<Value> = Vec::new();
+            let mut done: Vec<Value> = Vec::new();
+
+            for i in flow.items_in_order() {
+                let deps = deps_for(i, flow.edges());
+                let annotations = annotations_for(i, &events);
+                let v = item_json(i, &deps, &annotations);
+                match i.status {
+                    Status::Do => match i.gate {
+                        WaitGate::Wait => pending_wait.push(v),
+                        WaitGate::Go => pending_go.push(v),
+                    },
+                    Status::Doing => in_progress.push(v),
+                    Status::Done => done.push(v),
+                }
+            }
+
+            ok(
+                id,
+                json!({
+                    "pending": {
+                        "wait": pending_wait,
+                        "go":   pending_go
+                    },
+                    "in_progress": in_progress,
+                    "done":        done
+                }),
+            )
         }
         "get_item" => match arg_id(&args, "id") {
             Ok(item_id) => {

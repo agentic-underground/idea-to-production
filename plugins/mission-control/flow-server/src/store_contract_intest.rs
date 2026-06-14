@@ -735,3 +735,237 @@ fn tempdir() -> std::path::PathBuf {
     std::fs::create_dir_all(&dir).unwrap();
     dir
 }
+
+// ---------------------------------------------------------------------------
+// Gate persistence tests (item [36] — EARS-G36-01 through EARS-G36-08)
+// ---------------------------------------------------------------------------
+
+/// EARS-G36-01: After set_gate(wait), gates.json exists and maps the id to "wait".
+#[tokio::test]
+async fn gates_json_written_on_set_gate_wait() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    store.set_gate(&id("item-a"), WaitGate::Wait).await.unwrap();
+
+    let gates_path = dir.join("gates.json");
+    assert!(gates_path.exists(), "gates.json must exist after set_gate");
+    let raw = std::fs::read_to_string(&gates_path).unwrap();
+    let map: std::collections::BTreeMap<String, String> =
+        serde_json::from_str(&raw).expect("gates.json must be valid JSON");
+    assert_eq!(map.get("item-a").map(|s| s.as_str()), Some("wait"));
+}
+
+/// EARS-G36-01: After set_gate(go), gates.json maps the id to "go".
+#[tokio::test]
+async fn gates_json_updated_on_toggle_to_go() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    store.set_gate(&id("item-a"), WaitGate::Wait).await.unwrap();
+    store.set_gate(&id("item-a"), WaitGate::Go).await.unwrap();
+
+    let raw = std::fs::read_to_string(dir.join("gates.json")).unwrap();
+    let map: std::collections::BTreeMap<String, String> = serde_json::from_str(&raw).unwrap();
+    assert_eq!(map.get("item-a").map(|s| s.as_str()), Some("go"));
+}
+
+/// EARS-G36-01: gates.json.tmp does not persist after atomic rename.
+#[tokio::test]
+async fn gates_json_tmp_does_not_linger() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    store.set_gate(&id("item-a"), WaitGate::Wait).await.unwrap();
+    assert!(
+        !dir.join("gates.json.tmp").exists(),
+        "gates.json.tmp must not linger after atomic rename"
+    );
+}
+
+/// EARS-G36-01: gates.json is valid JSON after write (atomic write is complete).
+#[tokio::test]
+async fn gates_json_atomic_write_is_not_corrupted() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    store.set_gate(&id("item-a"), WaitGate::Wait).await.unwrap();
+    let raw = std::fs::read_to_string(dir.join("gates.json")).unwrap();
+    assert!(
+        serde_json::from_str::<serde_json::Value>(&raw).is_ok(),
+        "gates.json must be valid JSON"
+    );
+}
+
+/// EARS-G36-02 + EARS-G36-07: restore_gates after ingest_roadmap restores WAIT.
+#[tokio::test]
+async fn restore_gates_survives_restart() {
+    let dir = tempdir();
+    // First store: set gate to wait
+    {
+        let store = Store::open(&dir).await.unwrap();
+        store
+            .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+            .await
+            .unwrap();
+        store.set_gate(&id("item-a"), WaitGate::Wait).await.unwrap();
+    }
+    // Second store: open fresh, ingest roadmap (which resets gate to Go), then restore_gates
+    let store2 = Store::open(&dir).await.unwrap();
+    // Simulate ingest_roadmap resetting gates by upserting (which uses Item::new → Go default)
+    store2
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    // After upsert, gate is Go (reset by upsert). Now restore_gates should re-apply Wait.
+    store2.restore_gates().await;
+    let snap = store2.snapshot().await;
+    assert_eq!(
+        snap.get(&id("item-a")).unwrap().gate,
+        WaitGate::Wait,
+        "restore_gates must re-apply Wait gate after ingest resets it"
+    );
+}
+
+/// EARS-G36-03: Missing gates.json does not crash; all gates default to go.
+#[tokio::test]
+async fn missing_gates_json_does_not_prevent_restore() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    // No gates.json written. restore_gates must succeed silently.
+    store.restore_gates().await;
+    let snap = store.snapshot().await;
+    assert_eq!(snap.get(&id("item-a")).unwrap().gate, WaitGate::Go);
+}
+
+/// EARS-G36-04: Corrupt gates.json does not crash; all gates default to go.
+#[tokio::test]
+async fn corrupt_gates_json_does_not_prevent_restore() {
+    let dir = tempdir();
+    std::fs::write(dir.join("gates.json"), b"{not valid json}").unwrap();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    store.restore_gates().await;
+    let snap = store.snapshot().await;
+    assert_eq!(snap.get(&id("item-a")).unwrap().gate, WaitGate::Go);
+}
+
+/// EARS-G36-04: Empty gates.json does not crash; all gates default to go.
+#[tokio::test]
+async fn empty_gates_json_does_not_prevent_restore() {
+    let dir = tempdir();
+    std::fs::write(dir.join("gates.json"), b"").unwrap();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    store.restore_gates().await;
+    let snap = store.snapshot().await;
+    assert_eq!(snap.get(&id("item-a")).unwrap().gate, WaitGate::Go);
+}
+
+/// EARS-G36-05: Stale item ID in gates.json is silently discarded; known items restored.
+#[tokio::test]
+async fn stale_item_in_gates_json_is_silently_discarded() {
+    let dir = tempdir();
+    // gates.json has a ghost item (not in store) and a real item.
+    std::fs::write(
+        dir.join("gates.json"),
+        br#"{"ghost-item": "wait", "item-a": "wait"}"#,
+    )
+    .unwrap();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    // No crash, no error.
+    store.restore_gates().await;
+    let snap = store.snapshot().await;
+    // Known item is restored.
+    assert_eq!(snap.get(&id("item-a")).unwrap().gate, WaitGate::Wait);
+    // Ghost item has no effect (absent from store).
+    assert!(snap.get(&id("ghost-item")).is_none());
+}
+
+/// EARS-G36-07: ingest_roadmap resets gates; restore_gates after ingest re-applies them.
+/// This is the sequencing test: proves the correct call order in main.rs.
+/// The roadmap parser derives item IDs as "item-N" from "[N] Title" headers.
+#[tokio::test]
+async fn restore_gates_after_ingest_roadmap_preserves_wait() {
+    let dir = tempdir();
+    // Write a gates.json showing item-1 (the ID the roadmap parser assigns to "[1] Alpha") as Wait.
+    std::fs::write(dir.join("gates.json"), br#"{"item-1": "wait"}"#).unwrap();
+
+    let store = Store::open(&dir).await.unwrap();
+    // ingest_roadmap: upserts items (resets gate to Go via Item::new default).
+    // The "[1] Alpha" header generates id "item-1".
+    let md = "## [1] Alpha\n> STATUS: PENDING\n> DEPENDS ON: —\n";
+    store.ingest_roadmap(md).await.unwrap();
+
+    // After ingest, gate is Go (reset by upsert).
+    {
+        let snap = store.snapshot().await;
+        assert_eq!(
+            snap.get(&id("item-1")).unwrap().gate,
+            WaitGate::Go,
+            "gate should be Go after ingest (before restore)"
+        );
+    }
+
+    // Now restore_gates — this is what main.rs does after ingest_roadmap.
+    store.restore_gates().await;
+
+    let snap = store.snapshot().await;
+    assert_eq!(
+        snap.get(&id("item-1")).unwrap().gate,
+        WaitGate::Wait,
+        "restore_gates after ingest must re-apply Wait"
+    );
+}
+
+/// EARS-G36-08: set_gate succeeds even when the sidecar write faults (warn-and-continue).
+/// We simulate a write fault by replacing the .flow/ dir with a path where the tmp file
+/// cannot be written (put a file where the directory would be — not applicable since
+/// the directory already exists). Instead, replace gates.json with a directory so
+/// the rename target is a directory (rename onto a directory is an error on Linux).
+#[tokio::test]
+async fn set_gate_succeeds_when_sidecar_write_faults() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("item-a"), "Alpha".into(), "m".into())
+        .await
+        .unwrap();
+    // Put a directory where gates.json would be so the atomic rename faults.
+    std::fs::create_dir_all(dir.join("gates.json")).unwrap();
+    // set_gate must still return Ok (warn-and-continue, not fail).
+    let result = store.set_gate(&id("item-a"), WaitGate::Wait).await;
+    assert!(
+        result.is_ok(),
+        "set_gate must succeed even when sidecar write faults"
+    );
+    // In-memory gate is updated.
+    let snap = store.snapshot().await;
+    assert_eq!(snap.get(&id("item-a")).unwrap().gate, WaitGate::Wait);
+}

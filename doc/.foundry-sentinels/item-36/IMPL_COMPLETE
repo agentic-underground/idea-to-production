@@ -1,0 +1,11 @@
+IMPL_COMPLETE::GREEN
+item: item-36-gate-persist
+date: 2026-06-14
+files_changed:
+  - plugins/mission-control/flow-server/src/store.rs (Inner struct gates_path, persist_gates(), restore_gates(), set_gate modified)
+  - plugins/mission-control/flow-server/src/main.rs (store.restore_gates().await after ingest_roadmap)
+  - plugins/mission-control/flow-server/src/mcp.rs (list_items grouped response shape)
+  - plugins/mission-control/flow-server/src/mcp_surface_intest.rs (updated list_items surface test)
+test_result: 304 passed, 0 failed
+clippy: clean
+fmt: clean

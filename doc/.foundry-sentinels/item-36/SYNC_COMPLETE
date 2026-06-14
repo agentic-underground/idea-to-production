@@ -1,0 +1,5 @@
+SYNC_COMPLETE
+item: item-36-gate-persist
+date: 2026-06-14
+sync_action: no rebase needed (branch already at tip of main)
+post_sync_tests: 309 passed, 0 failed

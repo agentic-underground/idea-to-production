@@ -24,4 +24,6 @@ mod mcp_surface_intest;
 #[cfg(test)]
 mod store_contract_intest;
 #[cfg(test)]
+mod story_gate_persist_intest;
+#[cfg(test)]
 mod ws_contract_intest;
