@@ -1,0 +1,10 @@
+GREEN_RUN_COMPLETE
+item: item-36-gate-persist
+date: 2026-06-14
+test_result: 304 passed, 0 failed
+coverage: 99.02% overall; all new code branches covered
+pre_existing_gaps: mcp.rs lines 64,104,201,212 (read_events fault handlers, pre-existing)
+reviewer_coverage: PASS
+reviewer_correctness: PASS
+clippy: clean
+fmt: clean

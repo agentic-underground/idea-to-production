@@ -1,0 +1,34 @@
+COMMIT_MSG_READY
+item: item-36-gate-persist
+date: 2026-06-14
+message: |
+  feat(flow-server/gate-persist): persist gate state across restarts and surface in list_items
+
+  Gate state was in-memory only — restarting the server reset every
+  WAIT/GO toggle to Go, breaking the human governance gate guarantee.
+
+  Changes:
+  - store.rs: add `gates_path` to Inner; `persist_gates()` writes an
+    atomic tmp→rename JSON sidecar on every `set_gate()` call (warn-
+    and-continue on sidecar fault, JSONL remains authoritative);
+    `restore_gates()` reads `.flow/gates.json` on startup (missing →
+    silent, corrupt → warn+go, stale IDs → silently discarded)
+  - main.rs: call `store.restore_gates().await` after `ingest_roadmap()`
+    so gate values survive the `upsert_item` reset (sequencing invariant)
+  - mcp.rs: restructure `list_items` response from flat `{"items":[…]}`
+    to `{"pending":{"wait":[…],"go":[…]},"in_progress":[…],"done":[…]}`
+
+  Test evidence:
+  - 11 new unit/contract tests in store_contract_intest.rs covering all
+    branches: atomic write, toggle, restart restore, missing/corrupt/
+    empty file resilience, stale-ID discard, sequencing invariant,
+    sidecar fault warn-continue
+  - 3 new + 1 updated MCP contract tests covering grouped list_items shape
+  - 5 story tests (STORY-G36-01 through -05) exercising simulated restart,
+    corrupt cold-start, grouping, and real-time toggle
+  - All 309 Rust tests pass; 299 JS vitest tests pass
+
+  Closes [36]
+
+  EARS: EARS-G36-01 through EARS-G36-08
+  Sentinel: STORY_PROVEN

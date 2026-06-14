@@ -80,6 +80,9 @@ async fn mcp_rejects_without_token() {
 
 #[tokio::test]
 async fn mcp_list_items() {
+    // The response shape changed from {"items":[...]} to grouped:
+    // {"pending":{"wait":[...],"go":[...]},"in_progress":[...],"done":[...]}
+    // Both seeded items are PENDING/GO, so they appear in pending.go.
     let (router, _store) = seeded().await;
     let (status, v) = rpc(
         &router,
@@ -91,8 +94,119 @@ async fn mcp_list_items() {
     )
     .await;
     assert_eq!(status, StatusCode::OK);
-    let items = v["result"]["items"].as_array().unwrap();
-    assert_eq!(items.len(), 2);
+    let pending_go = v["result"]["pending"]["go"].as_array().unwrap();
+    assert_eq!(pending_go.len(), 2);
+    // The old "items" flat array must not be present.
+    assert!(
+        v["result"]["items"].is_null(),
+        "old flat 'items' key must not be present"
+    );
+}
+
+/// EARS-G36-06: list_items groups PENDING items by gate.
+#[tokio::test]
+async fn list_items_groups_pending_by_gate() {
+    let dir = tempdir();
+    let store = Arc::new(Store::open(&dir).await.unwrap());
+
+    // Seed four items: pending/wait, pending/go, doing/go, done/go.
+    for (slug, title) in [
+        ("pw", "PendWait"),
+        ("pg", "PendGo"),
+        ("dg", "Doing"),
+        ("dn", "Done"),
+    ] {
+        store
+            .upsert_item(
+                crate::domain::ItemId::new(slug).unwrap(),
+                title.to_string(),
+                "claude-sonnet-4-6".into(),
+            )
+            .await
+            .unwrap();
+    }
+    // Set pw to Wait
+    store
+        .set_gate(
+            &crate::domain::ItemId::new("pw").unwrap(),
+            crate::domain::WaitGate::Wait,
+        )
+        .await
+        .unwrap();
+    // Advance dg to Doing
+    store
+        .post_status(
+            &crate::domain::ItemId::new("dg").unwrap(),
+            crate::domain::Status::Doing,
+        )
+        .await
+        .unwrap();
+    // Advance dn to Done
+    store
+        .post_status(
+            &crate::domain::ItemId::new("dn").unwrap(),
+            crate::domain::Status::Done,
+        )
+        .await
+        .unwrap();
+
+    let router = build_router(Arc::clone(&store), Token::new("tok"), dir.join("static"));
+    let (status, v) = call(&router, "list_items", serde_json::json!({})).await;
+    assert_eq!(status, StatusCode::OK);
+
+    let wait = v["result"]["pending"]["wait"].as_array().unwrap();
+    assert_eq!(wait.len(), 1);
+    assert_eq!(wait[0]["id"], "pw");
+
+    let go = v["result"]["pending"]["go"].as_array().unwrap();
+    assert_eq!(go.len(), 1);
+    assert_eq!(go[0]["id"], "pg");
+
+    let in_progress = v["result"]["in_progress"].as_array().unwrap();
+    assert_eq!(in_progress.len(), 1);
+    assert_eq!(in_progress[0]["id"], "dg");
+
+    let done = v["result"]["done"].as_array().unwrap();
+    assert_eq!(done.len(), 1);
+    assert_eq!(done[0]["id"], "dn");
+}
+
+/// EARS-G36-06: Empty store returns all groups as empty arrays.
+#[tokio::test]
+async fn list_items_empty_store_returns_empty_groups() {
+    let dir = tempdir();
+    let store = Arc::new(Store::open(&dir).await.unwrap());
+    let router = build_router(Arc::clone(&store), Token::new("tok"), dir.join("static"));
+    let (status, v) = call(&router, "list_items", serde_json::json!({})).await;
+    assert_eq!(status, StatusCode::OK);
+
+    assert_eq!(v["result"]["pending"]["wait"].as_array().unwrap().len(), 0);
+    assert_eq!(v["result"]["pending"]["go"].as_array().unwrap().len(), 0);
+    assert_eq!(v["result"]["in_progress"].as_array().unwrap().len(), 0);
+    assert_eq!(v["result"]["done"].as_array().unwrap().len(), 0);
+}
+
+/// EARS-G36-06: All PENDING/GO items leave wait group empty.
+#[tokio::test]
+async fn list_items_all_pending_go_wait_empty() {
+    let dir = tempdir();
+    let store = Arc::new(Store::open(&dir).await.unwrap());
+    for slug in ["x", "y"] {
+        store
+            .upsert_item(
+                crate::domain::ItemId::new(slug).unwrap(),
+                slug.to_uppercase(),
+                "claude-sonnet-4-6".into(),
+            )
+            .await
+            .unwrap();
+    }
+    let router = build_router(Arc::clone(&store), Token::new("tok"), dir.join("static"));
+    let (status, v) = call(&router, "list_items", serde_json::json!({})).await;
+    assert_eq!(status, StatusCode::OK);
+
+    assert_eq!(v["result"]["pending"]["wait"].as_array().unwrap().len(), 0);
+    assert_eq!(v["result"]["pending"]["go"].as_array().unwrap().len(), 2);
 }
 
 #[tokio::test]
