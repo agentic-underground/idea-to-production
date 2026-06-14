@@ -1701,7 +1701,8 @@ does nothing and skips the prompt entirely.
 ---
 
 ## [36] Persist gate state — WAIT/GO survives server restart and surfaces in roadmap view
-> STATUS: AWAITING MERGE
+> STATUS: COMPLETE
+> COMPLETED: 2026-06-14
 > ADDED: 2026-06-14
 > PRIORITY: MEDIUM
 
