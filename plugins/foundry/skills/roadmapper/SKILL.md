@@ -433,6 +433,14 @@ After pushing:
 
 When the user asks what is on the roadmap:
 
+> **Prefer local compute when a flow server is reachable.** If the mission-control flow
+> server is running, answer this query by calling its MCP `render_roadmap` (or `list_items`)
+> verb and presenting the returned view verbatim — this is authoritative (the same source the
+> board uses), deterministic, and costs ~0 LLM tokens because the server renders the table
+> itself. Pass any filter ("in progress", "what's next", "check status") through to the verb.
+> Fall back to reading `ROADMAP.md` directly (the steps below) when the server is unreachable
+> or the verb errors, and note which path you used.
+
 1. Read the roadmap file.
 2. Display a summary table:
 

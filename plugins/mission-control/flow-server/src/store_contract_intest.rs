@@ -154,6 +154,17 @@ async fn reopen_replays_every_event_kind() {
             .await
             .unwrap();
         store.append_sysmsg("hello".into()).await.unwrap();
+        // An annotation (no-op on flow state replay) and two rewrites (each
+        // replays the draft bump) so apply_event's new arms are exercised.
+        store.annotate(&id("a"), "note".into()).await.unwrap();
+        store
+            .request_rewrite(&id("a"), "redo".into())
+            .await
+            .unwrap();
+        store
+            .request_rewrite(&id("a"), "again".into())
+            .await
+            .unwrap();
     }
 
     // Reopen: every event replays through apply_event into the same state.
@@ -164,6 +175,8 @@ async fn reopen_replays_every_event_kind() {
     assert_eq!(a.gate, WaitGate::Go);
     assert_eq!(a.tokens, 5);
     assert_eq!(a.model, "claude-opus-4-8");
+    // Two rewrites replayed: the draft count survives the reopen.
+    assert_eq!(a.draft, 2);
     // The add+remove cancel out: no edges survive.
     assert_eq!(snap.edges().len(), 0);
 }
@@ -464,6 +477,141 @@ async fn grafana_push_attempted_when_endpoint_present() {
 static ENV_LOCK: tokio::sync::Mutex<()> = tokio::sync::Mutex::const_new(());
 
 /// Minimal unique temp dir (no external crate); cleaned by the OS on reboot.
+#[tokio::test]
+async fn annotate_appends_to_plan_doc_when_present() {
+    // Use a test-owned root so `doc/` resolution (data_dir.parent()/doc) is
+    // isolated; the store data dir is a child of that root.
+    let root = tempdir();
+    let data = root.join(".flow");
+    let doc = root.join("doc");
+    std::fs::create_dir_all(&doc).unwrap();
+    // The item title "Flow server" → plan doc FLOW_SERVER_PLAN.md.
+    let plan = doc.join("FLOW_SERVER_PLAN.md");
+    std::fs::write(&plan, "# Flow server plan\n").unwrap();
+
+    let store = Store::open(&data).await.unwrap();
+    store
+        .upsert_item(id("flow-server"), "Flow server".into(), "m".into())
+        .await
+        .unwrap();
+    store
+        .annotate(&id("flow-server"), "tighten the auth gate".into())
+        .await
+        .unwrap();
+
+    // The annotation block was appended to the existing plan doc.
+    let contents = std::fs::read_to_string(&plan).unwrap();
+    assert!(contents.starts_with("# Flow server plan\n"));
+    assert!(contents.contains("### Annotation on `flow-server`"));
+    assert!(contents.contains("tighten the auth gate"));
+    // The per-item ledger was NOT used (the plan doc took precedence).
+    assert!(!data.join("annotations").join("flow-server.md").exists());
+}
+
+#[tokio::test]
+async fn annotate_falls_back_to_ledger_without_plan_doc() {
+    let root = tempdir();
+    let data = root.join(".flow");
+    let store = Store::open(&data).await.unwrap();
+    store
+        .upsert_item(id("flow-server"), "Flow server".into(), "m".into())
+        .await
+        .unwrap();
+    store
+        .annotate(&id("flow-server"), "first note".into())
+        .await
+        .unwrap();
+    store
+        .annotate(&id("flow-server"), "second note".into())
+        .await
+        .unwrap();
+    // The per-item ledger holds both annotations, in order.
+    let ledger = data.join("annotations").join("flow-server.md");
+    let contents = std::fs::read_to_string(&ledger).unwrap();
+    assert!(contents.contains("first note"));
+    assert!(contents.contains("second note"));
+    let first = contents.find("first note").unwrap();
+    let second = contents.find("second note").unwrap();
+    assert!(first < second);
+}
+
+#[tokio::test]
+async fn annotate_unknown_item_is_error() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    let err = store.annotate(&id("nope"), "x".into()).await;
+    assert!(err.is_err());
+}
+
+#[tokio::test]
+async fn request_rewrite_unknown_item_is_error() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    let err = store.request_rewrite(&id("nope"), "x".into()).await;
+    assert!(err.is_err());
+}
+
+#[tokio::test]
+async fn annotate_fails_when_ledger_dir_cannot_be_created() {
+    // Put a FILE where the annotations dir would go, so create_dir_all faults —
+    // exercising annotate's create_dir `?`.
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("a"), "A".into(), "m".into())
+        .await
+        .unwrap();
+    std::fs::write(dir.join("annotations"), "not a dir").unwrap();
+    assert!(store.annotate(&id("a"), "x".into()).await.is_err());
+}
+
+#[tokio::test]
+async fn annotate_fails_when_ledger_target_is_a_directory() {
+    // Make the per-item ledger file path a directory so append_raw's open faults —
+    // exercising annotate's append `?` after the dir is created.
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("a"), "A".into(), "m".into())
+        .await
+        .unwrap();
+    std::fs::create_dir_all(dir.join("annotations").join("a.md")).unwrap();
+    assert!(store.annotate(&id("a"), "x".into()).await.is_err());
+}
+
+#[tokio::test]
+async fn request_rewrite_commit_failure_propagates() {
+    // Replace events.jsonl with a directory so the commit append faults inside
+    // request_rewrite — exercising its `commit(...).await?`.
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("a"), "A".into(), "m".into())
+        .await
+        .unwrap();
+    std::fs::remove_file(dir.join("events.jsonl")).unwrap();
+    std::fs::create_dir_all(dir.join("events.jsonl")).unwrap();
+    assert!(store
+        .request_rewrite(&id("a"), "redo".into())
+        .await
+        .is_err());
+}
+
+#[tokio::test]
+async fn annotate_commit_failure_propagates() {
+    // The annotation append to the ledger succeeds, but the event commit's JSONL
+    // append faults — exercising annotate's trailing `commit(...).await`.
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .upsert_item(id("a"), "A".into(), "m".into())
+        .await
+        .unwrap();
+    std::fs::remove_file(dir.join("events.jsonl")).unwrap();
+    std::fs::create_dir_all(dir.join("events.jsonl")).unwrap();
+    assert!(store.annotate(&id("a"), "note".into()).await.is_err());
+}
+
 fn tempdir() -> std::path::PathBuf {
     use std::sync::atomic::{AtomicU64, Ordering};
     static COUNTER: AtomicU64 = AtomicU64::new(0);

@@ -62,6 +62,25 @@ pub enum Event {
         /// Prerequisite item.
         to: ItemId,
     },
+    /// A human comment was appended to an item's plan as an annotation
+    /// (roadmap #4 comment loop).
+    Annotated {
+        /// Annotated item.
+        id: ItemId,
+        /// The comment text recorded against the item's plan.
+        text: String,
+    },
+    /// A full re-draft of an item was requested, carrying the human's commentary
+    /// (roadmap #4 rewrite loop). The actual re-draft is external orchestration;
+    /// this records the request and the item's new draft number.
+    RewriteRequested {
+        /// Item to be re-drafted.
+        id: ItemId,
+        /// The commentary handed to the carriage agent for the re-draft.
+        comment: String,
+        /// The item's draft number after this request.
+        draft: u32,
+    },
     /// An orchestrator system message.
     SysMsg {
         /// Free-text message.
@@ -120,6 +139,15 @@ mod tests {
             Event::ConnectionRemoved {
                 from: id("a"),
                 to: id("b"),
+            },
+            Event::Annotated {
+                id: id("a"),
+                text: "looks good".into(),
+            },
+            Event::RewriteRequested {
+                id: id("a"),
+                comment: "redo with X".into(),
+                draft: 3,
             },
             Event::SysMsg {
                 text: "hello".into(),

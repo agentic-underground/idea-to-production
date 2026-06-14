@@ -124,3 +124,124 @@ async fn mcp_cycle_rejected() {
     assert_eq!(v["error"]["data"]["error"], "cycle");
     assert_eq!(store.snapshot().await.edges().len(), 1);
 }
+
+/// Call the `tools/call` verb `name` with `arguments`, returning the parsed body.
+async fn call(
+    router: &axum::Router,
+    name: &str,
+    arguments: serde_json::Value,
+) -> (StatusCode, serde_json::Value) {
+    rpc(
+        router,
+        serde_json::json!({
+            "jsonrpc":"2.0","id":1,
+            "method":"tools/call",
+            "params":{"name":name,"arguments":arguments}
+        }),
+    )
+    .await
+}
+
+#[tokio::test]
+async fn mcp_render_roadmap_returns_local_compute_view() {
+    let (router, _store) = seeded().await;
+    let (status, v) = call(&router, "render_roadmap", serde_json::json!({})).await;
+    assert_eq!(status, StatusCode::OK);
+    let rendered = v["result"]["rendered"].as_str().unwrap();
+    assert!(rendered.starts_with("ROADMAP\n2 item(s)\n"));
+    assert!(rendered.contains("· a · A · DO · GO · 0 tok · d0"));
+}
+
+#[tokio::test]
+async fn mcp_render_roadmap_token_gated() {
+    let (router, _store) = seeded().await;
+    let resp = router
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri("/mcp")
+                .header("content-type", "application/json")
+                .body(Body::from(
+                    serde_json::json!({
+                        "jsonrpc":"2.0","id":1,"method":"tools/call",
+                        "params":{"name":"render_roadmap","arguments":{}}
+                    })
+                    .to_string(),
+                ))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
+async fn mcp_annotate_happy_unknown_and_bad_body() {
+    let (router, store) = seeded().await;
+    // Happy.
+    let (status, v) = call(
+        &router,
+        "annotate",
+        serde_json::json!({"id":"a","text":"tighten it"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["result"]["ok"], true);
+    let events = store.read_events().await.unwrap();
+    assert!(events
+        .iter()
+        .any(|e| matches!(e, crate::domain::Event::Annotated { .. })));
+
+    // Unknown item → typed JSON-RPC error.
+    let (status, v) = call(
+        &router,
+        "annotate",
+        serde_json::json!({"id":"nope","text":"x"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["error"]["data"]["error"], "unknown");
+
+    // Bad body (missing `text`) → invalid params.
+    let (status, v) = call(&router, "annotate", serde_json::json!({"id":"a"})).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["error"]["code"], -32602);
+}
+
+#[tokio::test]
+async fn mcp_request_rewrite_happy_unknown_and_bad_body() {
+    let (router, store) = seeded().await;
+    // Happy: draft increments.
+    let (status, v) = call(
+        &router,
+        "request_rewrite",
+        serde_json::json!({"id":"a","comment":"redo"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["result"]["draft"], 1);
+    assert_eq!(
+        store
+            .snapshot()
+            .await
+            .get(&crate::domain::ItemId::new("a").unwrap())
+            .unwrap()
+            .draft,
+        1
+    );
+
+    // Unknown item → typed error.
+    let (status, v) = call(
+        &router,
+        "request_rewrite",
+        serde_json::json!({"id":"nope","comment":"x"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["error"]["data"]["error"], "unknown");
+
+    // Bad body (missing `comment`) → invalid params.
+    let (status, v) = call(&router, "request_rewrite", serde_json::json!({"id":"a"})).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["error"]["code"], -32602);
+}

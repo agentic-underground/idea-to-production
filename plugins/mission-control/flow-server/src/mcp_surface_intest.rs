@@ -1,4 +1,4 @@
-//! Exhaustive MCP JSON-RPC surface contract: tools/list, every one of the nine
+//! Exhaustive MCP JSON-RPC surface contract: tools/list, every one of the twelve
 //! `tools/call` verbs (happy + error/abuse/malformed-params), the unknown-tool
 //! and unknown-method envelopes, and the 401/no-token gate. Drives the real
 //! axum router via `oneshot`.
@@ -76,7 +76,7 @@ fn call(id: i64, name: &str, args: Value) -> Value {
 // --- envelopes ------------------------------------------------------------
 
 #[tokio::test]
-async fn tools_list_enumerates_the_nine_verbs() {
+async fn tools_list_enumerates_the_twelve_verbs() {
     let (router, _store) = seeded("list").await;
     let (status, v) = rpc(
         &router,
@@ -85,8 +85,13 @@ async fn tools_list_enumerates_the_nine_verbs() {
     .await;
     assert_eq!(status, StatusCode::OK);
     let tools = v["result"]["tools"].as_array().unwrap();
-    assert_eq!(tools.len(), 9);
+    // Nine original verbs plus roadmap #15 (render_roadmap) and roadmap #4
+    // (annotate, request_rewrite).
+    assert_eq!(tools.len(), 12);
     assert!(tools.iter().any(|t| t == "append_sysmsg"));
+    assert!(tools.iter().any(|t| t == "render_roadmap"));
+    assert!(tools.iter().any(|t| t == "annotate"));
+    assert!(tools.iter().any(|t| t == "request_rewrite"));
 }
 
 #[tokio::test]

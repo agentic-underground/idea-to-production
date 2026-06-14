@@ -190,3 +190,142 @@ async fn wait_state_refuses_carriage_advance() {
         crate::domain::Status::Do
     );
 }
+
+/// Helper: POST a JSON body to `uri` with the valid bearer token.
+async fn post_json(
+    router: &axum::Router,
+    uri: &str,
+    body: serde_json::Value,
+) -> (StatusCode, serde_json::Value) {
+    let resp = router
+        .clone()
+        .oneshot(
+            Request::builder()
+                .method("POST")
+                .uri(uri)
+                .header("Authorization", "Bearer test-token")
+                .header("content-type", "application/json")
+                .body(Body::from(body.to_string()))
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    let status = resp.status();
+    let bytes = resp.into_body().collect().await.unwrap().to_bytes();
+    // Some bodies (e.g. 422 from the extractor) are not JSON; default to null.
+    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap_or(serde_json::Value::Null);
+    (status, v)
+}
+
+#[tokio::test]
+async fn roadmap_rendered_is_token_gated_and_returns_the_view() {
+    let (router, _store) = seeded().await;
+    // Token-gated: no token → 401.
+    let resp = router
+        .clone()
+        .oneshot(
+            Request::builder()
+                .uri("/api/roadmap/rendered")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+
+    // With the token, the rendered text view comes back.
+    let resp = router
+        .oneshot(
+            Request::builder()
+                .uri("/api/roadmap/rendered")
+                .header("Authorization", "Bearer test-token")
+                .body(Body::empty())
+                .unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(resp.status(), StatusCode::OK);
+    let bytes = resp.into_body().collect().await.unwrap().to_bytes();
+    let text = String::from_utf8(bytes.to_vec()).unwrap();
+    assert!(text.starts_with("ROADMAP\n2 item(s)\n"));
+    assert!(text.contains("· a · A · DO · GO · 0 tok · d0"));
+}
+
+#[tokio::test]
+async fn annotate_happy_unknown_and_bad_body() {
+    let (router, store) = seeded().await;
+    // Happy: annotate a known item.
+    let (status, v) = post_json(
+        &router,
+        "/api/items/a/annotate",
+        serde_json::json!({"text":"please tighten the error path"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["ok"], true);
+    // The annotation was recorded as an event.
+    let events = store.read_events().await.unwrap();
+    assert!(events
+        .iter()
+        .any(|e| matches!(e, crate::domain::Event::Annotated { text, .. } if text == "please tighten the error path")));
+
+    // Unknown item → 404.
+    let (status, v) = post_json(
+        &router,
+        "/api/items/nope/annotate",
+        serde_json::json!({"text":"x"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::NOT_FOUND);
+    assert_eq!(v["error"], "unknown");
+
+    // Bad body (missing `text`) → 422 from the JSON extractor.
+    let (status, _v) = post_json(&router, "/api/items/a/annotate", serde_json::json!({})).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
+}
+
+#[tokio::test]
+async fn rewrite_happy_unknown_and_bad_body() {
+    let (router, store) = seeded().await;
+    // Happy: request a rewrite → draft increments to 1.
+    let (status, v) = post_json(
+        &router,
+        "/api/items/a/rewrite",
+        serde_json::json!({"comment":"redo with the new contract"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["draft"], 1);
+    // A second rewrite increments again.
+    let (status, v) = post_json(
+        &router,
+        "/api/items/a/rewrite",
+        serde_json::json!({"comment":"again"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(v["draft"], 2);
+    assert_eq!(
+        store
+            .snapshot()
+            .await
+            .get(&crate::domain::ItemId::new("a").unwrap())
+            .unwrap()
+            .draft,
+        2
+    );
+
+    // Unknown item → 404.
+    let (status, v) = post_json(
+        &router,
+        "/api/items/nope/rewrite",
+        serde_json::json!({"comment":"x"}),
+    )
+    .await;
+    assert_eq!(status, StatusCode::NOT_FOUND);
+    assert_eq!(v["error"], "unknown");
+
+    // Bad body (missing `comment`) → 422.
+    let (status, _v) = post_json(&router, "/api/items/a/rewrite", serde_json::json!({})).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
+}

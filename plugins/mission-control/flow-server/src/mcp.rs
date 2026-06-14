@@ -24,6 +24,9 @@ pub const TOOLS: &[&str] = &[
     "validate_connection",
     "mutate_connection",
     "append_sysmsg",
+    "render_roadmap",
+    "annotate",
+    "request_rewrite",
 ];
 
 /// Handle a single JSON-RPC request.
@@ -143,6 +146,36 @@ async fn call_tool(state: &AppState, id: Value, name: &str, args: Value) -> Resp
                 None => return invalid_params(id, "text must be a string"),
             };
             map_store(id, state.store.append_sysmsg(text).await)
+        }
+        "render_roadmap" => {
+            let flow = state.store.snapshot().await;
+            let rendered = crate::domain::render_roadmap(&flow);
+            ok(id, json!({ "rendered": rendered }))
+        }
+        "annotate" => {
+            let item_id = match arg_id(&args, "id") {
+                Ok(v) => v,
+                Err(e) => return invalid_params(id, &e),
+            };
+            let text = match args.get("text").and_then(Value::as_str) {
+                Some(v) => v.to_string(),
+                None => return invalid_params(id, "text must be a string"),
+            };
+            map_store(id, state.store.annotate(&item_id, text).await)
+        }
+        "request_rewrite" => {
+            let item_id = match arg_id(&args, "id") {
+                Ok(v) => v,
+                Err(e) => return invalid_params(id, &e),
+            };
+            let comment = match args.get("comment").and_then(Value::as_str) {
+                Some(v) => v.to_string(),
+                None => return invalid_params(id, "comment must be a string"),
+            };
+            match state.store.request_rewrite(&item_id, comment).await {
+                Ok(draft) => ok(id, json!({ "draft": draft })),
+                Err(e) => store_error(id, e),
+            }
         }
         other => rpc_error(id, -32602, &format!("unknown tool: {other}"), Value::Null),
     }

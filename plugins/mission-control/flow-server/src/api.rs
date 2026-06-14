@@ -43,6 +43,9 @@ pub fn build_router(store: Arc<Store>, token: Token, static_dir: PathBuf) -> Rou
         .route("/api/items/:id/status", post(post_status))
         .route("/api/items/:id/spend", post(append_spend))
         .route("/api/items/:id/model", post(set_item_model))
+        .route("/api/items/:id/annotate", post(annotate))
+        .route("/api/items/:id/rewrite", post(request_rewrite))
+        .route("/api/roadmap/rendered", get(roadmap_rendered))
         .route("/api/connection/validate", post(validate_connection))
         .route("/api/connection/mutate", post(mutate_connection))
         .route("/api/sysmsg", post(append_sysmsg))
@@ -103,6 +106,16 @@ struct MutateBody {
 #[derive(Deserialize)]
 struct SysMsgBody {
     text: String,
+}
+
+#[derive(Deserialize)]
+struct AnnotateBody {
+    text: String,
+}
+
+#[derive(Deserialize)]
+struct RewriteBody {
+    comment: String,
 }
 
 // --- handlers -------------------------------------------------------------
@@ -214,6 +227,49 @@ async fn mutate_connection(
 
 async fn append_sysmsg(State(state): State<AppState>, Json(body): Json<SysMsgBody>) -> Response {
     map_store(state.store.append_sysmsg(body.text).await)
+}
+
+async fn annotate(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    Json(body): Json<AnnotateBody>,
+) -> Response {
+    let id = match parse_id(&id) {
+        Ok(id) => id,
+        Err(e) => return id_error_response(e),
+    };
+    map_store(state.store.annotate(&id, body.text).await)
+}
+
+async fn request_rewrite(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    Json(body): Json<RewriteBody>,
+) -> Response {
+    let id = match parse_id(&id) {
+        Ok(id) => id,
+        Err(e) => return id_error_response(e),
+    };
+    match state.store.request_rewrite(&id, body.comment).await {
+        Ok(draft) => Json(json!({ "draft": draft })).into_response(),
+        Err(e) => store_error_response(e),
+    }
+}
+
+/// The local-compute roadmap view (roadmap #15): a deterministic, byte-stable
+/// rendered table returned as `text/plain`. The agent presents this directly,
+/// spending ~0 LLM tokens on formatting.
+async fn roadmap_rendered(State(state): State<AppState>) -> Response {
+    let flow = state.store.snapshot().await;
+    let rendered = crate::domain::render_roadmap(&flow);
+    (
+        [(
+            axum::http::header::CONTENT_TYPE,
+            "text/plain; charset=utf-8",
+        )],
+        rendered,
+    )
+        .into_response()
 }
 
 // --- shared rendering -----------------------------------------------------

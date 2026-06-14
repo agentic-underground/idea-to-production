@@ -12,7 +12,7 @@ use tokio::sync::{broadcast, Mutex};
 
 use crate::domain::graph::Mutation;
 use crate::domain::telemetry::{ancestors, grafana_payload, TelemetryEvent};
-use crate::domain::{Event, Flow, GraphError, Item, ItemId, Status, WaitGate};
+use crate::domain::{format_annotation, Event, Flow, GraphError, Item, ItemId, Status, WaitGate};
 
 /// Errors the store can raise (IO + typed domain errors).
 #[derive(Debug, thiserror::Error)]
@@ -37,6 +37,10 @@ struct Inner {
     jsonl_path: PathBuf,
     markdown_path: PathBuf,
     telemetry_path: PathBuf,
+    /// Where `doc/<TITLE>_PLAN.md` plan documents live (the repo's `doc/`).
+    doc_dir: PathBuf,
+    /// Fallback per-item annotations ledger dir, used when no plan doc exists.
+    annotations_dir: PathBuf,
 }
 
 /// The serialized flow-state writer.
@@ -54,6 +58,10 @@ impl Store {
         let jsonl_path = dir.join("events.jsonl");
         let markdown_path = dir.join("ROADMAP.flow.md");
         let telemetry_path = dir.join("telemetry.jsonl");
+        // Plan docs live in the repo's `doc/` (beside the `.flow` data dir);
+        // fall back to a `doc/` under the data dir when there is no parent.
+        let doc_dir = dir.parent().unwrap_or(dir).join("doc");
+        let annotations_dir = dir.join("annotations");
 
         let mut flow = Flow::new();
         if let Ok(contents) = tokio::fs::read_to_string(&jsonl_path).await {
@@ -73,6 +81,8 @@ impl Store {
                 jsonl_path,
                 markdown_path,
                 telemetry_path,
+                doc_dir,
+                annotations_dir,
             }),
             tx,
         };
@@ -274,6 +284,51 @@ impl Store {
         self.commit(&mut guard, ev).await
     }
 
+    /// Append a human comment as a markdown annotation to an item's plan doc
+    /// (roadmap #4 comment loop), and record an [`Event::Annotated`].
+    ///
+    /// The annotation target is resolved by [`Store::annotation_target`]: the
+    /// item's `doc/<TITLE>_PLAN.md` when that file exists, else a per-item
+    /// annotations ledger under the data dir. The block is produced by the pure
+    /// [`format_annotation`] formatter; the only IO is the path resolution and
+    /// the append. Returns the unknown error if the item is absent.
+    pub async fn annotate(&self, id: &ItemId, text: String) -> Result<(), StoreError> {
+        let mut guard = self.inner.lock().await;
+        let item = guard
+            .flow
+            .get(id)
+            .ok_or_else(|| crate::domain::FlowError::Unknown { id: id.clone() })?;
+        let (parent, target) =
+            annotation_target(&guard.doc_dir, &guard.annotations_dir, id, &item.title);
+        // Ensure the target's parent dir exists (the ledger dir is created lazily
+        // on first annotation; a plan doc's `doc/` already exists by definition).
+        tokio::fs::create_dir_all(&parent).await?;
+        let block = format_annotation(id, &text);
+        append_raw(&target, &block).await?;
+        let ev = Event::Annotated {
+            id: id.clone(),
+            text,
+        };
+        self.commit(&mut guard, ev).await
+    }
+
+    /// Request a full re-draft of an item (roadmap #4 rewrite loop): increment the
+    /// item's draft number and record an [`Event::RewriteRequested`] carrying the
+    /// commentary. The actual re-draft is external orchestration — the server only
+    /// records the request. Returns the new draft number, or the unknown error if
+    /// the item is absent.
+    pub async fn request_rewrite(&self, id: &ItemId, comment: String) -> Result<u32, StoreError> {
+        let mut guard = self.inner.lock().await;
+        let draft = guard.flow.bump_draft(id)?;
+        let ev = Event::RewriteRequested {
+            id: id.clone(),
+            comment,
+            draft,
+        };
+        self.commit(&mut guard, ev).await?;
+        Ok(draft)
+    }
+
     // --- internal ---------------------------------------------------------
 
     /// Append the event to the JSONL log, re-render the markdown view, and
@@ -359,6 +414,73 @@ async fn append_line(path: &Path, line: &str) -> Result<(), StoreError> {
     write_to(&mut file, line).await
 }
 
+/// Append raw bytes (no added newline — the caller's block manages its own
+/// trailing newline) to a file, creating it if absent. The annotation block is
+/// already a self-contained, newline-delimited markdown chunk.
+async fn append_raw(path: &Path, content: &str) -> Result<(), StoreError> {
+    let mut file = tokio::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path)
+        .await?;
+    write_raw_to(&mut file, content).await
+}
+
+/// Write `content` verbatim (no trailing newline) to an open sink, then flush.
+/// Takes a `&mut dyn AsyncWrite` (one compiled body) so the write/flush error
+/// arms are exercisable through a faulting test sink while production writes a
+/// real file through the same single body.
+async fn write_raw_to(
+    writer: &mut (dyn tokio::io::AsyncWrite + Unpin + Send),
+    content: &str,
+) -> Result<(), StoreError> {
+    writer.write_all(content.as_bytes()).await?;
+    writer.flush().await?;
+    Ok(())
+}
+
+/// Resolve where an item's annotation is appended, returning `(parent_dir,
+/// target_file)`: the item's `doc/<TITLE>_PLAN.md` when that file already exists,
+/// else a per-item ledger `<annotations_dir>/<id>.md` (created on first
+/// annotation). Path resolution is the only IO; the block content is built by the
+/// pure [`format_annotation`].
+fn annotation_target(
+    doc_dir: &Path,
+    annotations_dir: &Path,
+    id: &ItemId,
+    title: &str,
+) -> (PathBuf, PathBuf) {
+    let plan = doc_dir.join(plan_doc_filename(title));
+    if plan.is_file() {
+        (doc_dir.to_path_buf(), plan)
+    } else {
+        (
+            annotations_dir.to_path_buf(),
+            annotations_dir.join(format!("{}.md", id.as_str())),
+        )
+    }
+}
+
+/// Derive the plan-doc filename for an item title, matching the roadmap's
+/// `doc/<TITLE>_PLAN.md` convention (e.g. "Flow server" → `FLOW_SERVER_PLAN.md`):
+/// uppercase, with each run of non-alphanumeric characters collapsed to a single
+/// `_`, and surrounding `_` trimmed. Pure and deterministic.
+fn plan_doc_filename(title: &str) -> String {
+    let mut name = String::new();
+    let mut last_us = false;
+    for ch in title.chars() {
+        if ch.is_ascii_alphanumeric() {
+            name.push(ch.to_ascii_uppercase());
+            last_us = false;
+        } else if !last_us {
+            name.push('_');
+            last_us = true;
+        }
+    }
+    let trimmed = name.trim_matches('_');
+    format!("{trimmed}_PLAN.md")
+}
+
 /// Write `line` and a trailing newline to an open sink, then flush. Takes a
 /// `&mut dyn AsyncWrite` (one compiled body, no per-type monomorphization) so
 /// each of the write/flush error arms is exercisable through a faulting test
@@ -404,7 +526,15 @@ fn apply_event(flow: &mut Flow, event: &Event) {
         Event::ConnectionRemoved { from, to } => {
             let _ = flow.remove_connection(from, to);
         }
-        Event::SysMsg { .. } => {}
+        Event::RewriteRequested { id, .. } => {
+            // Replay the draft increment so the reopened draft count matches the
+            // live one. A logged rewrite was accepted against a known item, so
+            // `bump_draft` succeeds; its Err arm lives in the callee/std.
+            let _ = flow.bump_draft(id);
+        }
+        // An annotation wrote to the plan doc, not to flow state, so it is a
+        // no-op on replay (the doc is not re-derived from the JSONL log).
+        Event::Annotated { .. } | Event::SysMsg { .. } => {}
     }
 }
 
@@ -581,6 +711,91 @@ mod tests {
             fail_flush: true,
         };
         assert!(write_to(&mut s, "x").await.is_err());
+    }
+
+    fn iid(s: &str) -> ItemId {
+        ItemId::new(s).unwrap()
+    }
+
+    #[test]
+    fn plan_doc_filename_matches_roadmap_convention() {
+        assert_eq!(plan_doc_filename("Flow server"), "FLOW_SERVER_PLAN.md");
+        // Punctuation runs collapse to a single underscore; surrounding ones trim.
+        assert_eq!(
+            plan_doc_filename("Comment / pause / annotate"),
+            "COMMENT_PAUSE_ANNOTATE_PLAN.md"
+        );
+        // Leading/trailing non-alphanumerics are trimmed.
+        assert_eq!(plan_doc_filename("  hi!  "), "HI_PLAN.md");
+        // Digits survive.
+        assert_eq!(plan_doc_filename("item 15"), "ITEM_15_PLAN.md");
+    }
+
+    #[tokio::test]
+    async fn annotation_target_uses_plan_doc_when_present() {
+        let dir = unique("anntarget");
+        let doc = dir.join("doc");
+        let anns = dir.join("annotations");
+        std::fs::create_dir_all(&doc).unwrap();
+        // Create the plan doc so the resolver picks it.
+        std::fs::write(doc.join("FLOW_SERVER_PLAN.md"), "# plan\n").unwrap();
+        let (parent, target) = annotation_target(&doc, &anns, &iid("flow-server"), "Flow server");
+        assert_eq!(parent, doc);
+        assert_eq!(target, doc.join("FLOW_SERVER_PLAN.md"));
+    }
+
+    #[test]
+    fn annotation_target_falls_back_to_ledger_when_no_plan_doc() {
+        let dir = unique("annledger");
+        let doc = dir.join("doc"); // does not exist → no plan file
+        let anns = dir.join("annotations");
+        let (parent, target) = annotation_target(&doc, &anns, &iid("flow-server"), "Flow server");
+        assert_eq!(parent, anns);
+        assert_eq!(target, anns.join("flow-server.md"));
+    }
+
+    #[tokio::test]
+    async fn append_raw_appends_without_extra_newline() {
+        let dir = unique("appraw");
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("plan.md");
+        append_raw(&path, "a\n").await.unwrap();
+        append_raw(&path, "b\n").await.unwrap();
+        assert_eq!(std::fs::read_to_string(&path).unwrap(), "a\nb\n");
+    }
+
+    #[tokio::test]
+    async fn append_raw_fails_when_path_is_a_directory() {
+        let dir = unique("apprawdir");
+        std::fs::create_dir_all(&dir).unwrap();
+        assert!(append_raw(&dir, "x").await.is_err());
+    }
+
+    #[tokio::test]
+    async fn write_raw_to_succeeds_into_a_buffer() {
+        // The happy path: a Vec<u8> sink never faults and gets no extra newline.
+        let mut buf: Vec<u8> = Vec::new();
+        write_raw_to(&mut buf, "hi").await.unwrap();
+        assert_eq!(buf, b"hi");
+    }
+
+    #[tokio::test]
+    async fn write_raw_to_fails_on_payload_write() {
+        let mut s = FaultSink {
+            ok_writes: 0,
+            fail_flush: false,
+        };
+        assert!(write_raw_to(&mut s, "x").await.is_err());
+    }
+
+    #[tokio::test]
+    async fn write_raw_to_fails_on_flush() {
+        // The payload write_all succeeds; the flush faults.
+        let mut s = FaultSink {
+            ok_writes: 1,
+            fail_flush: true,
+        };
+        assert!(write_raw_to(&mut s, "x").await.is_err());
     }
 
     #[tokio::test]

@@ -46,6 +46,12 @@ pub struct Item {
     pub tokens: u64,
     /// The model assigned to this item's carriage agent (resolved value).
     pub model: String,
+    /// Number of times this item has been re-drafted (roadmap #4 rewrite loop).
+    /// Starts at 0 and is incremented each time a rewrite is requested.
+    /// `#[serde(default)]` so a flow serialized before this field existed still
+    /// deserializes (draft = 0).
+    #[serde(default)]
+    pub draft: u32,
     /// Provenance flag: `true` for proxy historical items derived from the git
     /// log (see [`crate::history`]); `false` for real roadmap tickets. A
     /// synthesized item is visually distinct and is never mutated as if real.
@@ -63,6 +69,7 @@ impl Item {
             gate: WaitGate::Go,
             tokens: 0,
             model: model.into(),
+            draft: 0,
             synthesized: false,
         }
     }
@@ -211,6 +218,19 @@ impl Flow {
         Ok(())
     }
 
+    /// Increment an item's draft counter (roadmap #4 rewrite loop) and return the
+    /// new draft number. Unlike carriage-advance verbs this is **not** WAIT-gated:
+    /// requesting a re-draft is exactly the human-in-the-loop action a paused item
+    /// is paused *for*. Returns the unknown error if the item is absent.
+    pub fn bump_draft(&mut self, id: &ItemId) -> Result<u32, FlowError> {
+        let item = self
+            .items
+            .get_mut(id)
+            .ok_or_else(|| FlowError::Unknown { id: id.clone() })?;
+        item.draft = item.draft.saturating_add(1);
+        Ok(item.draft)
+    }
+
     /// Validate that adding the edge `from -> to` keeps the graph buildable:
     /// both endpoints known, not a self-edge, and no cycle. Pure — mutates
     /// nothing.
@@ -310,7 +330,31 @@ mod tests {
         assert_eq!(it.gate, WaitGate::Go);
         assert_eq!(it.tokens, 0);
         assert_eq!(it.model, "claude-sonnet-4-6");
+        assert_eq!(it.draft, 0);
         assert!(!it.synthesized);
+    }
+
+    #[test]
+    fn bump_draft_increments_and_reports_unknown() {
+        let mut f = Flow::new();
+        f.upsert_item(item("a"));
+        assert_eq!(f.bump_draft(&id("a")).unwrap(), 1);
+        assert_eq!(f.bump_draft(&id("a")).unwrap(), 2);
+        assert_eq!(f.get(&id("a")).unwrap().draft, 2);
+        assert_eq!(
+            f.bump_draft(&id("z")),
+            Err(FlowError::Unknown { id: id("z") })
+        );
+    }
+
+    #[test]
+    fn bump_draft_not_gated_by_wait() {
+        // A rewrite is exactly what a paused item is paused for, so WAIT must not
+        // refuse the draft bump.
+        let mut f = Flow::new();
+        f.upsert_item(item("a"));
+        f.set_gate(&id("a"), WaitGate::Wait).unwrap();
+        assert_eq!(f.bump_draft(&id("a")).unwrap(), 1);
     }
 
     #[test]
