@@ -9,10 +9,10 @@
 // philosophy: instrument-panel · recognition-over-recall
 // paradigm: dashboard-explorative
 // intent: let a solo builder comprehend the whole value system as a live graph and
-//         steer it — pause/resume paths, tidy the layout, and reject any edit that
-//         would make the plan unbuildable
+//         steer it — pause/resume paths, pick the model that runs each job, tidy the
+//         layout, and reject any edit that would make the plan unbuildable
 // customer: solo-builder
-// binding: one-way                # API → render; toggle/connect → API verbs
+// binding: one-way                # API → render; toggle/model-pick/connect → API verbs
 // render-trigger: items.changed
 // modality: { touch: full, mouse: full, keyboard: full }
 // style: operation
@@ -34,6 +34,7 @@ import {
   zoomAboutCursor
 } from './layout.js'
 import { SVG_NS, renderCard } from './card.js'
+import { MODEL_ALLOWLIST, modelLabel, resolveModel } from './model.js'
 
 const COLUMN_LABELS = { do: 'DO', doing: 'DOING', done: 'DONE' }
 const BOARD_TOP = 8
@@ -149,13 +150,100 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
     }
   }
 
+  // --- model picker: an accessible listbox popup over the canvas. Only one open
+  // at a time; choosing an allowlisted model overrides, "Use default" clears it.
+  let pickerEl = null
+  const closePicker = () => {
+    if (pickerEl) {
+      pickerEl.remove()
+      pickerEl = null
+    }
+  }
+
+  // Apply a chosen model: `model` is an allowlisted id to override with, or null
+  // to clear the override. No-ops when the choice is already the resolved model.
+  const applyModel = async (id, model) => {
+    const item = items.find((i) => i.id === id)
+    const resolved = resolveModel(item)
+    closePicker()
+    // choosing the model already in effect (or "default" when already default) is a no-op
+    if (model === null ? !resolved.isOverride : model === resolved.model) return
+    const prevModel = item.model
+    try {
+      await api.setModel(id, model)
+      // Pin the default on the working copy so override-vs-default stays decidable
+      // even when the server has not (yet) exposed a separate defaultModel field.
+      item.defaultModel = resolved.default
+      item.model = model === null ? resolved.default : model
+      rerenderCard(id)
+      announce('')
+    } catch (err) {
+      item.model = prevModel
+      announce(`Could not change the model for ${id}: ${err.message}`)
+    }
+  }
+
+  const onPickModel = (id) => {
+    closePicker()
+    const item = items.find((i) => i.id === id)
+    const resolved = resolveModel(item)
+
+    const listbox = document.createElement('ul')
+    listbox.setAttribute('role', 'listbox')
+    listbox.setAttribute('aria-label', `Choose model for ${item.title}`)
+    listbox.className = 'model-listbox'
+    listbox.tabIndex = -1
+
+    const choices = [
+      ...MODEL_ALLOWLIST.map((m) => ({ label: modelLabel(m), model: m, selected: m === resolved.model })),
+      { label: 'Use default', model: null, selected: false }
+    ]
+
+    const optionEls = choices.map((choice) => {
+      const li = document.createElement('li')
+      li.setAttribute('role', 'option')
+      li.setAttribute('aria-selected', choice.selected ? 'true' : 'false')
+      li.tabIndex = -1
+      li.className = 'model-option'
+      li.textContent = choice.label
+      li.addEventListener('click', () => applyModel(id, choice.model))
+      listbox.appendChild(li)
+      return li
+    })
+
+    // keyboard: arrows move a roving focus (wrapping), Enter chooses, Escape closes.
+    let active = Math.max(0, choices.findIndex((c) => c.selected))
+    const focusActive = () => optionEls[active].focus()
+    listbox.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        active = (active + 1) % optionEls.length
+        focusActive()
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        active = (active - 1 + optionEls.length) % optionEls.length
+        focusActive()
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        applyModel(id, choices[active].model)
+      } else if (e.key === 'Escape') {
+        e.preventDefault()
+        closePicker()
+      }
+    })
+
+    root.appendChild(listbox)
+    pickerEl = listbox
+    focusActive()
+  }
+
   const placeCard = (id) => {
     cardEls[id].setAttribute('transform', `translate(${positions[id].x} ${positions[id].y})`)
   }
 
   const rerenderCard = (id) => {
     const item = items.find((i) => i.id === id)
-    const fresh = renderCard(item, positions[id], { onToggleGate })
+    const fresh = renderCard(item, positions[id], { onToggleGate, onPickModel })
     wireCardDrag(fresh, id)
     cardEls[id].replaceWith(fresh)
     cardEls[id] = fresh
@@ -179,8 +267,8 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
   function wireCardDrag(cardEl, id) {
     cardEl.addEventListener('pointerdown', (e) => {
       if (e.button !== 0) return
-      // a pointerdown that originates on the gate toggle must not start a drag
-      if (e.target.closest && e.target.closest('.gate-toggle')) return
+      // a pointerdown that originates on the gate toggle or model picker must not start a drag
+      if (e.target.closest && e.target.closest('.gate-toggle, .model-picker')) return
       e.stopPropagation() // do NOT let the canvas pan
       const startX = e.clientX
       const startY = e.clientY
@@ -252,7 +340,7 @@ export async function mountCanvas(root, { api, token = 'present' } = {}) {
     Object.assign(positions, autoAlign(items))
 
     for (const item of items) {
-      const g = renderCard(item, positions[item.id], { onToggleGate })
+      const g = renderCard(item, positions[item.id], { onToggleGate, onPickModel })
       wireCardDrag(g, item.id)
       cardEls[item.id] = g
       cardsLayer.appendChild(g)

@@ -5,8 +5,8 @@
 //
 // @front-end
 // element: flow-api-client
-// intent: let the canvas read items and post governance intents (WAIT/GO, draw a
-//         connection) over the server's token-gated REST surface
+// intent: let the canvas read items and post governance intents (WAIT/GO, per-job
+//         model override, draw a connection) over the server's token-gated REST surface
 // customer: solo-builder
 // binding: one-way
 // a11y: n/a (transport)
@@ -67,6 +67,17 @@ export function createApi(token) {
     async setGate(id, gate) {
       const res = await postJson(`/api/items/${id}/gate`, { gate })
       if (!res.ok) throw new Error(`setGate failed: ${res.status}`)
+      return res.json()
+    },
+
+    /**
+     * POST a per-job model assignment. `model` is an allowlisted model id to
+     * override with, or `null` to clear the override (revert to the default).
+     * Throws on a non-ok response (e.g. the server refuses an off-allowlist model).
+     */
+    async setModel(id, model) {
+      const res = await postJson(`/api/items/${id}/model`, { model })
+      if (!res.ok) throw new Error(`setModel failed: ${res.status}`)
       return res.json()
     },
 

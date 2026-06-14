@@ -108,6 +108,32 @@ describe('createApi', () => {
     expect(res.message).toMatch(/cycle/)
   })
 
+  it('setModel POSTs the model body to the item model endpoint', async () => {
+    fetchMock.mockResolvedValue(ok({ ok: true }))
+    const api = createApi('tok')
+    await api.setModel('svg-flow-canvas', 'claude-opus-4-8')
+    const [url, opts] = fetchMock.mock.calls[0]
+    expect(url).toBe('/api/items/svg-flow-canvas/model')
+    expect(opts.method).toBe('POST')
+    expect(JSON.parse(opts.body)).toEqual({ model: 'claude-opus-4-8' })
+    expect(opts.headers.Authorization).toBe('Bearer tok')
+  })
+
+  it('setModel sends model:null to clear an override (revert to default)', async () => {
+    fetchMock.mockResolvedValue(ok({ ok: true }))
+    const api = createApi('tok')
+    await api.setModel('svg-flow-canvas', null)
+    const [url, opts] = fetchMock.mock.calls[0]
+    expect(url).toBe('/api/items/svg-flow-canvas/model')
+    expect(JSON.parse(opts.body)).toEqual({ model: null })
+  })
+
+  it('setModel rejects (throws) on a non-ok response so callers can surface it', async () => {
+    fetchMock.mockResolvedValue(fail(409, { error: 'not_allowed' }))
+    const api = createApi('tok')
+    await expect(api.setModel('a', 'claude-evil-9')).rejects.toThrow(/409/)
+  })
+
   it('setGate rejects (throws) on a non-ok response so callers can surface it', async () => {
     fetchMock.mockResolvedValue(fail(401, { error: 'unauthorized' }))
     const api = createApi('bad')

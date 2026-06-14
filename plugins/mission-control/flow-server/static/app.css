@@ -197,6 +197,62 @@ html, body {
 .badge.model { fill: var(--ink-faint); }
 .badge.draft { fill: var(--ink-faint); }
 
+/* model picker badge (a button on the card) + its default/override marker */
+.model-picker { cursor: pointer; }
+.model-hit { fill: transparent; }
+.model-picker:hover .model-hit,
+.model-picker:focus-visible .model-hit {
+  fill: var(--bg-board);
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+.model-picker .badge.model { fill: var(--ink); }
+.badge.model-marker {
+  font: 700 9px/1 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.badge.model-default { fill: var(--ink-faint); }
+.badge.model-override { fill: var(--warn); }
+
+/* model picker dropdown — an accessible listbox over the canvas */
+.model-listbox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 7;
+  min-width: 12rem;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  background: var(--bg-card);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+.model-option {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.9rem;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font: 600 0.95rem/1 var(--font);
+  cursor: pointer;
+}
+.model-option:hover { background: var(--bg-board); }
+.model-option[aria-selected="true"] { color: var(--accent); }
+.model-option[aria-selected="true"]::before {
+  content: "✓";
+  margin-right: 0.5rem;
+  font-weight: 700;
+}
+.model-option:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+
 /* WAIT/GO toggle */
 .gate-toggle { cursor: pointer; }
 .gate-bg { fill: var(--accent); }

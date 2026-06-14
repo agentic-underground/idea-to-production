@@ -8,6 +8,7 @@ function makeApi(overrides = {}) {
   return {
     getItems: vi.fn().mockResolvedValue(FIXTURE_ITEMS),
     setGate: vi.fn().mockResolvedValue({ ok: true }),
+    setModel: vi.fn().mockResolvedValue({ ok: true }),
     validateConnection: vi.fn().mockResolvedValue({ ok: true }),
     ...overrides
   }
@@ -368,5 +369,213 @@ describe('mountCanvas — token gate', () => {
   it('mountCanvas tolerates being called with no options bag', async () => {
     // no api ⇒ no token gate prompt is the safe default; should not throw at mount
     await expect(mountCanvas(root, { token: '' })).resolves.toBeTruthy()
+  })
+})
+
+describe('mountCanvas — per-job model selection (#8)', () => {
+  const openPickerFor = async (handle, id) => {
+    const user = userEvent.setup()
+    await waitFor(() => expect(handle.svg.querySelector(`[data-id="${id}"]`)).toBeTruthy())
+    const card = handle.svg.querySelector(`[data-id="${id}"]`)
+    await user.click(within(card).getByRole('button', { name: /model/i }))
+    return user
+  }
+
+  it('the card shows the assigned model marked "default" before any change', async () => {
+    const handle = await mountCanvas(root, { api: makeApi() })
+    stubGeometry(handle.svg)
+    await waitFor(() => expect(handle.svg.querySelector('[data-id="svg-flow-canvas"]')).toBeTruthy())
+    const card = handle.svg.querySelector('[data-id="svg-flow-canvas"]') // sonnet, no defaultModel
+    const picker = within(card).getByRole('button', { name: /model/i })
+    expect(picker.getAttribute('data-override')).toBe('false')
+    expect(picker.getAttribute('aria-label').toLowerCase()).toContain('default')
+    expect(card.textContent).toContain('sonnet')
+  })
+
+  it('opening the picker lists exactly the allowlisted models plus "Use default"', async () => {
+    const handle = await mountCanvas(root, { api: makeApi() })
+    stubGeometry(handle.svg)
+    await openPickerFor(handle, 'svg-flow-canvas')
+
+    const listbox = await screen.findByRole('listbox')
+    const options = within(listbox).getAllByRole('option')
+    const names = options.map((o) => o.textContent)
+    expect(names).toContain('Haiku 4.5')
+    expect(names).toContain('Sonnet 4.6')
+    expect(names).toContain('Opus 4.8')
+    expect(names).toContain('Fable 5')
+    expect(names.some((n) => /use default/i.test(n))).toBe(true)
+    // exactly the 4 allowlisted models + the "Use default" entry
+    expect(options.length).toBe(5)
+  })
+
+  it('does NOT offer a non-allowlisted model in the picker', async () => {
+    const handle = await mountCanvas(root, { api: makeApi() })
+    stubGeometry(handle.svg)
+    await openPickerFor(handle, 'svg-flow-canvas')
+    const listbox = await screen.findByRole('listbox')
+    expect(within(listbox).queryByText(/evil|gpt|grok/i)).toBeNull()
+  })
+
+  it('marks the currently-assigned model as the selected option', async () => {
+    const handle = await mountCanvas(root, { api: makeApi() })
+    stubGeometry(handle.svg)
+    await openPickerFor(handle, 'svg-flow-canvas') // sonnet
+    const listbox = await screen.findByRole('listbox')
+    const selected = within(listbox).getByRole('option', { selected: true })
+    expect(selected.textContent).toBe('Sonnet 4.6')
+  })
+
+  it('choosing a different model calls setModel and flips the badge to "override"', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    const user = await openPickerFor(handle, 'svg-flow-canvas')
+
+    const listbox = await screen.findByRole('listbox')
+    await user.click(within(listbox).getByRole('option', { name: 'Opus 4.8' }))
+
+    expect(api.setModel).toHaveBeenCalledWith('svg-flow-canvas', 'claude-opus-4-8')
+    await waitFor(() => {
+      const card = handle.svg.querySelector('[data-id="svg-flow-canvas"]')
+      const picker = within(card).getByRole('button', { name: /model/i })
+      expect(picker.getAttribute('data-override')).toBe('true')
+      expect(card.textContent).toContain('opus')
+    })
+    // picker closes after a choice
+    expect(screen.queryByRole('listbox')).toBeNull()
+  })
+
+  it('does not mutate the fetched item objects when a model is overridden', async () => {
+    const fetched = FIXTURE_ITEMS.map((i) => ({ ...i }))
+    const api = makeApi({ getItems: vi.fn().mockResolvedValue(fetched) })
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    const user = await openPickerFor(handle, 'svg-flow-canvas')
+    const listbox = await screen.findByRole('listbox')
+    await user.click(within(listbox).getByRole('option', { name: 'Opus 4.8' }))
+    await waitFor(() => expect(api.setModel).toHaveBeenCalled())
+    // the original fetched object is untouched (one-way binding)
+    const original = fetched.find((i) => i.id === 'svg-flow-canvas')
+    expect(original.model).toBe('claude-sonnet-4-6')
+  })
+
+  it('"Use default" clears the override and reverts the badge to default', async () => {
+    // start overridden: opus over a sonnet default
+    const overridden = FIXTURE_ITEMS.map((i) =>
+      i.id === 'svg-flow-canvas'
+        ? { ...i, model: 'claude-opus-4-8', defaultModel: 'claude-sonnet-4-6' }
+        : { ...i }
+    )
+    const api = makeApi({ getItems: vi.fn().mockResolvedValue(overridden) })
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    let card = handle.svg.querySelector('[data-id="svg-flow-canvas"]')
+    await waitFor(() => {
+      card = handle.svg.querySelector('[data-id="svg-flow-canvas"]')
+      expect(within(card).getByRole('button', { name: /model/i }).getAttribute('data-override')).toBe('true')
+    })
+
+    const user = await openPickerFor(handle, 'svg-flow-canvas')
+    const listbox = await screen.findByRole('listbox')
+    await user.click(within(listbox).getByRole('option', { name: /use default/i }))
+
+    expect(api.setModel).toHaveBeenCalledWith('svg-flow-canvas', null)
+    await waitFor(() => {
+      card = handle.svg.querySelector('[data-id="svg-flow-canvas"]')
+      const picker = within(card).getByRole('button', { name: /model/i })
+      expect(picker.getAttribute('data-override')).toBe('false')
+      expect(card.textContent).toContain('sonnet')
+    })
+  })
+
+  it('surfaces an error and keeps the prior model when setModel rejects', async () => {
+    const api = makeApi({ setModel: vi.fn().mockRejectedValue(new Error('setModel failed: 409')) })
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    const user = await openPickerFor(handle, 'svg-flow-canvas')
+    const listbox = await screen.findByRole('listbox')
+    await user.click(within(listbox).getByRole('option', { name: 'Opus 4.8' }))
+
+    await waitFor(() => expect(screen.getByRole('alert').textContent).toMatch(/model/i))
+    // badge unchanged — still the sonnet default
+    const card = handle.svg.querySelector('[data-id="svg-flow-canvas"]')
+    expect(within(card).getByRole('button', { name: /model/i }).getAttribute('data-override')).toBe('false')
+    expect(card.textContent).toContain('sonnet')
+  })
+
+  it('choosing the already-assigned model closes the picker without an API call', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    const user = await openPickerFor(handle, 'svg-flow-canvas') // sonnet
+    const listbox = await screen.findByRole('listbox')
+    await user.click(within(listbox).getByRole('option', { name: 'Sonnet 4.6' }))
+    expect(api.setModel).not.toHaveBeenCalled()
+    await waitFor(() => expect(screen.queryByRole('listbox')).toBeNull())
+  })
+
+  it('Escape closes the picker without changing the model', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    const user = await openPickerFor(handle, 'svg-flow-canvas')
+    await screen.findByRole('listbox')
+    await user.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('listbox')).toBeNull())
+    expect(api.setModel).not.toHaveBeenCalled()
+  })
+
+  it('opening a second picker replaces the first (only one listbox at a time)', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    const user = await openPickerFor(handle, 'svg-flow-canvas')
+    await screen.findByRole('listbox')
+    // open the picker on another card
+    const other = handle.svg.querySelector('[data-id="carriage-telemetry"]')
+    await user.click(within(other).getByRole('button', { name: /model/i }))
+    await waitFor(() => expect(screen.getAllByRole('listbox').length).toBe(1))
+  })
+
+  it('the picker is keyboard-operable: arrow to an option and Enter chooses it', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    const user = await openPickerFor(handle, 'svg-flow-canvas') // sonnet selected
+    const listbox = await screen.findByRole('listbox')
+    // focus starts on the selected option (Sonnet, index 1); arrow down to Opus (index 2)
+    await user.keyboard('{ArrowDown}{Enter}')
+    expect(api.setModel).toHaveBeenCalledWith('svg-flow-canvas', 'claude-opus-4-8')
+    await waitFor(() => expect(screen.queryByRole('listbox')).toBeNull())
+    expect(listbox.isConnected).toBe(false)
+  })
+
+  it('ArrowUp past the first option wraps to the last', async () => {
+    // start overridden so the wrapped-to "Use default" option fires a real change
+    const overridden = FIXTURE_ITEMS.map((i) =>
+      i.id === 'svg-flow-canvas'
+        ? { ...i, model: 'claude-opus-4-8', defaultModel: 'claude-sonnet-4-6' }
+        : { ...i }
+    )
+    const api = makeApi({ getItems: vi.fn().mockResolvedValue(overridden) })
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    const user = await openPickerFor(handle, 'svg-flow-canvas')
+    await screen.findByRole('listbox')
+    // selected = Opus (index 2). Up → Sonnet (1) → Haiku (0). Up again → wrap to last ("Use default").
+    await user.keyboard('{ArrowUp}{ArrowUp}{ArrowUp}{Enter}')
+    expect(api.setModel).toHaveBeenCalledWith('svg-flow-canvas', null)
+  })
+
+  it('ArrowDown past the last option wraps to the first', async () => {
+    const api = makeApi()
+    const handle = await mountCanvas(root, { api })
+    stubGeometry(handle.svg)
+    const user = await openPickerFor(handle, 'svg-flow-canvas')
+    await screen.findByRole('listbox')
+    // 5 options; selected = Sonnet (1). Down x4 → index 5 wraps to 0 (Haiku).
+    await user.keyboard('{ArrowDown}{ArrowDown}{ArrowDown}{ArrowDown}{Enter}')
+    expect(api.setModel).toHaveBeenCalledWith('svg-flow-canvas', 'claude-haiku-4-5')
   })
 })

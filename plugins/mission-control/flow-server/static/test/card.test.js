@@ -114,6 +114,93 @@ describe('renderCard', () => {
     const badge = g.querySelector('[data-badge="model"]')
     expect(badge.textContent).toBe('')
   })
+})
+
+describe('renderCard — model badge / picker', () => {
+  it('exposes the model badge as a button with a picker affordance', () => {
+    // svg-flow-canvas: model sonnet, no defaultModel ⇒ default
+    const g = renderCard(item, { x: 0, y: 0 }, { onToggleGate: vi.fn(), onPickModel: vi.fn() })
+    svg.appendChild(g)
+    const picker = within(g).getByRole('button', { name: /model/i })
+    expect(picker.getAttribute('aria-haspopup')).toBe('listbox')
+    expect(picker.getAttribute('data-testid')).toBe(`model-picker-${item.id}`)
+  })
+
+  it('marks a model that equals the default as "default"', () => {
+    const g = renderCard(item, { x: 0, y: 0 }, { onToggleGate: vi.fn(), onPickModel: vi.fn() })
+    svg.appendChild(g)
+    const picker = g.querySelector(`[data-testid="model-picker-${item.id}"]`)
+    expect(picker.getAttribute('data-override')).toBe('false')
+    expect(picker.getAttribute('aria-label').toLowerCase()).toContain('default')
+    expect(picker.getAttribute('aria-label').toLowerCase()).toContain('sonnet')
+    // a visible default/override marker glyph reads on the card
+    expect(g.textContent.toLowerCase()).toContain('default')
+  })
+
+  it('marks a model that differs from the default as an "override"', () => {
+    const overridden = { ...item, model: 'claude-opus-4-8', defaultModel: 'claude-sonnet-4-6' }
+    const g = renderCard(overridden, { x: 0, y: 0 }, { onToggleGate: vi.fn(), onPickModel: vi.fn() })
+    svg.appendChild(g)
+    const picker = g.querySelector(`[data-testid="model-picker-${overridden.id}"]`)
+    expect(picker.getAttribute('data-override')).toBe('true')
+    expect(picker.getAttribute('aria-label').toLowerCase()).toContain('override')
+    expect(picker.getAttribute('aria-label').toLowerCase()).toContain('opus')
+    expect(g.textContent.toLowerCase()).toContain('override')
+  })
+
+  it('shows the resolved (override) model name in the badge, not the default', () => {
+    const overridden = { ...item, model: 'claude-opus-4-8', defaultModel: 'claude-sonnet-4-6' }
+    const g = renderCard(overridden, { x: 0, y: 0 }, { onToggleGate: vi.fn(), onPickModel: vi.fn() })
+    expect(g.textContent).toContain('opus')
+  })
+
+  it('emits onPickModel with the item id when the badge is clicked', async () => {
+    const user = userEvent.setup()
+    const onPickModel = vi.fn()
+    const g = renderCard(item, { x: 0, y: 0 }, { onToggleGate: vi.fn(), onPickModel })
+    svg.appendChild(g)
+    await user.click(within(g).getByRole('button', { name: /model/i }))
+    expect(onPickModel).toHaveBeenCalledWith(item.id)
+  })
+
+  it('the model badge is keyboard-operable (Enter opens the picker)', async () => {
+    const user = userEvent.setup()
+    const onPickModel = vi.fn()
+    const g = renderCard(item, { x: 0, y: 0 }, { onToggleGate: vi.fn(), onPickModel })
+    svg.appendChild(g)
+    const picker = within(g).getByRole('button', { name: /model/i })
+    picker.focus()
+    await user.keyboard('{Enter}')
+    expect(onPickModel).toHaveBeenCalledWith(item.id)
+  })
+
+  it('a non-activating key on the model badge emits no intent', async () => {
+    const user = userEvent.setup()
+    const onPickModel = vi.fn()
+    const g = renderCard(item, { x: 0, y: 0 }, { onToggleGate: vi.fn(), onPickModel })
+    svg.appendChild(g)
+    const picker = within(g).getByRole('button', { name: /model/i })
+    picker.focus()
+    await user.keyboard('{Escape}')
+    expect(onPickModel).not.toHaveBeenCalled()
+  })
+
+  it('opening the model picker does not start a card drag / pan', async () => {
+    const onPickModel = vi.fn()
+    const g = renderCard(item, { x: 0, y: 0 }, { onToggleGate: vi.fn(), onPickModel })
+    svg.appendChild(g)
+    const picker = g.querySelector(`[data-testid="model-picker-${item.id}"]`)
+    // pointerdown on the picker must be inside .model-picker so canvas drag-guard skips it
+    expect(picker.closest('.model-picker')).toBe(picker)
+  })
+
+  it('renders without a model picker handler (toggle-only callers still work)', () => {
+    const g = renderCard(item, { x: 0, y: 0 }, { onToggleGate: vi.fn() })
+    svg.appendChild(g)
+    // the badge falls back to an inert text label when no onPickModel is supplied
+    expect(g.querySelector('[data-badge="model"]')).toBeTruthy()
+    expect(g.querySelector(`[data-testid="model-picker-${item.id}"]`)).toBeNull()
+  })
 
   it('ignores a non-activating key on the toggle (no intent emitted)', async () => {
     const user = userEvent.setup()

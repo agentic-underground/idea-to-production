@@ -7,29 +7,28 @@
 // element: flow-card
 // philosophy: recognition-over-recall (badges read at a glance)
 // paradigm: dashboard-explorative
-// intent: show a builder cost · state · model · draft for one item, and let them
-//         pause/resume value-add down its path without opening it
+// intent: show a builder cost · state · model · draft for one item, let them
+//         pause/resume value-add down its path, and pick the model that runs it —
+//         all without opening it
 // customer: solo-builder
-// binding: one-way                # item in, gate-intent out
+// binding: one-way                # item in, gate-intent + model-pick-intent out
 // render-trigger: items.changed
 // modality: { touch: 1-tap, mouse: full, keyboard: full }
-// style: operation                # badges + a lever, not a form
-// a11y: wcag-2.1-aa               # role/name/value on the toggle; Enter/Space activate
-// improve?: "expose a model-picker (roadmap #8) and error-catch/child-task badges
-//            (roadmap #2 EARS) — the badge row is built to extend"
+// style: operation                # badges + a lever + a picker, not a form
+// a11y: wcag-2.1-aa               # role/name/value on the toggle; the model badge is a
+//                                   button (aria-haspopup=listbox); Enter/Space activate both
+// improve?: "add error-catch/child-task badges (roadmap #2 EARS) — the badge row is built to extend"
 // breadcrumbs: ["gate 'go' ⇒ aria-pressed=false (not paused); 'wait' ⇒ true",
-//               "onToggleGate is called with the OPPOSITE of the current gate"]
+//               "onToggleGate is called with the OPPOSITE of the current gate",
+//               "model badge carries data-override; default ⇔ model == defaultModel (or no defaultModel)",
+//               "onPickModel(id) only fires when a handler is wired (else the badge is inert text)"]
+
+import { shortModel, modelLabel, resolveModel } from './model.js'
 
 export const SVG_NS = 'http://www.w3.org/2000/svg'
 export const CARD_TESTID = 'flow-card'
 export const CARD_W = 240
 export const CARD_H = 120
-
-/** Shorten a marketplace model id to its family name for the badge. */
-function shortModel(model) {
-  const m = /claude-([a-z]+)/.exec(model ?? '')
-  return m ? m[1] : (model ?? '')
-}
 
 /** Group an integer with thousands separators (locale-independent). */
 function groupThousands(n) {
@@ -49,10 +48,56 @@ function badge(x, y, label, cls) {
 }
 
 /**
- * Render an item as an SVG `<g>` translated to `pos`. Calls
- * `onToggleGate(id, nextGate)` when the WAIT/GO toggle is activated.
+ * Render the model badge. Shows the resolved (override-or-default) model short
+ * name plus a "default"/"override" marker. When `onPickModel` is supplied the
+ * badge is a button (role=button, aria-haspopup=listbox, Enter/Space + click);
+ * otherwise it is an inert `<text>` label (backwards-compatible).
  */
-export function renderCard(item, pos, { onToggleGate }) {
+function renderModelBadge(item, onPickModel) {
+  const { model, default: def, isOverride } = resolveModel(item)
+  const marker = isOverride ? 'override' : 'default'
+
+  if (!onPickModel) {
+    return badge(120, 82, shortModel(model), 'model')
+  }
+
+  const ariaLabel = isOverride
+    ? `Model: ${modelLabel(model)} (override of default ${modelLabel(def)}) — change`
+    : `Model: ${modelLabel(model)} (default) — change`
+
+  const picker = el('g', {
+    role: 'button',
+    tabindex: '0',
+    'aria-haspopup': 'listbox',
+    'aria-label': ariaLabel,
+    class: 'model-picker',
+    'data-override': isOverride ? 'true' : 'false',
+    'data-testid': `model-picker-${item.id}`,
+    transform: 'translate(120 70)'
+  })
+  // a generous transparent hit target (>= the badge text it wraps)
+  picker.appendChild(el('rect', { x: -2, y: -12, width: 112, height: 28, rx: 6, ry: 6, class: 'model-hit' }))
+  picker.appendChild(badge(0, 0, shortModel(model), 'model'))
+  picker.appendChild(badge(0, 13, marker, `model-marker model-${marker}`))
+
+  const open = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    onPickModel(item.id)
+  }
+  picker.addEventListener('click', open)
+  picker.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') open(e)
+  })
+  return picker
+}
+
+/**
+ * Render an item as an SVG `<g>` translated to `pos`. Calls
+ * `onToggleGate(id, nextGate)` when the WAIT/GO toggle is activated, and
+ * `onPickModel(id)` when the model badge is activated (if a handler is given).
+ */
+export function renderCard(item, pos, { onToggleGate, onPickModel } = {}) {
   const paused = item.gate === 'wait'
 
   const g = el('g', {
@@ -73,8 +118,11 @@ export function renderCard(item, pos, { onToggleGate }) {
   // badge row
   g.appendChild(badge(16, 60, `${groupThousands(item.tokens)} tok`, 'tokens'))
   g.appendChild(badge(16, 82, item.status, 'status'))
-  g.appendChild(badge(120, 82, shortModel(item.model), 'model'))
   if (item.draft) g.appendChild(badge(120, 60, `#${item.draft}`, 'draft'))
+
+  // model badge — a keyboard-operable picker affordance when a handler is given,
+  // an inert label otherwise. Marks default vs override so cost↔capability reads.
+  g.appendChild(renderModelBadge(item, onPickModel))
 
   // WAIT/GO toggle — an SVG button-role group, keyboard operable.
   const nextGate = paused ? 'go' : 'wait'
