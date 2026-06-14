@@ -20,6 +20,9 @@ pub struct Config {
     /// Optional roadmap markdown to ingest on startup so the board is not blank.
     /// `None` (the default) starts with an empty store.
     pub roadmap_path: Option<PathBuf>,
+    /// When true, run in stdio JSON-RPC (MCP) mode instead of HTTP server mode.
+    /// Default `false`. Activated by the `--mcp` flag.
+    pub mcp: bool,
 }
 
 impl Default for Config {
@@ -31,6 +34,7 @@ impl Default for Config {
             static_dir: PathBuf::from("static"),
             data_dir: PathBuf::from(".flow"),
             roadmap_path: None,
+            mcp: false,
         }
     }
 }
@@ -73,6 +77,9 @@ impl Config {
                 "--roadmap" => {
                     let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
                     cfg.roadmap_path = Some(PathBuf::from(v));
+                }
+                "--mcp" => {
+                    cfg.mcp = true;
                 }
                 other => {
                     return Err(ConfigError::UnknownFlag {
@@ -213,5 +220,18 @@ mod tests {
                 flag: "--nope".into()
             })
         );
+    }
+
+    // T37-2: --mcp flag tests
+    #[test]
+    fn mcp_flag_absent_is_false() {
+        let cfg = Config::from_args(argv(&[])).unwrap();
+        assert!(!cfg.mcp, "--mcp absent must default to false");
+    }
+
+    #[test]
+    fn mcp_flag_present_is_true() {
+        let cfg = Config::from_args(argv(&["--mcp"])).unwrap();
+        assert!(cfg.mcp, "--mcp present must set mcp to true");
     }
 }

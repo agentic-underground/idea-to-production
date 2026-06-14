@@ -30,8 +30,20 @@ pub const TOOLS: &[&str] = &[
     "list_events",
 ];
 
-/// Handle a single JSON-RPC request.
+/// Thin axum handler: deserialises the JSON body via extractor, delegates to
+/// `dispatch`, and serialises the result back into an HTTP response. The real
+/// dispatch logic lives in `dispatch` so it can be called from any transport
+/// (HTTP or stdio) without going through the axum extractor chain.
 pub async fn handle(State(state): State<AppState>, Json(req): Json<Value>) -> Response {
+    Json(dispatch(&state, req).await).into_response()
+}
+
+/// Dispatch a single JSON-RPC request, returning a JSON-RPC `Value` response.
+///
+/// This function is transport-agnostic: it is called by the HTTP handler
+/// (`handle`) and by the stdio read loop (`run_stdio` in `main.rs`). The
+/// caller is responsible for serialising the returned `Value` to the wire.
+pub async fn dispatch(state: &AppState, req: Value) -> Value {
     let id = req.get("id").cloned().unwrap_or(Value::Null);
     let method = req.get("method").and_then(Value::as_str).unwrap_or("");
 
@@ -44,7 +56,7 @@ pub async fn handle(State(state): State<AppState>, Json(req): Json<Value>) -> Re
                 .get("arguments")
                 .cloned()
                 .unwrap_or_else(|| json!({}));
-            call_tool(&state, id, name, args).await
+            call_tool(state, id, name, args).await
         }
         other => rpc_error(
             id,
@@ -55,7 +67,7 @@ pub async fn handle(State(state): State<AppState>, Json(req): Json<Value>) -> Re
     }
 }
 
-async fn call_tool(state: &AppState, id: Value, name: &str, args: Value) -> Response {
+async fn call_tool(state: &AppState, id: Value, name: &str, args: Value) -> Value {
     match name {
         "list_items" => {
             let flow = state.store.snapshot().await;
@@ -253,32 +265,34 @@ fn arg_enum<T: serde::de::DeserializeOwned>(args: &Value, key: &str) -> Result<T
 }
 
 // --- JSON-RPC response builders ------------------------------------------
+// All builders return `Value` so they can be used by both the HTTP handler
+// (which wraps the result in `Json(...).into_response()`) and the stdio loop
+// (which serialises the `Value` directly to stdout).
 
-fn ok(id: Value, result: Value) -> Response {
-    Json(json!({ "jsonrpc": "2.0", "id": id, "result": result })).into_response()
+fn ok(id: Value, result: Value) -> Value {
+    json!({ "jsonrpc": "2.0", "id": id, "result": result })
 }
 
-fn rpc_error(id: Value, code: i64, message: &str, data: Value) -> Response {
-    Json(json!({
+fn rpc_error(id: Value, code: i64, message: &str, data: Value) -> Value {
+    json!({
         "jsonrpc": "2.0",
         "id": id,
         "error": { "code": code, "message": message, "data": data }
-    }))
-    .into_response()
+    })
 }
 
-fn invalid_params(id: Value, message: &str) -> Response {
+fn invalid_params(id: Value, message: &str) -> Value {
     rpc_error(id, -32602, message, Value::Null)
 }
 
-fn map_store(id: Value, result: Result<(), StoreError>) -> Response {
+fn map_store(id: Value, result: Result<(), StoreError>) -> Value {
     match result {
         Ok(()) => ok(id, json!({ "ok": true })),
         Err(e) => store_error(id, e),
     }
 }
 
-fn store_error(id: Value, err: StoreError) -> Response {
+fn store_error(id: Value, err: StoreError) -> Value {
     match err {
         StoreError::Graph(g) => graph_error(id, g),
         StoreError::Flow(f) => flow_error(id, f),
@@ -288,7 +302,7 @@ fn store_error(id: Value, err: StoreError) -> Response {
     }
 }
 
-fn flow_error(id: Value, err: FlowError) -> Response {
+fn flow_error(id: Value, err: FlowError) -> Value {
     let code = match err {
         FlowError::Waiting { .. } => "waiting",
         FlowError::Unknown { .. } => "unknown",
@@ -297,7 +311,7 @@ fn flow_error(id: Value, err: FlowError) -> Response {
     rpc_error(id, -32000, &err.to_string(), json!({ "error": code }))
 }
 
-fn graph_error(id: Value, err: GraphError) -> Response {
+fn graph_error(id: Value, err: GraphError) -> Value {
     let code = match err {
         GraphError::Cycle { .. } => "cycle",
         GraphError::BrokenDep { .. } => "broken_dep",
@@ -309,56 +323,49 @@ fn graph_error(id: Value, err: GraphError) -> Response {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum::body::to_bytes;
 
     fn id_val() -> Value {
         json!(1)
     }
 
-    /// Collect a `Response` body into parsed JSON.
-    async fn body_json(resp: Response) -> Value {
-        let bytes = to_bytes(resp.into_body(), usize::MAX).await.unwrap();
-        serde_json::from_slice(&bytes).unwrap()
-    }
-
     /// IO/Serialize store errors render the -32603 internal error. Not reachable
     /// through a normal request (only a real disk fault triggers it), so the
     /// renderer is pinned directly.
-    #[tokio::test]
-    async fn store_io_error_is_internal() {
+    #[test]
+    fn store_io_error_is_internal() {
         let err = StoreError::Io(std::io::Error::other("disk"));
-        let v = body_json(store_error(id_val(), err)).await;
+        let v = store_error(id_val(), err);
         assert_eq!(v["error"]["code"], -32603);
         assert_eq!(v["error"]["data"]["error"], "io");
     }
 
-    #[tokio::test]
-    async fn store_serialize_error_is_internal() {
+    #[test]
+    fn store_serialize_error_is_internal() {
         let serde_err = serde_json::from_str::<Value>("{").unwrap_err();
-        let v = body_json(store_error(id_val(), StoreError::Serialize(serde_err))).await;
+        let v = store_error(id_val(), StoreError::Serialize(serde_err));
         assert_eq!(v["error"]["code"], -32603);
     }
 
     /// A `FlowError::Graph` cannot arise from a carriage-advance verb, but the
     /// renderer delegates defensively to the graph renderer. Pin that.
-    #[tokio::test]
-    async fn flow_graph_error_delegates_to_graph() {
+    #[test]
+    fn flow_graph_error_delegates_to_graph() {
         let inner = GraphError::Unknown {
             id: ItemId::new("z").unwrap(),
         };
-        let v = body_json(flow_error(id_val(), FlowError::Graph(inner))).await;
+        let v = flow_error(id_val(), FlowError::Graph(inner));
         assert_eq!(v["error"]["code"], -32000);
         assert_eq!(v["error"]["data"]["error"], "unknown");
     }
 
     /// The graph BrokenDep variant renders the broken_dep code (the middle arm).
-    #[tokio::test]
-    async fn graph_broken_dep_code() {
+    #[test]
+    fn graph_broken_dep_code() {
         let err = GraphError::BrokenDep {
             from: ItemId::new("a").unwrap(),
             to: ItemId::new("b").unwrap(),
         };
-        let v = body_json(graph_error(id_val(), err)).await;
+        let v = graph_error(id_val(), err);
         assert_eq!(v["error"]["data"]["error"], "broken_dep");
     }
 }
