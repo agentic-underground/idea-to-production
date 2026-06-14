@@ -214,6 +214,61 @@ Check each gate in `DEFINITION_OF_DONE.md`:
 If all gates pass: mark item COMPLETE in loop state and signal closure.
 If any gate fails: open iteration N+1 and route to the earliest owning stage.
 
+## AWAITING MERGE — pause and prompt (pr-approval mode)
+
+When step-9 returns the `AWAITING_MERGE` sentinel, the active loop **HALTS**. Before halting,
+the orchestrator MUST:
+
+1. Extract the PR URL from the sentinel payload:
+   `SENTINEL::AWAITING_MERGE::ROADMAP-{N}::AWAITING_MERGE::{pr_url}`
+
+2. Emit this user-facing callout (visually prominent — the human's next action depends on it):
+
+   > **Item #{N} is built and reviewed — your PR is ready to merge:**
+   > {pr_url}
+   >
+   > Once you have merged it, reply **"merged"** (or run `/i2p-lifecycle post-merge {N}`)
+   > and I will mark item #{N} COMPLETE, update the flow board, and record delivery.
+
+3. Write loop checkpoint to `IN_PROGRESS.md` with state `AWAITING_MERGE` and the PR URL.
+   The loop does NOT continue until the user sends the post-merge signal.
+
+## Post-merge completion handler
+
+Triggered when the user sends the merge confirmation signal ("merged", "done",
+`/i2p-lifecycle post-merge {N}`, or equivalent natural-language confirmation).
+
+1. **Verify the merge.** Run `gh pr view {pr_number} --json state,mergedAt` and confirm
+   `state == "MERGED"`. If not yet merged, warn the user and wait — do not proceed.
+
+2. **Update ROADMAP.md.** Change:
+   ```
+   > STATUS: AWAITING MERGE
+   ```
+   to:
+   ```
+   > STATUS: COMPLETE
+   > COMPLETED: YYYY-MM-DD
+   ```
+
+3. **Emit DELIVERY_COMPLETE sentinel:**
+   ```
+   SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{commit_hash}
+   ```
+   Use `gh pr view {pr_number} --json mergeCommit` to get the merge commit hash (first 7 chars).
+
+4. **Sync flow canvas.** Invoke MCP tool `post_status` with `id="item-{N}"` and `status="done"`
+   (or the curl fallback from step-9 Action #8). This is idempotent — safe to repeat if step-9
+   already set the card to `done`.
+
+5. **Run the Global DoD Audit** against `DEFINITION_OF_DONE.md` (as defined above).
+
+6. **Emit completion summary** to the user:
+   - Item #{N} — COMPLETE
+   - Merged commit: {hash}
+   - Flow board: updated
+   - ROADMAP.md: STATUS: COMPLETE
+
 ## Required Skills
 
 - `${CLAUDE_PLUGIN_ROOT}/skills/development-system-core/SKILL.md` — maturity ladder and stage guardrails

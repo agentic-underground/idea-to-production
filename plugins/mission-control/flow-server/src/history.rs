@@ -192,7 +192,7 @@ pub fn synthesize_from_git_log(log: &str) -> Vec<Item> {
 /// Map a `> STATUS:` legend value onto a board [`Status`].
 fn status_from(raw: &str) -> Status {
     match raw.to_ascii_uppercase().as_str() {
-        "COMPLETE" => Status::Done,
+        "COMPLETE" | "AWAITING MERGE" => Status::Done,
         "IN PROGRESS" => Status::Doing,
         _ => Status::Do,
     }
@@ -383,7 +383,7 @@ mod tests {
         assert_eq!(s("item-1"), Status::Done);
         assert_eq!(s("item-2"), Status::Doing);
         assert_eq!(s("item-3"), Status::Do);
-        assert_eq!(s("item-4"), Status::Do);
+        assert_eq!(s("item-4"), Status::Done); // AWAITING MERGE → Done
         assert_eq!(s("item-5"), Status::Do);
         assert_eq!(s("item-6"), Status::Do);
     }
