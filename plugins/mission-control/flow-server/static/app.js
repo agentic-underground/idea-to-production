@@ -18,6 +18,8 @@
 import { resolveToken, saveToken, TOKEN_KEY } from './src/api.js'
 import { createApi } from './src/api.js'
 import { mountCanvas } from './src/canvas.js'
+import { mountMasthead } from './src/masthead.js'
+import { mountCommentPanel } from './src/comment.js'
 
 function mountTokenForm(root, onToken) {
   root.innerHTML = ''
@@ -61,6 +63,28 @@ async function boot() {
   const api = createApi(token)
   try {
     await mountCanvas(root, { api, token })
+    // roadmap #6 — masthead (progress bar + pac-man gauge + system-message feed)
+    // above the board, fed by the same items the canvas drew and the event log.
+    const items = await api.getItems()
+    const masthead = document.createElement('div')
+    root.appendChild(masthead)
+    await mountMasthead(masthead, { items, api })
+
+    // roadmap #4 — a focused-card comment/pause/annotate/rewrite panel. It follows
+    // card focus: focusing a card (re)mounts the panel for that item; Ctrl-Enter
+    // annotates + unpauses, the Rewrite button hands the comment to the agent.
+    const byId = new Map(items.map((i) => [i.id, i]))
+    const panelHost = document.createElement('div')
+    root.appendChild(panelHost)
+    let panelFor = null
+    root.addEventListener('focusin', (e) => {
+      const cardEl = e.target.closest?.('[data-id]')
+      const id = cardEl?.getAttribute('data-id')
+      if (!id || id === panelFor || !byId.has(id)) return
+      panelFor = id
+      panelHost.innerHTML = ''
+      mountCommentPanel(panelHost, { item: byId.get(id), api })
+    })
   } catch (err) {
     // a bad/expired token (401) drops the builder back to the token form
     if (/401|403/.test(String(err.message))) {

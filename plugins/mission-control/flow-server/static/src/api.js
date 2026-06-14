@@ -5,8 +5,9 @@
 //
 // @front-end
 // element: flow-api-client
-// intent: let the canvas read items and post governance intents (WAIT/GO, per-job
-//         model override, draw a connection) over the server's token-gated REST surface
+// intent: let the canvas read items and the event feed, and post governance intents
+//         (WAIT/GO, per-job model override, draw a connection, annotate/rewrite a plan)
+//         over the server's token-gated REST surface
 // customer: solo-builder
 // binding: one-way
 // a11y: n/a (transport)
@@ -90,6 +91,38 @@ export function createApi(token) {
       if (res.ok) return { ok: true }
       const body = await res.json()
       return { ok: false, error: body.error, message: body.message }
+    },
+
+    /**
+     * POST a comment to be appended to the item's plan markdown as an annotation
+     * (the Ctrl-Enter path of the comment/pause/annotate loop). Throws on a non-ok
+     * response so the caller can surface the failure.
+     */
+    async annotate(id, text) {
+      const res = await postJson(`/api/items/${id}/annotate`, { text })
+      if (!res.ok) throw new Error(`annotate failed: ${res.status}`)
+      return res.json()
+    },
+
+    /**
+     * POST a comment to the carriage agent to re-draft the item. Resolves the
+     * server's `{ draft }` (the new draft number) so the card's draft# badge can
+     * advance. Throws on a non-ok response.
+     */
+    async rewrite(id, comment) {
+      const res = await postJson(`/api/items/${id}/rewrite`, { comment })
+      if (!res.ok) throw new Error(`rewrite failed: ${res.status}`)
+      return res.json()
+    },
+
+    /**
+     * GET the orchestrator event array (the system-message feed source). Throws on
+     * a non-ok response so the feed can degrade gracefully (empty feed, no crash).
+     */
+    async getEvents() {
+      const res = await fetch('/api/events', { headers })
+      if (!res.ok) throw new Error(`getEvents failed: ${res.status}`)
+      return res.json()
     }
   }
 }

@@ -145,4 +145,54 @@ describe('createApi', () => {
     const api = createApi('bad')
     await expect(api.getItems()).rejects.toThrow(/401/)
   })
+
+  it('annotate POSTs the comment text to the item annotate endpoint', async () => {
+    fetchMock.mockResolvedValue(ok({ ok: true }))
+    const api = createApi('tok')
+    await api.annotate('svg-flow-canvas', 'ship the picker first')
+    const [url, opts] = fetchMock.mock.calls[0]
+    expect(url).toBe('/api/items/svg-flow-canvas/annotate')
+    expect(opts.method).toBe('POST')
+    expect(JSON.parse(opts.body)).toEqual({ text: 'ship the picker first' })
+    expect(opts.headers.Authorization).toBe('Bearer tok')
+  })
+
+  it('annotate rejects (throws) on a non-ok response so callers can surface it', async () => {
+    fetchMock.mockResolvedValue(fail(401, { error: 'unauthorized' }))
+    const api = createApi('bad')
+    await expect(api.annotate('a', 'note')).rejects.toThrow(/401/)
+  })
+
+  it('rewrite POSTs the comment and returns the new {draft} number', async () => {
+    fetchMock.mockResolvedValue(ok({ draft: 4 }))
+    const api = createApi('tok')
+    const res = await api.rewrite('svg-flow-canvas', 'redo the whole plan')
+    expect(res).toEqual({ draft: 4 })
+    const [url, opts] = fetchMock.mock.calls[0]
+    expect(url).toBe('/api/items/svg-flow-canvas/rewrite')
+    expect(opts.method).toBe('POST')
+    expect(JSON.parse(opts.body)).toEqual({ comment: 'redo the whole plan' })
+  })
+
+  it('rewrite rejects (throws) on a non-ok response so callers can surface it', async () => {
+    fetchMock.mockResolvedValue(fail(500, { error: 'agent_unavailable' }))
+    const api = createApi('bad')
+    await expect(api.rewrite('a', 'note')).rejects.toThrow(/500/)
+  })
+
+  it('getEvents GETs /api/events with the bearer token and returns the array', async () => {
+    fetchMock.mockResolvedValue(ok([{ kind: 'sys_msg', text: 'hello' }]))
+    const api = createApi('tok')
+    const events = await api.getEvents()
+    expect(events).toEqual([{ kind: 'sys_msg', text: 'hello' }])
+    const [url, opts] = fetchMock.mock.calls[0]
+    expect(url).toBe('/api/events')
+    expect(opts.headers.Authorization).toBe('Bearer tok')
+  })
+
+  it('getEvents rejects (throws) on a non-ok response so the feed can degrade', async () => {
+    fetchMock.mockResolvedValue(fail(503, { error: 'unavailable' }))
+    const api = createApi('bad')
+    await expect(api.getEvents()).rejects.toThrow(/503/)
+  })
 })

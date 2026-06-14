@@ -77,3 +77,4 @@ _render_*.html
 
 # Workflow helper scripts (local, not shipped)
 .claude/wf-*.js
+.vite/

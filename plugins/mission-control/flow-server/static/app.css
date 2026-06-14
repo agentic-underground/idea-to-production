@@ -281,6 +281,128 @@ html, body {
 }
 .flow-alert[hidden] { display: none; }
 
+/* --- masthead: progress bar + pac-man gauge + system-message feed (roadmap #6) --- */
+.flow-masthead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 7;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 0.4rem 1rem;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(180deg, var(--bg-board), transparent);
+  pointer-events: none; /* let the canvas beneath stay pannable; children opt back in */
+}
+.flow-masthead .masthead-feed { pointer-events: auto; }
+
+.masthead-bar {
+  grid-column: 1;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.masthead-bar [role="progressbar"] { height: 100%; }
+.masthead-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--warn));
+  transition: width var(--motion);
+}
+.flow-masthead[data-complete="true"] .masthead-fill { background: var(--accent); }
+
+.masthead-status {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.masthead-pacman .pacman-body { fill: var(--warn); transition: fill var(--motion); }
+.flow-masthead[data-complete="true"] .masthead-pacman .pacman-body { fill: var(--accent); }
+.masthead-percent { font: 700 0.85rem/1 var(--mono); color: var(--ink); }
+.masthead-complete {
+  font: 700 0.7rem/1 var(--font);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.masthead-feed {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 5.5rem;
+  overflow-y: auto;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+}
+.masthead-feed-item {
+  padding: 0.15rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.masthead-feed-empty { color: var(--ink-faint); font-style: italic; padding: 0.15rem 0; }
+
+/* --- comment / pause / annotate / rewrite panel (roadmap #4) --- */
+.comment-panel {
+  position: absolute;
+  bottom: var(--gap);
+  right: var(--gap);
+  z-index: 8;
+  width: 22rem;
+  max-width: calc(100vw - 2 * var(--gap));
+  padding: 0.8rem;
+  background: var(--bg-card);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.comment-panel.is-paused {
+  border-color: var(--warn);
+  background: var(--bg-card-paused);
+}
+.comment-label { font-weight: 600; font-size: 0.85rem; color: var(--ink-dim); }
+.comment-input {
+  width: 100%;
+  resize: vertical;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+.comment-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.comment-draft { font: 700 0.85rem/1 var(--mono); color: var(--ink-faint); }
+.comment-rewrite {
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-board);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--motion);
+}
+.comment-rewrite:hover { border-color: var(--accent); }
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
