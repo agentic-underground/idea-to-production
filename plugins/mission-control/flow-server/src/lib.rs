@@ -5,6 +5,7 @@ pub mod api;
 pub mod auth;
 pub mod config;
 pub mod domain;
+pub mod history;
 pub mod mcp;
 pub mod store;
 pub mod ws;

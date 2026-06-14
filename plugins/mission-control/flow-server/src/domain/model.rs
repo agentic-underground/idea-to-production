@@ -46,10 +46,15 @@ pub struct Item {
     pub tokens: u64,
     /// The model assigned to this item's carriage agent (resolved value).
     pub model: String,
+    /// Provenance flag: `true` for proxy historical items derived from the git
+    /// log (see [`crate::history`]); `false` for real roadmap tickets. A
+    /// synthesized item is visually distinct and is never mutated as if real.
+    pub synthesized: bool,
 }
 
 impl Item {
-    /// Create a fresh item in the DO column, GO, with zero spend.
+    /// Create a fresh, real item in the DO column, GO, with zero spend and
+    /// `synthesized = false`.
     pub fn new(id: ItemId, title: impl Into<String>, model: impl Into<String>) -> Self {
         Item {
             id,
@@ -58,6 +63,7 @@ impl Item {
             gate: WaitGate::Go,
             tokens: 0,
             model: model.into(),
+            synthesized: false,
         }
     }
 }
@@ -290,6 +296,7 @@ mod tests {
         assert_eq!(it.gate, WaitGate::Go);
         assert_eq!(it.tokens, 0);
         assert_eq!(it.model, "claude-sonnet-4-6");
+        assert!(!it.synthesized);
     }
 
     #[test]
