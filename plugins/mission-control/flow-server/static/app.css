@@ -15,34 +15,46 @@
 :root {
   color-scheme: dark;
 
-  /* surface */
-  --bg: #0b0f17;
-  --bg-board: #111722;
-  --bg-card: #18212f;
-  --bg-card-paused: #2a1f12;
+  /* surface — deep navy + glass (kanban-design palette) */
+  --bg: #070b16;
+  --bg-1: #0b1120;
+  --bg-board: #0e1626;
+  --surface: rgba(20, 28, 48, 0.55);
+  --surface-2: rgba(28, 38, 62, 0.6);
+  --bg-card: var(--surface);
+  --bg-card-paused: rgba(58, 40, 16, 0.6);
 
-  /* ink (all >= 4.5:1 on their surface) */
-  --ink: #e8edf6;
-  --ink-dim: #9fb0c6;
-  --ink-faint: #6c7d96;
+  /* ink ramp */
+  --ink: #f3f6fc;
+  --ink-dim: #c4cee0;
+  --ink-faint: #8794ad;
+  --ink-ghost: #5b6884;
 
-  /* accents */
-  --accent: #4fd6c9;        /* teal — the live/go signal */
+  /* status accents — shared chroma, varied hue */
+  --do: #5b9dff;     --do-glow: rgba(91, 157, 255, 0.5);
+  --doing: #f5b13d;  --doing-glow: rgba(245, 177, 61, 0.5);
+  --done: #2dd4a7;   --done-glow: rgba(45, 212, 167, 0.5);
+  --redo: #fb6a5e;   --redo-glow: rgba(251, 106, 94, 0.5);
+
+  /* primary roles map onto the status hues */
+  --accent: var(--done);    /* teal — the live/go signal */
   --accent-ink: #042b27;
-  --warn: #f2b347;          /* amber — WAIT / paused */
+  --warn: var(--doing);     /* amber — WAIT / paused */
   --warn-ink: #2a1c02;
-  --danger: #ff6b6b;        /* refused connection / error */
-  --line: #2b3850;          /* connectors + borders */
-  --line-strong: #3d4f70;
+  --danger: var(--redo);    /* coral — refused connection / error / REDO */
+  --line: rgba(120, 140, 175, 0.14);
+  --line-strong: rgba(120, 140, 175, 0.28);
   --focus: #8ab4ff;
 
   /* form */
-  --radius: 14px;
+  --radius: 16px;
   --radius-sm: 8px;
   --gap: 12px;
-  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
-  --shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  --font-head: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font: var(--font-body);
+  --mono: 'JetBrains Mono', ui-monospace, "SF Mono", Menlo, monospace;
+  --shadow: 0 14px 34px -16px rgba(0, 0, 0, 0.8);
   --motion: 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -179,21 +191,32 @@ html, body {
   opacity: 0.85;
 }
 
-/* cards */
+/* cards — per-status accent (DO=blue · DOING=amber · DONE=teal) */
 .card { cursor: grab; }
 .card:active { cursor: grabbing; }
+.card[data-status="do"]    { --status: var(--do);    --status-glow: var(--do-glow); }
+.card[data-status="doing"] { --status: var(--doing); --status-glow: var(--doing-glow); }
+.card[data-status="done"]  { --status: var(--done);  --status-glow: var(--done-glow); }
 .card-bg {
-  fill: var(--bg-card);
-  stroke: var(--line-strong);
-  stroke-width: 1;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--status, var(--line-strong)) 45%, var(--line-strong));
+  stroke-width: 1.25;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.55))
+          drop-shadow(0 0 7px var(--status-glow, transparent));
+  transition: filter var(--motion);
 }
-.card.is-paused .card-bg { fill: var(--bg-card-paused); stroke: var(--warn); }
-.card-title { fill: var(--ink); font: 600 15px/1.2 var(--font); }
+.card:hover .card-bg {
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.7))
+          drop-shadow(0 0 12px var(--status-glow, transparent));
+}
+.card.is-paused .card-bg { fill: var(--bg-card-paused); stroke: var(--warn); --status-glow: var(--warn); }
+/* the glowing left accent bar — recolored by column */
+.card-accent { fill: var(--status, var(--accent)); }
+.card-title { fill: var(--ink); font: 600 15px/1.2 var(--font-head); letter-spacing: -0.01em; }
 
 .badge { font: 600 12px/1 var(--mono); fill: var(--ink-dim); }
 .badge.tokens { fill: var(--accent); }
-.badge.status { fill: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+.badge.status { fill: var(--status, var(--ink-dim)); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
 .badge.model { fill: var(--ink-faint); }
 .badge.draft { fill: var(--ink-faint); }
 
@@ -311,10 +334,12 @@ html, body {
 .masthead-fill {
   height: 100%;
   width: 0;
-  background: linear-gradient(90deg, var(--accent), var(--warn));
+  background: linear-gradient(90deg, var(--do), var(--doing) 50%, var(--done));
+  box-shadow: 0 0 14px var(--done-glow);
   transition: width var(--motion);
 }
-.flow-masthead[data-complete="true"] .masthead-fill { background: var(--accent); }
+.flow-masthead[data-complete="true"] .masthead-fill { background: var(--done); }
+.masthead-bar { backdrop-filter: blur(6px); }
 
 .masthead-status {
   grid-column: 2;
@@ -402,6 +427,23 @@ html, body {
   transition: border-color var(--motion);
 }
 .comment-rewrite:hover { border-color: var(--accent); }
+
+/* --- glassmorphism + refined scrollbars (kanban-design polish) --- */
+.token-form, .comment-panel, .model-listbox { backdrop-filter: blur(12px); }
+.token-form { background: var(--surface-2); }
+
+.masthead-feed::-webkit-scrollbar,
+.model-listbox::-webkit-scrollbar,
+.comment-input::-webkit-scrollbar { width: 7px; height: 7px; }
+.masthead-feed::-webkit-scrollbar-track,
+.model-listbox::-webkit-scrollbar-track,
+.comment-input::-webkit-scrollbar-track { background: transparent; }
+.masthead-feed::-webkit-scrollbar-thumb,
+.model-listbox::-webkit-scrollbar-thumb,
+.comment-input::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 999px; }
+.masthead-feed::-webkit-scrollbar-thumb:hover,
+.model-listbox::-webkit-scrollbar-thumb:hover,
+.comment-input::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }

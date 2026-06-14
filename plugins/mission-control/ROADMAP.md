@@ -1348,6 +1348,132 @@ durable `tf` registry follow-up job.
 
 ---
 
+## [27] EPIC — Flow board kanban uplift (RHS detail · drag · REDO · commit-graph)
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: MEDIUM
+
+> Numbering note: reserves #27+ after the KAIZEN epic (#16–#26, PR #54); merge this PR **after** #54.
+
+**Brief Description**
+The structural features from the claude.ai/design "job items work board" handoff (the look-and-feel was
+already applied to the canvas). The board becomes a fuller kanban: a RHS detail panel that shows an EPIC's
+PR text + nested items and an ITEM's issue text + commit-graph; drag a card between DO/DOING/DONE to change
+its status; a coral REDO badge + required-comment modal on backward moves. Source design:
+[`doc/design/job-items-work-board/`](../../doc/design/job-items-work-board/README.md).
+
+### User Stories
+- AS a builder I WANT to click an EPIC/ITEM and read its PR/issue text + commits in a side panel SO THAT I
+  can review the full context without leaving the board.
+- AS a builder I WANT to drag a card between columns to set its status SO THAT steering flow is direct and tactile.
+- AS a builder I WANT a backward move (DONE→DO/DOING) to demand a "why" comment SO THAT regressions are explained and tracked.
+
+### Acceptance Criteria
+1. Given an EPIC card, clicking it shows its PR (title·description·labels·assignees) at the top of the RHS panel and its nested items below; clicking an ITEM shows its issue text + a clickable commit-graph.
+2. Given a card dragged DO↔DOING↔DONE, its status (and badge) follows the column.
+3. Given a DONE→DO/DOING drag, a modal requires a comment; the card stays where dropped and carries a coral REDO badge; the comment is stored on the item.
+
+### Implementation Notes
+- Surfaces existing data: #5 epic/item structure, #10 PR linkage, #11 issue annotations, the commit log.
+- RHS panel + modal are HTML overlays beside the SVG canvas; drag reuses the canvas pointer handling; REDO comment reuses #4 annotate. Keep the vitest suite at 100%.
+- Full design intent + tokens: `doc/design/job-items-work-board/chat1.md` + `project/kanban-board.html`.
+
+### Development Plan Reference
+`doc/FLOW_KANBAN_UPLIFT_PLAN.md` (master); each child gets its own plan at GO.
+
+---
+
+## [28] RHS detail panel — EPIC→PR + items · ITEM→issue + commits
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: MEDIUM
+> DEPENDS ON: — (atomic; epic #27)
+
+**Brief Description**
+A 35%-width right-hand panel. Click an EPIC → its PR (title·description·labels·assignees) fills the top
+content panel and its nested item list shows at the bottom. Click an ITEM → its issue text fills the top
+and its commit list the bottom. Both panels scroll; the description takes the larger share (inverted ratio).
+
+### Acceptance Criteria
+1. EPIC click → PR text + labels + assignee chips on top; nested items (with count) below; both scroll.
+2. ITEM click → issue text on top; commit list below; large text fits and overflows scroll.
+
+### Implementation Notes
+- New HTML panel mounted by app.js beside the canvas; reads item/epic data from `/api/items` (+ events/PR fields). Plan §RHS.
+
+### Development Plan Reference
+`doc/FLOW_RHS_PANEL_PLAN.md`
+
+---
+
+## [29] Drag-between-columns — set status by column
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: MEDIUM
+> DEPENDS ON: — (atomic; epic #27)
+
+**Brief Description**
+Drag a card from one column to another (DO↔DOING↔DONE) to change its status via the API; the status badge
+recolours to the new column (the look-and-feel already keys colour off `data-status`). A target column
+shows a drop-zone glow while dragging.
+
+### Acceptance Criteria
+1. Given a card dropped in another column, its status posts to the server and the badge/colour follow.
+2. Given an in-progress drag, the target column shows a drop-active glow.
+
+### Implementation Notes
+- Extend the canvas pointer/drag handling (currently card-move within the canvas) to detect column drop + `POST /api/items/:id/status`. Plan §drag.
+
+### Development Plan Reference
+`doc/FLOW_DRAG_COLUMNS_PLAN.md`
+
+---
+
+## [30] REDO badge + required-comment modal (backward moves)
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: MEDIUM
+> DEPENDS ON: #29
+
+**Brief Description**
+When a card is dragged DONE→DO or DONE→DOING, a blurred modal pops up requiring a "why" comment before the
+move commits; the comment is stored on the item (reusing #4 annotate), the card stays where dropped, and a
+coral **REDO** badge appears top-right (removed if moved elsewhere).
+
+### Acceptance Criteria
+1. Given a DONE→DO/DOING drag, the modal blocks the move until a non-empty comment is entered.
+2. Given a submitted comment, it is stored on the item and the card shows a REDO badge and stays put.
+
+### Implementation Notes
+- Modal as an HTML overlay; comment via `POST /api/items/:id/annotate` (#4). `--redo` coral token already in app.css. Plan §redo.
+
+### Development Plan Reference
+`doc/FLOW_REDO_MODAL_PLAN.md`
+
+---
+
+## [31] Commit-graph view (git-style, in the ITEM detail)
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: LOW
+> DEPENDS ON: #28
+
+**Brief Description**
+In the RHS item-detail, render the item's commits as a git-style graph — dots on a connecting line, each
+clickable to reveal the full commit message (hash + message, monospace), readable in full with scroll.
+
+### Acceptance Criteria
+1. Given an item with commits, the detail shows a dot-and-line graph; clicking a dot reveals the full message.
+2. Long commit messages are fully readable (scroll).
+
+### Implementation Notes
+- Consumes #28's panel; commit data from the server (`/api/events` or a commits field). JetBrains Mono for hashes. Plan §commit-graph.
+
+### Development Plan Reference
+`doc/FLOW_COMMIT_GRAPH_PLAN.md`
+
+---
+
 ## Principles guiding expansion
 
 Every surface here (a) keeps mission-control self-contained (`${CLAUDE_PLUGIN_ROOT}` only, no assumption
