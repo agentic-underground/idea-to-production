@@ -1474,6 +1474,115 @@ clickable to reveal the full commit message (hash + message, monospace), readabl
 
 ---
 
+## [32] EPIC — FOUNDRY lifecycle delivery hardening
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+
+**Brief Description**
+Two gaps exposed when operating the FOUNDRY SDLC in anger. First: when a PR is open and
+reviewed, the agent currently halts and leaves the user to merge manually — the interactive
+"Merge PR now?" confirmation + autonomous `gh pr merge` is missing. Second: the delivery
+automation changes shipped in PR #56 (AWAITING MERGE pause, post-merge COMPLETE handler,
+flow-canvas sync from step-9) bypassed the SDLC entirely — no EARS, no Gherkin, no story
+proof. Both gaps are closed here.
+
+### Dependency tree
+
+```
+EPIC #32 — FOUNDRY lifecycle delivery hardening
+ ├─ #33 Interactive "Merge PR now?" — confirm + `gh pr merge` on yes    [atomic]
+ └─ #34 EARS + Gherkin + story proof for PR #56 lifecycle changes        → blocks on #33
+```
+
+### Development Plan Reference
+`doc/FOUNDRY_DELIVERY_HARDENING_PLAN.md` (master); each child gets its own plan at GO.
+
+---
+
+## [33] Interactive "Merge PR now?" — `gh pr merge` on user approval
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+> DEPENDS ON: — (atomic; epic #32)
+
+**Brief Description**
+When the lifecycle-orchestrator reaches the AWAITING MERGE state and has emitted the PR-ready
+callout, it should interactively ask the user "Merge PR now? [yes/no]". On yes: run
+`gh pr merge {pr_number} --merge`, then immediately proceed to the post-merge completion
+handler (update ROADMAP.md → COMPLETE, emit DELIVERY_COMPLETE sentinel, sync flow canvas,
+run DoD audit, emit completion summary). On no: leave the PR open and halt as today.
+This makes delivery a single attended flow rather than a two-session hand-off.
+
+### User Stories
+- AS a builder I WANT the agent to ask me "Merge PR now?" at the point delivery is ready
+  SO THAT I can approve and complete the item in one continuous flow without switching context.
+- AS a builder I WANT to say no and keep the PR open SO THAT I can review it externally
+  before merging.
+
+### Acceptance Criteria
+1. Given the lifecycle reaches AWAITING MERGE and I answer "yes", the agent runs
+   `gh pr merge {pr_number} --merge`, confirms the merge, flips ROADMAP.md to COMPLETE,
+   emits DELIVERY_COMPLETE, syncs the flow canvas to `done`, and emits a completion summary.
+2. Given I answer "no", the agent halts with the PR URL visible and the item at AWAITING MERGE.
+3. Given `gh` is not authenticated or the merge fails, the agent surfaces the error and
+   falls back to the existing manual-merge path without corrupting the sentinel chain.
+
+### Implementation Notes
+- Change is in `plugins/foundry/agents/lifecycle-orchestrator.md` (the AWAITING MERGE section
+  added in PR #56): replace the static callout with an interactive yes/no branch.
+- `merge-governance.md` should document this as the standard `pr-approval` interactive path.
+- No Rust or JS code changes — this is agent-instruction markdown only.
+- The "yes" path must verify the merge completed (`gh pr view --json state`) before emitting
+  DELIVERY_COMPLETE; the "no" path must not alter roadmap STATUS.
+
+### Development Plan Reference
+`doc/FOUNDRY_INTERACTIVE_MERGE_PLAN.md`
+
+---
+
+## [34] EARS + Gherkin + story proof for PR #56 lifecycle delivery changes
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+> DEPENDS ON: #33
+
+**Brief Description**
+PR #56 shipped three behaviours to the FOUNDRY lifecycle outside the SDLC — no EARS spec,
+no Gherkin scenarios, no story proof:
+1. `history.rs` `status_from()` now maps `AWAITING MERGE` → `Status::Done` on startup.
+2. `ds-step-9-commit-push` Action #8 calls `post_status item-{N} done` on the flow canvas.
+3. `lifecycle-orchestrator` gains an AWAITING MERGE pause and a post-merge completion handler.
+
+This item runs those three behaviours through the full quality chain retroactively: EARS IDs,
+Gherkin happy/unhappy/abuse scenarios, unit or story tests that confirm each behaviour, and
+a passing story proof. Coverage floor is 100%.
+
+### User Stories
+- AS the FOUNDRY system I WANT every shipped behaviour pinned by EARS + test coordinates
+  SO THAT regressions are caught at test time, not discovered in production.
+
+### Acceptance Criteria
+1. EARS IDs exist for all three behaviours; each maps to at least one Gherkin scenario.
+2. `AWAITING MERGE → Done` mapping in `history.rs` is covered by an explicit unit test
+   (already added as part of PR #56 — verify and expand to unhappy/abuse paths).
+3. The AWAITING MERGE pause and post-merge handler in lifecycle-orchestrator have at least one
+   happy, one unhappy (merge fails), and one abuse (not-yet-merged PR) Gherkin scenario, each
+   backed by a story-level proof.
+4. Action #8 (flow canvas sync) has a scenario for server-up and server-down paths.
+
+### Implementation Notes
+- No new production code; all work is spec, Gherkin, and story test authoring.
+- Story tests for agent-instruction markdown use the lifecycle-orchestrator directly (invoke it
+  against a fixture roadmap item, observe sentinel chain and tool calls).
+- The existing `cargo test -p flow-server` suite is the unit-test home for `history.rs`; the
+  Gherkin scenarios live alongside other `.feature` files in the flow-server test tree.
+
+### Development Plan Reference
+`doc/FOUNDRY_PR56_COMPLIANCE_PLAN.md`
+
+---
+
 ## Principles guiding expansion
 
 Every surface here (a) keeps mission-control self-contained (`${CLAUDE_PLUGIN_ROOT}` only, no assumption
