@@ -44,7 +44,7 @@ nodes, blocking edges, and boards-within-boards — because the tree it draws is
 ---
 
 ## [0] EPIC — Flow-Tracking Governance UI
-> STATUS: PENDING
+> STATUS: IN PROGRESS
 > ADDED: 2026-06-13
 > PRIORITY: HIGH
 > BRANCH: flow-tracking-ui (single feature branch for the whole epic; the issue/PR is raised from it once the roadmap is empty)
