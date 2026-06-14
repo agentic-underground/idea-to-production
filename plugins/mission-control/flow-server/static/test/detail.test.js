@@ -3,7 +3,7 @@
 // content rendering. Scroll behaviour is not testable in jsdom — we test
 // CSS class application and content presence instead.
 
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mountDetailPanel } from '../src/detail.js'
 import {
   EPIC_ITEM,

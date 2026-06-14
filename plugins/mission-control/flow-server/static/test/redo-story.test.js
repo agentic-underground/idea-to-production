@@ -12,7 +12,7 @@
 // They satisfy the STORY_PROVEN gate.
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/dom'
+import { waitFor } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
 import { mountCanvas } from '../src/canvas.js'
 import { FIXTURE_ITEMS } from './fixtures.js'

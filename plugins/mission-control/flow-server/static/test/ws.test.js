@@ -166,7 +166,7 @@ describe('WS — reconnect on close/error', () => {
   it('calls refresh() after 2000ms when the WS closes', async () => {
     vi.stubGlobal('location', { protocol: 'http:', host: 'localhost' })
     const api = makeApi()
-    const handle = await mountCanvas(root, { api, token: 'tok' })
+    await mountCanvas(root, { api, token: 'tok' })
     await waitFor(() => expect(MockWebSocket.instances.length).toBe(1))
     const ws = MockWebSocket.instances[0]
 
