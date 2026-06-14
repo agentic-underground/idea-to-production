@@ -17,6 +17,9 @@ pub struct Config {
     pub static_dir: PathBuf,
     /// Directory holding the flow state (JSONL + markdown).
     pub data_dir: PathBuf,
+    /// Optional roadmap markdown to ingest on startup so the board is not blank.
+    /// `None` (the default) starts with an empty store.
+    pub roadmap_path: Option<PathBuf>,
 }
 
 impl Default for Config {
@@ -27,14 +30,15 @@ impl Default for Config {
             token_path: PathBuf::from(".flow/token"),
             static_dir: PathBuf::from("static"),
             data_dir: PathBuf::from(".flow"),
+            roadmap_path: None,
         }
     }
 }
 
 impl Config {
-    /// Parse `--host`, `--port`, `--token`, `--static`, `--data` from an
-    /// argument iterator (excluding argv[0]). Unknown flags are an error so a
-    /// typo never silently runs the default.
+    /// Parse `--host`, `--port`, `--token`, `--static`, `--data`, `--roadmap`
+    /// from an argument iterator (excluding argv[0]). Unknown flags are an error
+    /// so a typo never silently runs the default.
     pub fn from_args<I: IntoIterator<Item = String>>(args: I) -> Result<Self, ConfigError> {
         let mut cfg = Config::default();
         let mut it = args.into_iter();
@@ -65,6 +69,10 @@ impl Config {
                 "--data" => {
                     let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
                     cfg.data_dir = PathBuf::from(v);
+                }
+                "--roadmap" => {
+                    let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
+                    cfg.roadmap_path = Some(PathBuf::from(v));
                 }
                 other => {
                     return Err(ConfigError::UnknownFlag {
@@ -132,6 +140,29 @@ mod tests {
     #[test]
     fn empty_args_is_default() {
         assert_eq!(Config::from_args(argv(&[])).unwrap(), Config::default());
+    }
+
+    #[test]
+    fn roadmap_flag_absent_is_none() {
+        // Without `--roadmap`, the server starts with no roadmap to ingest.
+        let cfg = Config::from_args(argv(&[])).unwrap();
+        assert_eq!(cfg.roadmap_path, None);
+    }
+
+    #[test]
+    fn roadmap_flag_present_sets_path() {
+        let cfg = Config::from_args(argv(&["--roadmap", "/repo/ROADMAP.md"])).unwrap();
+        assert_eq!(cfg.roadmap_path, Some(PathBuf::from("/repo/ROADMAP.md")));
+    }
+
+    #[test]
+    fn roadmap_flag_missing_value_errors() {
+        assert_eq!(
+            Config::from_args(argv(&["--roadmap"])),
+            Err(ConfigError::MissingValue {
+                flag: "--roadmap".into()
+            })
+        );
     }
 
     #[test]

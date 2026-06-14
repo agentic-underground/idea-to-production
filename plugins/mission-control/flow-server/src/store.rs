@@ -329,6 +329,64 @@ impl Store {
         Ok(draft)
     }
 
+    /// Ingest a structured roadmap markdown so a fresh board is not blank: parse
+    /// it (via [`crate::history::parse_roadmap`]), upsert every item with its
+    /// parsed status, and add every declared edge — all through the single
+    /// serialized writer. Returns the number of items loaded.
+    ///
+    /// The markdown is the source of truth, so a declared dependency the graph
+    /// validator refuses (it would form a cycle, or names an unknown endpoint) is
+    /// **skipped gracefully** rather than aborting the ingest — only a real write
+    /// failure (IO/serialize) propagates. Items always land even when some of
+    /// their edges cannot.
+    pub async fn ingest_roadmap(&self, md: &str) -> Result<usize, StoreError> {
+        let roadmap = crate::history::parse_roadmap(md);
+        let mut guard = self.inner.lock().await;
+        // Apply every mutation to the in-memory flow first, collecting the events
+        // to journal; then commit them all through the one serialized writer. A
+        // graph-refused edge (cycle/unknown) is skipped before it produces an event
+        // — the markdown is authoritative, a malformed dep must not abort ingest.
+        let mut events: Vec<Event> = Vec::new();
+        for item in &roadmap.items {
+            guard.flow.upsert_item(Item::new(
+                item.id.clone(),
+                item.title.clone(),
+                item.model.clone(),
+            ));
+            // The roadmap status is part of the item's identity on the board; set
+            // it on the just-upserted item so it lands in the right column (no
+            // second WAIT-gated post_status round-trip).
+            set_status_in_flow(&mut guard.flow, &item.id, item.status);
+            events.push(Event::ItemUpserted {
+                id: item.id.clone(),
+                title: item.title.clone(),
+            });
+        }
+        for edge in &roadmap.edges {
+            // `edge_applied` classifies the graph-validated add (applied vs refused;
+            // non-generic, both arms unit-tested) — only an applied edge is
+            // journalled, so a refused dependency is silently skipped.
+            if edge_applied(crate::domain::mutate_connection(
+                &mut guard.flow,
+                Mutation::Add,
+                &edge.from,
+                &edge.to,
+            )) {
+                events.push(Event::ConnectionAdded {
+                    from: edge.from.clone(),
+                    to: edge.to.clone(),
+                });
+            }
+        }
+        let loaded = roadmap.items.len();
+        // One commit site for the whole batch: the first faulting append
+        // short-circuits the ingest with that write error.
+        for ev in events {
+            self.commit(&mut guard, ev).await?;
+        }
+        Ok(loaded)
+    }
+
     // --- internal ---------------------------------------------------------
 
     /// Append the event to the JSONL log, re-render the markdown view, and
@@ -401,6 +459,24 @@ pub(crate) async fn push_to_grafana_for_test(events: &[TelemetryEvent]) -> Grafa
 /// are exercisable in a test without per-type monomorphization.
 fn into_store_line(result: Result<String, serde_json::Error>) -> Result<String, StoreError> {
     Ok(result?)
+}
+
+/// Classify the in-flow result of adding one ingested edge: `true` when it
+/// applied (the caller commits it), `false` when the graph *refused* it (a cycle
+/// or unknown endpoint) — skipped, because the markdown is authoritative and a
+/// malformed dep must not abort ingest. The in-flow add is pure graph validation,
+/// so there is no IO error to consider here; both arms are unit-tested.
+fn edge_applied(result: Result<(), GraphError>) -> bool {
+    result.is_ok()
+}
+
+/// Set an item's status directly on the flow during ingest. The item was just
+/// upserted, so it is present and `advance_status` succeeds; on the impossible
+/// absent case the `Result` is discarded (its Err arm lives in the domain), as
+/// the other in-lock replay/roll-up sites do. WAIT never blocks here because a
+/// freshly-upserted item is GO.
+fn set_status_in_flow(flow: &mut Flow, id: &ItemId, status: Status) {
+    let _ = flow.advance_status(id, status);
 }
 
 /// Append one JSONL line (plus a newline, flushed) to the log file. The open `?`
@@ -616,6 +692,37 @@ mod tests {
         let ev = Event::SysMsg { text: "x".into() };
         let line = into_store_line(serde_json::to_string(&ev)).unwrap();
         assert_eq!(line, ev.to_jsonl().unwrap());
+    }
+
+    /// A successfully-applied edge reports `true` so the caller commits it.
+    #[test]
+    fn edge_applied_is_true_on_ok() {
+        assert!(edge_applied(Ok(())));
+    }
+
+    /// A graph refusal (cycle/unknown endpoint) reports `false`: ingest skips it
+    /// rather than aborting, because the markdown is the source of truth.
+    #[test]
+    fn edge_applied_is_false_on_graph_refusal() {
+        let refused = Err(GraphError::Cycle {
+            from: iid("a"),
+            to: iid("b"),
+        });
+        assert!(!edge_applied(refused));
+    }
+
+    /// `set_status_in_flow` advances a present item; the impossible-absent case is
+    /// a silent no-op (its Err lives in the domain), matching the other in-lock
+    /// replay sites.
+    #[test]
+    fn set_status_in_flow_advances_present_item() {
+        let mut flow = Flow::new();
+        flow.upsert_item(Item::new(iid("a"), "A", "m"));
+        set_status_in_flow(&mut flow, &iid("a"), Status::Doing);
+        assert_eq!(flow.get(&iid("a")).unwrap().status, Status::Doing);
+        // Absent item: a silent no-op (no panic, no state change).
+        set_status_in_flow(&mut flow, &iid("ghost"), Status::Done);
+        assert!(flow.get(&iid("ghost")).is_none());
     }
 
     #[tokio::test]

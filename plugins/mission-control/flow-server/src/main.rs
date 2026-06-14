@@ -15,6 +15,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let token = Token::load_or_create(&cfg.token_path).await?;
     let store = Arc::new(Store::open(&cfg.data_dir).await?);
+
+    // Seed the board from the roadmap if one was given and it reads; an absent or
+    // unreadable path degrades gracefully to an empty board (logged, not fatal).
+    if let Some(path) = &cfg.roadmap_path {
+        match tokio::fs::read_to_string(path).await {
+            Ok(md) => {
+                let n = store.ingest_roadmap(&md).await?;
+                eprintln!(
+                    "flow-server ingested {n} roadmap item(s) from {}",
+                    path.display()
+                );
+            }
+            Err(e) => eprintln!(
+                "flow-server: no roadmap ingested ({}: {e}); starting empty",
+                path.display()
+            ),
+        }
+    }
+
     let router = build_router(store, token, cfg.static_dir.clone());
 
     let addr = SocketAddr::new(cfg.host, cfg.port);

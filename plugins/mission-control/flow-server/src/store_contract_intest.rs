@@ -612,6 +612,120 @@ async fn annotate_commit_failure_propagates() {
     assert!(store.annotate(&id("a"), "note".into()).await.is_err());
 }
 
+#[tokio::test]
+async fn ingest_roadmap_loads_items_with_statuses_and_edges() {
+    // The startup ingest fills an empty store from the roadmap markdown so the
+    // board is not blank: every parsed item appears (with its parsed status) and
+    // every valid edge is added, all through the single serialized writer.
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    let md = "\
+## [1] Flow server
+> STATUS: IN PROGRESS
+> DEPENDS ON: —
+
+## [5] Roadmap history
+> STATUS: COMPLETE
+> DEPENDS ON: #1
+
+## [2] Canvas
+> STATUS: PENDING
+> DEPENDS ON: #1, #5
+";
+    let loaded = store.ingest_roadmap(md).await.unwrap();
+    assert_eq!(loaded, 3);
+
+    let snap = store.snapshot().await;
+    // Items present in display order with their parsed statuses.
+    let items: Vec<_> = snap
+        .items_in_order()
+        .iter()
+        .map(|i| (i.id.as_str().to_string(), i.title.clone(), i.status))
+        .collect();
+    assert_eq!(
+        items,
+        vec![
+            (
+                "item-1".to_string(),
+                "Flow server".to_string(),
+                Status::Doing
+            ),
+            (
+                "item-5".to_string(),
+                "Roadmap history".to_string(),
+                Status::Done
+            ),
+            ("item-2".to_string(), "Canvas".to_string(), Status::Do),
+        ]
+    );
+
+    // Edges added: 5->1, 2->1, 2->5.
+    let mut edges: Vec<_> = snap
+        .edges()
+        .iter()
+        .map(|e| (e.from.as_str().to_string(), e.to.as_str().to_string()))
+        .collect();
+    edges.sort();
+    assert_eq!(
+        edges,
+        vec![
+            ("item-2".to_string(), "item-1".to_string()),
+            ("item-2".to_string(), "item-5".to_string()),
+            ("item-5".to_string(), "item-1".to_string()),
+        ]
+    );
+}
+
+#[tokio::test]
+async fn ingest_roadmap_skips_rejected_edges_but_keeps_items() {
+    // A cyclic dependency is faithfully kept by the parser, but the graph
+    // validator refuses the edge that would close the cycle. Ingest must skip
+    // that edge gracefully (count it, proceed) rather than aborting — the
+    // markdown is the source of truth and a malformed dep must not blank the
+    // board. Both items still land, and the one acyclic edge survives.
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    let md = "\
+## [1] A
+> STATUS: PENDING
+> DEPENDS ON: #2
+## [2] B
+> STATUS: PENDING
+> DEPENDS ON: #1
+";
+    let loaded = store.ingest_roadmap(md).await.unwrap();
+    assert_eq!(loaded, 2);
+
+    let snap = store.snapshot().await;
+    assert!(snap.get(&id("item-1")).is_some());
+    assert!(snap.get(&id("item-2")).is_some());
+    // Exactly one of the two cyclic edges is accepted; the other is skipped.
+    assert_eq!(snap.edges().len(), 1);
+}
+
+#[tokio::test]
+async fn ingest_empty_roadmap_loads_nothing() {
+    // Empty markdown parses to no items: ingest reports zero and the board stays
+    // empty (the graceful "nothing to load" path).
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    assert_eq!(store.ingest_roadmap("").await.unwrap(), 0);
+    assert!(store.snapshot().await.items_in_order().is_empty());
+}
+
+#[tokio::test]
+async fn ingest_roadmap_commit_failure_propagates() {
+    // The first upsert's commit append faults (events.jsonl is a directory), so
+    // ingest surfaces the StoreError rather than swallowing a real IO failure.
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    // A fresh store has not written events.jsonl yet; put a directory in its
+    // place so the first upsert's commit append faults.
+    std::fs::create_dir_all(dir.join("events.jsonl")).unwrap();
+    let md = "## [1] A\n> STATUS: PENDING\n";
+    assert!(store.ingest_roadmap(md).await.is_err());
+}
+
 fn tempdir() -> std::path::PathBuf {
     use std::sync::atomic::{AtomicU64, Ordering};
     static COUNTER: AtomicU64 = AtomicU64::new(0);
