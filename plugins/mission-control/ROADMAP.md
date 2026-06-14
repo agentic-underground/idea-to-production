@@ -970,6 +970,384 @@ origins, per-item professional documentation, and the opt-in wiki).
 
 ---
 
+## Dependency tree (the EPIC, #16)
+
+```
+EPIC #16 KAIZEN UPLIFT — GEMBA feedback reflex + missing-handler decision gate
+ — PR-A: the GEMBA feedback reflex (mission-control) —
+ ├─ #17 Umbrella-org identity (.i2p/identity.json + identity.sh)                 [atomic]
+ ├─ #18 Learning ledger (.i2p/learnings.jsonl + reducer + overdue detector)      [atomic]
+ ├─ #19 Issue-raiser (raise-feedback.sh — gh api, dedup, autonomy)               → blocks on #17
+ ├─ #20 GEMBA reflex skill (/mission-control:gemba — capture·route·raise)        → blocks on #17,#18,#19
+ ├─ #21 KAIZEN-canon GEMBA awareness clause (the always-on instinct)             [atomic]
+ ├─ #22 GEMBA trigger points (incident · reviewer-BLOCK · missing-handler)       → blocks on #20
+ — PR-B: the missing-capability decision gate (foundry + ideator) — consumes PR-A —
+ ├─ #23 Missing-handler detection: pause-and-decide upgrade                      → blocks on (PR-A merged)
+ ├─ #24 The 3-way decision gate (BUILD-handler · MVP · BOTH)                      → blocks on #23,#20
+ ├─ #25 Handler-authoring discipline (pinned version matrix + FORBIDDEN list)    [atomic]
+ └─ #26 Deferral + resumption (awaiting-handler ↔ DEFERRED handler item)         → blocks on #24
+```
+
+Source plan: [`doc/KAIZEN_UPLIFT_PLAN.md`](../../doc/KAIZEN_UPLIFT_PLAN.md) (recovered from the
+`docs/token-fairness-learnings` branch). Two sequenced PRs, governance-gated, never self-merged: **PR-A**
+(the reflex) then **PR-B** (the gate, which consumes PR-A's `/mission-control:gemba`).
+
+---
+
+## [16] EPIC — KAIZEN UPLIFT: GEMBA feedback reflex + missing-handler decision gate
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+
+**Brief Description**
+When an idea-to-production plugin hits something it can't finish well — a missing value-handler, a tooling
+thrash, a reviewer BLOCK, a failure — it should *instinctively* capture the event and route it into the
+GitHub issue→PR feedback loop, so the fix lands once, upstream, for everyone. This epic weaves that **GEMBA
+feedback reflex** into the fabric (PR-A) and adds the **missing-capability decision gate** that turns a
+capability gap into a choice instead of a grind (PR-B). It generalises what we did by hand this session for
+the token-fairness scheduler (issue + draft PR + `doc/token-fairness-learnings/`).
+
+### User Stories
+- AS the marketplace I WANT to capture-and-file every gap/failure/thrash at the place it broke SO THAT fixes
+  land once, upstream, for the whole community — not re-solved per project.
+- AS a builder hitting a missing value-handler I WANT a 3-way decision (build the handler · MVP with existing ·
+  both) SO THAT a capability gap is a choice, not a silent degrade or a grind.
+- AS any agent I WANT the reflex to be always-on awareness (the KAIZEN canon) SO THAT it fires without being asked.
+
+### EARS Specification (epic-level; per-child EARS in #17–#26)
+**Ubiquitous**
+- The system SHALL classify every captured learning by **target** — SELF_IMPROVEMENT (this repo, auto),
+  GEMBA (a sibling repo, ask-first), or external (local ledger only).
+**Event-driven**
+- WHEN work hits a gap it cannot finish, a failure, or a painful thrash THE SYSTEM SHALL capture it
+  (incident + proposed-solutions) and route it to the issue→PR loop per its target.
+- WHEN the conveyor needs a value-handler that is not in the pool THE SYSTEM SHALL pause and surface the 3-way gate.
+**Unwanted behaviour**
+- IF a learning targets a sibling/cross-repo (GEMBA) THEN THE SYSTEM SHALL ask before filing; IF same-repo
+  (SELF_IMPROVEMENT) it MAY file automatically — but SHALL never self-merge (merge governance still gates).
+- IF an identical issue already exists THEN THE SYSTEM SHALL dedup (search by stable slug) and not file again.
+
+### Acceptance Criteria
+1. Given a captured learning, Then it is filed to the correct repo per its target, deduped, and recorded in
+   `.i2p/learnings.jsonl` (open→filed), with cross-repo filing gated on consent.
+2. Given a roadmap item with an unknown stack, Then `builder-lead` stops at the 3-way gate (no silent degrade);
+   option BOTH produces an MVP plan + a filed handler issue + a DEFERRED "Create handler-<stack>" item.
+3. Given a fresh session, Then the GEMBA-reflex clause is injected (always-on awareness), byte-identical across all 9 plugins.
+
+### Implementation Notes
+- **Cross-plugin**: PR-A in MISSION-CONTROL (reuses incident→postmortem→action-items→iterate); PR-B in
+  FOUNDRY + IDEATOR. Reuse-don't-reinvent per the plan's "What already exists" inventory.
+- **Net-new (small, sharp)**: there is no `gh issue create` anywhere yet; no umbrella-org identity; the
+  missing-handler path doesn't pause — these three seams are the work.
+- **Token safety**: large cycle — stamp `tf plan --class large`, bracket plan-open/close; gate any fan-out.
+- Full spec, decisions (already made — do not re-ask), and the worked references: `doc/KAIZEN_UPLIFT_PLAN.md`.
+
+### Development Plan Reference
+`doc/KAIZEN_UPLIFT_PLAN.md` (the master plan); each child gets its own `doc/<TITLE>_PLAN.md` at GO.
+
+---
+
+## [17] Umbrella-org identity — `.i2p/identity.json` + `identity.sh`
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+> DEPENDS ON: — (atomic; PR-A)
+
+**Brief Description**
+A schema-versioned `.i2p/identity.json` (with a committed `.example`) naming the github org, this
+marketplace repo, and sibling marketplaces (e.g. token-fairness). One field (`github_org`) re-targets the
+whole marketplace when the umbrella org is created. A `gemba/scripts/identity.sh` resolves a target-repo +
+SELF/GEMBA verdict from a "where does this belong" hint.
+
+### EARS Specification
+**Ubiquitous**
+- The system SHALL resolve, for any learning, a target repo and a SELF_IMPROVEMENT-vs-GEMBA verdict from `.i2p/identity.json`.
+**Event-driven**
+- WHEN `.i2p/identity.json` is absent THE SYSTEM SHALL seed it from `git remote -v` + `marketplace.json.owner`.
+**Unwanted behaviour**
+- IF `github_org` changes THEN every target SHALL re-point off that one field (verified via `--dry-run`).
+
+### Acceptance Criteria
+1. Given this repo, `identity.sh` returns `self`; given a token-fairness-class hint, it returns `gemba` + the correct sibling repo.
+2. Given no identity file, it is seeded from git remote + marketplace owner.
+3. Given `github_org` flipped, `--dry-run` shows every target re-pointed.
+
+### Implementation Notes
+- Reuse the `git remote -v` resolution from `plugins/foundry/skills/pr-review/scripts/gather-diff.sh`.
+- See `doc/KAIZEN_UPLIFT_PLAN.md` §1a.
+
+### Development Plan Reference
+`doc/GEMBA_IDENTITY_PLAN.md`
+
+---
+
+## [18] Learning ledger — `.i2p/learnings.jsonl` + reducer + overdue detector
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+> DEPENDS ON: — (atomic; PR-A)
+
+**Brief Description**
+An append-only, schema-versioned `.i2p/learnings.jsonl` (mirroring `.i2p/action-items.jsonl`): one record per
+event (`open|filed|closed`) carrying origin/phase/kind/target/severity/title/brief_path/issue_url. Plus a
+reducer and an unfiled/overdue detector (cloning `overdue-action-items.sh`) so open learnings surface as a
+re-entry signal into `mission-control:iterate`.
+
+### EARS Specification
+**Event-driven**
+- WHEN a learning is captured/filed/closed THE SYSTEM SHALL append a schema-versioned record to `.i2p/learnings.jsonl`.
+- WHEN learnings remain unfiled/open past a threshold THE SYSTEM SHALL surface them to `mission-control:iterate`.
+
+### Acceptance Criteria
+1. Given a capture and a later filing, the ledger records `open` then `filed` for the same id.
+2. Given an open-but-unfiled learning, the detector surfaces it.
+
+### Implementation Notes
+- Mirror `plugins/mission-control/skills/incident/scripts/{action-items,overdue-action-items}.sh`. Plan §1b.
+
+### Development Plan Reference
+`doc/GEMBA_LEARNING_LEDGER_PLAN.md`
+
+---
+
+## [19] Issue-raiser — `raise-feedback.sh` (gh api · dedup · autonomy)
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+> DEPENDS ON: #17
+
+**Brief Description**
+The genuinely net-new primitive (there is no `gh issue create` anywhere yet): wrap
+`gh api repos/<org>/<repo>/issues` (+ optional draft PR carrying the brief), deduping by a stable
+title/slug search before filing, honouring autonomy (same-repo auto; sibling repo requires `--confirm`),
+with `--dry-run`.
+
+### EARS Specification
+**Event-driven**
+- WHEN asked to raise feedback THE SYSTEM SHALL file an issue on the resolved target repo via `gh api`.
+**Unwanted behaviour**
+- IF an identical issue exists (slug search) THEN it SHALL NOT file again (dedup).
+- IF the target is a sibling repo AND `--confirm` is absent THEN it SHALL refuse and print the would-be issue.
+- WHERE `--dry-run` is set THE SYSTEM SHALL compose the body but file nothing.
+
+### Acceptance Criteria
+1. `--dry-run` composes a correct body and files nothing; a second identical call is suppressed by dedup.
+2. Same-repo files without prompt; a sibling repo refuses without `--confirm`.
+
+### Implementation Notes
+- The token-fairness `gh api` calls from this session are the proven shape; REST-only PAT. Plan §1d.
+
+### Development Plan Reference
+`doc/GEMBA_ISSUE_RAISER_PLAN.md`
+
+---
+
+## [20] GEMBA reflex skill — `/mission-control:gemba` (capture · route · raise)
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+> DEPENDS ON: #17, #18, #19
+
+**Brief Description**
+The one-step reflex skill: **capture** into `doc/learnings/<event-slug>/{incident-report,proposed-solutions}.md`
+(the exact shape of `doc/token-fairness-learnings/…`, the canonical template) + a ledger record; **route** via
+`identity.sh` (SELF → `/X:self-improve` or auto-file here; GEMBA → draft, ask, file on the sibling); **raise**
+via `raise-feedback.sh`, recording `issue_url` back to the ledger.
+
+### EARS Specification
+**Event-driven**
+- WHEN invoked THE SYSTEM SHALL capture the event in the canonical learnings shape, route it by target, and raise the feedback.
+**Unwanted behaviour**
+- IF the target is GEMBA (cross-repo) THEN it SHALL ask before filing; SELF_IMPROVEMENT MAY auto-file (never self-merge).
+
+### Acceptance Criteria
+1. Given a seeded test gap, one real issue is filed end-to-end on this repo (the dogfood), with the ledger open→filed.
+2. Given a GEMBA-target gap, the skill drafts and asks before filing on the sibling.
+
+### Implementation Notes
+- `plugins/mission-control/skills/gemba/SKILL.md`; reuses #17/#18/#19. Plan §1c. Branding: `gemba` (aligns with the GEMBA covenant principle).
+
+### Development Plan Reference
+`doc/GEMBA_REFLEX_SKILL_PLAN.md`
+
+---
+
+## [21] KAIZEN-canon GEMBA awareness clause — the always-on instinct
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: MEDIUM
+> DEPENDS ON: — (atomic; PR-A)
+
+**Brief Description**
+Add a short **GEMBA reflex** clause to `KAIZEN.md` (canonical root) + `kaizen-covenant.md`: when work hits a
+gap/failure/thrash, go and see — capture it and raise it as feedback (SELF → auto PR; GEMBA → consented
+issue). Re-synced byte-identical into all 9 plugins via `verify-prereqs.sh --fix` and injected every session
+via `inject-kaizen.sh`. **This is what makes the reflex fire without being asked.**
+
+### EARS Specification
+**Ubiquitous**
+- The system SHALL carry the GEMBA-reflex clause in the canonical KAIZEN canon, byte-identical across all 9 plugins.
+**Event-driven**
+- WHEN a session starts THE SYSTEM SHALL inject the GEMBA-reflex awareness (via `inject-kaizen.sh`).
+
+### Acceptance Criteria
+1. `bash scripts/verify-prereqs.sh` green (KAIZEN canon byte-identical across 9 plugins, check N).
+2. A fresh session shows the GEMBA-reflex clause injected.
+
+### Implementation Notes
+- Canonical-copy promise: edit the canon, re-sync all copies. Plan §1e.
+
+### Development Plan Reference
+`doc/GEMBA_AWARENESS_CLAUSE_PLAN.md`
+
+---
+
+## [22] GEMBA trigger points — incident · reviewer-BLOCK · missing-handler
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: MEDIUM
+> DEPENDS ON: #20
+
+**Brief Description**
+Wire the instinct into the conveyor: doc/skill instructions that invoke `/mission-control:gemba` when a
+postmortem action item is cross-cutting (`incident`), a reviewer returns BLOCK or repeated NEEDS_REVISION
+(`foundry:pr-review`/`reviewer`), or the missing-handler gate fires (#24). Backed by #21 so even un-wired
+surprises prompt the reflex.
+
+### EARS Specification
+**Event-driven**
+- WHEN a reviewer returns BLOCK/repeated-NEEDS_REVISION, or a postmortem item is cross-cutting, THE SYSTEM SHALL prompt `/mission-control:gemba`.
+
+### Acceptance Criteria
+1. Given a BLOCK verdict, the reviewer flow points to `/mission-control:gemba`.
+2. Given a cross-cutting postmortem item, `incident` points to the reflex.
+
+### Implementation Notes
+- Touch `plugins/foundry/agents/reviewer.md` / `skills/pr-review`, `plugins/mission-control/skills/incident`. Plan §1f.
+
+### Development Plan Reference
+`doc/GEMBA_TRIGGER_POINTS_PLAN.md`
+
+---
+
+## [23] Missing-handler detection — pause-and-decide upgrade
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+> DEPENDS ON: — (PR-B; consumes PR-A once merged)
+
+**Brief Description**
+Upgrade detection from silent-degrade to pause: `builder-lead.md` Phase 4.5 roster cross-check **PAUSES** on a
+missing VALUE_HANDLER (instead of routing to the nearest one); `builder/SKILL.md` §8/§14 updated; and an
+ideator stack-fit check (`challenge-protocol.md` + the IDEA-brief LANGUAGE/STACK field) catches the gap at
+ideation time too.
+
+### EARS Specification
+**Event-driven**
+- WHEN a required value-handler is absent from the pool THE SYSTEM SHALL pause (not silently degrade).
+- WHEN an IDEA brief names a stack with no handler THE SYSTEM SHALL flag the gap at ideation.
+
+### Acceptance Criteria
+1. Given a synthetic item with an unknown stack, `builder-lead` stops (does not route to the nearest handler).
+2. Given an IDEA brief with an unsupported stack, the stack-fit challenge flags it.
+
+### Implementation Notes
+- `plugins/foundry/agents/builder-lead.md` (Phase 4.5), `skills/builder/SKILL.md`, `plugins/ideator/knowledge/ideation/challenge-protocol.md`. Plan §2a.
+
+### Development Plan Reference
+`doc/MISSING_HANDLER_DETECTION_PLAN.md`
+
+---
+
+## [24] The 3-way decision gate — BUILD-handler · MVP · BOTH
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: HIGH
+> DEPENDS ON: #23, #20
+
+**Brief Description**
+On a missing handler, surface the roadmapper GO/DISCUSS/DEFER-idiom 3-way gate: (1) BUILD HANDLER FIRST
+(author `handler-<stack>` via the research→synthesis→build→review pipeline, then resume); (2) MVP WITH
+EXISTING (nearest handler + record DEGRADED_CAPABILITIES, disclose in FOUNDRY_PLAN.md); (3) BOTH (MVP now +
+`/mission-control:gemba` raises the new-handler feedback + a DEFERRED "Create handler-<stack>" item + mark the
+original awaiting-handler).
+
+### EARS Specification
+**Event-driven**
+- WHEN the missing-handler pause fires THE SYSTEM SHALL present the 3-way gate and act on the chosen path.
+**Unwanted behaviour**
+- IF option MVP is chosen THEN the system SHALL emit DEGRADED_CAPABILITIES and disclose it in FOUNDRY_PLAN.md.
+
+### Acceptance Criteria
+1. Given option BOTH, the system produces an MVP plan + a filed handler issue + a DEFERRED "Create handler-<stack>" item + an awaiting-handler mark on the original.
+2. Given option BUILD, it authors `handler-<stack>` via the proven pipeline, then resumes the original build.
+
+### Implementation Notes
+- Reuse `doc/handler-build/` pipeline + `handler-rust-tauri` as the worked example; consumes #20. Plan §2b.
+
+### Development Plan Reference
+`doc/MISSING_CAPABILITY_GATE_PLAN.md`
+
+---
+
+## [25] Handler-authoring discipline — pinned version matrix + FORBIDDEN list
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: MEDIUM
+> DEPENDS ON: — (atomic; PR-B)
+
+**Brief Description**
+A new knowledge doc `handler-authoring-discipline.md` — the antidote to version/tooling thrash (rust+tauri,
+typst): every new handler bakes in a **pinned version matrix**, a **FORBIDDEN list**, the KAIZEN covenant,
+and the four-wave build pipeline — generalised from `rust-webapp-rollout/references/00-MANIFEST.md`.
+
+### EARS Specification
+**Ubiquitous**
+- The system SHALL require every new value-handler to carry a pinned version matrix + a FORBIDDEN list.
+
+### Acceptance Criteria
+1. The discipline doc exists and is referenced by the handler-build pipeline + #24's BUILD path.
+2. A handler authored under it carries a pinned matrix + FORBIDDEN list.
+
+### Implementation Notes
+- Generalise `plugins/foundry/skills/rust-webapp-rollout/references/00-MANIFEST.md`. The typst pain becomes a
+  separate SELF_IMPROVEMENT issue to harden `pressroom`'s PDF path. Plan §2c.
+
+### Development Plan Reference
+`doc/HANDLER_AUTHORING_DISCIPLINE_PLAN.md`
+
+---
+
+## [26] Deferral + resumption — awaiting-handler ↔ DEFERRED handler item
+> STATUS: PENDING
+> ADDED: 2026-06-14
+> PRIORITY: MEDIUM
+> DEPENDS ON: #24
+
+**Brief Description**
+Reuse roadmapper DEFER/RESTORE (§11.7) + RESUME (§11.6): the original build item is marked
+*awaiting-handler*, paired with the DEFERRED handler-creation item; when the handler lands (and the
+marketplace updates) the original is RESTORED and re-planned with the real handler — optionally armed via a
+durable `tf` registry follow-up job.
+
+### EARS Specification
+**Event-driven**
+- WHEN a handler-creation item completes THE SYSTEM SHALL surface the paired awaiting-handler item for RESTORE + re-plan.
+**State-driven**
+- WHILE a build is awaiting-handler THE SYSTEM SHALL keep it paused and visibly paired with its DEFERRED handler item.
+
+### Acceptance Criteria
+1. Given option BOTH, the original item is awaiting-handler and paired with a DEFERRED "Create handler-<stack>" item.
+2. Given the handler lands, the original is RESTORED and re-planned with the real handler.
+
+### Implementation Notes
+- Reuse roadmapper DEFER/RESTORE/RESUME + `.i2p/scheduled-jobs.json` / `tf` registry. Plan §2d.
+
+### Development Plan Reference
+`doc/HANDLER_DEFERRAL_RESUMPTION_PLAN.md`
+
+---
+
 ## Principles guiding expansion
 
 Every surface here (a) keeps mission-control self-contained (`${CLAUDE_PLUGIN_ROOT}` only, no assumption
