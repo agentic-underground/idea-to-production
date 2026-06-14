@@ -78,3 +78,6 @@ _render_*.html
 # Workflow helper scripts (local, not shipped)
 .claude/wf-*.js
 .vite/
+
+# flow-server runtime state (per-project daemon: pid/port/token/log)
+/.flow/

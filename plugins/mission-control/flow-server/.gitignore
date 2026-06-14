@@ -1,3 +1,4 @@
 /target
 /static/node_modules
 /static/coverage
+/.flow/

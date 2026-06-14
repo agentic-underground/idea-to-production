@@ -27,6 +27,7 @@ and simply emits markdown.
 | **iterate** | build-measure-learn → a new OPPORTUNITY re-enters DISCOVER (↻) | `/iterate` |
 | **maintain** | dependency upkeep, CVE patching, rotation, restore drills, tech-debt | `/maintain [path]` |
 | **wiki-publisher** | opt-in: publish PRESSROOM's per-item docs + illustrations to the origin's GitHub `.wiki.git` | `/wiki-publisher [path]` |
+| **flow** | the roadmap flow board — auto-run daemon serving the live SVG governance UI on the network, clickable URL in the statusline | `/flow [start\|stop\|status\|url\|build]` |
 
 `/operate-gate` is the front door — it certifies a product is **ready to operate** at go-live and gives the
 **steady-state health view** once it's live, composing the other lenses into one report.
