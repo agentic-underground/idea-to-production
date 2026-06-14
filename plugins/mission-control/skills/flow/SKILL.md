@@ -42,5 +42,8 @@ network. `FLOW_HOST=127.0.0.1` binds localhost-only without code changes.
 
 ## Roadmap resolution
 
-`flowctl` serves the project roadmap: `$FLOW_ROADMAP` (env override) → `ROADMAP.md` → `doc/ROADMAP.md` →
-`docs/ROADMAP.md`. Item count is the number of `## [N]` headings.
+`flowctl` serves the project roadmap, resolved in order: `$FLOW_ROADMAP` (env override — **pinned** to
+`.flow/roadmap` when set, so a project with a non-standard roadmap location keeps auto-running across
+hook-driven sessions) → `.flow/roadmap` (a previously-pinned path) → `ROADMAP.md` → `doc/ROADMAP.md` →
+`docs/ROADMAP.md`. Item count is the number of `## [N]` headings. (This repo self-hosts a plugin-scoped
+roadmap, so it needs `FLOW_ROADMAP=plugins/mission-control/ROADMAP.md` once to pin it.)

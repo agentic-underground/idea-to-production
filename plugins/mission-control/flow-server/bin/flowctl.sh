@@ -30,7 +30,17 @@ BASE_PORT=7421
 
 # --- helpers -----------------------------------------------------------------
 resolve_roadmap() {
-  if [ -n "${FLOW_ROADMAP:-}" ] && [ -f "$FLOW_ROADMAP" ]; then printf '%s' "$FLOW_ROADMAP"; return 0; fi
+  # 1. explicit env override (also persisted below so hook-driven ensure keeps finding it)
+  if [ -n "${FLOW_ROADMAP:-}" ] && [ -f "$FLOW_ROADMAP" ]; then
+    mkdir -p "$FLOW" 2>/dev/null && printf '%s' "$FLOW_ROADMAP" > "$FLOW/roadmap" 2>/dev/null || true
+    printf '%s' "$FLOW_ROADMAP"; return 0
+  fi
+  # 2. a previously-pinned override (a project with a non-standard roadmap location)
+  if [ -s "$FLOW/roadmap" ]; then
+    local pinned; pinned="$(cat "$FLOW/roadmap" 2>/dev/null)"
+    [ -f "$pinned" ] && { printf '%s' "$pinned"; return 0; }
+  fi
+  # 3. the conventional locations
   local c
   for c in "ROADMAP.md" "doc/ROADMAP.md" "docs/ROADMAP.md"; do
     [ -f "$PROJECT/$c" ] && { printf '%s' "$PROJECT/$c"; return 0; }
