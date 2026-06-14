@@ -1349,7 +1349,7 @@ durable `tf` registry follow-up job.
 ---
 
 ## [27] EPIC — Flow board kanban uplift (RHS detail · drag · REDO · commit-graph)
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-14
 > PRIORITY: MEDIUM
 
@@ -1384,7 +1384,7 @@ its status; a coral REDO badge + required-comment modal on backward moves. Sourc
 ---
 
 ## [28] RHS detail panel — EPIC→PR + items · ITEM→issue + commits
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-14
 > PRIORITY: MEDIUM
 > DEPENDS ON: — (atomic; epic #27)
@@ -1407,7 +1407,7 @@ and its commit list the bottom. Both panels scroll; the description takes the la
 ---
 
 ## [29] Drag-between-columns — set status by column
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-14
 > PRIORITY: MEDIUM
 > DEPENDS ON: — (atomic; epic #27)
@@ -1441,7 +1441,7 @@ WebSocket `StatusPosted` broadcast so that status changes driven by the FOUNDRY 
 ---
 
 ## [30] REDO badge + required-comment modal (backward moves)
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-14
 > PRIORITY: MEDIUM
 > DEPENDS ON: #29
@@ -1464,7 +1464,7 @@ coral **REDO** badge appears top-right (removed if moved elsewhere).
 ---
 
 ## [31] Commit-graph view (git-style, in the ITEM detail)
-> STATUS: PENDING
+> STATUS: AWAITING MERGE
 > ADDED: 2026-06-14
 > PRIORITY: LOW
 > DEPENDS ON: #28
