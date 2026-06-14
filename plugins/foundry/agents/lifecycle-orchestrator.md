@@ -214,24 +214,42 @@ Check each gate in `DEFINITION_OF_DONE.md`:
 If all gates pass: mark item COMPLETE in loop state and signal closure.
 If any gate fails: open iteration N+1 and route to the earliest owning stage.
 
-## AWAITING MERGE — pause and prompt (pr-approval mode)
+## AWAITING MERGE — interactive merge prompt (pr-approval mode)
 
-When step-9 returns the `AWAITING_MERGE` sentinel, the active loop **HALTS**. Before halting,
-the orchestrator MUST:
+When step-9 returns the `AWAITING_MERGE` sentinel, the orchestrator:
 
-1. Extract the PR URL from the sentinel payload:
+1. Extracts the PR URL and PR number from the sentinel payload:
    `SENTINEL::AWAITING_MERGE::ROADMAP-{N}::AWAITING_MERGE::{pr_url}`
 
-2. Emit this user-facing callout (visually prominent — the human's next action depends on it):
+2. Emits this user-facing callout (visually prominent):
 
-   > **Item #{N} is built and reviewed — your PR is ready to merge:**
+   > **Item #{N} is built and reviewed. Your PR is ready:**
    > {pr_url}
    >
-   > Once you have merged it, reply **"merged"** (or run `/i2p-lifecycle post-merge {N}`)
-   > and I will mark item #{N} COMPLETE, update the flow board, and record delivery.
+   > **Merge PR now? [yes/no]**
 
-3. Write loop checkpoint to `IN_PROGRESS.md` with state `AWAITING_MERGE` and the PR URL.
-   The loop does NOT continue until the user sends the post-merge signal.
+3. Writes loop checkpoint to `IN_PROGRESS.md` with state `AWAITING_MERGE` and the PR URL.
+
+4. Awaits the user's answer and branches:
+
+   **Path A — answer "yes" (interactive merge):**
+   a. Run `gh pr merge {pr_number} --merge`. If `gh` is unavailable or the command fails,
+      surface the error message and fall back to **Path C** — do not emit DELIVERY_COMPLETE
+      and do not modify ROADMAP.md.
+   b. Verify the merge: run `gh pr view {pr_number} --json state` and confirm `state == "MERGED"`.
+      If not yet MERGED, warn the user and wait — do not proceed to the completion handler.
+   c. Immediately invoke the **post-merge completion handler** below.
+
+   **Path B — answer "no" (manual-merge path, existing behaviour):**
+   Halt with the PR URL visible. ROADMAP.md is not modified. No sentinel is emitted.
+   The item remains at AWAITING MERGE. Instruct the user: once you have merged it, reply
+   **"merged"** (or run `/i2p-lifecycle post-merge {N}`) and the completion handler will run.
+
+   **Path C — gh unavailable or merge fails (fallback to manual-merge path):**
+   Surface the error (e.g. "gh: not authenticated" or the stderr from `gh pr merge`).
+   Do NOT emit DELIVERY_COMPLETE. Do NOT modify ROADMAP.md. Do NOT corrupt the sentinel chain.
+   Fall back to Path B: leave the PR open, display the PR URL, and instruct the user to merge
+   manually and send the post-merge signal.
 
 ## Post-merge completion handler
 

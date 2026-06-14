@@ -31,6 +31,27 @@ simply when the user wants to *see and approve* what the value-handlers produced
 3. Open a **pull request** whose body carries the adversarial-review verdict + findings summary.
 4. **STOP.** The human reviews and clicks merge + close.
 
+#### Interactive merge offer (pr-approval + in-session)
+
+When the build session is still active at the AWAITING MERGE boundary, the orchestrator
+**offers an in-session merge** rather than silently halting:
+
+> **Merge PR now? [yes/no]**
+
+- **yes** — the orchestrator runs `gh pr merge {pr_number} --merge`, verifies
+  `state == "MERGED"` via `gh pr view {pr_number} --json state`, then immediately
+  invokes the post-merge completion handler (ROADMAP.md → COMPLETE, DELIVERY_COMPLETE
+  sentinel, flow canvas sync, DoD audit, completion summary). The human said yes in-session
+  — this is still `pr-approval` because the human approved; the agent did not self-initiate.
+- **no** — the orchestrator halts as before: PR stays open, the user merges externally,
+  and sends the post-merge signal.
+- **gh unavailable or merge fails** — the orchestrator surfaces the error, does NOT emit
+  DELIVERY_COMPLETE, does NOT modify ROADMAP.md, and falls back to the manual-merge path.
+  No sentinel corruption occurs.
+
+This is still `pr-approval` mode: the human explicitly approves the merge at the prompt.
+The agent never self-merges without a "yes" answer from the human.
+
 The agent **never self-merges** in this mode. (GitHub also structurally forbids approving your own
 PR, so a human approval is both a policy choice and a platform reality.) The value: a final human
 gate, full visibility into the direction of each feature branch, and an audit trail in the PR.
