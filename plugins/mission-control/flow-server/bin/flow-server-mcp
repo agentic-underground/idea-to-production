@@ -53,9 +53,15 @@ sha256_of() {  # <file> → lowercase hex digest (or non-zero if no tool)
   else return 1; fi
 }
 
-pinned_sum_for() {  # <asset> → the committed SHA256 for that asset, if any
+pinned_sum_for() {  # <asset> → the committed 64-hex SHA256 for that asset, if any
   [ -f "$SUMS_FILE" ] || return 0
-  awk -v a="$1" '$2==a || $2=="*"a {print $1; exit}' "$SUMS_FILE" 2>/dev/null || true
+  # Skip comment/blank lines and accept ONLY a well-formed 64-hex digest — a security-critical
+  # pin parser must reject a malformed pin (e.g. a '#' from an example comment line), never
+  # return it as if it were a checksum.
+  awk -v a="$1" '
+    /^[[:space:]]*#/ || /^[[:space:]]*$/ { next }
+    ($2==a || $2=="*"a) && $1 ~ /^[0-9a-fA-F]{64}$/ { print $1; exit }
+  ' "$SUMS_FILE" 2>/dev/null || true
 }
 
 # Print a verified binary path, or fail (→ build fallback). Never execs an unverified file.

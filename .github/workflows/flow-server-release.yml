@@ -17,18 +17,20 @@ on:
         description: 'Release tag to build/publish (e.g. flow-server-v0.1.0)'
         required: true
 
+# Least privilege: only the release job needs the write token; the build jobs
+# (rustup/cargo/cross) get read-only.
 permissions:
-  contents: write   # create the release + upload assets
-
-defaults:
-  run:
-    shell: bash
-    working-directory: plugins/mission-control/flow-server
+  contents: read
 
 jobs:
   build:
     name: build ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
+    # The build steps run inside the crate; bash on every OS (incl. windows-latest).
+    defaults:
+      run:
+        shell: bash
+        working-directory: plugins/mission-control/flow-server
     strategy:
       fail-fast: false
       matrix:
@@ -78,6 +80,10 @@ jobs:
     name: publish release
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # only this job creates the release + uploads assets
+    # No working-directory default here: the `dist` steps below resolve `dist`
+    # against the workspace root (where download-artifact writes it).
     steps:
       - uses: actions/checkout@v4
 
