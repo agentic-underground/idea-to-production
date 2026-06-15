@@ -13,22 +13,142 @@ use crate::domain::graph::Mutation;
 use crate::domain::{FlowError, GraphError, ItemId, Status, WaitGate};
 use crate::store::StoreError;
 
-/// The verb names this MCP surface exposes (mirrors the REST routes).
-pub const TOOLS: &[&str] = &[
-    "list_items",
-    "get_item",
-    "set_wait_go",
-    "post_status",
-    "append_spend",
-    "set_item_model",
-    "validate_connection",
-    "mutate_connection",
-    "append_sysmsg",
-    "render_roadmap",
-    "annotate",
-    "request_rewrite",
-    "list_events",
+/// MCP protocol versions this server implements. On `initialize` a requested
+/// version outside this set is answered with [`LATEST_PROTOCOL_VERSION`] rather
+/// than echoed, so a client never assumes capabilities we don't have.
+const SUPPORTED_PROTOCOL_VERSIONS: &[&str] = &["2024-11-05"];
+/// The newest version in [`SUPPORTED_PROTOCOL_VERSIONS`] (the negotiation fallback).
+const LATEST_PROTOCOL_VERSION: &str = "2024-11-05";
+
+/// The single source of truth for the verb set this MCP surface exposes: one
+/// `(name, one-line description)` per verb (mirrors the REST routes and the
+/// `call_tool` dispatch arms). `tool_descriptors` pairs each with its
+/// `input_schema`; the `descriptor_names_are_all_dispatchable` test guards
+/// against drift from `call_tool`.
+const TOOL_DESCRIPTIONS: &[(&str, &str)] = &[
+    (
+        "list_items",
+        "List roadmap items grouped by status (pending/in_progress/done).",
+    ),
+    (
+        "get_item",
+        "Fetch one roadmap item by id with its deps and annotations.",
+    ),
+    ("set_wait_go", "Toggle an item's WAIT/GO gate."),
+    (
+        "post_status",
+        "Move an item to a new status (the folder = the status).",
+    ),
+    (
+        "append_spend",
+        "Record token spend against an item (rolls up to ancestors).",
+    ),
+    (
+        "set_item_model",
+        "Set the model tier (Haiku/Sonnet/Opus/Fable) for an item.",
+    ),
+    (
+        "validate_connection",
+        "Validate a proposed dependency edge without applying it.",
+    ),
+    (
+        "mutate_connection",
+        "Add or remove a dependency edge between two items.",
+    ),
+    (
+        "append_sysmsg",
+        "Append a system message to the event feed.",
+    ),
+    (
+        "render_roadmap",
+        "Render 'what's on the roadmap' as text — ~0 LLM tokens.",
+    ),
+    ("annotate", "Annotate an item's plan (pauses the item)."),
+    (
+        "request_rewrite",
+        "Request a plan rewrite, bumping the draft number.",
+    ),
+    (
+        "list_events",
+        "Read the append-only event log, oldest first.",
+    ),
 ];
+
+/// The JSON-Schema for a verb's `arguments`, mirroring what `call_tool` reads.
+/// Real `properties`/`required` (not a hollow `{"type":"object"}`) so a client
+/// or LLM can call the arg-taking verbs correctly instead of round-tripping a
+/// `-32602` on every empty call. Status/gate enums match the lowercase serde
+/// reprs (`domain::model`); verbs with no arguments fall through to the empty
+/// object schema.
+fn input_schema(name: &str) -> Value {
+    let id = || json!({ "type": "string", "description": "Item id (e.g. \"item-42\")." });
+    let object = |props: Value, required: Value| json!({ "type": "object", "properties": props, "required": required });
+    match name {
+        "get_item" => object(json!({ "id": id() }), json!(["id"])),
+        "set_wait_go" => object(
+            json!({ "id": id(), "gate": { "type": "string", "enum": ["wait", "go"] } }),
+            json!(["id", "gate"]),
+        ),
+        "post_status" => object(
+            json!({ "id": id(), "status": { "type": "string", "enum": ["do", "doing", "done"] } }),
+            json!(["id", "status"]),
+        ),
+        "append_spend" => object(
+            json!({ "id": id(), "delta": { "type": "integer", "minimum": 0, "description": "Tokens to add." } }),
+            json!(["id", "delta"]),
+        ),
+        "set_item_model" => object(
+            json!({ "id": id(), "model": { "type": "string", "description": "Model tier id." } }),
+            json!(["id", "model"]),
+        ),
+        "validate_connection" | "mutate_connection" => {
+            let from = json!({ "type": "string", "description": "Dependent item id." });
+            let to = json!({ "type": "string", "description": "Dependency item id." });
+            if name == "mutate_connection" {
+                object(
+                    json!({ "op": { "type": "string", "enum": ["add", "remove"] }, "from": from, "to": to }),
+                    json!(["op", "from", "to"]),
+                )
+            } else {
+                object(json!({ "from": from, "to": to }), json!(["from", "to"]))
+            }
+        }
+        "append_sysmsg" => object(
+            json!({ "text": { "type": "string", "description": "Message to append to the feed." } }),
+            json!(["text"]),
+        ),
+        "annotate" => object(
+            json!({ "id": id(), "text": { "type": "string", "description": "Annotation text." } }),
+            json!(["id", "text"]),
+        ),
+        "request_rewrite" => object(
+            json!({ "id": id(), "comment": { "type": "string", "description": "Rewrite request." } }),
+            json!(["id", "comment"]),
+        ),
+        "list_events" => json!({
+            "type": "object",
+            "properties": { "kind": { "type": "string", "description": "Optional event-kind filter." } }
+        }),
+        // list_items, render_roadmap and any future no-arg verb.
+        _ => json!({ "type": "object" }),
+    }
+}
+
+/// Build the MCP `tools/list` descriptor array: each verb as a
+/// `{name, description, inputSchema}` object. Bare strings are NOT a conformant
+/// `tools/list` payload and prevent the client from registering.
+fn tool_descriptors() -> Vec<Value> {
+    TOOL_DESCRIPTIONS
+        .iter()
+        .map(|(name, desc)| {
+            json!({
+                "name": name,
+                "description": desc,
+                "inputSchema": input_schema(name),
+            })
+        })
+        .collect()
+}
 
 /// Thin axum handler: deserialises the JSON body via extractor, delegates to
 /// `dispatch`, and serialises the result back into an HTTP response. The real
@@ -48,7 +168,38 @@ pub async fn dispatch(state: &AppState, req: Value) -> Value {
     let method = req.get("method").and_then(Value::as_str).unwrap_or("");
 
     match method {
-        "tools/list" => ok(id, json!({ "tools": TOOLS })),
+        // MCP handshake: the client's mandatory first request. Without this the
+        // server is dropped before any tool is exposed. We advertise the `tools`
+        // capability and echo the client's requested protocol version when given.
+        "initialize" => {
+            // Negotiate, don't blindly echo: a client may request a version we
+            // don't implement (e.g. a future spec). Echo it only when supported;
+            // otherwise answer with our own latest, per the MCP handshake rule.
+            let requested = req
+                .get("params")
+                .and_then(|p| p.get("protocolVersion"))
+                .and_then(Value::as_str);
+            let protocol = match requested {
+                Some(v) if SUPPORTED_PROTOCOL_VERSIONS.contains(&v) => v,
+                _ => LATEST_PROTOCOL_VERSION,
+            }
+            .to_string();
+            ok(
+                id,
+                json!({
+                    "protocolVersion": protocol,
+                    "capabilities": { "tools": {} },
+                    "serverInfo": {
+                        "name": "flow-server",
+                        "version": env!("CARGO_PKG_VERSION"),
+                    },
+                }),
+            )
+        }
+        // Post-handshake notification — acknowledged with no response by the
+        // caller (it carries no `id`); see `run_stdio` / the HTTP handler.
+        "notifications/initialized" | "initialized" => Value::Null,
+        "tools/list" => ok(id, json!({ "tools": tool_descriptors() })),
         "tools/call" => {
             let params = req.get("params").cloned().unwrap_or(Value::Null);
             let name = params.get("name").and_then(Value::as_str).unwrap_or("");
