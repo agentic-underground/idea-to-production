@@ -2,7 +2,7 @@
 name: check
 description: >
   Verify that SENTINEL's security scanners are installed and reachable — SCA (npm audit, pip-audit,
-  cargo-audit, osv-scanner), secrets (gitleaks), and the `semgrep` CLI for SAST. Trigger with
+  cargo-audit, osv-scanner), secrets (gitleaks). Trigger with
   /sentinel:check (or "check sentinel prerequisites", "which scanners are installed?"). Runs a fast
   ✓/✗ probe grouped by tier. Advisory by default (SENTINEL degrades gracefully — a missing scanner
   narrows a lens to partial coverage, never a false PASS); pass --strict to fail on a missing
@@ -31,7 +31,7 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 
 - **required** — `git`, `bash`.
 - **recommended** — the scanners that turn a lens from heuristic to authoritative: `pip-audit`,
-  `cargo-audit`, `osv-scanner`, `gitleaks`, and `semgrep` (the **SAST** lens, standalone CLI).
+  `cargo-audit`, `osv-scanner`, `gitleaks`.
 - **optional** — ecosystem/extra scanners: `govulncheck`, `trivy`, `grype`/`syft`, `trufflehog`, …
 
 ## Interpreting the result

@@ -30,7 +30,7 @@
 ## B. High-value additions — install these next
 
 ### MCP servers (launchers only — keys are runtime secrets)
-- **Shipped, keyless** — ensure the launcher and you're done: **Fetch** (`uvx mcp-server-fetch`, needs `uv`) for discovery/ideation web research; **Context7** (`npx -y @upstash/context7-mcp`, needs `node`) for up-to-date library docs in foundry; **Playwright** (`npx`) + **Semgrep** (`uvx`) as before. No install task — `npx`/`uvx` fetch them ephemerally.
+- **Shipped, keyless** — ensure the launcher and you're done: **Fetch** (`uvx mcp-server-fetch`, needs `uv`) for discovery/ideation web research; **Context7** (`npx -y @upstash/context7-mcp`, needs `node`) for up-to-date library docs in foundry; **Playwright** (`npx`) as before. No install task — `npx`/`uvx` fetch them ephemerally.
 - **Optional, key-gated** (document, don't bake keys): **Tavily** (`npx -y tavily-mcp@latest` + `TAVILY_API_KEY`) and **Exa** (`npx -y exa-mcp-server` + `EXA_API_KEY`) for deep market research; **official GitHub MCP** (remote HTTP + PAT — *not* the deprecated `@modelcontextprotocol/server-github`). Full detail in [`40-mcp.md`](40-mcp.md).
 
 ### Feedback & code intelligence
@@ -43,7 +43,7 @@
 - **`debugpy`** — `uv tool install debugpy`
 
 ### Security (SENTINEL)
-- **`osv-scanner`** (Google OSV, all ecosystems), **`gitleaks`** (secrets), **`semgrep`** (SAST), **`cargo-audit`**, **`pip-audit`**, **`govulncheck`**, optionally **`trivy`**/**`grype`**+**`syft`**, **`trufflehog`**.
+- **`osv-scanner`** (Google OSV, all ecosystems), **`gitleaks`** (secrets), **`cargo-audit`**, **`pip-audit`**, **`govulncheck`**, optionally **`trivy`**/**`grype`**+**`syft`**, **`trufflehog`**.
 
 ### Publishing (PRESSROOM)
 - **TeX Live** set (`texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended`) — enables the LaTeX engine.

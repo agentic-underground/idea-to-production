@@ -11,7 +11,6 @@
     - debugpy          # foundry Python debugger
     - pyright          # foundry Python LSP (alternative to npm install)
     - ruff             # foundry Python lint/diagnostics
-    - semgrep          # sentinel SAST CLI (optional static-analysis lens)
   tags: [foundry, sentinel, lsp]
 
 # The Fetch MCP (market-scanner, ideator) is launched ephemerally via `uvx mcp-server-fetch`

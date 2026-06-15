@@ -54,7 +54,7 @@ When either holds, route per the `headless_capable` table:
 
 - **Headless-safe phases** (EARS, FEATURE, TEST, IMPLEMENT, commit) — install and run **normally**.
 - **MCP/browser-dependent phases** (STORY browser/E2E via `ds-step-story-tests`+PLAYWRIGHT-AGENT;
-  `atelier` mockup/ui-review; `sentinel` SAST) — **skip the MCP-dependent step** and take its
+  `atelier` mockup/ui-review) — **skip the MCP-dependent step** and take its
   degraded-but-valid fallback (CLI/API journey tests, SVG/wireframe, SCA/secrets-only), then
   **DISCLOSE** the gap: name the `capability`, `reason`, and `since_phase` from the record (per the
   contract §3). Never install a browser-story step that will produce an empty pass — that is the exact
