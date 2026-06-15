@@ -38,7 +38,7 @@ For every candidate site (a heading, a paragraph, a list that *describes a struc
   — pick the top 3 by score, defer the rest.
 - **Skip-list.** Never illustrate: pure reference/manifest files (`*.tsv`, `*.json`, `requirements.*`),
   files that are *already* figure-dense, generated/historical reports, and canonical-copy files
-  (`SOUL.md`, `inject-soul.sh`, `check.sh` — they must stay byte-identical across plugins).
+  (`KAIZEN.md`, `inject-kaizen.sh`, `check.sh` — they must stay byte-identical across plugins).
 - **Tie to the matrix.** A site that scores high but cannot fit the [4×9 matrix](../../rich-pdf-with-diagrams/references/charting-matrix.md)
   even when decomposed is a site for **two** figures, or none — never one illegible sprawl.
 

@@ -33,4 +33,4 @@ tree into each plugin.
 
 ### Implementation Notes
 - Builds on the `docs/guide` / `docs/internal` / `docs/historical` split already in place.
-- Keep README/CLAUDE/KAIZEN/SOUL at root (canons injected; must not move).
+- Keep README/CLAUDE/KAIZEN at root (canons injected; must not move).

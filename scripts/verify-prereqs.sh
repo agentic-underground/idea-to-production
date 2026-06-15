@@ -15,8 +15,6 @@
 #   D′. no-download tsv probes: the SAME no-download rule as check D, extended over the
 #      requirements.tsv probe cells (column 2) — a capability probe may render/launch locally
 #      but must never `npx -y`/`uvx`/`pip install`/`npm install`/`curl … | sh` a package.
-#   E. SOUL.md is byte-identical across the canonical root and every plugin copy.
-#   F. inject-soul.sh is byte-identical across all plugins (the SessionStart injector).
 #   N. KAIZEN.md is byte-identical across the canonical root and every plugin copy.
 #   O. inject-kaizen.sh is byte-identical across all plugins (the lean SessionStart injector).
 #   H. marketplace.json ⟺ plugins/ — every plugins/<name>/ dir has a matching
@@ -43,7 +41,7 @@
 #      ZERO exit when fed a minimal synthetic SessionStart event on stdin — in a sandbox
 #      (HOME + CLAUDE_PROJECT_DIR = fresh mktemp dirs) so it can't touch real state, under a timeout.
 #      A missing / unparsable / non-zero-exiting hook = FAIL: this is what makes a dead
-#      inject-soul/capture-cost detectable, vs the `2>/dev/null||true` that hides it at runtime.
+#      inject-kaizen/capture-cost detectable, vs the `2>/dev/null||true` that hides it at runtime.
 #   M. LSP capability probes exist AND are no-download (P2-14) — the browser incident's
 #      presence-vs-capability lesson, generalised to Language Server Protocol servers. Asserts that
 #      (1) at least one CAPABILITY-grade LSP probe exists (one that drives a server over its JSON-RPC
@@ -53,10 +51,10 @@
 #      the LSP class) — it may launch the server locally but must never fetch-and-run a package.
 #
 # Flag:
-#   --fix  guarded canonical re-sync — when the canonical-copy parity checks (A check.sh, E SOUL.md,
-#          F inject-soul.sh, N KAIZEN.md, O inject-kaizen.sh) FAIL, re-sync each drifted copy FROM its
-#          named canonical source (root SOUL.md for E, root KAIZEN.md for N; the most-common copy for
-#          A/F/O). GUARDS: refuses on a dirty git tree, prints
+#   --fix  guarded canonical re-sync — when the canonical-copy parity checks (A check.sh,
+#          N KAIZEN.md, O inject-kaizen.sh) FAIL, re-sync each drifted copy FROM its
+#          named canonical source (root KAIZEN.md for N; the most-common copy for
+#          A/O). GUARDS: refuses on a dirty git tree, prints
 #          the diff before writing, and operates ONLY on the canonical-copy sets these checks track
 #          (never a file the user intentionally diverged elsewhere). Without --fix: detect-only.
 set -uo pipefail
@@ -80,7 +78,7 @@ pass() { printf "  %b✓%b %s\n" "$green" "$reset" "$1"; }
 fail() { printf "  %b✗ %s%b\n" "$red" "$1" "$reset"; fails=$((fails+1)); }
 section() { printf "\n%b%s%b\n" "$bold" "$1" "$reset"; }
 
-# ── --fix registry (canonical-copy re-sync, used by checks A/E/F) ─────────────
+# ── --fix registry (canonical-copy re-sync, used by checks A/N/O) ─────────────
 # Each parity check, when it detects drift, registers the canonical source and the drifted copies
 # it would re-sync. The actual re-sync happens in the guarded --fix block before the verdict — never
 # inline, so detect-only behaviour (the default) is preserved byte-for-byte.
@@ -251,41 +249,8 @@ else
   printf '%s\n' "$tsv_offenders" | sed 's/^/      /'
 fi
 
-# ── E. SOUL.md byte-identical (canonical root + every plugin copy) ───────────
-section "E. SOUL.md canonical-copy parity"
-mapfile -t souls < <(find plugins -path '*/SOUL.md' | sort)
-if [ ! -f SOUL.md ]; then
-  fail "canonical root SOUL.md is missing"
-elif [ "${#souls[@]}" -lt 1 ]; then
-  fail "expected ≥1 plugin SOUL.md copy, found ${#souls[@]}"
-else
-  souls=("SOUL.md" "${souls[@]}")
-  sums="$(md5sum "${souls[@]}" | awk '{print $1}' | sort -u)"
-  if [ "$(printf '%s\n' "$sums" | wc -l)" -eq 1 ]; then
-    pass "${#souls[@]} copies identical incl. root ($sums)"
-  else
-    fail "SOUL.md copies diverge (root vs plugins):"; md5sum "${souls[@]}" | sed 's/^/      /'
-    register_drift "SOUL.md" "${souls[@]}"   # named canonical source = root SOUL.md
-  fi
-fi
-
-# ── F. inject-soul.sh byte-identical across all plugins ──────────────────────
-section "F. inject-soul.sh canonical-copy parity"
-mapfile -t injectors < <(find plugins -path '*/hooks/inject-soul.sh' | sort)
-if [ "${#injectors[@]}" -lt 2 ]; then
-  fail "expected ≥2 inject-soul.sh copies, found ${#injectors[@]}"
-else
-  sums="$(md5sum "${injectors[@]}" | awk '{print $1}' | sort -u)"
-  if [ "$(printf '%s\n' "$sums" | wc -l)" -eq 1 ]; then
-    pass "${#injectors[@]} copies identical ($sums)"
-  else
-    fail "inject-soul.sh copies diverge across plugins:"; md5sum "${injectors[@]}" | sed 's/^/      /'
-    register_drift "$(canonical_of "${injectors[@]}")" "${injectors[@]}"
-  fi
-fi
-
 # ── N. KAIZEN.md byte-identical (canonical root + every plugin copy) ─────────
-# The KAIZEN always-aware banner — the lean sibling of SOUL.md (check E). Same canonical-copy
+# The KAIZEN always-aware banner — a small, universal canon mirrored into every plugin. Canonical-copy
 # contract: edits start at the repo-root KAIZEN.md and are mirrored outward.
 section "N. KAIZEN.md canonical-copy parity"
 mapfile -t kaizens < <(find plugins -path '*/KAIZEN.md' | sort)
@@ -305,7 +270,7 @@ else
 fi
 
 # ── O. inject-kaizen.sh byte-identical across all plugins ─────────────────────
-# The SessionStart injector for the KAIZEN banner — the lean sibling of inject-soul.sh (check F).
+# The SessionStart injector for the KAIZEN banner — mirrored byte-identical across all plugins.
 section "O. inject-kaizen.sh canonical-copy parity"
 mapfile -t kinjectors < <(find plugins -path '*/hooks/inject-kaizen.sh' | sort)
 if [ "${#kinjectors[@]}" -lt 2 ]; then
@@ -512,7 +477,7 @@ fi
 # to a ZERO exit when fed a minimal synthetic SessionStart event on stdin — sandboxed so it cannot
 # touch real state: HOME and CLAUDE_PROJECT_DIR are fresh mktemp dirs, and it runs under a timeout
 # (when available). A hook that is missing, unparsable, or exits non-zero = FAIL — that is exactly the
-# dead inject-soul/capture-cost the runtime's `2>/dev/null || true` would otherwise hide. Hooks that
+# dead inject-kaizen/capture-cost the runtime's `2>/dev/null || true` would otherwise hide. Hooks that
 # legitimately emit nothing are fine (output is discarded; only the exit code is asserted).
 section "L. hooks smoke-exec (exist · bash -n · zero-exit on a synthetic event)"
 if ! command -v jq >/dev/null 2>&1; then

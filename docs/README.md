@@ -16,6 +16,6 @@ plugins:
 - **[`images/`](images/)** — banners, animated GIFs (lifecycle, masthead, plugin heroes), SVG sources.
 - **[`diagrams/`](diagrams/)** — vector/`.dot` diagram sources.
 
-> The marketplace's two always-on canons — `KAIZEN.md` and `SOUL.md` — and the entry points
+> The marketplace's always-on canon — `KAIZEN.md` — and the entry points
 > `README.md` / `CLAUDE.md` deliberately remain at the repo root (the canons are injected into every
 > plugin's session and must not move).

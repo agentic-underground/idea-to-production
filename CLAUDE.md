@@ -50,23 +50,15 @@ actual feeds the estimator, and gate every fan-out wave against the live rate-li
 the guard hooks (live-ceiling spawn gate, snapshot bridge, session-token writer, durable-job re-arm),
 all driven by the `tf` binary. Until token-fairness is installed, this repo ships **no** token guard.
 
-## SOUL
+## KAIZEN
 
-The all-systems-go phrase — the shared **soul** of this marketplace. When a green-gate
-moment lands (a readiness check passes, a vertical slice goes clean, the trap is set
-right), mark it with **one of these seven**; they all mean *everything's set, we are go*:
-
-1. "Light is green, trap is clean." — *Ghostbusters* (1984)
-2. "Let's kick the tires and light the fires, Big Daddy." — *Independence Day* (1996)
-3. "We are go for launch." — *Apollo 13* (1995)
-4. "Lock and load." — *Aliens* (1986)
-5. "Lock S-foils in attack position." — *Return of the Jedi* (1983)
-6. "You're cleared to engage." — *Top Gun* (1986)
-7. "Roads? Where we're going, we don't need roads." — *Back to the Future* (1985)
-
-**Canonical source:** [`SOUL.md`](./SOUL.md) — mirrored byte-for-byte into every plugin
-and injected into the agent's context once per session by each plugin's SessionStart
-hook (`plugins/*/hooks/inject-soul.sh`). It is ALWAYS_ON: present whenever **any** of the
-nine plugins is active, never duplicated, never omitted. How a document reaches an agent's
-context — and exactly where SOUL fits — is explained in
+The standing operating awareness of the marketplace — the lean canon (muda · mura · muri, the seven
+wastes + rediscovery, and *halve the distance to perfection*). It is **not** duplicated here: the
+canonical source is [`KAIZEN.md`](./KAIZEN.md), mirrored byte-for-byte into every plugin and **injected
+into the agent's context once per session** by each plugin's SessionStart hook
+(`plugins/*/hooks/inject-kaizen.sh`) — so it is ALWAYS_ON wherever any plugin is active (a plugin user's
+own project too, which is why it lives in `KAIZEN.md` and not only here). Depth:
+[`plugins/foundry/knowledge/pillars/waste-elimination.md`](plugins/foundry/knowledge/pillars/waste-elimination.md)
+and [`plugins/foundry/knowledge/architecture/kaizen-covenant.md`](plugins/foundry/knowledge/architecture/kaizen-covenant.md).
+How a document reaches an agent's context is explained in
 [`docs/guide/context-building-pipeline.md`](docs/guide/context-building-pipeline.md).

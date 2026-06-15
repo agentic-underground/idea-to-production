@@ -32,7 +32,7 @@ guardrail, and the KAIZEN covenant. Write `I2P_INSPECTION_REPORT.md` to the proj
 3. **Capability-by-detection:** i2p detects which specialist plugins are active **model-side** (from the
    available skills/commands), never by a brittle filesystem probe, and never claims a power from an
    absent plugin — every command degrades gracefully and names what is missing.
-4. **Onboarding-hook integrity:** `hooks/hooks.json` wires SessionStart (`inject-soul.sh` +
+4. **Onboarding-hook integrity:** `hooks/hooks.json` wires SessionStart (`inject-kaizen.sh` +
    `session-intro.sh`) and UserPromptSubmit (`tips.sh`); every referenced script exists, emits valid
    JSON, ends with `|| true`, never blocks a prompt, and `tips/tips.tsv` holds only ≤25-word, honest,
-   capability-accurate tips. `inject-soul.sh` and `SOUL.md` are byte-identical to the canon (Checks E/F).
+   capability-accurate tips. `inject-kaizen.sh` and `KAIZEN.md` are byte-identical to the canon (Checks N/O).

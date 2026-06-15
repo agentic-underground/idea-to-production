@@ -40,5 +40,5 @@ resources. Map first, restructure later.
 
 ### Implementation Notes
 - Survey `plugins/*/agents`, `skills`, `commands`.
-- Respect the canonical-copy promise (SOUL/KAIZEN) and self-contained-plugin rule.
+- Respect the canonical-copy promise (KAIZEN) and self-contained-plugin rule.
 - Reference foundry VALUE_FLOW.md value-station/value-handler definitions.
