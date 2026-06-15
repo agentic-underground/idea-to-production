@@ -44,6 +44,7 @@ network. `FLOW_HOST=127.0.0.1` binds localhost-only without code changes.
 
 `flowctl` serves the project roadmap, resolved in order: `$FLOW_ROADMAP` (env override — **pinned** to
 `.flow/roadmap` when set, so a project with a non-standard roadmap location keeps auto-running across
-hook-driven sessions) → `.flow/roadmap` (a previously-pinned path) → `ROADMAP.md` → `doc/ROADMAP.md` →
-`docs/ROADMAP.md`. Item count is the number of `## [N]` headings. (This repo self-hosts a plugin-scoped
-roadmap, so it needs `FLOW_ROADMAP=plugins/mission-control/ROADMAP.md` once to pin it.)
+hook-driven sessions) → `.flow/roadmap` (a previously-pinned path) → the **`.i2p/roadmap/` tree** (the
+authoritative file-per-item source, folder = status; roadmap [42]) → legacy `ROADMAP.md` → `doc/ROADMAP.md`
+→ `docs/ROADMAP.md`. Item count is the number of `.md` files across the tree's status folders (or `## [N]`
+headings for a legacy single file). The `.i2p/roadmap/` tree is auto-detected — no `FLOW_ROADMAP` pin needed.

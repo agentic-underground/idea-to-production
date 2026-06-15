@@ -21,8 +21,11 @@ pub struct Config {
     pub static_dir: PathBuf,
     /// Directory holding the flow state (JSONL + markdown).
     pub data_dir: PathBuf,
-    /// Optional roadmap markdown to ingest on startup so the board is not blank.
-    /// `None` (the default) starts with an empty store.
+    /// Optional roadmap source to ingest on startup so the board is not blank.
+    /// A directory is read as the `.i2p/roadmap/` file-per-item tree (folder =
+    /// status); a file is the legacy single `ROADMAP.md`. `None` (the default)
+    /// makes `main` fall back to the conventional `.i2p/roadmap/` tree if present,
+    /// else an empty store.
     pub roadmap_path: Option<PathBuf>,
     /// When true, run in stdio JSON-RPC (MCP) mode instead of HTTP server mode.
     /// Default `false`. Activated by the `--mcp` flag.

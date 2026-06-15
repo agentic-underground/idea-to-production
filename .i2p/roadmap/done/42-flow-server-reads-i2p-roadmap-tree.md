@@ -1,9 +1,11 @@
 ---
 id: 42
 title: "Flow-server reads the .i2p/roadmap/ tree as its source"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-15
+completed: 2026-06-16
+branch: feat/42-flow-server-reads-roadmap-tree
 depends_on: "—"
 ---
 

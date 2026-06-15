@@ -29,12 +29,14 @@ two epics, the masthead reading 38% complete (the six shipped epic-#9 items in D
 cargo run --bin flow-server -- \
   --host 127.0.0.1 --port 7433 \
   --data .flow --static plugins/mission-control/flow-server/static \
-  --roadmap plugins/mission-control/ROADMAP.md
+  --roadmap .i2p/roadmap
 # → open http://127.0.0.1:7433/?token=<the token printed to stderr / .flow/token>
 ```
 
-`--host` defaults to LAN-reachable; the token is generated to `--token` (default `.flow/token`) on first run
-and required on every HTTP/WS/MCP request.
+`--roadmap` takes the `.i2p/roadmap/` **tree** (folder = status) — the authoritative source (roadmap
+[42]); a single `ROADMAP.md` file is still accepted (legacy). Omit it entirely and the server
+auto-detects `.i2p/roadmap/` in the cwd. `--host` defaults to LAN-reachable; the token is generated to
+`--token` (default `.flow/token`) on first run and required on every HTTP/WS/MCP request.
 
 ## Architecture
 

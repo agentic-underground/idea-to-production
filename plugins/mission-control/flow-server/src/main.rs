@@ -28,21 +28,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // Seed and restore gates identically to HTTP path so the board state
         // is consistent regardless of which transport is used.
-        if let Some(path) = &cfg.roadmap_path {
-            match tokio::fs::read_to_string(path).await {
-                Ok(md) => {
-                    let n = store.ingest_roadmap(&md).await?;
-                    eprintln!(
-                        "flow-server ingested {n} roadmap item(s) from {}",
-                        path.display()
-                    );
-                }
-                Err(e) => eprintln!(
-                    "flow-server: no roadmap ingested ({}: {e}); starting empty",
-                    path.display()
-                ),
-            }
-        }
+        ingest_source(&store, &cfg).await?;
         store.restore_gates().await;
 
         run_stdio(store).await?;
@@ -54,23 +40,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let token = Token::load_or_create(&cfg.token_path).await?;
     let store = Arc::new(Store::open(&cfg.data_dir).await?);
 
-    // Seed the board from the roadmap if one was given and it reads; an absent or
-    // unreadable path degrades gracefully to an empty board (logged, not fatal).
-    if let Some(path) = &cfg.roadmap_path {
-        match tokio::fs::read_to_string(path).await {
-            Ok(md) => {
-                let n = store.ingest_roadmap(&md).await?;
-                eprintln!(
-                    "flow-server ingested {n} roadmap item(s) from {}",
-                    path.display()
-                );
-            }
-            Err(e) => eprintln!(
-                "flow-server: no roadmap ingested ({}: {e}); starting empty",
-                path.display()
-            ),
-        }
-    }
+    // Seed the board from the roadmap source (tree or single file); an absent or
+    // unreadable source degrades gracefully to an empty board (logged, not fatal).
+    ingest_source(&store, &cfg).await?;
 
     // Restore gate state from .flow/gates.json AFTER ingest_roadmap, because
     // upsert_item resets every item's gate to Go (WaitGate default). This must
@@ -88,6 +60,45 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         cfg.token_path.display()
     );
     axum::serve(listener, router).await?;
+    Ok(())
+}
+
+/// Seed the board from the configured roadmap source (roadmap [42]). Resolution:
+/// an explicit `--roadmap` path, else the conventional `.i2p/roadmap/` tree in the
+/// cwd. A directory source is ingested as the file-per-item tree (folder = status,
+/// with `post_status` write-back); a file source is the legacy single `ROADMAP.md`.
+/// Degrades gracefully: no source or an unreadable file leaves the board empty
+/// (logged, not fatal). A genuine store write error during ingest still propagates.
+async fn ingest_source(store: &Store, cfg: &Config) -> Result<(), Box<dyn std::error::Error>> {
+    let default_tree = std::path::PathBuf::from(".i2p/roadmap");
+    let source = cfg
+        .roadmap_path
+        .clone()
+        .or_else(|| default_tree.is_dir().then_some(default_tree));
+    let Some(path) = source else {
+        return Ok(()); // no source → empty board
+    };
+    if path.is_dir() {
+        let n = store.ingest_roadmap_tree(&path).await?;
+        eprintln!(
+            "flow-server ingested {n} roadmap item(s) from the {} tree",
+            path.display()
+        );
+        return Ok(());
+    }
+    match tokio::fs::read_to_string(&path).await {
+        Ok(md) => {
+            let n = store.ingest_roadmap(&md).await?;
+            eprintln!(
+                "flow-server ingested {n} roadmap item(s) from {}",
+                path.display()
+            );
+        }
+        Err(e) => eprintln!(
+            "flow-server: no roadmap ingested ({}: {e}); starting empty",
+            path.display()
+        ),
+    }
     Ok(())
 }
 

@@ -726,6 +726,134 @@ async fn ingest_roadmap_commit_failure_propagates() {
     assert!(store.ingest_roadmap(md).await.is_err());
 }
 
+// ---- .i2p/roadmap/ tree ingest + post_status write-back (roadmap [42]) ----
+
+/// Build a fixture roadmap tree under a fresh temp dir and return its root.
+fn tree_fixture() -> std::path::PathBuf {
+    let root = tempdir().join("roadmap");
+    for (folder, name, body) in [
+        (
+            "backlog",
+            "16-epic.md",
+            "---\nid: 16\ntitle: Epic\nstatus: PENDING\ndepends_on: \"—\"\n---\nbody\n",
+        ),
+        (
+            "doing",
+            "42-tree.md",
+            "---\nid: 42\ntitle: Tree\nstatus: IN PROGRESS\ndepends_on: \"#16\"\n---\nbody\n",
+        ),
+        (
+            "done",
+            "01-first.md",
+            "---\nid: 1\ntitle: First\nstatus: COMPLETE\n---\nbody\n",
+        ),
+    ] {
+        let dir = root.join(folder);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join(name), body).unwrap();
+    }
+    root
+}
+
+#[tokio::test]
+async fn ingest_roadmap_tree_loads_items_grouped_by_folder() {
+    let dir = tempdir();
+    let tree = tree_fixture();
+    let store = Store::open(&dir).await.unwrap();
+
+    let n = store.ingest_roadmap_tree(&tree).await.unwrap();
+    assert_eq!(n, 3);
+
+    let flow = store.snapshot().await;
+    let status = |s: &str| {
+        flow.items_in_order()
+            .iter()
+            .find(|i| i.id == id(s))
+            .unwrap()
+            .status
+    };
+    assert_eq!(status("item-16"), Status::Do); // backlog → Do
+    assert_eq!(status("item-42"), Status::Doing); // doing → Doing
+    assert_eq!(status("item-1"), Status::Done); // done → Done
+}
+
+#[tokio::test]
+async fn post_status_moves_tree_file_and_rewrites_frontmatter() {
+    // AC#2: `post_status 42 doing` → 42's file in doing/ with status IN PROGRESS.
+    let dir = tempdir();
+    let tree = tree_fixture();
+    let store = Store::open(&dir).await.unwrap();
+    store.ingest_roadmap_tree(&tree).await.unwrap();
+
+    // 16 starts in backlog/. Advance it to Doing.
+    store
+        .post_status(&id("item-16"), Status::Doing)
+        .await
+        .unwrap();
+
+    assert!(
+        !tree.join("backlog/16-epic.md").exists(),
+        "source file must be gone"
+    );
+    let moved = tree.join("doing/16-epic.md");
+    assert!(moved.exists(), "file must move into doing/");
+    let contents = std::fs::read_to_string(&moved).unwrap();
+    assert!(
+        contents.contains("status: IN PROGRESS"),
+        "front-matter status must be rewritten, got:\n{contents}"
+    );
+    assert!(
+        contents.contains("id: 16") && contents.contains("body"),
+        "rest of the file is preserved"
+    );
+
+    // And Done → done/ with COMPLETE.
+    store
+        .post_status(&id("item-16"), Status::Done)
+        .await
+        .unwrap();
+    assert!(tree.join("done/16-epic.md").exists());
+    assert!(std::fs::read_to_string(tree.join("done/16-epic.md"))
+        .unwrap()
+        .contains("status: COMPLETE"));
+}
+
+#[tokio::test]
+async fn post_status_without_tree_leaves_disk_untouched() {
+    // A non-tree store (single-file/test): post_status mutates memory only.
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    store
+        .ingest_roadmap("## [9] Nine\n> STATUS: PENDING\n")
+        .await
+        .unwrap();
+    // No roadmap_tree was recorded, so this must not error trying to move a file.
+    store
+        .post_status(&id("item-9"), Status::Doing)
+        .await
+        .unwrap();
+    let flow = store.snapshot().await;
+    assert_eq!(
+        flow.items_in_order()
+            .iter()
+            .find(|i| i.id == id("item-9"))
+            .unwrap()
+            .status,
+        Status::Doing
+    );
+}
+
+#[tokio::test]
+async fn ingest_roadmap_tree_absent_is_empty_not_error() {
+    let dir = tempdir();
+    let store = Store::open(&dir).await.unwrap();
+    let n = store
+        .ingest_roadmap_tree(std::path::Path::new("/no/such/tree/at/all"))
+        .await
+        .unwrap();
+    assert_eq!(n, 0);
+}
+
 fn tempdir() -> std::path::PathBuf {
     use std::sync::atomic::{AtomicU64, Ordering};
     static COUNTER: AtomicU64 = AtomicU64::new(0);
