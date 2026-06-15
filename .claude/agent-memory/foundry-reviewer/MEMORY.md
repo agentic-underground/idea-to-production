@@ -9,4 +9,5 @@
 - [Wiki-publisher asset exfil](project_wiki-publisher-exfil.md) — publish-wiki.sh guard blocklists http/abs/< but misses ../; blocklist-not-allowlist sanitiser class recurs marketplace-wide
 - [flow-server stdio transport](project_flow-server-stdio-transport.md) — --mcp stdio loop: LIVE risk is unbounded read_line (OOM); IO-disclosure/auth/traversal/injection already mitigated, don't re-flag
 - [flow-server tool-naming drift](project_flow-server-tool-naming-drift.md) — MCP gate tool is set_wait_go in code; EARS/README/feature docs wrongly call it set_gate (= store method); tests are right
+- [flow-server pin-parse robustness](project_flow-server-pin-parse.md) — launcher SHA256 pin-parser matches comment lines & takes $1 verbatim (no hex check) → expected='#'; loose-match class, NOT exec bypass; exec gate fails closed
 - [Pressroom knowledge scaffold](project_pressroom-knowledge-scaffold.md) — pressroom lacks foundry's knowledge/ tree; foundry-copied handlers import broken knowledge links; target covenant→pressroom/knowledge/covenant.md; CI Check I skips ${CLAUDE_PLUGIN_ROOT} refs so they pass CI yet break at runtime

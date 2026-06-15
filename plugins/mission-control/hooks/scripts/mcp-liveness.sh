@@ -66,11 +66,17 @@ fi
 hook_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 servers=""   # accumulates "name\tcommand" lines
 
-collect_from_mcp_json() {  # $1 = a .mcp.json path
-  local f="$1"
+collect_from_mcp_json() {  # $1 = a .mcp.json path; $2 = plugin root for ${CLAUDE_PLUGIN_ROOT}
+  local f="$1" root="${2:-}"
   [ -f "$f" ] || return 0
   jq -e . "$f" >/dev/null 2>&1 || return 0
-  jq -r '(.mcpServers // {}) | to_entries[] | "\(.key)\t\(.value.command // "")"' "$f" 2>/dev/null || true
+  # Expand ${CLAUDE_PLUGIN_ROOT} (a plugin's own path — the only var shipped configs use) so a
+  # resident-path launcher resolves to a real file the probe can stat. An unknown root stays literal
+  # (the probe then declines rather than false-flagging it dead).
+  jq -r --arg root "$root" '
+    (.mcpServers // {}) | to_entries[]
+    | "\(.key)\t\((.value.command // "") | gsub("\\$\\{CLAUDE_PLUGIN_ROOT\\}"; $root))"
+  ' "$f" 2>/dev/null || true
 }
 
 # Source A — climb from the hook dir looking for a plugins/ dir, then read every sibling .mcp.json.
@@ -83,7 +89,7 @@ for _ in 1 2 3 4 5 6; do
 done
 if [ -n "$plugins_root" ]; then
   for f in "$plugins_root"/*/.mcp.json; do
-    [ -f "$f" ] && servers="$servers$(collect_from_mcp_json "$f")
+    [ -f "$f" ] && servers="$servers$(collect_from_mcp_json "$f" "$(dirname "$f")")
 "
   done
 fi
@@ -102,9 +108,17 @@ fi
 # ── 5. Probe each (unique) server's launcher: bounded, non-destructive ───────────────────
 TIMEOUT=""; command -v timeout >/dev/null 2>&1 && TIMEOUT="timeout 8"
 
-probe_command() {  # $1 = launch command (npx|uvx|node|python|…) → 0 live, 1 dead, 2 undecidable
+probe_command() {  # $1 = launch command (npx|uvx|node|python|… or a resident path) → 0 live, 1 dead, 2 undecidable
   local launcher="$1"
   [ -n "$launcher" ] || return 2
+  # A resident-path launcher (a plugin-shipped script/binary, e.g. flow-server's
+  # ${CLAUDE_PLUGIN_ROOT}/.../flow-server-mcp) is checked as a FILE, not via PATH lookup.
+  case "$launcher" in
+    *'${'*) return 2 ;;                         # an unresolved variable → can't decide, stay silent
+    */*)
+      [ -x "$launcher" ] && return 0            # present + executable → launcher reachable
+      return 1 ;;                                # missing / not executable → DEAD
+  esac
   # The runner itself must be on PATH; if it isn't, the server cannot start → DEAD.
   command -v "$launcher" >/dev/null 2>&1 || return 1
   # Confirm the runner answers a trivial, NON-DESTRUCTIVE, network-free flag under a timeout.

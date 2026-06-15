@@ -1,0 +1,126 @@
+#!/usr/bin/env bash
+# flow-server-mcp — the MCP launcher the mission-control plugin registers (see the
+# plugin-root .mcp.json). It obtains the flow-server binary WITHOUT requiring a Rust
+# toolchain on the destination machine, then execs it (the plugin passes `--mcp`).
+#
+# Resolution ladder (first that succeeds wins):
+#   1. CACHED   — a previously-retrieved binary under the cache dir whose SHA256 still
+#                 matches the pinned sum.
+#   2. RETRIEVE — download the prebuilt release asset for this platform from GitHub
+#                 Releases, VERIFY it against the pinned SHA256 (SHA256SUMS), cache, exec.
+#   3. BUILD    — DEV fallback only: if cargo is present and the source is alongside,
+#                 build --release from source. (A contributor's machine; never required
+#                 on a destination.)
+#   4. ERROR    — none worked: print an actionable message and exit non-zero.
+#
+# SECURITY: a retrieved binary is run ONLY if its SHA256 matches the pinned sum committed
+# in this directory's SHA256SUMS. A mismatch is refused (never executed) and falls through
+# to the build fallback. This mirrors the marketplace's pinned-release discipline (the npx
+# servers pin @<version>; verify.yml installs gitleaks from a pinned release).
+set -uo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# CLAUDE_PLUGIN_ROOT (set by the harness for plugin surfaces) = the mission-control plugin
+# root; else derive it (this script lives at <plugin>/flow-server/bin/flow-server-mcp).
+PLUGIN="${CLAUDE_PLUGIN_ROOT:-$(dirname "$(dirname "$SCRIPT_DIR")")}"
+FS_DIR="$PLUGIN/flow-server"
+REPO="agentic-underground/idea-to-production"
+RELEASE_TAG="$(tr -d '[:space:]' < "$SCRIPT_DIR/RELEASE" 2>/dev/null || true)"
+SUMS_FILE="$SCRIPT_DIR/SHA256SUMS"
+
+log() { printf 'flow-server-mcp: %s\n' "$*" >&2; }
+
+# uname → the Rust target triple used in release asset names.
+target_triple() {
+  local os arch
+  case "$(uname -s 2>/dev/null)" in
+    Linux)                os="unknown-linux-gnu" ;;
+    Darwin)               os="apple-darwin" ;;
+    MINGW*|MSYS*|CYGWIN*) os="pc-windows-msvc" ;;
+    *) return 1 ;;
+  esac
+  case "$(uname -m 2>/dev/null)" in
+    x86_64|amd64)  arch="x86_64" ;;
+    arm64|aarch64) arch="aarch64" ;;
+    *) return 1 ;;
+  esac
+  printf '%s-%s' "$arch" "$os"
+}
+
+sha256_of() {  # <file> → lowercase hex digest (or non-zero if no tool)
+  if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | awk '{print $1}'
+  elif command -v shasum >/dev/null 2>&1; then shasum -a 256 "$1" | awk '{print $1}'
+  else return 1; fi
+}
+
+pinned_sum_for() {  # <asset> → the committed 64-hex SHA256 for that asset, if any
+  [ -f "$SUMS_FILE" ] || return 0
+  # Skip comment/blank lines and accept ONLY a well-formed 64-hex digest — a security-critical
+  # pin parser must reject a malformed pin (e.g. a '#' from an example comment line), never
+  # return it as if it were a checksum.
+  awk -v a="$1" '
+    /^[[:space:]]*#/ || /^[[:space:]]*$/ { next }
+    ($2==a || $2=="*"a) && $1 ~ /^[0-9a-fA-F]{64}$/ { print $1; exit }
+  ' "$SUMS_FILE" 2>/dev/null || true
+}
+
+# Print a verified binary path, or fail (→ build fallback). Never execs an unverified file.
+retrieve() {
+  local triple ext asset cache bin expected url tmp got
+  triple="$(target_triple)" || return 1
+  ext=""; case "$triple" in *windows*) ext=".exe" ;; esac
+  # The tag is in the download URL path; the asset name only carries the platform.
+  asset="flow-server-${triple}${ext}"
+  cache="${XDG_CACHE_HOME:-$HOME/.claude}/flow-server/${RELEASE_TAG:-unpinned}"
+  bin="$cache/flow-server${ext}"
+  expected="$(pinned_sum_for "$asset")"
+
+  # Cached and still matching the pin? Use it (no network).
+  if [ -n "$expected" ] && [ -x "$bin" ]; then
+    got="$(sha256_of "$bin" 2>/dev/null || true)"
+    [ "$got" = "$expected" ] && { printf '%s' "$bin"; return 0; }
+  fi
+
+  # Can only retrieve safely with both a pinned tag and a pinned checksum.
+  [ -n "$RELEASE_TAG" ] && [ -n "$expected" ] || return 1
+  command -v curl >/dev/null 2>&1 || return 1
+
+  url="https://github.com/${REPO}/releases/download/${RELEASE_TAG}/${asset}"
+  mkdir -p "$cache" 2>/dev/null || return 1
+  tmp="$cache/.dl.$$"
+  log "retrieving ${asset} from the ${RELEASE_TAG} release…"
+  curl -fsSL "$url" -o "$tmp" 2>/dev/null || { rm -f "$tmp"; return 1; }
+  got="$(sha256_of "$tmp" 2>/dev/null || true)"
+  if [ "$got" != "$expected" ]; then
+    rm -f "$tmp"
+    log "REFUSING ${asset}: SHA256 mismatch (pinned ${expected:-∅}, got ${got:-∅})."
+    return 1
+  fi
+  chmod +x "$tmp" 2>/dev/null || true
+  mv -f "$tmp" "$bin" 2>/dev/null || { rm -f "$tmp"; return 1; }
+  printf '%s' "$bin"
+}
+
+# DEV fallback: build from the source shipped beside this launcher. Requires cargo.
+build_from_source() {
+  command -v cargo >/dev/null 2>&1 || return 1
+  [ -f "$FS_DIR/Cargo.toml" ] || return 1
+  log "no verified release binary for this platform; building from source with cargo (dev fallback)…"
+  cargo build --release --manifest-path "$FS_DIR/Cargo.toml" --bin flow-server >&2 || return 1
+  printf '%s' "$FS_DIR/target/release/flow-server"
+}
+
+main() {
+  local bin=""
+  if bin="$(retrieve)" && [ -n "$bin" ]; then :
+  elif bin="$(build_from_source)" && [ -n "$bin" ]; then :
+  else
+    log "could not obtain the flow-server binary for this platform ($(uname -sm 2>/dev/null))."
+    log "expected a pinned release at https://github.com/${REPO}/releases/tag/${RELEASE_TAG:-<unset>},"
+    log "or a Rust toolchain (https://rustup.rs) for the source-build fallback."
+    exit 1
+  fi
+  exec "$bin" "$@"
+}
+
+main "$@"

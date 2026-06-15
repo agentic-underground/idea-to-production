@@ -1,0 +1,113 @@
+name: flow-server release
+
+# Build the flow-server MCP binary for every supported platform and publish it as a
+# GitHub Release with a SHA256SUMS manifest. The plugin launcher
+# (plugins/mission-control/flow-server/bin/flow-server-mcp) retrieves the matching asset
+# and verifies it against the pinned SHA256 — so a destination machine runs the server
+# WITHOUT a Rust toolchain. Cut a release by pushing a tag:  git tag flow-server-v0.1.0 && git push --tags
+# After the release exists, copy the published SHA256SUMS into
+# plugins/mission-control/flow-server/bin/SHA256SUMS and commit, to activate verified retrieval.
+
+on:
+  push:
+    tags: ['flow-server-v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to build/publish (e.g. flow-server-v0.1.0)'
+        required: true
+
+# Least privilege: only the release job needs the write token; the build jobs
+# (rustup/cargo/cross) get read-only.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    # The build steps run inside the crate; bash on every OS (incl. windows-latest).
+    defaults:
+      run:
+        shell: bash
+        working-directory: plugins/mission-control/flow-server
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest,  target: x86_64-unknown-linux-gnu,  cross: true  }
+          - { os: ubuntu-latest,  target: aarch64-unknown-linux-gnu, cross: true  }
+          - { os: macos-latest,   target: x86_64-apple-darwin,       cross: false }
+          - { os: macos-latest,   target: aarch64-apple-darwin,      cross: false }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc,    cross: false }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        run: |
+          rustup update stable --no-self-update
+          rustup target add ${{ matrix.target }}
+
+      - name: Install cross (Linux targets)
+        if: matrix.cross
+        run: cargo install cross --locked --version 0.2.5
+
+      - name: Build (release)
+        run: |
+          if [ "${{ matrix.cross }}" = "true" ]; then
+            cross build --release --locked --target ${{ matrix.target }} --bin flow-server
+          else
+            cargo build --release --locked --target ${{ matrix.target }} --bin flow-server
+          fi
+
+      - name: Package asset + checksum
+        run: |
+          ext=""; case "${{ matrix.target }}" in *windows*) ext=".exe" ;; esac
+          asset="flow-server-${{ matrix.target }}${ext}"
+          cp "target/${{ matrix.target }}/release/flow-server${ext}" "$asset"
+          if command -v sha256sum >/dev/null 2>&1; then sha256sum "$asset" > "$asset.sha256"
+          else shasum -a 256 "$asset" > "$asset.sha256"; fi
+          cat "$asset.sha256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flow-server-${{ matrix.target }}
+          path: |
+            plugins/mission-control/flow-server/flow-server-${{ matrix.target }}*
+          if-no-files-found: error
+
+  release:
+    name: publish release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # only this job creates the release + uploads assets
+    # No working-directory default here: the `dist` steps below resolve `dist`
+    # against the workspace root (where download-artifact writes it).
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Assemble SHA256SUMS
+        working-directory: dist
+        run: |
+          cat ./*.sha256 > SHA256SUMS
+          echo "── SHA256SUMS ──"; cat SHA256SUMS
+
+      - name: Publish GitHub Release
+        working-directory: dist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
+          # Upload every platform binary + the aggregate SHA256SUMS (the per-file .sha256 are folded in).
+          assets=(SHA256SUMS); for f in flow-server-*; do case "$f" in *.sha256) ;; *) assets+=("$f") ;; esac; done
+          gh release create "$tag" \
+            --repo "${{ github.repository }}" \
+            --title "$tag" \
+            --notes "flow-server MCP binary for the mission-control plugin. The plugin launcher retrieves the asset for its platform and verifies it against SHA256SUMS. Copy SHA256SUMS into plugins/mission-control/flow-server/bin/SHA256SUMS to activate verified retrieval." \
+            "${assets[@]}"

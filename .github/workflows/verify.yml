@@ -57,6 +57,24 @@ jobs:
       - name: Scan tree + git history for committed secrets
         run: gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
 
+  # The retrieved-artifact contract: spawn the flow-server MCP launcher exactly as the
+  # mission-control plugin's .mcp.json registers it, and assert the JSON-RPC handshake
+  # completes. Builds the binary first so the launcher's source-build fallback is a fast
+  # no-op; the smoke then drives `initialize` + `tools/list` through the shipped launcher.
+  # This is the test two PR reviewers asked for — it mechanically catches a committed MCP
+  # command that can't start (the gitignored-binary regression class).
+  flow-server-mcp-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        run: rustup update stable --no-self-update
+      - name: Build flow-server (release)
+        working-directory: plugins/mission-control/flow-server
+        run: cargo build --release --locked --bin flow-server
+      - name: MCP handshake smoke (spawn the shipped launcher)
+        run: bash plugins/mission-control/flow-server/bin/smoke-mcp.sh
+
   # Cobbler's children (P2-18): the marketplace runs MISSION-CONTROL's own OBSERVABILITY
   # lens on ITSELF. This is the HEALTH slice of the same self-observation substrate whose
   # SECURITY slice is the secret-scan-self job above — together they dogfood the two lenses

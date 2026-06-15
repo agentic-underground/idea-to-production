@@ -56,25 +56,35 @@ truth is the roadmap markdown + the append-only JSONL log; the UI is a view.
 ## MCP registration (stdio transport)
 
 The flow-server speaks the [MCP stdio transport](https://modelcontextprotocol.io/docs/concepts/transports)
-when started with `--mcp`. This repo's `.claude/settings.json` registers it so the tools
-(`list_items`, `render_roadmap`, `post_status`, `set_wait_go`, `append_spend`) appear automatically
-in every Claude Code session opened from the repo root.
+when started with `--mcp`. The **mission-control plugin registers it itself** — `../.mcp.json` declares
+the `flow-server` server, so its tools (`list_items`, `render_roadmap`, `post_status`, `set_wait_go`,
+`append_spend`, …) surface as `mcp__flow-server__*` in any session where the plugin is enabled, with no
+project-level `.claude/settings.json` entry. (Like every plugin MCP server, it is approval-gated under
+default permissions — `claude mcp list` shows it `⏸ Pending approval` until you approve it.)
 
-**First run** — `cargo run` will compile the binary on first invocation (30-60 seconds). Subsequent
-calls reuse the compiled artifact.
+### No Rust toolchain required — the launcher retrieves a prebuilt binary
 
-**Production mode** (faster startup after `cargo build --release`):
-Update the `args` in `.claude/settings.json` to point at the compiled binary:
-```json
-{
-  "mcpServers": {
-    "flow-server": {
-      "command": "plugins/mission-control/flow-server/target/release/flow-server",
-      "args": ["--mcp"]
-    }
-  }
-}
+The registered command is the launcher [`bin/flow-server-mcp`](bin/flow-server-mcp), not `cargo`. It
+obtains the binary by this ladder and execs it:
+
+1. **Cached** — a previously-retrieved binary whose SHA256 still matches the pin.
+2. **Retrieve** — download this platform's asset from the [GitHub Release](https://github.com/agentic-underground/idea-to-production/releases)
+   named in [`bin/RELEASE`](bin/RELEASE) and **verify it against the pinned SHA256** in
+   [`bin/SHA256SUMS`](bin/SHA256SUMS) (a mismatch is refused, never run). No compiler needed.
+3. **Build** — *dev fallback only*: if `cargo` is present and the source is alongside, `cargo build
+   --release`. A contributor's machine; never required on a destination.
+
+**Cutting a release** (publishes the prebuilt binaries the launcher retrieves):
+
+```sh
+git tag flow-server-v0.1.0 && git push origin flow-server-v0.1.0   # → .github/workflows/flow-server-release.yml
 ```
+
+The workflow cross-builds for linux/macOS/Windows (x86_64 + arm64), publishes each as a Release asset,
+and emits a `SHA256SUMS`. Copy that `SHA256SUMS` into [`bin/SHA256SUMS`](bin/SHA256SUMS) and commit to
+activate verified retrieval; until then the launcher uses the source-build fallback (so the dev repo
+keeps working). The `flow-server-mcp-smoke` job in `.github/workflows/verify.yml` spawns the launcher on
+every PR and asserts the handshake completes.
 
 The binary reads `.flow/` from the **current working directory** when invoked by the MCP harness.
 Run Claude Code from the repo root so the store path resolves correctly.

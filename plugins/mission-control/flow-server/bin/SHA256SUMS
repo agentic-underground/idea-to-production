@@ -1,0 +1,9 @@
+# SHA256SUMS — pinned checksums for the flow-server release assets named in RELEASE.
+# Format: "<sha256>  <asset>" (sha256sum / shasum -a 256 output), one asset per platform.
+# POPULATED WHEN A RELEASE IS CUT: the flow-server-release CI workflow builds each asset and
+# emits a SHA256SUMS file as a release artifact; copy its lines here and commit, then the
+# launcher (flow-server-mcp) retrieves + verifies instead of falling back to a source build.
+# Asset name: flow-server-<target-triple>[.exe], e.g.
+#   flow-server-x86_64-unknown-linux-gnu
+#   flow-server-aarch64-apple-darwin
+#   flow-server-x86_64-pc-windows-msvc.exe
