@@ -46,6 +46,12 @@ struct Inner {
     doc_dir: PathBuf,
     /// Fallback per-item annotations ledger dir, used when no plan doc exists.
     annotations_dir: PathBuf,
+    /// The `.i2p/roadmap/` tree root, set when the board was ingested from the
+    /// file-per-item tree (roadmap [42]). When `Some`, `post_status` writes the
+    /// status change back to the tree (move the item file + update its front-matter)
+    /// so the tree stays the single source of truth. `None` for legacy single-file
+    /// or test stores — write-back is then skipped (in-memory only, unchanged).
+    roadmap_tree: Option<PathBuf>,
 }
 
 /// The serialized flow-state writer.
@@ -90,6 +96,7 @@ impl Store {
                 gates_path,
                 doc_dir,
                 annotations_dir,
+                roadmap_tree: None,
             }),
             tx,
         };
@@ -209,10 +216,28 @@ impl Store {
         }
     }
 
-    /// Advance an item's carriage status (refused while WAIT).
+    /// Advance an item's carriage status (refused while WAIT). When the board was
+    /// ingested from the `.i2p/roadmap/` tree, the change is written back to the
+    /// tree (item file moved to the target folder, `status:` front-matter updated)
+    /// before the in-memory commit, so the tree stays the single source of truth.
     pub async fn post_status(&self, id: &ItemId, status: Status) -> Result<(), StoreError> {
         let mut guard = self.inner.lock().await;
+        // Capture the prior status so a failed tree write can be rolled back.
+        let prior = guard.flow.get(id).map(|i| i.status);
         guard.flow.advance_status(id, status)?;
+        if let Some(tree) = guard.roadmap_tree.clone() {
+            // The tree is the source of truth: if the file move/rewrite fails, REJECT the
+            // change and roll the in-memory status back, so memory matches the unchanged
+            // tree (no silent divergence). On a successful tree write the change is durable
+            // — the JSONL below is a runtime event stream, and on restart the tree is
+            // re-ingested and wins, so a rare post-write commit failure self-heals.
+            if let Err(e) = write_status_to_tree(&tree, id, status).await {
+                if let Some(prev) = prior {
+                    let _ = guard.flow.advance_status(id, prev);
+                }
+                return Err(e);
+            }
+        }
         let ev = Event::StatusPosted {
             id: id.clone(),
             status,
@@ -396,10 +421,34 @@ impl Store {
     pub async fn ingest_roadmap(&self, md: &str) -> Result<usize, StoreError> {
         let roadmap = crate::history::parse_roadmap(md);
         let mut guard = self.inner.lock().await;
+        self.apply_roadmap(&mut guard, roadmap).await
+    }
+
+    /// Ingest the `.i2p/roadmap/` file-per-item tree at `tree_dir` (roadmap [42]):
+    /// the folder is the status (`backlog`/`do` → Do, `doing` → Doing, `done` →
+    /// Done). Records `tree_dir` as the write-back root so `post_status` moves the
+    /// item file between folders, then applies the loaded items/edges through the
+    /// same path as the single-file ingest. An absent tree loads zero items (no
+    /// error), per the EARS unwanted-behaviour clause. Returns the items loaded.
+    pub async fn ingest_roadmap_tree(&self, tree_dir: &Path) -> Result<usize, StoreError> {
+        let roadmap = crate::history::load_roadmap_tree(tree_dir);
+        let mut guard = self.inner.lock().await;
+        guard.roadmap_tree = Some(tree_dir.to_path_buf());
+        self.apply_roadmap(&mut guard, roadmap).await
+    }
+
+    /// Apply a parsed [`Roadmap`](crate::history::Roadmap) (items + edges) to the
+    /// in-memory flow and journal it through the one serialized writer — the shared
+    /// core of both `ingest_roadmap` (single file) and `ingest_roadmap_tree`.
+    async fn apply_roadmap(
+        &self,
+        guard: &mut Inner,
+        roadmap: crate::history::Roadmap,
+    ) -> Result<usize, StoreError> {
         // Apply every mutation to the in-memory flow first, collecting the events
         // to journal; then commit them all through the one serialized writer. A
         // graph-refused edge (cycle/unknown) is skipped before it produces an event
-        // — the markdown is authoritative, a malformed dep must not abort ingest.
+        // — the roadmap is authoritative, a malformed dep must not abort ingest.
         let mut events: Vec<Event> = Vec::new();
         for item in &roadmap.items {
             guard.flow.upsert_item(Item::new(
@@ -436,7 +485,7 @@ impl Store {
         // One commit site for the whole batch: the first faulting append
         // short-circuits the ingest with that write error.
         for ev in events {
-            self.commit(&mut guard, ev).await?;
+            self.commit(guard, ev).await?;
         }
         Ok(loaded)
     }
@@ -554,6 +603,132 @@ fn edge_applied(result: Result<(), GraphError>) -> bool {
 /// freshly-upserted item is GO.
 fn set_status_in_flow(flow: &mut Flow, id: &ItemId, status: Status) {
     let _ = flow.advance_status(id, status);
+}
+
+// ── .i2p/roadmap/ tree write-back (roadmap [42]) ─────────────────────────────
+
+/// The tree folder a board [`Status`] writes back into. `Do` lands in `do/` (the
+/// groomed/ready lane); moving an item back to Do from `backlog/` is a grooming
+/// transition owned by the writer here, not a separate verb.
+fn tree_folder(status: Status) -> &'static str {
+    match status {
+        Status::Do => "do",
+        Status::Doing => "doing",
+        Status::Done => "done",
+    }
+}
+
+/// The canonical `status:` front-matter label for a board [`Status`].
+fn tree_status_label(status: Status) -> &'static str {
+    match status {
+        Status::Do => "PENDING",
+        Status::Doing => "IN PROGRESS",
+        Status::Done => "COMPLETE",
+    }
+}
+
+/// Replace the first `status:` line inside the leading `---`…`---` front-matter
+/// with `status: <label>`, preserving indentation. Contents without a
+/// front-matter `status:` line are returned unchanged. Pure.
+fn rewrite_status_front_matter(contents: &str, label: &str) -> String {
+    let mut out = String::with_capacity(contents.len() + label.len());
+    let mut in_fm = false;
+    let mut replaced = false;
+    for (i, line) in contents.lines().enumerate() {
+        let trimmed = line.trim();
+        if i == 0 && trimmed == "---" {
+            in_fm = true;
+            out.push_str(line);
+            out.push('\n');
+            continue;
+        }
+        if in_fm && trimmed == "---" {
+            in_fm = false;
+            out.push_str(line);
+            out.push('\n');
+            continue;
+        }
+        if in_fm && !replaced && trimmed.starts_with("status:") {
+            let indent = &line[..line.len() - line.trim_start().len()];
+            out.push_str(indent);
+            out.push_str("status: ");
+            out.push_str(label);
+            out.push('\n');
+            replaced = true;
+            continue;
+        }
+        out.push_str(line);
+        out.push('\n');
+    }
+    out
+}
+
+/// Move the tree file for `id` into the folder for `status`, updating its
+/// `status:` front-matter. Finds the file by matching the numeric id in each
+/// folder's front-matter; a no-op if the item has no file in the tree (e.g. a
+/// synthesized item). Atomic-per-file: write a temp in the destination folder,
+/// rename it into place, then remove the old file.
+async fn write_status_to_tree(tree: &Path, id: &ItemId, status: Status) -> Result<(), StoreError> {
+    // The flow id is the slug `item-N`; the tree front-matter `id:` is `N`.
+    let num = id.as_str().strip_prefix("item-").unwrap_or(id.as_str());
+    let dest_folder = tree_folder(status);
+    let label = tree_status_label(status);
+
+    // Collect EVERY file whose front-matter id matches, in TREE_FOLDERS order. The
+    // loader (`history::load_roadmap_tree`) resolves a duplicate id last-folder-wins, so
+    // the writer agrees by operating on the LAST match — and warns when there is more than
+    // one, surfacing the malformed tree rather than silently moving one and abandoning the
+    // rest (which would leave the loader and the tree disagreeing).
+    let mut matches: Vec<(PathBuf, String)> = Vec::new();
+    for folder in crate::history::TREE_FOLDERS {
+        let mut rd = match tokio::fs::read_dir(tree.join(folder)).await {
+            Ok(r) => r,
+            Err(_) => continue, // missing folder
+        };
+        while let Some(entry) = rd.next_entry().await? {
+            let path = entry.path();
+            if path.extension().and_then(|x| x.to_str()) != Some("md") {
+                continue;
+            }
+            let Ok(contents) = tokio::fs::read_to_string(&path).await else {
+                continue;
+            };
+            if crate::history::parse_front_matter(&contents)
+                .get("id")
+                .map(String::as_str)
+                == Some(num)
+            {
+                matches.push((path, contents));
+            }
+        }
+    }
+
+    let Some((path, contents)) = matches.pop() else {
+        return Ok(()); // no tree file for this id → nothing to write back
+    };
+    if !matches.is_empty() {
+        eprintln!(
+            "flow-server: WARNING — {} files share roadmap id {num}; moving the last (the \
+             loader's authoritative copy) and leaving the rest. Fix the duplicate.",
+            matches.len() + 1
+        );
+    }
+
+    // Rewrite the status and place the file in dest_folder atomically (tmp + rename).
+    let Some(file_name) = path.file_name().map(ToOwned::to_owned) else {
+        return Ok(());
+    };
+    let updated = rewrite_status_front_matter(&contents, label);
+    let dest_dir = tree.join(dest_folder);
+    tokio::fs::create_dir_all(&dest_dir).await?;
+    let dest = dest_dir.join(&file_name);
+    let tmp = dest_dir.join(format!(".{}.tmp", file_name.to_string_lossy()));
+    tokio::fs::write(&tmp, updated.as_bytes()).await?;
+    tokio::fs::rename(&tmp, &dest).await?;
+    if path != dest {
+        let _ = tokio::fs::remove_file(&path).await;
+    }
+    Ok(())
 }
 
 /// Append one JSONL line (plus a newline, flushed) to the log file. The open `?`

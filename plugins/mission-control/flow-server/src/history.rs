@@ -18,12 +18,14 @@
 //! [`Flow`] constructors and handles any [`GraphError`](crate::domain::GraphError).
 //!
 //! The parsers take `&str` and return domain values — **no IO** — so they are
-//! exhaustively testable from string fixtures. The only impure parts are the
-//! thin [`read_roadmap_file`] / [`run_git_log`] helpers, which read a file or
-//! shell `git log` and feed the pure parsers.
+//! exhaustively testable from string fixtures. The impure parts are the thin
+//! [`read_roadmap_file`] / [`run_git_log`] helpers (read a file / shell `git log`)
+//! and [`load_roadmap_tree`] (roadmap [42]) — which enumerates the `.i2p/roadmap/`
+//! tree's directories and delegates per-file parsing to the pure [`parse_item_file`].
 
+use std::collections::BTreeMap;
 use std::io;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use crate::domain::{Edge, Item, ItemId, Status};
@@ -120,6 +122,135 @@ pub fn parse_roadmap(md: &str) -> Roadmap {
         }
     }
 
+    let edges = resolve_edges(&items, raw_edges);
+    Roadmap { items, edges }
+}
+
+// ── .i2p/roadmap/ tree ingest (roadmap item [42]) ────────────────────────────
+// The marketplace's authoritative roadmap is a file-per-item tree where the
+// FOLDER is the status (`backlog`/`do` → Do, `doing` → Doing, `done` → Done) and
+// each `.md` carries YAML front-matter. We read it WITHOUT a YAML dependency: the
+// fields are flat `key: value` lines, so a minimal hand-rolled reader (matching
+// this crate's self-contained ethos) extracts `id`/`title`/`status`/`depends_on`.
+
+/// The four status folders of the tree, in display order (folder name → status).
+pub const TREE_FOLDERS: [&str; 4] = ["backlog", "do", "doing", "done"];
+
+/// Map a tree folder name onto a board [`Status`]. `backlog` and `do` are both
+/// pre-`Doing` (Do); `doing`/`done` map directly. An unknown folder defaults to Do.
+pub fn status_for_folder(folder: &str) -> Status {
+    match folder {
+        "doing" => Status::Doing,
+        "done" => Status::Done,
+        _ => Status::Do,
+    }
+}
+
+/// Parse the leading `---`…`---` front-matter into `key → value` pairs (first
+/// fence pair only; values are unquoted scalars). Returns an empty map when the
+/// file does not open with a `---` fence. Pure: no IO.
+pub fn parse_front_matter(contents: &str) -> BTreeMap<String, String> {
+    let mut map = BTreeMap::new();
+    // Tolerate a leading UTF-8 BOM so an editor-saved file isn't silently dropped.
+    let mut lines = contents.trim_start_matches('\u{feff}').lines();
+    if lines.next().map(str::trim) != Some("---") {
+        return map; // no front-matter block
+    }
+    for line in lines {
+        let trimmed = line.trim();
+        if trimmed == "---" {
+            break; // end of the front-matter block
+        }
+        if let Some((k, v)) = line.split_once(':') {
+            let key = k.trim().to_string();
+            let val = v
+                .trim()
+                .trim_matches(|c| c == '"' || c == '\'')
+                .trim()
+                .to_string();
+            if !key.is_empty() {
+                map.insert(key, val);
+            }
+        }
+    }
+    map
+}
+
+/// Parse a `depends_on` front-matter value (`"#1, #2"`, `"1 2"`, or a `—`/`-`
+/// placeholder) into dependency ids — numeric tokens only, deduplicated.
+fn dep_ids_from_front_matter(raw: &str) -> Vec<ItemId> {
+    let mut ids: Vec<ItemId> = Vec::new();
+    for tok in raw.split(|c: char| c == ',' || c.is_whitespace()) {
+        let t = tok.trim().trim_start_matches('#');
+        if t.is_empty() || !t.chars().all(|c| c.is_ascii_digit()) {
+            continue; // placeholder (— / -) or non-numeric → skip
+        }
+        if let Some(id) = item_id_for(t) {
+            if !ids.contains(&id) {
+                ids.push(id);
+            }
+        }
+    }
+    ids
+}
+
+/// Parse one tree item file (its `folder` sets the status) into an [`Item`] plus
+/// its declared dependency edges. `None` when there is no usable `id`. Pure: no IO.
+pub fn parse_item_file(folder: &str, contents: &str) -> Option<(Item, Vec<Edge>)> {
+    let fm = parse_front_matter(contents);
+    let id = item_id_for(fm.get("id")?)?;
+    let title = fm.get("title").cloned().unwrap_or_default();
+    let mut item = Item::new(id.clone(), &title, HISTORY_MODEL);
+    item.status = status_for_folder(folder);
+    let edges = fm
+        .get("depends_on")
+        .map(|d| {
+            dep_ids_from_front_matter(d)
+                .into_iter()
+                .map(|to| Edge {
+                    from: id.clone(),
+                    to,
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    Some((item, edges))
+}
+
+/// Load the `.i2p/roadmap/` tree at `tree_dir` into a faithful [`Roadmap`]:
+/// enumerate `{backlog,do,doing,done}/*.md`, parse each file's front-matter, and
+/// take the folder as the status. A missing folder is skipped; an absent tree
+/// yields an empty roadmap (never an error). Edges are resolved against the loaded
+/// set; cycle rejection stays the graph validator's job. The only IO is the
+/// directory reads — parsing is delegated to the pure [`parse_item_file`].
+pub fn load_roadmap_tree(tree_dir: &Path) -> Roadmap {
+    let mut items: Vec<Item> = Vec::new();
+    let mut raw_edges: Vec<Edge> = Vec::new();
+    for folder in TREE_FOLDERS {
+        let dir = tree_dir.join(folder);
+        let entries = match std::fs::read_dir(&dir) {
+            Ok(e) => e,
+            Err(_) => continue, // missing folder → skip
+        };
+        let mut paths: Vec<PathBuf> = entries
+            .filter_map(|e| e.ok().map(|e| e.path()))
+            .filter(|p| p.extension().and_then(|x| x.to_str()) == Some("md"))
+            .collect();
+        paths.sort(); // deterministic order (id-prefixed filenames sort sensibly)
+        for path in paths {
+            let Ok(contents) = std::fs::read_to_string(&path) else {
+                continue;
+            };
+            if let Some((item, edges)) = parse_item_file(folder, &contents) {
+                // Last file wins on a duplicate id (keeps its folder-derived status).
+                match items.iter().position(|i| i.id == item.id) {
+                    Some(idx) => items[idx] = item,
+                    None => items.push(item),
+                }
+                raw_edges.extend(edges);
+            }
+        }
+    }
     let edges = resolve_edges(&items, raw_edges);
     Roadmap { items, edges }
 }
@@ -726,5 +857,134 @@ docs(readme): explain the board
         // path, not an error.
         let items = run_git_log("/no/such/repo/dir/at/all");
         assert!(items.is_empty());
+    }
+
+    // ---- .i2p/roadmap/ tree ingest (roadmap [42]) ----------------------
+
+    fn tree_tempdir(tag: &str) -> PathBuf {
+        use std::sync::atomic::{AtomicU64, Ordering};
+        static N: AtomicU64 = AtomicU64::new(0);
+        let n = N.fetch_add(1, Ordering::Relaxed);
+        let dir = std::env::temp_dir().join(format!("flow-tree-{tag}-{}-{n}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        dir
+    }
+
+    fn write_item(root: &Path, folder: &str, name: &str, body: &str) {
+        let dir = root.join(folder);
+        std::fs::create_dir_all(&dir).unwrap();
+        std::fs::write(dir.join(name), body).unwrap();
+    }
+
+    #[test]
+    fn front_matter_parses_fields_and_strips_quotes() {
+        let fm = parse_front_matter(
+            "---\nid: 42\ntitle: \"A: colon title\"\nstatus: PENDING\n---\nbody\n",
+        );
+        assert_eq!(fm.get("id").map(String::as_str), Some("42"));
+        assert_eq!(fm.get("title").map(String::as_str), Some("A: colon title"));
+        assert_eq!(fm.get("status").map(String::as_str), Some("PENDING"));
+    }
+
+    #[test]
+    fn front_matter_absent_without_opening_fence() {
+        assert!(parse_front_matter("# heading\nid: 1\n").is_empty());
+    }
+
+    #[test]
+    fn status_for_folder_maps_each_lane() {
+        assert_eq!(status_for_folder("backlog"), Status::Do);
+        assert_eq!(status_for_folder("do"), Status::Do);
+        assert_eq!(status_for_folder("doing"), Status::Doing);
+        assert_eq!(status_for_folder("done"), Status::Done);
+        assert_eq!(status_for_folder("anything-else"), Status::Do);
+    }
+
+    #[test]
+    fn parse_item_file_uses_folder_status_and_hash_deps() {
+        let (item, edges) = parse_item_file(
+            "doing",
+            "---\nid: 7\ntitle: Seven\ndepends_on: \"#1, #3\"\n---\n",
+        )
+        .unwrap();
+        assert_eq!(item.id, iid("item-7"));
+        assert_eq!(item.title, "Seven");
+        assert_eq!(item.status, Status::Doing);
+        assert_eq!(
+            edges,
+            vec![
+                Edge {
+                    from: iid("item-7"),
+                    to: iid("item-1")
+                },
+                Edge {
+                    from: iid("item-7"),
+                    to: iid("item-3")
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn parse_item_file_dash_placeholder_yields_no_edges() {
+        let (_item, edges) = parse_item_file(
+            "backlog",
+            "---\nid: 2\ntitle: Two\ndepends_on: \"—\"\n---\n",
+        )
+        .unwrap();
+        assert!(edges.is_empty());
+    }
+
+    #[test]
+    fn parse_item_file_none_without_id() {
+        assert!(parse_item_file("backlog", "---\ntitle: No id\n---\n").is_none());
+    }
+
+    #[test]
+    fn load_roadmap_tree_groups_items_by_folder_and_resolves_edges() {
+        let root = tree_tempdir("load");
+        write_item(
+            &root,
+            "backlog",
+            "16-epic.md",
+            "---\nid: 16\ntitle: Epic\ndepends_on: \"—\"\n---\n",
+        );
+        write_item(
+            &root,
+            "doing",
+            "42-tree.md",
+            "---\nid: 42\ntitle: Tree\ndepends_on: \"#16\"\n---\n",
+        );
+        write_item(
+            &root,
+            "done",
+            "01-first.md",
+            "---\nid: 1\ntitle: First\n---\n",
+        );
+        // non-.md and a missing `do/` folder are tolerated.
+        std::fs::write(root.join("backlog").join("notes.txt"), "ignore me").unwrap();
+
+        let rm = load_roadmap_tree(&root);
+        assert_eq!(rm.items.len(), 3);
+        let status_of = |id: &str| rm.get(&iid(id)).unwrap().status;
+        assert_eq!(status_of("item-16"), Status::Do);
+        assert_eq!(status_of("item-42"), Status::Doing);
+        assert_eq!(status_of("item-1"), Status::Done);
+        // The `#16` dep resolves (both endpoints known).
+        assert_eq!(
+            rm.edges,
+            vec![Edge {
+                from: iid("item-42"),
+                to: iid("item-16")
+            }]
+        );
+        std::fs::remove_dir_all(&root).unwrap();
+    }
+
+    #[test]
+    fn load_roadmap_tree_absent_is_empty_not_error() {
+        let rm = load_roadmap_tree(Path::new("/no/such/roadmap/tree/anywhere"));
+        assert!(rm.items.is_empty() && rm.edges.is_empty());
     }
 }

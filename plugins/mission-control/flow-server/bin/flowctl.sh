@@ -40,7 +40,9 @@ resolve_roadmap() {
     local pinned; pinned="$(cat "$FLOW/roadmap" 2>/dev/null)"
     [ -f "$pinned" ] && { printf '%s' "$pinned"; return 0; }
   fi
-  # 3. the conventional locations
+  # 3. the .i2p/roadmap/ file-per-item tree — the authoritative source (roadmap [42]).
+  [ -d "$PROJECT/.i2p/roadmap" ] && { printf '%s' "$PROJECT/.i2p/roadmap"; return 0; }
+  # 4. legacy single-file conventional locations.
   local c
   for c in "ROADMAP.md" "doc/ROADMAP.md" "docs/ROADMAP.md"; do
     [ -f "$PROJECT/$c" ] && { printf '%s' "$PROJECT/$c"; return 0; }
@@ -50,6 +52,12 @@ resolve_roadmap() {
 
 item_count() {
   local f="$1"
+  # A tree source: count item .md files across the status folders.
+  if [ -n "$f" ] && [ -d "$f" ]; then
+    find "$f/backlog" "$f/do" "$f/doing" "$f/done" -maxdepth 1 -name '*.md' 2>/dev/null | wc -l | tr -d ' '
+    return 0
+  fi
+  # A legacy single file: count `## [N]` headings.
   [ -n "$f" ] && [ -f "$f" ] && grep -c '^## \[' "$f" 2>/dev/null || printf '0'
 }
 
