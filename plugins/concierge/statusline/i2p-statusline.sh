@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# i2p-statusline-version: 2
+# i2p-statusline-version: 3
 # idea-to-production rich status line — two-line layout, wide gauges, caught widget.
 # Reads JSON from stdin, renders a two-line ANSI status bar.
 # Never exits non-zero; all fields degrade gracefully when absent.
@@ -21,6 +21,28 @@ input=$(cat)
 # ---------------------------------------------------------------------------
 _jq_ok=''
 command -v jq >/dev/null 2>&1 && _jq_ok=1
+
+# ---------------------------------------------------------------------------
+# Per-segment visibility config — each segment can be turned OFF without
+# touching the renderer. Source order (later wins):
+#   1. defaults (every segment ON)
+#   2. $CLAUDE_I2P_STATUSLINE_CONF, else ~/.claude/i2p-statusline.conf
+# Conf format: one `key=0` (hide) or `key=1` (show) per line; `#` comments ok.
+# Keys: cwd branch repo pr model version style effort context rate_5h rate_7d
+#       lifecycle session_cost lifecycle_cost catches session_meta vim
+# Configure via /concierge:statusline. Unknown/absent keys default to ON, so
+# an empty or missing conf reproduces the original always-on behaviour.
+# ---------------------------------------------------------------------------
+declare -A SEG 2>/dev/null || SEG=()
+_seg_conf="${CLAUDE_I2P_STATUSLINE_CONF:-$HOME/.claude/i2p-statusline.conf}"
+if [ -r "$_seg_conf" ]; then
+  while IFS='=' read -r _k _v; do
+    _k="${_k//[[:space:]]/}"; _v="${_v//[[:space:]]/}"
+    case "$_k" in ''|\#*) continue ;; esac
+    SEG["$_k"]="$_v"
+  done < "$_seg_conf"
+fi
+seg_on() { [ "${SEG[$1]:-1}" != "0" ]; }
 
 jget() {
   if [ -n "$_jq_ok" ]; then
@@ -335,28 +357,28 @@ lifecycle_cost_widget() {
 
 printf "${BOLD}${FG_BGREEN}%s${R}${DIM}@${R}${FG_GREEN}%s${R}" "$user" "$host"
 
-if [ -n "$cwd" ]; then
+if seg_on cwd && [ -n "$cwd" ]; then
   printf "${DIM}:${R}${BOLD}${FG_BBLUE}%s${R}" "$cwd"
 fi
 
-if [ -n "$proj_dir" ]; then
+if seg_on cwd && [ -n "$proj_dir" ]; then
   printf " ${DIM}(proj:${FG_BLUE}%s${R}${DIM})${R}" "$proj_dir"
 fi
 
 # Branch
-if [ -n "$branch" ]; then
+if seg_on branch && [ -n "$branch" ]; then
   printf "${SEP}${FG_BMAGENTA} %s${R}" "$branch"
 fi
 
 # Repo
-if [ -n "$repo" ]; then
+if seg_on repo && [ -n "$repo" ]; then
   _repo_disp="$repo"
   [ -n "$repo_host" ] && _repo_disp="${repo_host}/${repo}"
   printf "${SEP}${DIM}${FG_BCYAN}⬡ %s${R}" "$_repo_disp"
 fi
 
 # PR
-if [ -n "$pr_number" ]; then
+if seg_on pr && [ -n "$pr_number" ]; then
   case "$pr_state" in
     approved)           pr_icon=" " ; pr_clr="${FG_BGREEN}"   ;;
     changes_requested)  pr_icon=" " ; pr_clr="${FG_BRED}"     ;;
@@ -368,22 +390,24 @@ if [ -n "$pr_number" ]; then
 fi
 
 # Model
-if [ -n "$model_name" ]; then
-  printf "${SEP}${BOLD}${FG_BMAGENTA}⬡ %s${R}" "$model_name"
-elif [ -n "$model_id" ]; then
-  printf "${SEP}${BOLD}${FG_BMAGENTA}⬡ %s${R}" "$model_id"
+if seg_on model; then
+  if [ -n "$model_name" ]; then
+    printf "${SEP}${BOLD}${FG_BMAGENTA}⬡ %s${R}" "$model_name"
+  elif [ -n "$model_id" ]; then
+    printf "${SEP}${BOLD}${FG_BMAGENTA}⬡ %s${R}" "$model_id"
+  fi
 fi
 
 # Version
-[ -n "$version" ] && printf "${SEP}${DIM}v%s${R}" "$version"
+seg_on version && [ -n "$version" ] && printf "${SEP}${DIM}v%s${R}" "$version"
 
 # Output style (skip "default")
-if [ -n "$output_style" ] && [ "$output_style" != "default" ]; then
+if seg_on style && [ -n "$output_style" ] && [ "$output_style" != "default" ]; then
   printf "${SEP}${FG_BBLACK}style:${FG_BYELLOW}%s${R}" "$output_style"
 fi
 
 # Vim mode
-if [ -n "$vim_mode" ]; then
+if seg_on vim && [ -n "$vim_mode" ]; then
   case "$vim_mode" in
     INSERT)      vm_clr="${FG_BGREEN}" ;;
     NORMAL)      vm_clr="${FG_BCYAN}"  ;;
@@ -394,7 +418,7 @@ if [ -n "$vim_mode" ]; then
 fi
 
 # Effort
-if [ -n "$effort" ]; then
+if seg_on effort && [ -n "$effort" ]; then
   case "$effort" in
     low)    ef_clr="${FG_BBLACK}"      ; ef_icon="○" ;;
     medium) ef_clr="${FG_BYELLOW}"     ; ef_icon="◑" ;;
@@ -407,22 +431,22 @@ if [ -n "$effort" ]; then
 fi
 
 # Thinking
-if [ "$thinking" = "true" ]; then
+if seg_on effort && [ "$thinking" = "true" ]; then
   printf "${SEP}${FG_BMAGENTA}⟳ thinking${R}"
 fi
 
 # Session name
-if [ -n "$session_name" ]; then
+if seg_on session_meta && [ -n "$session_name" ]; then
   printf "${SEP}${FG_BBLACK}▸ ${FG_BCYAN}%s${R}" "$session_name"
 fi
 
 # Worktree
-if [ -n "$wt_name" ]; then
+if seg_on session_meta && [ -n "$wt_name" ]; then
   printf "${SEP}${FG_BBLACK}wt:${FG_CYAN}%s${R}" "$wt_name"
 fi
 
 # Agent
-if [ -n "$agent_name" ]; then
+if seg_on session_meta && [ -n "$agent_name" ]; then
   printf "${SEP}${FG_BBLACK}agent:${FG_BYELLOW}%s${R}" "$agent_name"
   [ -n "$agent_type" ] && printf "${DIM}(%s)${R}" "$agent_type"
 fi
@@ -437,7 +461,7 @@ printf "\n"
 line2_parts=()
 
 # Context window — 28-cell bar
-if [ -n "$used_pct" ]; then
+if seg_on context && [ -n "$used_pct" ]; then
   used_int=$(printf '%.0f' "$used_pct" 2>/dev/null) || used_int=0
   gauge_bar "$used_int" 28 "█" "░"
   _tokens_str=""
@@ -449,7 +473,7 @@ if [ -n "$used_pct" ]; then
 fi
 
 # 5-hour rate limit — 20-cell bar
-if [ -n "$five_h_pct" ]; then
+if seg_on rate_5h && [ -n "$five_h_pct" ]; then
   pct_int=$(printf '%.0f' "$five_h_pct" 2>/dev/null) || pct_int=0
   gauge_bar "$pct_int" 20 "▰" "▱"
   _reset_str=""
@@ -458,7 +482,7 @@ if [ -n "$five_h_pct" ]; then
 fi
 
 # 7-day rate limit — 20-cell bar
-if [ -n "$seven_d_pct" ]; then
+if seg_on rate_7d && [ -n "$seven_d_pct" ]; then
   pct_int=$(printf '%.0f' "$seven_d_pct" 2>/dev/null) || pct_int=0
   gauge_bar "$pct_int" 20 "▰" "▱"
   _reset_str=""
@@ -467,24 +491,32 @@ if [ -n "$seven_d_pct" ]; then
 fi
 
 # Product-lifecycle phase
-lifecycle_widget
-[ -n "$LC_OUT" ] && line2_parts+=("$LC_OUT")
+if seg_on lifecycle; then
+  lifecycle_widget
+  [ -n "$LC_OUT" ] && line2_parts+=("$LC_OUT")
+fi
 
 # Session spend — always-on, first-order (tokens + $)
-session_cost_widget
-[ -n "$SC_OUT" ] && line2_parts+=("$SC_OUT")
+if seg_on session_cost; then
+  session_cost_widget
+  [ -n "$SC_OUT" ] && line2_parts+=("$SC_OUT")
+fi
 
 # Lifecycle spend vs estimate (only when a lifecycle cost ledger exists)
-lifecycle_cost_widget
-[ -n "$LCC_OUT" ] && line2_parts+=("$LCC_OUT")
-
-# Adversarial catch counter — always rendered on line 2
-if [ "$catches" -gt 0 ] 2>/dev/null; then
-  _caught_clr="${BOLD}${FG_BYELLOW}"
-else
-  _caught_clr="${DIM}${FG_BBLACK}"
+if seg_on lifecycle_cost; then
+  lifecycle_cost_widget
+  [ -n "$LCC_OUT" ] && line2_parts+=("$LCC_OUT")
 fi
-line2_parts+=("${_caught_clr}⚔ caught ${catches}${R}")
+
+# Adversarial catch counter — rendered on line 2 unless hidden
+if seg_on catches; then
+  if [ "$catches" -gt 0 ] 2>/dev/null; then
+    _caught_clr="${BOLD}${FG_BYELLOW}"
+  else
+    _caught_clr="${DIM}${FG_BBLACK}"
+  fi
+  line2_parts+=("${_caught_clr}⚔ caught ${catches}${R}")
+fi
 
 # Plugin-contributed widgets (extension point): any marketplace plugin may drop an
 # executable segment-printer in ~/.claude/state/statusline-widgets.d/*.sh. Each is
