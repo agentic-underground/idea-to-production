@@ -14,4 +14,4 @@ mark it with one of these seven. They all say the same thing: *everything's set,
 
 This file is the canonical source of truth. It is mirrored byte-for-byte into every
 plugin and injected into the agent's context once per session by each plugin's
-SessionStart hook. How it reaches context: see `doc/context-building-pipeline.md`.
+SessionStart hook. How it reaches context: see `docs/guide/context-building-pipeline.md`.

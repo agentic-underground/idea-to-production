@@ -3,11 +3,11 @@
 # cells (status, template, ckpt), the gain under test, and (when the SCORE phase has appended them) the
 # per-objective verdict + named gain. The catalog is the tracked durable record; the rasters are gitignored.
 #
-# Usage: CRAFT_DIR=doc/image-craft-study/craft bash build-catalog.sh
+# Usage: CRAFT_DIR=docs/internal/image-craft-study/craft bash build-catalog.sh
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 find_root() { local d="$HERE"; while [ "$d" != / ]; do [ -f "$d/.claude-plugin/marketplace.json" ] && { echo "$d"; return; }; d="$(dirname "$d")"; done; echo "$PWD"; }
-CRAFT_DIR="${CRAFT_DIR:-$(find_root)/doc/image-craft-study/craft}"
+CRAFT_DIR="${CRAFT_DIR:-$(find_root)/docs/internal/image-craft-study/craft}"
 MANIFEST="$CRAFT_DIR/manifest.json"; JOURNAL="$CRAFT_DIR/journal.jsonl"; OUT="$CRAFT_DIR/catalog.md"
 [ -f "$MANIFEST" ] || { echo "no manifest" >&2; exit 2; }; touch "$JOURNAL"
 

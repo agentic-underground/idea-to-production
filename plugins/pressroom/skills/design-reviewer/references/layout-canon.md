@@ -35,10 +35,10 @@ The order is fixed:
 
 1. **`layout-check.sh` — SVG-math (free).** A deterministic awk pass over the generator/`.svg`: horizontal
    bounds, vertical bounds, the inline-legibility rule (§5), and the aspect advisory. Catches every class the
-   geometry can see, at zero tokens. *See* [`layout-check.sh`](../../../../../doc/image-craft-study/toolchain/src/layout-check.sh).
+   geometry can see, at zero tokens. *See* [`layout-check.sh`](../../../../../docs/internal/image-craft-study/toolchain/src/layout-check.sh).
 2. **`raster-lint.sh` — cheap per-tile heuristics (free).** Token-free ImageMagick heuristics on the inline
    render, tiled into blocks: edge-clip-by-pixel, ink/edge crowding density, thin-stroke-through-text /
-   occlusion. Emits the list of **SUSPECT tiles** + an exit code. *See* [`raster-lint.sh`](../../../../../doc/image-craft-study/toolchain/src/raster-lint.sh).
+   occlusion. Emits the list of **SUSPECT tiles** + an exit code. *See* [`raster-lint.sh`](../../../../../docs/internal/image-craft-study/toolchain/src/raster-lint.sh).
    These are *suspicion* heuristics — false positives are fine; the lint only decides **whether** to spend the eye.
 3. **A vision Read — ONLY when a tile trips.** Clean lint → the reviewer **skips vision** (cost saved).
    Suspect tile → escalate: Read the full render / the suspect crops, run the 8-item checklist, and list
@@ -148,9 +148,9 @@ honoured the covenant.
 
 > **Cross-references:** [`charting-matrix.md`](../../rich-pdf-with-diagrams/references/charting-matrix.md) (the
 > PRINT 4×9 too-wide law — §1, Rule 1, F1 — the print sibling of the §5 screen rule);
-> [`layout-check.sh`](../../../../../doc/image-craft-study/toolchain/src/layout-check.sh) (the free SVG-math
+> [`layout-check.sh`](../../../../../docs/internal/image-craft-study/toolchain/src/layout-check.sh) (the free SVG-math
 > tier — horizontal + vertical bounds, the inline-legibility rule, the aspect advisory);
-> [`raster-lint.sh`](../../../../../doc/image-craft-study/toolchain/src/raster-lint.sh) (the free cheap-raster
+> [`raster-lint.sh`](../../../../../docs/internal/image-craft-study/toolchain/src/raster-lint.sh) (the free cheap-raster
 > tier — suspect-tile heuristics for overlap / crowding / edge-clip / occlusion). The other three lenses:
 > [`typography-canon.md`](typography-canon.md), [`dataviz-canon.md`](dataviz-canon.md),
 > [`image-aesthetic-canon.md`](image-aesthetic-canon.md). Cite the item by name in every finding so the maker

@@ -77,7 +77,7 @@ review.
 > `CANNOT-REVIEW: <missing input/tool — what is needed>`. **Never emit a score or a verdict from source.**
 > The fallback ladder per artefact type:
 > 1. Live route: plugin-namespaced Playwright MCP (`mcp__plugin_atelier_playwright__browser_take_screenshot`)
-> 2. Crawl-script screenshot gallery (`doc/design/review/*/screenshots/*.png`) → `Read` with built-in vision
+> 2. Crawl-script screenshot gallery (`docs/guide/design/review/*/screenshots/*.png`) → `Read` with built-in vision
 > 3. User-pasted or on-disk screenshot → `Read`
 > 4. `CANNOT-REVIEW: <reason>` — state what is needed to proceed
 

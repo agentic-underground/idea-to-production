@@ -12,7 +12,7 @@ Design with ATELIER. Follow the [`mockup` skill](../skills/mockup/SKILL.md):
    (HTML/CSS screenshotted via the Playwright MCP, or SVG wireframe; user-flows as Mermaid via pressroom
    `/publish` *by capability*) → invoke the **`ui-design-reviewer`** → apply HIGH+MED → re-render → re-score
    until CONVERGED / DIMINISHING-RETURNS (surface the impasse) / CAP.
-4. **Deliver** under `doc/design/mockups/<slug>/` — the artefact + a rationale (the canon choices) + the
+4. **Deliver** under `docs/guide/design/mockups/<slug>/` — the artefact + a rationale (the canon choices) + the
    fitness score and any accepted residual.
 
 Never present a draft that hasn't been through at least one review turn. Verify tools with `/atelier:check`.

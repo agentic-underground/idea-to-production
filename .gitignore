@@ -4,7 +4,7 @@
 # cruft, so they are never ignored wholesale:
 #   .claude/   → agent-memory/ is a tracked ledger; only runtime files are ignored below.
 #   .foundry/  → MARKETPLACE_SCORECARD.jsonl + governance.md are tracked; never ignore this dir.
-# Inspection reports are tracked ONLY when archived under doc/historical/, so their
+# Inspection reports are tracked ONLY when archived under docs/historical/, so their
 # ignore rules are root-anchored (a leading /) to leave the archives addable.
 
 # --- Claude Code harness runtime (per-machine / per-session, never shared) ---
@@ -14,7 +14,7 @@
 
 # --- Marketplace self-dogfood + lifecycle runtime artifacts (regenerable/transient) ---
 # These appear at the repo root when the marketplace's own scripts run against itself.
-# The durable ledgers (.foundry/MARKETPLACE_SCORECARD.jsonl, doc/historical/*) stay tracked.
+# The durable ledgers (.foundry/MARKETPLACE_SCORECARD.jsonl, docs/historical/*) stay tracked.
 /SCORECARD.json
 /marketplace-health.json
 /IN_PROGRESS.md
@@ -32,10 +32,10 @@
 # --- ComfyUI model-survey artifacts (generated rasters retained on disk, never in git) ---
 # catalog.md, journal.jsonl, manifest.json, and comfyui-model-survey.pdf stay TRACKED (the durable record);
 # only the large/regenerable images are ignored. Root-anchored to scope them to this one tree.
-/doc/comfyui-experiment/images/
-/doc/comfyui-experiment/thumbs/
-/doc/comfyui-experiment/contact-sheets/
-/doc/comfyui-experiment/.catalog-raw.pdf
+/docs/internal/comfyui-experiment/images/
+/docs/internal/comfyui-experiment/thumbs/
+/docs/internal/comfyui-experiment/contact-sheets/
+/docs/internal/comfyui-experiment/.catalog-raw.pdf
 
 # --- Language tooling (defensive: plugins drive local node/python test runs) ---
 node_modules/
@@ -51,29 +51,29 @@ coverage/
 _render_*.html
 
 # image-craft-study: track ledgers/catalogs/curated-JSON; ignore large/regenerable rasters
-/doc/image-craft-study/corpus/genres/
-/doc/image-craft-study/corpus/styles/
-/doc/image-craft-study/corpus/scenes/
-/doc/image-craft-study/corpus/diagrams/
-/doc/image-craft-study/corpus/landscapes/
-/doc/image-craft-study/corpus/action/
-/doc/image-craft-study/workflows/raw/
-/doc/image-craft-study/craft/images/
-/doc/image-craft-study/craft/thumbs/
-/doc/image-craft-study/craft/contact-sheets/
-/doc/image-craft-study/craft/validate/
-/doc/image-craft-study/verification/new/
-/doc/image-craft-study/verification/old/
-/doc/image-craft-study/rig-inventory/awesome-contact.jpg
-/doc/image-craft-study/rig-inventory/awesome-recipes.txt
+/docs/internal/image-craft-study/corpus/genres/
+/docs/internal/image-craft-study/corpus/styles/
+/docs/internal/image-craft-study/corpus/scenes/
+/docs/internal/image-craft-study/corpus/diagrams/
+/docs/internal/image-craft-study/corpus/landscapes/
+/docs/internal/image-craft-study/corpus/action/
+/docs/internal/image-craft-study/workflows/raw/
+/docs/internal/image-craft-study/craft/images/
+/docs/internal/image-craft-study/craft/thumbs/
+/docs/internal/image-craft-study/craft/contact-sheets/
+/docs/internal/image-craft-study/craft/validate/
+/docs/internal/image-craft-study/verification/new/
+/docs/internal/image-craft-study/verification/old/
+/docs/internal/image-craft-study/rig-inventory/awesome-contact.jpg
+/docs/internal/image-craft-study/rig-inventory/awesome-recipes.txt
 # toolchain (Phase 8): track src/ scripts + the small proof/ evidence; ignore frames + heavy intermediates
-/doc/image-craft-study/toolchain/frames/
-/doc/image-craft-study/toolchain/lc-frames/
-/doc/image-craft-study/toolchain/out/
-/doc/image-craft-study/toolchain/src/*.png
+/docs/internal/image-craft-study/toolchain/frames/
+/docs/internal/image-craft-study/toolchain/lc-frames/
+/docs/internal/image-craft-study/toolchain/out/
+/docs/internal/image-craft-study/toolchain/src/*.png
 # diagram-fail: track the runner + FINDINGS + the downsized evidence jpg; ignore raw rasters
-/doc/image-craft-study/diagram-fail/images/
-/doc/image-craft-study/workflows/reruns/
+/docs/internal/image-craft-study/diagram-fail/images/
+/docs/internal/image-craft-study/workflows/reruns/
 
 # Workflow helper scripts (local, not shipped)
 .claude/wf-*.js

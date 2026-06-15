@@ -11,7 +11,7 @@
  * Config (all env vars, all optional except BASE_URL):
  *   BASE_URL    required — the running app's base URL (no default; never assume a port).
  *   ROUTES      comma-separated paths to visit instead of auto-discovery, e.g. "/,/dashboard,/settings".
- *   OUT         output dir (default: doc/design/review/<YYYY-MM-DD>).
+ *   OUT         output dir (default: docs/guide/design/review/<YYYY-MM-DD>).
  *   VIEWPORTS   "desktop,mobile" (default) — desktop=1440×900, mobile=375×812.
  *   MAX_ROUTES  cap on auto-discovered routes (default 25) — avoids crawling an unbounded app.
  *   WAIT_MS     settle time after navigation (default 600).

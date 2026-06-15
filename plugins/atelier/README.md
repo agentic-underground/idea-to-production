@@ -5,7 +5,7 @@
 > The designer's workshop of the marketplace — where visual work is both **made** and **critiqued** to a
 > commercial-grade standard. *Artistic, elegant, powerful, excellent.*
 
-![The designer↔reviewer critique loop animated: a rough wireframe screen on the left is reviewed by an amber scan sweep while a five-criterion design-fitness rubric on the right (Visual hierarchy, Contrast / WCAG AA, Touch targets · Fitts, Consistency · Jakob, Delight · Norman) resolves left-to-right — each finding flags amber, then clears to a teal check as its score bar fills; across three iterations the screen refines from dim greys to teal-accented and accessible, until the bottom design-fitness gate strip turns green (PASS — no HIGH findings · WCAG AA clear · score ≥ target) with a teal check badge on the screen, and the settled loop closes.](../../doc/images/atelier-critique.gif)
+![The designer↔reviewer critique loop animated: a rough wireframe screen on the left is reviewed by an amber scan sweep while a five-criterion design-fitness rubric on the right (Visual hierarchy, Contrast / WCAG AA, Touch targets · Fitts, Consistency · Jakob, Delight · Norman) resolves left-to-right — each finding flags amber, then clears to a teal check as its score bar fills; across three iterations the screen refines from dim greys to teal-accented and accessible, until the bottom design-fitness gate strip turns green (PASS — no HIGH findings · WCAG AA clear · score ≥ target) with a teal check badge on the screen, and the settled loop closes.](../../docs/images/atelier-critique.gif)
 
 ATELIER is the **DESIGN** capability of the `idea-to-production` marketplace. It does two things, joined by
 one loop:

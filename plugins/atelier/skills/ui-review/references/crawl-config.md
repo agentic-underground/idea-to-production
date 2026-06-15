@@ -7,7 +7,7 @@ no hardcoded panels, selectors, or ports — it reads the app's own same-origin 
 |---|---|---|---|
 | `BASE_URL` | **yes** | — (never assumed) | The running app's base URL, e.g. `http://localhost:5173`. |
 | `ROUTES` | no | auto-discover | Comma-separated paths to visit instead of discovery, e.g. `/,/dashboard,/settings`. |
-| `OUT` | no | `doc/design/review/<YYYY-MM-DD>` | Output directory. |
+| `OUT` | no | `docs/guide/design/review/<YYYY-MM-DD>` | Output directory. |
 | `VIEWPORTS` | no | `desktop,mobile` | `desktop`=1440×900, `mobile`=375×812. |
 | `MAX_ROUTES` | no | `25` | Cap on auto-discovered routes (avoids unbounded crawls). |
 | `WAIT_MS` | no | `600` | Settle time after each navigation. |

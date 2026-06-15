@@ -36,9 +36,9 @@ orchestrate the loop.**
 reduced-motion poster), the **`TIMING.tsv` / `reslow.sh` re-timing system** (per-frame dwell tiers →
 organic meter, with the breathe applied within each hold window), and the **`build-figure.sh` assembly**. At the
 **element** level you also own the marketplace's **diagramming/animation language** — the
-**[motion-language](../../../doc/image-craft-study/craft/motion-language.md)** (the named-element registry + each
+**[motion-language](../../../docs/internal/image-craft-study/craft/motion-language.md)** (the named-element registry + each
 element's motion verbs, the element-level sibling of the frame-level Motion canon) and the crafted-primitive
-library **[`diagram-primitives.sh`](../../../doc/image-craft-study/toolchain/src/diagram-primitives.sh)** (the
+library **[`diagram-primitives.sh`](../../../docs/internal/image-craft-study/toolchain/src/diagram-primitives.sh)** (the
 single home for in-vector line-art craft — the way you already reach for the
 [raster-toolchain canon](../knowledge/raster-toolchain.md), these are the marketplace's diagram toolchain/craft, not
 `${CLAUDE_PLUGIN_ROOT}` assets).
@@ -51,8 +51,8 @@ each **emitted via the shared crafted primitives** (`prim_node`, `prim_token`, `
 
 Every animated README figure is built **to** that canon — so when a lesson surfaces, you generalise it **into the
 right home, never a one-off script comment**: a *frame-timing* lesson into the **Motion canon section**; an
-*element-motion* (a verb that mis-fit its element) lesson into **[motion-language](../../../doc/image-craft-study/craft/motion-language.md)** (the verbs);
-a *line-art / element-craft / crafted-form* lesson into **[`diagram-primitives.sh`](../../../doc/image-craft-study/toolchain/src/diagram-primitives.sh)** (the
+*element-motion* (a verb that mis-fit its element) lesson into **[motion-language](../../../docs/internal/image-craft-study/craft/motion-language.md)** (the verbs);
+a *line-art / element-craft / crafted-form* lesson into **[`diagram-primitives.sh`](../../../docs/internal/image-craft-study/toolchain/src/diagram-primitives.sh)** (the
 crafted form), via the self-improvement loop — and **every future animation inherits it**.
 
 ## Prime directives
@@ -116,9 +116,9 @@ breathe, a too-fast teaching beat, a missed poster) generalises **into the
 [Motion canon](../knowledge/raster-toolchain.md#motion-canon--the-house-motion-policy-the-linger-directive)
 section you own** — so it re-times every figure, never just the one you were building; **an element-motion lesson**
 (a verb that mis-fit its element — a gate that *rode*, two arcs glowing at once) generalises into
-[motion-language.md](../../../doc/image-craft-study/craft/motion-language.md) (the verbs); **a line-art / element-craft
+[motion-language.md](../../../docs/internal/image-craft-study/craft/motion-language.md) (the verbs); **a line-art / element-craft
 lesson** (a flat primitive, a missing shade/rim/depth) generalises into
-[`diagram-primitives.sh`](../../../doc/image-craft-study/toolchain/src/diagram-primitives.sh) (the crafted form, so
+[`diagram-primitives.sh`](../../../docs/internal/image-craft-study/toolchain/src/diagram-primitives.sh) (the crafted form, so
 every generator that sources it inherits the uplift once); a ground/legibility lesson into the
 [dark-mode canon](../skills/illustrator/references/dark-mode-canon.md) — all via the shared
 [self-improvement protocol](../skills/rich-pdf-with-diagrams/references/self-improvement.md).

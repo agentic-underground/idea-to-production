@@ -34,7 +34,7 @@ completion in `IDEA_COST.jsonl` so the system gets smarter with every cycle.
 > It does not write EARS statements, Gherkin, test code, or production code
 > directly. All artefact production is delegated to PHASE_POOL and
 > VALUE_HANDLER_POOL agents. FOUNDRY's only direct writes are to
-> `doc/FOUNDRY_PLAN.md` and `IDEA_COST.jsonl`.
+> `docs/internal/FOUNDRY_PLAN.md` and `IDEA_COST.jsonl`.
 >
 > **CODE_QUALITY is the knowledge-home for all code design and review decisions.**
 > FOUNDRY defers to it at every implementation and review stage.
@@ -164,7 +164,7 @@ Spawn `builder-lead` agent with:
 - Historical IDEA_COST.jsonl (if available)
 - Proposed tier structure from §4
 
-LEAD ENGINEER is responsible for producing `doc/FOUNDRY_PLAN.md` containing:
+LEAD ENGINEER is responsible for producing `docs/internal/FOUNDRY_PLAN.md` containing:
 
 ```markdown
 # FOUNDRY Plan — [project] — [date]
@@ -434,7 +434,7 @@ in `${CLAUDE_PLUGIN_ROOT}/agents/handler-{stack}.md`.
 | handler-roadmap-decomposition | Atomic-job breakdown of a ROADMAP item (INVEST slices, dependency graph, phase mapping) | LEAD ENGINEER §5 when a heavy roadmap item must be split into parallelisable jobs — it plans, it does not orchestrate |
 
 When the LEAD ENGINEER identifies a stack not in the pool above, note it in
-`doc/FOUNDRY_PLAN.md` under `## VALUE_HANDLER_POOL Required` with a description
+`docs/internal/FOUNDRY_PLAN.md` under `## VALUE_HANDLER_POOL Required` with a description
 of what knowledge the new handler needs. The self-improvement protocol (§14)
 will formalise it into an agent file.
 

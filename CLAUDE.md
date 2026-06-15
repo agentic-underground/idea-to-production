@@ -69,4 +69,4 @@ and injected into the agent's context once per session by each plugin's SessionS
 hook (`plugins/*/hooks/inject-soul.sh`). It is ALWAYS_ON: present whenever **any** of the
 nine plugins is active, never duplicated, never omitted. How a document reaches an agent's
 context — and exactly where SOUL fits — is explained in
-[`doc/context-building-pipeline.md`](doc/context-building-pipeline.md).
+[`docs/guide/context-building-pipeline.md`](docs/guide/context-building-pipeline.md).

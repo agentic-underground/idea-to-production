@@ -7,14 +7,14 @@
 # background and to re-run (idempotent — completed cells are skipped). Errors (e.g. a checkpoint that won't
 # load) are journalled as data, never fatal.
 #
-# Usage: SURVEY_DIR=doc/comfyui-experiment bash generate.sh
+# Usage: SURVEY_DIR=docs/internal/comfyui-experiment bash generate.sh
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$HERE/comfyui-lib.sh"
 
-# Resolve the survey dir (default: <repo>/doc/comfyui-experiment).
+# Resolve the survey dir (default: <repo>/docs/internal/comfyui-experiment).
 find_root() { local d="$HERE"; while [ "$d" != / ]; do [ -f "$d/.claude-plugin/marketplace.json" ] && { echo "$d"; return; }; d="$(dirname "$d")"; done; echo "$PWD"; }
-SURVEY_DIR="${SURVEY_DIR:-$(find_root)/doc/comfyui-experiment}"
+SURVEY_DIR="${SURVEY_DIR:-$(find_root)/docs/internal/comfyui-experiment}"
 MANIFEST="$SURVEY_DIR/manifest.json"
 JOURNAL="$SURVEY_DIR/journal.jsonl"
 [ -f "$MANIFEST" ] || { echo "no manifest: $MANIFEST" >&2; exit 2; }

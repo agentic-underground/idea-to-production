@@ -12,7 +12,7 @@ Review a UI with ATELIER. Follow the [`ui-review` skill](../skills/ui-review/SKI
    ad-hoc. Committed-snapshot fallback: `BASE_URL=… node ${CLAUDE_PLUGIN_ROOT}/skills/ui-review/scripts/crawl.mjs`.
 3. **Critique** each surface against the canon (visual-foundations → interaction-laws → accessibility),
    every finding naming its principle + fix + rubric dimension; **score** the design-fitness rubric.
-4. **Write** `doc/design/review/<date>/design-review.md` — executive summary (score + a11y gate + systemic
+4. **Write** `docs/guide/design/review/<date>/design-review.md` — executive summary (score + a11y gate + systemic
    themes + biggest quick win) and per-surface prioritised findings.
 
 Suggestions are proposals — the user approves what to apply, then the **convergent loop** verifies the

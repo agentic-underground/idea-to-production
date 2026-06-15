@@ -46,7 +46,7 @@ draft: it is the artefact *after* the loop has raised it to the rubric.
    (surface the impasse, ask the user) / CAP. Never present a draft that hasn't been through at least one
    review turn.
 4. **Deliver** the artefact + a short **rationale** (the canon choices) + the **fitness score** and any
-   accepted residual. Write under `doc/design/mockups/<slug>/` (PNG/SVG/`.mmd` + `rationale.md`).
+   accepted residual. Write under `docs/guide/design/mockups/<slug>/` (PNG/SVG/`.mmd` + `rationale.md`).
 
 ## Composition defaults (the starting point, then justify)
 

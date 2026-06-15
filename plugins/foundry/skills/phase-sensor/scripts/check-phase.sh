@@ -41,7 +41,7 @@ fi
 
 # ---- ROADMAP ↔ sentinel-state cross-check (P1-6) ----
 # A ROADMAP item's STATUS must agree with its terminal completion sentinel in the
-# sentinel audit log (`doc/FOUNDRY_PLAN.md` under `## Sentinel Audit Log`, per
+# sentinel audit log (`docs/internal/FOUNDRY_PLAN.md` under `## Sentinel Audit Log`, per
 # knowledge/protocols/context-sentinel.md). The end-of-life sentinel is
 # DELIVERY_COMPLETE; the terminal-pending one is AWAITING_MERGE. When a roadmap
 # item is marked COMPLETE but the audit log carries NO DELIVERY_COMPLETE for it,
@@ -50,7 +50,7 @@ fi
 # The check is silent when the records are consistent, or when there is no audit
 # log to cross-check against (nothing to contradict).
 cross_check_sentinels() {
-    local plan="${PROJECT}/doc/FOUNDRY_PLAN.md"
+    local plan="${PROJECT}/docs/internal/FOUNDRY_PLAN.md"
     [ -f "$plan" ] || return 0          # no audit log → nothing to cross-check
     # Pull only the sentinel-audit-log region so stray prose can't false-match.
     local audit

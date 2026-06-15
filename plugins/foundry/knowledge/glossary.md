@@ -129,13 +129,13 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   *resolves*, halo *attention-pulses*) — the sibling of the frame-level Motion canon (it answers "what KIND of
   thing is this and how does a thing of THIS kind move?", where the Motion canon answers "how long does this FRAME
   hold?"). Owned by **handler-composite**. → study-repo
-  [`doc/image-craft-study/craft/motion-language.md`](../../../doc/image-craft-study/craft/motion-language.md).
+  [`docs/internal/image-craft-study/craft/motion-language.md`](../../../docs/internal/image-craft-study/craft/motion-language.md).
 - **diagram-primitives.sh** — the shared **crafted-primitive library** (`prim_node`/`prim_token`/`prim_gate`/
   `prim_rail`/`prim_arc`/`prim_sweep`/`prim_stamp`/`prim_halo` + the shared `prim_defs`/palette/geometry). The
   single home for in-vector line-art craft: generators **source** it instead of re-hand-rolling SVG and copying
   `<defs>`, so the craft uplift (shading, rim light, soft shadow — pure SVG, no raster) lands ONCE and every
   generator inherits it. Names match motion-language.md's registry. → study-repo
-  [`doc/image-craft-study/toolchain/src/diagram-primitives.sh`](../../../doc/image-craft-study/toolchain/src/diagram-primitives.sh).
+  [`docs/internal/image-craft-study/toolchain/src/diagram-primitives.sh`](../../../docs/internal/image-craft-study/toolchain/src/diagram-primitives.sh).
 - **Cost-tier doctrine** ≡ **cheap-checks-first** ≡ **vision-on-suspicion** — shared reviewer canon for every
   graphical review: the free deterministic checks (the layout machine) run first, and an expensive pixel/vision
   Read is spent **only when something cheap has flagged a suspect**, never by default. Specified for layout in

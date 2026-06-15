@@ -10,7 +10,7 @@ description: >
   UI is good — and why.
 metadata:
   type: producer
-  output: a scored, prioritised design-review report (doc/design/review/<date>/design-review.md)
+  output: a scored, prioritised design-review report (docs/guide/design/review/<date>/design-review.md)
 model: inherit
 ---
 
@@ -62,7 +62,7 @@ whole SPA or a single pasted screenshot. It is adversarial by stance and grounde
 
 ```bash
 BASE_URL=http://localhost:5173 node ${CLAUDE_PLUGIN_ROOT}/skills/ui-review/scripts/crawl.mjs
-# optional: ROUTES="/,/dashboard,/settings"  OUT=doc/design/review/$(date +%F)  VIEWPORTS=desktop,mobile
+# optional: ROUTES="/,/dashboard,/settings"  OUT=docs/guide/design/review/$(date +%F)  VIEWPORTS=desktop,mobile
 ```
 It discovers same-origin links from the base URL (or uses an explicit `ROUTES` list), screenshots each at
 the requested viewports, and writes a screenshot **gallery** `README.md` + `screenshots/`. It is
@@ -73,7 +73,7 @@ critique the saved PNGs with `Read` (built-in vision, no API key). See
 
 ## Output
 
-Write `doc/design/review/<date>/design-review.md`:
+Write `docs/guide/design/review/<date>/design-review.md`:
 
 ```markdown
 # Design Review — <date>   ·   Fitness: <score>/100

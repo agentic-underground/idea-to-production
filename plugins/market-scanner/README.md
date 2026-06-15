@@ -8,7 +8,7 @@ MARKET-SCANNER is the **DISCOVERY** front door of the `idea-to-production` marke
 exists, it helps you find an opportunity *worth* building — and, just as importantly, **kills weak ideas
 early and cheaply** so you don't spend months on one.
 
-![MARKET-SCANNER radar sweep: an amber discovery beam rotates over a scattered market field, surfacing each candidate (thin demand, crowded space, underserved niche, no pricing power, hard to reach, weak severity) as it passes; then the five weak ideas are dimmed and struck through — killed early and cheaply — while the one strong opportunity, underserved niche, is ringed in teal and upheld with the verdict KEEP — the spark → ideator. The motion teaches DISCOVER plus kill-weak-early.](../../doc/images/market-scanner-radar.gif)
+![MARKET-SCANNER radar sweep: an amber discovery beam rotates over a scattered market field, surfacing each candidate (thin demand, crowded space, underserved niche, no pricing power, hard to reach, weak severity) as it passes; then the five weak ideas are dimmed and struck through — killed early and cheaply — while the one strong opportunity, underserved niche, is ringed in teal and upheld with the verdict KEEP — the spark → ideator. The motion teaches DISCOVER plus kill-weak-early.](../../docs/images/market-scanner-radar.gif)
 
 ## The loop
 

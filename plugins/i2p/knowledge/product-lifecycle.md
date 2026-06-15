@@ -5,7 +5,7 @@
 > operated. This document is the canonical articulation; the statusline phase widget, `/i2p-help`, and
 > `/i2p-lifecycle` all read it.
 
-![The eight-phase value cycle building up stage by stage — DISCOVER, IDEATE, DESIGN, BUILD, ASSURE, SECURE, PUBLISH, OPERATE — then the return arc glows as OPERATE's learnings re-enter DISCOVER, closing the loop.](../../../doc/images/lifecycle-cycle.gif)
+![The eight-phase value cycle building up stage by stage — DISCOVER, IDEATE, DESIGN, BUILD, ASSURE, SECURE, PUBLISH, OPERATE — then the return arc glows as OPERATE's learnings re-enter DISCOVER, closing the loop.](../../../docs/images/lifecycle-cycle.gif)
 
 ## What "product lifecycle" means here
 

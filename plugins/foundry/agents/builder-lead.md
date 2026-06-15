@@ -123,7 +123,7 @@ Trigger conditions:
 If none of these apply, skip Phase 2.5 — the architecture decision was made
 in an earlier ADR or the item is small enough not to warrant one.
 
-Record any spawned ADRs in `doc/FOUNDRY_PLAN.md` under `## Architecture
+Record any spawned ADRs in `docs/internal/FOUNDRY_PLAN.md` under `## Architecture
 Decisions`.
 
 ---
@@ -282,7 +282,7 @@ An item may only run in parallel with another if:
 
 ## Phase 6 — Produce FOUNDRY_PLAN.md
 
-Write `doc/FOUNDRY_PLAN.md` with all of the above. Structure:
+Write `docs/internal/FOUNDRY_PLAN.md` with all of the above. Structure:
 
 ```markdown
 # FOUNDRY Plan — [project] — [date]
@@ -329,7 +329,7 @@ At the end of the deep dive, flag for the self-improvement covenant ([`kaizen-co
 - Any EARS form that appeared in multiple items but has no precedent in the
   existing EARS spec (suggests a new EARS template is needed)
 
-Record flags in `doc/FOUNDRY_PLAN.md` under `## Self-Improvement Flags`.
+Record flags in `docs/internal/FOUNDRY_PLAN.md` under `## Self-Improvement Flags`.
 
 ---
 

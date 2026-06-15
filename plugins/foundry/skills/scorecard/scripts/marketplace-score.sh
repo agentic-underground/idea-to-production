@@ -33,7 +33,7 @@ core_ok=$(check_identical "plugins/*/knowledge/inspection-core.md")
 #   • the scorecard's own files (this script, its SKILL/command/schema) and the glossary/self-improve prose
 #     that name the metric — self-references, not couplings.
 port_viol=$(grep -rIn '~/\.claude' plugins/ 2>/dev/null \
-  | grep -vE '/(docs/HISTORY|docs/MIGRATION|docs/DEPRECATED)\.md|/examples/|/doc/historical/' \
+  | grep -vE '/(docs/HISTORY|docs/MIGRATION|docs/DEPRECATED)\.md|/examples/|/docs/historical/' \
   | grep -vE '/knowledge/inspection-core\.md|/agents/inspector\.md|/knowledge/(policy|protocols)/' \
   | grep -vE '/concierge/(statusline/|skills/statusline-install/|commands/statusline\.md|README\.md|\.claude-plugin/plugin\.json)' \
   | grep -vE '/i2p/knowledge/instrumentation\.md|/i2p/skills/lifecycle/scripts/cost\.sh' \
