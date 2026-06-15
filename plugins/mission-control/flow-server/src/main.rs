@@ -150,7 +150,14 @@ async fn run_stdio(store: Arc<Store>) -> Result<(), Box<dyn std::error::Error>> 
                 continue;
             }
         };
+        // JSON-RPC notifications carry no `id` (e.g. `notifications/initialized`
+        // after the handshake) and MUST NOT receive a response — replying to one
+        // is a protocol violation that some clients reject.
+        let is_notification = req.get("id").is_none();
         let resp = mcp::dispatch(&state, req).await;
+        if is_notification {
+            continue;
+        }
         let mut out = tokio::io::stdout();
         out.write_all(format!("{resp}\n").as_bytes()).await?;
         out.flush().await?;

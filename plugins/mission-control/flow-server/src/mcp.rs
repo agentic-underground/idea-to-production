@@ -30,6 +30,74 @@ pub const TOOLS: &[&str] = &[
     "list_events",
 ];
 
+/// One-line human description per verb, surfaced in the MCP `tools/list`
+/// descriptors so clients can present each tool. Order mirrors `TOOLS`.
+const TOOL_DESCRIPTIONS: &[(&str, &str)] = &[
+    (
+        "list_items",
+        "List roadmap items grouped by status (pending/in_progress/done).",
+    ),
+    (
+        "get_item",
+        "Fetch one roadmap item by id with its deps and annotations.",
+    ),
+    ("set_wait_go", "Toggle an item's WAIT/GO gate."),
+    (
+        "post_status",
+        "Move an item to a new status (the folder = the status).",
+    ),
+    (
+        "append_spend",
+        "Record token spend against an item (rolls up to ancestors).",
+    ),
+    (
+        "set_item_model",
+        "Set the model tier (Haiku/Sonnet/Opus/Fable) for an item.",
+    ),
+    (
+        "validate_connection",
+        "Validate a proposed dependency edge without applying it.",
+    ),
+    (
+        "mutate_connection",
+        "Add or remove a dependency edge between two items.",
+    ),
+    (
+        "append_sysmsg",
+        "Append a system message to the event feed.",
+    ),
+    (
+        "render_roadmap",
+        "Render 'what's on the roadmap' as text — ~0 LLM tokens.",
+    ),
+    ("annotate", "Annotate an item's plan (pauses the item)."),
+    (
+        "request_rewrite",
+        "Request a plan rewrite, bumping the draft number.",
+    ),
+    (
+        "list_events",
+        "Read the append-only event log, oldest first.",
+    ),
+];
+
+/// Build the MCP `tools/list` descriptor array: each verb as a
+/// `{name, description, inputSchema}` object (a permissive object schema —
+/// arguments are validated per-verb in `call_tool`). Bare strings are NOT a
+/// conformant `tools/list` payload and prevent the client from registering.
+fn tool_descriptors() -> Vec<Value> {
+    TOOL_DESCRIPTIONS
+        .iter()
+        .map(|(name, desc)| {
+            json!({
+                "name": name,
+                "description": desc,
+                "inputSchema": { "type": "object" },
+            })
+        })
+        .collect()
+}
+
 /// Thin axum handler: deserialises the JSON body via extractor, delegates to
 /// `dispatch`, and serialises the result back into an HTTP response. The real
 /// dispatch logic lives in `dispatch` so it can be called from any transport
@@ -48,7 +116,32 @@ pub async fn dispatch(state: &AppState, req: Value) -> Value {
     let method = req.get("method").and_then(Value::as_str).unwrap_or("");
 
     match method {
-        "tools/list" => ok(id, json!({ "tools": TOOLS })),
+        // MCP handshake: the client's mandatory first request. Without this the
+        // server is dropped before any tool is exposed. We advertise the `tools`
+        // capability and echo the client's requested protocol version when given.
+        "initialize" => {
+            let protocol = req
+                .get("params")
+                .and_then(|p| p.get("protocolVersion"))
+                .and_then(Value::as_str)
+                .unwrap_or("2024-11-05")
+                .to_string();
+            ok(
+                id,
+                json!({
+                    "protocolVersion": protocol,
+                    "capabilities": { "tools": {} },
+                    "serverInfo": {
+                        "name": "flow-server",
+                        "version": env!("CARGO_PKG_VERSION"),
+                    },
+                }),
+            )
+        }
+        // Post-handshake notification — acknowledged with no response by the
+        // caller (it carries no `id`); see `run_stdio` / the HTTP handler.
+        "notifications/initialized" | "initialized" => Value::Null,
+        "tools/list" => ok(id, json!({ "tools": tool_descriptors() })),
         "tools/call" => {
             let params = req.get("params").cloned().unwrap_or(Value::Null);
             let name = params.get("name").and_then(Value::as_str).unwrap_or("");

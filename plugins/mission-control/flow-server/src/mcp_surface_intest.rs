@@ -88,11 +88,26 @@ async fn tools_list_enumerates_the_thirteen_verbs() {
     // Nine original verbs plus roadmap #15 (render_roadmap), roadmap #4
     // (annotate, request_rewrite), and the event-log reader (list_events).
     assert_eq!(tools.len(), 13);
-    assert!(tools.iter().any(|t| t == "append_sysmsg"));
-    assert!(tools.iter().any(|t| t == "render_roadmap"));
-    assert!(tools.iter().any(|t| t == "annotate"));
-    assert!(tools.iter().any(|t| t == "request_rewrite"));
-    assert!(tools.iter().any(|t| t == "list_events"));
+    // MCP-conformant descriptors: each tool is a {name, description, inputSchema}
+    // object, not a bare string. Match on the `name` field.
+    let has = |n: &str| tools.iter().any(|t| t["name"] == n);
+    assert!(has("append_sysmsg"));
+    assert!(has("render_roadmap"));
+    assert!(has("annotate"));
+    assert!(has("request_rewrite"));
+    assert!(has("list_events"));
+    // Every descriptor must carry the three MCP-required fields.
+    for t in tools {
+        assert!(t["name"].is_string(), "tool missing name: {t:?}");
+        assert!(
+            t["description"].is_string(),
+            "tool missing description: {t:?}"
+        );
+        assert!(
+            t["inputSchema"].is_object(),
+            "tool missing inputSchema: {t:?}"
+        );
+    }
 }
 
 // --- list_events ----------------------------------------------------------

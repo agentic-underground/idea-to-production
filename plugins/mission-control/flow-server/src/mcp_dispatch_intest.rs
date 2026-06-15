@@ -214,6 +214,60 @@ async fn dispatch_unknown_method_returns_32601() {
 }
 
 #[tokio::test]
+async fn dispatch_initialize_completes_handshake() {
+    let state = make_state("initialize").await;
+    let req = json!({
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {},
+            "clientInfo": { "name": "probe", "version": "0" }
+        }
+    });
+    let resp = mcp::dispatch(&state, req).await;
+    assert!(
+        resp.get("error").is_none(),
+        "initialize must not error, got: {resp:?}"
+    );
+    assert_eq!(resp["result"]["protocolVersion"], "2024-11-05");
+    assert!(
+        resp["result"]["capabilities"]["tools"].is_object(),
+        "must advertise the tools capability, got: {resp:?}"
+    );
+    assert_eq!(resp["result"]["serverInfo"]["name"], "flow-server");
+}
+
+#[tokio::test]
+async fn dispatch_initialized_notification_yields_no_response() {
+    let state = make_state("initialized-notif").await;
+    let req = json!({ "jsonrpc": "2.0", "method": "notifications/initialized" });
+    let resp = mcp::dispatch(&state, req).await;
+    assert_eq!(
+        resp,
+        Value::Null,
+        "the initialized notification must produce no JSON-RPC response"
+    );
+}
+
+#[tokio::test]
+async fn dispatch_tools_list_returns_descriptor_objects() {
+    let state = make_state("tools-list-objects").await;
+    let req = json!({ "jsonrpc": "2.0", "id": 1, "method": "tools/list" });
+    let resp = mcp::dispatch(&state, req).await;
+    let tools = resp["result"]["tools"].as_array().unwrap();
+    assert_eq!(tools.len(), 13);
+    for t in tools {
+        assert!(t["name"].is_string(), "descriptor missing name: {t:?}");
+        assert!(
+            t["inputSchema"].is_object(),
+            "descriptor missing inputSchema: {t:?}"
+        );
+    }
+}
+
+#[tokio::test]
 async fn dispatch_tools_list_returns_tool_array() {
     let state = make_state("tools-list").await;
     let req = json!({
