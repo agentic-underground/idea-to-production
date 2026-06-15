@@ -46,20 +46,6 @@ returns a false PASS.
 /plugin install sentinel@idea-to-production
 ```
 
-### The `semgrep` MCP server (resident binary)
-
-SENTINEL's `semgrep` MCP server launches the **resident** `semgrep-mcp` binary, not the
-ephemeral `uvx semgrep-mcp` (that transport stalls the MCP initialize handshake on many
-stacks). Install it once so the server starts:
-
-```
-uv tool install semgrep-mcp  &&  uv tool install semgrep    # recommended
-# or: pipx install semgrep-mcp  &&  pipx install semgrep
-```
-
-If it's missing, a SessionStart hook prints this same fix; SENTINEL's other audits (PII,
-secrets, dependencies) work without it.
-
 ## Design principles
 
 - **Three distinct lenses, kept separate** — personal data, credentials, and supply chain are

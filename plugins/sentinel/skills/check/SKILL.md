@@ -2,7 +2,7 @@
 name: check
 description: >
   Verify that SENTINEL's security scanners are installed and reachable — SCA (npm audit, pip-audit,
-  cargo-audit, osv-scanner), secrets (gitleaks), and the Semgrep MCP for SAST. Trigger with
+  cargo-audit, osv-scanner), secrets (gitleaks), and the `semgrep` CLI for SAST. Trigger with
   /sentinel:check (or "check sentinel prerequisites", "which scanners are installed?"). Runs a fast
   ✓/✗ probe grouped by tier. Advisory by default (SENTINEL degrades gracefully — a missing scanner
   narrows a lens to partial coverage, never a false PASS); pass --strict to fail on a missing
@@ -31,7 +31,7 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 
 - **required** — `git`, `bash`.
 - **recommended** — the scanners that turn a lens from heuristic to authoritative: `pip-audit`,
-  `cargo-audit`, `osv-scanner`, `gitleaks`, and `uvx` (for the **Semgrep MCP** SAST lens).
+  `cargo-audit`, `osv-scanner`, `gitleaks`, and `semgrep` (the **SAST** lens, standalone CLI).
 - **optional** — ecosystem/extra scanners: `govulncheck`, `trivy`, `grype`/`syft`, `trufflehog`, …
 
 ## Interpreting the result
@@ -39,7 +39,7 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 A `✗` is never a hard failure — SENTINEL's three core lenses also run on pattern-matching alone and
 **report the gap** rather than passing silently. Each `✗` prints its install hint (the local source
 of truth is this skill's `requirements.tsv`); fuller rationale + Ansible fragments are in the
-marketplace `PREREQUISITES/` folder (`20-sentinel.md`, `40-mcp.md` for the Semgrep MCP) when run
+marketplace `PREREQUISITES/` folder (`20-sentinel.md`) when run
 from the marketplace source tree.
 
 > [`requirements.tsv`](requirements.tsv) is the single source of truth — it is what this check runs.

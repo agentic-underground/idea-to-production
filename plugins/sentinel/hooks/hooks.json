@@ -12,14 +12,6 @@
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/inject-kaizen.sh 2>/dev/null || true"
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/check-semgrep-mcp.sh 2>/dev/null || true"
-          }
-        ]
       }
     ]
   }

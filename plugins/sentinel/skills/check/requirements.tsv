@@ -4,7 +4,6 @@
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled
 ripgrep	command -v rg	recommended	apt install ripgrep
-semgrep-mcp	command -v uvx	recommended	uv (launches `uvx semgrep-mcp` — SAST lens)
 pip-audit	command -v pip-audit	recommended	uv tool install pip-audit
 cargo-audit	cargo audit --version	recommended	cargo install cargo-audit
 osv-scanner	command -v osv-scanner	recommended	github.com/google/osv-scanner releases

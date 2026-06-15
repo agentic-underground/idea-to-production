@@ -29,5 +29,5 @@ guardrail, and the KAIZEN covenant. Write `SENTINEL_INSPECTION_REPORT.md` to the
    emits a single PASS/REVIEW/BLOCK `SECURITY-REPORT.md` — none of the sub-audits is orphaned.
 3. **Pattern-reference integrity:** `secret-scan` cites `references/SECRET-PATTERNS.md` and `pii-audit`
    cites its `references/PII-DEFINITION.md`/`AUDIT-SCOPE.md`; every reference resolves and is used.
-4. **Scanner-by-capability:** SCA/secret/SAST tooling (incl. the Semgrep MCP) is referenced by capability
+4. **Scanner-by-capability:** SCA/secret/SAST tooling (incl. the `semgrep` SAST CLI) is referenced by capability
    and degrades gracefully when absent — no hard machine coupling.
