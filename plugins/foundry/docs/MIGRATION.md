@@ -217,14 +217,14 @@ the path-rewrite map); the files moved verbatim. Cross-plugin path repairs done 
 
 ## I · RUST_WEBAPP_API knowledge incorporated (2026-06)
 
-**Source.** A hard-won knowledge package (`incoming-knowledge/knowledge/` — distilled from the
+**Source.** A hard-won knowledge package (`docs/historical/archive/incoming-knowledge/knowledge/` — distilled from the
 shipped `forge` Rust/WASM + Vercel project: a production spec for building a full-Rust vertical
 slice first-time-every-time). The raw folder is **kept as-is** as a provenance archive; the plugin
 received its own incorporated copies so `${CLAUDE_PLUGIN_ROOT}` resolves at runtime.
 
 | Incorporated as | From | Notes |
 |---|---|---|
-| `skills/rust-webapp-rollout/` + `references/` (00–08 + README) + `references/templates/` (16 zero-drift templates) | `incoming-knowledge/knowledge/**` | Copied **verbatim** (intact cross-links + version matrix). The one-shot rollout capability. |
+| `skills/rust-webapp-rollout/` + `references/` (00–08 + README) + `references/templates/` (16 zero-drift templates) | `docs/historical/archive/incoming-knowledge/knowledge/**` | Copied **verbatim** (intact cross-links + version matrix). The one-shot rollout capability. |
 | `agents/handler-rust.md` | manifest §2 prime directives + quality-gate | General Rust value-handler. |
 | `agents/handler-rust-webapp.md` | architecture blueprint + deploy playbook + guardrails | RUST_WEBAPP_API handler; defers to the rollout skill. |
 | `knowledge/protocols/certainty-markers.md` | the `THE ONLY WAY`/`GUARDRAIL`/`ANTI-PATTERN`/`WORKED EXAMPLE` markers | NEW marketplace-wide articulation standard. |
