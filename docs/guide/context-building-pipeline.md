@@ -2,7 +2,7 @@
 
 *A "learning to Claude" note.* This explains the mechanisms by which text becomes part of
 an agent's working context in Claude Code, what each one costs, and how this marketplace
-uses them — concretely, how [`SOUL.md`](../SOUL.md) is **always on** without burning tokens.
+uses them — concretely, how [`KAIZEN.md`](../../KAIZEN.md) is **always on** without burning tokens.
 
 It is learner-facing material for anyone working on the marketplace; it is not shipped to
 or read by the installed plugins at runtime.
@@ -85,26 +85,31 @@ that genuinely change turn-to-turn, not for a fixed document.
 A skill's `SKILL.md` frontmatter (name + description) is always cheaply in context; its
 **body loads only when the skill is invoked**. This is the model for content that should
 *not* be always on — large, situational knowledge that earns its tokens only when needed.
-SOUL is the opposite case (tiny, universal), so it belongs in a door 1/2 mechanism, not a
+KAIZEN is the opposite case (tiny, universal), so it belongs in a door 1/2 mechanism, not a
 skill — but the contrast is the whole point: **match the door to the document.**
 
-## Where SOUL.md fits — the design, end to end
+## Where KAIZEN.md fits — the design, end to end
 
-SOUL is small (a framing line + seven quotes) and universal (it should be present whenever
-*any* plugin is active). That profile points squarely at **door 2 with dedup**:
-
-![How SOUL.md reaches context exactly once: the canonical SOUL.md at the repo root is copied byte-identical (CI Check E) into each plugin's SOUL.md (×9, travelling with the install), each read by that plugin's inject-soul.sh hook (×9, byte-identical, CI Check F). On SessionStart every enabled plugin's hook fires together and races at an atomic sentinel — mkdir ${TMPDIR}/claude-soul/soul-<session_id>-<source>.lock — which succeeds for exactly ONE caller per (session, source) event; that one winner prints hookSpecificOutput.additionalContext = SOUL.md, so SOUL lands in the cached prefix ONCE per event — never 9×, never omitted.](diagrams/02-soul-sentinel.png)
+KAIZEN is small (the lean muda · mura · muri canon) and universal (it should be present whenever
+*any* plugin is active). That profile points squarely at **door 2 with dedup**: the canonical
+`KAIZEN.md` at the repo root is copied byte-identical (CI Check N) into each plugin's `KAIZEN.md`
+(travelling with the install), each read by that plugin's `inject-kaizen.sh` hook (byte-identical,
+CI Check O). On SessionStart every enabled plugin's hook fires together and races at an atomic
+sentinel — `mkdir ${TMPDIR}/claude-kaizen/kaizen-<session_id>-<source>.lock` — which succeeds for
+exactly ONE caller per (session, source) event; that winner prints
+`hookSpecificOutput.additionalContext = KAIZEN.md`, so KAIZEN lands in the cached prefix ONCE per
+event — never N×, never omitted.
 
 The properties this buys, mapped back to the three axes:
 
 - **When:** every session start, and re-injected on `resume` / `clear` / `compact` —
   because `clear` wipes context and `compact` can drop earlier injections, the sentinel is
-  keyed by `session_id` **and** `source`, so a fresh single injection restores SOUL after
+  keyed by `session_id` **and** `source`, so a fresh single injection restores KAIZEN after
   each. *Never omitted.*
 - **Token cost:** one small injection per event, into the cached prefix → effectively
   one-time, not per-turn. *Not wasteful.*
 - **Reliability:** fires whenever ≥1 plugin is enabled; the atomic `mkdir` lock guarantees
-  exactly one of the nine emits. *Never duplicated.*
+  exactly one emits. *Never duplicated.*
 
 ### Why these specific choices
 
@@ -112,22 +117,22 @@ The properties this buys, mapped back to the three axes:
   resolve `${CLAUDE_PLUGIN_ROOT}` — its own directory. It cannot reach a sibling plugin or
   the marketplace root at runtime. So each plugin must carry its own copy; the
   byte-identity is held by **CI verification, not a generator** (matching the repo's
-  existing `check.sh` covenant). Single source of truth = the root `SOUL.md`; CI Checks
-  E/F fail on any drift.
+  existing `check.sh` covenant). Single source of truth = the root `KAIZEN.md`; CI Checks
+  N/O fail on any drift.
 - **Why `mkdir` for the lock?** It is the portable atomic test-and-set — it succeeds for
   exactly one concurrent caller and fails for the rest, with no partial-write race a `>`
   redirect could leave.
 - **Why no hard dependency on `jq`?** The hook runs on every session of every install;
   it parses and emits with `jq` when present and falls back to pure bash otherwise, so a
   missing tool degrades to "still works", and any failure at all degrades (via `|| true`)
-  to "no SOUL this session" rather than a broken session start.
+  to "no KAIZEN this session" rather than a broken session start.
 
 ## The takeaway
 
 Putting a document in front of the model is a *routing* decision, not a copy-paste:
 
 - **Small + universal + static** → SessionStart `additionalContext` (or a memory file if
-  the scope is a single repo/machine). Cached prefix makes it one-time. **← SOUL.md**
+  the scope is a single repo/machine). Cached prefix makes it one-time. **← KAIZEN.md**
 - **Small + dynamic** → UserPromptSubmit (pay per turn on purpose).
 - **Large + situational** → a skill body (pay only when invoked).
 - **Repo-local canon for agents working *on* the repo** → `CLAUDE.md` + `@imports`.

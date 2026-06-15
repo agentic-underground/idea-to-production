@@ -9,7 +9,7 @@
 # Check O) and reads the byte-identical per-plugin KAIZEN.md (Check N). Edits start at the
 # repo-root KAIZEN.md / this file and are mirrored outward. The script touches only the
 # temp dir; it never reads or writes the user's project. It uses an independent sentinel
-# namespace from inject-soul.sh so the two injectors never collide.
+# namespace (claude-kaizen) so a re-run or other hook never collides.
 set -uo pipefail
 
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"

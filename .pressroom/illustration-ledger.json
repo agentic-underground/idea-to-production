@@ -14,7 +14,7 @@
     "plugins/foundry/VALUE_FLOW.md": { "status": "done", "figures": ["02-conveyor.png (composition 88)", "03-quality-chain.png (mermaid BEST 86)"], "doc_review": "PASS" },
     "plugins/foundry/knowledge/first-principles.md": { "status": "done", "figures": ["03-three-pillars.png (composition 82)", "02-tests-coordinates.png (composition 88)", "04-pure-core.png (composition BEST 87)"], "doc_review": "PASS" },
     "plugins/foundry/knowledge/glossary.md": { "status": "done", "figures": ["01-domain-tree.png (graphviz 84)"], "doc_review": "figure PASS; pre-existing scorecard-skill omission flagged" },
-    "docs/guide/context-building-pipeline.md": { "status": "done", "figures": ["01-context-doors.png (composition 88)", "02-soul-sentinel.png (graphviz 82)"], "doc_review": "PASS (fixed: six->nine plugins in prose+figure)" }
+    "docs/guide/context-building-pipeline.md": { "status": "done", "figures": ["01-context-doors.png (composition 88)"], "doc_review": "PASS (SOUL retired; 02-soul-sentinel figure removed with the SOUL canon)" }
   },
   "plugin_banners": {
     "note": "Coherent dark line-art branding banner set (1920x400) — one per plugin, the top visual of each plugin README. Crisp SVG wordmark + tagline + faint line-art motif over a dark graphic band; all stylized, non-photoreal. Replaces the obsolete square photoreal comfyui_heroes (5 hero.jpg, removed).",
@@ -31,7 +31,6 @@
   "no_figure_restraint": ["docs/internal/comfyui-experiment/README.md","docs/internal/comfyui-experiment/catalog.md","PREREQUISITES/README.md"],
   "deferred_findings_pre_existing": [
     "ideator README advertises /ideator:self-improve command with no backing commands/*.md (self-improve ships as a skill)",
-    "glossary omits the scorecard skill + /foundry:scorecard command from its lists",
-    "inject-soul.sh carries a stale '8 hooks/8x' comment across its 9 byte-identical copies (canonical-copy resync is human-gated)"
+    "glossary omits the scorecard skill + /foundry:scorecard command from its lists"
   ]
 }

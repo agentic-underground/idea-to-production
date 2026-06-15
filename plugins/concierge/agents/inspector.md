@@ -23,7 +23,7 @@ guardrail, and the KAIZEN covenant. Write `CONCIERGE_INSPECTION_REPORT.md` to th
 
 ## Phase 3 — CONCIERGE-specific cross-system consistency
 
-1. **Hook↔manifest parity:** every hook wired in `hooks/hooks.json` (`inject-soul`, `inject-welcome`,
+1. **Hook↔manifest parity:** every hook wired in `hooks/hooks.json` (`inject-welcome`,
    `offer-welcome`, `offer-statusline`, `check-statusline-drift`, `count-adversarial-catches`,
    `capture-cost`) exists on disk, is `bash -n` clean, exits 0 on a no-op, and NEVER writes the user's
    repo — opt-out/sentinel state lives only under `~/.claude/hook-state` or `~/.claude/state`.
@@ -39,5 +39,5 @@ guardrail, and the KAIZEN covenant. Write `CONCIERGE_INSPECTION_REPORT.md` to th
    `statusline/adversarial-artifacts.lst` (the single shared list), so a new reviewer artifact widens the
    ⚔ tally by editing data, not the script.
 5. **Canonical copies + four mirrors:** `skills/check/scripts/check.sh` and `knowledge/inspection-core.md`
-   are byte-identical to their sibling canonical copies; SOUL.md + inject-soul.sh parity holds; any skill
+   are byte-identical to their sibling canonical copies; KAIZEN.md + inject-kaizen.sh parity holds; any skill
    change is mirrored across `plugin.json`, the marketplace entry, `README.md`, and `requirements.tsv`.
