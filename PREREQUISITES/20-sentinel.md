@@ -3,7 +3,7 @@
 SENTINEL's three core lenses (PII, secrets, dependencies) work on **pattern-matching + the
 ecosystem's native advisory tooling**. It degrades gracefully: a missing scanner narrows a lens to
 "partial coverage" and is reported — never a silent PASS. Installing the scanners below upgrades
-coverage from heuristic to authoritative, and adds a **SAST** lens via the standalone `semgrep` CLI.
+coverage from heuristic to authoritative.
 
 ## Dependency / supply-chain (SCA) — per ecosystem
 
@@ -34,17 +34,8 @@ coverage from heuristic to authoritative, and adds a **SAST** lens via the stand
 > SENTINEL's secret-scan also works with **zero external tools** (regex families + entropy). The
 > scanners above raise confidence and add history/verification depth.
 
-## SAST (static application security testing)
-
-| Tool | Tier | Probe | Install |
-|---|---|---|---|
-| `semgrep` (standalone CLI) | optional | `semgrep --version` | `uv tool install semgrep` |
-
-Code-level vuln patterns (injection, taint, weak crypto) are an optional lens run via the standalone
-`semgrep` CLI; SENTINEL ships no SAST MCP server.
-
 Ansible: [`ansible/binaries.yml`](ansible/binaries.yml) (osv-scanner/trivy/grype/gitleaks/trufflehog),
-[`ansible/cargo.yml`](ansible/cargo.yml) (cargo-audit), [`ansible/uv.yml`](ansible/uv.yml) (pip-audit/semgrep),
+[`ansible/cargo.yml`](ansible/cargo.yml) (cargo-audit), [`ansible/uv.yml`](ansible/uv.yml) (pip-audit),
 [`ansible/go.yml`](ansible/go.yml) (govulncheck).
 
 > **No MCP needed.** SENTINEL is built entirely on local CLI scanners — the broader gaps (SBOM, IaC,

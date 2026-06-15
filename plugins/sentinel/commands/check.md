@@ -1,5 +1,5 @@
 ---
-description: Verify SENTINEL's security scanners (SCA, secrets, semgrep CLI for SAST) are installed and reachable — a ✓/✗ table by tier (advisory; --strict to fail on a missing required tool).
+description: Verify SENTINEL's security scanners (SCA, secrets) are installed and reachable — a ✓/✗ table by tier (advisory; --strict to fail on a missing required tool).
 ---
 
 Run the SENTINEL dependency check. Execute the script and present its ✓/✗ table, then summarise

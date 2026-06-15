@@ -16,4 +16,3 @@ syft	command -v syft	optional	anchore/syft install script
 trufflehog	command -v trufflehog	optional	trufflesecurity/trufflehog releases
 bundler-audit	command -v bundle-audit || bundle audit version	optional	gem install bundler-audit
 dependency-check	command -v dependency-check	optional	OWASP dependency-check release
-semgrep	command -v semgrep	optional	uv tool install semgrep (standalone CLI)

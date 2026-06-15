@@ -97,7 +97,7 @@ not-applicable, and any you skipped** in the report (no silent narrowing).
 
 > **If SENTINEL is installed**, also run `/security-gate` over the changed tree and fold its verdict
 > in as the **authoritative security lens** — it supersedes the SECURITY-REVIEWER pass for the
-> mechanical lenses (secrets, supply-chain, SAST, PII). The SECURITY-REVIEWER then narrows to the
+> mechanical lenses (secrets, supply-chain, PII). The SECURITY-REVIEWER then narrows to the
 > logic SENTINEL can't see (authz bypass, session/state design, business-logic abuse), cites CWE/OWASP
 > IDs, and does **not** re-report what the gate already owns (the dedup boundary in
 > [`../../agents/reviewer.md`](../../agents/reviewer.md) §SECURITY-REVIEWER). When SENTINEL is absent,

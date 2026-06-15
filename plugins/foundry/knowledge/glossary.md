@@ -64,7 +64,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   product can be high-quality and insecure. *(Built-in not inspected-in: quality is engineered from the
   first line of BUILD; ASSURE certifies it.)*
 - **SECURE** (lifecycle phase ⑥; gate, owner sentinel) — the **security** certification gate: PII,
-  secrets, supply-chain, SAST clear before exposure. Distinct from ASSURE (quality). *(Baked in from the
+  secrets, supply-chain clear before exposure. Distinct from ASSURE (quality). *(Baked in from the
   beginning — secure-by-design from DISCOVER; SECURE is the pre-exposure certification.)*
 - **OPERATE** (lifecycle phase ⑧; owner `mission-control`) — the living phase: observe, respond to
   incidents, iterate, and maintain the realised & live product; its learnings open the **next** cycle

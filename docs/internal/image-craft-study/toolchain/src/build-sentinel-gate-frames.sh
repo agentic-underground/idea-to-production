@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# SENTINEL — the security gate animated: a scan sweep crosses the artifact, each of four lenses
-# (PII · SECRETS · SUPPLY-CHAIN · SAST) seals green as the sweep reaches it, the verdict flips to
+# SENTINEL — the security gate animated: a scan sweep crosses the artifact, each of three lenses
+# (PII · SECRETS · SUPPLY-CHAIN) seals green as the sweep reaches it, the verdict flips to
 # PASS, and the gate barrier lifts — "cleared to expose". Motion teaches certify-BEFORE-exposure.
 # Dark-mode canon ground; teal "sealed/clear" / amber "scanning now" / dim "pending".
 set -euo pipefail
 OUT="${1:-sentinel-gate-frames}"; mkdir -p "$OUT"
 
-LENSES=(PII SECRETS "SUPPLY-CHAIN" SAST)
+LENSES=(PII SECRETS "SUPPLY-CHAIN")
 NL=${#LENSES[@]}
 W=1300; H=356
 DIM="#3a3a55"; TEAL="#5eead4"; AMBER="#fbbf24"; TXTD="#6b7280"; TXTL="#e8e8ef"; GROUND="#1e1e2e"
 
-# layout: artifact box at left, four lens chips stacked at center, gate barrier at right
+# layout: artifact box at left, three lens chips stacked at center, gate barrier at right
 ART_X=110; ART_Y=128; ART_W=150; ART_H=120     # the artifact under review
 CHIP_X=380; CHIP_W=300; CHIP_H=44; CHIP_GAP=14; CHIP_Y0=104
 GATE_X=820; GATE_W=360                          # the gate channel
@@ -43,7 +43,7 @@ emit() { # $1 sealed_count(0..NL) ; $2 sweep_x (-1 = off) ; $3 gate_lift(0..100)
     done
     printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="600" fill="%s" text-anchor="middle">artifact</text>\n' "$((ART_X+ART_W/2))" "$((ART_Y+ART_H+24))" "$TXTD"
 
-    # ---- the four lens chips ----
+    # ---- the three lens chips ----
     for i in $(seq 0 $((NL-1))); do
       cy=$(chip_y "$i")
       if [ "$i" -lt "$sealed" ]; then col="$TEAL"; tcol="$TXTL"; icon="check"; op=1.0
@@ -127,7 +127,7 @@ for i in $(seq 0 $((NL-1))); do
   frame "$((i+1))" -1 0 0 label                # lens i sealed green, sweep off
 done
 
-# 3) all four sealed, gate still closed — "4/4 lenses, security cleared". A settling beat the
+# 3) all three sealed, gate still closed — "3/3 lenses, security cleared". A settling beat the
 #    reader needs to absorb before the verdict resolves.
 frame "$NL" -1 0 0 caption
 
