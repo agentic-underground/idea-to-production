@@ -1,9 +1,16 @@
 # SHA256SUMS — pinned checksums for the flow-server release assets named in RELEASE.
 # Format: "<sha256>  <asset>" (sha256sum / shasum -a 256 output), one asset per platform.
 # POPULATED WHEN A RELEASE IS CUT: the flow-server-release CI workflow builds each asset and
-# emits a SHA256SUMS file as a release artifact; copy its lines here and commit, then the
+# emits a SHA256SUMS file as a release artifact; copy its lines below and commit, then the
 # launcher (flow-server-mcp) retrieves + verifies instead of falling back to a source build.
+# The launcher's parser skips these comment lines and accepts only 64-hex digests, so the
+# example/instruction comments are safe to keep above the real entries.
 # Asset name: flow-server-<target-triple>[.exe], e.g.
 #   flow-server-x86_64-unknown-linux-gnu
 #   flow-server-aarch64-apple-darwin
 #   flow-server-x86_64-pc-windows-msvc.exe
+5fde7967a29e0fa09b8926fd1a20d98d2acb2123c1555c92785d09279899f8e5  flow-server-aarch64-apple-darwin
+fd554c447ba9b93d4e1ddbd03d890d32b4c8a47c7d4232674aa5561ea70791e5  flow-server-aarch64-unknown-linux-gnu
+b09eefdd16c128d07c01b4b595c1c9bba24ee783424996c8377aef2ce0ead6b1  flow-server-x86_64-apple-darwin
+79cafa754428cefc012984597b76b67a2b4df1c2c0e31afaafb22cb04aa009e9 *flow-server-x86_64-pc-windows-msvc.exe
+b8cdcdb295e4688017d1ef9059feab641483a87a0a46de04e5b957d79a73730f  flow-server-x86_64-unknown-linux-gnu
