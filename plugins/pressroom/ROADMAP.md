@@ -1,5 +1,9 @@
 # PRESSROOM — Roadmap
 
+> **Consolidating.** The marketplace roadmap now lives as a file-per-item tree at
+> [`.i2p/roadmap/`](../../.i2p/roadmap/) (status = folder). The expansion items below are **pending
+> migration** into `.i2p/roadmap/backlog/` (roadmap item [47]); kept here meanwhile so nothing is lost.
+
 The shipped v1 covers prose (writer), standalone diagrams (diagram-studio), print PDFs
 (rich-pdf-with-diagrams), and the `/publish` orchestrator. **v1.2** adds the Mermaid-native
 **mermaid-specialist** (full taxonomy + theming + ELK) and the adversarial **design-reviewer**

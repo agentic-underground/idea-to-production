@@ -1,5 +1,10 @@
 # ROADMAP — deferred capability
 
+> **Consolidating.** The marketplace roadmap now lives as a file-per-item tree at
+> [`.i2p/roadmap/`](../../../../../.i2p/roadmap/) (status = folder). These deferred design-system
+> capabilities are **pending migration** into `.i2p/roadmap/backlog/` (roadmap item [47]); kept here
+> meanwhile so nothing is lost.
+
 v1 is the design system itself: philosophy, the INTENT marker protocol, the element registry + `-help`, the elicitation flow, the starter elements, and the adversarial design-critic procedure. The items below are real, valued, and deliberately deferred — read this before promising work in these areas.
 
 ## 1. Large datasets & virtualization
