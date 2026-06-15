@@ -19,7 +19,10 @@
 /marketplace-health.json
 /IN_PROGRESS.md
 /CHECKPOINT_*.md
-/.i2p/
+# Ignore .i2p/ runtime state (lifecycle.json, cost.json, events.jsonl, …) — but NOT the
+# roadmap tree, which is the durable source of truth and must stay tracked.
+/.i2p/*
+!/.i2p/roadmap/
 /*_INSPECTION_REPORT.md
 
 # --- OS / editor cruft ---
