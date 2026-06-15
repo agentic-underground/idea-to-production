@@ -1,9 +1,10 @@
 ---
 id: 48
 title: "Statusline widget line-break control (break-before / break-after / none)"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-15
+completed: 2026-06-15
 depends_on: "—"
 ---
 

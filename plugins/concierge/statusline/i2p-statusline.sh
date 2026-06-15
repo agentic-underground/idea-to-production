@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# i2p-statusline-version: 3
+# i2p-statusline-version: 4
 # idea-to-production rich status line — two-line layout, wide gauges, caught widget.
 # Reads JSON from stdin, renders a two-line ANSI status bar.
 # Never exits non-zero; all fields degrade gracefully when absent.
@@ -23,26 +23,37 @@ _jq_ok=''
 command -v jq >/dev/null 2>&1 && _jq_ok=1
 
 # ---------------------------------------------------------------------------
-# Per-segment visibility config — each segment can be turned OFF without
-# touching the renderer. Source order (later wins):
-#   1. defaults (every segment ON)
+# Per-segment config — visibility AND (for line-2 widgets) line-break layout —
+# without touching the renderer. Source order (later wins):
+#   1. defaults (every segment ON; every widget break = none)
 #   2. $CLAUDE_I2P_STATUSLINE_CONF, else ~/.claude/i2p-statusline.conf
-# Conf format: one `key=0` (hide) or `key=1` (show) per line; `#` comments ok.
-# Keys: cwd branch repo pr model version style effort context rate_5h rate_7d
-#       lifecycle session_cost lifecycle_cost catches session_meta vim
-# Configure via /concierge:statusline. Unknown/absent keys default to ON, so
-# an empty or missing conf reproduces the original always-on behaviour.
+# Conf format: one `key=value` per line; `#` comments ok. Two key families:
+#   • visibility: `<seg>=0` (hide) / `=1` (show). Segs: cwd branch repo pr model
+#     version style effort context rate_5h rate_7d lifecycle session_cost
+#     lifecycle_cost catches session_meta vim
+#   • line-break: `break_<widget>=before|after|none` for line-2 widgets
+#     (context rate_5h rate_7d lifecycle session_cost lifecycle_cost catches).
+#     `before` starts the widget on a new line, `after` breaks after it, `none`
+#     (default) keeps it inline and defers wrapping to the terminal.
+# Configure via /concierge:statusline (visibility) and /concierge:statusline-widgets
+# (line breaks). Unknown/absent keys default to ON / none, so an empty or missing
+# conf reproduces the original two-line behaviour.
 # ---------------------------------------------------------------------------
-declare -A SEG 2>/dev/null || SEG=()
+declare -A SEG BREAK 2>/dev/null || { SEG=(); BREAK=(); }
 _seg_conf="${CLAUDE_I2P_STATUSLINE_CONF:-$HOME/.claude/i2p-statusline.conf}"
 if [ -r "$_seg_conf" ]; then
   while IFS='=' read -r _k _v; do
     _k="${_k//[[:space:]]/}"; _v="${_v//[[:space:]]/}"
     case "$_k" in ''|\#*) continue ;; esac
-    SEG["$_k"]="$_v"
+    case "$_k" in
+      break_*) BREAK["${_k#break_}"]="$_v" ;;
+      *)       SEG["$_k"]="$_v" ;;
+    esac
   done < "$_seg_conf"
 fi
 seg_on() { [ "${SEG[$1]:-1}" != "0" ]; }
+# break_of <widget-key> → before|after|none (invalid/absent ⇒ none)
+break_of() { case "${BREAK[$1]:-none}" in before) printf before ;; after) printf after ;; *) printf none ;; esac; }
 
 jget() {
   if [ -n "$_jq_ok" ]; then
@@ -458,7 +469,10 @@ printf "\n"
 #                           ⚔ caught │ <plugin-contributed widgets>
 # ─────────────────────────────────────────────────────────────────────────────
 
-line2_parts=()
+line2_parts=(); line2_keys=()
+# push_widget <key> <rendered-segment> — append a line-2 widget keeping its key
+# (parallel arrays) so break_of(<key>) can place line breaks during composition.
+push_widget() { line2_keys+=("$1"); line2_parts+=("$2"); }
 
 # Context window — 28-cell bar
 if seg_on context && [ -n "$used_pct" ]; then
@@ -469,7 +483,7 @@ if seg_on context && [ -n "$used_pct" ]; then
   _total=$(fmt_tokens "$ctx_total")
   [ -n "$_tok" ] && [ -n "$_total" ] && _tokens_str="  ${DIM}${_tok}/${_total}${R}"
   [ -n "$_tok" ] && [ -z "$_total" ] && _tokens_str="  ${DIM}${_tok}${R}"
-  line2_parts+=("${FG_BBLACK}ctx ${GAUGE_COLOR}${GAUGE_OUT}${R}  ${GAUGE_COLOR}${used_int}%  used${R}${_tokens_str}")
+  push_widget context "${FG_BBLACK}ctx ${GAUGE_COLOR}${GAUGE_OUT}${R}  ${GAUGE_COLOR}${used_int}%  used${R}${_tokens_str}"
 fi
 
 # 5-hour rate limit — 20-cell bar
@@ -478,7 +492,7 @@ if seg_on rate_5h && [ -n "$five_h_pct" ]; then
   gauge_bar "$pct_int" 20 "▰" "▱"
   _reset_str=""
   [ -n "$five_h_reset" ] && _reset_str="  ${DIM}↺$(fmt_epoch_hhmm "$five_h_reset")${R}"
-  line2_parts+=("${FG_BBLACK}5h ${GAUGE_COLOR}${GAUGE_OUT}${R}  ${GAUGE_COLOR}${pct_int}%${R}${_reset_str}")
+  push_widget rate_5h "${FG_BBLACK}5h ${GAUGE_COLOR}${GAUGE_OUT}${R}  ${GAUGE_COLOR}${pct_int}%${R}${_reset_str}"
 fi
 
 # 7-day rate limit — 20-cell bar
@@ -487,25 +501,25 @@ if seg_on rate_7d && [ -n "$seven_d_pct" ]; then
   gauge_bar "$pct_int" 20 "▰" "▱"
   _reset_str=""
   [ -n "$seven_d_reset" ] && _reset_str="  ${DIM}↺$(fmt_epoch_hhmm "$seven_d_reset")${R}"
-  line2_parts+=("${FG_BBLACK}7d ${GAUGE_COLOR}${GAUGE_OUT}${R}  ${GAUGE_COLOR}${pct_int}%${R}${_reset_str}")
+  push_widget rate_7d "${FG_BBLACK}7d ${GAUGE_COLOR}${GAUGE_OUT}${R}  ${GAUGE_COLOR}${pct_int}%${R}${_reset_str}"
 fi
 
 # Product-lifecycle phase
 if seg_on lifecycle; then
   lifecycle_widget
-  [ -n "$LC_OUT" ] && line2_parts+=("$LC_OUT")
+  [ -n "$LC_OUT" ] && push_widget lifecycle "$LC_OUT"
 fi
 
 # Session spend — always-on, first-order (tokens + $)
 if seg_on session_cost; then
   session_cost_widget
-  [ -n "$SC_OUT" ] && line2_parts+=("$SC_OUT")
+  [ -n "$SC_OUT" ] && push_widget session_cost "$SC_OUT"
 fi
 
 # Lifecycle spend vs estimate (only when a lifecycle cost ledger exists)
 if seg_on lifecycle_cost; then
   lifecycle_cost_widget
-  [ -n "$LCC_OUT" ] && line2_parts+=("$LCC_OUT")
+  [ -n "$LCC_OUT" ] && push_widget lifecycle_cost "$LCC_OUT"
 fi
 
 # Adversarial catch counter — rendered on line 2 unless hidden
@@ -515,7 +529,7 @@ if seg_on catches; then
   else
     _caught_clr="${DIM}${FG_BBLACK}"
   fi
-  line2_parts+=("${_caught_clr}⚔ caught ${catches}${R}")
+  push_widget catches "${_caught_clr}⚔ caught ${catches}${R}"
 fi
 
 # Plugin-contributed widgets (extension point): any marketplace plugin may drop an
@@ -527,19 +541,31 @@ if [ -d "$_widget_dir" ]; then
   for _w in "$_widget_dir"/*.sh; do
     [ -r "$_w" ] || continue
     _seg=$(printf '%s' "$input" | bash "$_w" 2>/dev/null) || _seg=""
-    [ -n "$_seg" ] && line2_parts+=("$_seg")
+    [ -n "$_seg" ] && push_widget "widget:$(basename "$_w" .sh)" "$_seg"
   done
 fi
 
+# Compose line 2 with per-widget line breaks (break_of): a widget begins a new
+# line when its own break is `before` OR the previous widget's break is `after`;
+# otherwise it stays inline (MSEP) and the terminal soft-wraps. Consecutive
+# breaks collapse to one; a leading/trailing break never makes a blank line
+# (i==0 never breaks; an `after` on the last widget has no following widget).
 if [ "${#line2_parts[@]}" -gt 0 ]; then
-  first=1
-  for part in "${line2_parts[@]}"; do
-    if [ "$first" = "1" ]; then
-      printf "%s" "$part"
-      first=0
+  _i=0
+  while [ "$_i" -lt "${#line2_parts[@]}" ]; do
+    if [ "$_i" -eq 0 ]; then
+      printf "%s" "${line2_parts[$_i]}"
     else
-      printf "%s%s" "$MSEP" "$part"
+      _wb=0
+      [ "$(break_of "${line2_keys[$_i]}")" = "before" ] && _wb=1
+      [ "$(break_of "${line2_keys[$((_i-1))]}")" = "after" ] && _wb=1
+      if [ "$_wb" = "1" ]; then
+        printf "\n%s" "${line2_parts[$_i]}"
+      else
+        printf "%s%s" "$MSEP" "${line2_parts[$_i]}"
+      fi
     fi
+    _i=$((_i+1))
   done
   printf "\n"
 fi

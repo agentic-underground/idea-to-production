@@ -80,6 +80,12 @@ activation CONCIERGE makes a single, unobtrusive offer — a splash, nothing mor
 points at a stable path). The **⚔ caught** tally is fed automatically by a PostToolUse hook
 ([`statusline/count-adversarial-catches.sh`](statusline/count-adversarial-catches.sh)) — no setup needed.
 
+**Fit it to your terminal.** **`/concierge:statusline-widgets`** ("show me the statusline widgets")
+controls where the line-2 widgets wrap: assign each `break-before`, `break-after`, or `none` (the default —
+flow inline and let the terminal soft-wrap). Choices persist to `~/.claude/i2p-statusline.conf` as
+`break_<widget>=…`; the renderer composes the breaks (adjacent breaks collapse; absent widgets never leave a
+blank line). Visibility (which segments show) stays on `/concierge:statusline`.
+
 **Extensible.** Any plugin can add a segment by dropping an executable printer in
 `~/.claude/state/statusline-widgets.d/*.sh`; each is fed the same stdin JSON and prints one already-colored
 segment. A failing or empty widget is silently skipped, so it can never break the bar.
