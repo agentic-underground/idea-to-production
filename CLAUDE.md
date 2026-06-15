@@ -16,6 +16,23 @@ start at [README.md](./README.md); agents working *on the marketplace itself* st
   plugin and CI-verified) is how shared assets stay in sync — see
   `scripts/verify-prereqs.sh`.
 
+## GIT WORKFLOW — branch → commit → push → PR → merge
+
+**Every change to this repo follows the full cycle — never commit straight to `main`.** Even a
+one-line fix gets its own branch and PR. The steps, in order:
+
+1. **Branch** off up-to-date `main` (`feat/…`, `fix/…`, `chore/…`, `docs/…`).
+2. **Commit** in focused, single-purpose batches — one concern per PR (small batches are KAIZEN; a
+   mixed PR is `muda`). Emoji-prefixed messages matching the existing history (`📝 docs(...)`,
+   `✨ feat(...)`, `🔧 chore(...)`), ending with the `Co-Authored-By` trailer.
+3. **Push** the branch to `origin`.
+4. **PR** via `gh pr create` — a clear title + body. The always-on adversarial review
+   (`/foundry:pr-review`) is the quality gate.
+5. **Merge** after the gate is green. **Who merges is set by
+   [`.foundry/governance.md`](.foundry/governance.md):** in `direct-merge` mode the agent merges its
+   own PR after a PASS; in `pr-approval` mode the agent stops at the open PR and a human merges. Keep
+   that file and this section in agreement.
+
 ## TOKEN SAFETY — provided by the token-fairness plugin
 
 The token-aware scheduler that protects a solo builder's usage meter from a paid lockout **no longer
