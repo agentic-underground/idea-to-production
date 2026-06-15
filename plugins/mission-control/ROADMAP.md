@@ -112,7 +112,7 @@ surface** of the human element of the software value system.
   or similar) plus the server + static assets; must keep mission-control self-contained
   (`${CLAUDE_PLUGIN_ROOT}` only).
 - **Reuse:** the masthead progress-bar generator at
-  `doc/image-craft-study/toolchain/src/build-masthead-svg.sh` (for #6); mission-control's existing
+  `docs/internal/image-craft-study/toolchain/src/build-masthead-svg.sh` (for #6); mission-control's existing
   observability/golden-signals knowledge and the local-Grafana target (for #3).
 - **Taste bar (maintainer HIGH standard):** every shipped SVG diagram is 4×-adversarially-reviewed and
   must look *stunning*; screenshots are double-reviewed (ATELIER ui-design-reviewer). "If the
@@ -211,7 +211,7 @@ JSONL event log; no client ever writes those files directly.
   including a token-rejected path and a concurrent-write serialization test.)
 
 ### Development Plan Reference
-`doc/FLOW_SERVER_PLAN.md`
+`docs/internal/FLOW_SERVER_PLAN.md`
 
 ---
 
@@ -464,7 +464,7 @@ feed: a mini-blog of orchestrator updates on what's been happening in the value 
 3. Given an orchestrator message is emitted, Then it appears at the top of the feed without reload.
 
 ### Implementation Notes
-- Reuse `doc/image-craft-study/toolchain/src/build-masthead-svg.sh` for the bar's look; fill bound to the
+- Reuse `docs/internal/image-craft-study/toolchain/src/build-masthead-svg.sh` for the bar's look; fill bound to the
   DONE fraction over the WebSocket stream; system messages come from the JSONL event log (#3).
 
 ### Human Interface Test Plan
@@ -731,7 +731,7 @@ front, that its roadmap items will be documented this way.
   be scheduled through the `tf` token-fairness gate, per completed item, off-peak — never per commit.
 
 ### Development Plan Reference
-`doc/PROCESS_DOC_GIT_GOVERNANCE_PLAN.md` (master epic plan; each child gets its own `doc/<TITLE>_PLAN.md`).
+`docs/internal/PROCESS_DOC_GIT_GOVERNANCE_PLAN.md` (master epic plan; each child gets its own `doc/<TITLE>_PLAN.md`).
 
 ---
 
@@ -988,7 +988,7 @@ EPIC #16 KAIZEN UPLIFT — GEMBA feedback reflex + missing-handler decision gate
  └─ #26 Deferral + resumption (awaiting-handler ↔ DEFERRED handler item)         → blocks on #24
 ```
 
-Source plan: [`doc/KAIZEN_UPLIFT_PLAN.md`](../../doc/KAIZEN_UPLIFT_PLAN.md) (recovered from the
+Source plan: [`docs/internal/KAIZEN_UPLIFT_PLAN.md`](../../docs/internal/KAIZEN_UPLIFT_PLAN.md) (recovered from the
 `docs/token-fairness-learnings` branch). Two sequenced PRs, governance-gated, never self-merged: **PR-A**
 (the reflex) then **PR-B** (the gate, which consumes PR-A's `/mission-control:gemba`).
 
@@ -1005,7 +1005,7 @@ thrash, a reviewer BLOCK, a failure — it should *instinctively* capture the ev
 GitHub issue→PR feedback loop, so the fix lands once, upstream, for everyone. This epic weaves that **GEMBA
 feedback reflex** into the fabric (PR-A) and adds the **missing-capability decision gate** that turns a
 capability gap into a choice instead of a grind (PR-B). It generalises what we did by hand this session for
-the token-fairness scheduler (issue + draft PR + `doc/token-fairness-learnings/`).
+the token-fairness scheduler (issue + draft PR + `docs/internal/token-fairness-learnings/`).
 
 ### User Stories
 - AS the marketplace I WANT to capture-and-file every gap/failure/thrash at the place it broke SO THAT fixes
@@ -1040,10 +1040,10 @@ the token-fairness scheduler (issue + draft PR + `doc/token-fairness-learnings/`
 - **Net-new (small, sharp)**: there is no `gh issue create` anywhere yet; no umbrella-org identity; the
   missing-handler path doesn't pause — these three seams are the work.
 - **Token safety**: large cycle — stamp `tf plan --class large`, bracket plan-open/close; gate any fan-out.
-- Full spec, decisions (already made — do not re-ask), and the worked references: `doc/KAIZEN_UPLIFT_PLAN.md`.
+- Full spec, decisions (already made — do not re-ask), and the worked references: `docs/internal/KAIZEN_UPLIFT_PLAN.md`.
 
 ### Development Plan Reference
-`doc/KAIZEN_UPLIFT_PLAN.md` (the master plan); each child gets its own `doc/<TITLE>_PLAN.md` at GO.
+`docs/internal/KAIZEN_UPLIFT_PLAN.md` (the master plan); each child gets its own `doc/<TITLE>_PLAN.md` at GO.
 
 ---
 
@@ -1074,7 +1074,7 @@ SELF/GEMBA verdict from a "where does this belong" hint.
 
 ### Implementation Notes
 - Reuse the `git remote -v` resolution from `plugins/foundry/skills/pr-review/scripts/gather-diff.sh`.
-- See `doc/KAIZEN_UPLIFT_PLAN.md` §1a.
+- See `docs/internal/KAIZEN_UPLIFT_PLAN.md` §1a.
 
 ### Development Plan Reference
 `doc/GEMBA_IDENTITY_PLAN.md`
@@ -1150,7 +1150,7 @@ with `--dry-run`.
 
 **Brief Description**
 The one-step reflex skill: **capture** into `doc/learnings/<event-slug>/{incident-report,proposed-solutions}.md`
-(the exact shape of `doc/token-fairness-learnings/…`, the canonical template) + a ledger record; **route** via
+(the exact shape of `docs/internal/token-fairness-learnings/…`, the canonical template) + a ledger record; **route** via
 `identity.sh` (SELF → `/X:self-improve` or auto-file here; GEMBA → draft, ask, file on the sibling); **raise**
 via `raise-feedback.sh`, recording `issue_url` back to the ledger.
 
@@ -1283,7 +1283,7 @@ original awaiting-handler).
 2. Given option BUILD, it authors `handler-<stack>` via the proven pipeline, then resumes the original build.
 
 ### Implementation Notes
-- Reuse `doc/handler-build/` pipeline + `handler-rust-tauri` as the worked example; consumes #20. Plan §2b.
+- Reuse `docs/internal/handler-build/` pipeline + `handler-rust-tauri` as the worked example; consumes #20. Plan §2b.
 
 ### Development Plan Reference
 `doc/MISSING_CAPABILITY_GATE_PLAN.md`
@@ -1361,7 +1361,7 @@ The structural features from the claude.ai/design "job items work board" handoff
 already applied to the canvas). The board becomes a fuller kanban: a RHS detail panel that shows an EPIC's
 PR text + nested items and an ITEM's issue text + commit-graph; drag a card between DO/DOING/DONE to change
 its status; a coral REDO badge + required-comment modal on backward moves. Source design:
-[`doc/design/job-items-work-board/`](../../doc/design/job-items-work-board/README.md).
+[`docs/guide/design/job-items-work-board/`](../../docs/guide/design/job-items-work-board/README.md).
 
 ### User Stories
 - AS a builder I WANT to click an EPIC/ITEM and read its PR/issue text + commits in a side panel SO THAT I
@@ -1377,10 +1377,10 @@ its status; a coral REDO badge + required-comment modal on backward moves. Sourc
 ### Implementation Notes
 - Surfaces existing data: #5 epic/item structure, #10 PR linkage, #11 issue annotations, the commit log.
 - RHS panel + modal are HTML overlays beside the SVG canvas; drag reuses the canvas pointer handling; REDO comment reuses #4 annotate. Keep the vitest suite at 100%.
-- Full design intent + tokens: `doc/design/job-items-work-board/chat1.md` + `project/kanban-board.html`.
+- Full design intent + tokens: `docs/guide/design/job-items-work-board/chat1.md` + `project/kanban-board.html`.
 
 ### Development Plan Reference
-`doc/FLOW_KANBAN_UPLIFT_PLAN.md` (master); each child gets its own plan at GO.
+`docs/internal/FLOW_KANBAN_UPLIFT_PLAN.md` (master); each child gets its own plan at GO.
 
 ---
 
@@ -1554,7 +1554,7 @@ This makes delivery a single attended flow rather than a two-session hand-off.
   DELIVERY_COMPLETE; the "no" path must not alter roadmap STATUS.
 
 ### Development Plan Reference
-`doc/FOUNDRY_INTERACTIVE_MERGE_PLAN.md`
+`docs/internal/FOUNDRY_INTERACTIVE_MERGE_PLAN.md`
 
 ---
 
@@ -1760,7 +1760,7 @@ undifferentiated list.
 - Keep the Rust suite at 100% coverage; add a unit test for the cold-start / corrupt-file paths.
 
 ### Development Plan Reference
-`doc/FLOW_GATE_PERSIST_PLAN.md`
+`docs/internal/FLOW_GATE_PERSIST_PLAN.md`
 
 ---
 

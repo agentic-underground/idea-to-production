@@ -7,7 +7,7 @@
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 find_root() { local d="$HERE"; while [ "$d" != / ]; do [ -f "$d/.claude-plugin/marketplace.json" ] && { echo "$d"; return; }; d="$(dirname "$d")"; done; echo "$PWD"; }
-SURVEY_DIR="${SURVEY_DIR:-$(find_root)/doc/comfyui-experiment}"
+SURVEY_DIR="${SURVEY_DIR:-$(find_root)/docs/internal/comfyui-experiment}"
 MANIFEST="$SURVEY_DIR/manifest.json"
 OUT="$SURVEY_DIR/contact-sheets"; mkdir -p "$OUT"
 command -v typst >/dev/null || { echo "typst not found" >&2; exit 2; }

@@ -11,4 +11,4 @@ The domain `Item` struct (`domain/model.rs`) only carries: `id, title, status, g
 
 **How to apply:** When a cycle requires PR or commit data in the frontend, scope the panel to available data only (`annotations` from `Annotated` events, `deps` from `Flow.edges()`). Stub `pr: null` and `commits: []` in `item_json`. Recommend a KAIZEN item to add `PrLinkage` and `CommitRef` types to the domain model.
 
-See: `doc/FLOW_KANBAN_UPLIFT_PLAN.md` §1.3 for the full data gap analysis from epic [27] planning.
+See: `docs/internal/FLOW_KANBAN_UPLIFT_PLAN.md` §1.3 for the full data gap analysis from epic [27] planning.

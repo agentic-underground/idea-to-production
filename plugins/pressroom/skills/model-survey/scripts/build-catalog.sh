@@ -7,7 +7,7 @@
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 find_root() { local d="$HERE"; while [ "$d" != / ]; do [ -f "$d/.claude-plugin/marketplace.json" ] && { echo "$d"; return; }; d="$(dirname "$d")"; done; echo "$PWD"; }
-SURVEY_DIR="${SURVEY_DIR:-$(find_root)/doc/comfyui-experiment}"
+SURVEY_DIR="${SURVEY_DIR:-$(find_root)/docs/internal/comfyui-experiment}"
 MANIFEST="$SURVEY_DIR/manifest.json"; JOURNAL="$SURVEY_DIR/journal.jsonl"
 MD="$SURVEY_DIR/catalog.md"; TYP="$SURVEY_DIR/catalog.typ"
 RAW="$SURVEY_DIR/.catalog-raw.pdf"; PDF="$SURVEY_DIR/comfyui-model-survey.pdf"

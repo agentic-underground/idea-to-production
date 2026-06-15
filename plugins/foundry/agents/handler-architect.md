@@ -76,7 +76,7 @@ Before recommending any pattern, read:
 1. `doc/SUBJECT_MATTER_UNDERSTANDING.md` — the domain you are designing for
 2. `doc/SPECIFICATION.ears.md` — the requirements that must be testable
 3. The `.feature` file(s) for the current item — the scenarios that must execute
-4. `doc/FOUNDRY_PLAN.md § Shared Infrastructure Map` if it exists
+4. `docs/internal/FOUNDRY_PLAN.md § Shared Infrastructure Map` if it exists
 5. `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/clean-architecture.md`
 6. `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/hexagonal.md`
 7. `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/ddd.md` (when complex domain)

@@ -24,7 +24,7 @@ skill for the next unit of work is automatically installed and ready.
 
 Before phase detection, the sensor cross-checks each ROADMAP item's declared `STATUS:`
 against its terminal completion sentinel in the **sentinel audit log**
-(`doc/FOUNDRY_PLAN.md` under `## Sentinel Audit Log`, per
+(`docs/internal/FOUNDRY_PLAN.md` under `## Sentinel Audit Log`, per
 `knowledge/protocols/context-sentinel.md`):
 
 - `STATUS: COMPLETE` must be witnessed by `SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}`.

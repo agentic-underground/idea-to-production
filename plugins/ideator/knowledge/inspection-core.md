@@ -84,7 +84,7 @@ each inspector ADDS its own plugin-specific Phase-3 items on top.
    manifests. It may appear **only** in the provenance archive, where each occurrence reads as *history* and
    notes that the folder is no longer a concern of the marketplace plugins (they run where installed). Flag
    every live `~/.claude`-style or hard-coded home/config-dir coupling as a defect. Allowlisted archive:
-   `docs/HISTORY.md`, `docs/MIGRATION.md`, `docs/DEPRECATED.md`, `examples/`, `doc/historical/`, and any
+   `docs/HISTORY.md`, `docs/MIGRATION.md`, `docs/DEPRECATED.md`, `examples/`, `docs/historical/`, and any
    file with an explicit `LEGACY`/deprecated banner or `docs/DEPRECATED.md` catalog entry. A
    **project-relative** `./.claude/` (a *project's* own config) is legitimate and not a coupling.
 3. **Canonical-copy integrity:** shared assets copied across plugins must be **byte-identical**. Assert both

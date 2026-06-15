@@ -8,7 +8,7 @@
 # cells skip). Errors (a checkpoint/LoRA that will not load, a base/SDXL mismatch) are journalled as DATA,
 # never fatal — a load-failure is a finding.
 #
-# Usage: CRAFT_DIR=doc/image-craft-study/craft bash generate.sh
+# Usage: CRAFT_DIR=docs/internal/image-craft-study/craft bash generate.sh
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Reuse the proven REST client from the sibling model-survey skill (same plugin — self-contained).
@@ -16,7 +16,7 @@ source "$HERE/../../model-survey/scripts/comfyui-lib.sh"
 TEMPL_DIR="$HERE/../../../knowledge/comfyui-workflows"   # plugins/pressroom/knowledge/comfyui-workflows
 
 find_root() { local d="$HERE"; while [ "$d" != / ]; do [ -f "$d/.claude-plugin/marketplace.json" ] && { echo "$d"; return; }; d="$(dirname "$d")"; done; echo "$PWD"; }
-CRAFT_DIR="${CRAFT_DIR:-$(find_root)/doc/image-craft-study/craft}"
+CRAFT_DIR="${CRAFT_DIR:-$(find_root)/docs/internal/image-craft-study/craft}"
 MANIFEST="$CRAFT_DIR/manifest.json"
 JOURNAL="$CRAFT_DIR/journal.jsonl"
 [ -f "$MANIFEST" ] || { echo "no manifest: $MANIFEST" >&2; exit 2; }

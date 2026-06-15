@@ -47,7 +47,7 @@ LEAD ENGINEER may promote an item to an earlier tier when:
 3. **Token efficiency**: Two small MEDIUM items together cost fewer tokens than
    one large HIGH item. Promote them to PRIMARY when the budget has headroom.
 
-Promotions are recorded in `doc/FOUNDRY_PLAN.md` with rationale.
+Promotions are recorded in `docs/internal/FOUNDRY_PLAN.md` with rationale.
 
 ---
 
@@ -61,7 +61,7 @@ Promotions are recorded in `doc/FOUNDRY_PLAN.md` with rationale.
 | TERTIARY+ | Remainder; processed in subsequent sessions |
 
 LEAD ENGINEER adjusts these caps based on actual item complexity after the
-deep dive (§5). Adjustments are documented in `doc/FOUNDRY_PLAN.md`.
+deep dive (§5). Adjustments are documented in `docs/internal/FOUNDRY_PLAN.md`.
 
 ---
 

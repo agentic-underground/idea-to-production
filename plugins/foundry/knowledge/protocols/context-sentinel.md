@@ -285,7 +285,7 @@ before doing any work.
 
 Sentinels are passed as context strings, not stored in files.
 For audit purposes, FOUNDRY appends the full sentinel chain for each item
-to `doc/FOUNDRY_PLAN.md` under `## Sentinel Audit Log` after completion.
+to `docs/internal/FOUNDRY_PLAN.md` under `## Sentinel Audit Log` after completion.
 
 ---
 

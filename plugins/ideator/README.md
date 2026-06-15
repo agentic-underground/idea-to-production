@@ -8,7 +8,7 @@ IDEATOR is the **REFINEMENT** phase of the `idea-to-production` marketplace. It 
 opportunity (from [`market-scanner`](../market-scanner/)) or a raw idea you already have, refines it to
 **knowledge-parity** through an adversarially-challenged dialogue, and emits the **IDEA package**.
 
-![IDEATE animated: four scattered fragments — PROBLEM (the pain, sharp), USERS (named actors), CRITERIA (testable success), and SCOPE (explicit edges) — drift in from the corners and dock one-by-one into a central IDEA-package frame, each turning from dim to amber in-flight to teal as it locks and the knowledge-parity meter fills; once all four axes are locked the challenger's READY stamp lands amber and settles teal, captioned "challenger signs off · knowledge-parity reached → hand off to FOUNDRY". The motion teaches IDEATE: a scattered idea is refined axis-by-axis to knowledge-parity until the package is unambiguous and signed off.](../../doc/images/ideator-converge.gif)
+![IDEATE animated: four scattered fragments — PROBLEM (the pain, sharp), USERS (named actors), CRITERIA (testable success), and SCOPE (explicit edges) — drift in from the corners and dock one-by-one into a central IDEA-package frame, each turning from dim to amber in-flight to teal as it locks and the knowledge-parity meter fills; once all four axes are locked the challenger's READY stamp lands amber and settles teal, captioned "challenger signs off · knowledge-parity reached → hand off to FOUNDRY". The motion teaches IDEATE: a scattered idea is refined axis-by-axis to knowledge-parity until the package is unambiguous and signed off.](../../docs/images/ideator-converge.gif)
 
 ## The IDEA package — two faces, one understanding
 

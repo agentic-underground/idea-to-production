@@ -8,7 +8,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$HERE/comfyui-lib.sh"
 find_root() { local d="$HERE"; while [ "$d" != / ]; do [ -f "$d/.claude-plugin/marketplace.json" ] && { echo "$d"; return; }; d="$(dirname "$d")"; done; echo "$PWD"; }
 ROOT="$(find_root)"
-SURVEY_DIR="${SURVEY_DIR:-$ROOT/doc/comfyui-experiment}"
+SURVEY_DIR="${SURVEY_DIR:-$ROOT/docs/internal/comfyui-experiment}"
 WISH="${1:-$HERE/../references/manifest.example.json}"
 JOURNAL="$SURVEY_DIR/journal.jsonl"
 mkdir -p "$SURVEY_DIR"; touch "$JOURNAL"

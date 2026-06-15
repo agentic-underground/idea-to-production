@@ -3,11 +3,11 @@
 # 0 model tokens. The SCORE phase reads ONE sheet per objective so a single agent judges the whole A/B
 # (baseline vs treatment) and names the gain. Local ImageMagick 7 (`magick montage`).
 #
-# Usage: CRAFT_DIR=doc/image-craft-study/craft bash contact-sheets.sh
+# Usage: CRAFT_DIR=docs/internal/image-craft-study/craft bash contact-sheets.sh
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 find_root() { local d="$HERE"; while [ "$d" != / ]; do [ -f "$d/.claude-plugin/marketplace.json" ] && { echo "$d"; return; }; d="$(dirname "$d")"; done; echo "$PWD"; }
-CRAFT_DIR="${CRAFT_DIR:-$(find_root)/doc/image-craft-study/craft}"
+CRAFT_DIR="${CRAFT_DIR:-$(find_root)/docs/internal/image-craft-study/craft}"
 MANIFEST="$CRAFT_DIR/manifest.json"
 OUT="$CRAFT_DIR/contact-sheets"; mkdir -p "$OUT"
 command -v magick >/dev/null || { echo "magick (ImageMagick 7) required" >&2; exit 2; }
