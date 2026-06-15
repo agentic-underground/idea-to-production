@@ -12,7 +12,7 @@ every workflow. Validated on **Debian 13 (trixie)**.
 | `node` ≥ 18 (24 validated) | recommended | `node --version` | Playwright MCP, JS/TS toolchains, mermaid-cli. | via [Volta](https://volta.sh) or `apt` |
 | `npm` | recommended | `npm --version` | Global installs (LSP, mermaid, playwright). | ships with node |
 | `python3` ≥ 3.10 (3.13 validated) | recommended | `python3 --version` | Python handler, several scanners. | `apt install python3` |
-| `uv` / `uvx` | recommended | `uv --version` | Fast Python + **ephemeral tool runner** — how we launch the Semgrep MCP and Python LSP/scanners without polluting the system. | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
+| `uv` / `uvx` | recommended | `uv --version` | Fast Python + **ephemeral tool runner** — how we launch the Fetch MCP and Python LSP/scanners without polluting the system. | `curl -LsSf https://astral.sh/uv/install.sh \| sh` |
 | `rustc` / `cargo` | recommended | `cargo --version` | Rust handlers, `typst`, several `cargo install` tools. | via [rustup](https://rustup.rs) |
 | `curl` | recommended | `curl --version` | Fetching installers / health checks. | `apt install curl` |
 

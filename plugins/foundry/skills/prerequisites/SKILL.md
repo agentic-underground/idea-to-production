@@ -52,7 +52,7 @@ missing on this machine.
 
    ## Core baseline            (from 00-core.md)
    ## FOUNDRY                  (from 10-foundry.md — toolchains, Playwright MCP, debuggers, LSP)
-   ## SENTINEL  (if installed) (from 20-sentinel.md — scanners + Semgrep MCP)
+   ## SENTINEL  (if installed) (from 20-sentinel.md — scanners incl. semgrep SAST CLI)
    ## PRESSROOM (if installed) (from 30-pressroom.md — dual-engine typesetting + DTP)
    ## MCP servers              (from 40-mcp.md)
    ## Language servers         (from 45-lsp.md)

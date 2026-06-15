@@ -16,7 +16,7 @@
 | `dx` (Dioxus CLI) | — | Drives the Rust/WASM webapp stack. | `cargo install dioxus-cli --locked` |
 | `cargo-zigbuild` + `zig` | zig 0.13 | glibc-correct cross-builds for Vercel's Rust runtime. | `cargo install cargo-zigbuild` + zig release |
 | `typst` | 0.14.2 | Fast, no-TeX typesetting — pressroom's default engine. | `cargo install typst-cli` |
-| `uv` / `uvx` | 0.11.17 | Fast Python + **ephemeral tool runner**; launches the Semgrep MCP & Python tooling cleanly. | astral install script |
+| `uv` / `uvx` | 0.11.17 | Fast Python + **ephemeral tool runner**; launches the Fetch MCP & Python tooling cleanly. | astral install script |
 | `node` (Volta) | 24.16 | Playwright MCP, JS/TS toolchains, mermaid-cli. | Volta |
 | `dotnet` | 10.0.203 | .NET stack availability. | Microsoft apt feed |
 | `rustc`/`cargo` | 1.96 | Rust toolchain. | rustup |

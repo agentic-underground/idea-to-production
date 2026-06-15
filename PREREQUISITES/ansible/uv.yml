@@ -11,10 +11,9 @@
     - debugpy          # foundry Python debugger
     - pyright          # foundry Python LSP (alternative to npm install)
     - ruff             # foundry Python lint/diagnostics
-    - semgrep          # sentinel SAST CLI (the MCP bundles its own; this is the standalone)
+    - semgrep          # sentinel SAST CLI (optional static-analysis lens)
   tags: [foundry, sentinel, lsp]
 
-# The Semgrep MCP (sentinel) and Fetch MCP (market-scanner, ideator) are launched ephemerally via
-# `uvx semgrep-mcp` / `uvx mcp-server-fetch` (no install needed). Ensuring uv is present
-# (core-bootstrap.yml) is the only requirement. API keys, where a server needs one, are runtime env —
-# never store them in the playbook.
+# The Fetch MCP (market-scanner, ideator) is launched ephemerally via `uvx mcp-server-fetch`
+# (no install needed). Ensuring uv is present (core-bootstrap.yml) is the only requirement. API
+# keys, where a server needs one, are runtime env — never store them in the playbook.

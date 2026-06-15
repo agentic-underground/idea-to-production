@@ -53,19 +53,6 @@ then:
 
 ---
 
-## Optional 4th lens — SAST via the Semgrep MCP
-
-SENTINEL ships a `semgrep` MCP server ([`../../.mcp.json`](../../.mcp.json), package `semgrep-mcp`,
-run via `uvx`; approve it once with `claude mcp list`). When present it adds a **static application
-security testing (SAST)** lens through the `mcp__semgrep__*` tools — code-level vulnerability
-patterns (injection, unsafe deserialisation, path traversal, weak crypto, taint flows) that the
-SCA / secret / PII lenses do not cover. Scan the changed source, fold findings into the **Supply
-Chain / Code** section, and apply the same severity → verdict rule. It is **optional and additive**:
-if the server is not approved or `uvx` is unavailable, the gate runs its three core lenses and
-records SAST as a coverage gap (no silent PASS).
-
----
-
 ## The verdict rule
 
 | Verdict | Condition | Meaning for the line |
@@ -117,7 +104,7 @@ itself degrades cleanly:
 
 ## Chain-gap diagnostics (don't halt silently)
 
-The gate **walks a chain** — pii-audit → secret-scan → dependency-audit (→ optional SAST). When a
+The gate **walks a chain** — pii-audit → secret-scan → dependency-audit. When a
 link cannot run (a sub-skill is unreachable, its required tool is absent, or a scope it needs is
 missing), the old failure mode was to **halt or skip with no actionable guidance**. Instead,
 **detect the gap and emit a diagnostic the next operator can act on**, in this exact shape:

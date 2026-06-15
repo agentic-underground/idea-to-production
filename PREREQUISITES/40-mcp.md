@@ -23,7 +23,7 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
 - **Pinned for reproducibility.** Each of these servers fetches and executes third-party code at
   launch, so the shipped configs pin an **explicit version** (never a floating `@latest`) — a fetched
   server can't change underneath you. The current pins: `@playwright/mcp@0.0.75`,
-  `@upstash/context7-mcp@3.1.0`, `uvx mcp-server-fetch@2026.6.4`, `uvx semgrep-mcp@0.9.0`.
+  `@upstash/context7-mcp@3.1.0`, `uvx mcp-server-fetch@2026.6.4`.
   `scripts/verify-prereqs.sh` check K asserts every `.mcp.json` server carries such a pin.
 - Manual fallback (no plugin): `claude mcp add playwright -- npx -y @playwright/mcp@0.0.75`.
 
@@ -34,10 +34,9 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
 | `fetch` | market-scanner, ideator | `uvx mcp-server-fetch@2026.6.4` | `mcp__fetch__*` | Keyless web research: fetch a URL and extract it as **markdown in chunks** — competitor pricing, docs, forum threads. Grounds the discovery scorecard / IDEA package in real evidence. |
 | `context7` | foundry | `npx -y @upstash/context7-mcp@3.1.0` | `mcp__context7__*` | **Version-specific** library docs + examples for 9,000+ libraries, injected into context — handlers code against the current API, not the training cutoff. |
 | `playwright` | foundry, atelier | `npx -y @playwright/mcp@0.0.75` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. foundry uses it for STORY feedback; atelier for `/ui-review` crawl + a11y snapshot. |
-| `semgrep` | sentinel | `uvx semgrep-mcp@0.9.0` | `mcp__semgrep__*` | SAST: code-level vulnerability patterns. Bundles its own `semgrep`. |
 
-Prereqs: `fetch` + `semgrep` need `uv`/`uvx`; `context7` + `playwright` need `node`/`npx` (Playwright's
-browser auto-downloads on first use). All four run **keyless** — nothing to provision but the launcher
+Prereqs: `fetch` needs `uv`/`uvx`; `context7` + `playwright` need `node`/`npx` (Playwright's
+browser auto-downloads on first use). All three run **keyless** — nothing to provision but the launcher
 (Context7 takes an optional key only to raise rate limits).
 
 ## headless_capable — which phases need a spawnable MCP/browser, which are headless-safe
@@ -56,7 +55,6 @@ prose guidance; the runtime contract it serves is
 | BUILD — `context7` version-specific docs lookup | `mcp.context7` (nice-to-have) | **yes (degrades)** | code against the training cutoff; disclose docs were not version-checked |
 | BUILD/ASSURE — STORY browser/E2E tests (`ds-step-story-tests`, PLAYWRIGHT-AGENT) | `mcp.playwright` + a real Chromium | **no — requires browser** | skip browser story tests; run CLI/API journey tests where the interface allows; disclose the browser lens did not run |
 | DESIGN — `atelier:mockup` / `atelier:ui-review` (screenshot + a11y crawl) | `mcp.playwright` + browser | **no — requires browser** | emit an SVG/wireframe fallback or skip; disclose screenshot-grade review skipped |
-| SECURE — `sentinel` SAST (`semgrep` MCP) | `mcp.semgrep` | **no — requires MCP** | skip the SAST lens; run SCA/secrets lenses that don't need it; mark the security lens PARTIAL |
 
 **The rule:** a headless-safe phase runs unchanged; an MCP/browser-dependent phase, when its MCP can't
 spawn (a `mcp.*` DEGRADED record is present, or `CI`/no-display is detected), takes its degraded-but-valid

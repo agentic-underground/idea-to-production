@@ -3,7 +3,7 @@
 SENTINEL's three core lenses (PII, secrets, dependencies) work on **pattern-matching + the
 ecosystem's native advisory tooling**. It degrades gracefully: a missing scanner narrows a lens to
 "partial coverage" and is reported — never a silent PASS. Installing the scanners below upgrades
-coverage from heuristic to authoritative, and adds a **SAST** lens via the Semgrep MCP.
+coverage from heuristic to authoritative, and adds a **SAST** lens via the standalone `semgrep` CLI.
 
 ## Dependency / supply-chain (SCA) — per ecosystem
 
@@ -34,17 +34,19 @@ coverage from heuristic to authoritative, and adds a **SAST** lens via the Semgr
 > SENTINEL's secret-scan also works with **zero external tools** (regex families + entropy). The
 > scanners above raise confidence and add history/verification depth.
 
-## SAST (static application security testing) — via MCP
+## SAST (static application security testing)
 
-| Tool | Tier | Probe | Why |
+| Tool | Tier | Probe | Install |
 |---|---|---|---|
-| Semgrep MCP (`semgrep-mcp`) | recommended | `command -v uvx` | Code-level vuln patterns (injection, taint, weak crypto). Shipped in [`plugins/sentinel/.mcp.json`](../plugins/sentinel/.mcp.json); bundles its own `semgrep`. Tools: `mcp__semgrep__*`. |
-| `semgrep` (standalone CLI) | optional | `semgrep --version` | run rules directly without MCP | `uv tool install semgrep` |
+| `semgrep` (standalone CLI) | optional | `semgrep --version` | `uv tool install semgrep` |
+
+Code-level vuln patterns (injection, taint, weak crypto) are an optional lens run via the standalone
+`semgrep` CLI; SENTINEL ships no SAST MCP server.
 
 Ansible: [`ansible/binaries.yml`](ansible/binaries.yml) (osv-scanner/trivy/grype/gitleaks/trufflehog),
 [`ansible/cargo.yml`](ansible/cargo.yml) (cargo-audit), [`ansible/uv.yml`](ansible/uv.yml) (pip-audit/semgrep),
 [`ansible/go.yml`](ansible/go.yml) (govulncheck).
 
-> **No additional MCP needed.** SENTINEL ships the Semgrep MCP for SAST; the broader gaps (SBOM, IaC,
-> container scanning) are served by the optional **CLI** scanners already listed above (`syft`/`grype`,
-> `trivy`) — local binaries, not MCP servers, are the right model for a security gate.
+> **No MCP needed.** SENTINEL is built entirely on local CLI scanners — the broader gaps (SBOM, IaC,
+> container scanning) are served by the optional **CLI** scanners listed above (`syft`/`grype`,
+> `trivy`); local binaries, not MCP servers, are the right model for a security gate.

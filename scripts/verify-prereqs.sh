@@ -467,7 +467,7 @@ else
     while IFS=$'\t' read -r srv cmd args; do
       [ -n "$srv" ] || continue
       # Only EPHEMERAL runners (npx/uvx/bunx/…) re-resolve a package on each launch and so
-      # must pin @<version>. A RESIDENT-binary command (e.g. `semgrep-mcp`) is whatever is
+      # must pin @<version>. A RESIDENT-binary command (a bare executable on PATH) is whatever is
       # installed on the host — there is no package spec to pin, and its args are runtime
       # flags (e.g. `-t stdio`), so exempt it from this check.
       case "$cmd" in
