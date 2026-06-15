@@ -13,25 +13,18 @@ use crate::domain::graph::Mutation;
 use crate::domain::{FlowError, GraphError, ItemId, Status, WaitGate};
 use crate::store::StoreError;
 
-/// The verb names this MCP surface exposes (mirrors the REST routes).
-pub const TOOLS: &[&str] = &[
-    "list_items",
-    "get_item",
-    "set_wait_go",
-    "post_status",
-    "append_spend",
-    "set_item_model",
-    "validate_connection",
-    "mutate_connection",
-    "append_sysmsg",
-    "render_roadmap",
-    "annotate",
-    "request_rewrite",
-    "list_events",
-];
+/// MCP protocol versions this server implements. On `initialize` a requested
+/// version outside this set is answered with [`LATEST_PROTOCOL_VERSION`] rather
+/// than echoed, so a client never assumes capabilities we don't have.
+const SUPPORTED_PROTOCOL_VERSIONS: &[&str] = &["2024-11-05"];
+/// The newest version in [`SUPPORTED_PROTOCOL_VERSIONS`] (the negotiation fallback).
+const LATEST_PROTOCOL_VERSION: &str = "2024-11-05";
 
-/// One-line human description per verb, surfaced in the MCP `tools/list`
-/// descriptors so clients can present each tool. Order mirrors `TOOLS`.
+/// The single source of truth for the verb set this MCP surface exposes: one
+/// `(name, one-line description)` per verb (mirrors the REST routes and the
+/// `call_tool` dispatch arms). `tool_descriptors` pairs each with its
+/// `input_schema`; the `descriptor_names_are_all_dispatchable` test guards
+/// against drift from `call_tool`.
 const TOOL_DESCRIPTIONS: &[(&str, &str)] = &[
     (
         "list_items",
@@ -81,10 +74,69 @@ const TOOL_DESCRIPTIONS: &[(&str, &str)] = &[
     ),
 ];
 
+/// The JSON-Schema for a verb's `arguments`, mirroring what `call_tool` reads.
+/// Real `properties`/`required` (not a hollow `{"type":"object"}`) so a client
+/// or LLM can call the arg-taking verbs correctly instead of round-tripping a
+/// `-32602` on every empty call. Status/gate enums match the lowercase serde
+/// reprs (`domain::model`); verbs with no arguments fall through to the empty
+/// object schema.
+fn input_schema(name: &str) -> Value {
+    let id = || json!({ "type": "string", "description": "Item id (e.g. \"item-42\")." });
+    let object = |props: Value, required: Value| json!({ "type": "object", "properties": props, "required": required });
+    match name {
+        "get_item" => object(json!({ "id": id() }), json!(["id"])),
+        "set_wait_go" => object(
+            json!({ "id": id(), "gate": { "type": "string", "enum": ["wait", "go"] } }),
+            json!(["id", "gate"]),
+        ),
+        "post_status" => object(
+            json!({ "id": id(), "status": { "type": "string", "enum": ["do", "doing", "done"] } }),
+            json!(["id", "status"]),
+        ),
+        "append_spend" => object(
+            json!({ "id": id(), "delta": { "type": "integer", "minimum": 0, "description": "Tokens to add." } }),
+            json!(["id", "delta"]),
+        ),
+        "set_item_model" => object(
+            json!({ "id": id(), "model": { "type": "string", "description": "Model tier id." } }),
+            json!(["id", "model"]),
+        ),
+        "validate_connection" | "mutate_connection" => {
+            let from = json!({ "type": "string", "description": "Dependent item id." });
+            let to = json!({ "type": "string", "description": "Dependency item id." });
+            if name == "mutate_connection" {
+                object(
+                    json!({ "op": { "type": "string", "enum": ["add", "remove"] }, "from": from, "to": to }),
+                    json!(["op", "from", "to"]),
+                )
+            } else {
+                object(json!({ "from": from, "to": to }), json!(["from", "to"]))
+            }
+        }
+        "append_sysmsg" => object(
+            json!({ "text": { "type": "string", "description": "Message to append to the feed." } }),
+            json!(["text"]),
+        ),
+        "annotate" => object(
+            json!({ "id": id(), "text": { "type": "string", "description": "Annotation text." } }),
+            json!(["id", "text"]),
+        ),
+        "request_rewrite" => object(
+            json!({ "id": id(), "comment": { "type": "string", "description": "Rewrite request." } }),
+            json!(["id", "comment"]),
+        ),
+        "list_events" => json!({
+            "type": "object",
+            "properties": { "kind": { "type": "string", "description": "Optional event-kind filter." } }
+        }),
+        // list_items, render_roadmap and any future no-arg verb.
+        _ => json!({ "type": "object" }),
+    }
+}
+
 /// Build the MCP `tools/list` descriptor array: each verb as a
-/// `{name, description, inputSchema}` object (a permissive object schema —
-/// arguments are validated per-verb in `call_tool`). Bare strings are NOT a
-/// conformant `tools/list` payload and prevent the client from registering.
+/// `{name, description, inputSchema}` object. Bare strings are NOT a conformant
+/// `tools/list` payload and prevent the client from registering.
 fn tool_descriptors() -> Vec<Value> {
     TOOL_DESCRIPTIONS
         .iter()
@@ -92,7 +144,7 @@ fn tool_descriptors() -> Vec<Value> {
             json!({
                 "name": name,
                 "description": desc,
-                "inputSchema": { "type": "object" },
+                "inputSchema": input_schema(name),
             })
         })
         .collect()
@@ -120,12 +172,18 @@ pub async fn dispatch(state: &AppState, req: Value) -> Value {
         // server is dropped before any tool is exposed. We advertise the `tools`
         // capability and echo the client's requested protocol version when given.
         "initialize" => {
-            let protocol = req
+            // Negotiate, don't blindly echo: a client may request a version we
+            // don't implement (e.g. a future spec). Echo it only when supported;
+            // otherwise answer with our own latest, per the MCP handshake rule.
+            let requested = req
                 .get("params")
                 .and_then(|p| p.get("protocolVersion"))
-                .and_then(Value::as_str)
-                .unwrap_or("2024-11-05")
-                .to_string();
+                .and_then(Value::as_str);
+            let protocol = match requested {
+                Some(v) if SUPPORTED_PROTOCOL_VERSIONS.contains(&v) => v,
+                _ => LATEST_PROTOCOL_VERSION,
+            }
+            .to_string();
             ok(
                 id,
                 json!({

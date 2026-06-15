@@ -268,6 +268,96 @@ async fn dispatch_tools_list_returns_descriptor_objects() {
 }
 
 #[tokio::test]
+async fn dispatch_initialize_clamps_unsupported_protocol_version() {
+    let state = make_state("initialize-clamp").await;
+    let req = json!({
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": { "protocolVersion": "2999-01-01", "capabilities": {} }
+    });
+    let resp = mcp::dispatch(&state, req).await;
+    assert_eq!(
+        resp["result"]["protocolVersion"], "2024-11-05",
+        "an unsupported requested version must clamp to our latest, not echo: {resp:?}"
+    );
+}
+
+#[tokio::test]
+async fn descriptor_names_are_all_dispatchable() {
+    // Drift guard: every advertised tool must be a real `call_tool` arm. Calling
+    // each with empty args may return invalid_params (missing required args) —
+    // that still proves the verb is dispatchable; only the "unknown tool" arm
+    // means a descriptor names a verb dispatch doesn't handle.
+    let state = make_state("dispatchable").await;
+    let list = mcp::dispatch(
+        &state,
+        json!({ "jsonrpc": "2.0", "id": 1, "method": "tools/list" }),
+    )
+    .await;
+    let tools = list["result"]["tools"].as_array().unwrap().clone();
+    assert_eq!(tools.len(), 13);
+    for t in &tools {
+        let name = t["name"].as_str().unwrap();
+        let resp = mcp::dispatch(
+            &state,
+            json!({
+                "jsonrpc": "2.0", "id": 1,
+                "method": "tools/call",
+                "params": { "name": name, "arguments": {} }
+            }),
+        )
+        .await;
+        let msg = resp["error"]["message"].as_str().unwrap_or("");
+        assert!(
+            !msg.contains("unknown tool"),
+            "advertised tool {name:?} is not dispatchable: {resp:?}"
+        );
+    }
+}
+
+#[tokio::test]
+async fn arg_taking_descriptors_declare_required_fields() {
+    // The schemas must not be hollow: arg-taking verbs declare their required
+    // properties so a client/LLM calls them correctly rather than round-tripping
+    // a -32602 on every empty call.
+    let state = make_state("schema-required").await;
+    let list = mcp::dispatch(
+        &state,
+        json!({ "jsonrpc": "2.0", "id": 1, "method": "tools/list" }),
+    )
+    .await;
+    let tools = list["result"]["tools"].as_array().unwrap().clone();
+    let schema_of = |name: &str| {
+        tools
+            .iter()
+            .find(|t| t["name"] == name)
+            .map(|t| t["inputSchema"].clone())
+            .unwrap()
+    };
+    for (name, required) in [
+        ("get_item", &["id"][..]),
+        ("post_status", &["id", "status"][..]),
+        ("mutate_connection", &["op", "from", "to"][..]),
+        ("append_spend", &["id", "delta"][..]),
+    ] {
+        let schema = schema_of(name);
+        let req = schema["required"].as_array().unwrap();
+        for field in required {
+            assert!(
+                req.iter().any(|r| r == field),
+                "{name} inputSchema must require {field:?}: {schema:?}"
+            );
+        }
+        assert!(
+            schema["properties"][required[0]].is_object(),
+            "{name} must declare property {:?}: {schema:?}",
+            required[0]
+        );
+    }
+}
+
+#[tokio::test]
 async fn dispatch_tools_list_returns_tool_array() {
     let state = make_state("tools-list").await;
     let req = json!({
