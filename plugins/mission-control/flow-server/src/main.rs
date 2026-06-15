@@ -76,7 +76,15 @@ async fn ingest_source(store: &Store, cfg: &Config) -> Result<(), Box<dyn std::e
         .clone()
         .or_else(|| default_tree.is_dir().then_some(default_tree));
     let Some(path) = source else {
-        return Ok(()); // no source → empty board
+        // No source resolved — log the cwd we looked in, so a silently-empty board
+        // (e.g. the server spawned from the wrong directory) is diagnosable.
+        eprintln!(
+            "flow-server: no roadmap source (no --roadmap and no .i2p/roadmap/ under {}); starting empty",
+            std::env::current_dir()
+                .map(|p| p.display().to_string())
+                .unwrap_or_else(|_| ".".into())
+        );
+        return Ok(());
     };
     if path.is_dir() {
         let n = store.ingest_roadmap_tree(&path).await?;

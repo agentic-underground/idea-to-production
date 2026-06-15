@@ -222,9 +222,21 @@ impl Store {
     /// before the in-memory commit, so the tree stays the single source of truth.
     pub async fn post_status(&self, id: &ItemId, status: Status) -> Result<(), StoreError> {
         let mut guard = self.inner.lock().await;
+        // Capture the prior status so a failed tree write can be rolled back.
+        let prior = guard.flow.get(id).map(|i| i.status);
         guard.flow.advance_status(id, status)?;
         if let Some(tree) = guard.roadmap_tree.clone() {
-            write_status_to_tree(&tree, id, status).await?;
+            // The tree is the source of truth: if the file move/rewrite fails, REJECT the
+            // change and roll the in-memory status back, so memory matches the unchanged
+            // tree (no silent divergence). On a successful tree write the change is durable
+            // — the JSONL below is a runtime event stream, and on restart the tree is
+            // re-ingested and wins, so a rare post-write commit failure self-heals.
+            if let Err(e) = write_status_to_tree(&tree, id, status).await {
+                if let Some(prev) = prior {
+                    let _ = guard.flow.advance_status(id, prev);
+                }
+                return Err(e);
+            }
         }
         let ev = Event::StatusPosted {
             id: id.clone(),
@@ -662,6 +674,12 @@ async fn write_status_to_tree(tree: &Path, id: &ItemId, status: Status) -> Resul
     let dest_folder = tree_folder(status);
     let label = tree_status_label(status);
 
+    // Collect EVERY file whose front-matter id matches, in TREE_FOLDERS order. The
+    // loader (`history::load_roadmap_tree`) resolves a duplicate id last-folder-wins, so
+    // the writer agrees by operating on the LAST match — and warns when there is more than
+    // one, surfacing the malformed tree rather than silently moving one and abandoning the
+    // rest (which would leave the loader and the tree disagreeing).
+    let mut matches: Vec<(PathBuf, String)> = Vec::new();
     for folder in crate::history::TREE_FOLDERS {
         let mut rd = match tokio::fs::read_dir(tree.join(folder)).await {
             Ok(r) => r,
@@ -678,28 +696,39 @@ async fn write_status_to_tree(tree: &Path, id: &ItemId, status: Status) -> Resul
             if crate::history::parse_front_matter(&contents)
                 .get("id")
                 .map(String::as_str)
-                != Some(num)
+                == Some(num)
             {
-                continue;
+                matches.push((path, contents));
             }
-            // Found the item's file: rewrite its status and place it in dest_folder.
-            let Some(file_name) = path.file_name().map(ToOwned::to_owned) else {
-                return Ok(());
-            };
-            let updated = rewrite_status_front_matter(&contents, label);
-            let dest_dir = tree.join(dest_folder);
-            tokio::fs::create_dir_all(&dest_dir).await?;
-            let dest = dest_dir.join(&file_name);
-            let tmp = dest_dir.join(format!(".{}.tmp", file_name.to_string_lossy()));
-            tokio::fs::write(&tmp, updated.as_bytes()).await?;
-            tokio::fs::rename(&tmp, &dest).await?;
-            if path != dest {
-                let _ = tokio::fs::remove_file(&path).await;
-            }
-            return Ok(());
         }
     }
-    Ok(()) // no tree file for this id → nothing to write back
+
+    let Some((path, contents)) = matches.pop() else {
+        return Ok(()); // no tree file for this id → nothing to write back
+    };
+    if !matches.is_empty() {
+        eprintln!(
+            "flow-server: WARNING — {} files share roadmap id {num}; moving the last (the \
+             loader's authoritative copy) and leaving the rest. Fix the duplicate.",
+            matches.len() + 1
+        );
+    }
+
+    // Rewrite the status and place the file in dest_folder atomically (tmp + rename).
+    let Some(file_name) = path.file_name().map(ToOwned::to_owned) else {
+        return Ok(());
+    };
+    let updated = rewrite_status_front_matter(&contents, label);
+    let dest_dir = tree.join(dest_folder);
+    tokio::fs::create_dir_all(&dest_dir).await?;
+    let dest = dest_dir.join(&file_name);
+    let tmp = dest_dir.join(format!(".{}.tmp", file_name.to_string_lossy()));
+    tokio::fs::write(&tmp, updated.as_bytes()).await?;
+    tokio::fs::rename(&tmp, &dest).await?;
+    if path != dest {
+        let _ = tokio::fs::remove_file(&path).await;
+    }
+    Ok(())
 }
 
 /// Append one JSONL line (plus a newline, flushed) to the log file. The open `?`

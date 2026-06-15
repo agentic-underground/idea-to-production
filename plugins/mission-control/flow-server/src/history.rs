@@ -18,9 +18,10 @@
 //! [`Flow`] constructors and handles any [`GraphError`](crate::domain::GraphError).
 //!
 //! The parsers take `&str` and return domain values — **no IO** — so they are
-//! exhaustively testable from string fixtures. The only impure parts are the
-//! thin [`read_roadmap_file`] / [`run_git_log`] helpers, which read a file or
-//! shell `git log` and feed the pure parsers.
+//! exhaustively testable from string fixtures. The impure parts are the thin
+//! [`read_roadmap_file`] / [`run_git_log`] helpers (read a file / shell `git log`)
+//! and [`load_roadmap_tree`] (roadmap [42]) — which enumerates the `.i2p/roadmap/`
+//! tree's directories and delegates per-file parsing to the pure [`parse_item_file`].
 
 use std::collections::BTreeMap;
 use std::io;
@@ -150,7 +151,8 @@ pub fn status_for_folder(folder: &str) -> Status {
 /// file does not open with a `---` fence. Pure: no IO.
 pub fn parse_front_matter(contents: &str) -> BTreeMap<String, String> {
     let mut map = BTreeMap::new();
-    let mut lines = contents.lines();
+    // Tolerate a leading UTF-8 BOM so an editor-saved file isn't silently dropped.
+    let mut lines = contents.trim_start_matches('\u{feff}').lines();
     if lines.next().map(str::trim) != Some("---") {
         return map; // no front-matter block
     }

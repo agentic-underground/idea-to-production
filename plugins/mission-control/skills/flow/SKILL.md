@@ -21,8 +21,10 @@ interactive SVG card-graph. This skill is the **manual front door**; day-to-day 
 
 - **SessionStart** (`hooks/scripts/flow-advertise.sh`) — starts the board if the roadmap has items, then
   advertises the URL as a `systemMessage`.
-- **PostToolUse(Edit|Write)** (`hooks/scripts/flow-roadmap-watch.sh`) — on a ROADMAP.md edit, re-drives
-  `ensure`: **start** when the roadmap gains its first item, **stop** when it is emptied.
+- **PostToolUse(Edit|Write)** (`hooks/scripts/flow-roadmap-watch.sh`) — on a `ROADMAP.md` edit, re-drives
+  `ensure`: **start** when the roadmap gains its first item, **stop** when it is emptied. (The watcher
+  matches the legacy single-file `ROADMAP.md` only; for the `.i2p/roadmap/` tree the SessionStart
+  `ensure` keeps the board current — extending the watcher to tree edits is tracked by item [39].)
 
 State lives in the project's gitignored `.flow/` dir (`pid`, `port`, `token`, `flow-server.log`). The port is
 a stable per-project value (so the URL is a durable bookmark). The clickable link also renders in the

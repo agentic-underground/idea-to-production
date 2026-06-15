@@ -844,6 +844,61 @@ async fn post_status_without_tree_leaves_disk_untouched() {
 }
 
 #[tokio::test]
+async fn post_status_moves_the_loaders_authoritative_copy_on_duplicate_id() {
+    // A duplicate id across folders: the loader resolves last-folder-wins (done), so the
+    // writer must move THAT copy (not the first found), keeping loader + tree consistent.
+    let dir = tempdir();
+    let tree = tempdir().join("roadmap");
+    for (folder, name) in [("backlog", "5-a.md"), ("done", "5-b.md")] {
+        let d = tree.join(folder);
+        std::fs::create_dir_all(&d).unwrap();
+        std::fs::write(d.join(name), "---\nid: 5\ntitle: Dup\n---\nbody\n").unwrap();
+    }
+    let store = Store::open(&dir).await.unwrap();
+    store.ingest_roadmap_tree(&tree).await.unwrap();
+
+    store
+        .post_status(&id("item-5"), Status::Doing)
+        .await
+        .unwrap();
+
+    // The done/ copy (the loader's authoritative one) moved to doing/.
+    assert!(
+        tree.join("doing/5-b.md").exists(),
+        "the last-folder copy must move"
+    );
+    assert!(!tree.join("done/5-b.md").exists());
+    // The earlier duplicate is left in place (surfaced via a warning, not silently moved).
+    assert!(tree.join("backlog/5-a.md").exists());
+}
+
+#[tokio::test]
+async fn post_status_rolls_back_in_memory_when_tree_write_fails() {
+    // Make the destination folder un-createable (a FILE where `doing/` must be a dir);
+    // the tree write fails, post_status must error AND leave the in-memory status unchanged.
+    let dir = tempdir();
+    let tree = tree_fixture();
+    std::fs::remove_dir_all(tree.join("doing")).ok();
+    std::fs::write(tree.join("doing"), "not a directory").unwrap();
+    let store = Store::open(&dir).await.unwrap();
+    store.ingest_roadmap_tree(&tree).await.unwrap();
+
+    // item-16 is in backlog/ (Do). Advancing it to Doing must fail at the tree write.
+    let res = store.post_status(&id("item-16"), Status::Doing).await;
+    assert!(res.is_err(), "a failed tree write must propagate");
+    let flow = store.snapshot().await;
+    assert_eq!(
+        flow.items_in_order()
+            .iter()
+            .find(|i| i.id == id("item-16"))
+            .unwrap()
+            .status,
+        Status::Do,
+        "in-memory status must roll back to match the unchanged tree"
+    );
+}
+
+#[tokio::test]
 async fn ingest_roadmap_tree_absent_is_empty_not_error() {
     let dir = tempdir();
     let store = Store::open(&dir).await.unwrap();
