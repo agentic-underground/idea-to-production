@@ -27,6 +27,10 @@ const LATEST_PROTOCOL_VERSION: &str = "2024-11-05";
 /// against drift from `call_tool`.
 const TOOL_DESCRIPTIONS: &[(&str, &str)] = &[
     (
+        "ping",
+        "Health check — returns 'hello from the flow MCP' plus the server version, ingested item count, and roadmap source (surfaces a stale/misconfigured server).",
+    ),
+    (
         "list_items",
         "List roadmap items grouped by status (pending/in_progress/done).",
     ),
@@ -353,9 +357,40 @@ async fn call_tool(state: &AppState, id: Value, name: &str, args: Value) -> Valu
             };
             map_store(id, state.store.append_sysmsg(text).await)
         }
+        "ping" => {
+            // Health check + staleness diagnostic. A stale pinned binary (one predating
+            // the .i2p/roadmap/ tree ingest of item [42]) self-reports an old version, 0
+            // items, and a null source — so an empty roadmap is never a silent mystery.
+            // Doubles as the payload for the `/flow hello|ping` command.
+            let flow = state.store.snapshot().await;
+            let items = flow.items_in_order().len();
+            let source = state
+                .store
+                .roadmap_source()
+                .await
+                .map(|p| p.display().to_string());
+            ok(
+                id,
+                json!({
+                    "message": "hello from the flow MCP",
+                    "version": env!("CARGO_PKG_VERSION"),
+                    "items": items,
+                    "source": source,
+                }),
+            )
+        }
         "render_roadmap" => {
             let flow = state.store.snapshot().await;
-            let rendered = crate::domain::render_roadmap(&flow);
+            let mut rendered = crate::domain::render_roadmap(&flow);
+            // Never let an empty result read as authoritative: if the store has no items,
+            // append a diagnostic pointing at `ping` (a stale/misconfigured server is the
+            // common cause — e.g. a pinned binary predating the tree-ingest of item [42]).
+            if flow.items_in_order().is_empty() {
+                rendered.push_str(
+                    "\n⚠ 0 items — the roadmap store is empty. If a .i2p/roadmap/ tree exists on disk, \
+                     the server may be stale or misconfigured; call `ping` to check its version + source.\n",
+                );
+            }
             ok(id, json!({ "rendered": rendered }))
         }
         "annotate" => {
