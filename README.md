@@ -151,6 +151,29 @@ Add the marketplace, then install whichever plugins you want:
 Each plugin works on its own — `market-scanner` and `ideator` need no build system to help you find and
 shape an idea, and `sentinel` and `pressroom` are useful on any repository, not just foundry projects.
 
+### Verify the flow MCP is installed & running
+
+`mission-control` ships an MCP server — **flow-server** — that answers *"what's on the roadmap"* by local
+compute at ~0 tokens (the `render_roadmap` verb) and carries items across the board. Confirm it end-to-end:
+
+1. **Install / update + restart.** After `/plugin install mission-control@idea-to-production` (or
+   `/plugin marketplace update idea-to-production` && `/plugin update mission-control`), **restart Claude
+   Code** — a plugin's MCP config is read only at startup (`/reload-plugins` does *not* pick up new MCP
+   servers).
+2. **Approve it once.** Run `/mcp`; `flow-server` shows as `⏸ Pending approval` — approve it. This one-time
+   approval **cannot** be pre-granted by any setting, CLI command, or launch flag (it's a deliberate
+   Claude Code security gate for plugin-shipped MCP servers). The binary is pre-cached, so it connects
+   instantly.
+3. **Prove the roundtrip.** Run **`/flow hello`** → it calls the MCP and prints **"hello from the flow
+   MCP"** plus the server `version` and roadmap `items` count. Then ask *"what's on the roadmap"* → you
+   should get the rendered table (via `render_roadmap`), not a file listing.
+4. **Health any time:** `/flow status` reports the MCP (version / items / source) and the board.
+
+**Troubleshooting.** `/flow hello` shows `items: 0` or `version` below `0.2.0`, or *"what's on the
+roadmap"* comes back empty against a populated `.i2p/roadmap/` tree ⇒ the pinned MCP binary is **stale** or
+the server isn't approved. Run **`/mission-control:flow-setup`** for a guided, verified walkthrough. (No
+`mcp__…__flow-server__*` tools at all ⇒ not connected yet — repeat steps 1–2.)
+
 ## Concepts & glossary
 
 New here? [`plugins/foundry/knowledge/glossary.md`](plugins/foundry/knowledge/glossary.md) names every

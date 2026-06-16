@@ -1,9 +1,10 @@
 ---
 id: 92
 title: "flow-server MCP render_roadmap returns empty (stale pinned release) + roadmap-read routing gaps"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-16
+completed: 2026-06-16
 depends_on: "—"
 ---
 
