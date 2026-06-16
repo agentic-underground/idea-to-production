@@ -91,24 +91,39 @@ the `.i2p/roadmap/` tree — the MCP path just makes it instant and ~0-token.
 The registered command is the launcher [`bin/flow-server-mcp`](bin/flow-server-mcp), not `cargo`. It
 obtains the binary by this ladder and execs it:
 
-1. **Cached** — a previously-retrieved binary whose SHA256 still matches the pin.
-2. **Retrieve** — download this platform's asset from the [GitHub Release](https://github.com/agentic-underground/idea-to-production/releases)
-   named in [`bin/RELEASE`](bin/RELEASE) and **verify it against the pinned SHA256** in
-   [`bin/SHA256SUMS`](bin/SHA256SUMS) (a mismatch is refused, never run). No compiler needed.
-3. **Build** — *dev fallback only*: if `cargo` is present and the source is alongside, `cargo build
+The launcher **always tracks the latest release** — there is no committed version pin. It asks GitHub
+which release is newest, then:
+
+0. **Resolve** — follow GitHub's [`releases/latest`](https://github.com/agentic-underground/idea-to-production/releases/latest)
+   redirect (API fallback) to learn the latest tag.
+1. **Cached** — a previously-retrieved binary for that latest tag whose SHA256 still matches the
+   release's own published `SHA256SUMS` (no network beyond the resolve).
+2. **Retrieve** — download this platform's asset *and that release's own `SHA256SUMS`* from the
+   [GitHub Release](https://github.com/agentic-underground/idea-to-production/releases), and **verify the
+   asset against the published checksum** (a mismatch is refused, never run). No compiler needed.
+3. **Cached-offline** — if the latest tag can't be resolved (offline), exec the newest cached binary
+   that still verifies against its cached `SHA256SUMS` (last-known-good).
+4. **Build** — *dev fallback only*: if `cargo` is present and the source is alongside, `cargo build
    --release`. A contributor's machine; never required on a destination.
+
+> **Integrity posture.** Tracking latest is a deliberate, owner-chosen trade: every retrieved binary is
+> still SHA-verified against the checksum the release publishes, but "always latest" gives up the
+> reproducibility and malicious-publish protection a committed version pin provides. If you need a frozen
+> version, pin the `RELEASE_TAG` resolution in [`bin/flow-server-mcp`](bin/flow-server-mcp) instead.
 
 **Cutting a release** (publishes the prebuilt binaries the launcher retrieves):
 
 ```sh
-git tag flow-server-v0.1.0 && git push origin flow-server-v0.1.0   # → .github/workflows/flow-server-release.yml
+git tag flow-server-v0.2.0 && git push origin flow-server-v0.2.0   # → .github/workflows/flow-server-release.yml
 ```
 
 The workflow cross-builds for linux/macOS/Windows (x86_64 + arm64), publishes each as a Release asset,
-and emits a `SHA256SUMS`. Copy that `SHA256SUMS` into [`bin/SHA256SUMS`](bin/SHA256SUMS) and commit to
-activate verified retrieval; until then the launcher uses the source-build fallback (so the dev repo
-keeps working). The `flow-server-mcp-smoke` job in `.github/workflows/verify.yml` spawns the launcher on
-every PR and asserts the handshake completes.
+and emits a `SHA256SUMS` asset alongside them — the launcher fetches that `SHA256SUMS` at retrieval time,
+so a new release is picked up automatically with **no committed-file change**. Until the first release is
+published, the launcher uses the source-build fallback (so the dev repo keeps working). The
+`flow-server-mcp-smoke` job in `.github/workflows/verify.yml` spawns the launcher on every PR and asserts
+the handshake completes; `flow-server-mcp-latest` boots the latest published release and asserts the
+roadmap renders non-empty.
 
 The binary reads `.flow/` from the **current working directory** when invoked by the MCP harness.
 Run Claude Code from the repo root so the store path resolves correctly.

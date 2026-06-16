@@ -2,11 +2,12 @@ name: flow-server release
 
 # Build the flow-server MCP binary for every supported platform and publish it as a
 # GitHub Release with a SHA256SUMS manifest. The plugin launcher
-# (plugins/mission-control/flow-server/bin/flow-server-mcp) retrieves the matching asset
-# and verifies it against the pinned SHA256 — so a destination machine runs the server
-# WITHOUT a Rust toolchain. Cut a release by pushing a tag:  git tag flow-server-v0.1.0 && git push --tags
-# After the release exists, copy the published SHA256SUMS into
-# plugins/mission-control/flow-server/bin/SHA256SUMS and commit, to activate verified retrieval.
+# (plugins/mission-control/flow-server/bin/flow-server-mcp) always resolves GitHub's
+# releases/latest, retrieves the matching asset AND this release's SHA256SUMS, and verifies
+# the asset against it — so a destination machine runs the server WITHOUT a Rust toolchain.
+# Cut a release by pushing a tag:  git tag flow-server-v0.2.0 && git push --tags
+# The launcher fetches SHA256SUMS at retrieval time, so a new release is picked up
+# automatically — there is NO committed bin/SHA256SUMS to update.
 
 on:
   push:
@@ -109,5 +110,5 @@ jobs:
           gh release create "$tag" \
             --repo "${{ github.repository }}" \
             --title "$tag" \
-            --notes "flow-server MCP binary for the mission-control plugin. The plugin launcher retrieves the asset for its platform and verifies it against SHA256SUMS. Copy SHA256SUMS into plugins/mission-control/flow-server/bin/SHA256SUMS to activate verified retrieval." \
+            --notes "flow-server MCP binary for the mission-control plugin. The plugin launcher always tracks releases/latest: it retrieves the asset for its platform plus this release's SHA256SUMS and verifies the asset against it. No committed-file change is needed to activate a new release." \
             "${assets[@]}"
