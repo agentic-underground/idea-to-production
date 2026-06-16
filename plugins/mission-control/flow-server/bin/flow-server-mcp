@@ -112,6 +112,21 @@ build_from_source() {
 
 main() {
   local bin=""
+
+  # Pre-warm mode (for a background SessionStart prewarm): retrieve + SHA-verify +
+  # cache the release binary, then exit 0 — NEVER start the server and NEVER fall back
+  # to a cargo build (a multi-minute build must not run in the background of a fresh
+  # session). If no verified release binary exists for this platform, do nothing and
+  # exit 0 cleanly — the real launch resolves it lazily (retrieve → build).
+  if [ "${1:-}" = "--ensure-binary" ]; then
+    if bin="$(retrieve)" && [ -n "$bin" ]; then
+      log "pre-warmed ${bin}"
+    else
+      log "pre-warm skipped — no verified release binary for this platform yet; resolved lazily on launch."
+    fi
+    exit 0
+  fi
+
   if bin="$(retrieve)" && [ -n "$bin" ]; then :
   elif bin="$(build_from_source)" && [ -n "$bin" ]; then :
   else

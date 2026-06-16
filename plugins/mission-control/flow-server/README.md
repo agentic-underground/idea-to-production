@@ -64,6 +64,28 @@ the `flow-server` server, so its tools (`list_items`, `render_roadmap`, `post_st
 project-level `.claude/settings.json` entry. (Like every plugin MCP server, it is approval-gated under
 default permissions — `claude mcp list` shows it `⏸ Pending approval` until you approve it.)
 
+### Finishing the install (the smooth path)
+
+After installing/updating mission-control, two one-time steps remain — and the plugin makes both as
+frictionless as the harness allows:
+
+1. **Restart Claude Code.** A plugin's `.mcp.json` is read only at startup, so a restart is required
+   after an install/update for `flow-server` to appear (`/reload-plugins` loads skills/hooks but **not**
+   new MCP servers).
+2. **Approve it once** — run `/mcp`, find `flow-server` (⏸ *Pending approval*), approve. This one-time
+   approval **cannot** be pre-granted by any setting, CLI command, or launch flag — it's a deliberate
+   Claude Code security gate for plugin-shipped MCP servers. After approving once, it connects
+   immediately and future sessions need nothing.
+
+What the plugin automates around those steps: a SessionStart hook
+([`hooks/scripts/flow-mcp-onboard.sh`](../hooks/scripts/flow-mcp-onboard.sh)) **pre-warms** the binary in
+the background (so approval starts the server instantly, no transient "connecting/failed") and surfaces a
+gentle one-time nudge; the agent then **detects** whether `mcp__flow-server__*` is connected from its own
+tool list and guides only when it isn't. Run **`/mission-control:flow-setup`** any time for a guided,
+verified walkthrough (it pre-caches the binary, walks the approval, and confirms the connection with a
+`render_roadmap` probe). Until it's connected, "what's on the roadmap" still works via a direct scan of
+the `.i2p/roadmap/` tree — the MCP path just makes it instant and ~0-token.
+
 ### No Rust toolchain required — the launcher retrieves a prebuilt binary
 
 The registered command is the launcher [`bin/flow-server-mcp`](bin/flow-server-mcp), not `cargo`. It
