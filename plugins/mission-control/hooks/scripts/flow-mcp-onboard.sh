@@ -16,6 +16,9 @@ set -uo pipefail
 # Drain the SessionStart payload; we don't need it.
 [ -t 0 ] || cat >/dev/null 2>&1 || true
 
+# In CI / automation there is no user to onboard and no point pre-fetching — skip both.
+[ -n "${CI:-}" ] && exit 0
+
 # CLAUDE_PLUGIN_ROOT (set for plugin hooks) = the mission-control plugin root; else derive.
 PLUGIN="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 LAUNCHER="$PLUGIN/flow-server/bin/flow-server-mcp"

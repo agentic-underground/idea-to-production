@@ -89,7 +89,7 @@ retrieve() {
   mkdir -p "$cache" 2>/dev/null || return 1
   tmp="$cache/.dl.$$"
   log "retrieving ${asset} from the ${RELEASE_TAG} release…"
-  curl -fsSL "$url" -o "$tmp" 2>/dev/null || { rm -f "$tmp"; return 1; }
+  curl -fsSL --connect-timeout 10 --max-time 120 "$url" -o "$tmp" 2>/dev/null || { rm -f "$tmp"; return 1; }
   got="$(sha256_of "$tmp" 2>/dev/null || true)"
   if [ "$got" != "$expected" ]; then
     rm -f "$tmp"
