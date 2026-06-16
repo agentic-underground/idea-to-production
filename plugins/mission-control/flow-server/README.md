@@ -91,39 +91,48 @@ the `.i2p/roadmap/` tree — the MCP path just makes it instant and ~0-token.
 The registered command is the launcher [`bin/flow-server-mcp`](bin/flow-server-mcp), not `cargo`. It
 obtains the binary by this ladder and execs it:
 
-The launcher **always tracks the latest release** — there is no committed version pin. It asks GitHub
-which release is newest, then:
+The launcher runs a **pinned release** — [`bin/RELEASE`](bin/RELEASE) names the exact tag and
+[`bin/SHA256SUMS`](bin/SHA256SUMS) is the committed integrity source of truth. It execs by this ladder:
 
-0. **Resolve** — follow GitHub's [`releases/latest`](https://github.com/agentic-underground/idea-to-production/releases/latest)
-   redirect (API fallback) to learn the latest tag.
-1. **Cached** — a previously-retrieved binary for that latest tag whose SHA256 still matches the
-   release's own published `SHA256SUMS` (no network beyond the resolve).
-2. **Retrieve** — download this platform's asset *and that release's own `SHA256SUMS`* from the
-   [GitHub Release](https://github.com/agentic-underground/idea-to-production/releases), and **verify the
-   asset against the published checksum** (a mismatch is refused, never run). No compiler needed.
-3. **Cached-offline** — if the latest tag can't be resolved (offline), exec the newest cached binary
-   that still verifies against its cached `SHA256SUMS` (last-known-good).
-4. **Build** — *dev fallback only*: if `cargo` is present and the source is alongside, `cargo build
+1. **Cached** — a previously-retrieved binary whose SHA256 still matches the **committed**
+   `SHA256SUMS` (no network). The cache dir is keyed on the tag **plus** a fingerprint of the committed
+   checksum, so a bumped/re-cut pin lands in a fresh dir — a stale cache is never re-selected.
+2. **Retrieve** — download this platform's asset from the pinned
+   [GitHub Release](https://github.com/agentic-underground/idea-to-production/releases) and **verify it
+   against the committed checksum** (a mismatch is refused, never run). No compiler needed.
+3. **Build** — *dev fallback only*: if `cargo` is present and the source is alongside, `cargo build
    --release`. A contributor's machine; never required on a destination.
 
-> **Integrity posture.** Tracking latest is a deliberate, owner-chosen trade: every retrieved binary is
-> still SHA-verified against the checksum the release publishes, but "always latest" gives up the
-> reproducibility and malicious-publish protection a committed version pin provides. If you need a frozen
-> version, pin the `RELEASE_TAG` resolution in [`bin/flow-server-mcp`](bin/flow-server-mcp) instead.
+Diagnose any launch with **`bin/flow-server-mcp --doctor`** — it prints the pin, the expected-vs-cached
+SHA (match/mismatch), the cache dir, and the resolved project root + roadmap item count.
 
-**Cutting a release** (publishes the prebuilt binaries the launcher retrieves):
+> **Integrity & determinism posture.** Pinning is the deliberate, owner-chosen posture (it aligns with
+> `scripts/verify-prereqs.sh` §K — no floating tags). Every machine converges on ONE SHA-verified binary;
+> a release is adopted only by a reviewed PR that bumps the pin. This replaced an earlier "track latest"
+> launcher whose tag-keyed cache let a **re-cut** `flow-server-v0.2.0` strand machines on stale bytes
+> (defect [92]). The binary now also bakes its git rev into the version it self-reports (`ping` →
+> `0.2.1+<rev>`), so two builds are never confusable.
+
+**Cutting a release — the bump-and-cut flow** (NEVER re-cut a tag; bump the version every time):
 
 ```sh
-git tag flow-server-v0.2.0 && git push origin flow-server-v0.2.0   # → .github/workflows/flow-server-release.yml
+# 1. bump plugins/mission-control/flow-server/Cargo.toml `version`, then:
+git tag flow-server-v0.2.1 && git push origin flow-server-v0.2.1   # → .github/workflows/flow-server-release.yml
+# 2. the workflow's `preflight` refuses a re-cut tag or tag≠Cargo version, then cross-builds
+#    linux/macOS/Windows (x86_64+arm64), publishes each asset + a SHA256SUMS, and notes the next step:
+# 3. copy the published SHA256SUMS lines into bin/SHA256SUMS, set bin/RELEASE to the tag, commit.
 ```
 
-The workflow cross-builds for linux/macOS/Windows (x86_64 + arm64), publishes each as a Release asset,
-and emits a `SHA256SUMS` asset alongside them — the launcher fetches that `SHA256SUMS` at retrieval time,
-so a new release is picked up automatically with **no committed-file change**. Until the first release is
-published, the launcher uses the source-build fallback (so the dev repo keeps working). The
-`flow-server-mcp-smoke` job in `.github/workflows/verify.yml` spawns the launcher on every PR and asserts
-the handshake completes; `flow-server-mcp-latest` boots the latest published release and asserts the
-roadmap renders non-empty.
+The launcher trusts **only** the committed `bin/SHA256SUMS`, so step 3 is what activates a release.
+Between step 1 and step 3 (the *bootstrap window*) destinations without `cargo` cannot fetch a binary
+and devs use the source-build fallback; `verify-prereqs.sh` §P notes the window and `smoke-pinned.sh`
+SKIPs until the checksums are committed. On every PR, `flow-server-mcp-smoke` (in
+`.github/workflows/verify.yml`) spawns the launcher and asserts the handshake; `flow-server-mcp-pinned`
+boots the **pinned** release against the tree and asserts the roadmap renders non-empty at the pinned
+version (skipping in the bootstrap window).
 
-The binary reads `.flow/` from the **current working directory** when invoked by the MCP harness.
-Run Claude Code from the repo root so the store path resolves correctly.
+The MCP launcher resolves the roadmap **independent of the spawn directory**: it walks up from the
+working directory to the project root (the dir holding `.i2p/roadmap/`) and passes the flow-server an
+absolute `--roadmap` and a root-anchored `--data`. So the board is populated even when the harness
+spawns the server from somewhere other than the repo root — a stale binary, not a wrong CWD, is the only
+remaining way the board can come up empty.
