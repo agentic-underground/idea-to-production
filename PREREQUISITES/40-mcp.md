@@ -19,8 +19,13 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
   the `mcp__…__*` name to its `tools:` list (FOUNDRY's web handlers do this for `playwright`).
 - `.mcp.json` servers are **approval-gated under default permissions**: on first session
   `claude mcp list` shows them as `⏸ Pending approval`, and Claude Code does not connect to (run) a
-  plugin/project MCP server until you approve it. Treat this as the safety default, not an absolute
-  guarantee — a permissive permission mode or pre-approval changes it.
+  plugin/project MCP server until you approve it once via `/mcp`. **Pre-approval differs by scope:** a
+  *project*-root `.mcp.json` server can be pre-trusted via `enableAllProjectMcpServers` /
+  `enabledMcpjsonServers` in settings, but a **plugin-shipped** server (like `flow-server`) **cannot** —
+  no setting, `claude mcp` subcommand, or launch flag (incl. `--dangerously-skip-permissions`, which
+  gates *tools*, not MCP-server trust) pre-approves it. The one-time interactive approval is mandatory
+  by design. mission-control smooths this: it pre-warms the `flow-server` binary and offers
+  **`/mission-control:flow-setup`** to walk + verify the approval (see its [README](../plugins/mission-control/flow-server/README.md#finishing-the-install-the-smooth-path)).
 - **Pinned for reproducibility.** The three third-party servers fetch and execute remote code at
   launch, so the shipped configs pin an **explicit version** (never a floating `@latest`) — a fetched
   server can't change underneath you. The current pins: `@playwright/mcp@0.0.75`,
