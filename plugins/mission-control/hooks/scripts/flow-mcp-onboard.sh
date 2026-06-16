@@ -28,20 +28,34 @@ if [ -x "$LAUNCHER" ]; then
   ( "$LAUNCHER" --ensure-binary >/dev/null 2>&1 & ) >/dev/null 2>&1 || true
 fi
 
-# 2. One-time-per-version gentle nudge.
+# 2a. STANDING routing rule (R4 / item [92]) — emitted EVERY session as invisible
+#     additionalContext so the agent always answers roadmap reads via the MCP, not by
+#     ad-hoc ls/cat of the tree. This must NOT be one-time: a fresh agent in any later
+#     session needs the rule too (that routing gap is the defect [92] L2).
+ROUTING="To answer \"what's on the roadmap\" or read roadmap items, call the flow-server MCP verb render_roadmap (or list_items) — the ~0-token authoritative path. It is a DEFERRED tool: if mcp__…__flow-server__render_roadmap is not already in your tool list, ToolSearch for 'flow-server__render_roadmap' first. Do NOT ls/cat/head the .i2p/roadmap/ tree to answer roadmap questions; that raw-file path is the slow fallback. If render_roadmap returns empty against a non-empty .i2p/roadmap/ tree, the pinned MCP binary is stale — call the ping verb (it reports version/items/source) and suggest /mission-control:flow-setup."
+
+# 2b. One-time-per-version SETUP nudge (the only VISIBLE part), gated by an atomic sentinel.
 VER="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PLUGIN/.claude-plugin/plugin.json" 2>/dev/null | head -n1)"
 STATE_DIR="${HOME}/.claude/hook-state"
 SENTINEL="${STATE_DIR}/mission-control-flow-mcp-onboarded-${VER:-x}"
-mkdir -p "$STATE_DIR" 2>/dev/null || exit 0
-mkdir "$SENTINEL" 2>/dev/null || exit 0   # already nudged for this version → silent no-op.
+SETUP_MSG=""
+SETUP_CTX=""
+if mkdir -p "$STATE_DIR" 2>/dev/null && mkdir "$SENTINEL" 2>/dev/null; then
+  SETUP_MSG="⬢ mission-control ships a roadmap MCP (flow-server). If \"what's on the roadmap\" isn't instant yet, run /mission-control:flow-setup to finish the one-time setup."
+  SETUP_CTX=" SETUP: if you do NOT have mcp__…__flow-server__* tools, the server isn't connected — guide the user ONCE: (a) restart Claude Code if they just installed/updated mission-control; (b) run /mcp and approve 'flow-server' (a plugin MCP server requires this one-time approval — no setting, CLI, or flag can pre-approve it); the binary is pre-cached so it starts instantly; /mission-control:flow-setup gives a guided, verified walkthrough. Never nag."
+fi
 
-MSG="⬢ mission-control ships a roadmap MCP (flow-server). If \"what's on the roadmap\" isn't instant yet, run /mission-control:flow-setup to finish the one-time setup."
-CTX="mission-control ships the flow-server MCP server (verbs: render_roadmap — answers \"what's on the roadmap\" by local compute at ~0 tokens — plus list_items, post_status, set_wait_go, …). RECONCILE against YOUR OWN available tools: if you have mcp__flow-server__* tools, the server is already connected — just use them and say NOTHING about setup. If you do NOT have those tools, it is not connected yet; the next time the user does anything roadmap-related (or asks how to enable it), guide them ONCE and briefly: (a) if they just installed or updated mission-control, Claude Code must be restarted to read the new MCP config; (b) run /mcp and approve 'flow-server' — a plugin MCP server requires this one-time interactive approval by design (no setting, CLI, or flag can pre-approve it); the binary is pre-cached so it starts instantly. They can also run /mission-control:flow-setup for a guided, verified walkthrough. Never nag; mention at most once per session."
-
+CTX="${ROUTING}${SETUP_CTX}"
 if command -v jq >/dev/null 2>&1; then
-  jq -cn --arg m "$MSG" --arg c "$CTX" \
-    '{systemMessage:$m, hookSpecificOutput:{hookEventName:"SessionStart", additionalContext:$c}}'
+  if [ -n "$SETUP_MSG" ]; then
+    jq -cn --arg m "$SETUP_MSG" --arg c "$CTX" \
+      '{systemMessage:$m, hookSpecificOutput:{hookEventName:"SessionStart", additionalContext:$c}}'
+  else
+    jq -cn --arg c "$CTX" \
+      '{hookSpecificOutput:{hookEventName:"SessionStart", additionalContext:$c}}'
+  fi
 else
-  printf '{"systemMessage":"⬢ mission-control ships a roadmap MCP (flow-server). Run /mission-control:flow-setup to finish the one-time setup.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"mission-control ships the flow-server MCP. If you lack mcp__flow-server__* tools, guide the user once: restart if just installed/updated, then /mcp approve flow-server (a one-time plugin-MCP approval that cannot be auto-granted). Offer /mission-control:flow-setup. If you already have the tools, say nothing."}}\n'
+  # No jq: emit the standing routing rule (ASCII-safe), drop the optional systemMessage.
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Answer roadmap questions via the flow-server MCP verb render_roadmap (ToolSearch for flow-server__render_roadmap if deferred); do not ls/cat the .i2p/roadmap/ tree. If it returns empty, the pinned binary is stale — call ping and run /mission-control:flow-setup."}}\n'
 fi
 exit 0

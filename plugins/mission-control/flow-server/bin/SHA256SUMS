@@ -9,8 +9,8 @@
 #   flow-server-x86_64-unknown-linux-gnu
 #   flow-server-aarch64-apple-darwin
 #   flow-server-x86_64-pc-windows-msvc.exe
-5fde7967a29e0fa09b8926fd1a20d98d2acb2123c1555c92785d09279899f8e5  flow-server-aarch64-apple-darwin
-fd554c447ba9b93d4e1ddbd03d890d32b4c8a47c7d4232674aa5561ea70791e5  flow-server-aarch64-unknown-linux-gnu
-b09eefdd16c128d07c01b4b595c1c9bba24ee783424996c8377aef2ce0ead6b1  flow-server-x86_64-apple-darwin
-79cafa754428cefc012984597b76b67a2b4df1c2c0e31afaafb22cb04aa009e9 *flow-server-x86_64-pc-windows-msvc.exe
-b8cdcdb295e4688017d1ef9059feab641483a87a0a46de04e5b957d79a73730f  flow-server-x86_64-unknown-linux-gnu
+ea4149c9531dcafe0a77571cbd03d8dd6513a4810c2b2196a3c6f21359ebc6f8  flow-server-aarch64-apple-darwin
+b2a1ba406f3487d98dfc79731215bdf374f85e0f3925da7c2abc8c952fa3974f  flow-server-aarch64-unknown-linux-gnu
+a0d2dc79e3df66be2bcc194f0dc31e35b62e74e5a80e8488becafd62586e0458  flow-server-x86_64-apple-darwin
+02f6733eb8511139cafc4d60ed9fe3622fde61c9c642f9b6c5d344d40a788999 *flow-server-x86_64-pc-windows-msvc.exe
+b074888ffd3be3d10c4c935cc6a58919923603551efafae6f1f87eda24781de1  flow-server-x86_64-unknown-linux-gnu
