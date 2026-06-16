@@ -1,13 +1,20 @@
 ---
 id: 45
 title: "comfyui-mcp disposition — implement or archive the stub"
-status: PENDING
+status: COMPLETE
 priority: LOW
 added: 2026-06-15
+completed: 2026-06-16
 depends_on: "—"
 ---
 
 # [45] comfyui-mcp disposition — implement or archive the stub
+
+> **DISPOSITION (2026-06-16): IMPLEMENT.** The decision is to build the secured backend, not archive the
+> stub. The build is tracked by EPIC **[73]** (comfyui-mcp secured generative backend) and its children
+> [74]–[78] (Phase 1) + [79]–[80] (Phase 2), with PRESSROOM's `handler-comfyui` curl→MCP adoption as [49].
+> This decision item is therefore COMPLETE; the build work lives in [73]. Recorded as part of the roadmap
+> migration (item [47]), which moved `comfyui-mcp/ROADMAP.md` into the tree.
 
 **Brief Description**
 Decide the fate of `./comfyui-mcp`, currently a stub (design doc + Dockerfile + 5 workflow templates, no
