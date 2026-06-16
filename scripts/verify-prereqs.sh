@@ -471,6 +471,55 @@ else
   [ "$k_ok" -eq 1 ] && pass "every ephemeral-runner .mcp.json server pins an explicit @<version> (resident-binary servers exempt)"
 fi
 
+# ── P. flow-server pinned-release parity (defect [92]) ───────────────────────
+# The flow-server MCP runs a PINNED release: bin/flow-server-mcp reads bin/RELEASE for the tag and
+# verifies the retrieved asset against the COMMITTED bin/SHA256SUMS. This check keeps the three in
+# lockstep so the pin can never drift silently: (1) bin/RELEASE is a single well-formed
+# flow-server-vX.Y.Z tag; (2) Cargo.toml `version` == that tag's version (so the baked, self-reported
+# version matches the pin); (3) every committed SHA256SUMS line is a well-formed 64-hex digest for a
+# known asset, and IF any are committed they cover all supported platforms (a partial finalize is a
+# FAIL). Zero checksum lines is the legitimate bootstrap window (tag bumped, release not yet
+# published) — noted, not failed; smoke-pinned.sh likewise SKIPs there.
+section "P. flow-server pinned-release parity (RELEASE ⟺ Cargo ⟺ SHA256SUMS)"
+fs_dir="plugins/mission-control/flow-server"
+rel_file="$fs_dir/bin/RELEASE"; sums_file="$fs_dir/bin/SHA256SUMS"; cargo_file="$fs_dir/Cargo.toml"
+p_ok=1
+if [ ! -f "$rel_file" ] || [ ! -f "$sums_file" ] || [ ! -f "$cargo_file" ]; then
+  fail "missing one of $rel_file / $sums_file / $cargo_file"
+else
+  tag="$(tr -d '[:space:]' < "$rel_file")"
+  case "$tag" in
+    flow-server-v[0-9]*.[0-9]*.[0-9]*) tagver="${tag#flow-server-v}" ;;
+    *) p_ok=0; fail "bin/RELEASE '$tag' is not a well-formed flow-server-vX.Y.Z tag" ; tagver="" ;;
+  esac
+  cargover="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' "$cargo_file" | head -n1)"
+  if [ -n "$tagver" ] && [ "$tagver" != "$cargover" ]; then
+    p_ok=0; fail "Cargo.toml version ($cargover) != bin/RELEASE tag version ($tagver) — bump them together"
+  fi
+  # Validate the committed checksum lines (ignoring comments/blanks).
+  expected_assets="flow-server-x86_64-unknown-linux-gnu flow-server-aarch64-unknown-linux-gnu flow-server-x86_64-apple-darwin flow-server-aarch64-apple-darwin flow-server-x86_64-pc-windows-msvc.exe"
+  bad="$(awk '
+    /^[[:space:]]*#/ || /^[[:space:]]*$/ { next }
+    !($1 ~ /^[0-9a-fA-F]{64}$/ && $2 ~ /^\*?flow-server-/) { print NR": "$0 }
+  ' "$sums_file")"
+  ncs="$(awk '/^[[:space:]]*#/ || /^[[:space:]]*$/ {next} {n++} END{print n+0}' "$sums_file")"
+  if [ -n "$bad" ]; then
+    p_ok=0; fail "bin/SHA256SUMS has malformed line(s) (need '<64-hex>  flow-server-<triple>'):"; printf '%s\n' "$bad" | sed 's/^/      /'
+  elif [ "$ncs" -eq 0 ]; then
+    pass "pin bootstrap window: bin/RELEASE=$tag, Cargo=$cargover aligned; SHA256SUMS not yet finalized (smoke-pinned SKIPs until published)"
+  else
+    missing=""
+    for a in $expected_assets; do
+      awk -v a="$a" '($2==a || $2=="*"a){f=1} END{exit !f}' "$sums_file" || missing="$missing $a"
+    done
+    if [ -n "$missing" ]; then
+      p_ok=0; fail "bin/SHA256SUMS is partially finalized — missing checksum(s) for:$missing"
+    elif [ "$p_ok" -eq 1 ]; then
+      pass "pin finalized & aligned: bin/RELEASE=$tag, Cargo=$cargover, SHA256SUMS covers all $(printf '%s\n' $expected_assets | wc -l | tr -d ' ') platforms"
+    fi
+  fi
+fi
+
 # ── L. hooks smoke-exec (P1-8) ───────────────────────────────────────────────
 # For every plugins/*/hooks/hooks.json, resolve each declared command's script path
 # (${CLAUDE_PLUGIN_ROOT} → the plugin dir) and assert: the script EXISTS, passes `bash -n`, and runs

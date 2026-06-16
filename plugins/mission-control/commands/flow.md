@@ -12,12 +12,14 @@ The **flow** command has two route families. Pick by `$ARGUMENTS` (default: `sta
   item count), and `source`. This proves the MCP is connected and serving the tree.
 - **`status`** — report the MCP **and** the board:
   1. Call `ping`. Show `version` / `items` / `source`. **Flag staleness:** if `items` is 0 (or `source`
-     is null) while `.i2p/roadmap/` has files on disk, OR `version` is below `0.2.0`, the running MCP
-     binary is **stale** — the launcher always tracks `releases/latest`, so the live server is on an
-     old **cached** binary; tell the user to restart Claude Code so it re-resolves latest (clearing
-     `${XDG_CACHE_HOME:-~/.claude}/flow-server/` forces a fresh fetch), then re-verify via
-     `/mission-control:flow-setup`. If you have no `mcp__…__flow-server__*` tools at all, it isn't
-     connected — guide them: restart after install/update, then `/mcp` approve `flow-server`.
+     is null) while `.i2p/roadmap/` has files on disk, OR `version` is below `0.2.1`, the running MCP
+     binary is **stale**. The launcher runs a **pinned** release, so a stale server means the *plugin
+     itself* is out of date (its `bin/RELEASE` pins an older binary) — the fix is to **update the
+     mission-control plugin** (`/plugin marketplace update idea-to-production`, then update the plugin)
+     and restart Claude Code, not to clear a cache. Run `flow-server/bin/flow-server-mcp --doctor` to
+     see the pinned tag vs the cached binary, then re-verify via `/mission-control:flow-setup`. If you
+     have no `mcp__…__flow-server__*` tools at all, it isn't connected — guide them: restart after
+     install/update, then `/mcp` approve `flow-server`.
   2. Then run the board controller below with `status`.
 
 ## Board routes (the SVG governance UI daemon, via `flowctl.sh`)

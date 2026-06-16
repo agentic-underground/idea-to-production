@@ -23,9 +23,14 @@ set -uo pipefail
 PLUGIN="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 LAUNCHER="$PLUGIN/flow-server/bin/flow-server-mcp"
 
-# 1. Pre-warm — detached, output discarded, never blocks the hook's return.
+# 1. Pre-warm — detached, never blocks the hook's return. Its stderr (the resolve/verify
+#    reason) is APPENDED to the flow-server prewarm log so a failed pre-warm is diagnosable
+#    instead of vanishing (the launcher also self-logs structured reasons there, and surfaces
+#    them via `flow-server-mcp --doctor`); stdout is dropped.
 if [ -x "$LAUNCHER" ]; then
-  ( "$LAUNCHER" --ensure-binary >/dev/null 2>&1 & ) >/dev/null 2>&1 || true
+  PREWARM_LOG="${XDG_CACHE_HOME:-$HOME/.claude}/flow-server/prewarm.log"
+  mkdir -p "$(dirname "$PREWARM_LOG")" 2>/dev/null || true
+  ( "$LAUNCHER" --ensure-binary >/dev/null 2>>"$PREWARM_LOG" & ) >/dev/null 2>&1 || true
 fi
 
 # 2a. STANDING routing rule (R4 / item [92]) — emitted EVERY session as invisible

@@ -4,35 +4,62 @@
 # toolchain on the destination machine, then execs it (the plugin passes `--mcp`).
 #
 # Resolution ladder (first that succeeds wins):
-#   1. RESOLVE  — ask GitHub which release is LATEST (the `releases/latest` redirect; API
-#                 fallback). We always track latest — there is NO committed version pin.
-#   2. CACHED   — a previously-retrieved binary for that latest tag whose SHA256 still
-#                 matches the release's own published SHA256SUMS (no network beyond resolve).
-#   3. RETRIEVE — download the prebuilt release asset for this platform AND that release's
-#                 own SHA256SUMS, VERIFY the asset against it, cache, exec.
-#   4. CACHED-OFFLINE — resolve failed (offline): exec the newest cached binary that still
-#                 verifies against its cached SHA256SUMS (last-known-good).
-#   5. BUILD    — DEV fallback only: if cargo is present and the source is alongside, build
-#                 --release from source. (A contributor's machine; never required on a dest.)
-#   6. ERROR    — none worked: print an actionable message and exit non-zero.
+#   1. CACHED   — a previously-retrieved binary, in a cache dir keyed on the pinned tag
+#                 AND the pinned checksum, whose SHA256 still matches the COMMITTED pin.
+#   2. RETRIEVE — download the prebuilt release asset for this platform from GitHub
+#                 Releases, VERIFY it against the committed SHA256 (bin/SHA256SUMS),
+#                 cache, exec.
+#   3. BUILD    — DEV fallback only: if cargo is present and the source is alongside,
+#                 build --release from source. (A contributor's machine; never required
+#                 on a destination.)
+#   4. ERROR    — none worked: print an actionable message and exit non-zero.
 #
-# SECURITY / INTEGRITY: we no longer pin a specific version — we always fetch the LATEST
-# release. A retrieved binary is still run ONLY if its SHA256 matches the checksum the
-# release itself publishes in its SHA256SUMS asset (defence-in-depth over the TLS transport):
-# a mismatch is refused (never executed) and falls through to the build fallback. Tracking
-# latest deliberately trades away the reproducibility / malicious-publish protection a
-# committed pin gives — an explicit, owner-chosen posture (see flow-server/README.md).
+# DETERMINISM / INTEGRITY: we PIN a specific release (bin/RELEASE) and run a retrieved
+# binary ONLY if its SHA256 matches the checksum committed in bin/SHA256SUMS — never a
+# checksum fetched at runtime, and never an arbitrary "newest cached" binary. Two things
+# defeat the staleness that made this unreliable (defect [92]):
+#   * the cache dir is keyed on the pinned tag PLUS a fingerprint of the committed sum, so
+#     a re-cut/bumped pin lands in a NEW dir — a stale dir is never selected again; and
+#   * every cache hit is re-verified against the committed sum, so a re-cut tag (same name,
+#     different bytes) can never satisfy the new pin from an old cache.
+# A mismatch is refused (never executed) and falls through to the build fallback. This
+# mirrors the marketplace's pinned-release discipline (verify-prereqs.sh §K: no floating tags).
+#
+# CWD-INDEPENDENCE: the flow-server resolves its roadmap from a RELATIVE `.i2p/roadmap`
+# against its CWD unless given `--roadmap`. The harness may spawn this launcher from any
+# directory, which would silently yield an empty board. So we walk up from $PWD to the
+# project root (the dir holding `.i2p/roadmap/`) and inject an ABSOLUTE `--roadmap` (and a
+# root-anchored `--data`) — unless the caller already passed them. This is why a stale
+# binary, not a wrong CWD, is the only remaining way the board can come up empty.
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # CLAUDE_PLUGIN_ROOT (set by the harness for plugin surfaces) = the mission-control plugin
 # root; else derive it (this script lives at <plugin>/flow-server/bin/flow-server-mcp).
+# NOTE: this is the PLUGIN dir, NOT the user's project root — the project root is found by
+# the $PWD walk-up below, never from CLAUDE_PLUGIN_ROOT.
 PLUGIN="${CLAUDE_PLUGIN_ROOT:-$(dirname "$(dirname "$SCRIPT_DIR")")}"
 FS_DIR="$PLUGIN/flow-server"
 REPO="agentic-underground/idea-to-production"
-CACHE_ROOT="${XDG_CACHE_HOME:-$HOME/.claude}/flow-server"
+RELEASE_TAG="$(tr -d '[:space:]' < "$SCRIPT_DIR/RELEASE" 2>/dev/null || true)"
+SUMS_FILE="$SCRIPT_DIR/SHA256SUMS"
+CACHE_BASE="${XDG_CACHE_HOME:-$HOME/.claude}/flow-server"
+PREWARM_LOG="$CACHE_BASE/prewarm.log"
+# retrieve() is always called as `bin="$(retrieve)"` — a command substitution, i.e. a SUBSHELL.
+# A variable it sets cannot reach the parent, so it records its failure reason to this file and
+# the parent reads it back with read_reason after the call. (File writes DO survive a subshell.)
+REASON_FILE="$CACHE_BASE/.last-reason"
 
 log() { printf 'flow-server-mcp: %s\n' "$*" >&2; }
+set_reason() { mkdir -p "$CACHE_BASE" 2>/dev/null || true; printf '%s' "$*" >"$REASON_FILE" 2>/dev/null || true; }
+read_reason() { cat "$REASON_FILE" 2>/dev/null || true; }
+
+# Append a timestamp-free diagnostic line to the prewarm log (best-effort; never fatal).
+# Failures during a background pre-warm are otherwise invisible — this makes them readable.
+prewarm_log() {
+  mkdir -p "$CACHE_BASE" 2>/dev/null || return 0
+  printf 'flow-server prewarm[%s]: %s\n' "$RELEASE_TAG" "$*" >>"$PREWARM_LOG" 2>/dev/null || true
+}
 
 # uname → the Rust target triple used in release asset names.
 target_triple() {
@@ -51,114 +78,75 @@ target_triple() {
   printf '%s-%s' "$arch" "$os"
 }
 
+asset_name() {  # → the release asset file name for this platform
+  local triple ext
+  triple="$(target_triple)" || return 1
+  ext=""; case "$triple" in *windows*) ext=".exe" ;; esac
+  printf 'flow-server-%s%s' "$triple" "$ext"
+}
+
 sha256_of() {  # <file> → lowercase hex digest (or non-zero if no tool)
   if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | awk '{print $1}'
   elif command -v shasum >/dev/null 2>&1; then shasum -a 256 "$1" | awk '{print $1}'
   else return 1; fi
 }
 
-sum_for() {  # <sums-file> <asset> → the published 64-hex SHA256 for that asset, if any
-  [ -f "$1" ] || return 0
-  # Skip comment/blank lines and accept ONLY a well-formed 64-hex digest — an integrity
-  # parser must reject a malformed line (e.g. a '#' from a comment), never return it as if
-  # it were a checksum.
-  awk -v a="$2" '
+pinned_sum_for() {  # <asset> → the committed 64-hex SHA256 for that asset, if any
+  [ -f "$SUMS_FILE" ] || return 0
+  # Skip comment/blank lines and accept ONLY a well-formed 64-hex digest — a security-critical
+  # pin parser must reject a malformed pin (e.g. a '#' from an example comment line), never
+  # return it as if it were a checksum.
+  awk -v a="$1" '
     /^[[:space:]]*#/ || /^[[:space:]]*$/ { next }
     ($2==a || $2=="*"a) && $1 ~ /^[0-9a-fA-F]{64}$/ { print $1; exit }
-  ' "$1" 2>/dev/null || true
+  ' "$SUMS_FILE" 2>/dev/null || true
 }
 
-# Resolve the LATEST release tag from GitHub WITHOUT jq: follow the `releases/latest`
-# redirect, whose effective URL ends with /releases/tag/<TAG>. API fallback for environments
-# that don't expose the redirect. Prints the tag, or fails (→ offline cache fallback).
-resolve_latest_tag() {
-  command -v curl >/dev/null 2>&1 || return 1
-  local url tag=""
-  url="$(curl -fsSL -o /dev/null -w '%{url_effective}' --connect-timeout 10 --max-time 30 \
-        "https://github.com/${REPO}/releases/latest" 2>/dev/null || true)"
-  case "$url" in
-    */releases/tag/*) tag="${url##*/tag/}" ;;
-  esac
-  if [ -z "$tag" ]; then
-    tag="$(curl -fsSL --connect-timeout 10 --max-time 30 \
-          "https://api.github.com/repos/${REPO}/releases/latest" 2>/dev/null \
-          | sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1)"
-  fi
-  # Defensive: a tag is a git ref — it must never contain a path separator or whitespace
-  # (it goes straight into a download URL path).
-  case "$tag" in
-    ''|*/*|*[[:space:]]*) return 1 ;;
-  esac
-  printf '%s' "$tag"
+# The cache dir for the current pin: keyed on the tag AND a 12-hex fingerprint of the
+# committed checksum, so a re-cut or bumped pin lands in a fresh dir and a stale dir is
+# never re-selected. <expected-sum> may be empty (→ dir keyed on tag alone).
+cache_dir() {  # <expected-sum>
+  local fp="${1:0:12}"
+  printf '%s/%s%s' "$CACHE_BASE" "${RELEASE_TAG:-unpinned}" "${fp:+-$fp}"
 }
 
-# Print a verified binary path for <tag>, or fail (→ next rung). Downloads the asset AND the
-# release's own SHA256SUMS and verifies. Never execs an unverified file.
-retrieve() {  # <tag>
-  local tag="$1" triple ext asset cache bin sums expected url tmp got
-  [ -n "$tag" ] || return 1
-  triple="$(target_triple)" || return 1
-  ext=""; case "$triple" in *windows*) ext=".exe" ;; esac
-  asset="flow-server-${triple}${ext}"
-  cache="$CACHE_ROOT/${tag}"
+# Print a verified binary path, or fail (→ build fallback). Never execs an unverified file.
+retrieve() {
+  local ext asset cache bin expected url tmp got
+  : >"$REASON_FILE" 2>/dev/null || true   # clear any reason from a prior call
+  asset="$(asset_name)" || { set_reason "unsupported platform ($(uname -sm 2>/dev/null))"; return 1; }
+  ext=""; case "$asset" in *.exe) ext=".exe" ;; esac
+  expected="$(pinned_sum_for "$asset")"
+  cache="$(cache_dir "$expected")"
   bin="$cache/flow-server${ext}"
-  sums="$cache/SHA256SUMS"
 
-  # Cached binary + cached sums still matching? Use it (no network beyond resolve).
-  expected="$(sum_for "$sums" "$asset")"
+  # Cached and still matching the COMMITTED pin? Use it (no network).
   if [ -n "$expected" ] && [ -x "$bin" ]; then
     got="$(sha256_of "$bin" 2>/dev/null || true)"
     [ "$got" = "$expected" ] && { printf '%s' "$bin"; return 0; }
   fi
 
-  command -v curl >/dev/null 2>&1 || return 1
-  mkdir -p "$cache" 2>/dev/null || return 1
+  # Can only retrieve safely with both a pinned tag and a pinned checksum.
+  [ -n "$RELEASE_TAG" ] && [ -n "$expected" ] || { set_reason "no pin (tag/checksum) for this platform — bin/SHA256SUMS not finalized for ${asset}?"; return 1; }
+  command -v curl >/dev/null 2>&1 || { set_reason "curl not available"; return 1; }
 
-  # Fetch the release's published SHA256SUMS — the integrity source of truth for this tag.
-  if ! curl -fsSL --connect-timeout 10 --max-time 60 \
-       "https://github.com/${REPO}/releases/download/${tag}/SHA256SUMS" -o "$cache/.sums.$$" 2>/dev/null; then
-    rm -f "$cache/.sums.$$"; return 1
-  fi
-  expected="$(sum_for "$cache/.sums.$$" "$asset")"
-  if [ -z "$expected" ]; then
-    rm -f "$cache/.sums.$$"; log "no SHA256 for ${asset} in the ${tag} SHA256SUMS."; return 1
-  fi
-
-  url="https://github.com/${REPO}/releases/download/${tag}/${asset}"
+  url="https://github.com/${REPO}/releases/download/${RELEASE_TAG}/${asset}"
+  mkdir -p "$cache" 2>/dev/null || { set_reason "cannot create cache dir"; return 1; }
   tmp="$cache/.dl.$$"
-  log "retrieving ${asset} from the latest release (${tag})…"
+  log "retrieving ${asset} from the ${RELEASE_TAG} release…"
   if ! curl -fsSL --connect-timeout 10 --max-time 120 "$url" -o "$tmp" 2>/dev/null; then
-    rm -f "$tmp" "$cache/.sums.$$"; return 1
+    rm -f "$tmp"; set_reason "download failed (offline or asset missing): $url"; return 1
   fi
   got="$(sha256_of "$tmp" 2>/dev/null || true)"
   if [ "$got" != "$expected" ]; then
-    rm -f "$tmp" "$cache/.sums.$$"
-    log "REFUSING ${asset}: SHA256 mismatch (published ${expected:-∅}, got ${got:-∅})."
+    rm -f "$tmp"
+    set_reason "SHA256 MISMATCH for ${asset} (pinned ${expected:-∅}, got ${got:-∅}) — refused"
+    log "REFUSING ${asset}: SHA256 mismatch (pinned ${expected:-∅}, got ${got:-∅})."
     return 1
   fi
   chmod +x "$tmp" 2>/dev/null || true
-  mv -f "$tmp" "$bin" 2>/dev/null || { rm -f "$tmp" "$cache/.sums.$$"; return 1; }
-  mv -f "$cache/.sums.$$" "$sums" 2>/dev/null || rm -f "$cache/.sums.$$"
+  mv -f "$tmp" "$bin" 2>/dev/null || { rm -f "$tmp"; set_reason "cannot install cached binary"; return 1; }
   printf '%s' "$bin"
-}
-
-# Offline fallback: the newest cached tag whose binary still verifies against its cached
-# SHA256SUMS (last-known-good). Used only when we cannot resolve the latest tag (no network).
-newest_cached_verified() {
-  local triple ext asset d bin sums expected got
-  triple="$(target_triple)" || return 1
-  ext=""; case "$triple" in *windows*) ext=".exe" ;; esac
-  asset="flow-server-${triple}${ext}"
-  [ -d "$CACHE_ROOT" ] || return 1
-  for d in $(ls -1dt "$CACHE_ROOT"/*/ 2>/dev/null); do
-    bin="${d}flow-server${ext}"; sums="${d}SHA256SUMS"
-    [ -x "$bin" ] || continue
-    expected="$(sum_for "$sums" "$asset")"
-    [ -n "$expected" ] || continue
-    got="$(sha256_of "$bin" 2>/dev/null || true)"
-    [ "$got" = "$expected" ] && { printf '%s' "$bin"; return 0; }
-  done
-  return 1
 }
 
 # DEV fallback: build from the source shipped beside this launcher. Requires cargo.
@@ -170,35 +158,109 @@ build_from_source() {
   printf '%s' "$FS_DIR/target/release/flow-server"
 }
 
-main() {
-  local tag bin=""
-  tag="$(resolve_latest_tag || true)"
+# Walk up from $PWD to the project root — the nearest ancestor containing a `.i2p/roadmap/`
+# directory. Prints the root path, or fails. (The plugin dir is NOT the project root, so the
+# walk-up from the spawn CWD is the only correct source — see header.)
+find_project_root() {
+  local d="$PWD"
+  while [ -n "$d" ] && [ "$d" != "/" ]; do
+    [ -d "$d/.i2p/roadmap" ] && { printf '%s' "$d"; return 0; }
+    d="$(dirname "$d")"
+  done
+  [ -d "/.i2p/roadmap" ] && { printf '/'; return 0; }
+  return 1
+}
 
-  # Pre-warm mode (for a background SessionStart prewarm): resolve latest + retrieve +
-  # SHA-verify + cache, then exit 0 — NEVER start the server and NEVER fall back to a cargo
-  # build (a multi-minute build must not run in the background of a fresh session). If the
-  # latest release can't be resolved/verified for this platform, do nothing and exit 0
-  # cleanly — the real launch resolves it lazily.
-  if [ "${1:-}" = "--ensure-binary" ]; then
-    if [ -n "$tag" ] && bin="$(retrieve "$tag")" && [ -n "$bin" ]; then
-      log "pre-warmed ${bin}"
+# --doctor: a human-readable health report so a broken/stale launch is diagnosable instead of
+# silently empty. Prints the pin, the expected vs cached checksum (match/mismatch), the cache
+# dir, and the resolved project root + whether its roadmap tree was found. Always exits 0.
+doctor() {
+  local asset expected cache bin got root
+  echo "flow-server-mcp --doctor"
+  echo "  plugin dir     : $PLUGIN"
+  echo "  pinned tag     : ${RELEASE_TAG:-<unset>}"
+  asset="$(asset_name 2>/dev/null || echo '<unsupported platform>')"
+  echo "  platform asset : $asset"
+  expected="$(pinned_sum_for "$asset" 2>/dev/null || true)"
+  echo "  pinned SHA256  : ${expected:-<none committed>}"
+  cache="$(cache_dir "$expected")"
+  bin="$cache/flow-server"; [ -e "${bin}.exe" ] && bin="${bin}.exe"
+  echo "  cache dir      : $cache"
+  if [ -x "$bin" ]; then
+    got="$(sha256_of "$bin" 2>/dev/null || echo '<no sha tool>')"
+    if [ -z "$expected" ]; then
+      echo "  cached binary  : present (SHA256 ${got}) — but NO checksum is committed for ${asset} yet (bootstrap window), so it can't be pin-verified"
+    elif [ "$got" = "$expected" ]; then
+      echo "  cached binary  : present — SHA256 MATCHES the pin ✓"
     else
-      log "pre-warm skipped — could not resolve/verify the latest release binary for this platform yet; resolved lazily on launch."
+      echo "  cached binary  : present — SHA256 ${got} does NOT match the pin ✗ (will re-retrieve)"
     fi
-    exit 0
+  else
+    echo "  cached binary  : none cached yet (will retrieve on launch)"
   fi
+  if root="$(find_project_root 2>/dev/null)"; then
+    echo "  project root   : $root"
+    echo "  roadmap tree   : $root/.i2p/roadmap ($(find "$root/.i2p/roadmap" -maxdepth 2 -name '*.md' ! -name 'README.md' 2>/dev/null | wc -l | tr -d ' ') item file(s))"
+  else
+    echo "  project root   : NOT FOUND walking up from $PWD (no .i2p/roadmap/ ancestor) — board would be empty"
+  fi
+  [ -f "$PREWARM_LOG" ] && { echo "  last prewarm   :"; tail -n 3 "$PREWARM_LOG" 2>/dev/null | sed 's/^/    /'; }
+  exit 0
+}
 
-  if [ -n "$tag" ] && bin="$(retrieve "$tag")" && [ -n "$bin" ]; then :
-  elif bin="$(newest_cached_verified)" && [ -n "$bin" ]; then
-    log "could not resolve the latest release (offline?) — using newest cached verified binary: ${bin}"
+# Compose the extra args that anchor the server to the project root: an absolute --roadmap
+# (and a root-anchored --data), but ONLY for flags the caller did not already pass. Sets the
+# global array INJECT.
+compute_injected_args() {
+  INJECT=()
+  local root have_roadmap=0 have_data=0 a
+  for a in "$@"; do
+    case "$a" in --roadmap) have_roadmap=1 ;; --data) have_data=1 ;; esac
+  done
+  root="$(find_project_root 2>/dev/null || true)"
+  [ -n "$root" ] && [ -d "$root/.i2p/roadmap" ] || return 0
+  [ "$have_roadmap" = 0 ] && INJECT+=(--roadmap "$root/.i2p/roadmap")
+  [ "$have_data" = 0 ] && INJECT+=(--data "$root/.flow")
+}
+
+main() {
+  local bin=""
+  INJECT=()
+
+  case "${1:-}" in
+    --doctor) doctor ;;  # exits 0
+    --ensure-binary)
+      # Pre-warm mode (background SessionStart prewarm): retrieve + SHA-verify + cache the
+      # release binary, then exit 0 — NEVER start the server and NEVER fall back to a cargo
+      # build (a multi-minute build must not run in a fresh session's background). On failure
+      # we still exit 0 (the real launch resolves it lazily), but we LOG the reason to
+      # $PREWARM_LOG so a failed pre-warm is diagnosable rather than silent.
+      if bin="$(retrieve)" && [ -n "$bin" ]; then
+        log "pre-warmed ${bin}"; prewarm_log "OK — cached ${bin}"
+      else
+        RETRIEVE_REASON="$(read_reason)"
+        case "$RETRIEVE_REASON" in
+          *MISMATCH*) prewarm_log "REFUSED — ${RETRIEVE_REASON}. The pin and the published asset disagree." ;;
+          *download*) prewarm_log "deferred — ${RETRIEVE_REASON}. Will resolve on next launch." ;;
+          *)          prewarm_log "deferred — ${RETRIEVE_REASON:-unknown}." ;;
+        esac
+        log "pre-warm skipped — ${RETRIEVE_REASON:-no verified release binary for this platform yet}; resolved lazily on launch."
+      fi
+      exit 0
+      ;;
+  esac
+
+  if bin="$(retrieve)" && [ -n "$bin" ]; then :
   elif bin="$(build_from_source)" && [ -n "$bin" ]; then :
   else
-    log "could not obtain the flow-server binary for this platform ($(uname -sm 2>/dev/null))."
-    log "expected a published release at https://github.com/${REPO}/releases/latest,"
+    log "could not obtain the flow-server binary for this platform ($(uname -sm 2>/dev/null)): $(read_reason || echo unknown)."
+    log "expected a pinned release at https://github.com/${REPO}/releases/tag/${RELEASE_TAG:-<unset>},"
     log "or a Rust toolchain (https://rustup.rs) for the source-build fallback."
     exit 1
   fi
-  exec "$bin" "$@"
+
+  compute_injected_args "$@"
+  exec "$bin" ${INJECT[@]+"${INJECT[@]}"} "$@"
 }
 
 main "$@"
