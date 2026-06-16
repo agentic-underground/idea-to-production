@@ -126,6 +126,13 @@ impl Store {
         self.inner.lock().await.flow.clone()
     }
 
+    /// The `.i2p/roadmap/` tree path this store ingested from, if any (roadmap [42]).
+    /// `None` for a legacy single-file/empty store. Surfaced by the MCP `ping` verb so
+    /// a stale or misconfigured server (empty store, no source) is visible, not silent.
+    pub async fn roadmap_source(&self) -> Option<PathBuf> {
+        self.inner.lock().await.roadmap_tree.clone()
+    }
+
     /// Read and parse the full JSONL event log.
     pub async fn read_events(&self) -> Result<Vec<Event>, StoreError> {
         let guard = self.inner.lock().await;

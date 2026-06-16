@@ -1,5 +1,5 @@
 //! Exhaustive MCP JSON-RPC surface contract: tools/list, every one of the
-//! thirteen `tools/call` verbs (happy + error/abuse/malformed-params), the
+//! fourteen `tools/call` verbs (happy + error/abuse/malformed-params), the
 //! unknown-tool and unknown-method envelopes, and the 401/no-token gate. Drives
 //! the real axum router via `oneshot`.
 
@@ -76,7 +76,7 @@ fn call(id: i64, name: &str, args: Value) -> Value {
 // --- envelopes ------------------------------------------------------------
 
 #[tokio::test]
-async fn tools_list_enumerates_the_thirteen_verbs() {
+async fn tools_list_enumerates_the_fourteen_verbs() {
     let (router, _store) = seeded("list").await;
     let (status, v) = rpc(
         &router,
@@ -86,11 +86,13 @@ async fn tools_list_enumerates_the_thirteen_verbs() {
     assert_eq!(status, StatusCode::OK);
     let tools = v["result"]["tools"].as_array().unwrap();
     // Nine original verbs plus roadmap #15 (render_roadmap), roadmap #4
-    // (annotate, request_rewrite), and the event-log reader (list_events).
-    assert_eq!(tools.len(), 13);
+    // (annotate, request_rewrite), the event-log reader (list_events), and the
+    // ping health/staleness verb ([92]).
+    assert_eq!(tools.len(), 14);
     // MCP-conformant descriptors: each tool is a {name, description, inputSchema}
     // object, not a bare string. Match on the `name` field.
     let has = |n: &str| tools.iter().any(|t| t["name"] == n);
+    assert!(has("ping"));
     assert!(has("append_sysmsg"));
     assert!(has("render_roadmap"));
     assert!(has("annotate"));

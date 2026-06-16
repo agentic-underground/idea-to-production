@@ -535,7 +535,7 @@ mod tests {
     /// deps_for returns the `to` ids for edges where `from == item.id`.
     #[test]
     fn deps_for_returns_outgoing_edges() {
-        use crate::domain::{Edge, Item};
+        use crate::domain::Edge;
         let item = make_item("a");
         let edges = vec![
             Edge {

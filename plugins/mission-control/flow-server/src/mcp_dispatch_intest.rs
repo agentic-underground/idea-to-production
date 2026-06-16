@@ -257,7 +257,7 @@ async fn dispatch_tools_list_returns_descriptor_objects() {
     let req = json!({ "jsonrpc": "2.0", "id": 1, "method": "tools/list" });
     let resp = mcp::dispatch(&state, req).await;
     let tools = resp["result"]["tools"].as_array().unwrap();
-    assert_eq!(tools.len(), 13);
+    assert_eq!(tools.len(), 14);
     for t in tools {
         assert!(t["name"].is_string(), "descriptor missing name: {t:?}");
         assert!(
@@ -265,6 +265,67 @@ async fn dispatch_tools_list_returns_descriptor_objects() {
             "descriptor missing inputSchema: {t:?}"
         );
     }
+}
+
+#[tokio::test]
+async fn dispatch_ping_greets_and_reports_version_items_source() {
+    // Empty store: ping greets, reports a non-empty version, 0 items, null source.
+    let state = make_state("ping-empty").await;
+    let resp = mcp::dispatch(
+        &state,
+        json!({ "jsonrpc": "2.0", "id": 1, "method": "tools/call",
+                "params": { "name": "ping", "arguments": {} } }),
+    )
+    .await;
+    assert_eq!(resp["result"]["message"], "hello from the flow MCP");
+    assert!(
+        resp["result"]["version"]
+            .as_str()
+            .is_some_and(|v| !v.is_empty()),
+        "ping must report a non-empty version: {resp:?}"
+    );
+    assert_eq!(resp["result"]["items"], 0);
+    assert_eq!(resp["result"]["source"], Value::Null);
+
+    // With an item seeded, the count is reflected.
+    let (state2, _id) = make_state_with_item("ping-one").await;
+    let resp2 = mcp::dispatch(
+        &state2,
+        json!({ "jsonrpc": "2.0", "id": 2, "method": "tools/call",
+                "params": { "name": "ping", "arguments": {} } }),
+    )
+    .await;
+    assert_eq!(resp2["result"]["items"], 1);
+}
+
+#[tokio::test]
+async fn dispatch_render_roadmap_empty_carries_a_staleness_diagnostic() {
+    // An empty roadmap must NOT read as a silent authoritative answer — it points at ping.
+    let state = make_state("render-empty").await;
+    let resp = mcp::dispatch(
+        &state,
+        json!({ "jsonrpc": "2.0", "id": 1, "method": "tools/call",
+                "params": { "name": "render_roadmap", "arguments": {} } }),
+    )
+    .await;
+    let rendered = resp["result"]["rendered"].as_str().unwrap();
+    assert!(
+        rendered.contains("0 items") && rendered.contains("ping"),
+        "empty render must carry the stale/misconfigured diagnostic: {rendered:?}"
+    );
+
+    // A non-empty store renders without the diagnostic.
+    let (state2, _id) = make_state_with_item("render-one").await;
+    let resp2 = mcp::dispatch(
+        &state2,
+        json!({ "jsonrpc": "2.0", "id": 2, "method": "tools/call",
+                "params": { "name": "render_roadmap", "arguments": {} } }),
+    )
+    .await;
+    assert!(!resp2["result"]["rendered"]
+        .as_str()
+        .unwrap()
+        .contains("may be stale"));
 }
 
 #[tokio::test]
@@ -296,7 +357,7 @@ async fn descriptor_names_are_all_dispatchable() {
     )
     .await;
     let tools = list["result"]["tools"].as_array().unwrap().clone();
-    assert_eq!(tools.len(), 13);
+    assert_eq!(tools.len(), 14);
     for t in &tools {
         let name = t["name"].as_str().unwrap();
         let resp = mcp::dispatch(

@@ -42,7 +42,7 @@ auto-detects `.i2p/roadmap/` in the cwd. `--host` defaults to LAN-reachable; the
 
 A **pure domain core** (`src/domain/`: ids · model · graph · event · telemetry · roadmap_view · annotation —
 no IO, parse-don't-validate, no cycles by construction) behind **thin adapters** (`store.rs` the one writer ·
-`auth.rs` token gate · `api.rs` REST · `ws.rs` broadcast · `mcp.rs` 13-verb JSON-RPC). The single source of
+`auth.rs` token gate · `api.rs` REST · `ws.rs` broadcast · `mcp.rs` 14-verb JSON-RPC). The single source of
 truth is the roadmap markdown + the append-only JSONL log; the UI is a view.
 
 ## Tests
@@ -50,7 +50,7 @@ truth is the roadmap markdown + the append-only JSONL log; the UI is a view.
 - **Rust**: `cargo test` → 277 tests; `cargo clippy -D warnings` + `cargo fmt --check` clean; domain core and
   every new module at **100% line+region**, `main.rs` the only excluded shim (an entrypoint, e2e-smoked).
 - **Frontend**: `cd static && npm test` → 164 vitest+jsdom tests, 100% coverage.
-- **Live**: booted with the real roadmap ingested; HTTP/WS/MCP exercised end-to-end (token-reject, 9→13
+- **Live**: booted with the real roadmap ingested; HTTP/WS/MCP exercised end-to-end (token-reject, 14
   verbs, cycle-reject, REST+MCP through the one writer, board renders all 16 items — see the screenshot).
 
 ← back to the [mission-control plugin](../README.md) · the [marketplace root](../../../README.md)
