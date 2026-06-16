@@ -1,0 +1,5 @@
+# flow-server pinned-release checksums — the integrity source of truth for bin/flow-server-mcp.
+# One line per published release asset: "<64-hex-sha256>  flow-server-<triple>[.exe]".
+# FINALIZED AFTER the release workflow publishes flow-server-v0.2.1 — copy the published
+# SHA256SUMS asset's lines here verbatim, then commit (see flow-server/README.md "cut a release").
+# Until these lines exist, destinations without cargo cannot fetch a binary; devs build from source.
