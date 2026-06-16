@@ -42,7 +42,7 @@ auto-detects `.i2p/roadmap/` in the cwd. `--host` defaults to LAN-reachable; the
 
 A **pure domain core** (`src/domain/`: ids · model · graph · event · telemetry · roadmap_view · annotation —
 no IO, parse-don't-validate, no cycles by construction) behind **thin adapters** (`store.rs` the one writer ·
-`auth.rs` token gate · `api.rs` REST · `ws.rs` broadcast · `mcp.rs` 13-verb JSON-RPC). The single source of
+`auth.rs` token gate · `api.rs` REST · `ws.rs` broadcast · `mcp.rs` 14-verb JSON-RPC). The single source of
 truth is the roadmap markdown + the append-only JSONL log; the UI is a view.
 
 ## Tests
