@@ -272,42 +272,11 @@ add parsing instructions to the agent's `## Phase 0 — Initialise` section.
 
 ## Roadmap — Planned Improvements
 
-### v1.1 — Stack-Aware Analysis
-- Auto-detect framework (FastAPI, Django, Rails, Spring, etc.)
-- Load framework-specific lens alongside generic ones
-- FastAPI: router organisation, dependency injection patterns
-- Django: fat models vs. thin models, signals abuse
-- Rails: concerns, service objects, form objects
-
-### v1.2 — Pre-commit Hook Integration
-- Hook script that runs the quality analysis on changed files only
-- Configurable threshold (fail commit if score below X)
-- Fast mode: lint only, no LLM call
-
-### v1.3 — Quality Trend Tracking
-- Write quality scores to `.claude/quality-history.json` after each run
-- `/quality-trend` command: show improvement over time
-- Regression detection: alert when a file's score drops
-
-### v1.4 — PR / Diff Mode
-- `/code-quality --diff HEAD~1` — analyse only changed lines
-- Output formatted as GitHub PR review comments
-- Integration with `gh pr review` command
-
-### v1.5 — Architecture Decision Records (ADR) Integration
-- Detect existing ADRs in `docs/decisions/`
-- Cross-reference findings against recorded decisions
-- Suggest new ADRs when a pattern inconsistency is found
-
-### v1.6 — Self-Improving Description Optimiser
-- Run the skill-creator's description optimiser on a schedule
-- Automatically sharpen triggering accuracy based on usage patterns
-
-### v2.0 — Multi-Agent Quality Pipeline
-- `spec-reviewer-agent`: checks specs for testability before implementation
-- `coverage-gate-agent`: blocks merges below threshold (CI integration)
-- `architecture-guardian-agent`: continuous boundary enforcement
-- Orchestrator that runs all three in parallel on every PR
+The planned code-quality improvements (v1.1 stack-aware analysis, v1.2 pre-commit hook, v1.3 trend
+tracking, v1.4 PR/diff mode, v1.5 ADR integration, v1.6 description optimiser, and the v2.0 multi-agent
+quality pipeline) now live as items in the marketplace roadmap tree
+[`.i2p/roadmap/`](../../../../.i2p/roadmap/) — **ids 81–91** — migrated there under roadmap item [47] so
+all roadmaps share one source of truth. See the `81-`…`91-` item files for the full EARS/AC specs.
 
 ---
 
