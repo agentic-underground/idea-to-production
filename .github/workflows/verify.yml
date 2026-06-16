@@ -75,19 +75,19 @@ jobs:
       - name: MCP handshake smoke (spawn the shipped launcher)
         run: bash plugins/mission-control/flow-server/bin/smoke-mcp.sh
 
-  # The defect-[92] regression guard: boot the PINNED RELEASE binary (the exact artifact
-  # users run, named in bin/RELEASE + SHA-verified against bin/SHA256SUMS) against the repo's
-  # .i2p/roadmap/ tree with a FRESH store, and assert the MCP renders it NON-empty. This
-  # closes the gap that let [92] ship: the smoke job above builds from SOURCE (always current)
-  # and was green while the pinned v0.1.0 binary predated the tree ingest of item [42] →
-  # render_roadmap returned empty over MCP. NO Rust toolchain — it downloads the binary, the
-  # whole point. A stale/mispinned RELEASE makes this fail.
-  flow-server-mcp-pinned:
+  # The defect-[92] regression guard: boot the LATEST RELEASE binary (the exact artifact
+  # users run — the launcher resolves GitHub's releases/latest and SHA-verifies it against
+  # that release's own SHA256SUMS) against the repo's .i2p/roadmap/ tree with a FRESH store,
+  # and assert the MCP renders it NON-empty. This closes the gap that let [92] ship: the smoke
+  # job above builds from SOURCE (always current) and was green while a stale v0.1.0 release
+  # binary predated the tree ingest of item [42] → render_roadmap returned empty over MCP.
+  # NO Rust toolchain — it downloads the binary, the whole point. A bad latest release fails.
+  flow-server-mcp-latest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Pinned-release MCP renders the roadmap (regression guard for [92])
-        run: bash plugins/mission-control/flow-server/bin/smoke-pinned.sh
+      - name: Latest-release MCP renders the roadmap (regression guard for [92])
+        run: bash plugins/mission-control/flow-server/bin/smoke-latest.sh
 
   # Cobbler's children (P2-18): the marketplace runs MISSION-CONTROL's own OBSERVABILITY
   # lens on ITSELF. This is the HEALTH slice of the same self-observation substrate whose

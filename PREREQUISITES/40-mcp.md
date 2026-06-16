@@ -3,7 +3,8 @@
 [Model Context Protocol](https://modelcontextprotocol.io) servers give agents real, interactive
 capabilities beyond text + Bash. The marketplace ships **four** — three keyless third-party launchers
 (Context7 takes an optional rate-limit key) and its own first-party **flow-server** (a retrieved,
-SHA256-pinned Rust binary) — declared in each plugin's root `.mcp.json`, plus documented optional extras.
+latest-tracking, SHA256-verified Rust binary) — declared in each plugin's root `.mcp.json`, plus
+documented optional extras.
 
 ## How a plugin ships an MCP server
 
@@ -31,9 +32,12 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
   server can't change underneath you. The current pins: `@playwright/mcp@0.0.75`,
   `@upstash/context7-mcp@3.1.0`, `uvx mcp-server-fetch@2026.6.4`.
   `scripts/verify-prereqs.sh` check K asserts every ephemeral-runner `.mcp.json` server carries such a
-  pin. **`flow-server` is first-party**: a resident-binary command (so check K exempts it), pinned a
-  different way — the launcher verifies each retrieved release asset against the **SHA256** committed in
-  `flow-server/bin/SHA256SUMS`, refusing any binary whose digest doesn't match.
+  pin. **`flow-server` is first-party and the exception**: a resident-binary command (so check K exempts
+  it) that deliberately **tracks the latest release** rather than a committed version — the launcher
+  resolves GitHub's `releases/latest`, then verifies each retrieved asset against the **SHA256** that
+  release publishes in its own `SHA256SUMS`, refusing any binary whose digest doesn't match. This keeps
+  integrity verification while giving up the version pin's reproducibility (an owner-chosen trade; see
+  the [flow-server README](../plugins/mission-control/flow-server/README.md#no-rust-toolchain-required--the-launcher-retrieves-a-prebuilt-binary)).
 - Manual fallback (no plugin): `claude mcp add playwright -- npx -y @playwright/mcp@0.0.75`.
 
 ## Shipped by the marketplace
@@ -43,7 +47,7 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
 | `fetch` | market-scanner, ideator | `uvx mcp-server-fetch@2026.6.4` | `mcp__fetch__*` | Keyless web research: fetch a URL and extract it as **markdown in chunks** — competitor pricing, docs, forum threads. Grounds the discovery scorecard / IDEA package in real evidence. |
 | `context7` | foundry | `npx -y @upstash/context7-mcp@3.1.0` | `mcp__context7__*` | **Version-specific** library docs + examples for 9,000+ libraries, injected into context — handlers code against the current API, not the training cutoff. |
 | `playwright` | foundry, atelier | `npx -y @playwright/mcp@0.0.75` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. foundry uses it for STORY feedback; atelier for `/ui-review` crawl + a11y snapshot. |
-| `flow-server` | mission-control | `${CLAUDE_PLUGIN_ROOT}/flow-server/bin/flow-server-mcp` — a launcher that retrieves a SHA256-pinned prebuilt binary from GitHub Releases (no Rust toolchain on the destination; source-builds only as a dev fallback) | `mcp__flow-server__*` | The roadmap flow board's MCP surface. `render_roadmap` answers "what's on the roadmap" by local compute (~0 LLM tokens); `list_items`/`post_status`/`set_wait_go`/`append_spend`/… read and carry roadmap items. **First-party** — the marketplace's own Rust binary, not a fetched package. |
+| `flow-server` | mission-control | `${CLAUDE_PLUGIN_ROOT}/flow-server/bin/flow-server-mcp` — a launcher that retrieves the latest prebuilt binary from GitHub Releases and SHA256-verifies it against that release's published checksums (no Rust toolchain on the destination; source-builds only as a dev fallback) | `mcp__flow-server__*` | The roadmap flow board's MCP surface. `render_roadmap` answers "what's on the roadmap" by local compute (~0 LLM tokens); `list_items`/`post_status`/`set_wait_go`/`append_spend`/… read and carry roadmap items. **First-party** — the marketplace's own Rust binary, not a fetched package. |
 
 Prereqs: `fetch` needs `uv`/`uvx`; `context7` + `playwright` need `node`/`npx` (Playwright's
 browser auto-downloads on first use). All three run **keyless** — nothing to provision but the launcher

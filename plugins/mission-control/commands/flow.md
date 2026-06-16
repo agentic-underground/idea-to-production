@@ -12,9 +12,11 @@ The **flow** command has two route families. Pick by `$ARGUMENTS` (default: `sta
   item count), and `source`. This proves the MCP is connected and serving the tree.
 - **`status`** — report the MCP **and** the board:
   1. Call `ping`. Show `version` / `items` / `source`. **Flag staleness:** if `items` is 0 (or `source`
-     is null) while `.i2p/roadmap/` has files on disk, OR `version` is below `0.2.0`, the pinned MCP
-     binary is **stale** — tell the user to re-approve via `/mission-control:flow-setup` (or that the
-     `bin/RELEASE` pin needs bumping). If you have no `mcp__…__flow-server__*` tools at all, it isn't
+     is null) while `.i2p/roadmap/` has files on disk, OR `version` is below `0.2.0`, the running MCP
+     binary is **stale** — the launcher always tracks `releases/latest`, so the live server is on an
+     old **cached** binary; tell the user to restart Claude Code so it re-resolves latest (clearing
+     `${XDG_CACHE_HOME:-~/.claude}/flow-server/` forces a fresh fetch), then re-verify via
+     `/mission-control:flow-setup`. If you have no `mcp__…__flow-server__*` tools at all, it isn't
      connected — guide them: restart after install/update, then `/mcp` approve `flow-server`.
   2. Then run the board controller below with `status`.
 
