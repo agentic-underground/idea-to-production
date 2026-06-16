@@ -282,7 +282,7 @@
       "source": "./plugins/mission-control",
       "displayName": "MISSION-CONTROL — Operate the live product",
       "description": "The OPERATE phase owner — what runs a mission AFTER launch. MISSION-CONTROL keeps the live product alive and improving: it verifies operational readiness at go-live, instruments and watches the four golden signals (observability), runs incident response (severity, incident-command roles, mitigate-first, runbooks, blameless postmortems), keeps a maintenance cadence (dependency upkeep + CVE patching + tech-debt), and closes the build-measure-learn loop by turning production signals into a new opportunity that re-enters DISCOVER (the cyclic re-entry). /operate-gate is the front door — an operational-readiness check at go-live and the steady-state health view with a READY / WATCH / NOT-READY verdict. Grounded in named canon (SRE SLIs/SLOs/error budgets + golden signals, the Incident Command System, build-measure-learn, ITIL-lite). Stands alone on any live project, or advances the idea-to-production lifecycle OPERATE → DISCOVER (↻) when i2p is installed. Composes sentinel's dependency-audit and hands new opportunities to market-scanner/ideator by capability. Carries the KAIZEN self-improvement covenant: every incident becomes a runbook, every alert gap becomes an SLO.",
-      "version": "0.2.2",
+      "version": "0.2.3",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",

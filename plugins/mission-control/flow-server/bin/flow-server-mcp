@@ -113,7 +113,7 @@ cache_dir() {  # <expected-sum>
 # Print a verified binary path, or fail (→ build fallback). Never execs an unverified file.
 retrieve() {
   local ext asset cache bin expected url tmp got
-  : >"$REASON_FILE" 2>/dev/null || true   # clear any reason from a prior call
+  set_reason ""   # clear any reason from a prior call (set_reason mkdir's $CACHE_BASE first)
   asset="$(asset_name)" || { set_reason "unsupported platform ($(uname -sm 2>/dev/null))"; return 1; }
   ext=""; case "$asset" in *.exe) ext=".exe" ;; esac
   expected="$(pinned_sum_for "$asset")"
