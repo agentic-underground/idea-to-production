@@ -17,7 +17,7 @@ sub-project closes that gap with a server that exposes only what a figure needs 
 ```
 comfyui-mcp/
 ├── README.md            # this file
-├── ROADMAP.md           # MVP-now (raw HTTP) vs the full secured build, phased
+│                        # (roadmap migrated to .i2p/roadmap/ — EPIC [73], Phase 1: 74–78; Phase 2: 79–80)
 ├── EARS.md              # the spec FOUNDRY consumes to build server/ test-first
 ├── server/              # the MCP server (foundry-built, sentinel-secured) — see server/README.md
 ├── workflows/           # ALLOWLISTED workflow templates — the ONLY graphs the server will submit
@@ -45,7 +45,9 @@ graph. This single decision removes the arbitrary-node / SSRF class.
 This is the headline: the marketplace builds its own infrastructure. [`EARS.md`](EARS.md) → **foundry** builds
 `server/` test-first to the 100% coverage floor → **sentinel** runs `/security-gate` + `/secret-scan` +
 `/dependency-audit` → **pressroom** documents it. Then `handler-comfyui` switches from raw `curl` to
-`mcp__comfyui__*` tools and the Phase-0 gap is closed. See [`ROADMAP.md`](ROADMAP.md).
+`mcp__comfyui__*` tools and the Phase-0 gap is closed. The build is tracked in the marketplace roadmap tree
+[`.i2p/roadmap/`](../.i2p/roadmap/) as EPIC [73] (Phase 1: items 74–78) + Phase 2 (79–80), migrated under
+roadmap item [47]; the implement-or-archive disposition [45] is resolved (implement).
 
 ## License
 Dual-licensed under **MIT OR Apache-2.0** (matching the marketplace).
