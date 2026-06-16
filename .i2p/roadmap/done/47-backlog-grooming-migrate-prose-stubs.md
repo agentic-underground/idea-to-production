@@ -1,13 +1,20 @@
 ---
 id: 47
 title: "Backlog grooming — migrate per-plugin prose-stub items into the tree"
-status: PENDING
+status: COMPLETE
 priority: LOW
 added: 2026-06-15
+completed: 2026-06-16
 depends_on: "—"
 ---
 
 # [47] Backlog grooming — migrate per-plugin prose-stub items into the tree
+
+> **COMPLETE (2026-06-16).** All five source roadmaps migrated into the tree as full EARS/AC items and the
+> sources deleted: PRESSROOM → [49]–[58]; SENTINEL → [59]–[67]; FRONTEND design-system → [68]–[72];
+> comfyui-mcp → EPIC [73] + [74]–[80] (and the disposition [45] resolved to IMPLEMENT); code-quality
+> (DEPLOYMENT.md roadmap section) → [81]–[91]. `find . -name ROADMAP.md` now returns nothing in scope; the
+> flow-server ingests 92 items from the tree.
 
 **Brief Description**
 Migrate the remaining per-plugin roadmap prose-stubs (pressroom, sentinel expansion paths; foundry/frontend
