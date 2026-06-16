@@ -4,7 +4,7 @@ title: "SENTINEL CI integration recipes — drop-in gate snippets"
 status: PENDING
 priority: MEDIUM
 added: 2026-06-16
-depends_on: "—"
+depends_on: "#60"
 ---
 
 # [63] SENTINEL CI integration recipes — drop-in gate snippets
