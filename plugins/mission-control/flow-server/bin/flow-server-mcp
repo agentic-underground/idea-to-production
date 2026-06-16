@@ -45,8 +45,14 @@ RELEASE_TAG="$(tr -d '[:space:]' < "$SCRIPT_DIR/RELEASE" 2>/dev/null || true)"
 SUMS_FILE="$SCRIPT_DIR/SHA256SUMS"
 CACHE_BASE="${XDG_CACHE_HOME:-$HOME/.claude}/flow-server"
 PREWARM_LOG="$CACHE_BASE/prewarm.log"
+# retrieve() is always called as `bin="$(retrieve)"` — a command substitution, i.e. a SUBSHELL.
+# A variable it sets cannot reach the parent, so it records its failure reason to this file and
+# the parent reads it back with read_reason after the call. (File writes DO survive a subshell.)
+REASON_FILE="$CACHE_BASE/.last-reason"
 
 log() { printf 'flow-server-mcp: %s\n' "$*" >&2; }
+set_reason() { mkdir -p "$CACHE_BASE" 2>/dev/null || true; printf '%s' "$*" >"$REASON_FILE" 2>/dev/null || true; }
+read_reason() { cat "$REASON_FILE" 2>/dev/null || true; }
 
 # Append a timestamp-free diagnostic line to the prewarm log (best-effort; never fatal).
 # Failures during a background pre-warm are otherwise invisible — this makes them readable.
@@ -107,7 +113,8 @@ cache_dir() {  # <expected-sum>
 # Print a verified binary path, or fail (→ build fallback). Never execs an unverified file.
 retrieve() {
   local ext asset cache bin expected url tmp got
-  asset="$(asset_name)" || return 1
+  : >"$REASON_FILE" 2>/dev/null || true   # clear any reason from a prior call
+  asset="$(asset_name)" || { set_reason "unsupported platform ($(uname -sm 2>/dev/null))"; return 1; }
   ext=""; case "$asset" in *.exe) ext=".exe" ;; esac
   expected="$(pinned_sum_for "$asset")"
   cache="$(cache_dir "$expected")"
@@ -120,25 +127,25 @@ retrieve() {
   fi
 
   # Can only retrieve safely with both a pinned tag and a pinned checksum.
-  [ -n "$RELEASE_TAG" ] && [ -n "$expected" ] || { RETRIEVE_REASON="no pin (tag/checksum) for this platform"; return 1; }
-  command -v curl >/dev/null 2>&1 || { RETRIEVE_REASON="curl not available"; return 1; }
+  [ -n "$RELEASE_TAG" ] && [ -n "$expected" ] || { set_reason "no pin (tag/checksum) for this platform — bin/SHA256SUMS not finalized for ${asset}?"; return 1; }
+  command -v curl >/dev/null 2>&1 || { set_reason "curl not available"; return 1; }
 
   url="https://github.com/${REPO}/releases/download/${RELEASE_TAG}/${asset}"
-  mkdir -p "$cache" 2>/dev/null || { RETRIEVE_REASON="cannot create cache dir"; return 1; }
+  mkdir -p "$cache" 2>/dev/null || { set_reason "cannot create cache dir"; return 1; }
   tmp="$cache/.dl.$$"
   log "retrieving ${asset} from the ${RELEASE_TAG} release…"
   if ! curl -fsSL --connect-timeout 10 --max-time 120 "$url" -o "$tmp" 2>/dev/null; then
-    rm -f "$tmp"; RETRIEVE_REASON="download failed (offline or asset missing): $url"; return 1
+    rm -f "$tmp"; set_reason "download failed (offline or asset missing): $url"; return 1
   fi
   got="$(sha256_of "$tmp" 2>/dev/null || true)"
   if [ "$got" != "$expected" ]; then
     rm -f "$tmp"
-    RETRIEVE_REASON="SHA256 MISMATCH for ${asset} (pinned ${expected:-∅}, got ${got:-∅}) — refused"
+    set_reason "SHA256 MISMATCH for ${asset} (pinned ${expected:-∅}, got ${got:-∅}) — refused"
     log "REFUSING ${asset}: SHA256 mismatch (pinned ${expected:-∅}, got ${got:-∅})."
     return 1
   fi
   chmod +x "$tmp" 2>/dev/null || true
-  mv -f "$tmp" "$bin" 2>/dev/null || { rm -f "$tmp"; RETRIEVE_REASON="cannot install cached binary"; return 1; }
+  mv -f "$tmp" "$bin" 2>/dev/null || { rm -f "$tmp"; set_reason "cannot install cached binary"; return 1; }
   printf '%s' "$bin"
 }
 
@@ -181,7 +188,9 @@ doctor() {
   echo "  cache dir      : $cache"
   if [ -x "$bin" ]; then
     got="$(sha256_of "$bin" 2>/dev/null || echo '<no sha tool>')"
-    if [ -n "$expected" ] && [ "$got" = "$expected" ]; then
+    if [ -z "$expected" ]; then
+      echo "  cached binary  : present (SHA256 ${got}) — but NO checksum is committed for ${asset} yet (bootstrap window), so it can't be pin-verified"
+    elif [ "$got" = "$expected" ]; then
       echo "  cached binary  : present — SHA256 MATCHES the pin ✓"
     else
       echo "  cached binary  : present — SHA256 ${got} does NOT match the pin ✗ (will re-retrieve)"
@@ -226,10 +235,10 @@ main() {
       # build (a multi-minute build must not run in a fresh session's background). On failure
       # we still exit 0 (the real launch resolves it lazily), but we LOG the reason to
       # $PREWARM_LOG so a failed pre-warm is diagnosable rather than silent.
-      RETRIEVE_REASON=""
       if bin="$(retrieve)" && [ -n "$bin" ]; then
         log "pre-warmed ${bin}"; prewarm_log "OK — cached ${bin}"
       else
+        RETRIEVE_REASON="$(read_reason)"
         case "$RETRIEVE_REASON" in
           *MISMATCH*) prewarm_log "REFUSED — ${RETRIEVE_REASON}. The pin and the published asset disagree." ;;
           *download*) prewarm_log "deferred — ${RETRIEVE_REASON}. Will resolve on next launch." ;;
@@ -241,11 +250,10 @@ main() {
       ;;
   esac
 
-  RETRIEVE_REASON=""
   if bin="$(retrieve)" && [ -n "$bin" ]; then :
   elif bin="$(build_from_source)" && [ -n "$bin" ]; then :
   else
-    log "could not obtain the flow-server binary for this platform ($(uname -sm 2>/dev/null)): ${RETRIEVE_REASON:-unknown}."
+    log "could not obtain the flow-server binary for this platform ($(uname -sm 2>/dev/null)): $(read_reason || echo unknown)."
     log "expected a pinned release at https://github.com/${REPO}/releases/tag/${RELEASE_TAG:-<unset>},"
     log "or a Rust toolchain (https://rustup.rs) for the source-build fallback."
     exit 1

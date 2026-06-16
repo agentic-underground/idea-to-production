@@ -25,8 +25,15 @@ SUMS_FILE="$SCRIPT_DIR/SHA256SUMS"
 TAG="$(tr -d '[:space:]' < "$SCRIPT_DIR/RELEASE")"
 CARGO_VER="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' "$FS_DIR/Cargo.toml" | head -n1)"
 ext=""; case "$(uname -m)" in arm64|aarch64) arch=aarch64 ;; *) arch=x86_64 ;; esac
-case "$(uname -s)" in MINGW*|MSYS*|CYGWIN*) ext=".exe" ;; esac
-case "$(uname -s)" in Linux) os=unknown-linux-gnu ;; Darwin) os=apple-darwin ;; *) os=unknown-linux-gnu ;; esac
+# Reconstruct the platform triple EXACTLY as the launcher's target_triple() and the release
+# matrix do — Windows must map to pc-windows-msvc (+.exe), never the linux default, or the
+# bootstrap-skip check would look up the wrong asset and silently pass on Windows.
+case "$(uname -s)" in
+  Linux)                os=unknown-linux-gnu ;;
+  Darwin)               os=apple-darwin ;;
+  MINGW*|MSYS*|CYGWIN*) os=pc-windows-msvc; ext=".exe" ;;
+  *)                    os=unknown-linux-gnu ;;
+esac
 ASSET="flow-server-${arch}-${os}${ext}"
 
 # Bootstrap-window skip: no committed checksum line for this platform yet → the pinned release
