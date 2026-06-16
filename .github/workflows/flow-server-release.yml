@@ -2,12 +2,17 @@ name: flow-server release
 
 # Build the flow-server MCP binary for every supported platform and publish it as a
 # GitHub Release with a SHA256SUMS manifest. The plugin launcher
-# (plugins/mission-control/flow-server/bin/flow-server-mcp) always resolves GitHub's
-# releases/latest, retrieves the matching asset AND this release's SHA256SUMS, and verifies
-# the asset against it — so a destination machine runs the server WITHOUT a Rust toolchain.
-# Cut a release by pushing a tag:  git tag flow-server-v0.2.0 && git push --tags
-# The launcher fetches SHA256SUMS at retrieval time, so a new release is picked up
-# automatically — there is NO committed bin/SHA256SUMS to update.
+# (plugins/mission-control/flow-server/bin/flow-server-mcp) runs a PINNED release: it reads
+# bin/RELEASE for the tag and verifies the retrieved asset against the COMMITTED bin/SHA256SUMS
+# — so a destination machine runs the server WITHOUT a Rust toolchain and deterministically.
+#
+# Cut a release (the bump-and-cut flow — see flow-server/README.md):
+#   1. Bump plugins/mission-control/flow-server/Cargo.toml `version` (NEVER re-cut a tag).
+#   2. Push the matching tag:  git tag flow-server-v0.2.1 && git push --tags
+#   3. This workflow's `preflight` refuses a re-cut tag or a tag≠Cargo version, then builds +
+#      publishes the assets + SHA256SUMS.
+#   4. Copy the published SHA256SUMS lines into bin/SHA256SUMS, set bin/RELEASE to the tag, commit.
+# The launcher trusts ONLY the committed bin/SHA256SUMS, so step 4 is what activates a release.
 
 on:
   push:
@@ -24,8 +29,40 @@ permissions:
   contents: read
 
 jobs:
+  # Gate the whole release on two invariants that keep binary identity honest (defect [92]):
+  #   * the tag must NOT already exist as a release — re-cutting a tag ships different bytes under
+  #     the same name, the exact failure that stranded machines on a stale flow-server-v0.2.0; and
+  #   * the tag version must equal Cargo.toml `version`, so the binary's baked, self-reported
+  #     version always matches the tag the pin names.
+  preflight:
+    name: preflight (no re-cut · Cargo==tag)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refuse a re-cut tag and enforce Cargo.toml version == tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}"
+          case "$tag" in
+            flow-server-v*) tagver="${tag#flow-server-v}" ;;
+            *) echo "::error::tag '$tag' is not of the form flow-server-vX.Y.Z"; exit 1 ;;
+          esac
+          cargover="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' \
+                      plugins/mission-control/flow-server/Cargo.toml | head -n1)"
+          if [ "$tagver" != "$cargover" ]; then
+            echo "::error::tag version ($tagver) != Cargo.toml version ($cargover) — bump Cargo.toml to match the tag before cutting."
+            exit 1
+          fi
+          if gh release view "$tag" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "::error::release '$tag' already exists — NEVER re-cut a tag (that is the [92] regression). Bump the version and cut a new tag."
+            exit 1
+          fi
+          echo "preflight OK: $tag is new and matches Cargo.toml ($cargover)."
+
   build:
     name: build ${{ matrix.target }}
+    needs: preflight
     runs-on: ${{ matrix.os }}
     # The build steps run inside the crate; bash on every OS (incl. windows-latest).
     defaults:
@@ -110,5 +147,5 @@ jobs:
           gh release create "$tag" \
             --repo "${{ github.repository }}" \
             --title "$tag" \
-            --notes "flow-server MCP binary for the mission-control plugin. The plugin launcher always tracks releases/latest: it retrieves the asset for its platform plus this release's SHA256SUMS and verifies the asset against it. No committed-file change is needed to activate a new release." \
+            --notes "flow-server MCP binary for the mission-control plugin. The plugin launcher runs a PINNED release: it reads bin/RELEASE for the tag and verifies the retrieved asset against the COMMITTED bin/SHA256SUMS. To activate this release, copy this SHA256SUMS into plugins/mission-control/flow-server/bin/SHA256SUMS and set bin/RELEASE to this tag, then commit." \
             "${assets[@]}"
