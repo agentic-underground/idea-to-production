@@ -17,7 +17,7 @@ sub-project closes that gap with a server that exposes only what a figure needs 
 ```
 comfyui-mcp/
 ├── README.md            # this file
-├── ROADMAP.md           # MVP-now (raw HTTP) vs the full secured build, phased
+│                        # (roadmap migrated to .i2p/roadmap/ — EPIC [73], Phase 1: 74–78; Phase 2: 79–80)
 ├── EARS.md              # the spec FOUNDRY consumes to build server/ test-first
 ├── server/              # the MCP server (foundry-built, sentinel-secured) — see server/README.md
 ├── workflows/           # ALLOWLISTED workflow templates — the ONLY graphs the server will submit
