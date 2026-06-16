@@ -58,8 +58,9 @@ A4 page. The maker↔reviewer loop **measurably improves** the artefact rather t
 - **Standalone** — PRESSROOM never assumes another plugin is installed; its writer carries its
   own commit convention.
 
-See [ROADMAP.md](ROADMAP.md) for planned capabilities (slide decks, multi-format export,
-citations, web publishing).
+Planned capabilities (slide decks, multi-format export, citations, web publishing, …) live as items
+in the marketplace roadmap tree [`.i2p/roadmap/`](../../.i2p/roadmap/) (ids 49–58), migrated there under
+roadmap item [47].
 
 ## ♻️ Self-improvement covenant — halve the distance to perfection
 
