@@ -57,8 +57,9 @@ returns a false PASS.
 - **Self-improving** — every missed pattern becomes a rule; every false positive becomes a
   narrow allowlist entry. The next scan starts stricter than the last.
 
-See [ROADMAP.md](ROADMAP.md) for planned capabilities (license compliance, SBOM, CI recipes, IaC
-scanning).
+Planned capabilities (license compliance, SBOM, CI recipes, IaC scanning, …) live as items in the
+marketplace roadmap tree [`.i2p/roadmap/`](../../.i2p/roadmap/) (ids 59–67), migrated there under
+roadmap item [47].
 
 ## ♻️ Self-improvement covenant — halve the distance to perfection
 
