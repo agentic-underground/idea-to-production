@@ -1,6 +1,6 @@
 [package]
 name = "flow-server"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "Flow server — sole writer of flow state; serves the governance UI over HTTP, broadcasts deltas over WebSocket, and exposes an MCP verb surface (roadmap #1)."
 license = "MIT"

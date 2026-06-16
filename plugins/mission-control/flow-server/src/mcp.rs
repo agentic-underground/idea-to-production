@@ -20,6 +20,14 @@ const SUPPORTED_PROTOCOL_VERSIONS: &[&str] = &["2024-11-05"];
 /// The newest version in [`SUPPORTED_PROTOCOL_VERSIONS`] (the negotiation fallback).
 const LATEST_PROTOCOL_VERSION: &str = "2024-11-05";
 
+/// The server's self-reported build identity: the crate version PLUS the short git
+/// rev baked at compile time by `build.rs` (`FLOW_BUILD_REV`). The crate version
+/// alone is ambiguous — a re-cut release tag (defect [92]) ships a *different* binary
+/// under the same `version`, so two builds would self-report identically. Appending
+/// the rev makes every build distinguishable, so `ping`/`--doctor` can prove which
+/// binary is actually running. Falls back to `…+unknown` outside a git checkout.
+pub const SERVER_VERSION: &str = concat!(env!("CARGO_PKG_VERSION"), "+", env!("FLOW_BUILD_REV"));
+
 /// The single source of truth for the verb set this MCP surface exposes: one
 /// `(name, one-line description)` per verb (mirrors the REST routes and the
 /// `call_tool` dispatch arms). `tool_descriptors` pairs each with its
@@ -195,7 +203,7 @@ pub async fn dispatch(state: &AppState, req: Value) -> Value {
                     "capabilities": { "tools": {} },
                     "serverInfo": {
                         "name": "flow-server",
-                        "version": env!("CARGO_PKG_VERSION"),
+                        "version": SERVER_VERSION,
                     },
                 }),
             )
@@ -373,7 +381,7 @@ async fn call_tool(state: &AppState, id: Value, name: &str, args: Value) -> Valu
                 id,
                 json!({
                     "message": "hello from the flow MCP",
-                    "version": env!("CARGO_PKG_VERSION"),
+                    "version": SERVER_VERSION,
                     "items": items,
                     "source": source,
                 }),
