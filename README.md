@@ -179,7 +179,8 @@ the server isn't approved. Run **`/mission-control:flow-setup`** for a guided, v
 New here? [`plugins/foundry/knowledge/glossary.md`](plugins/foundry/knowledge/glossary.md) names every
 concept, plugin, agent, skill, and command, draws the conceptual-domain tree, and settles the
 **foundry vs forge vs founder** question. The system itself is described in
-[`plugins/foundry/VALUE_FLOW.md`](plugins/foundry/VALUE_FLOW.md).
+[`plugins/foundry/VALUE_FLOW.md`](plugins/foundry/VALUE_FLOW.md). For a phase-by-phase catalog of
+every slash command across all nine plugins, see [`docs/SLASH_COMMANDS.md`](docs/SLASH_COMMANDS.md).
 
 ## License
 
