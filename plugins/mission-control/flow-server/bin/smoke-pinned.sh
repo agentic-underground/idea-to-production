@@ -44,7 +44,7 @@ out="$(printf '%s\n' \
 
 # 3. Assert the pinned binary renders the tree NON-empty (this is what v0.1.0 failed).
 printf '%s\n' "$out" | python3 -c '
-import sys, json
+import sys, json, re
 items = None
 rendered_ok = False
 for ln in sys.stdin:
@@ -55,8 +55,11 @@ for ln in sys.stdin:
     r = o.get("result", {})
     if o.get("id") == 2 and "items" in r:
         items = r["items"]
-    if o.get("id") == 3 and isinstance(r.get("rendered"), str) and "item(s)" in r["rendered"]:
-        rendered_ok = True
+    if o.get("id") == 3 and isinstance(r.get("rendered"), str):
+        # Require a POSITIVE item count in the render itself: "0 item(s)" must NOT pass, so
+        # the guard does not hinge on the items check alone (defence in depth, no apostrophes
+        # here because this whole block is inside python3 -c with single quotes).
+        rendered_ok = bool(re.search(r"\b[1-9]\d* item", r["rendered"]))
 if items is None or items < 1:
     sys.exit("FAIL: pinned release ping reports items=%s — the pinned binary does not ingest the "
              ".i2p/roadmap tree (stale release predating item [42]?)." % items)
