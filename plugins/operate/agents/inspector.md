@@ -34,7 +34,7 @@ guardrail, and the KAIZEN covenant. Write `OPERATE_INSPECTION_REPORT.md` to the 
    signals, ICS/SEV, build-measure-learn, ITIL-lite) — the citation resolves and the canon section exists.
    No skill invents an operational claim the canon doesn't name.
 4. **Lifecycle wiring (by capability):** `iterate` (the re-entry signal) advances the lifecycle with
-   `/i2p-lifecycle done OPERATE` (→ DISCOVER ↻) **only when i2p is installed**, order-safe & idempotent —
+   `/i2p:lifecycle done OPERATE` (→ DISCOVER ↻) **only when i2p is installed**, order-safe & idempotent —
    never a hard cross-plugin path, never auto-advancing out of order.
 5. **Tooling-by-capability:** observability/platform CLIs (curl, jq, promtool, kubectl, cloud CLIs) are
    referenced by capability and degrade gracefully when absent — a missing CLI narrows a lens to partial,

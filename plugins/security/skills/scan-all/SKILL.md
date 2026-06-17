@@ -165,7 +165,7 @@ BLOCK/REVIEW), and the **i2p** plugin is installed, mark the **SECURE** phase do
 product lifecycle and the status line advance to PUBLISH:
 
 ```bash
-/i2p-lifecycle done SECURE   # order-safe & idempotent — a no-op unless a lifecycle is running at SECURE
+/i2p:lifecycle done SECURE   # order-safe & idempotent — a no-op unless a lifecycle is running at SECURE
 ```
 
 Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

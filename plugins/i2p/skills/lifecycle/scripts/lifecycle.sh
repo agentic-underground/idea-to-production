@@ -57,7 +57,7 @@ is_corrupt() {
 
 # corrupt_msg — one clear diagnostic, to stderr, never confused with "not started".
 corrupt_msg() {
-  echo "lifecycle: $LF is corrupt — not overwriting; back it up and re-init / repair (e.g. mv '$LF' '$LF.bak' && /i2p-lifecycle)" >&2
+  echo "lifecycle: $LF is corrupt — not overwriting; back it up and re-init / repair (e.g. mv '$LF' '$LF.bak' && /i2p:lifecycle)" >&2
 }
 
 get_phase() {
@@ -116,7 +116,7 @@ case "$cmd" in
       cyc="$(get_cycle)"; if [ "${cyc:-1}" -gt 1 ] 2>/dev/null; then cycstr=" · cycle ${cyc}"; else cycstr=""; fi
       echo "lifecycle: ${p} (${idx}/${n})${cycstr} — $LF"
     else
-      echo "lifecycle: not started (run: /i2p-lifecycle  or  lifecycle.sh init)"
+      echo "lifecycle: not started (run: /i2p:lifecycle  or  lifecycle.sh init)"
     fi ;;
   init)
     # Refuse to clobber a corrupt-but-recoverable state file with a fresh init.

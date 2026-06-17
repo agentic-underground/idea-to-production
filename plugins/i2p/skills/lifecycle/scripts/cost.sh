@@ -138,7 +138,7 @@ case "$cmd" in
     ;;
 
   report)
-    [ -r "$CF" ] || { echo "cost: no ledger (run /i2p-lifecycle, then it accrues)"; exit 0; }
+    [ -r "$CF" ] || { echo "cost: no ledger (run /i2p:lifecycle, then it accrues)"; exit 0; }
     # Report the ACTIVE cycle's node (defaults to cycle 1 for a flat/legacy file). When the file is
     # cycle-indexed, label the cycle so prior cycles are visibly preserved, not clobbered.
     label="$(jq -r --arg cyc "$CYCLE" 'if has("cycles") then "  (cycle \($cyc) of \(.cycles|keys|length))" else "" end' "$CF" 2>/dev/null)"

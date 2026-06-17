@@ -7,7 +7,7 @@
 #   (now − the timestamp of the most recent history[] entry whose .phase == current_phase),
 #   and if that exceeds a sensible per-phase budget it PRINTS a proposal naming the elapsed
 #   time and the exact command to investigate/advance. It NEVER writes, NEVER advances the
-#   lifecycle — advancing is a human decision (/i2p-lifecycle done <PHASE>).
+#   lifecycle — advancing is a human decision (/i2p:lifecycle done <PHASE>).
 #
 # BUDGETS (per-phase, calendar days). OPERATE is long-lived by design (a live product sits
 # in OPERATE indefinitely) so its budget is generous; the build/assure phases should not sit
@@ -57,7 +57,7 @@ budget_for() {  # honour an env override I2P_STUCK_BUDGET_<PHASE>_DAYS, else the
 
 # ── Graceful: absent vs corrupt vs unparseable ──────────────────────────────────────────
 if [ ! -f "$LF" ]; then
-  echo "stuck-phase: no lifecycle at $LF — nothing to check (run /i2p-lifecycle to start one)."
+  echo "stuck-phase: no lifecycle at $LF — nothing to check (run /i2p:lifecycle to start one)."
   exit 0
 fi
 if ! command -v jq >/dev/null 2>&1; then
@@ -114,7 +114,7 @@ stuck-phase: ⚠ PROPOSAL — phase $current_phase has been active ${elapsed_day
 A phase sitting far past budget is invisible drift, not progress. Investigate why it is stalled,
 then either keep working it or advance it deliberately:
 
-    /i2p-lifecycle done $current_phase     # advance when the phase's exit criteria are met
+    /i2p:lifecycle done $current_phase     # advance when the phase's exit criteria are met
 
 This is a proposal only — nothing has been advanced. (OPERATE is long-lived by design; for
 shorter phases like BUILD/ASSURE, multi-day stalls usually mean a blocked item to surface.)

@@ -1,9 +1,10 @@
 ---
 id: 99
 title: "Normalise i2p command prefix: /i2p:i2p-check → /i2p:check"
-status: PENDING
+status: COMPLETE
 priority: LOW
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "—"
 ---
 

@@ -70,7 +70,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   incidents, iterate, and maintain the realised & live product; its learnings open the **next** cycle
   (↻ → DISCOVER). `operate` may not be installed yet — surfaces name what installing it unlocks.
 - **i2p** — the marketplace **front door / meta-layer & arrival layer**: marketplace-level meta-commands
-  (`/i2p-help`, `/i2p-review`, `/i2p-check`, `/i2p-flow`) plus session-start onboarding, and — folded in
+  (`/i2p:help`, `/i2p:review`, `/i2p:check`, `/i2p:flow`) plus session-start onboarding, and — folded in
   from the retired concierge — the **repo welcome** (a SessionStart hook renders a repo's
   `.claude/welcome.md` to greet and route whoever opens it; `/i2p:define-welcome` authors it) and the
   **idea-to-production status line** (`/i2p:statusline`, offered once on first activation). A thin

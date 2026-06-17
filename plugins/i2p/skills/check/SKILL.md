@@ -1,7 +1,7 @@
 ---
 name: check
 description: >
-  Consolidated marketplace readiness. Use for /i2p-check (or "are all my tools installed?",
+  Consolidated marketplace readiness. Use for /i2p:check (or "are all my tools installed?",
   "check the whole marketplace", "what's missing across the plugins?"). Runs every installed
   plugin's /check and merges the ✓/✗ results into one table grouped by plugin, then summarises
   what's missing and how to install it. Thin: it delegates to each plugin's check, it owns no

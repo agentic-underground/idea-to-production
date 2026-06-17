@@ -1,7 +1,7 @@
 ---
 name: lifecycle
 description: >
-  Start and report the idea-to-production PRODUCT LIFECYCLE for a project. Use for /i2p-lifecycle
+  Start and report the idea-to-production PRODUCT LIFECYCLE for a project. Use for /i2p:lifecycle
   (or "start a product lifecycle", "what phase are we in?", "kick off idea-to-production",
   "advance the lifecycle"). Reads/writes .i2p/lifecycle.json via scripts/lifecycle.sh and
   explains the model from knowledge/product-lifecycle.md. The statusline phase widget reads the
@@ -52,7 +52,7 @@ Full model + schema: [`../../knowledge/instrumentation.md`](../../knowledge/inst
 
 ## Kick off a new product lifecycle
 
-When the user wants to start (or `/i2p-help` offered and they accepted):
+When the user wants to start (or `/i2p:help` offered and they accepted):
 1. Run `lifecycle.sh init "<product name>"` (defaults to the repo folder name) — sets phase **DISCOVER**.
 2. **Route to the phase owner**: DISCOVER → `/market-scan` (or `/discovery-goal` first); if they already have a
    validated idea, `set IDEATE` and route to `/ideate`. Name only the **installed** plugins; if a phase's
@@ -62,7 +62,7 @@ When the user wants to start (or `/i2p-help` offered and they accepted):
 ## Advance the lifecycle
 
 Advancement is **wired into each owning plugin**: when a station completes it calls
-`/i2p-lifecycle done <its-phase>` (by capability — only when i2p is installed). `done <PHASE>` is
+`/i2p:lifecycle done <its-phase>` (by capability — only when i2p is installed). `done <PHASE>` is
 **order-safe and idempotent** — it advances to the next phase *only if* the lifecycle is currently at
 `<PHASE>`, and is a silent no-op otherwise (or when no lifecycle is running), so a plugin can never jump
 the lifecycle out of order or auto-start it. The exit signal → `done` mapping:

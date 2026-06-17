@@ -12,11 +12,11 @@ set -euo pipefail
 if [ ! -t 0 ]; then cat >/dev/null 2>&1 || true; fi
 
 read -r -d '' MSG <<'EOF' || true
-💡 idea-to-production is online — type /i2p-help to browse what you can do (or /i2p-flow to see the pipeline, /i2p-review for a full review).
+💡 idea-to-production is online — type /i2p:help to browse what you can do (or /i2p:flow to see the pipeline, /i2p:review for a full review).
 EOF
 
 read -r -d '' CTX <<'EOF' || true
-The idea-to-production marketplace (front door plugin "i2p") is active. If the user has not yet been oriented this session, give a one-line conversational intro and mention that /i2p-help browses every installed capability. Do not repeat this on later turns.
+The idea-to-production marketplace (front door plugin "i2p") is active. If the user has not yet been oriented this session, give a one-line conversational intro and mention that /i2p:help browses every installed capability. Do not repeat this on later turns.
 EOF
 
 # jq builds correctly-escaped JSON; fall back to a static payload if jq is absent.
@@ -29,5 +29,5 @@ if command -v jq >/dev/null 2>&1; then
     }
   }'
 else
-  printf '{"systemMessage":"💡 idea-to-production is online — type /i2p-help to browse what you can do.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"The idea-to-production marketplace is active; mention /i2p-help once if the user is not yet oriented."}}\n'
+  printf '{"systemMessage":"💡 idea-to-production is online — type /i2p:help to browse what you can do.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"The idea-to-production marketplace is active; mention /i2p:help once if the user is not yet oriented."}}\n'
 fi

@@ -76,7 +76,7 @@ OPERATE is where the product meets reality, so it is where the **Build → Measu
   intended outcome — a metric stalls, an incident reveals a wrong assumption, feedback contradicts the
   thesis — that divergence is a **new OPPORTUNITY**. This is the marketplace's **cyclic re-entry**: OPERATE
   hands that opportunity back to **DISCOVER (↻)** to open the next value cycle (the `iterate` skill does
-  this, calling `/i2p-lifecycle done OPERATE`). Continuous discovery means the loop never dead-ends at
+  this, calling `/i2p:lifecycle done OPERATE`). Continuous discovery means the loop never dead-ends at
   launch.
 
 ## 4. ITIL-lite maintenance — keep the lights on without ceremony

@@ -705,7 +705,7 @@ When the conveyor delivers a shippable item (it reaches **SHIP** / the item is m
 product lifecycle and the status line advance to ASSURE:
 
 ```bash
-/i2p-lifecycle done BUILD   # order-safe & idempotent — a no-op unless a lifecycle is running at BUILD
+/i2p:lifecycle done BUILD   # order-safe & idempotent — a no-op unless a lifecycle is running at BUILD
 ```
 
 Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

@@ -44,7 +44,7 @@ A lifecycle phase running far past its budget is invisible drift, not progress �
 cadence must surface. [`scripts/stuck-phase.sh`](scripts/stuck-phase.sh) reads `<project>/.i2p/lifecycle.json`
 `history[]` timestamps, computes time-in-current-phase, and against sensible per-phase budgets (OPERATE is
 long-lived by design; BUILD/ASSURE/SECURE/PUBLISH should not sit for days) **prints a proposal** when a phase
-is over budget — e.g. *"phase BUILD active 9d (budget 7d) — investigate or advance: `/i2p-lifecycle done
+is over budget — e.g. *"phase BUILD active 9d (budget 7d) — investigate or advance: `/i2p:lifecycle done
 BUILD`"*. It **never auto-advances** (advancing is a human decision) and degrades gracefully on a corrupt or
 absent `lifecycle.json`. Run it as part of the cadence:
 

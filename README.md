@@ -9,8 +9,8 @@ disciplined, **test-first** value flow: discover ▸ refine ▸ design ▸ build
 
 </div>
 
-> **Start here →** **`/i2p-help`** browses every power you have · **`/i2p-flow`** shows the pipeline ·
-> **`/i2p-review`** gives one verdict from every reviewer. The **i2p** plugin is the front door — it
+> **Start here →** **`/i2p:help`** browses every power you have · **`/i2p:flow`** shows the pipeline ·
+> **`/i2p:review`** gives one verdict from every reviewer. The **i2p** plugin is the front door — it
 > also greets whoever opens the repo (the welcome + the status line).
 
 ---
@@ -82,7 +82,7 @@ repo) and seven specialists. Each stands alone; install only what you need.
 
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
-| **[i2p](plugins/i2p/)** | The marketplace FRONT DOOR / meta-layer + ARRIVAL layer: `/i2p-help` browses every power you have (grouped by the value flow), `/i2p-review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p-check` consolidates readiness, `/i2p-flow` maps the pipeline and your next command. It also GREETS whoever opens the repo — a `SessionStart` hook renders a maintainer-authored `.claude/welcome.md` (**smart-gated**: greets only on a cold/vague open, steps aside for a concrete task), `/i2p:define-welcome` reads a repo and writes that welcome for you, and `/i2p:statusline` turns on a rich two-line **status line** (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). Introduces itself on session start. | A single front door to the whole suite — one review that pulls in *all* the reviewers at once, plus a greeting and a status bar that surface the whole suite at a glance. |
+| **[i2p](plugins/i2p/)** | The marketplace FRONT DOOR / meta-layer + ARRIVAL layer: `/i2p:help` browses every power you have (grouped by the value flow), `/i2p:review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p:check` consolidates readiness, `/i2p:flow` maps the pipeline and your next command. It also GREETS whoever opens the repo — a `SessionStart` hook renders a maintainer-authored `.claude/welcome.md` (**smart-gated**: greets only on a cold/vague open, steps aside for a concrete task), `/i2p:define-welcome` reads a repo and writes that welcome for you, and `/i2p:statusline` turns on a rich two-line **status line** (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). Introduces itself on session start. | A single front door to the whole suite — one review that pulls in *all* the reviewers at once, plus a greeting and a status bar that surface the whole suite at a glance. |
 | **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/discovery-goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
 | **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
 | **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |

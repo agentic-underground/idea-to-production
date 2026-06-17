@@ -10,8 +10,8 @@
 
 - **Knowledge-parity** (≡ *knowledge-alignment*) — the front door's whole job is to close the gap between
   *powers a user has* and *powers a user knows about*. Every recurring "how do I…?" becomes a written
-  answer in `/i2p-help`, asked once. It never describes a capability it cannot confirm is installed.
-- **Quality-first** (≡ *quality-confidence*) — `/i2p-review` is a **gate**, not a summary: it returns one
+  answer in `/i2p:help`, asked once. It never describes a capability it cannot confirm is installed.
+- **Quality-first** (≡ *quality-confidence*) — `/i2p:review` is a **gate**, not a summary: it returns one
   honest verdict (BLOCK > NEEDS_REVISION > PASS) and is never weakened to make a change look mergeable.
   A reviewer it cannot run is reported as a **gap**, never silently dropped to a green light.
 - **Waste-elimination** (≡ *muda · mura · muri*) — remove waste in every form, *including rediscovery*. The front door **delegates,
@@ -29,10 +29,10 @@ Every element of this plugin continuously asks how it can improve, and each iter
 **self-cleaves** into smaller, single-purpose elements.
 
 For a **front door**, improvement is folding **discoverability feedback** back into itself: when a user
-could not find a power they had, or `/i2p-review` missed a reviewer it should have run, that becomes a
-sharper `/i2p-help` entry, a new tip, or a new reviewer in the fan-out — landed via branch → adversarial
+could not find a power they had, or `/i2p:review` missed a reviewer it should have run, that becomes a
+sharper `/i2p:help` entry, a new tip, or a new reviewer in the fan-out — landed via branch → adversarial
 review → **PR**, so **every future session, for all users, surfaces it by default**.
 
 > A power that exists but stays hidden has not honoured the covenant — and the fix is upstream: a better
-> `/i2p-help` line or tip, fixed once. The front door composes with — never duplicates — the specialist
+> `/i2p:help` line or tip, fixed once. The front door composes with — never duplicates — the specialist
 > plugins; where a capability is absent, it says so plainly rather than pretending coverage.

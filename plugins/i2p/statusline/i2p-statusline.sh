@@ -261,7 +261,7 @@ MSEP="   ${DIM}│${R}   "
 # Product-lifecycle phase widget — reads the project-local .i2p/lifecycle.json
 # (current_phase + phases[]) and renders an 8-pip progress track. Degrades to
 # nothing when the file is absent. The state file is written by the i2p
-# lifecycle helper (/i2p-help kickoff); this only READS it.
+# lifecycle helper (/i2p:help kickoff); this only READS it.
 # ---------------------------------------------------------------------------
 lifecycle_widget() {
   LC_OUT=""

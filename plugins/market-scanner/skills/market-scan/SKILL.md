@@ -106,7 +106,7 @@ When a candidate earns a **KEEP** verdict (a validated OPPORTUNITY ready for ref
 product lifecycle and the status line advance to IDEATE:
 
 ```bash
-/i2p-lifecycle done DISCOVER   # order-safe & idempotent — a no-op unless a lifecycle is running at DISCOVER
+/i2p:lifecycle done DISCOVER   # order-safe & idempotent — a no-op unless a lifecycle is running at DISCOVER
 ```
 
 Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

@@ -146,6 +146,6 @@ cannot pass again — the next gate starts stricter than the last.
 
 OPERATE-GATE reports the steady state of the **OPERATE** phase. It does **not** advance the lifecycle on its
 own — OPERATE ends only when a learning becomes a new opportunity, which the [`../iterate/SKILL.md`](../iterate/SKILL.md)
-skill detects and acts on (calling `/i2p-lifecycle done OPERATE` → DISCOVER ↻). When this gate's **Re-entry
+skill detects and acts on (calling `/i2p:lifecycle done OPERATE` → DISCOVER ↻). When this gate's **Re-entry
 signal** section finds such a signal, hand off to `/iterate`. The canonical model is
 `i2p/knowledge/product-lifecycle.md`; degrades silently when i2p is absent.
