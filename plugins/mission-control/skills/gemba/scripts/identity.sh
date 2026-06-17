@@ -70,7 +70,9 @@ git_remote_repo() {
   [ -n "$remote" ] || { for r in origin github; do git -C "$dir" remote get-url "$r" >/dev/null 2>&1 && remote="$r" && break; done; }
   [ -n "$remote" ] || return 1
   url="$(git -C "$dir" remote get-url "$remote" 2>/dev/null)" || return 1
-  printf '%s\n' "$url" | sed -E 's#^.*github\.com[:/]+[^/]+/([^/]+?)(\.git)?$#\1#'
+  # Strip the org/host prefix, then strip a trailing `.git` explicitly — GNU sed ERE has no
+  # non-greedy `+?`, so a single-pass `(\.git)?$` would NOT remove it (yields `repo.git` → 404).
+  printf '%s\n' "$url" | sed -E 's#^.*github\.com[:/]+[^/]+/([^/]+)$#\1#; s#\.git$##'
 }
 marketplace_owner() {
   local mf="${dir}/.claude-plugin/marketplace.json"
@@ -137,23 +139,31 @@ case "$cmd" in
   resolve)
     id="$(load_identity)"
     org="$(effective_org "$id")"
-    # Match the hint (lowercased) against each sibling's name/repo/topics. First match wins ⇒ GEMBA.
+    # Match the hint against each sibling by WORD-BOUNDARY tokens, not a substring-anywhere scan.
+    # The hint is split into whole tokens (non-alnum → space); a sibling matches when EITHER:
+    #   • its NAME or REPO appears as a whole token (a strong, unambiguous signal ⇒ GEMBA), OR
+    #   • ≥2 distinct TOPIC tokens appear as whole tokens (a single generic topic word like
+    #     "token"/"scheduler" is too weak — it routes to SELF when ambiguous).
+    # This stops a sibling-topic substring anywhere in the hint (e.g. "the scheduler in foundry",
+    # or "token bucket bug in mission-control") from hijacking the route to a sibling repo.
     lc_hint="$(printf '%s' "$hint" | tr '[:upper:]' '[:lower:]')"
     printf '%s' "$id" | jq -c --arg org "$org" --arg hint "$lc_hint" '
       . as $id
       | ($id.siblings // []) as $sibs
+      | ( ($hint | ascii_downcase | [ scan("[a-z0-9]+") ]) | unique ) as $toks
       | ( [ $sibs[]
             | . as $s
-            | ([ .name, .repo ] + (.topics // []))
-              | map(ascii_downcase)
-              | map(select($hint != "" and ($hint | contains(.)) ))
-              | if length > 0 then $s else empty end
+            | ([ .name, .repo ] | map(ascii_downcase)) as $ids
+            | ((.topics // []) | map(ascii_downcase)) as $tops
+            | ( [ $ids[]  | select(. as $w | $toks | index($w)) ] | length ) as $nid
+            | ( [ $tops[] | select(. as $w | $toks | index($w)) ] | unique | length ) as $ntop
+            | if ($toks | length) > 0 and ($nid > 0 or $ntop >= 2) then $s else empty end
           ] | .[0] ) as $hit
       | if $hit == null
         then { verdict:"self",  org:$org, repo:$id.self.repo,
                target:($org + "/" + $id.self.repo), matched:null,
                reason:(if $hint=="" then "no hint — defaults to self"
-                       else "no sibling matched hint — self" end) }
+                       else "no sibling matched hint (word-boundary) — self" end) }
         else { verdict:"gemba", org:$org, repo:$hit.repo,
                target:($org + "/" + $hit.repo), matched:$hit.name,
                reason:("hint matched sibling " + $hit.name) }

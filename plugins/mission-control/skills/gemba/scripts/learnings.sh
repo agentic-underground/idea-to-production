@@ -44,7 +44,7 @@ reduce_latest() {
   jq -s '
     map(select(type=="object" and has("id")))
     | group_by(.id) | map(.[-1])' \
-    <(grep -v '^[[:space:]]*$' "$LEDGER" 2>/dev/null | jq -c '.' 2>/dev/null) 2>/dev/null \
+    <(grep -v '^[[:space:]]*$' "$LEDGER" 2>/dev/null | jq -c -R 'fromjson? // empty' 2>/dev/null) 2>/dev/null \
     || echo "[]"
 }
 

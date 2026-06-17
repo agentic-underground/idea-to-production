@@ -21,6 +21,8 @@ cat > "$MOCK/gh" <<EOF
 echo "\$*" >> "$CALLS"
 all="\$*"
 if printf '%s' "\$all" | grep -q 'search/issues'; then
+  # GH_MOCK_SEARCH_FAIL=1 simulates a transient search failure (gh exits non-zero, no output).
+  if [ "\${GH_MOCK_SEARCH_FAIL:-0}" = "1" ]; then exit 4; fi
   if [ "\${GH_MOCK_DUP:-0}" = "1" ]; then echo "https://github.com/o/r/issues/9"; else echo ""; fi
   exit 0
 fi
@@ -72,6 +74,23 @@ grep -q 'POST' "$CALLS" || { echo "FAIL: --confirm sibling should POST"; FAIL=1;
 out="$(bash "$R" --dir "$TMP" --hint "tf scheduler rate-limit" --title "tf gate blind" --dry-run 2>&1)"; rc=$?
 [ $rc -eq 0 ] || { echo "FAIL: sibling --dry-run should compose (exit 0), got $rc"; FAIL=1; }
 echo "$out" | grep -q "verdict=gemba" || { echo "FAIL: sibling --dry-run should report verdict gemba"; FAIL=1; }
+
+# REGRESSION (#112 — MEDIUM) — dedup must FAIL CLOSED. A transient search error (gh exits non-zero)
+# must NOT be read as "no duplicate → file"; the script must refuse to file and exit non-zero, and
+# must NOT POST a new issue (otherwise a flaky search spams duplicates on the auto-file path).
+: > "$CALLS"
+out="$(PATH="$MOCK:$PATH" GH_MOCK_SEARCH_FAIL=1 bash "$R" --dir "$TMP" --title "Add abuse test for X" --body "B" 2>&1)"; rc=$?
+[ $rc -ne 0 ] || { echo "FAIL: a failed dedup search must exit non-zero (fail closed), got $rc"; FAIL=1; }
+echo "$out" | grep -qi "dedup search failed" || { echo "FAIL: a failed dedup search should explain it refused to file"; FAIL=1; }
+grep -q 'POST' "$CALLS" && { echo "FAIL: a failed dedup search must NOT POST a new issue"; FAIL=1; }
+
+# REGRESSION (#112 — MEDIUM) — an explicit --slug is SLUGIFIED too (never injected verbatim into the
+# dedup query). A messy "Foo Bar: baz" must normalise to the same marker as the title path would.
+out="$(bash "$R" --dir "$TMP" --title "Whatever title" --slug 'Foo Bar: baz' --body "B" --dry-run 2>&1)"; rc=$?
+[ $rc -eq 0 ] || { echo "FAIL: --slug dry-run should compose (exit 0), got $rc"; FAIL=1; }
+echo "$out" | grep -q "gemba-feedback-slug: foo-bar-baz" || { echo "FAIL: explicit --slug should be slugified to 'foo-bar-baz', got: $out"; FAIL=1; }
+# And the SLUG: line printed by --dry-run reflects the normalised slug (no spaces/colons leak through).
+echo "$out" | grep -Eq '^SLUG:[[:space:]]+foo-bar-baz$' || { echo "FAIL: --dry-run SLUG line should show the normalised slug foo-bar-baz"; FAIL=1; }
 
 rm -rf "$TMP" "$MOCK"
 [ "$FAIL" -eq 0 ] && echo "PASS: [19] raise-feedback dry-run/dedup/autonomy" || exit 1

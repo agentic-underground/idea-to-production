@@ -53,7 +53,7 @@ latest="$(jq -s '
   map(select(type=="object" and has("id")))
   | group_by(.id) | map(.[-1])
   | map(select(.status=="open"))' \
-  <(grep -v '^[[:space:]]*$' "$LEDGER" 2>/dev/null | jq -c '.' 2>/dev/null) 2>/dev/null || echo "[]")"
+  <(grep -v '^[[:space:]]*$' "$LEDGER" 2>/dev/null | jq -c -R 'fromjson? // empty' 2>/dev/null) 2>/dev/null || echo "[]")"
 [ -n "$latest" ] || latest="[]"
 
 open_count="$(printf '%s' "$latest" | jq 'length' 2>/dev/null || echo 0)"

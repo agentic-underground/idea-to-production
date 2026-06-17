@@ -53,5 +53,28 @@ bash "$O" --dir "$TMP" --hours 0 --strict >/dev/null 2>&1 || { echo "FAIL: all-f
 TMP2="$(mktemp -d)"
 bash "$O" --dir "$TMP2" >/dev/null 2>&1 || { echo "FAIL: no-ledger detector should exit 0"; FAIL=1; }
 
-rm -rf "$TMP" "$TMP2"
+# REGRESSION (#112 — HIGH) — a malformed ledger line must be SKIPPED per-line, not abort the whole
+# reduce. The old stream-mode `jq -c '.'` aborts on the first parse error, silently dropping every
+# later record. Build a ledger with [open A] / [a non-JSON CORRUPT line] / [open B, old ts] and assert
+# B survives: both `learnings.sh get B` and `overdue-learnings.sh` must still see it.
+TMP3="$(mktemp -d)"; mkdir -p "$TMP3/.i2p"
+LED3="$TMP3/.i2p/learnings.jsonl"
+{
+  printf '%s\n' '{"schema":"learnings/1.0","id":"corrupt-a","event":"open","status":"open","verdict":"self","target":"o/r","title":"A before corruption","ts":"2020-01-01T00:00:00Z"}'
+  printf '%s\n' 'THIS IS NOT JSON — a corrupt line that must be skipped, not fatal'
+  printf '%s\n' '{"schema":"learnings/1.0","id":"corrupt-b","event":"open","status":"open","verdict":"self","target":"o/r","title":"B after corruption","ts":"2020-01-02T00:00:00Z"}'
+} > "$LED3"
+
+# learnings.sh get B returns B (not null) despite the earlier corrupt line.
+gb="$(bash "$L" get "$TMP3" corrupt-b | jq -r '.id // "null"')"
+[ "$gb" = "corrupt-b" ] || { echo "FAIL: corrupt line aborted reduce — get corrupt-b returned '$gb' (want corrupt-b)"; FAIL=1; }
+# A is still readable too (the line before the corruption).
+ga="$(bash "$L" get "$TMP3" corrupt-a | jq -r '.id // "null"')"
+[ "$ga" = "corrupt-a" ] || { echo "FAIL: get corrupt-a returned '$ga' (want corrupt-a)"; FAIL=1; }
+# overdue-learnings still SURFACES B (old ts ⇒ OVERDUE) despite the corrupt line.
+oout="$(bash "$O" --dir "$TMP3" --hours 24)"
+echo "$oout" | grep -q "corrupt-b" || { echo "FAIL: overdue detector dropped corrupt-b after a malformed line"; FAIL=1; }
+echo "$oout" | grep -q "corrupt-a" || { echo "FAIL: overdue detector dropped corrupt-a after a malformed line"; FAIL=1; }
+
+rm -rf "$TMP" "$TMP2" "$TMP3"
 [ "$FAIL" -eq 0 ] && echo "PASS: [18] learnings ledger open→filed + overdue detector" || exit 1

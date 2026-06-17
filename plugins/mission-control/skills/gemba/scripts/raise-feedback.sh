@@ -51,7 +51,9 @@ have jq || { echo "raise-feedback: jq required" >&2; exit 2; }
 
 # slugify — deterministic stable slug from the title (lowercased, non-alnum → '-', squeezed/trimmed).
 slugify() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//'; }
-[ -n "$slug" ] || slug="$(slugify "$title")"
+# Always normalise — an explicit --slug is slugified too, so it can never inject raw text (spaces,
+# quotes, colons) into the dedup search query. Default to the title when no --slug was given.
+slug="$(slugify "${slug:-$title}")"
 
 # Resolve the target repo + SELF/GEMBA verdict via identity.sh (honours its own --dry-run for seeding).
 res="$(bash "$IDENTITY" resolve "$dir" "$hint" ${dry_run:+--dry-run} 2>/dev/null)"
@@ -99,8 +101,16 @@ org="${target%%/*}"; repo="${target##*/}"
 
 # DEDUP — search the repo for an issue carrying the same slug marker (REST search, open + closed).
 # A hit suppresses the filing (idempotent). The `in:body` qualifier matches the hidden slug marker.
-dedup_q="repo:${target} \"gemba-feedback-slug: ${slug}\" in:body"
-existing="$(gh api -X GET search/issues --field q="$dedup_q" -q '.items[0].html_url // empty' 2>/dev/null || true)"
+# FAIL CLOSED: the search exit status is captured separately from its (possibly empty) output. A
+# NON-ZERO search (transient gh/network/rate-limit failure) must NOT be read as "no duplicate" — that
+# would spam duplicates on the auto-file path. On a search error we refuse to file and exit non-zero;
+# only a SUCCESSFUL empty result is treated as "no existing issue → safe to file".
+existing="$(gh api -X GET search/issues --field q="repo:${target} \"gemba-feedback-slug: ${slug}\" in:body" -q '.items[0].html_url // empty' 2>/dev/null)"
+search_rc=$?
+if [ "$search_rc" -ne 0 ]; then
+  echo "raise-feedback: dedup search failed (gh exit ${search_rc}) — refusing to file to avoid duplicates (retry)." >&2
+  exit 1
+fi
 if [ -n "$existing" ]; then
   echo "raise-feedback: DEDUP — an issue with slug '${slug}' already exists on ${target}: ${existing}"
   printf '%s\n' "$existing"
