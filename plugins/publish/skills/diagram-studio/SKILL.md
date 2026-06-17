@@ -55,10 +55,16 @@ cleanly via `rankdir`/clusters). Use **Mermaid** when the diagram will live as a
 ```` ```mermaid ```` block inside markdown that a renderer (GitHub, docs site) draws itself — in
 that case emit the Mermaid source, not a rendered file.
 
-> **Deep Mermaid work → the `mermaid-specialist`.** When the job is Mermaid-specific — picking the right
-> type from the full taxonomy (sequence, state, sankey, quadrant, timeline, journey…), theming to a
-> palette, or driving the **ELK** layout — defer to the [`mermaid-specialist`](../mermaid-specialist/SKILL.md)
-> skill (its peer). It shares this same charting-matrix; one legibility discipline, two producers.
+> **Deep Mermaid work → the `handler-mermaid` value-handler.** When the job is Mermaid-specific — picking
+> the right type from the full taxonomy (sequence, state, sankey, quadrant, timeline, journey…), theming to a
+> palette, or driving the **ELK** layout — route to / spawn the
+> [`handler-mermaid`](../../agents/handler-mermaid.md) value-handler, the single authoritative home for
+> Mermaid authoring (the Mermaid peer to `handler-graphviz`, reached exactly as Graphviz is). The full
+> Mermaid taxonomy lives in
+> [`../rich-pdf-with-diagrams/references/mermaid-taxonomy.md`](../rich-pdf-with-diagrams/references/mermaid-taxonomy.md)
+> and theming/ELK in
+> [`../rich-pdf-with-diagrams/references/mermaid-theming.md`](../rich-pdf-with-diagrams/references/mermaid-theming.md);
+> the handler shares this same charting-matrix — one legibility discipline, two engines, one handler each.
 
 > **Both renderers are optional external CLIs** — `dot` (Graphviz) and `mmdc` (mermaid-cli) — and
 > may be absent on a given machine. `/publish:check` reports which are present; install guidance is
@@ -136,3 +142,5 @@ vice-versa. One legibility discipline, two delivery surfaces.
 | `../rich-pdf-with-diagrams/references/graphviz-patterns.md` | DOT recipes per diagram type (shared) |
 | `../rich-pdf-with-diagrams/references/self-improvement.md` | Feedback-absorption protocol (shared) |
 | `references/mermaid-patterns.md` | Mermaid recipes (sequence, class, gantt, flowchart) and when to prefer Mermaid |
+| `../rich-pdf-with-diagrams/references/mermaid-taxonomy.md` | The full Mermaid diagram taxonomy + "when each fits" (the `handler-mermaid` authority, shared) |
+| `../rich-pdf-with-diagrams/references/mermaid-theming.md` | `%%{init}%%` theming, `themeVariables`, the ELK layout engine, accessibility (shared) |

@@ -1,6 +1,6 @@
 <svg viewBox="0 0 860 620" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans">
   <title>PUBLISH publishing pipeline — top-down branching tree</title>
-  <desc>/publish drives prose (writer), then figures (diagram-studio / mermaid-specialist), then render. Render branches downward into three outputs: markdown plus SVG, PDF via rich-pdf-with-diagrams, and diagrams only. The adversarial design-reviewer gate wraps the render-to-output stage in a convergence loop: critique typography and data-viz, apply HIGH and MED, re-build until the artefact clears the 4x9 rubric.</desc>
+  <desc>/publish drives prose (writer), then figures (diagram-studio / handler-mermaid), then render. Render branches downward into three outputs: markdown plus SVG, PDF via rich-pdf-with-diagrams, and diagrams only. The adversarial design-reviewer gate wraps the render-to-output stage in a convergence loop: critique typography and data-viz, apply HIGH and MED, re-build until the artefact clears the 4x9 rubric.</desc>
 
   <defs>
     <marker id="ar" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -35,7 +35,7 @@
   <!-- figures -->
   <g>
     <rect x="290" y="178" width="280" height="56" rx="9" fill="#1e1e2e" stroke="#9aa2c0" stroke-width="1.5"/>
-    <text x="430" y="200" text-anchor="middle" font-size="13" font-weight="bold" fill="#e6e9f0" font-family="DejaVu Sans Mono">diagram-studio / mermaid-specialist</text>
+    <text x="430" y="200" text-anchor="middle" font-size="13" font-weight="bold" fill="#e6e9f0" font-family="DejaVu Sans Mono">diagram-studio / handler-mermaid</text>
     <text x="430" y="221" text-anchor="middle" font-size="11.5" fill="#b8bed0">figures · the diagrams</text>
   </g>
 

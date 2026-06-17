@@ -1,9 +1,10 @@
 ---
 id: 111
 title: "publish: surface a prose/document reviewer (copy-review)"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "#96 (pressroom→publish rename)"
 ---
 

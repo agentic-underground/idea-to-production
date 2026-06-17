@@ -77,7 +77,7 @@ the mid-tone `stroke`/`text-dim` so they survive a white host.
   'lineColor':'#9aa2c0','fontFamily':'Inter, ui-sans-serif, system-ui','fontSize':'15px'
 }}}%%
 ```
-Start from `base` (the only customisable built-in — see [`mermaid-theming.md`](../../mermaid-specialist/references/mermaid-theming.md)),
+Start from `base` (the only customisable built-in — see [`mermaid-theming.md`](../../rich-pdf-with-diagrams/references/mermaid-theming.md)),
 set `background:'transparent'`. Do **not** use the built-in `dark` theme: it paints a dark slab and assumes
 a dark host, failing on a white one.
 

@@ -28,8 +28,8 @@ graphical value handler render **two** options, and runs a strict adversarial re
 as **the best** — not merely the least-worse. Every figure it ships is dark-mode, transparent-ground, and
 legible on any host.
 
-> **Where this fits.** The producers (`diagram-studio`, `mermaid-specialist`, `rich-pdf-with-diagrams`)
-> *make* figures on request; the `design-reviewer` *judges* them. The ILLUSTRATOR is the **orchestrator** that
+> **Where this fits.** The producers (`diagram-studio` with its `handler-graphviz` / `handler-mermaid`
+> value-handlers, `rich-pdf-with-diagrams`) *make* figures on request; the `design-reviewer` *judges* them. The ILLUSTRATOR is the **orchestrator** that
 > decides *what to illustrate and why*, hands a [SPEC](references/spec-schema.md) to the right value handler,
 > and closes the A/B loop with the reviewer. It produces nothing itself — it directs.
 
@@ -62,7 +62,7 @@ For a chosen site, pick the value handler and the diagram type:
 | The site needs… | Handler | Type source |
 |---|---|---|
 | a structured graph (architecture, pipeline, state, fan-out) | `handler-graphviz` | [graphviz-patterns](../rich-pdf-with-diagrams/references/graphviz-patterns.md) |
-| messages-over-time / lifecycle / flow / 2×2 / schedule | `handler-mermaid` | [mermaid-taxonomy](../mermaid-specialist/references/mermaid-taxonomy.md) |
+| messages-over-time / lifecycle / flow / 2×2 / schedule | `handler-mermaid` | [mermaid-taxonomy](../rich-pdf-with-diagrams/references/mermaid-taxonomy.md) |
 | a comparison **of data** | `handler-chart` | dataviz encoding ranking |
 | a non-graph concept poster / labelled figure / callout | `handler-composition` | composition kind |
 | a genuinely pictorial / generative image | `handler-comfyui` | text-to-image |

@@ -24,7 +24,9 @@ guardrail, and the KAIZEN covenant. Write `PUBLISH_INSPECTION_REPORT.md` to the 
 ## Phase 3 — PUBLISH-specific cross-system consistency
 
 1. **Charting-matrix single-source:** the 4×9 charting/legibility matrix is defined once and referenced by
-   `diagram-studio`, `mermaid-specialist`, and `rich-pdf-with-diagrams` — not restated divergently.
+   `diagram-studio`, the `handler-mermaid`/`handler-graphviz` value-handlers, and `rich-pdf-with-diagrams` —
+   not restated divergently. The Mermaid taxonomy/theming references live once under `rich-pdf-with-diagrams`
+   and `handler-mermaid` is their single authoring authority (no standalone `mermaid-specialist` skill).
 2. **Reviewer wiring:** the `design-reviewer` agents (typographic + dataviz) and the writer's prose
    `reviewer` are reachable from the skills that should invoke them; the convergent designer↔reviewer loop
    is intact.
