@@ -1,11 +1,8 @@
-//! Hand-rolled MCP JSON-RPC surface on the same router and behind the same
-//! token gate as REST. The tool set mirrors the REST verbs exactly, so an agent
-//! reads/mutates flow through one authoritative surface. (rmcp is intentionally
-//! out for the MVP — this is a self-contained JSON-RPC handler.)
+//! Hand-rolled MCP JSON-RPC surface, driven over stdio by `run_stdio` in
+//! `main.rs`. The web UI was removed in roadmap #39, so `dispatch` is the single
+//! transport-agnostic entry point; there is no HTTP `/mcp` endpoint. (rmcp is
+//! intentionally out for the MVP — this is a self-contained JSON-RPC handler.)
 
-use axum::extract::State;
-use axum::response::{IntoResponse, Response};
-use axum::Json;
 use serde_json::{json, Value};
 
 use crate::api::{annotations_for, deps_for, events_json, item_json, AppState};
@@ -162,19 +159,11 @@ fn tool_descriptors() -> Vec<Value> {
         .collect()
 }
 
-/// Thin axum handler: deserialises the JSON body via extractor, delegates to
-/// `dispatch`, and serialises the result back into an HTTP response. The real
-/// dispatch logic lives in `dispatch` so it can be called from any transport
-/// (HTTP or stdio) without going through the axum extractor chain.
-pub async fn handle(State(state): State<AppState>, Json(req): Json<Value>) -> Response {
-    Json(dispatch(&state, req).await).into_response()
-}
-
 /// Dispatch a single JSON-RPC request, returning a JSON-RPC `Value` response.
 ///
-/// This function is transport-agnostic: it is called by the HTTP handler
-/// (`handle`) and by the stdio read loop (`run_stdio` in `main.rs`). The
-/// caller is responsible for serialising the returned `Value` to the wire.
+/// This function is transport-agnostic: it is called by the stdio read loop
+/// (`run_stdio` in `main.rs`). The caller is responsible for serialising the
+/// returned `Value` to the wire.
 pub async fn dispatch(state: &AppState, req: Value) -> Value {
     let id = req.get("id").cloned().unwrap_or(Value::Null);
     let method = req.get("method").and_then(Value::as_str).unwrap_or("");
@@ -459,9 +448,8 @@ fn arg_enum<T: serde::de::DeserializeOwned>(args: &Value, key: &str) -> Result<T
 }
 
 // --- JSON-RPC response builders ------------------------------------------
-// All builders return `Value` so they can be used by both the HTTP handler
-// (which wraps the result in `Json(...).into_response()`) and the stdio loop
-// (which serialises the `Value` directly to stdout).
+// All builders return `Value`; the stdio loop serialises the `Value` directly
+// to stdout.
 
 fn ok(id: Value, result: Value) -> Value {
     json!({ "jsonrpc": "2.0", "id": id, "result": result })

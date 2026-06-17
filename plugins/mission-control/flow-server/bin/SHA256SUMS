@@ -1,9 +1,13 @@
 # flow-server pinned-release checksums — the integrity source of truth for bin/flow-server-mcp.
 # One line per published release asset: "<64-hex-sha256>  flow-server-<triple>[.exe]".
-# Finalized from the flow-server-v0.2.1 GitHub Release (see flow-server/README.md "cut a release").
-# To adopt a new release: bump Cargo.toml, cut the tag, then replace these lines + bin/RELEASE.
-4ebf47fbd2009d65c2e4618f78026194f7d47b3aac86eb59f3e2c448dde5a2a7  flow-server-aarch64-apple-darwin
-3afe0e31f5d6a0130d53d0d9faae5e2f9df598b72944671d85f21505afa82dd5  flow-server-aarch64-unknown-linux-gnu
-e973b45554ce14df7ace34760c307d5b5e42df522acf740aed8accef466f68d9  flow-server-x86_64-apple-darwin
-427732dbb6f2447bad0acc41e6fbc630343a2215f18864233d6351609f899ca2 *flow-server-x86_64-pc-windows-msvc.exe
-92d0d3e7a3b3e516771e9ff090224ac78b96e2c24f4a9189f52e29520a553cbe  flow-server-x86_64-unknown-linux-gnu
+#
+# BOOTSTRAP WINDOW (roadmap #39): bin/RELEASE was bumped to flow-server-v0.2.2 (the web-UI-removed,
+# MCP-stdio-only core) but the v0.2.2 GitHub Release has not been published yet, so no checksums are
+# committed below. While this file carries no asset line for a platform, the launcher resolves the
+# binary by building from source (dev/CI) and smoke-pinned.sh + verify-prereqs §P cleanly SKIP/PASS
+# the bootstrap window. Once the v0.2.2 release assets are published, paste their checksum lines here
+# (one per platform: x86_64/aarch64 × linux-gnu/apple-darwin, plus x86_64-pc-windows-msvc.exe) to
+# re-arm the deterministic pinned-binary path.
+#
+# To adopt a new release: bump Cargo.toml, cut the tag, publish the assets, then replace these lines
+# + bin/RELEASE.

@@ -1,17 +1,16 @@
-//! MCP contract: the JSON-RPC verb surface on the same router, behind the same
-//! token gate. A `validate_connection` that would cycle is rejected with a typed
-//! error and the graph is unchanged; `list_items` returns the items.
+//! MCP contract: the JSON-RPC verb surface driven directly through
+//! `mcp::dispatch` (the stdio transport's entry point — the HTTP `/mcp` route was
+//! removed in roadmap #39). A `validate_connection` that would cycle is rejected
+//! with a typed error and the graph is unchanged; `list_items` returns the items.
 
 use std::sync::Arc;
 
-use crate::api::build_router;
+use crate::api::AppState;
 use crate::auth::Token;
+use crate::mcp;
 use crate::store::Store;
 
-use axum::body::Body;
-use axum::http::{Request, StatusCode};
-use http_body_util::BodyExt;
-use tower::ServiceExt;
+use serde_json::Value;
 
 fn tempdir() -> std::path::PathBuf {
     use std::sync::atomic::{AtomicU64, Ordering};
@@ -22,7 +21,7 @@ fn tempdir() -> std::path::PathBuf {
     dir
 }
 
-async fn seeded() -> (axum::Router, Arc<Store>) {
+async fn seeded() -> (AppState, Arc<Store>) {
     let dir = tempdir();
     let store = Arc::new(Store::open(&dir).await.unwrap());
     for s in ["a", "b"] {
@@ -35,57 +34,26 @@ async fn seeded() -> (axum::Router, Arc<Store>) {
             .await
             .unwrap();
     }
-    let router = build_router(Arc::clone(&store), Token::new("tok"), dir.join("static"));
-    (router, store)
+    let state = AppState {
+        store: Arc::clone(&store),
+        token: Token::new("tok"),
+    };
+    (state, store)
 }
 
-async fn rpc(router: &axum::Router, body: serde_json::Value) -> (StatusCode, serde_json::Value) {
-    let resp = router
-        .clone()
-        .oneshot(
-            Request::builder()
-                .method("POST")
-                .uri("/mcp")
-                .header("Authorization", "Bearer tok")
-                .header("content-type", "application/json")
-                .body(Body::from(body.to_string()))
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    let status = resp.status();
-    let bytes = resp.into_body().collect().await.unwrap().to_bytes();
-    let v: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
-    (status, v)
-}
-
-#[tokio::test]
-async fn mcp_rejects_without_token() {
-    let (router, _store) = seeded().await;
-    let resp = router
-        .oneshot(
-            Request::builder()
-                .method("POST")
-                .uri("/mcp")
-                .header("content-type", "application/json")
-                .body(Body::from(
-                    serde_json::json!({"jsonrpc":"2.0","id":1,"method":"tools/list"}).to_string(),
-                ))
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+/// Dispatch a JSON-RPC request `Value` and return the response `Value`.
+async fn rpc(state: &AppState, body: Value) -> Value {
+    mcp::dispatch(state, body).await
 }
 
 #[tokio::test]
 async fn mcp_list_items() {
-    // The response shape changed from {"items":[...]} to grouped:
+    // The response shape is grouped:
     // {"pending":{"wait":[...],"go":[...]},"in_progress":[...],"done":[...]}
     // Both seeded items are PENDING/GO, so they appear in pending.go.
-    let (router, _store) = seeded().await;
-    let (status, v) = rpc(
-        &router,
+    let (state, _store) = seeded().await;
+    let v = rpc(
+        &state,
         serde_json::json!({
             "jsonrpc":"2.0","id":1,
             "method":"tools/call",
@@ -93,7 +61,6 @@ async fn mcp_list_items() {
         }),
     )
     .await;
-    assert_eq!(status, StatusCode::OK);
     let pending_go = v["result"]["pending"]["go"].as_array().unwrap();
     assert_eq!(pending_go.len(), 2);
     // The old "items" flat array must not be present.
@@ -150,9 +117,11 @@ async fn list_items_groups_pending_by_gate() {
         .await
         .unwrap();
 
-    let router = build_router(Arc::clone(&store), Token::new("tok"), dir.join("static"));
-    let (status, v) = call(&router, "list_items", serde_json::json!({})).await;
-    assert_eq!(status, StatusCode::OK);
+    let state = AppState {
+        store: Arc::clone(&store),
+        token: Token::new("tok"),
+    };
+    let v = call(&state, "list_items", serde_json::json!({})).await;
 
     let wait = v["result"]["pending"]["wait"].as_array().unwrap();
     assert_eq!(wait.len(), 1);
@@ -176,9 +145,11 @@ async fn list_items_groups_pending_by_gate() {
 async fn list_items_empty_store_returns_empty_groups() {
     let dir = tempdir();
     let store = Arc::new(Store::open(&dir).await.unwrap());
-    let router = build_router(Arc::clone(&store), Token::new("tok"), dir.join("static"));
-    let (status, v) = call(&router, "list_items", serde_json::json!({})).await;
-    assert_eq!(status, StatusCode::OK);
+    let state = AppState {
+        store,
+        token: Token::new("tok"),
+    };
+    let v = call(&state, "list_items", serde_json::json!({})).await;
 
     assert_eq!(v["result"]["pending"]["wait"].as_array().unwrap().len(), 0);
     assert_eq!(v["result"]["pending"]["go"].as_array().unwrap().len(), 0);
@@ -201,9 +172,11 @@ async fn list_items_all_pending_go_wait_empty() {
             .await
             .unwrap();
     }
-    let router = build_router(Arc::clone(&store), Token::new("tok"), dir.join("static"));
-    let (status, v) = call(&router, "list_items", serde_json::json!({})).await;
-    assert_eq!(status, StatusCode::OK);
+    let state = AppState {
+        store,
+        token: Token::new("tok"),
+    };
+    let v = call(&state, "list_items", serde_json::json!({})).await;
 
     assert_eq!(v["result"]["pending"]["wait"].as_array().unwrap().len(), 0);
     assert_eq!(v["result"]["pending"]["go"].as_array().unwrap().len(), 2);
@@ -211,10 +184,10 @@ async fn list_items_all_pending_go_wait_empty() {
 
 #[tokio::test]
 async fn mcp_cycle_rejected() {
-    let (router, store) = seeded().await;
+    let (state, store) = seeded().await;
     // add a->b
-    let (status, _) = rpc(
-        &router,
+    let _ = rpc(
+        &state,
         serde_json::json!({
             "jsonrpc":"2.0","id":1,
             "method":"tools/call",
@@ -222,11 +195,10 @@ async fn mcp_cycle_rejected() {
         }),
     )
     .await;
-    assert_eq!(status, StatusCode::OK);
 
     // validate b->a would cycle: typed JSON-RPC error, graph unchanged.
-    let (status, v) = rpc(
-        &router,
+    let v = rpc(
+        &state,
         serde_json::json!({
             "jsonrpc":"2.0","id":2,
             "method":"tools/call",
@@ -234,19 +206,14 @@ async fn mcp_cycle_rejected() {
         }),
     )
     .await;
-    assert_eq!(status, StatusCode::OK); // JSON-RPC carries the error in-band
     assert_eq!(v["error"]["data"]["error"], "cycle");
     assert_eq!(store.snapshot().await.edges().len(), 1);
 }
 
-/// Call the `tools/call` verb `name` with `arguments`, returning the parsed body.
-async fn call(
-    router: &axum::Router,
-    name: &str,
-    arguments: serde_json::Value,
-) -> (StatusCode, serde_json::Value) {
+/// Call the `tools/call` verb `name` with `arguments`, returning the response.
+async fn call(state: &AppState, name: &str, arguments: serde_json::Value) -> serde_json::Value {
     rpc(
-        router,
+        state,
         serde_json::json!({
             "jsonrpc":"2.0","id":1,
             "method":"tools/call",
@@ -258,48 +225,23 @@ async fn call(
 
 #[tokio::test]
 async fn mcp_render_roadmap_returns_local_compute_view() {
-    let (router, _store) = seeded().await;
-    let (status, v) = call(&router, "render_roadmap", serde_json::json!({})).await;
-    assert_eq!(status, StatusCode::OK);
+    let (state, _store) = seeded().await;
+    let v = call(&state, "render_roadmap", serde_json::json!({})).await;
     let rendered = v["result"]["rendered"].as_str().unwrap();
     assert!(rendered.starts_with("ROADMAP\n2 item(s)\n"));
     assert!(rendered.contains("· a · A · DO · GO · 0 tok · d0"));
 }
 
 #[tokio::test]
-async fn mcp_render_roadmap_token_gated() {
-    let (router, _store) = seeded().await;
-    let resp = router
-        .oneshot(
-            Request::builder()
-                .method("POST")
-                .uri("/mcp")
-                .header("content-type", "application/json")
-                .body(Body::from(
-                    serde_json::json!({
-                        "jsonrpc":"2.0","id":1,"method":"tools/call",
-                        "params":{"name":"render_roadmap","arguments":{}}
-                    })
-                    .to_string(),
-                ))
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
-}
-
-#[tokio::test]
 async fn mcp_annotate_happy_unknown_and_bad_body() {
-    let (router, store) = seeded().await;
+    let (state, store) = seeded().await;
     // Happy.
-    let (status, v) = call(
-        &router,
+    let v = call(
+        &state,
         "annotate",
         serde_json::json!({"id":"a","text":"tighten it"}),
     )
     .await;
-    assert_eq!(status, StatusCode::OK);
     assert_eq!(v["result"]["ok"], true);
     let events = store.read_events().await.unwrap();
     assert!(events
@@ -307,32 +249,29 @@ async fn mcp_annotate_happy_unknown_and_bad_body() {
         .any(|e| matches!(e, crate::domain::Event::Annotated { .. })));
 
     // Unknown item → typed JSON-RPC error.
-    let (status, v) = call(
-        &router,
+    let v = call(
+        &state,
         "annotate",
         serde_json::json!({"id":"nope","text":"x"}),
     )
     .await;
-    assert_eq!(status, StatusCode::OK);
     assert_eq!(v["error"]["data"]["error"], "unknown");
 
     // Bad body (missing `text`) → invalid params.
-    let (status, v) = call(&router, "annotate", serde_json::json!({"id":"a"})).await;
-    assert_eq!(status, StatusCode::OK);
+    let v = call(&state, "annotate", serde_json::json!({"id":"a"})).await;
     assert_eq!(v["error"]["code"], -32602);
 }
 
 #[tokio::test]
 async fn mcp_request_rewrite_happy_unknown_and_bad_body() {
-    let (router, store) = seeded().await;
+    let (state, store) = seeded().await;
     // Happy: draft increments.
-    let (status, v) = call(
-        &router,
+    let v = call(
+        &state,
         "request_rewrite",
         serde_json::json!({"id":"a","comment":"redo"}),
     )
     .await;
-    assert_eq!(status, StatusCode::OK);
     assert_eq!(v["result"]["draft"], 1);
     assert_eq!(
         store
@@ -345,17 +284,15 @@ async fn mcp_request_rewrite_happy_unknown_and_bad_body() {
     );
 
     // Unknown item → typed error.
-    let (status, v) = call(
-        &router,
+    let v = call(
+        &state,
         "request_rewrite",
         serde_json::json!({"id":"nope","comment":"x"}),
     )
     .await;
-    assert_eq!(status, StatusCode::OK);
     assert_eq!(v["error"]["data"]["error"], "unknown");
 
     // Bad body (missing `comment`) → invalid params.
-    let (status, v) = call(&router, "request_rewrite", serde_json::json!({"id":"a"})).await;
-    assert_eq!(status, StatusCode::OK);
+    let v = call(&state, "request_rewrite", serde_json::json!({"id":"a"})).await;
     assert_eq!(v["error"]["code"], -32602);
 }

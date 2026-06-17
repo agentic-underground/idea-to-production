@@ -1,26 +1,27 @@
 //! Story tests for item [36]: gate state persists across restarts and surfaces
 //! in list_items MCP grouping.
 //!
-//! These are end-to-end stories that exercise the full request stack (store +
-//! router + HTTP handler) and simulate restart by reopening the store from the
-//! same `.flow/` directory with a fresh `Store::open()` call. This is the
-//! closest possible simulation to an actual server restart within the test
-//! binary without spawning a separate process.
+//! These are end-to-end stories that exercise the full stack (store + the MCP
+//! dispatch surface) and simulate restart by reopening the store from the same
+//! `.flow/` directory with a fresh `Store::open()` call. This is the closest
+//! possible simulation to an actual server restart within the test binary
+//! without spawning a separate process.
+//!
+//! The web UI was removed in roadmap #39, so the gate is set and read through the
+//! MCP verbs (`set_wait_go`, `list_items`) via `mcp::dispatch` rather than the
+//! removed HTTP REST surface.
 //!
 //! Story tests are mandatory per the FOUNDRY orchestration rules and must emit
 //! `STORY_PROVEN` before the pipeline can advance to sync/commit.
 
 use std::sync::Arc;
 
-use axum::body::Body;
-use axum::http::{Request, StatusCode};
-use http_body_util::BodyExt;
 use serde_json::{json, Value};
-use tower::ServiceExt;
 
-use crate::api::build_router;
+use crate::api::AppState;
 use crate::auth::Token;
 use crate::domain::ItemId;
+use crate::mcp;
 use crate::store::Store;
 
 const TOK: &str = "story-tok";
@@ -35,45 +36,23 @@ fn tempdir(tag: &str) -> std::path::PathBuf {
     dir
 }
 
-/// Issue an authenticated request on a one-shot router, return (status, body).
-async fn req(
-    router: &axum::Router,
-    method: &str,
-    uri: &str,
-    body: Option<Value>,
-) -> (StatusCode, Value) {
-    let mut builder = Request::builder()
-        .method(method)
-        .uri(uri)
-        .header("Authorization", format!("Bearer {TOK}"));
-    let body = match body {
-        Some(v) => {
-            builder = builder.header("content-type", "application/json");
-            Body::from(v.to_string())
-        }
-        None => Body::empty(),
-    };
-    let resp = router
-        .clone()
-        .oneshot(builder.body(body).unwrap())
-        .await
-        .unwrap();
-    let status = resp.status();
-    let bytes = resp.into_body().collect().await.unwrap().to_bytes();
-    let v: Value = serde_json::from_slice(&bytes).unwrap_or(Value::Null);
-    (status, v)
+/// Build an AppState over a store (the stdio dispatch surface takes no auth).
+fn state(store: Arc<Store>) -> AppState {
+    AppState {
+        store,
+        token: Token::new(TOK),
+    }
 }
 
-/// Issue a JSON-RPC call and return the parsed body.
-async fn mcp_call(router: &axum::Router, name: &str, args: Value) -> Value {
+/// Issue a JSON-RPC `tools/call` through `mcp::dispatch` and return the response.
+async fn mcp_call(state: &AppState, name: &str, args: Value) -> Value {
     let body = json!({
         "jsonrpc": "2.0",
         "id": 1,
         "method": "tools/call",
         "params": {"name": name, "arguments": args}
     });
-    let (_, v) = req(router, "POST", "/mcp", Some(body)).await;
-    v
+    mcp::dispatch(state, body).await
 }
 
 // ---------------------------------------------------------------------------
@@ -82,10 +61,9 @@ async fn mcp_call(router: &axum::Router, name: &str, args: Value) -> Value {
 //
 // Steps:
 //   1. Start store with a temp .flow/ dir, seed item "item-a"
-//   2. POST /api/items/item-a/gate {"gate": "wait"}
+//   2. set_wait_go {"id":"item-a","gate":"wait"}
 //   3. "Restart": drop the store, reopen from same dir, call restore_gates()
-//   4. GET /api/items — item-a must have gate: "wait"
-//   5. MCP list_items — pending.wait must contain item-a
+//   4. list_items — pending.wait must contain item-a; item-a's gate is "wait"
 
 #[tokio::test]
 async fn story_g36_01_gate_wait_survives_restart() {
@@ -98,16 +76,10 @@ async fn story_g36_01_gate_wait_survives_restart() {
             .upsert_item(ItemId::new("item-a").unwrap(), "Alpha".into(), "m".into())
             .await
             .unwrap();
-        let router = build_router(Arc::clone(&store), Token::new(TOK), dir.join("static"));
+        let st = state(Arc::clone(&store));
 
-        let (status, _) = req(
-            &router,
-            "POST",
-            "/api/items/item-a/gate",
-            Some(json!({"gate": "wait"})),
-        )
-        .await;
-        assert_eq!(status, StatusCode::OK, "POST gate must succeed");
+        let v = mcp_call(&st, "set_wait_go", json!({"id":"item-a","gate":"wait"})).await;
+        assert_eq!(v["result"]["ok"], true, "set_wait_go must succeed");
 
         // Verify gates.json was written
         assert!(
@@ -129,24 +101,18 @@ async fn story_g36_01_gate_wait_survives_restart() {
         // restore_gates re-applies gates from gates.json (AFTER upsert)
         store2.restore_gates().await;
 
-        let router2 = build_router(Arc::clone(&store2), Token::new(TOK), dir.join("static"));
+        let st = state(Arc::clone(&store2));
 
-        // GET /api/items — item-a must be "wait"
-        let (status, body) = req(&router2, "GET", "/api/items", None).await;
-        assert_eq!(status, StatusCode::OK);
-        let items = body.as_array().unwrap();
-        let item_a = items.iter().find(|i| i["id"] == "item-a").unwrap();
+        // list_items — item-a must be in pending.wait with gate "wait"
+        let v = mcp_call(&st, "list_items", json!({})).await;
+        let wait = v["result"]["pending"]["wait"].as_array().unwrap();
+        let item_a = wait
+            .iter()
+            .find(|i| i["id"] == "item-a")
+            .expect("STORY-G36-01: item-a must be in pending.wait after restart");
         assert_eq!(
             item_a["gate"], "wait",
             "STORY-G36-01: gate must be 'wait' after restart"
-        );
-
-        // MCP list_items — pending.wait must contain item-a
-        let v = mcp_call(&router2, "list_items", json!({})).await;
-        let wait = v["result"]["pending"]["wait"].as_array().unwrap();
-        assert!(
-            wait.iter().any(|i| i["id"] == "item-a"),
-            "STORY-G36-01: item-a must be in pending.wait after restart"
         );
         let go = v["result"]["pending"]["go"].as_array().unwrap();
         assert!(
@@ -164,7 +130,7 @@ async fn story_g36_01_gate_wait_survives_restart() {
 //   1. Write corrupt JSON to .flow/gates.json
 //   2. Open a new Store (simulating server start)
 //   3. Seed an item, call restore_gates
-//   4. Verify server is healthy (GET /api/items returns 200)
+//   4. Verify the surface is healthy (list_items returns a grouped result)
 //   5. Verify all items have gate: "go"
 
 #[tokio::test]
@@ -188,20 +154,22 @@ async fn story_g36_02_corrupt_gates_json_cold_start() {
     // restore_gates with corrupt file: must not crash, all gates default to go
     store.restore_gates().await; // infallible
 
-    let router = build_router(Arc::clone(&store), Token::new(TOK), dir.join("static"));
+    let st = state(Arc::clone(&store));
 
-    // Server is healthy
-    let (status, body) = req(&router, "GET", "/api/items", None).await;
+    // Surface is healthy: list_items returns a grouped result, all items in go.
+    let v = mcp_call(&st, "list_items", json!({})).await;
+    let go = v["result"]["pending"]["go"].as_array().unwrap();
     assert_eq!(
-        status,
-        StatusCode::OK,
-        "STORY-G36-02: server must be healthy despite corrupt gates.json"
+        go.len(),
+        2,
+        "STORY-G36-02: both items must default to 'go' when gates.json is corrupt"
     );
-
-    // All items have gate: "go"
-    let items = body.as_array().unwrap();
-    assert!(!items.is_empty(), "STORY-G36-02: items must be present");
-    for item in items {
+    let wait = v["result"]["pending"]["wait"].as_array().unwrap();
+    assert!(
+        wait.is_empty(),
+        "STORY-G36-02: no item must be in wait after a corrupt gates.json"
+    );
+    for item in go {
         assert_eq!(
             item["gate"], "go",
             "STORY-G36-02: all items must default to 'go' when gates.json is corrupt"
@@ -225,18 +193,17 @@ async fn story_g36_03_missing_gates_json_cold_start() {
         .unwrap();
     store.restore_gates().await; // must not crash
 
-    let router = build_router(Arc::clone(&store), Token::new(TOK), dir.join("static"));
+    let st = state(Arc::clone(&store));
 
-    let (status, body) = req(&router, "GET", "/api/items", None).await;
-    assert_eq!(
-        status,
-        StatusCode::OK,
-        "STORY-G36-03: server must be healthy with no gates.json"
-    );
-    let items = body.as_array().unwrap();
+    let v = mcp_call(&st, "list_items", json!({})).await;
+    let go = v["result"]["pending"]["go"].as_array().unwrap();
     assert!(
-        items.iter().all(|i| i["gate"] == "go"),
+        go.iter().all(|i| i["gate"] == "go"),
         "STORY-G36-03: all gates must be 'go'"
+    );
+    assert!(
+        go.iter().any(|i| i["id"] == "item-x"),
+        "STORY-G36-03: item-x must be present and in go"
     );
 }
 
@@ -282,8 +249,8 @@ async fn story_g36_04_list_items_grouping() {
         .await
         .unwrap();
 
-    let router = build_router(Arc::clone(&store), Token::new(TOK), dir.join("static"));
-    let v = mcp_call(&router, "list_items", json!({})).await;
+    let st = state(Arc::clone(&store));
+    let v = mcp_call(&st, "list_items", json!({})).await;
 
     // pending.wait: only "pw"
     let wait = v["result"]["pending"]["wait"].as_array().unwrap();
@@ -339,28 +306,22 @@ async fn story_g36_05_gate_toggle_updates_list_items_grouping() {
         .await
         .unwrap();
 
-    let router = build_router(Arc::clone(&store), Token::new(TOK), dir.join("static"));
+    let st = state(Arc::clone(&store));
 
     // Initially GO → in pending.go
-    let v = mcp_call(&router, "list_items", json!({})).await;
+    let v = mcp_call(&st, "list_items", json!({})).await;
     let go = v["result"]["pending"]["go"].as_array().unwrap();
     assert!(
         go.iter().any(|i| i["id"] == "item-a"),
         "initially in pending.go"
     );
 
-    // Toggle to WAIT
-    let (status, _) = req(
-        &router,
-        "POST",
-        "/api/items/item-a/gate",
-        Some(json!({"gate": "wait"})),
-    )
-    .await;
-    assert_eq!(status, StatusCode::OK);
+    // Toggle to WAIT via the set_wait_go verb
+    let v = mcp_call(&st, "set_wait_go", json!({"id":"item-a","gate":"wait"})).await;
+    assert_eq!(v["result"]["ok"], true);
 
     // Now in pending.wait
-    let v = mcp_call(&router, "list_items", json!({})).await;
+    let v = mcp_call(&st, "list_items", json!({})).await;
     let wait = v["result"]["pending"]["wait"].as_array().unwrap();
     assert!(
         wait.iter().any(|i| i["id"] == "item-a"),
@@ -373,17 +334,11 @@ async fn story_g36_05_gate_toggle_updates_list_items_grouping() {
     );
 
     // Toggle back to GO
-    let (status, _) = req(
-        &router,
-        "POST",
-        "/api/items/item-a/gate",
-        Some(json!({"gate": "go"})),
-    )
-    .await;
-    assert_eq!(status, StatusCode::OK);
+    let v = mcp_call(&st, "set_wait_go", json!({"id":"item-a","gate":"go"})).await;
+    assert_eq!(v["result"]["ok"], true);
 
     // Back in pending.go
-    let v = mcp_call(&router, "list_items", json!({})).await;
+    let v = mcp_call(&st, "list_items", json!({})).await;
     let go = v["result"]["pending"]["go"].as_array().unwrap();
     assert!(
         go.iter().any(|i| i["id"] == "item-a"),

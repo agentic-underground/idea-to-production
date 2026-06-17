@@ -1,57 +1,54 @@
-# Flow server — the Flow-Tracking Governance UI
+# Flow server — the roadmap MCP core
 
-The standing **observability/governance interface** of the idea-to-production value system: a per-project
-local web app that renders the live roadmap as an interactive SVG board the human steers. One Rust binary
-serves the UI, a WebSocket delta stream, and a token-gated MCP endpoint; a vanilla-JS canvas draws the
-roadmap as cards in DO·DOING·DONE columns.
+The standing **roadmap-tracking surface** of the idea-to-production value system: one Rust binary that
+ingests a project's `.i2p/roadmap/` tree and exposes it to an agent as a **token-authenticated MCP verb
+surface over stdio**. It is the **sole serialized writer** of the roadmap markdown + JSONL event log, so
+every read and mutation flows through one authoritative path.
 
-![The flow board, live — the mission-control roadmap ingested and rendered](docs/flow-board.png)
+> **Roadmap #39 — web UI removed.** The flow-server once *also* served an interactive SVG governance
+> board over HTTP + a WebSocket delta stream + a REST surface. That web UI was removed in roadmap #39;
+> the binary now runs the MCP stdio core only. The launcher passes `--mcp` (retained as a harmless
+> no-op — stdio is the only transport), so nothing changes for the registered MCP server.
 
-*Above: the running server with this repository's own `mission-control` roadmap ingested — 16 items across
-two epics, the masthead reading 38% complete (the six shipped epic-#9 items in DONE).*
-
-## What it does (epic #0, roadmap items #1–#8, #15)
+## What it does (roadmap items #1, #3–#6, #8, #15)
 
 | Item | Capability |
 |------|-----------|
-| **#1** | One Rust binary: HTTP + WebSocket + MCP on one router, **sole serialized writer** of the roadmap markdown + JSONL event log, **bearer-token** on every surface, stable slug IDs, cycle/broken-dep graph guard |
-| **#2** | SVG flow-canvas: rounded-rect cards · curved connectors · DO·DOING·DONE boards · wheel-zoom-about-cursor · click-drag pan · card drag · auto-align · WAIT/GO toggle · badges |
-| **#3** | Carriage telemetry: ancestor **token roll-up** (a spend on a child accrues up the dependency tree) → `telemetry.jsonl` → (graceful) local Grafana |
-| **#4** | Comment / pause / annotate / rewrite: typing pauses the item, Ctrl-Enter annotates its plan, a rewrite request bumps the draft# |
-| **#5** | Roadmap ingest (`--roadmap`) + git-log proxy synthesis for projects that adopted the roadmap late |
-| **#6** | Masthead progress bar + pac-man completion gauge (DONE fraction → "run & observe" at 100%) + system-message feed |
-| **#8** | Per-job model selection: default shown, per-card override (Haiku/Sonnet/Opus/Fable) |
-| **#15** | `render_roadmap` — "what's on the roadmap" answered by local compute (MCP/REST), ~0 LLM tokens |
+| **#1** | One Rust binary: the MCP verb surface over stdio, **sole serialized writer** of the roadmap markdown + JSONL event log, stable slug IDs, cycle/broken-dep graph guard |
+| **#3** | Carriage telemetry: ancestor **token roll-up** (a spend on a child accrues up the dependency tree) |
+| **#4** | Comment / pause / annotate / rewrite: `annotate` pauses the item; a `request_rewrite` bumps the draft# |
+| **#5** | Roadmap ingest (`--roadmap`) of the `.i2p/roadmap/` tree |
+| **#6** | System-message feed via `append_sysmsg` / `list_events` |
+| **#8** | Per-job model selection: `set_item_model` (Haiku/Sonnet/Opus/Fable) |
+| **#15** | `render_roadmap` — "what's on the roadmap" answered by local compute, ~0 LLM tokens |
 
 ## Run it
 
 ```bash
-cargo run --bin flow-server -- \
-  --host 127.0.0.1 --port 7433 \
-  --data .flow --static plugins/mission-control/flow-server/static \
+cargo run --bin flow-server -- --mcp \
+  --data .flow \
   --roadmap .i2p/roadmap
-# → open http://127.0.0.1:7433/?token=<the token printed to stderr / .flow/token>
+# Speaks newline-delimited JSON-RPC on stdin/stdout (the MCP stdio transport).
 ```
 
 `--roadmap` takes the `.i2p/roadmap/` **tree** (folder = status) — the authoritative source (roadmap
 [42]); a single `ROADMAP.md` file is still accepted (legacy). Omit it entirely and the server
-auto-detects `.i2p/roadmap/` in the cwd. `--host` defaults to LAN-reachable; the token is generated to
-`--token` (default `.flow/token`) on first run and required on every HTTP/WS/MCP request.
+auto-detects `.i2p/roadmap/` in the cwd. The `--mcp` flag is accepted for back-compat but is a no-op:
+stdio is the only transport. A token file is created at `--token` (default `.flow/token`) on first run;
+the stdio transport has no auth layer, so the token is not presented on a request.
 
 ## Architecture
 
 A **pure domain core** (`src/domain/`: ids · model · graph · event · telemetry · roadmap_view · annotation —
 no IO, parse-don't-validate, no cycles by construction) behind **thin adapters** (`store.rs` the one writer ·
-`auth.rs` token gate · `api.rs` REST · `ws.rs` broadcast · `mcp.rs` 14-verb JSON-RPC). The single source of
-truth is the roadmap markdown + the append-only JSONL log; the UI is a view.
+`auth.rs` the token type · `api.rs` the shared `AppState` + JSON render helpers · `mcp.rs` the 14-verb
+JSON-RPC `dispatch`). The single source of truth is the roadmap markdown + the append-only JSONL log.
 
 ## Tests
 
-- **Rust**: `cargo test` → 277 tests; `cargo clippy -D warnings` + `cargo fmt --check` clean; domain core and
-  every new module at **100% line+region**, `main.rs` the only excluded shim (an entrypoint, e2e-smoked).
-- **Frontend**: `cd static && npm test` → 164 vitest+jsdom tests, 100% coverage.
-- **Live**: booted with the real roadmap ingested; HTTP/WS/MCP exercised end-to-end (token-reject, 14
-  verbs, cycle-reject, REST+MCP through the one writer, board renders all 16 items — see the screenshot).
+- **Rust**: `cargo test --workspace`; `cargo clippy --workspace -D warnings` + `cargo fmt --check` clean.
+  The MCP verbs are exercised through `mcp::dispatch` directly; `tests/stdio_story.rs` drives the binary
+  end-to-end over real stdin/stdout.
 
 ← back to the [mission-control plugin](../README.md) · the [marketplace root](../../../README.md)
 
@@ -111,13 +108,13 @@ SHA (match/mismatch), the cache dir, and the resolved project root + roadmap ite
 > a release is adopted only by a reviewed PR that bumps the pin. This replaced an earlier "track latest"
 > launcher whose tag-keyed cache let a **re-cut** `flow-server-v0.2.0` strand machines on stale bytes
 > (defect [92]). The binary now also bakes its git rev into the version it self-reports (`ping` →
-> `0.2.1+<rev>`), so two builds are never confusable.
+> `0.2.2+<rev>`), so two builds are never confusable.
 
 **Cutting a release — the bump-and-cut flow** (NEVER re-cut a tag; bump the version every time):
 
 ```sh
 # 1. bump plugins/mission-control/flow-server/Cargo.toml `version`, then:
-git tag flow-server-v0.2.1 && git push origin flow-server-v0.2.1   # → .github/workflows/flow-server-release.yml
+git tag flow-server-v0.2.2 && git push origin flow-server-v0.2.2   # → .github/workflows/flow-server-release.yml
 # 2. the workflow's `preflight` refuses a re-cut tag or tag≠Cargo version, then cross-builds
 #    linux/macOS/Windows (x86_64+arm64), publishes each asset + a SHA256SUMS, and notes the next step:
 # 3. copy the published SHA256SUMS lines into bin/SHA256SUMS, set bin/RELEASE to the tag, commit.
@@ -133,6 +130,6 @@ version (skipping in the bootstrap window).
 
 The MCP launcher resolves the roadmap **independent of the spawn directory**: it walks up from the
 working directory to the project root (the dir holding `.i2p/roadmap/`) and passes the flow-server an
-absolute `--roadmap` and a root-anchored `--data`. So the board is populated even when the harness
+absolute `--roadmap` and a root-anchored `--data`. So the roadmap is populated even when the harness
 spawns the server from somewhere other than the repo root — a stale binary, not a wrong CWD, is the only
-remaining way the board can come up empty.
+remaining way the roadmap can come up empty.
