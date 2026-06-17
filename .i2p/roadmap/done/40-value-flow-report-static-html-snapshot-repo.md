@@ -1,9 +1,10 @@
 ---
 id: 40
 title: "value-flow-report — new ~/Code repo, on-demand static-HTML snapshot"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-15
+completed: 2026-06-18
 depends_on: "#42 (tree source), #39 (UI removed)"
 ---
 
@@ -43,3 +44,5 @@ not real-time.
 - Consume the flow-server's read verbs (`list_items`, `list_events`, `render_roadmap`) once [42] is tree-aware,
   or scan `.i2p/roadmap/` directly.
 - Confirm final repo name with the owner before `git init`.
+
+> **Superseded by [107]** (2026-06-18): the reporter was executed under the v2 flow/DELIVER stream as `~/Code/value-flow-report`, retargeted at the renamed `flow-mcp` backend. Not built twice.

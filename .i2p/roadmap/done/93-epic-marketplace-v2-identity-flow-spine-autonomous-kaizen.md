@@ -1,9 +1,10 @@
 ---
 id: 93
 title: "EPIC — Marketplace v2: function-first identity, the flow/DELIVER spine, autonomous KAIZEN"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "—"
 ---
 
@@ -61,3 +62,5 @@ the migration plan; this epic is the authoritative tracker.
 - Highest risk: **Stream 1** renames — land each as an isolated PR with verify-prereqs green before the next.
 - Stream 4 must **link, not recreate**, #16,18–26.
 - Dependency DAG and per-stream file lists live in the migration plan that authored this epic.
+
+> **EPIC COMPLETE 2026-06-18.** All six streams shipped: S1 renames (#94–99), S2 lifecycle v2 (#100–104), S3 flow/DELIVER spine (#39/#41/#105–110 + the value-flow-report repo #107), S4 autonomous KAIZEN (#16–26), S5 publish fixes (#111/#112), S6 reconciliation (#113/#114). The flow plugin also gained the universal check/inspect/self-improve trio. `docs/SLASH_COMMANDS.md` reconciled; every inline directive discharged.

@@ -1,9 +1,10 @@
 ---
 id: 107
 title: "value-flow-report — build the static-HTML snapshot repo (absorbs #40)"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "#105, #97 (flow-mcp rename)"
 ---
 
@@ -54,3 +55,5 @@ removal.
   `.i2p/roadmap/` directly.
 - [40] already specifies the reporter (offline successor to the removed [39] board); this item executes it —
   carry [40]'s acceptance criteria forward rather than re-deriving them.
+
+> **Shipped 2026-06-18:** built at `~/Code/value-flow-report` (Python 3 stdlib, zero-dep; 12 tests; proven against the live tree — 115 items → one self-contained HTML). Local repo, not pushed to a remote (owner's call).
