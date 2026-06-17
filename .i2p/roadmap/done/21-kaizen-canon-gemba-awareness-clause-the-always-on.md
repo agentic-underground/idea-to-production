@@ -1,9 +1,10 @@
 ---
 id: 21
 title: "KAIZEN-canon GEMBA awareness clause — the always-on instinct"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "— (atomic; PR-A)"
 ---
 
