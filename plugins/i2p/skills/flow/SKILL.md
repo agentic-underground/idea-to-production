@@ -1,7 +1,7 @@
 ---
 name: flow
 description: >
-  The value-flow map. Use for /i2p-flow (or "show me the value flow", "where does each plugin
+  The value-flow map. Use for /i2p:flow (or "show me the value flow", "where does each plugin
   fit?", "what's my next step?", "draw the idea-to-production pipeline"). Places each installed
   plugin on DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE, names the
   headline command and artefact at each stage, marks dark stages, and — given a starting point —
@@ -65,4 +65,4 @@ Close with a single **"your next command"** line.
 ## Self-improvement covenant
 
 Inherits the front door covenant (`knowledge/covenant.md`). When the flow gains a stage or a plugin, this
-map is the one place that learns it — update once, every `/i2p-flow` inherits it.
+map is the one place that learns it — update once, every `/i2p:flow` inherits it.

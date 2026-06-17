@@ -1,7 +1,7 @@
 ---
 name: review
 description: >
-  The marketplace-wide adversarial review. Use for /i2p-review (or "review everything",
+  The marketplace-wide adversarial review. Use for /i2p:review (or "review everything",
   "full review across all the plugins", "give me one verdict from every reviewer"). Determines
   scope, fans out EVERY installed specialist reviewer — code (foundry /pr-review), design
   (atelier /ui-review), rendered docs (publish design-review), security (security
@@ -18,7 +18,7 @@ model: inherit
 # i2p — Cross-plugin adversarial review
 
 One command, the whole marketplace's review power, one verdict. Where foundry's `/pr-review` reviews the
-**code**, `/i2p-review` adds the **design**, **rendered-doc**, and **security** lenses the specialist
+**code**, `/i2p:review` adds the **design**, **rendered-doc**, and **security** lenses the specialist
 plugins own — behind a single marketplace-wide decision a human (or an auto-merge step) can act on.
 
 > **Stance — adversarial, not confirmatory.** Every lens is told to *find what is wrong, missing, or

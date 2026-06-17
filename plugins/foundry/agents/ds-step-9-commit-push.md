@@ -156,7 +156,7 @@ Before beginning:
   > **Item #{N} is built, reviewed, and pushed — your PR is ready to merge:**
   > {pr_url}
   >
-  > Once you have merged it, reply **"merged"** (or run `/i2p-lifecycle post-merge {N}`)
+  > Once you have merged it, reply **"merged"** (or run `/i2p:lifecycle post-merge {N}`)
   > and the lifecycle will mark item #{N} COMPLETE and record delivery.
 
 ## Reviewer Rule

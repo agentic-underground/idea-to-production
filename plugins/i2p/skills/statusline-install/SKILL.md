@@ -39,7 +39,7 @@ Present the output verbatim, then note the bar appears after a **restart or `/re
 ## Notes
 - The **⚔ caught** tally is fed automatically by this plugin's PostToolUse hook
   (`statusline/count-adversarial-catches.sh`) — no setup needed; it works once i2p is installed.
-- The **lifecycle phase** widget lights up once a project has a `.i2p/lifecycle.json` (see `/i2p-help`).
+- The **lifecycle phase** widget lights up once a project has a `.i2p/lifecycle.json` (see `/i2p:help`).
 - Other plugins can add their own segments by dropping an executable printer in
   `~/.claude/state/statusline-widgets.d/*.sh` (fed the same stdin JSON; prints one colored segment).
 

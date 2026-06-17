@@ -68,7 +68,7 @@ plugin is installed, mark the **OPERATE** phase done so the marketplace product 
 line cycle back to **DISCOVER (↻)** — opening the next value cycle:
 
 ```bash
-/i2p-lifecycle done OPERATE   # order-safe & idempotent — a no-op unless a lifecycle is running at OPERATE
+/i2p:lifecycle done OPERATE   # order-safe & idempotent — a no-op unless a lifecycle is running at OPERATE
 ```
 
 Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md` (OPERATE

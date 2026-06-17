@@ -1,7 +1,7 @@
 ---
 name: help
 description: >
-  The marketplace's front door. Use for /i2p-help (or "what can i2p do?",
+  The marketplace's front door. Use for /i2p:help (or "what can i2p do?",
   "what powers do I have now?", "browse the idea-to-production marketplace", "where do I
   start?"). Renders the three pillars and the DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸
   SECURE ▸ PUBLISH ▸ OPERATE value flow, listing only the plugins currently installed with their
@@ -40,7 +40,7 @@ probe the filesystem. The plugins to look for:
 | **security** | SECURE (security gate) | `/scan-all`, `/scan-for-secrets`, `/scan-for-pii`, `/scan-dependencies` |
 | **publish** | PUBLISH | `/publish`, `/publish:design-review` |
 | **operate** | OPERATE | *(add to unlock — observe, respond to incidents, iterate the live product)* |
-| **i2p** | front door + arrival | `/i2p-help`, `/i2p-review`, `/i2p-check`, `/i2p-flow`, `/i2p-lifecycle`, `/i2p:define-welcome`, `/i2p:statusline` |
+| **i2p** | front door + arrival | `/i2p:help`, `/i2p:review`, `/i2p:check`, `/i2p:flow`, `/i2p:lifecycle`, `/i2p:define-welcome`, `/i2p:statusline` |
 
 ## 2. Render the menu
 
@@ -51,8 +51,8 @@ Keep it scannable — a menu, not an essay:
    `knowledge/covenant.md`.
 2. **The value flow** with only installed plugins placed on it, each with its headline command and a
    one-line "run this when you want…". Mark dark stages as "▫ add `<plugin>` to unlock …".
-3. **The meta-commands**: `/i2p-review` (one verdict from every reviewer), `/i2p-check` (consolidated
-   readiness), `/i2p-flow` (the flow + your next command), `/i2p-lifecycle` (start/track the lifecycle).
+3. **The meta-commands**: `/i2p:review` (one verdict from every reviewer), `/i2p:check` (consolidated
+   readiness), `/i2p:flow` (the flow + your next command), `/i2p:lifecycle` (start/track the lifecycle).
 4. **Go deeper**: marketplace `README.md`; `plugins/foundry/knowledge/glossary.md` (every term);
    `plugins/foundry/VALUE_FLOW.md` (the system).
 
@@ -73,7 +73,7 @@ around. Summarise the model from [`../../knowledge/product-lifecycle.md`](../../
 > OPERATE.)
 
 Then **offer to kick one off**: ask if they'd like to start a product lifecycle for this project. If yes,
-run `/i2p-lifecycle init` (sets phase DISCOVER) and route them to the first installed owner
+run `/i2p:lifecycle init` (sets phase DISCOVER) and route them to the first installed owner
 (`/market-scan`, or `/ideate` if they already have a validated idea). If a `.i2p/lifecycle.json` already
 exists, report the current phase instead and offer `advance`. Mention that the **status line** shows the
 live phase — offer `/i2p:statusline` if it isn't enabled.
@@ -89,4 +89,4 @@ commands, what each produces, and a "next command" suggestion. Otherwise show th
 
 Inherits the front door covenant (`knowledge/covenant.md`). When a user couldn't find a power they had,
 that is a gap in this menu — add the missing line or a tip, fixed upstream once, so every future
-`/i2p-help` surfaces it.
+`/i2p:help` surfaces it.

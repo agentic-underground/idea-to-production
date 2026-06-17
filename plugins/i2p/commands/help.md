@@ -10,7 +10,7 @@ Be the marketplace front door. Follow the [`help` skill](../skills/help/SKILL.md
 2. Render the **three pillars** in one line each, then a compact map of the value flow
    (DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻) showing only the installed
    plugins, each with its headline command(s) and a one-line "run this when you want…".
-3. Surface the sibling meta-commands: `/i2p-review`, `/i2p-check`, `/i2p-flow`.
+3. Surface the sibling meta-commands: `/i2p:review`, `/i2p:check`, `/i2p:flow`.
 4. Point to deeper docs: the marketplace `README.md`, `plugins/foundry/knowledge/glossary.md`, and
    `plugins/foundry/VALUE_FLOW.md`.
 

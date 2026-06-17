@@ -15,10 +15,10 @@ review that pulls in *every* reviewer at once. That is i2p.
 
 | Command | What it does |
 |---|---|
-| **`/i2p-help`** | Browse the whole marketplace's powers, grouped by the value flow (DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻). Lists only the plugins currently installed, with their key commands and the next thing to run. |
-| **`/i2p-review`** | A cross-plugin **adversarial review**. Determines scope, fans out *every installed* specialist reviewer — code (foundry `/pr-review`), design (atelier `/ui-review`), rendered docs (publish design-review), security (security `/scan-all`) — adversarially verifies the serious findings, and returns **one** verdict (BLOCK > NEEDS_REVISION > PASS) in `I2P_REVIEW.md`, naming what it could **not** review. |
-| **`/i2p-check`** | Run every installed plugin's `/check` and consolidate the ✓/✗ readiness into one table. |
-| **`/i2p-flow`** | Show where each installed plugin sits in the value flow and the next command at each stage (Mermaid when publish/atelier are present, else markdown). |
+| **`/i2p:help`** | Browse the whole marketplace's powers, grouped by the value flow (DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻). Lists only the plugins currently installed, with their key commands and the next thing to run. |
+| **`/i2p:review`** | A cross-plugin **adversarial review**. Determines scope, fans out *every installed* specialist reviewer — code (foundry `/pr-review`), design (atelier `/ui-review`), rendered docs (publish design-review), security (security `/scan-all`) — adversarially verifies the serious findings, and returns **one** verdict (BLOCK > NEEDS_REVISION > PASS) in `I2P_REVIEW.md`, naming what it could **not** review. |
+| **`/i2p:check`** | Run every installed plugin's `/check` and consolidate the ✓/✗ readiness into one table. |
+| **`/i2p:flow`** | Show where each installed plugin sits in the value flow and the next command at each stage (Mermaid when publish/atelier are present, else markdown). |
 | **`/i2p:define-welcome`** | Author this repo's welcome experience — i2p greets and routes whoever opens it next (folded in from the retired concierge plugin). |
 | **`/i2p:statusline`** `[off]` | Turn on (or off) the rich two-line idea-to-production status line — context/rate gauges, the lifecycle phase, the ⚔ reviewer-catch tally. |
 | **`/i2p:statusline-widgets`** | Lay out the status line's line-2 widgets to fit your terminal. |
@@ -34,7 +34,7 @@ others when present" pattern, applied at the top level.
 
 Because Claude Code has no built-in "tips" feature, i2p uses the supported hook mechanisms:
 
-- a **SessionStart** hook that introduces the marketplace once per session (`💡 type /i2p-help …`);
+- a **SessionStart** hook that introduces the marketplace once per session (`💡 type /i2p:help …`);
 - a **UserPromptSubmit** hook that surfaces a rotating ≤25-word "did you know?" tip every few prompts
   (state-tracked, so it appears *now and then*, not on every turn).
 
@@ -44,6 +44,6 @@ Both degrade silently if anything goes wrong — they never block a prompt.
 
 i2p carries the marketplace's three pillars and the KAIZEN self-improvement covenant
 ([`knowledge/covenant.md`](knowledge/covenant.md)). When a user can't find a power they have, the fix is
-upstream — a sharper `/i2p-help` line or a new tip, landed via PR so every future session inherits it.
+upstream — a sharper `/i2p:help` line or a new tip, landed via PR so every future session inherits it.
 
 Dual-licensed under **MIT OR Apache-2.0**.

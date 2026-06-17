@@ -69,7 +69,7 @@ When the product's primary **design phase** concludes and hands off to build (th
 product lifecycle and the status line advance to BUILD:
 
 ```bash
-/i2p-lifecycle done DESIGN   # order-safe & idempotent — a no-op unless a lifecycle is running at DESIGN
+/i2p:lifecycle done DESIGN   # order-safe & idempotent — a no-op unless a lifecycle is running at DESIGN
 ```
 
 Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

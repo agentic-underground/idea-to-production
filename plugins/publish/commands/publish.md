@@ -56,7 +56,7 @@ When publication-grade output is produced (the release is documented and out), a
 product lifecycle and the status line advance to OPERATE (the living phase, owned by `operate`):
 
 ```bash
-/i2p-lifecycle done PUBLISH   # order-safe & idempotent — a no-op unless a lifecycle is running at PUBLISH
+/i2p:lifecycle done PUBLISH   # order-safe & idempotent — a no-op unless a lifecycle is running at PUBLISH
 ```
 
 Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

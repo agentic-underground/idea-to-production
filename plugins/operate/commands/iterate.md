@@ -16,7 +16,7 @@ When a genuine re-entry signal is confirmed and **i2p** is installed, advance th
 line cycles OPERATE → DISCOVER (↻):
 
 ```bash
-/i2p-lifecycle done OPERATE   # order-safe & idempotent — a no-op unless a lifecycle is running at OPERATE
+/i2p:lifecycle done OPERATE   # order-safe & idempotent — a no-op unless a lifecycle is running at OPERATE
 ```
 
 Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

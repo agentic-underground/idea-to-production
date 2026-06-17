@@ -99,7 +99,7 @@ When the IDEA package is complete and handed off (FOUNDRY's discovery exit crite
 product lifecycle and the status line advance to DESIGN:
 
 ```bash
-/i2p-lifecycle done IDEATE   # order-safe & idempotent — a no-op unless a lifecycle is running at IDEATE
+/i2p:lifecycle done IDEATE   # order-safe & idempotent — a no-op unless a lifecycle is running at IDEATE
 ```
 
 Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.

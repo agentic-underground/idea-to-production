@@ -243,7 +243,7 @@ When step-9 returns the `AWAITING_MERGE` sentinel, the orchestrator:
    **Path B — answer "no" (manual-merge path, existing behaviour):**
    Halt with the PR URL visible. ROADMAP.md is not modified. No sentinel is emitted.
    The item remains at AWAITING MERGE. Instruct the user: once you have merged it, reply
-   **"merged"** (or run `/i2p-lifecycle post-merge {N}`) and the completion handler will run.
+   **"merged"** (or run `/i2p:lifecycle post-merge {N}`) and the completion handler will run.
 
    **Path C — gh unavailable or merge fails (fallback to manual-merge path):**
    Surface the error (e.g. "gh: not authenticated" or the stderr from `gh pr merge`).
@@ -254,7 +254,7 @@ When step-9 returns the `AWAITING_MERGE` sentinel, the orchestrator:
 ## Post-merge completion handler
 
 Triggered when the user sends the merge confirmation signal ("merged", "done",
-`/i2p-lifecycle post-merge {N}`, or equivalent natural-language confirmation).
+`/i2p:lifecycle post-merge {N}`, or equivalent natural-language confirmation).
 
 1. **Verify the merge.** Run `gh pr view {pr_number} --json state,mergedAt` and confirm
    `state == "MERGED"`. If not yet merged, warn the user and wait — do not proceed.

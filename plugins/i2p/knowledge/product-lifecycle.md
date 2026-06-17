@@ -2,8 +2,8 @@
 
 > The organising spine of the marketplace. Every plugin is a **phase** or a **cross-cutting concern** of one
 > lifecycle that carries a product from **the search for an idea** to **IN PRODUCTION** — realised, live, and
-> operated. This document is the canonical articulation; the statusline phase widget, `/i2p-help`, and
-> `/i2p-lifecycle` all read it.
+> operated. This document is the canonical articulation; the statusline phase widget, `/i2p:help`, and
+> `/i2p:lifecycle` all read it.
 
 ![The eight-phase value cycle building up stage by stage — DISCOVER, IDEATE, DESIGN, BUILD, ASSURE, SECURE, PUBLISH, OPERATE — then the return arc glows as OPERATE's learnings re-enter DISCOVER, closing the loop.](../../../docs/images/lifecycle-cycle.gif)
 
@@ -112,16 +112,16 @@ A phase is *entered* when its predecessor's exit signal fires, and *exited* when
 ## How the marketplace aligns to this spine
 
 - The **state file** `.i2p/lifecycle.json` records `current_phase`. Each owning plugin **advances it at its own
-  exit signal** by calling `/i2p-lifecycle done <its-phase>` (by capability — only when i2p is installed).
+  exit signal** by calling `/i2p:lifecycle done <its-phase>` (by capability — only when i2p is installed).
   `done` is **order-safe & idempotent**: it advances *only if* the lifecycle is at that phase, so a plugin can
   never jump it out of order or auto-start it. Helper: `skills/lifecycle/scripts/lifecycle.sh`
   (`init|get|status|done|set|advance`).
 - The **statusline** phase widget (shipped by i2p) reads it and shows `◆ lifecycle … (n/8)`.
 - **Token cost is tracked per phase** with a self-calibrating estimator — see
-  [`instrumentation.md`](instrumentation.md). `/i2p-lifecycle init` seeds estimates; each phase's
+  [`instrumentation.md`](instrumentation.md). `/i2p:lifecycle init` seeds estimates; each phase's
   actual-vs-estimate is measured (i2p Stop hook) and folded back so estimates improve over time.
   The HUD shows `◇ session` spend and `◈ life actual/~estimate (Δ%) · $`.
-- **`/i2p-help`** explains this lifecycle and offers to **kick one off**; **`/i2p-lifecycle`** initialises
+- **`/i2p:help`** explains this lifecycle and offers to **kick one off**; **`/i2p:lifecycle`** initialises
   and reports it.
 - This doc is referenced by `foundry/VALUE_FLOW.md` and the glossary so the whole suite shares one spine.
 

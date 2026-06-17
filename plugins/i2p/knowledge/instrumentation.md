@@ -36,9 +36,9 @@ self-correct over time**.
   **current phase** (`phases[PHASE].actual_tokens` / `actual_usd`; `totals` recomputed).
 
 ### Estimate + calibrate (the loop) — `i2p/skills/lifecycle/scripts/cost.sh`
-- **`estimate`** (run on `/i2p-lifecycle init`): per-phase `estimate_tokens = BASE[phase] × ratio_ewma[phase]`.
+- **`estimate`** (run on `/i2p:lifecycle init`): per-phase `estimate_tokens = BASE[phase] × ratio_ewma[phase]`.
   BASE is a rough seed table; the multiplier is **learned**.
-- **`close <PHASE>`** (run on `/i2p-lifecycle done <PHASE>`): computes `ratio = actual/estimate` for the
+- **`close <PHASE>`** (run on `/i2p:lifecycle done <PHASE>`): computes `ratio = actual/estimate` for the
   phase and folds it into the **global** calibration ledger `~/.claude/state/i2p-cost/calibration.json`
   (`ratio_ewma`, EWMA α=0.4, cross-project). Every closed phase makes future estimates of that phase sharper.
 - **`record <PHASE> N`**: folds an authoritative external actual into a phase — FOUNDRY calls this with
