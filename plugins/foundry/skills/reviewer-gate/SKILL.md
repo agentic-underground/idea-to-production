@@ -5,6 +5,8 @@ description: Use when a stage agent generates or updates a document and must pas
 
 # Reviewer Gate
 
+> Agent-internal — invoked by the FOUNDRY conveyor, not typed directly.
+
 ## Purpose
 
 Enforce a mandatory second-pass critical review for every generated document in the Development System. No document advances to the next stage without passing this gate.

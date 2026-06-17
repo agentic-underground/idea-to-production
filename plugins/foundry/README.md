@@ -19,7 +19,7 @@ performance-instrumented **test contract**. Read [`VALUE_FLOW.md`](VALUE_FLOW.md
 | [`agents/`](agents/) | The orchestration hierarchy + the value-handlers + governance (see below). |
 | [`skills/`](skills/) | The station skills (`ideator`, `roadmapper`, `development-system-core`, `lifecycle-states`, `code-quality`, `reviewer-gate`, `frontend`, `vertical-slice`, `founder-method`, `value-station-handoff`, `handoff-protocol`, `builder`, `phase-sensor`, and the Rust one-shot [`rust-webapp-rollout`](skills/rust-webapp-rollout/)). |
 | [`knowledge/`](knowledge/) | The define-once canon (pillars, architecture, specs, testing, protocols, orchestration, policy). Index: [`knowledge/README.md`](knowledge/README.md). |
-| [`commands/`](commands/) | `/foundry`, `/inspect`, `/coverage-loop`, `/phase-sensor`, `/rust-webapp-rollout`. |
+| [`commands/`](commands/) | `/foundry`, `/inspect`, `/coverage-loop`, `/phase-sensor`, `/prerequisites`, `/pr-review`, `/scorecard`, `/self-improve`, `/check`, `/rust-webapp-rollout`. The **user-facing vs agent-internal** split is below. |
 | [`hooks/hooks.json`](hooks/hooks.json) | A PostToolUse hook that runs the `phase-sensor` so the dev-system self-applies. |
 | [`examples/`](examples/) | Worked dev-system artefacts (real EARS → Gherkin → plan). Index: [`examples/README.md`](examples/README.md). |
 | [`docs/`](docs/) | [`MIGRATION.md`](docs/MIGRATION.md) (provenance) + [`DEPRECATED.md`](docs/DEPRECATED.md) + [`HISTORY.md`](docs/HISTORY.md) (origin story). |
@@ -35,6 +35,41 @@ performance-instrumented **test contract**. Read [`VALUE_FLOW.md`](VALUE_FLOW.md
 system), `-react`, `-css`, `-playwright`, [`-rust`](agents/handler-rust.md), and
 [`-rust-webapp`](agents/handler-rust-webapp.md) (the RUST_WEBAPP_API one-shot, governed by the
 [`rust-webapp-rollout`](skills/rust-webapp-rollout/SKILL.md) skill).
+
+## Command surface — user-facing vs agent-internal conveyor
+
+Not every foundry skill is something a human types. The conveyor is staffed by **internal machinery**
+the orchestrator invokes on your behalf; the small set of verbs below is what you run deliberately.
+(Reframed under roadmap [106]: documentation + surfacing, **not deletion** — the agent-internal
+skills/agents keep working, they are simply not presented as user commands. Prefixes stay `foundry:*`.)
+
+**User-facing commands** (run these deliberately):
+
+| Command / skill | What it is |
+|---|---|
+| [`/foundry:foundry`](commands/foundry.md) | the production cycle — **the internal engine that [`/flow:pull`](../flow/commands/pull.md) wraps.** The owner's directive (roadmap [106], `docs/SLASH_COMMANDS.md`) is that `/foundry:foundry` is non-intuitive: *"I want to pull from the backlog"* → **`/flow:pull`** is the intended verb; `/foundry:foundry` remains available as the engine it drives. |
+| [`/foundry:pr-review`](commands/pr-review.md) | adversarial PR / diff review → one PASS / NEEDS_REVISION / BLOCK verdict |
+| [`/foundry:coverage-loop`](commands/coverage-loop.md) | pin the least-covered behaviour, loop until every behaviour is pinned |
+| [`/foundry:phase-sensor`](commands/phase-sensor.md) | detect each item's dev phase, install the right next-stage skill |
+| [`/foundry:prerequisites`](commands/prerequisites.md) | generate `PREREQUISITES.md` + stamp this machine's ✓/✗ |
+| [`/foundry:scorecard`](commands/scorecard.md) | deterministic, artifact-measured scorecards |
+| [`/foundry:self-improve`](commands/self-improve.md) | reflect on one element against the covenant + improve it |
+| [`/foundry:check`](commands/check.md) | verify foundry's external tool dependencies |
+| [`/foundry:rust-webapp-rollout`](commands/rust-webapp-rollout.md) | one-shot full-Rust web-app + Vercel rollout |
+| [`/foundry:inspect`](commands/inspect.md) | audit the foundry plugin itself |
+| `roadmapper` · `code-quality` · `frontend` · `vertical-slice` skills | user-triggerable station skills (manage the roadmap, run code-quality analysis, build a data-bound UI, carve a slice) — invoked by their trigger phrases, no `/command` of their own |
+
+**Agent-internal conveyor (not for direct use)** — invoked by the FOUNDRY orchestrator, never typed:
+
+- the **`builder`**, **`lifecycle-states`**, **`handoff-protocol`**, **`reviewer-gate`**,
+  **`value-station-handoff`**, **`development-system-core`**, and **`founder-method`** skills (each
+  carries an *Agent-internal* note at the top of its `SKILL.md`); and
+- the **`ds-step-*`** agents (`ds-step-0-plan` … `ds-step-9-commit-push`, `ds-step-story-tests`) — the
+  conveyor's per-step executors, spawned by the lifecycle-orchestrator.
+
+These are machinery: the conveyor calls them as it drives an item idea→product. The `ideator` station
+skill is likewise composed by the cycle rather than typed. None of them are deleted or renamed — they
+are simply no longer surfaced as user commands.
 
 ## The test contract (why FOUNDER may refuse to build)
 Five levels — **unit, module, boundary, system, STORY** — each emitting performance samples, with a

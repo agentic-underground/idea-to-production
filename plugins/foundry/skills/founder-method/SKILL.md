@@ -11,6 +11,8 @@ description: >
 
 # THE FOUNDER METHOD
 
+> Agent-internal — invoked by the FOUNDRY conveyor, not typed directly.
+
 A method for running an application-layer production house. It exists to make every change
 **rigorously disciplined**: each increment passes through a fixed line of stations, each
 station has a defined value, an owning handler, and an exit gate, and nothing merges that

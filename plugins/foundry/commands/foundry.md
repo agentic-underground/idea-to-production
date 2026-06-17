@@ -4,6 +4,14 @@ description: Run the FOUNDRY production cycle — ingest the ROADMAP, plan, tier
 
 Run a FOUNDRY cycle.
 
+> **This is the internal BUILD engine.** The intuitive user-facing verb is
+> [`/flow:pull`](../../flow/commands/pull.md), which selects the next `.i2p/roadmap/` backlog item,
+> carries it, and drives it through *this* command. The owner's directive (roadmap [106],
+> [`docs/SLASH_COMMANDS.md`](../../../docs/SLASH_COMMANDS.md)) is that `/foundry:foundry` is
+> non-intuitive — *"I want to pull from the backlog" ≠ "/foundry:foundry"* — so prefer `/flow:pull`.
+> `/foundry:foundry` remains available as the engine `/flow:pull` wraps (e.g. to run the whole backlog,
+> or an estimate-only cycle).
+
 1. Read `${CLAUDE_PLUGIN_ROOT}/VALUE_FLOW.md` to ground yourself in the conveyor, the three
    pillars, and the orchestration hierarchy (§9).
 2. Invoke the **founder** agent (COO) to establish knowledge-parity and define/confirm the
