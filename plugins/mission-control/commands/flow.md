@@ -1,42 +1,59 @@
 ---
-description: Roadmap flow — ping/greet the flow-server MCP, check its status, or control the board daemon.
+description: Value-flow — carry a roadmap item to its next stage (recording who/what/cost), or report the current flow state.
 ---
 
-The **flow** command has two route families. Pick by `$ARGUMENTS` (default: `status`):
+The **flow** command is the lightweight value-carry verb: advance one item through the
+`.i2p/roadmap/` lanes without reaching for the heavyweight FOUNDRY cycle, and report the current
+state of value flow. Pick the route by `$ARGUMENTS` (default: `report`).
 
-## MCP routes (go THROUGH the flow-server MCP — prove the roundtrip)
+The **lanes** are exactly the subfolders of `.i2p/roadmap/`, in flow order — today
+**`backlog` → `doing` → `done`** (folder = stage). The carry verb moves an item one lane forward
+(or to a named lane) and records *who is processing it · what they are doing · the running cost* via
+the flow-server's typed MCP telemetry verbs, so the board state is always reportable.
 
-- **`hello`** / **`ping`** — call the MCP verb **`ping`** (`mcp__…__flow-server__ping`; it's a deferred
-  tool — if it's not in your tool list, `ToolSearch` for `flow-server__ping` first). Then print, verbatim,
-  the server's `message` — **"hello from the flow MCP"** — followed by its `version`, `items` (roadmap
-  item count), and `source`. This proves the MCP is connected and serving the tree.
-- **`status`** — report the MCP **and** the board:
-  1. Call `ping`. Show `version` / `items` / `source`. **Flag staleness:** if `items` is 0 (or `source`
-     is null) while `.i2p/roadmap/` has files on disk, OR `version` is below `0.2.1`, the running MCP
-     binary is **stale**. The launcher runs a **pinned** release, so a stale server means the *plugin
-     itself* is out of date (its `bin/RELEASE` pins an older binary) — the fix is to **update the
-     mission-control plugin** (`/plugin marketplace update idea-to-production`, then update the plugin)
-     and restart Claude Code, not to clear a cache. Run `flow-server/bin/flow-server-mcp --doctor` to
-     see the pinned tag vs the cached binary, then re-verify via `/mission-control:flow-setup`. If you
-     have no `mcp__…__flow-server__*` tools at all, it isn't connected — guide them: restart after
-     install/update, then `/mcp` approve `flow-server`.
-  2. Then run the board controller below with `status`.
+## `report` (default) — render the current value flow
 
-## Board routes (the SVG governance UI daemon, via `flowctl.sh`)
+Call the MCP verb **`render_roadmap`** (`mcp__…__flow-server__render_roadmap`; it's a deferred tool —
+if it's not in your tool list, `ToolSearch` for `flow-server__render_roadmap` first). Print its text
+verbatim — it groups items by stage at ~0 LLM tokens. Then, for any item carried this session, append
+its **who / what / cost** (the `annotate` text and `append_spend` total you wrote on carry).
 
-- **`start`** — start the board now (if the roadmap has items); binds `0.0.0.0`, advertises the LAN URL.
-- **`stop`** — stop the daemon.
-- **`url`** — print the clickable `http://<LAN-IP>:<port>/?token=…` link.
-- **`build`** — one-time `cargo build` of the flow-server binary (needed once per checkout; `target/` is gitignored).
+If `render_roadmap` returns empty while `.i2p/roadmap/` has files on disk, the pinned MCP binary is
+stale — call **`ping`** (below) to confirm, then fall back to scanning the tree directly: list each
+lane folder and its `.md` items. Never print an empty/misleading report when the tree is non-empty.
+
+## `carry <item> [to <stage>]` — advance one item
+
+1. **Resolve `<item>`** to exactly one roadmap item — by leading id number (e.g. `41`) or an
+   unambiguous title match across all lane folders. **If zero or more than one match, STOP and ask;
+   never guess** (EARS unwanted-behaviour: ambiguous item → refuse).
+2. **Resolve the target stage.** With `to <stage>`, it must name an existing lane folder under
+   `.i2p/roadmap/`; **if it is not a valid lane, STOP and ask.** Without `to <stage>`, carry the item
+   **one lane forward** in flow order (`backlog`→`doing`→`done`); refuse if it is already in the last
+   lane.
+3. **Move the file** with `git mv .i2p/roadmap/<from>/<file> .i2p/roadmap/<to>/<file>`.
+4. **Update the `status:` front-matter** to match the destination lane:
+   `backlog` → `PENDING`, `doing` → `IN PROGRESS`, `done` → `DONE`.
+5. **Record telemetry** against the item id through the flow-server MCP verbs (each is deferred —
+   `ToolSearch` for `flow-server__<verb>` if absent):
+   - **`post_status`** — set the item's status to the new stage (the authoritative transition).
+   - **`annotate`** — write the **who / what**: the agent/handler processing it and the activity
+     (e.g. `"carried to doing — handler:foundry, implementing #41"`).
+   - **`append_spend`** — add the **cost** (tokens) spent carrying it, if known.
+6. **Report** the move back to the user: `<id> <from> → <to>`, plus the who / what / cost you recorded.
+
+## `ping` / `hello` — MCP health check
+
+Call the MCP verb **`ping`** and print its `message` ("hello from the flow MCP") plus `version`,
+`items`, and `source`. **Flag staleness:** if `items` is 0 (or `source` is null) while `.i2p/roadmap/`
+has files on disk, the pinned MCP binary is stale — the fix is `/mission-control:flow-setup` to
+re-cache and re-verify. If you have no `mcp__…__flow-server__*` tools at all, it isn't connected —
+restart Claude Code after install/update, then `/mcp` and approve `flow-server`.
 
 ```bash
-# Board routes only (start|stop|status|url|build). For hello/ping, call the MCP verb above instead.
-case "${ARGUMENTS:-status}" in
-  hello|ping) : ;;  # handled via the MCP ping verb — do not shell out
-  *) bash "${CLAUDE_PLUGIN_ROOT}/flow-server/bin/flowctl.sh" "${ARGUMENTS:-status}" ;;
-esac
+# Routing is agent-driven (the verbs above are MCP calls, not shell). Default route: report.
+echo "flow route: ${ARGUMENTS:-report}"
 ```
 
-**Security:** the board binds `0.0.0.0` (LAN-reachable) — the bearer token in `.flow/token` is the only
-guard and the URL embeds it, so treat the URL as a secret on a shared network. Set `FLOW_HOST=127.0.0.1`
-to bind localhost-only.
+The web governance board has been removed (roadmap [39]); there is no `start`/`stop`/`url`/`build`
+daemon to control — the flow-server is now a data-only MCP service, and `report` is its on-demand view.
