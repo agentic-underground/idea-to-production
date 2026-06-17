@@ -1,14 +1,9 @@
 # flow-mcp pinned-release checksums — the integrity source of truth for bin/flow-mcp.
 # One line per published release asset: "<64-hex-sha256>  flow-mcp-<triple>[.exe]".
-#
-# BOOTSTRAP WINDOW (roadmap #97): bin/RELEASE was bumped to flow-mcp-v0.2.3 (the flow-server →
-# flow-mcp rename, incl. a fresh release lineage) but the flow-mcp-v0.2.3 GitHub Release has not
-# been published yet, so no checksums are committed below. While this file carries no asset line
-# for a platform, the launcher resolves the binary by building from source (dev/CI) and
-# smoke-pinned.sh + verify-prereqs §P cleanly SKIP/PASS the bootstrap window. Once the
-# flow-mcp-v0.2.3 release assets are published, paste their checksum lines here (one per platform:
-# x86_64/aarch64 × linux-gnu/apple-darwin, plus x86_64-pc-windows-msvc.exe) to re-arm the
-# deterministic pinned-binary path.
-#
-# To adopt a new release: bump Cargo.toml, cut the tag, publish the assets, then replace these lines
-# + bin/RELEASE.
+# Finalized from the flow-mcp-v0.2.3 GitHub Release (the flow-server → flow-mcp rename, #97).
+# To adopt a new release: bump Cargo.toml, cut the tag, then replace these lines + bin/RELEASE.
+ed4cb2dade762b7e2f85c3ba25561dc5e815c16237b8b5a237d01318d00e0c0c  flow-mcp-aarch64-apple-darwin
+e9dd9481ae7657e81392e38f6dec239dd454e00b6d55386bb3a9d84d4f188b2f  flow-mcp-aarch64-unknown-linux-gnu
+b7213b9a59daad8af59d0244d5e49ffb2db99793b33c0a6cac14fddfdd45c524  flow-mcp-x86_64-apple-darwin
+f51fe9d3386a9c20f9d3afa1e4fc5188ecf80626a327fe2f702da2daf9998fa4 *flow-mcp-x86_64-pc-windows-msvc.exe
+204319acd736c0da2ecd255c5c8213ab5d6575b412275739a957cc1079461c60  flow-mcp-x86_64-unknown-linux-gnu
