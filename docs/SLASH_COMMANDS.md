@@ -20,11 +20,30 @@ entry points sit above the spine.
 |---|---|---|---|
 | **▸** | *entry* — front door | `i2p` | [↓](#i2p--front-door) |
 | **▸** | *entry* — session greeter | `concierge` | [↓](#concierge--session-greeter) |
+>
+> I want to merge the i2p and concierge together into "i2p" it's quicker
+> more simplified to remember the mnemonic "i2p"
+> the "front door greeting" etc are just 'things that happen' we don't need
+> a special fancy product name for it
+>
+
 | **1** | DISCOVER | `market-scanner` | [↓](#market-scanner--discover) |
 | **2** | IDEATE | `ideator` | [↓](#ideator--ideate) |
-| **3** | DESIGN | `atelier` | [↓](#atelier--design) |
-| **4** | BUILD · ASSURE | `foundry` | [↓](#foundry--build--assure) |
-| **5** | SECURE | `sentinel` | [↓](#sentinel--secure) |
+
+> **3** DELIVER: delivery is the moment where IDEAS are formally moved into the roadmap
+> the act of moving IDEAS into the roadmap is where these ideas are built into 
+> EARS and FEATURES, and the work is analysed and decomposed into atomic items of work
+> (or dependent value-chains of work items - "b needs a" or "z needs y needs x" etc)
+> SO: this is all DELIVERY - each of these sub-items is a part of the DELIVERY
+> stage
+| **x** | DESIGN | `atelier` | [↓](#atelier--design) |
+| **x** | BUILD · ASSURE | `foundry` | [↓](#foundry--build--assure) |
+> split BUILD and ASSURE
+| **x** | SECURE | `sentinel` | [↓](#sentinel--secure) |
+> BUILD / ASSURE / SECURE are a looping feedback mechanism
+> which continues to feed back on itself until all three
+> stages are "satisfied" and the roadmap items are complete
+
 | **6** | PUBLISH | `pressroom` | [↓](#pressroom--publish) |
 | **7** | OPERATE ↻ | `mission-control` | [↓](#mission-control--operate) |
 
@@ -41,7 +60,18 @@ Three verbs repeat across the marketplace and are **not** relisted in each table
 Every plugin ships `check` and `inspect`; all except `concierge` ship `self-improve`. (`i2p`
 spells its own as `/i2p:i2p-check` — see its table.)
 
+
+> change it to /i2p:check because consistency is mandated
+> also, what of the AUTOMATED "encounter issue, write-back learnings"
+> self-improvement? (e.g. KAIZEN.md et-al) is this happening?
+> I see, from time to time, value-handlers encountering problems
+> but they don't make moves to self-improve like I expect they ought
+> DIRECTIVE: investigate the self-improvement / learning mechanisms
+> and make sure we have autonomous self-improvement built in
+
 ---
+
+> MERGE i2p and concierge
 
 ## i2p — front door
 
@@ -58,6 +88,8 @@ The marketplace's map and consolidated front desk.
 
 ## concierge — session greeter
 
+> retire the "concierge" concept
+
 The conversational welcome and the status line.
 
 | Command | What it does |
@@ -65,6 +97,9 @@ The conversational welcome and the status line.
 | `/concierge:define-welcome` | Author this repo's welcome experience and routing lanes |
 | `/concierge:statusline` `[off]` | Turn the idea-to-production status line on (or off) |
 | `/concierge:statusline-widgets` | Lay out the status line's line-2 widgets to fit your terminal |
+
+> MERGE i2p and concierge
+
 
 ## market-scanner — DISCOVER
 
@@ -93,12 +128,23 @@ Design the interface before it's built.
 | `/atelier:mockup` | Design a reviewed UI mockup, wireframe, or user-flow — not a first draft |
 | `/atelier:ui-review` | Adversarially review a running SPA or screenshot → a scored, prioritised critique |
 
+> FOUNDRY to be moved to FLOW
+> 
+
 ## foundry — BUILD · ASSURE
 
 The production cycle: roadmap → product, with the quality gates.
 
 | Command | What it does |
 |---|---|
+> "/foundry:foundry" is non-sensical and doesn't come to mind when the user is 
+> thinking about driving the flow system: "I want to pull from the backlog" does not
+> translate to "foundry:foundry (something)" 
+> and what are the optional arguments? they don't look like the kinds of verbs
+> that drive value, or the production of value ... 
+> "/flow pull" is more intuitive
+> DIRECTIVE: re-examine the meanings of the "foundry" slash-commands and what they
+> claim to be "doing" ... which ones are user-facing versus agent-facing
 | `/foundry:foundry` `[scaffold·gate·deploy·verify]` | Run the production cycle — drive roadmap items idea→product |
 | `/foundry:vertical-slice` | Cut and drive one thin, end-to-end, shippable increment |
 | `/foundry:roadmapper` | Manage `ROADMAP.md` — read it, add features, drive them through stages |
@@ -115,17 +161,32 @@ The production cycle: roadmap → product, with the quality gates.
 > `reviewer-gate`, `value-station-handoff`, `development-system-core`, `founder-method` — that run
 > automatically inside `/foundry:foundry`. They are building blocks, not meant for direct use.
 
+
+> SENTINEL - retire this "salesy" name. 
+> this should become "/security"
+
 ## sentinel — SECURE
 
 The pre-release security audits.
 
 | Command | What it does |
 |---|---|
+> rename "security-gate" to "scan-all"
 | `/sentinel:security-gate` `[full·quick·path]` | Run all three audits → SECURITY-REPORT.md with a PASS / REVIEW / BLOCK verdict |
+
+> rename "dependency-audit" to "scan-dependencies"
 | `/sentinel:dependency-audit` | Audit dependencies — CVEs, unpinned versions, abandoned packages, typosquats |
+
+> rename "secret-scan" to "scan-for-secrets"
 | `/sentinel:secret-scan` `[tree·git·history]` | Scan tree, git history, and artefacts for committed secrets |
+> rename "pii-audit" to "scan-for-pii"
 | `/sentinel:pii-audit` | Audit for PII across data, source, git history, and frontend |
 
+
+> pressroom is another "salesy" name
+> but it's pragmatic too. recommend alternative names
+> pressroom is a cross-cutting concern that strides across
+> marketing and delivery
 ## pressroom — PUBLISH
 
 Turn the work into articles, diagrams, and print-quality documents.
@@ -136,10 +197,21 @@ Turn the work into articles, diagrams, and print-quality documents.
 | `/pressroom:writer` | Write an article, post, narrative, retrospective, or release notes |
 | `/pressroom:illustrate` `[docs·this·file]` | Find the highest-impact figure-sites and render each (skill: `illustrator`) |
 | `/pressroom:diagram-studio` | Author Graphviz/Mermaid diagrams → SVG, PNG, or PDF for any target |
+> is the mermaid-specialist a user-facing or agent-facing capability?
+> it looks to me like it should be a value-handler rather than 
+> a slash command? why is it a slash command? make the case for it
 | `/pressroom:mermaid-specialist` | Author and render across Mermaid's full diagram taxonomy |
 | `/pressroom:rich-pdf-with-diagrams` | Produce a print-quality PDF with embedded diagrams |
+> we have a design-reviewer, but where is the pressroom "copy reviewer"
+> or "document reviewer" ?
+> is it missing or obscured?
 | `/pressroom:design-reviewer` | Adversarially review the visual design of a rendered doc or chart |
 | `/pressroom:model-survey` · `/pressroom:craft-study` | Survey image models / discover image-craft techniques on the ComfyUI backend (loop-driven) |
+
+
+> mission-control is much too salesy
+> rename "mission-control" to "operate"
+> or "operations" .. make the case for your recommendation
 
 ## mission-control — OPERATE ↻
 
@@ -152,7 +224,15 @@ Keep the live product alive and improving.
 | `/mission-control:incident` `[declare·runbook·postmortem]` | Declare severity & roles, mitigate, then runbook + blameless postmortem |
 | `/mission-control:maintain` | Upkeep cadence — deps, CVE patching, cert/secret rotation, tech debt |
 | `/mission-control:iterate` | Turn a production signal into a new opportunity that re-enters DISCOVER |
+> this should not be buried in mission-control
+> it should be "/flow ping" or "/flow status" etc
+> move to DELIVER
 | `/mission-control:flow` `[ping·status·start·stop·url·build]` | The roadmap flow board + flow-server MCP control |
+> move to DELIVER
+> surface "/flow setup" and give it more prominence
+> if this needs user-intervention in order to set it up
+> then the user needs to be prompted to set it up
+> with instructions
 | `/mission-control:flow-setup` | Finish the flow-server MCP one-time setup (pre-cache, approve, verify) |
 | `/mission-control:wiki-publisher` | Publish per-item docs to the origin's GitHub wiki (opt-in) |
 
@@ -168,14 +248,34 @@ slash commands — there are no `/mcp__…` commands to type.
 | `context7` | foundry | Fetch current documentation for a library, framework, SDK, or CLI |
 | `fetch` | ideator, market-scanner | Retrieve and read web page content |
 | `playwright` | atelier, foundry | Drive a real browser — navigate, screenshot, accessibility snapshot |
+> the flow-server is RETIRING because it's "too hard for claude to figure out"
+> the MCP will not be serving web pages (that will be another project entirely, not in idea-to-production)
+> the mcp will answer questions like "what is on the roadmap"
+> and other deterministism-layer (CPU on the client machine) actions
+> that do not require the model to reason about / interpret or otherwise
+> interact with data that is acquired / presented by the "flow mcp"
 | `flow-server` | mission-control | The roadmap flow board — a first-party, pinned Rust binary |
 
+> ALL of the below (unless specifically for the HTTP server)
+> are in fact MCP bindings and as such should be documented
+> and integrated with "flow"
+> "flow-server" is to be retired as a name
+> "flow-mcp" is the new name, and the flow-mcp is a connection that 
+> operates these CPU / deterministic actions
 The **flow-server** verbs are tools the plugin calls for you (reached through
 `/mission-control:flow`, never typed directly): `render_roadmap`, `list_items`, `get_item`,
 `post_status`, `set_wait_go`, `append_spend`, `set_item_model`, `validate_connection`,
 `mutate_connection`, `annotate`, `request_rewrite`, `append_sysmsg`, `list_events`, `ping`.
 
 ---
+
+> DIRECTIVE: write a comprehensive migration plan for the changes
+> above, and use /roadmapper to create an epic containing atomic
+> work items (or dependency streams) to accomplish the above
+> to settle ambiguities, or to gain steering, ask the user
+> and present carefully thought-out choices for the direction of 
+> travel
+
 
 *Source of truth: this catalog is hand-kept from `plugins/*/commands/` and `plugins/*/skills/`.
 When a command is added, renamed, or retired there, update this file. Agent-internal skills are
