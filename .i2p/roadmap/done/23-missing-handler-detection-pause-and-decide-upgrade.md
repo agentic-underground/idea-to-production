@@ -1,9 +1,10 @@
 ---
 id: 23
 title: "Missing-handler detection — pause-and-decide upgrade"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "— (PR-B; consumes PR-A once merged)"
 ---
 

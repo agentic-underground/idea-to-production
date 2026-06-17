@@ -17,7 +17,8 @@ own copy of the contract; it does not reach across the plugin boundary).
    ACTORS (named roles, not "users") · IN-SCOPE (v1 bullets) · OUT-OF-SCOPE (v1 bullets) ·
    CONSTRAINTS (performance · platform · compliance · integration · budget) ·
    SUCCESS-METRIC (testable: "actor can do X in under Y", not "better") ·
-   PRICE-BAND (from the opportunity) · LANGUAGE/STACK (which FOUNDRY handler) ·
+   PRICE-BAND (from the opportunity) · LANGUAGE/STACK (which **registered** FOUNDRY value-handler — if
+   none maps, the stack-fit flag fired in the challenge protocol and its resolution is recorded here) ·
    WILD-CARD (the outside-the-box observation, if any)
    ```
 2. **SMU-seed** — a *subject-matter-understanding* seed: what the product is, who it's for, the problem,

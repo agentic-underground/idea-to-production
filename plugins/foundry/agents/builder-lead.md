@@ -193,7 +193,7 @@ for items with no comparable history.
 
 ## Phase 4.5 — Cycle-Integrity Self-Heal (pre-flight gates)
 
-Before emitting the plan, run these detect-and-degrade checks. Each states what it detects, the safe
+Before emitting the plan, run these detect-and-decide / detect-and-warn checks. Each states what it detects, the safe
 action, and where the governing protocol lives. None of them mutate the codebase; they HALT or WARN.
 
 ### Roster cross-check — reviewer roles & handlers exist (P2-4)
@@ -203,14 +203,18 @@ invoked`, `VALUE_HANDLERS required`) must actually be **registered**. Cross-chec
 handler against the roster ([`../knowledge/orchestration/agent-roster.md`](../knowledge/orchestration/agent-roster.md))
 and the on-disk agents (`${CLAUDE_PLUGIN_ROOT}/agents/`). On a miss:
 
-- A missing **VALUE_HANDLER** → degrade: note the gap, route the item to the nearest registered handler
-  (or flag the item as blocked on a new handler), and record it under `## Missing Handlers` for the
-  self-improvement covenant (§14 of FOUNDRY SKILL.md / [`../knowledge/architecture/kaizen-covenant.md`](../knowledge/architecture/kaizen-covenant.md)).
+- A missing **VALUE_HANDLER** → **PAUSE — do NOT silently route to the nearest handler.** A stack with no
+  handler is a decision point, not a routing detail. **STOP before emitting the plan** and surface the
+  **3-way decision gate** — BUILD HANDLER FIRST · MVP WITH EXISTING (+ `DEGRADED_CAPABILITIES`) · BOTH —
+  per the governing protocol [`../knowledge/orchestration/missing-handler-gate.md`](../knowledge/orchestration/missing-handler-gate.md).
+  Act on the human's (or `founder`'s) choice; never route to the nearest handler on your own authority.
+  (This replaces the former detect-and-degrade routing — the silent nearest-handler fallback is gone.)
 - A missing **reviewer role** → WARN loudly in the plan: a phase that names a non-existent reviewer would
   silently skip its gate. Name the missing role and the transition it guards; do not let the plan claim a
   gate that cannot run.
 
-This is detect-and-degrade, never silent: a roster gap surfaces in `FOUNDRY_PLAN.md`, it does not vanish.
+This is detect-and-**decide**, never silent: a handler gap HALTS the plan and surfaces the gate in
+`FOUNDRY_PLAN.md`; it is never resolved by a quiet substitution. A reviewer gap WARNs. Neither vanishes.
 
 ### Topological sort — halt on a dependency cycle (P2-7)
 

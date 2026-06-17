@@ -24,8 +24,27 @@ recommended answer + multiple-choice**). For each, name the **hidden assumption*
 | **Value & price** | Does the value (quantified) exceed the price-band? Who signs the cheque? If the economics don't close, the idea doesn't. |
 | **The wedge** | Why *this*, why *now*, why *you*? What makes an actor switch and stay? "Same but new" is not a wedge. |
 | **The slice** | What is the thin, end-to-end **first slice** that proves the core in days? If you can't name it, scope is still fuzzy. |
-| **Stack-fit** | Does it map to a FOUNDRY value-handler? A buildable idea is one the conveyor can carry. |
+| **Stack-fit** | Does the brief's `LANGUAGE/STACK` map to a **registered** FOUNDRY value-handler? A buildable idea is one the conveyor can carry. **If the named stack has no handler, FLAG the gap here** (see *Stack-fit flag* below) — don't paper over it; an unhandled stack caught at ideation is a conversation, caught at BUILD it is a paused conveyor and a handler to author. |
 | **The risks** | What are the top 2–3 ways this fails? Each unresolved risk is either *answered* or *explicitly accepted* — never silently ignored. |
+
+## Stack-fit flag — an unsupported stack is surfaced at ideation, not at BUILD
+
+> **WHEN an IDEA brief names a `LANGUAGE/STACK` with no FOUNDRY value-handler, the system SHALL flag the
+> gap at ideation** — the cheapest place to catch it. Cross-check the brief's stack against the registered
+> handlers (FOUNDRY's VALUE_HANDLER_POOL — Python · JS/TS · React · CSS · Rust · Rust-webapp · Rust-Tauri
+> · FastAPI · vanilla-JS · GitHub-Actions · …). On a miss, do **not** silently accept the brief:
+>
+> 1. **Name the gap** plainly: "Stack `<X>` has no FOUNDRY value-handler — the conveyor can't yet carry it
+>    natively."
+> 2. **Offer the fork** (the same decision FOUNDRY's missing-handler gate will otherwise force later):
+>    pivot to a **supported stack**, **author a new `handler-<X>`** first (governed by FOUNDRY's
+>    handler-authoring discipline), or **accept it as an explicit risk** the user signs off on (the BUILD
+>    will pause and decide).
+> 3. **Record the resolution** into the package (the chosen stack, or the accepted-risk note) so the gap
+>    is never silently rediscovered downstream.
+>
+> This is the ideation-side half of FOUNDRY's missing-handler pause-and-decide gate: the same gap, caught
+> a station earlier and far cheaper.
 
 ## The disambiguation rule
 

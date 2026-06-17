@@ -108,6 +108,12 @@ they can *see* why it exists. Guardrails are the reason this build is safe to ru
 
 This matrix is canonical. Every template in `templates/` is written against it.
 
+> **This charter is the worked example of a wider rule.** The pinned-matrix + FORBIDDEN-list + KAIZEN +
+> four-wave-pipeline discipline that makes *this* handler reproducible is **generalised** for every new
+> value-handler in [`../../../knowledge/orchestration/handler-authoring-discipline.md`](../../../knowledge/orchestration/handler-authoring-discipline.md).
+> When a new `handler-<stack>` is authored (the BUILD path of the missing-handler gate), it follows that
+> discipline — keeping this *shape*, swapping the *contents*.
+
 ---
 
 ## 5. The stack in one paragraph

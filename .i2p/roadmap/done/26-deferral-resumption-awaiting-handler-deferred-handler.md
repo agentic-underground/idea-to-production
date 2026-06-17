@@ -1,9 +1,10 @@
 ---
 id: 26
 title: "Deferral + resumption — awaiting-handler ↔ DEFERRED handler item"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "#24"
 ---
 
