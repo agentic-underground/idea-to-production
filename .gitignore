@@ -24,6 +24,9 @@
 /.i2p/*
 !/.i2p/roadmap/
 /*_INSPECTION_REPORT.md
+# Generated adversarial-review verdict artifacts (pr-review / i2p-review write these to the project root)
+/PR_REVIEW.md
+/I2P_REVIEW.md
 
 # --- OS / editor cruft ---
 .DS_Store
