@@ -9,6 +9,7 @@
 
 # --- Claude Code harness runtime (per-machine / per-session, never shared) ---
 .claude/scheduled_tasks.lock
+.claude/scheduled_tasks.json
 .claude/cache/
 .claude/settings.local.json
 
