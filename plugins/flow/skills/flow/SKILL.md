@@ -65,3 +65,43 @@ The flow-mcp server resolves its source in order: `$FLOW_ROADMAP` (env override)
 tree** (the authoritative file-per-item source, folder = status; roadmap [42]) → a legacy single
 `ROADMAP.md`. The tree is auto-detected — no pin needed. Item count is the number of `.md` files across
 the lane folders.
+
+## The flow-mcp verbs — the deterministic `/flow` bindings
+
+The `/flow` surface is a **thin command layer over the `flow-mcp` MCP verbs**: the verbs are the
+**deterministic, CPU-layer (client-side) actions** — typed, token-authenticated, the sole serialized
+writer of the roadmap markdown + JSONL event log. They are **never typed directly** (`/mcp__…` is not a
+command); `/flow`, `/flow:pull`, and `/flow:flow-setup` *call* them. This is the binding map (folded here
+from the slash-command catalog's MCP appendix so the surface and its backend live in one place); it
+matches the 14 verbs shipped in [`../../flow-mcp/src/mcp.rs`](../../flow-mcp/src/mcp.rs) exactly — a
+documented verb that is not in the binary (or vice versa) is drift to reconcile, never a phantom.
+
+**Read verbs** (no mutation — safe, ~0 LLM tokens):
+
+| Verb | Does | Bound by |
+|---|---|---|
+| `render_roadmap` | Render the whole roadmap as a stage-grouped table | `/flow report`, `/flow:pull` (select), `/flow:flow-setup` (verify) |
+| `list_items` | Items grouped `pending{wait,go}` / `in_progress` / `done` | `/flow:pull` (select), `/flow report` |
+| `get_item` | One item incl. deps + annotations + **gate** | `/flow carry` (gate check), `/flow:pull` |
+| `list_events` | The append-only JSONL event log (optional `kind` filter) | flow telemetry / audit |
+| `validate_connection` | Check a `from→to` dependency edge without writing | dependency-graph guard |
+| `ping` | Health check — `message` · `version` · `items` · `source`; flags a stale pinned binary | `/flow ping`, `/flow:flow-setup` |
+
+**Mutating verbs** (the writer path — the server moves files + rewrites front-matter itself, so callers
+never `git mv` or hand-edit):
+
+| Verb | Does | Bound by |
+|---|---|---|
+| `post_status` | The **single writer**: move the item file between lane folders + rewrite `status:` | `/flow carry`, `/flow:pull` (carry → `doing`, then → `done`) |
+| `append_spend` | Add to the running token cost (rolls up the dependency tree) | `/flow carry`, `/flow:pull` |
+| `annotate` | Record who/what on the card (also pauses the item) | `/flow carry`, `/flow:pull` |
+| `set_wait_go` | Set an item's gate `Wait`/`Go` (a `Wait` item refuses carry) | gate control (clear before carry) |
+| `set_item_model` | Pin the per-job model (Haiku/Sonnet/Opus/Fable) | model selection |
+| `mutate_connection` | Add/remove a dependency edge (`op: add|remove`) | dependency-graph editing |
+| `request_rewrite` | Bump an item's draft# with a comment | rewrite request |
+| `append_sysmsg` | Append to the system-message feed | sysmsg feed |
+
+So `/flow report` → `render_roadmap`; `/flow carry` (and `/flow:pull`) → `get_item` (gate) ·
+`post_status` · `append_spend` · `annotate`; `/flow ping` → `ping`. Each is a **deferred** tool —
+`ToolSearch` for `flow-mcp__<verb>` if it isn't already in your tool list. When the verbs are absent
+entirely, the server isn't connected: run `/flow:flow-setup`.

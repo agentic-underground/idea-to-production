@@ -29,14 +29,16 @@ DISCOVER ──▶ IDEATE ─▶ DELIVER ─▶ DESIGN ─▶ BUILD ─▶ ASSUR
 market-       ideator  flow +     atelier   foundry  foundry   security  publish  mission-
 scanner                roadmapper                    (quality) (security)          control
                                             └──── BUILD ⇄ ASSURE ⇄ SECURE loop ────┘
- /discovery-  /ideate  /roadmapper /mockup  IDEA▶…▶ /pr-review /scan-all /publish  observe ·
- goal +                            /ui-rev   SHIP   (quality)                      iterate ↻→DISCOVER
+ /discovery-  /ideate  /flow:pull  /mockup  IDEA▶…▶ /pr-review /scan-all /publish  observe ·
+ goal +                +/roadmapper /ui-rev   SHIP   (quality)                      iterate ↻→DISCOVER
  /market-scan
 ```
 
 Nine phases forming a **cycle** — OPERATE's learnings loop back to DISCOVER. **DELIVER** sits between
-IDEATE and DESIGN: it turns the IDEA package into a dependency-ordered roadmap (intake → EARS/feature
-authoring → decomposition), owned by **the flow plugin (DELIVER) + `foundry:roadmapper`**. The three
+IDEATE and DESIGN: it turns the IDEA package into a dependency-ordered roadmap and pulls the next item
+into delivery (intake → EARS/feature authoring → decomposition → **`/flow:pull`** the next item),
+owned by **the flow plugin (DELIVER) — headline `/flow:pull`, artefact a dependency-ordered roadmap +
+a delivered increment — plus `foundry:roadmapper`** (EARS/feature authoring). The three
 realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop**, not a straight line — a failed quality or
 security gate sends the work *back* to BUILD (the `fail` back-edge), and the loop exits to PUBLISH only
 when all three are satisfied. **ASSURE** (foundry, quality V&V) and **SECURE** (security, security) are
@@ -52,12 +54,13 @@ marketplace `README.md` composition diagram.
 
 Place only **installed** plugins as live stages. Mark each missing plugin's stage as dark:
 "▫ DISCOVER — add `market-scanner` to find what's worth building" / "▫ DELIVER — add the `flow` plugin to
-turn the IDEA package into a dependency-ordered roadmap (with `foundry:roadmapper` authoring the EARS
-specs)" / "▫ OPERATE — add `operate` to observe, respond to incidents, and iterate the live product." A
-user should see both the path they have and the path they could unlock. (The **flow** plugin owns
-DELIVER — `/flow` / `/flow-setup`; treat it like any other specialist: list it when installed, mark
-DELIVER dark when it is not — name the stage and its owner regardless; graceful degradation, the gap
-named not skipped.)
+turn the IDEA package into a dependency-ordered roadmap and pull the next item with `/flow:pull` (with
+`foundry:roadmapper` authoring the EARS specs)" / "▫ OPERATE — add `operate` to observe, respond to
+incidents, and iterate the live product." A user should see both the path they have and the path they
+could unlock. (The **flow** plugin owns DELIVER — **headline `/flow:pull`** (also `/flow report|carry`
+and `/flow:flow-setup` for the one-time MCP setup); treat it like any other specialist: list it as a LIVE
+stage with `/flow:pull` when installed, mark DELIVER dark when it is not — name the stage and its owner
+regardless; graceful degradation, the gap named not skipped.)
 
 ## 3. Trace a path (if asked)
 

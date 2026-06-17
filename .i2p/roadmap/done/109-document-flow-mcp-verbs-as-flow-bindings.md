@@ -1,7 +1,8 @@
 ---
 id: 109
 title: "Document flow-mcp verbs as the /flow bindings"
-status: PENDING
+status: COMPLETE
+completed: 2026-06-18
 priority: LOW
 added: 2026-06-17
 depends_on: "#97 (flow-mcp rename), #105"
