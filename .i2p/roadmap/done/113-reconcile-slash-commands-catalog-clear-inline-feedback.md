@@ -1,9 +1,10 @@
 ---
 id: 113
 title: "Reconcile docs/SLASH_COMMANDS.md to shipped reality; clear inline feedback"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "#94, #95, #96, #97, #98, #99, #105, #106 (the renames + flow surface that change command names)"
 ---
 
