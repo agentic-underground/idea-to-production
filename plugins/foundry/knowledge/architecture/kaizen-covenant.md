@@ -83,9 +83,10 @@ repeated NEEDS_REVISION), or a **missing handler**, the agent does not merely ro
    ships. A problem encountered and not captured is **rediscovery** waiting to happen.
 
 The reflex is *always-on*: it fires without being asked, because the KAIZEN canon that names it is
-injected into every session. The capture→route→raise machinery is the GEMBA skill and the issue-raiser
-(`raise-feedback.sh`); the trigger points (incident action items, reviewer BLOCK, the missing-handler
-gate) are wired so the reflex cannot be silently skipped.
+injected into every session. The capture→route→raise machinery **will be** the GEMBA skill and the
+issue-raiser (`raise-feedback.sh`), with the trigger points (incident action items, reviewer BLOCK,
+the missing-handler gate) wired so the reflex cannot be silently skipped — delivered across epic #93's
+Stream 4 (#18–#20, #22).
 
 ### Self-cleaving — when the defect is *breadth* (muri)
 
