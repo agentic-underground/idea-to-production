@@ -2,7 +2,7 @@
 # Test: [48] set-widget-break.sh — idempotent upsert of break_<key> preserving the conf.
 # Run from the repo root: bash tests/item-48/48-set-widget-break.sh
 FAIL=0
-S="plugins/concierge/statusline/set-widget-break.sh"
+S="plugins/i2p/statusline/set-widget-break.sh"
 [ -r "$S" ] || { echo "FAIL: helper not found at $S"; exit 1; }
 
 conf="$(mktemp)"; rm -f "$conf"   # start from a non-existent conf
