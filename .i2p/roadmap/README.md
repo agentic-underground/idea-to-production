@@ -1,7 +1,7 @@
 # .i2p/roadmap/ — the roadmap (file-per-item, single source of truth)
 
 This is the **authoritative roadmap** for the idea-to-production marketplace. Each work item is **one
-file**; the **folder is its status**. This replaces the former monolithic `plugins/mission-control/ROADMAP.md`.
+file**; the **folder is its status**. This replaces the former monolithic `plugins/operate/ROADMAP.md`.
 
 ```
 .i2p/roadmap/
@@ -22,7 +22,7 @@ file**; the **folder is its status**. This replaces the former monolithic `plugi
 - **"What's on the roadmap?"** is answered by the **roadmapper skill** → flow-server `render_roadmap`
   MCP verb (preferred, ~0 tokens), else a structured scan of this tree. Not by an agent reading files.
 - **Carrying an item** through `roadmap → backlog → do → doing → done` (and reporting who is DOING /
-  WHAT / cost) is the job of **`/mission-control:flow`** (see roadmap item [41]).
+  WHAT / cost) is the job of **`/operate:flow`** (see roadmap item [41]).
 
 ## Dependency tree (EPIC #0 and the families)
 

@@ -78,7 +78,7 @@ Browser-consuming skills link here for the resolver model and TC-BROWSER-1 — t
 - `atelier/mockup` — screenshots renderable HTML/CSS via the Playwright MCP.
 - `pressroom/rich-pdf-with-diagrams` — renders Mermaid via `mmdc`/puppeteer.
 - **foundry story phases** — live STORY feedback through the Playwright MCP.
-- **mission-control's** browser-using skills — runtime/observability surfaces that drive a browser.
+- **operate's** browser-using skills — runtime/observability surfaces that drive a browser.
 
 Discovery/install prose for both resolvers lives in the marketplace
 [`PREREQUISITES/40-mcp.md`](../../../../PREREQUISITES/40-mcp.md) ("Headless-browser discovery");

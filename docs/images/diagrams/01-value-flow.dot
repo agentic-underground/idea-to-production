@@ -27,7 +27,7 @@ digraph ValueFlow {
           shape=hexagon, fillcolor="#2a2a3c", color="#e0af68", penwidth=2.5, margin="0.16,0.08"]
 
   publish  [label=<<b>PUBLISH</b><br/><font color="#b8bed0" point-size="16">pressroom</font>>,       color="#d8b58a"]
-  operate  [label=<<b>OPERATE</b><br/><font color="#b8bed0" point-size="16">mission-control</font>>, color="#e0af68"]
+  operate  [label=<<b>OPERATE</b><br/><font color="#b8bed0" point-size="16">operate</font>>, color="#e0af68"]
 
   // top row = 4 phases; bottom row = 4 phases (each ~half the original width)
   { rank=same; discover; ideate; design; build }

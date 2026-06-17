@@ -10,7 +10,7 @@ name: verify
 #     gitleaks (SENTINEL's secret-scan tool) over the tree + git history so the marketplace
 #     dogfoods its own secret lens. Allowlist: .gitleaks.toml.
 #   marketplace-golden-signals (P2-18) — the HEALTH slice of that SAME substrate: runs
-#     MISSION-CONTROL's observability lens (the four golden signals) over the marketplace's
+#     OPERATE's observability lens (the four golden signals) over the marketplace's
 #     own runtime/health and surfaces a health summary artifact the HUD/CI can read.
 
 on:
@@ -58,7 +58,7 @@ jobs:
         run: gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
 
   # The retrieved-artifact contract: spawn the flow-server MCP launcher exactly as the
-  # mission-control plugin's .mcp.json registers it, and assert the JSON-RPC handshake
+  # operate plugin's .mcp.json registers it, and assert the JSON-RPC handshake
   # completes. Builds the binary first so the launcher's source-build fallback is a fast
   # no-op; the smoke then drives `initialize` + `tools/list` through the shipped launcher.
   # This is the test two PR reviewers asked for — it mechanically catches a committed MCP
@@ -70,10 +70,10 @@ jobs:
       - name: Install Rust toolchain
         run: rustup update stable --no-self-update
       - name: Build flow-server (release)
-        working-directory: plugins/mission-control/flow-server
+        working-directory: plugins/operate/flow-server
         run: cargo build --release --locked --bin flow-server
       - name: MCP handshake smoke (spawn the shipped launcher)
-        run: bash plugins/mission-control/flow-server/bin/smoke-mcp.sh
+        run: bash plugins/operate/flow-server/bin/smoke-mcp.sh
 
   # The defect-[92] regression guard: boot the PINNED RELEASE binary (the exact artifact users
   # run — named in bin/RELEASE, SHA-verified against the COMMITTED bin/SHA256SUMS) against the
@@ -88,18 +88,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Pinned-release MCP renders the roadmap (regression guard for [92])
-        run: bash plugins/mission-control/flow-server/bin/smoke-pinned.sh
+        run: bash plugins/operate/flow-server/bin/smoke-pinned.sh
 
-  # Cobbler's children (P2-18): the marketplace runs MISSION-CONTROL's own OBSERVABILITY
+  # Cobbler's children (P2-18): the marketplace runs OPERATE's own OBSERVABILITY
   # lens on ITSELF. This is the HEALTH slice of the same self-observation substrate whose
   # SECURITY slice is the secret-scan-self job above — together they dogfood the two lenses
   # the marketplace ships for OPERATE. We invoke the observability skill's golden-signals
-  # script (plugins/mission-control/skills/observability/SKILL.md — the four golden signals:
+  # script (plugins/operate/skills/observability/SKILL.md — the four golden signals:
   # latency, traffic, errors, saturation) mapped onto the marketplace's own deterministic
   # runtime surface (live plugins/skills/agents, manifest validation latency, broken-reference
   # error rate, reference error-budget saturation). It runs EXTERNALLY — not from a session —
   # by design: a self-observability lens must survive the thing it observes, exactly the reason
-  # the runtime self-heal detectors live in the hook substrate, not in mission-control itself.
+  # the runtime self-heal detectors live in the hook substrate, not in operate itself.
   # The job uploads the health summary as a CI artifact (a HUD/dashboard feed) and fails only
   # on a hard substrate outage (an unparseable plugin.json or a non-runnable hook), not on
   # mere drift. detect-auto.
@@ -107,10 +107,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Observe the marketplace's own golden signals (mission-control observability dogfood)
+      - name: Observe the marketplace's own golden signals (operate observability dogfood)
         run: |
           set -euo pipefail
-          bash plugins/mission-control/skills/observability/scripts/marketplace-golden-signals.sh \
+          bash plugins/operate/skills/observability/scripts/marketplace-golden-signals.sh \
             . --out marketplace-health.json
       - name: Upload marketplace health summary
         if: always()

@@ -445,7 +445,7 @@ After pushing:
 When the user asks what is on the roadmap:
 
 > **Do not ad-hoc-read raw roadmap files. Answer through the roadmapper resolution path:**
-> 1. **Flow-server MCP (preferred).** If the mission-control flow server is reachable, call its
+> 1. **Flow-server MCP (preferred).** If the operate flow server is reachable, call its
 >    `render_roadmap` (or `list_items`) verb and present the returned view verbatim — authoritative
 >    (the same source the board uses), deterministic, ~0 LLM tokens (the server renders the table).
 >    Pass any filter ("in progress", "what's next", "check status") through to the verb.

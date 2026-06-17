@@ -42,7 +42,7 @@ observed product). Ground the wording in `plugins/i2p/knowledge/product-lifecycl
 ## 2. Light vs dark
 
 Place only **installed** plugins as live stages. Mark each missing plugin's stage as dark:
-"▫ DISCOVER — add `market-scanner` to find what's worth building" / "▫ OPERATE — add `mission-control`
+"▫ DISCOVER — add `market-scanner` to find what's worth building" / "▫ OPERATE — add `operate`
 to observe, respond to incidents, and iterate the live product." A user should see both the path they
 have and the path they could unlock.
 

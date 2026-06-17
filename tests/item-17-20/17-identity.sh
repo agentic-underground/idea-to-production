@@ -2,7 +2,7 @@
 # Test: [17] identity.sh — target + SELF/GEMBA resolution, seeding, one-field re-targeting.
 # Run from the repo root: bash tests/item-17-20/17-identity.sh
 FAIL=0
-S="plugins/mission-control/skills/gemba/scripts/identity.sh"
+S="plugins/operate/skills/gemba/scripts/identity.sh"
 [ -r "$S" ] || { echo "FAIL: script not found at $S"; exit 1; }
 command -v jq >/dev/null 2>&1 || { echo "SKIP: jq not installed"; exit 0; }
 
@@ -66,11 +66,11 @@ for url_form in "git@github.com:owner/some-repo.git" "https://github.com/owner/s
 done
 
 # REGRESSION (#112 — MEDIUM) — over-broad gemba routing. A single generic sibling-topic word anywhere
-# in the hint must NOT hijack the route to the sibling repo. "token bucket bug in mission-control"
+# in the hint must NOT hijack the route to the sibling repo. "token bucket bug in operate"
 # carries the topic word "token" but is about THIS repo ⇒ self, not token-fairness.
-rself="$(bash "$S" resolve "$TMP" "token bucket bug in mission-control" 2>/dev/null)"
+rself="$(bash "$S" resolve "$TMP" "token bucket bug in operate" 2>/dev/null)"
 [ "$(echo "$rself" | jq -r '.verdict')" = "self" ] \
-  || { echo "FAIL: 'token bucket bug in mission-control' should route to self, got '$(echo "$rself" | jq -r '.verdict')'"; FAIL=1; }
+  || { echo "FAIL: 'token bucket bug in operate' should route to self, got '$(echo "$rself" | jq -r '.verdict')'"; FAIL=1; }
 # A sibling-topic substring inside another word must not match either (still a strong-signal test below).
 rfoun="$(bash "$S" resolve "$TMP" "the scheduler in foundry" 2>/dev/null)"
 [ "$(echo "$rfoun" | jq -r '.verdict')" = "self" ] \

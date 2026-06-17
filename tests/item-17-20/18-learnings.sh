@@ -2,8 +2,8 @@
 # Test: [18] learnings.sh + overdue-learnings.sh — append-only ledger (open→filed) + overdue detector.
 # Run from the repo root: bash tests/item-17-20/18-learnings.sh
 FAIL=0
-L="plugins/mission-control/skills/gemba/scripts/learnings.sh"
-O="plugins/mission-control/skills/gemba/scripts/overdue-learnings.sh"
+L="plugins/operate/skills/gemba/scripts/learnings.sh"
+O="plugins/operate/skills/gemba/scripts/overdue-learnings.sh"
 [ -r "$L" ] || { echo "FAIL: $L not found"; exit 1; }
 [ -r "$O" ] || { echo "FAIL: $O not found"; exit 1; }
 command -v jq >/dev/null 2>&1 || { echo "SKIP: jq not installed"; exit 0; }

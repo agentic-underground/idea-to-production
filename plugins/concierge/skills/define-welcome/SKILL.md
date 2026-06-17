@@ -47,7 +47,7 @@ that exist yet. These reads are *targeted* (small, identity-bearing files), neve
 | DESIGN | `docs/guide/design/mockups/<slug>/rationale.md` | "[Name] — designed; review with `/ui-review`" |
 | BUILD | `doc/SUBJECT_MATTER_UNDERSTANDING.md`, `ROADMAP.md` | "[Name] — building; lanes from the roadmap" |
 | ASSURE / SECURE | `PR_REVIEW.md` / `SECURITY-REPORT.md` verdicts | "proven / secured — current gate status" |
-| PUBLISH / OPERATE | `doc/articles/` titles; mission-control surfaces | "live — story + operate lanes" |
+| PUBLISH / OPERATE | `doc/articles/` titles; operate surfaces | "live — story + operate lanes" |
 
 Early phases lead with *what it's becoming and the next command*; later phases give the full lanes. For a
 repo with **no** lifecycle, skip this and rely on the repo reads below.

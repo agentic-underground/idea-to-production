@@ -12,13 +12,13 @@ understand the *system*; read here to disambiguate a *name*.
 
 ## 1. The conceptual-domain tree
 
-![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — market-scanner (DISCOVERY front door) → ideator (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), pressroom (PUBLISH), atelier (DESIGN/usability), mission-control (OPERATE).](diagrams/01-domain-tree.png)
+![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — market-scanner (DISCOVERY front door) → ideator (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), pressroom (PUBLISH), atelier (DESIGN/usability), operate (OPERATE).](diagrams/01-domain-tree.png)
 
 The companions are **cross-cutting**: foundry/ideator use them *by capability* when installed
 (graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
 is the eight-phase product-lifecycle **cycle**: **DISCOVER (market-scanner) → IDEATE (ideator) →
 DESIGN (atelier) → BUILD (foundry) → ASSURE (foundry, quality) → SECURE (security) →
-PUBLISH (pressroom) → OPERATE (mission-control) ↻** (OPERATE loops back to DISCOVER). Three concerns
+PUBLISH (pressroom) → OPERATE (operate) ↻** (OPERATE loops back to DISCOVER). Three concerns
 cross-cut every phase — usability (atelier), quality (foundry), security (the security plugin).
 
 ---
@@ -66,9 +66,9 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - **SECURE** (lifecycle phase ⑥; gate, owner security) — the **security** certification gate: PII,
   secrets, supply-chain clear before exposure. Distinct from ASSURE (quality). *(Baked in from the
   beginning — secure-by-design from DISCOVER; SECURE is the pre-exposure certification.)*
-- **OPERATE** (lifecycle phase ⑧; owner `mission-control`) — the living phase: observe, respond to
+- **OPERATE** (lifecycle phase ⑧; owner `operate`) — the living phase: observe, respond to
   incidents, iterate, and maintain the realised & live product; its learnings open the **next** cycle
-  (↻ → DISCOVER). `mission-control` may not be installed yet — surfaces name what installing it unlocks.
+  (↻ → DISCOVER). `operate` may not be installed yet — surfaces name what installing it unlocks.
 - **i2p** — the marketplace **front door / meta-layer**: marketplace-level meta-commands (`/i2p-help`,
   `/i2p-review`, `/i2p-check`, `/i2p-flow`) plus session-start onboarding. A thin orchestrator that
   composes the seven specialists by capability and never re-implements them.
@@ -79,7 +79,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - **concierge** — the **arrival / greeter**: a SessionStart hook renders a repo's
   `.claude/welcome.md` to greet and route whoever opens it; `/concierge:define-welcome` authors that
   welcome; also offers the idea-to-production status line on first activation.
-- **market-scanner / ideator / foundry / security / pressroom / atelier / mission-control** — the seven
+- **market-scanner / ideator / foundry / security / pressroom / atelier / operate** — the seven
   specialist plugins: DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the
   core conveyor (BUILD + the ASSURE quality gate) / SECURITY companion (the SECURE gate) / PUBLISHING
   companion / DESIGN companion (make + adversarially review the visuals) / OPERATE companion (run the live
@@ -110,7 +110,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **pr-review** (adversarial PR/diff review → one verdict) · **self-improve** (targeted self-cleaving →
   PR) · **prerequisites** (emit PREREQUISITES.md) ·
   **check** (verify tool dependencies). The companions add **check** too (market-scanner, ideator,
-  security, pressroom, atelier, mission-control).
+  security, pressroom, atelier, operate).
 
 ### Skills (companion plugins)
 - market-scanner: **goal-setter** · **market-scan** · **self-improve** · **check**.
