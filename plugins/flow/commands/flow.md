@@ -57,7 +57,7 @@ and pass the item id as the slug **`item-N`** (the numeric tree id `N` prefixed 
 
 Call the MCP verb **`ping`** and print its `message` ("hello from the flow MCP") plus `version`,
 `items`, and `source`. **Flag staleness:** if `items` is 0 (or `source` is null) while `.i2p/roadmap/`
-has files on disk, the pinned MCP binary is stale — the fix is `/operate:flow-setup` to
+has files on disk, the pinned MCP binary is stale — the fix is `/flow:flow-setup` to
 re-cache and re-verify. If you have no `mcp__…__flow-mcp__*` tools at all, it isn't connected —
 restart Claude Code after install/update, then `/mcp` and approve `flow-mcp`.
 

@@ -57,7 +57,7 @@ by hand. Pass ids as the slug **`item-N`**.
 ## `/flow ping`
 
 MCP health check — prints the server `message`, `version`, `items`, and `source`, and flags a stale
-pinned binary (fix: `/operate:flow-setup`).
+pinned binary (fix: `/flow:flow-setup`).
 
 ## Roadmap resolution
 

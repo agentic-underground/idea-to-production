@@ -19,7 +19,7 @@ set -uo pipefail
 # In CI / automation there is no user to onboard and no point pre-fetching — skip both.
 [ -n "${CI:-}" ] && exit 0
 
-# CLAUDE_PLUGIN_ROOT (set for plugin hooks) = the operate plugin root; else derive.
+# CLAUDE_PLUGIN_ROOT (set for plugin hooks) = the flow plugin root; else derive.
 PLUGIN="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 LAUNCHER="$PLUGIN/flow-mcp/bin/flow-mcp"
 
@@ -37,17 +37,17 @@ fi
 #     additionalContext so the agent always answers roadmap reads via the MCP, not by
 #     ad-hoc ls/cat of the tree. This must NOT be one-time: a fresh agent in any later
 #     session needs the rule too (that routing gap is the defect [92] L2).
-ROUTING="To answer \"what's on the roadmap\" or read roadmap items, call the flow-mcp MCP verb render_roadmap (or list_items) — the ~0-token authoritative path. It is a DEFERRED tool: if mcp__…__flow-mcp__render_roadmap is not already in your tool list, ToolSearch for 'flow-mcp__render_roadmap' first. Do NOT ls/cat/head the .i2p/roadmap/ tree to answer roadmap questions; that raw-file path is the slow fallback. If render_roadmap returns empty against a non-empty .i2p/roadmap/ tree, the pinned MCP binary is stale — call the ping verb (it reports version/items/source) and suggest /operate:flow-setup."
+ROUTING="To answer \"what's on the roadmap\" or read roadmap items, call the flow-mcp MCP verb render_roadmap (or list_items) — the ~0-token authoritative path. It is a DEFERRED tool: if mcp__…__flow-mcp__render_roadmap is not already in your tool list, ToolSearch for 'flow-mcp__render_roadmap' first. Do NOT ls/cat/head the .i2p/roadmap/ tree to answer roadmap questions; that raw-file path is the slow fallback. If render_roadmap returns empty against a non-empty .i2p/roadmap/ tree, the pinned MCP binary is stale — call the ping verb (it reports version/items/source) and suggest /flow:flow-setup."
 
 # 2b. One-time-per-version SETUP nudge (the only VISIBLE part), gated by an atomic sentinel.
 VER="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PLUGIN/.claude-plugin/plugin.json" 2>/dev/null | head -n1)"
 STATE_DIR="${HOME}/.claude/hook-state"
-SENTINEL="${STATE_DIR}/operate-flow-mcp-onboarded-${VER:-x}"
+SENTINEL="${STATE_DIR}/flow-flow-mcp-onboarded-${VER:-x}"
 SETUP_MSG=""
 SETUP_CTX=""
 if mkdir -p "$STATE_DIR" 2>/dev/null && mkdir "$SENTINEL" 2>/dev/null; then
-  SETUP_MSG="⬢ operate ships a roadmap MCP (flow-mcp). If \"what's on the roadmap\" isn't instant yet, run /operate:flow-setup to finish the one-time setup."
-  SETUP_CTX=" SETUP: if you do NOT have mcp__…__flow-mcp__* tools, the server isn't connected — guide the user ONCE: (a) restart Claude Code if they just installed/updated operate; (b) run /mcp and approve 'flow-mcp' (a plugin MCP server requires this one-time approval — no setting, CLI, or flag can pre-approve it); the binary is pre-cached so it starts instantly; /operate:flow-setup gives a guided, verified walkthrough. Never nag."
+  SETUP_MSG="⬢ flow ships a roadmap MCP (flow-mcp). If \"what's on the roadmap\" isn't instant yet, run /flow:flow-setup to finish the one-time setup."
+  SETUP_CTX=" SETUP: if you do NOT have mcp__…__flow-mcp__* tools, the server isn't connected — guide the user ONCE: (a) restart Claude Code if they just installed/updated flow; (b) run /mcp and approve 'flow-mcp' (a plugin MCP server requires this one-time approval — no setting, CLI, or flag can pre-approve it); the binary is pre-cached so it starts instantly; /flow:flow-setup gives a guided, verified walkthrough. Never nag."
 fi
 
 CTX="${ROUTING}${SETUP_CTX}"
@@ -61,6 +61,6 @@ if command -v jq >/dev/null 2>&1; then
   fi
 else
   # No jq: emit the standing routing rule (ASCII-safe), drop the optional systemMessage.
-  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Answer roadmap questions via the flow-mcp MCP verb render_roadmap (ToolSearch for flow-mcp__render_roadmap if deferred); do not ls/cat the .i2p/roadmap/ tree. If it returns empty, the pinned binary is stale — call ping and run /operate:flow-setup."}}\n'
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Answer roadmap questions via the flow-mcp MCP verb render_roadmap (ToolSearch for flow-mcp__render_roadmap if deferred); do not ls/cat the .i2p/roadmap/ tree. If it returns empty, the pinned binary is stale — call ping and run /flow:flow-setup."}}\n'
 fi
 exit 0

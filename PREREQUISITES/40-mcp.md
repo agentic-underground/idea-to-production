@@ -25,8 +25,8 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
   `enabledMcpjsonServers` in settings, but a **plugin-shipped** server (like `flow-mcp`) **cannot** —
   no setting, `claude mcp` subcommand, or launch flag (incl. `--dangerously-skip-permissions`, which
   gates *tools*, not MCP-server trust) pre-approves it. The one-time interactive approval is mandatory
-  by design. operate smooths this: it pre-warms the `flow-mcp` binary and offers
-  **`/operate:flow-setup`** to walk + verify the approval (see its [README](../plugins/operate/flow-mcp/README.md#finishing-the-install-the-smooth-path)).
+  by design. flow smooths this: it pre-warms the `flow-mcp` binary and offers
+  **`/flow:flow-setup`** to walk + verify the approval (see its [README](../plugins/flow/flow-mcp/README.md#finishing-the-install-the-smooth-path)).
 - **Pinned for reproducibility.** The three third-party servers fetch and execute remote code at
   launch, so the shipped configs pin an **explicit version** (never a floating `@latest`) — a fetched
   server can't change underneath you. The current pins: `@playwright/mcp@0.0.75`,
@@ -38,7 +38,7 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
   refusing any binary whose digest doesn't match. Every machine converges on one SHA-verified binary;
   a release is adopted only by a reviewed PR that bumps the pin (the determinism the earlier
   latest-tracking launcher gave up — see the
-  [flow-mcp README](../plugins/operate/flow-mcp/README.md#no-rust-toolchain-required--the-launcher-retrieves-a-prebuilt-binary)).
+  [flow-mcp README](../plugins/flow/flow-mcp/README.md#no-rust-toolchain-required--the-launcher-retrieves-a-prebuilt-binary)).
 - Manual fallback (no plugin): `claude mcp add playwright -- npx -y @playwright/mcp@0.0.75`.
 
 ## Shipped by the marketplace
@@ -48,7 +48,7 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
 | `fetch` | market-scanner, ideator | `uvx mcp-server-fetch@2026.6.4` | `mcp__fetch__*` | Keyless web research: fetch a URL and extract it as **markdown in chunks** — competitor pricing, docs, forum threads. Grounds the discovery scorecard / IDEA package in real evidence. |
 | `context7` | foundry | `npx -y @upstash/context7-mcp@3.1.0` | `mcp__context7__*` | **Version-specific** library docs + examples for 9,000+ libraries, injected into context — handlers code against the current API, not the training cutoff. |
 | `playwright` | foundry, atelier | `npx -y @playwright/mcp@0.0.75` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. foundry uses it for STORY feedback; atelier for `/ui-review` crawl + a11y snapshot. |
-| `flow-mcp` | operate | `${CLAUDE_PLUGIN_ROOT}/flow-mcp/bin/flow-mcp` — a launcher that retrieves the **pinned** prebuilt binary (tag in `bin/RELEASE`) from GitHub Releases and SHA256-verifies it against the **committed** `bin/SHA256SUMS` (no Rust toolchain on the destination; source-builds only as a dev fallback) | `mcp__flow-mcp__*` | The roadmap flow board's MCP surface. `render_roadmap` answers "what's on the roadmap" by local compute (~0 LLM tokens); `list_items`/`post_status`/`set_wait_go`/`append_spend`/… read and carry roadmap items. **First-party** — the marketplace's own Rust binary, not a fetched package. |
+| `flow-mcp` | flow | `${CLAUDE_PLUGIN_ROOT}/flow-mcp/bin/flow-mcp` — a launcher that retrieves the **pinned** prebuilt binary (tag in `bin/RELEASE`) from GitHub Releases and SHA256-verifies it against the **committed** `bin/SHA256SUMS` (no Rust toolchain on the destination; source-builds only as a dev fallback) | `mcp__flow-mcp__*` | The roadmap flow board's MCP surface. `render_roadmap` answers "what's on the roadmap" by local compute (~0 LLM tokens); `list_items`/`post_status`/`set_wait_go`/`append_spend`/… read and carry roadmap items. **First-party** — the marketplace's own Rust binary, not a fetched package. |
 
 Prereqs: `fetch` needs `uv`/`uvx`; `context7` + `playwright` need `node`/`npx` (Playwright's
 browser auto-downloads on first use). All three run **keyless** — nothing to provision but the launcher

@@ -12,7 +12,7 @@
 # (render_roadmap / list_items), not through a board.
 set -uo pipefail
 
-msg='flow board removed (roadmap #39): the flow-mcp server is an MCP stdio core only — read the roadmap via the flow-mcp MCP verbs (render_roadmap / list_items), e.g. /operate:flow or /operate:flow-setup.'
+msg='flow board removed (roadmap #39): the flow-mcp server is an MCP stdio core only — read the roadmap via the flow-mcp MCP verbs (render_roadmap / list_items), e.g. /flow:flow or /flow:flow-setup.'
 
 case "${1:-status}" in
   ensure|start|stop|build|install-widget) : ;;   # no daemon to manage

@@ -17,7 +17,7 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PLUGIN="$(cd "$SCRIPT_DIR/../.." && pwd)"          # plugins/operate
+PLUGIN="$(cd "$SCRIPT_DIR/../.." && pwd)"          # plugins/flow
 ROOT="$(cd "$PLUGIN/../.." && pwd)"                # repo root (where .i2p/roadmap lives)
 FS_DIR="$PLUGIN/flow-mcp"
 LAUNCHER="$SCRIPT_DIR/flow-mcp"

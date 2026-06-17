@@ -77,14 +77,15 @@ Not decoration — these are the ideas the whole system obeys. The philosophical
 
 ## The plugins
 
-Eight composable plugins span the whole arc — the **i2p** front door (which also greets whoever opens the
-repo) and seven specialists. Each stands alone; install only what you need.
+Nine composable plugins span the whole arc — the **i2p** front door (which also greets whoever opens the
+repo) and eight specialists. Each stands alone; install only what you need.
 
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
 | **[i2p](plugins/i2p/)** | The marketplace FRONT DOOR / meta-layer + ARRIVAL layer: `/i2p:help` browses every power you have (grouped by the value flow), `/i2p:review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p:check` consolidates readiness, `/i2p:flow` maps the pipeline and your next command. It also GREETS whoever opens the repo — a `SessionStart` hook renders a maintainer-authored `.claude/welcome.md` (**smart-gated**: greets only on a cold/vague open, steps aside for a concrete task), `/i2p:define-welcome` reads a repo and writes that welcome for you, and `/i2p:statusline` turns on a rich two-line **status line** (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). Introduces itself on session start. | A single front door to the whole suite — one review that pulls in *all* the reviewers at once, plus a greeting and a status bar that surface the whole suite at a glance. |
 | **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/discovery-goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
 | **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
+| **[flow](plugins/flow/)** | The DELIVER stage: `/flow` carries roadmap value — pings/reports the roadmap **flow-mcp** MCP (its `render_roadmap`/`list_items` verbs answer "what's on the roadmap" at ~0 LLM tokens) and advances a `.i2p/roadmap/` item to its next lane; `/flow-setup` walks the one-time MCP approval and verifies the connection. Ships the first-party flow-mcp binary alongside the command. | A roadmap surface and a deterministic, ~0-token "what's on the roadmap" answer that travels with the project. |
 | **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |
 | **[security](plugins/security/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
 | **[publish](plugins/publish/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
@@ -173,7 +174,7 @@ compute at ~0 tokens (the `render_roadmap` verb) and carries items across the bo
 
 **Troubleshooting.** `/flow hello` shows `items: 0` or `version` below `0.2.0`, or *"what's on the
 roadmap"* comes back empty against a populated `.i2p/roadmap/` tree ⇒ the pinned MCP binary is **stale** or
-the server isn't approved. Run **`/operate:flow-setup`** for a guided, verified walkthrough. (No
+the server isn't approved. Run **`/flow:flow-setup`** for a guided, verified walkthrough. (No
 `mcp__…__flow-mcp__*` tools at all ⇒ not connected yet — repeat steps 1–2.)
 
 ## Concepts & glossary

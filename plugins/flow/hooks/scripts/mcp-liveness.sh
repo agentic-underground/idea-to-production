@@ -60,7 +60,7 @@ fi
 
 # ── 4. Enumerate shipped MCP servers → newline list of "name<TAB>command" ────────────────
 # Source A (preferred): the marketplace plugins/*/.mcp.json. The hook lives at
-# plugins/operate/hooks/scripts/; walk up to find a plugins/ tree with siblings.
+# plugins/flow/hooks/scripts/; walk up to find a plugins/ tree with siblings.
 # Source B (fallback): the harness's installed MCP config under ~/.claude, when present.
 # Dedup by server name (the same server, e.g. playwright, ships in several plugins).
 hook_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -161,7 +161,7 @@ done <<< "$servers"
 mkdir -p "$I2P_DIR" 2>/dev/null || exit 0
 STATE="${I2P_DIR}/degraded-capabilities.json"
 ts="$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo "")"
-emitter="operate:sessionstart-mcp-liveness"
+emitter="flow:sessionstart-mcp-liveness"
 
 # Existing doc (tolerate absent/corrupt: corrupt → start fresh rather than crash).
 base='{"schema":"degraded-capabilities/1.0","degraded":[]}'

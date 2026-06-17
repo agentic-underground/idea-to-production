@@ -58,7 +58,7 @@ jobs:
         run: gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
 
   # The retrieved-artifact contract: spawn the flow-mcp MCP launcher exactly as the
-  # operate plugin's .mcp.json registers it, and assert the JSON-RPC handshake
+  # flow plugin's .mcp.json registers it, and assert the JSON-RPC handshake
   # completes. Builds the binary first so the launcher's source-build fallback is a fast
   # no-op; the smoke then drives `initialize` + `tools/list` through the shipped launcher.
   # This is the test two PR reviewers asked for — it mechanically catches a committed MCP
@@ -70,10 +70,10 @@ jobs:
       - name: Install Rust toolchain
         run: rustup update stable --no-self-update
       - name: Build flow-mcp (release)
-        working-directory: plugins/operate/flow-mcp
+        working-directory: plugins/flow/flow-mcp
         run: cargo build --release --locked --bin flow-mcp
       - name: MCP handshake smoke (spawn the shipped launcher)
-        run: bash plugins/operate/flow-mcp/bin/smoke-mcp.sh
+        run: bash plugins/flow/flow-mcp/bin/smoke-mcp.sh
 
   # The defect-[92] regression guard: boot the PINNED RELEASE binary (the exact artifact users
   # run — named in bin/RELEASE, SHA-verified against the COMMITTED bin/SHA256SUMS) against the
@@ -88,7 +88,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Pinned-release MCP renders the roadmap (regression guard for [92])
-        run: bash plugins/operate/flow-mcp/bin/smoke-pinned.sh
+        run: bash plugins/flow/flow-mcp/bin/smoke-pinned.sh
 
   # Cobbler's children (P2-18): the marketplace runs OPERATE's own OBSERVABILITY
   # lens on ITSELF. This is the HEALTH slice of the same self-observation substrate whose
