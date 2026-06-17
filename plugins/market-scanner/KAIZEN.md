@@ -19,6 +19,14 @@ distance to perfection**; standardize the current best, then raise the floor in 
 steps; and **fix upstream once** — fold every lesson back at its source so no future build pays for
 it again, shipped to all users via PR.
 
+**GEMBA reflex — go and see, then raise it:** when work hits a gap, a failure, a tooling thrash, a
+reviewer BLOCK, or a missing handler, do not just route around it — *genchi genbutsu*, go and see at
+the point it happened, **capture** what actually broke, and **raise it as feedback** so the fix lands
+once, upstream, for everyone. If the gap is in **your own** element, fold it back and open a PR
+(`/<plugin>:self-improve`); if it belongs **elsewhere**, record it to the learning ledger and raise a
+consented issue. A problem encountered and not captured is **rediscovery** waiting to happen — the
+reflex fires *without being asked*.
+
 This file is the canonical source of truth. It is mirrored byte-for-byte into every plugin and
 injected into the agent's context once per session by each plugin's SessionStart hook
 (`hooks/inject-kaizen.sh`). Depth lives in `knowledge/pillars/waste-elimination.md` (muda·mura·muri +
