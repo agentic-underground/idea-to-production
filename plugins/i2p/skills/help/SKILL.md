@@ -37,7 +37,7 @@ probe the filesystem. The plugins to look for:
 | **ideator** | IDEATE | `/ideate` |
 | **atelier** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
 | **foundry** | BUILD + ASSURE (quality gate) | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
-| **sentinel** | SECURE (security gate) | `/security-gate`, `/secret-scan`, `/pii-audit`, `/dependency-audit` |
+| **security** | SECURE (security gate) | `/scan-all`, `/scan-for-secrets`, `/scan-for-pii`, `/scan-dependencies` |
 | **pressroom** | PUBLISH | `/publish`, `/pressroom:design-review` |
 | **mission-control** | OPERATE | *(add to unlock — observe, respond to incidents, iterate the live product)* |
 | **i2p** | front door | `/i2p-help`, `/i2p-review`, `/i2p-check`, `/i2p-flow`, `/i2p-lifecycle` |
@@ -66,10 +66,10 @@ around. Summarise the model from [`../../knowledge/product-lifecycle.md`](../../
 > and carries it into **OPERATE** (realised, live, and kept alive). **Eight phases forming a cycle**, each
 > owned by one plugin:
 > **DISCOVER ①** (market-scanner) → **IDEATE ②** (ideator) → **DESIGN ③** (atelier) → **BUILD ④** (foundry)
-> → **ASSURE ⑤** (foundry — quality V&V) → **SECURE ⑥** (sentinel — security) → **PUBLISH ⑦** (pressroom)
+> → **ASSURE ⑤** (foundry — quality V&V) → **SECURE ⑥** (security — security) → **PUBLISH ⑦** (pressroom)
 > → **OPERATE ⑧** (mission-control — observe, respond, iterate) ↻ loops back to DISCOVER. **ASSURE and
 > SECURE are separate first-class gates** (quality ≠ security). Three concerns **cross-cut** every phase:
-> usability (atelier), quality (foundry — built-in not inspected-in), security (sentinel — baked in from
+> usability (atelier), quality (foundry — built-in not inspected-in), security (security — baked in from
 > the start). (The marketing *market life cycle* — introduction→growth→maturity→decline — runs alongside
 > OPERATE.)
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the nine-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, sentinel, pressroom, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door and concierge greeter, before gently looping." src="docs/images/masthead.svg">
+<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the nine-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, security, pressroom, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door and concierge greeter, before gently looping." src="docs/images/masthead.svg">
 
 # idea-to-production
 
@@ -67,7 +67,7 @@ Not decoration — these are the ideas the whole system obeys. The philosophical
 
 ### ⑤ Every piece, one map
 
-<img width="820" alt="Conceptual-domain map: upstream discovery (market-scanner → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (sentinel, pressroom, atelier, mission-control) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.svg">
+<img width="820" alt="Conceptual-domain map: upstream discovery (market-scanner → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (security, pressroom, atelier, mission-control) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.svg">
 
 *Upstream discovery → the foundry conveyor → cross-cutting companions. Nine plugins, one value flow.*
 
@@ -86,7 +86,7 @@ specialists. Each stands alone; install only what you need.
 | **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/discovery-goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
 | **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
 | **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |
-| **[sentinel](plugins/sentinel/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
+| **[security](plugins/security/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
 | **[pressroom](plugins/pressroom/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
 | **[atelier](plugins/atelier/)** | The DESIGN studio: `/ui-review` crawls any SPA's routes (screenshot + accessibility snapshot) and writes a **scored, prioritised** critique citing named canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG 2.2); `/mockup` composes polished screens and flows and runs a **convergent** designer↔reviewer loop until they clear a design-fitness rubric. | Visual work — UIs, mockups, user-flows — that is *artistic, elegant, and accessible*, not first-draft. |
 | **[mission-control](plugins/mission-control/)** | The OPERATE phase: keep the live product healthy and feed the next cycle — `/operate-gate` runs go-live + steady-state readiness, `/observability` instruments the four golden signals and SLI→SLO→alerts, `/incident` drives severity-tiered response → runbook + blameless postmortem, `/maintain` keeps dependencies/CVEs/certs current, and `/iterate` turns a production signal into a new OPPORTUNITY that re-enters DISCOVER (↻). | To run what you shipped — observe it, respond to incidents, maintain it, and loop its learnings back to discovery. |
@@ -107,7 +107,7 @@ and **SECURE** (security) are deliberately **separate first-class gates**.
 | **DESIGN** | atelier | `/mockup` · `/ui-review` |
 | **BUILD** | foundry | IDEA ▶ ROADMAP ▶ … ▶ STORY ▶ SHIP |
 | **ASSURE** | foundry | `/pr-review` (quality V&V) |
-| **SECURE** | sentinel | `/security-gate` → SECURITY-REPORT.md |
+| **SECURE** | security | `/scan-all` → SECURITY-REPORT.md |
 | **PUBLISH** | pressroom | `/publish` — articles & PDFs |
 | **OPERATE** | mission-control | observe · `/incident` · `/iterate` |
 
@@ -117,14 +117,14 @@ and **SECURE** (security) are deliberately **separate first-class gates**.
 |---|---|---|
 | **Usability** | atelier (DESIGN) | `/ui-review` · `/mockup` — the convergent designer↔reviewer loop |
 | **Quality** | foundry (ASSURE) | built-in, not inspected-in; certified at the ASSURE gate |
-| **Security** | sentinel (SECURE) | baked in from the start; certified at the SECURE gate |
+| **Security** | security (SECURE) | baked in from the start; certified at the SECURE gate |
 
 **No plugin requires another — they light each other up *by capability* (graceful enhancement):**
 
 | When installed | The pipeline gains… | Fallback when absent |
 |---|---|---|
 | **ideator** | foundry's IDEA station receives the IDEA package | the inline `ideator` skill |
-| **sentinel** | the SECURE gate runs before delivery | stage skipped, and says so |
+| **security** | the SECURE gate runs before delivery | stage skipped, and says so |
 | **pressroom** | PUBLISH upgrades markdown → articles, diagrams, PDFs | markdown as-is |
 | **atelier** | user-flows & mockups are design-reviewed before anyone sees them | stage skipped, and says so |
 
@@ -141,7 +141,7 @@ Add the marketplace, then install whichever plugins you want:
 /plugin install market-scanner@idea-to-production
 /plugin install ideator@idea-to-production
 /plugin install foundry@idea-to-production
-/plugin install sentinel@idea-to-production
+/plugin install security@idea-to-production
 /plugin install pressroom@idea-to-production
 /plugin install atelier@idea-to-production
 /plugin install mission-control@idea-to-production
@@ -149,7 +149,7 @@ Add the marketplace, then install whichever plugins you want:
 ```
 
 Each plugin works on its own — `market-scanner` and `ideator` need no build system to help you find and
-shape an idea, and `sentinel` and `pressroom` are useful on any repository, not just foundry projects.
+shape an idea, and `security` and `pressroom` are useful on any repository, not just foundry projects.
 
 ### Verify the flow MCP is installed & running
 

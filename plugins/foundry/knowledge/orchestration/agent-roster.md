@@ -327,10 +327,10 @@ one of them drives the `reviewer` agent:
   adversarial merge gate. **Fans out the `reviewer` agent in up to six adversarial roles**
   (correctness, security, regression, architecture, performance, docs), each prompted to *refute*
   the change, then synthesises one verdict (`PASS | NEEDS_REVISION | BLOCK`). Composes
-  `/security-gate` when SENTINEL is present. Outcome routing is the project's **merge governance**
+  `/security:scan-all` when the SECURITY plugin is present. Outcome routing is the project's **merge governance**
   ([`../protocols/merge-governance.md`](../protocols/merge-governance.md)).
 - **`check`** ([`../../skills/check/SKILL.md`](../../skills/check/SKILL.md)) — diagnostic; verifies
-  the plugin's external tool dependencies (`requirements.tsv`). Mirrored in sentinel and pressroom.
+  the plugin's external tool dependencies (`requirements.tsv`). Mirrored in security and pressroom.
 - **`prerequisites`** ([`../../skills/prerequisites/SKILL.md`](../../skills/prerequisites/SKILL.md)) —
   emits a project-local `PREREQUISITES.md` from the installed plugins' manifests.
 - **`self-improve`** ([`../../skills/self-improve/SKILL.md`](../../skills/self-improve/SKILL.md)) — the

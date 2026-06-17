@@ -8,7 +8,7 @@
 > **Marketplace spine.** FOUNDRY owns the **BUILD** phase *and* the **ASSURE** quality gate of the
 > marketplace-wide **product lifecycle** — eight phases forming a cycle: DISCOVER → IDEATE → DESIGN →
 > **BUILD** → **ASSURE** → SECURE → PUBLISH → OPERATE ↻ (OPERATE loops back to DISCOVER). ASSURE (quality
-> V&V, foundry) and SECURE (security, sentinel) are separate first-class gates. The canonical lifecycle
+> V&V, foundry) and SECURE (security, the security plugin) are separate first-class gates. The canonical lifecycle
 > model is [`../i2p/knowledge/product-lifecycle.md`](../i2p/knowledge/product-lifecycle.md).
 
 FOUNDRY is one cohesive capability: a **conveyor that carries VALUE from IDEA to
@@ -28,7 +28,7 @@ if it must, ask a question back up the line until the answer is found.
 
 ## 1 · The conveyor (the picture)
 
-![The FOUNDRY conveyor, three layers: THE IDEA above the line (the user ⇄ IDEATOR / PRODUCT_MANAGER, knowledge-parity before build) feeds a clear agent-readable brief DOWN into THE CONVEYOR, whose nine value-stations carry value left→right — IDEA (ideator) ▶ ROADMAP (roadmapper) ▶ PLAN ▶ EARS (spec) ▶ FEATURE ▶ TEST (tests) ▶ IMPLEMENT +DESIGN (builder/handlers) ▶ STORY ▶ SHIP (deliver) — with cross-cutting GOVERNANCE (reviewers · perf-delta gates · inspector, in foundry) and companions when installed (PUBLISHING → pressroom · SECURITY → sentinel · DESIGN → atelier) riding the whole carriage; questions flow UP, value flows DOWN.](diagrams/02-conveyor.png)
+![The FOUNDRY conveyor, three layers: THE IDEA above the line (the user ⇄ IDEATOR / PRODUCT_MANAGER, knowledge-parity before build) feeds a clear agent-readable brief DOWN into THE CONVEYOR, whose nine value-stations carry value left→right — IDEA (ideator) ▶ ROADMAP (roadmapper) ▶ PLAN ▶ EARS (spec) ▶ FEATURE ▶ TEST (tests) ▶ IMPLEMENT +DESIGN (builder/handlers) ▶ STORY ▶ SHIP (deliver) — with cross-cutting GOVERNANCE (reviewers · perf-delta gates · inspector, in foundry) and companions when installed (PUBLISHING → pressroom · SECURITY → security · DESIGN → atelier) riding the whole carriage; questions flow UP, value flows DOWN.](diagrams/02-conveyor.png)
 
 Three layers:
 - **THE IDEA (above):** what we are building, and why. Owned by the PRODUCT_MANAGER.
@@ -119,10 +119,10 @@ cleanly without (**graceful enhancement** — foundry's value artefact is markdo
   adversarial print/data-viz design review. When absent, foundry delivers markdown and notes that
   rich publishing was skipped. Reference by capability/skill-name, never by `${CLAUDE_PLUGIN_ROOT}`
   path across the plugin boundary.
-- **SECURITY** *(companion: `sentinel` plugin)* — when installed, foundry's release path can run
-  `/security-gate` (PII + secret + dependency audit → `SECURITY-REPORT.md`, verdict
+- **SECURITY** *(companion: `security` plugin)* — when installed, foundry's release path can run
+  `/security:scan-all` (PII + secret + dependency audit → `SECURITY-REPORT.md`, verdict
   PASS/REVIEW/BLOCK) before DELIVERY. When absent, the gate is skipped with a noted recommendation
-  to install `sentinel`.
+  to install `security`.
 - **DESIGN** *(companion: `atelier` plugin)* — when installed, foundry's rendered UI surfaces can be
   put under `/ui-review` (crawl + adversarial, canon-grounded critique with an accessibility gate), and
   user-flows/mockups composed via `/mockup` in a convergent designer↔reviewer loop. It **composes with**
@@ -280,7 +280,7 @@ reviewer (panel)                   — gates every transition (PASS / NEEDS_REVI
 | DELIVERY | `lifecycle-states` | ds-step-7/8/9 | protocols/commit-message, protocols/definition-of-done |
 | GOVERNANCE | `code-quality`, `reviewer-gate` | reviewer, inspector, coverage-loop-agent, flaky-test-fixer | all pillars, testing/* |
 | PUBLISHING *(companion)* | `pressroom` plugin: `writer`, `diagram-studio`, `mermaid-specialist`, `rich-pdf-with-diagrams`, `design-reviewer` (via `/publish`) | writer's reviewer · typographic/dataviz reviewers | — |
-| SECURITY *(companion)* | `sentinel` plugin: `pii-audit`, `secret-scan`, `dependency-audit` (via `/security-gate`) | (parallel audit sub-agents) | — |
+| SECURITY *(companion)* | `security` plugin: `scan-for-pii`, `scan-for-secrets`, `scan-dependencies` (via `/security:scan-all`) | (parallel audit sub-agents) | — |
 | DESIGN *(companion)* | `atelier` plugin: `ui-review`, `mockup` (via `/ui-review`, `/mockup`) | ui-design-reviewer | — |
 | SENSOR (infra) | `phase-sensor` | (hook) | per-phase notes |
 

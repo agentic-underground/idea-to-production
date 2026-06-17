@@ -8,6 +8,6 @@
   register: goi
   changed_when: true            # go install is quiet; treat as changed (safe to re-run)
   loop:
-    - golang.org/x/vuln/cmd/govulncheck@latest    # sentinel SCA (Go)
+    - golang.org/x/vuln/cmd/govulncheck@latest    # security SCA (Go)
     - golang.org/x/tools/gopls@latest             # foundry LSP (Go)
-  tags: [foundry, sentinel, lsp, go, optional]
+  tags: [foundry, security, lsp, go, optional]

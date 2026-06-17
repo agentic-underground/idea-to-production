@@ -64,7 +64,7 @@ one; the marketplace's `PREREQUISITES/05-discovery.md` documents the discovery t
   (by capability) → roadmap → `/loop /foundry` carries it to PRODUCTION. **IDEATOR supersedes FOUNDRY's
   inline ideator**, which remains as the graceful-degradation fallback when this plugin is absent.
 - The arc: **DISCOVER (market-scanner) → IDEATE (ideator) → BUILD (foundry) → SECURE/PUBLISH
-  (sentinel/pressroom)**. *Graceful enhancement* — no hard dependency in any direction.
+  (security/pressroom)**. *Graceful enhancement* — no hard dependency in any direction.
 
 ## The feedback loop
 

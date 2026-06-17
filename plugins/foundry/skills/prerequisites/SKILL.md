@@ -2,7 +2,7 @@
 name: prerequisites
 description: >
   Emit a project-local PREREQUISITES.md describing the external software the installed marketplace
-  plugins (foundry, and sentinel/pressroom when present) need to do their best work — with install
+  plugins (foundry, and security/pressroom when present) need to do their best work — with install
   guidance and the current ✓/✗ status of this machine. Trigger with /foundry:prerequisites (or
   "what software do I need?", "generate a prerequisites doc", "document the tool dependencies").
   Assembles from the marketplace PREREQUISITES/ folder and runs each installed plugin's -check to
@@ -23,7 +23,7 @@ missing on this machine.
 ## How to run
 
 1. **Detect which plugins are installed — by capability, not by filesystem location.** foundry is
-   always present; treat sentinel / pressroom as available only if their `/sentinel:check` /
+   always present; treat security / pressroom as available only if their `/security:check` /
    `/pressroom:check` commands resolve in this session. Never assume a sibling plugin's path on disk
    (plugins install independently; foundry references companions *by capability* — the same rule the
    inspector enforces).
@@ -32,14 +32,14 @@ missing on this machine.
    command surface** — never a cross-plugin filesystem path:
    ```
    /foundry:check
-   /sentinel:check      # only if sentinel is installed
+   /security:check      # only if security is installed
    /pressroom:check     # only if pressroom is installed
    ```
    (foundry's own probe is equivalently `bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh`.)
 
 3. **Assemble `PREREQUISITES.md`** in the **current project root**. When foundry is run from the
    marketplace **source tree**, draw the canonical prose from the marketplace `PREREQUISITES/` folder
-   (`00-core.md`, `10-foundry.md`, `20-sentinel.md`/`30-pressroom.md` for installed companions,
+   (`00-core.md`, `10-foundry.md`, `20-security.md`/`30-pressroom.md` for installed companions,
    `40-mcp.md`, `45-lsp.md`). **If that folder is not reachable** (foundry was installed standalone,
    so there is no marketplace root above `${CLAUDE_PLUGIN_ROOT}`), **degrade gracefully**: build the
    document from each installed plugin's own `skills/check/requirements.tsv` (tool · tier ·
@@ -52,7 +52,7 @@ missing on this machine.
 
    ## Core baseline            (from 00-core.md)
    ## FOUNDRY                  (from 10-foundry.md — toolchains, Playwright MCP, debuggers, LSP)
-   ## SENTINEL  (if installed) (from 20-sentinel.md — scanners)
+   ## SECURITY  (if installed) (from 20-security.md — scanners)
    ## PRESSROOM (if installed) (from 30-pressroom.md — dual-engine typesetting + DTP)
    ## MCP servers              (from 40-mcp.md)
    ## Language servers         (from 45-lsp.md)

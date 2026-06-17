@@ -7,12 +7,12 @@ description: >
   agent in multiple adversarial roles (correctness, security, regression, architecture, performance,
   docs — plus conditional API-contract, observability, licensing, prompt-injection, i18n, and
   doc-accessibility lenses when the diff touches them) — each prompted to REFUTE the change, not
-  rubber-stamp it — then synthesises their findings into one verdict. Composes SENTINEL's
-  /security-gate when installed. Writes PR_REVIEW.md.
+  rubber-stamp it — then synthesises their findings into one verdict. Composes the SECURITY plugin's
+  /scan-all when installed. Writes PR_REVIEW.md.
 metadata:
   type: orchestrator
   output: PR_REVIEW.md (verdict PASS | NEEDS_REVISION | BLOCK) + optional PR comment
-  composes: [reviewer (agent, multi-role), security-gate (sentinel, if present)]
+  composes: [reviewer (agent, multi-role), scan-all (security, if present)]
 model: inherit
 ---
 
@@ -71,7 +71,7 @@ is downgraded by the agent).
 | Role (reviewer `role=`) | Adversarial question it must answer |
 |---|---|
 | **CORRECTNESS-REVIEWER** | Where is this logically wrong, inconsistent, or unhandled? What input breaks it? |
-| **SECURITY-REVIEWER** | Where is the authz/session/business-logic flaw a scanner can't see? (Superseded by SENTINEL — below.) |
+| **SECURITY-REVIEWER** | Where is the authz/session/business-logic flaw a scanner can't see? (Superseded by SECURITY — below.) |
 | **REGRESSION-REVIEWER** | What existing behaviour or test could this silently break? |
 | **ARCHITECTURE-REVIEWER** | What boundary/SOLID/dependency rule does this violate? |
 | **PERFORMANCE-REVIEWER** | What gets slower, allocates more, or scales worse? |
@@ -84,7 +84,7 @@ is downgraded by the agent).
 |---|---|
 | **API-CONTRACT-REVIEWER** | a public API/schema/RPC/proto, library public symbols, CLI flags, event payloads, or config keys (breaking-change + semver discipline). |
 | **OBSERVABILITY-REVIEWER** | a production code path that can fail/branch/carry latency (logs/traces/metrics, SLO hooks — ties to the OPERATE phase). |
-| **LICENSING-REVIEWER** | an added or bumped dependency (licence compatibility — complements SENTINEL's dependency-audit, which checks vulns not licences). |
+| **LICENSING-REVIEWER** | an added or bumped dependency (licence compatibility — complements the SECURITY plugin's scan-dependencies, which checks vulns not licences). |
 | **PROMPT-INJECTION-REVIEWER** | LLM prompts, tool/agent definitions, or external data fed into a model (injection, tool-permission scope, exfiltration). |
 | **I18N-REVIEWER** | user-facing strings or locale/number/date/RTL formatting (translation readiness). |
 | **DOC-ACCESSIBILITY-REVIEWER** | a rendered document artefact (PDF/report) — tagging, reading order, contrast, alt text (hard a11y gate). |
@@ -95,12 +95,12 @@ touching auth pulls in SECURITY + REGRESSION; an API change pulls in API-CONTRAC
 change pulls in PROMPT-INJECTION. **Name the roles you ran, the conditional ones that were
 not-applicable, and any you skipped** in the report (no silent narrowing).
 
-> **If SENTINEL is installed**, also run `/security-gate` over the changed tree and fold its verdict
+> **If the SECURITY plugin is installed**, also run `/scan-all` over the changed tree and fold its verdict
 > in as the **authoritative security lens** — it supersedes the SECURITY-REVIEWER pass for the
 > mechanical lenses (secrets, supply-chain, PII). The SECURITY-REVIEWER then narrows to the
-> logic SENTINEL can't see (authz bypass, session/state design, business-logic abuse), cites CWE/OWASP
+> logic the SECURITY plugin can't see (authz bypass, session/state design, business-logic abuse), cites CWE/OWASP
 > IDs, and does **not** re-report what the gate already owns (the dedup boundary in
-> [`../../agents/reviewer.md`](../../agents/reviewer.md) §SECURITY-REVIEWER). When SENTINEL is absent,
+> [`../../agents/reviewer.md`](../../agents/reviewer.md) §SECURITY-REVIEWER). When the SECURITY plugin is absent,
 > SECURITY-REVIEWER widens back to the OWASP floor and the report notes machine scanning did not run.
 
 ## 3. Adversarially refute every surviving HIGH/CRITICAL — MANDATORY
@@ -116,7 +116,7 @@ plausible-but-wrong blocks before they cost a revision cycle. Record each refuta
 ## 4. Synthesise the verdict
 
 Deduplicate overlapping findings, then apply the **same verdict rule FOUNDRY uses everywhere**
-(matches SENTINEL's gate and the reviewer agent):
+(matches the SECURITY plugin's gate and the reviewer agent):
 
 | Verdict | Condition |
 |---|---|
@@ -142,7 +142,7 @@ is fixed upstream once — never let a hard stop pass uncaptured.
 
 ## Verdict rationale         (one paragraph — why this verdict)
 ## Findings                  (table: severity · file:line · claim · evidence · suggested fix · role · [verified])
-## Security (SENTINEL)        (gate verdict + link, or "not installed")
+## Security (SECURITY)        (gate verdict + link, or "not installed")
 ## What was NOT reviewed      (roles skipped, files excluded, metadata/CI unavailable — and why)
 ```
 

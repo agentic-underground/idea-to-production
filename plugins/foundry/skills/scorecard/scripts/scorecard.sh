@@ -12,7 +12,7 @@
 #   coverage/coverage-summary.json   → branch/line/fn/stmt coverage % (Istanbul/nyc/vitest format)
 #   tests/corpus/parity-baseline.json→ corpus fixture count + false-positive rate (if the project has one)
 #   IDEA_COST.jsonl (root or doc/)   → real tokens / wall-clock / regressions from the last FOUNDRY cycle
-#   SECURITY-REPORT.md               → SENTINEL gate verdict (PASS/REVIEW/BLOCK)
+#   SECURITY-REPORT.md               → SECURITY gate verdict (PASS/REVIEW/BLOCK)
 #   src/**/*.rules.* / rules/**      → rule count (detection-style products)
 #   .i2p/degraded-capabilities.json  → degraded lenses (P1-17) → coverage is PARTIAL, never a silent PASS
 #
@@ -143,7 +143,7 @@ if [[ -n "$icost" ]]; then
   fi
 fi
 
-# ---- SENTINEL gate verdict ----
+# ---- SECURITY gate verdict ----
 sec_verdict='"n/a"'
 for s in SECURITY-REPORT.md doc/SECURITY-REPORT.md; do
   if [[ -f "$s" ]]; then

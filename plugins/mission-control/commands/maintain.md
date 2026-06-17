@@ -10,7 +10,7 @@ Review the maintenance **cadence** and mark each item current / due / overdue: d
 CVE patching, certificate & secret rotation, backup-restore drills, capacity review against saturation
 trends, and budgeted tech-debt paydown.
 
-For dependencies/CVEs, **compose `sentinel`'s `/dependency-audit`** by capability when SENTINEL is
+For dependencies/CVEs, **compose `security`'s `/scan-dependencies`** by capability when SECURITY is
 installed (vulnerable/unpinned/abandoned/typosquat packages); when absent, fall back to a static manifest
 read and **note the reduced coverage** — never declare deps clean on no audit. Changes to the live system
 stay deliberate (known blast radius, rollback plan, risky change gated by remaining error budget). Write

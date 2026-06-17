@@ -564,7 +564,7 @@ authoritative BUILD actual — see `i2p/knowledge/instrumentation.md`.
 `IDEA_COST.jsonl` is the *only* place real tokens/wall-clock are captured (here, mid-cycle). At the same
 `STORY_PROVEN` milestone, run the **`scorecard` skill** (`/foundry:scorecard`) to snapshot the project's
 artifact-measured quality — `scorecard.sh` reads this record for the real cost fields and combines it with
-coverage, corpus FP-rate, rule/test counts, and the SENTINEL verdict into `SCORECARD.json`. That snapshot,
+coverage, corpus FP-rate, rule/test counts, and the SECURITY verdict into `SCORECARD.json`. That snapshot,
 compared run-over-run, is the proof the product is getting better. Schema:
 [`${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/scorecard-schema.md`](../../knowledge/orchestration/scorecard-schema.md).
 
@@ -580,7 +580,7 @@ inspector" to trigger. There is no scheduled or automatic invocation.
 See [`agents/inspector.md`](../../agents/inspector.md) for full behaviour. In summary:
 
 1. Reads the installed FOUNDRY plugin (`${CLAUDE_PLUGIN_ROOT}`) — skills, agents, knowledge,
-   commands, hooks, manifests — and the companion plugins (`sentinel`/`pressroom`) if present.
+   commands, hooks, manifests — and the companion plugins (`security`/`pressroom`) if present.
 2. Builds a fresh critical-analysis persona (domain expert + covenant auditor).
 3. Analyses each document against: clarity, accuracy, covenant compliance, coverage **density**,
    outdated patterns, and **portability** (zero machine-specific home/config-dir coupling).

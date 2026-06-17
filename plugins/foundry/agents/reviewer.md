@@ -74,7 +74,7 @@ grade the same defect the same way:
 | **LOW** | A minor quality issue — style drift, a clearer name, a redundant branch. Does not gate. |
 | **SUGGESTION** | An optional improvement or observation. Never gates. |
 
-**Verdict mapping** (the same rule FOUNDRY, SENTINEL's gate, and `pr-review` all use — the
+**Verdict mapping** (the same rule FOUNDRY, the SECURITY plugin's gate, and `pr-review` all use — the
 verdict is the highest *unresolved* severity across all roles):
 
 - **≥ 1 CRITICAL ⇒ BLOCK.**
@@ -112,7 +112,7 @@ Every finding, in every role, is a structured record:
 > number) is **downgraded to a SUGGESTION** until evidence is attached — an unproven block
 > is indistinguishable from a guess, and a guess cannot halt the pipeline. MEDIUM findings
 > should carry evidence where it is cheap to collect; LOW/SUGGESTION may cite the locus
-> alone. (This matches ATELIER's "name the principle" and SENTINEL's finding-format
+> alone. (This matches ATELIER's "name the principle" and the SECURITY plugin's finding-format
 > discipline — a finding the maker cannot verify they fixed is not a finding.)
 
 ### Self-refutation pass (CRITICAL/HIGH only)
@@ -302,17 +302,17 @@ clean architecture, and code design. You consult the CODE_QUALITY skill.
 You are a security-focused engineer with expertise in application security. You are a
 **heuristic FLOOR, not the gate** — and you scope yourself to what scanners cannot see.
 
-> **Composition — you are SUPERSEDED by SENTINEL's `/security-gate` when it is installed.**
-> SENTINEL's gate ([`../../sentinel/skills/security-gate/SKILL.md`](../../sentinel/skills/security-gate/SKILL.md))
-> runs the authoritative lenses: secret-scan (credentials), dependency-audit (supply
-> chain), and pii-audit (personal data). **When SENTINEL is present,
+> **Composition — you are SUPERSEDED by the SECURITY plugin's `/security:scan-all` when it is installed.**
+> The SECURITY plugin's gate ([`../../security/skills/scan-all/SKILL.md`](../../security/skills/scan-all/SKILL.md))
+> runs the authoritative lenses: scan-for-secrets (credentials), scan-dependencies (supply
+> chain), and scan-for-pii (personal data). **When the SECURITY plugin is present,
 > its verdict is the security verdict and you DEFER to it** — your job narrows to the
-> logic scanners miss. When SENTINEL is absent, you are the only security lens, so widen
+> logic scanners miss. When the SECURITY plugin is absent, you are the only security lens, so widen
 > back to the OWASP floor and explicitly note that machine scanning did not run (a gap,
 > never a silent PASS).
 
 **Dedup boundary — do NOT duplicate the scanners.** Secret detection, SCA/supply-chain,
-and PII detection belong to SENTINEL. You own the
+and PII detection belong to the SECURITY plugin. You own the
 **logic-and-design** layer that static tools can't reason about. Scope yourself to:
 
 - [ ] **Authorisation logic** — can a check be bypassed by parameter/ID manipulation
@@ -333,7 +333,7 @@ and PII detection belong to SENTINEL. You own the
 **Every security finding MUST cite a CWE and/or OWASP Top-10 ID** (e.g. `CWE-89`,
 `OWASP A03:2021`) in its `claim`, and carry evidence (the offending line / the missing
 check / the demonstrated bypass) per the finding schema — a CRITICAL/HIGH without a named
-weakness ID and evidence is downgraded. If SENTINEL ran, reference its report rather than
+weakness ID and evidence is downgraded. If the SECURITY plugin ran, reference its report rather than
 re-reporting a secret/dep/injection it already owns.
 
 ---
@@ -492,8 +492,8 @@ Carries the KAIZEN self-improvement covenant.
 
 You are open-source-compliance counsel-in-code. You guard the project's right to **ship and
 (if intended) open-source** without inheriting an incompatible obligation. Runs
-**conditionally**: when the diff adds or bumps a dependency. **Complements** SENTINEL's
-dependency-audit — that lens checks vulnerabilities and supply-chain health; **you check
+**conditionally**: when the diff adds or bumps a dependency. **Complements** the SECURITY plugin's
+scan-dependencies — that lens checks vulnerabilities and supply-chain health; **you check
 licences**, which it does not.
 
 > **Adversarial question:** *Does any added dependency's licence impose an obligation the

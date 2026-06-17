@@ -6,7 +6,7 @@ Score it. Follow the [`scorecard` skill](../skills/scorecard/SKILL.md):
 
 1. **Product** — in the project you're building, run
    `bash ${CLAUDE_PLUGIN_ROOT}/skills/scorecard/scripts/scorecard.sh` → writes `SCORECARD.json` (coverage,
-   corpus FP, test/rule count, SENTINEL verdict, and real tokens/wall-clock from the last cycle's
+   corpus FP, test/rule count, SECURITY verdict, and real tokens/wall-clock from the last cycle's
    `IDEA_COST.jsonl` when present).
 2. **Marketplace** — in the marketplace source tree, run
    `bash ${CLAUDE_PLUGIN_ROOT}/skills/scorecard/scripts/marketplace-score.sh` → appends a line to

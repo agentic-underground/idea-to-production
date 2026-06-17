@@ -1,0 +1,18 @@
+# name	probe-command	tier	install-hint
+# Canonical dependency manifest for SECURITY. TAB-separated. See PREREQUISITES/20-security.md.
+# SECURITY degrades gracefully — every missing scanner narrows a lens to "partial", never a false PASS.
+git	command -v git	required	apt install git
+bash	command -v bash	required	preinstalled
+ripgrep	command -v rg	recommended	apt install ripgrep
+pip-audit	command -v pip-audit	recommended	uv tool install pip-audit
+cargo-audit	cargo audit --version	recommended	cargo install cargo-audit
+osv-scanner	command -v osv-scanner	recommended	github.com/google/osv-scanner releases
+gitleaks	command -v gitleaks	recommended	github.com/gitleaks/gitleaks releases
+npm	command -v npm	recommended	ships with node (npm audit)
+govulncheck	command -v govulncheck	optional	go install golang.org/x/vuln/cmd/govulncheck@latest
+trivy	command -v trivy	optional	aquasecurity/trivy install script
+grype	command -v grype	optional	anchore/grype install script
+syft	command -v syft	optional	anchore/syft install script
+trufflehog	command -v trufflehog	optional	trufflesecurity/trufflehog releases
+bundler-audit	command -v bundle-audit || bundle audit version	optional	gem install bundler-audit
+dependency-check	command -v dependency-check	optional	OWASP dependency-check release

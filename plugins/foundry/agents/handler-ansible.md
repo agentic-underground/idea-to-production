@@ -156,7 +156,7 @@ ls ansible.cfg inventory* 2>/dev/null                     # config + inventory s
 
 Treat the inventory as sensitive and external input as hostile. Secrets via `ansible-vault` only;
 `no_log` on secret-handling tasks; authenticated, rate-limit-aware external calls (Directive 4);
-least-privilege `become`. This mirrors the `reviewer` SECURITY role and the `sentinel` plugin's
+least-privilege `become`. This mirrors the `reviewer` SECURITY role and the `security` plugin's
 gate when installed.
 
 ---

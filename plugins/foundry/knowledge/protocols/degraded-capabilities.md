@@ -22,7 +22,7 @@ A degraded capability is a structured record with exactly three required fields:
 | Field | Type | Meaning |
 |---|---|---|
 | `capability` | string | A stable, dotted identifier for the unavailable capability — e.g. `mcp.playwright`, `mcp.context7`, `lens.security`, `tool.mmdc`, `tool.browser`. Namespaced by kind (`mcp.` / `lens.` / `tool.`) so consumers can match on a family. |
-| `reason` | string | A concrete, human-readable cause — not "unavailable". E.g. `"playwright MCP did not respond to liveness ping"`, `"no system browser on PATH"`, `"SENTINEL not installed"`. |
+| `reason` | string | A concrete, human-readable cause — not "unavailable". E.g. `"playwright MCP did not respond to liveness ping"`, `"no system browser on PATH"`, `"SECURITY not installed"`. |
 | `since_phase` | string | The lifecycle/dev-system phase at which the degradation was first observed (e.g. `DESIGN`, `IMPL`, `OPERATE`, or a dev-system step id like `ds-step-5`). Lets a consumer tell a degradation that has persisted across phases from a fresh one. |
 
 Optional fields a producer MAY add (consumers must tolerate their absence):
@@ -109,7 +109,7 @@ Any skill/agent/instrument that reads degraded-capabilities MUST honour all thre
 
 2. **DISCLOSE.** The skip is surfaced to the user, never swallowed. The disclosure names the
    `capability`, the `reason`, and the `since_phase` (the three fields exist so the disclosure can
-   be specific): *"Security lens did not run — SENTINEL not installed (since DESIGN); coverage is
+   be specific): *"Security lens did not run — SECURITY not installed (since DESIGN); coverage is
    PARTIAL, not PASS."* This is the marketplace's standing detect→degrade→**disclose** discipline,
    made machine-checkable.
 

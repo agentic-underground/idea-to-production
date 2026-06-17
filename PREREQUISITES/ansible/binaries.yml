@@ -7,7 +7,7 @@
     path: "{{ ansible_env.HOME }}/.local/bin"
     state: directory
     mode: "0755"
-  tags: [sentinel, foundry]
+  tags: [security, foundry]
 
 # --- zig (foundry rust-webapp cross-build) -----------------------------------
 - name: zig (pinned release tarball)
@@ -21,14 +21,14 @@
   tags: [foundry, optional]
 # Then symlink {{ HOME }}/.local/zig-linux-x86_64-<ver>/zig into ~/.local/bin (add a file: link task).
 
-# --- SENTINEL scanners --------------------------------------------------------
+# --- SECURITY scanners --------------------------------------------------------
 - name: osv-scanner (Google OSV — all ecosystems)
   ansible.builtin.get_url:
     url: "https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_amd64"
     dest: "{{ ansible_env.HOME }}/.local/bin/osv-scanner"
     mode: "0755"
     creates: "{{ ansible_env.HOME }}/.local/bin/osv-scanner"
-  tags: [sentinel]
+  tags: [security]
 
 - name: gitleaks (secret scanner) — pinned release tarball
   vars:
@@ -38,7 +38,7 @@
     dest: "{{ ansible_env.HOME }}/.local/bin"
     remote_src: true
     creates: "{{ ansible_env.HOME }}/.local/bin/gitleaks"
-  tags: [sentinel]
+  tags: [security]
 
 - name: trivy (SCA/IaC/container) via official install script
   ansible.builtin.shell: |
@@ -47,7 +47,7 @@
       | sh -s -- -b "{{ ansible_env.HOME }}/.local/bin"
   args:
     creates: "{{ ansible_env.HOME }}/.local/bin/trivy"
-  tags: [sentinel, optional]
+  tags: [security, optional]
 
 - name: grype + syft (SBOM + vuln) via official install scripts
   ansible.builtin.shell: |
@@ -56,6 +56,6 @@
     curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh  | sh -s -- -b "{{ ansible_env.HOME }}/.local/bin"
   args:
     creates: "{{ ansible_env.HOME }}/.local/bin/grype"
-  tags: [sentinel, optional]
+  tags: [security, optional]
 
 # trufflehog: `go install github.com/trufflesecurity/trufflehog/v3@latest` (see go.yml) or a release tarball.

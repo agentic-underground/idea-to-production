@@ -12,14 +12,14 @@ understand the *system*; read here to disambiguate a *name*.
 
 ## 1. The conceptual-domain tree
 
-![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — market-scanner (DISCOVERY front door) → ideator (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — sentinel (SECURE), pressroom (PUBLISH), atelier (DESIGN/usability), mission-control (OPERATE).](diagrams/01-domain-tree.png)
+![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — market-scanner (DISCOVERY front door) → ideator (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), pressroom (PUBLISH), atelier (DESIGN/usability), mission-control (OPERATE).](diagrams/01-domain-tree.png)
 
 The companions are **cross-cutting**: foundry/ideator use them *by capability* when installed
 (graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
 is the eight-phase product-lifecycle **cycle**: **DISCOVER (market-scanner) → IDEATE (ideator) →
-DESIGN (atelier) → BUILD (foundry) → ASSURE (foundry, quality) → SECURE (sentinel, security) →
+DESIGN (atelier) → BUILD (foundry) → ASSURE (foundry, quality) → SECURE (security) →
 PUBLISH (pressroom) → OPERATE (mission-control) ↻** (OPERATE loops back to DISCOVER). Three concerns
-cross-cut every phase — usability (atelier), quality (foundry), security (sentinel).
+cross-cut every phase — usability (atelier), quality (foundry), security (the security plugin).
 
 ---
 
@@ -54,8 +54,8 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - **product lifecycle** — the *creation arc* the suite is organised around: **eight phases forming a
   cycle** — **DISCOVER → IDEATE → DESIGN → BUILD → ASSURE → SECURE → PUBLISH → OPERATE ↻** (OPERATE loops
   back to DISCOVER), each owned by one plugin. **ASSURE** (quality V&V, foundry) and **SECURE** (security,
-  sentinel) are separate first-class gates; three concerns cross-cut every phase — usability (atelier),
-  quality (foundry), security (sentinel). The canonical model (owners, academic lineage, entry/exit
+  the security plugin) are separate first-class gates; three concerns cross-cut every phase — usability (atelier),
+  quality (foundry), security (the security plugin). The canonical model (owners, academic lineage, entry/exit
   signals) is `i2p/knowledge/product-lifecycle.md`; tracked per-project in `.i2p/lifecycle.json` and shown
   on the concierge status line. Distinct from the *marketing* product life cycle
   (introduction→growth→maturity→decline), which runs alongside OPERATE.
@@ -63,7 +63,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   V&V (tests green, coverage density, perf-delta, regression, architecture). Distinct from SECURE — a
   product can be high-quality and insecure. *(Built-in not inspected-in: quality is engineered from the
   first line of BUILD; ASSURE certifies it.)*
-- **SECURE** (lifecycle phase ⑥; gate, owner sentinel) — the **security** certification gate: PII,
+- **SECURE** (lifecycle phase ⑥; gate, owner security) — the **security** certification gate: PII,
   secrets, supply-chain clear before exposure. Distinct from ASSURE (quality). *(Baked in from the
   beginning — secure-by-design from DISCOVER; SECURE is the pre-exposure certification.)*
 - **OPERATE** (lifecycle phase ⑧; owner `mission-control`) — the living phase: observe, respond to
@@ -79,7 +79,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - **concierge** — the **arrival / greeter**: a SessionStart hook renders a repo's
   `.claude/welcome.md` to greet and route whoever opens it; `/concierge:define-welcome` authors that
   welcome; also offers the idea-to-production status line on first activation.
-- **market-scanner / ideator / foundry / sentinel / pressroom / atelier / mission-control** — the seven
+- **market-scanner / ideator / foundry / security / pressroom / atelier / mission-control** — the seven
   specialist plugins: DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the
   core conveyor (BUILD + the ASSURE quality gate) / SECURITY companion (the SECURE gate) / PUBLISHING
   companion / DESIGN companion (make + adversarially review the visuals) / OPERATE companion (run the live
@@ -110,12 +110,12 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **pr-review** (adversarial PR/diff review → one verdict) · **self-improve** (targeted self-cleaving →
   PR) · **prerequisites** (emit PREREQUISITES.md) ·
   **check** (verify tool dependencies). The companions add **check** too (market-scanner, ideator,
-  sentinel, pressroom, atelier, mission-control).
+  security, pressroom, atelier, mission-control).
 
 ### Skills (companion plugins)
 - market-scanner: **goal-setter** · **market-scan** · **self-improve** · **check**.
 - ideator: **ideate** (the IDEA package) · **self-improve** · **check**.
-- sentinel: **pii-audit** · **secret-scan** · **dependency-audit** · **security-gate** · **check**.
+- security: **scan-for-pii** · **scan-for-secrets** · **scan-dependencies** · **scan-all** · **check**.
 - pressroom: **writer** · **diagram-studio** · **mermaid-specialist** (full Mermaid taxonomy + theming + ELK) ·
   **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review; agents
   **typographic-reviewer**, **dataviz-reviewer**, **image-aesthetic-reviewer**, **layout-reviewer** — the
@@ -150,7 +150,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **/foundry:pr-review** · **/foundry:self-improve** · **/foundry:check** · **/foundry:prerequisites**
 - market-scanner: **/market-scan** · **/discovery-goal** · **/market-scanner:check**
 - ideator: **/ideate** · **/ideator:check**
-- sentinel: **/security-gate** · **/pii-audit** · **/secret-scan** · **/dependency-audit** · **/sentinel:check**
+- security: **/scan-all** · **/scan-for-pii** · **/scan-for-secrets** · **/scan-dependencies** · **/security:check**
 - pressroom: **/publish** · **/pressroom:check**
 - atelier: **/ui-review** · **/mockup** · **/atelier:check**
 
@@ -166,7 +166,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   ([`architecture/pure-core.md`](architecture/pure-core.md)).
 - **Certainty markers** — `THE ONLY WAY` / `GUARDRAIL` / `ANTI-PATTERN` / `WORKED EXAMPLE`
   ([`protocols/certainty-markers.md`](protocols/certainty-markers.md)).
-- **Graceful enhancement** — foundry uses sentinel/pressroom *by capability if installed*, else
+- **Graceful enhancement** — foundry uses security/pressroom *by capability if installed*, else
   degrades to markdown.
 - **Adversarial PR review** — `/foundry:pr-review` fans the `reviewer` agent across adversarial
   roles (each tries to *refute* the change) → one verdict `PASS | NEEDS_REVISION | BLOCK`
@@ -185,7 +185,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 ### Artefacts
 - **FOUNDRY_PLAN.md** (cycle plan) · **IDEA_COST.jsonl** (cost ledger) · **SUBJECT_MATTER_UNDERSTANDING.md**
   (SMU) · **FOUNDRY_INSPECTION_REPORT.md** (inspector output, written to the project) ·
-  **SECURITY-REPORT.md** (sentinel verdict) · sentinels (machine-readable phase state).
+  **SECURITY-REPORT.md** (security verdict) · sentinels (machine-readable phase state).
 
 ---
 

@@ -26,8 +26,8 @@ guardrail, and the KAIZEN covenant. Write `I2P_INSPECTION_REPORT.md` to the proj
 1. **Command↔skill parity:** each meta-command (`i2p-help`, `i2p-review`, `i2p-check`, `i2p-flow`) has a
    matching `skills/*/SKILL.md`, and each command points at its skill. `inspect` ↔ the inspector agent.
 2. **Delegation-not-duplication:** the front door stays THIN — `i2p-review` delegates to the specialists'
-   reviewers (foundry `/pr-review`, atelier `/ui-review`, pressroom design-review, sentinel
-   `/security-gate`), `i2p-check` to each plugin's `/check`. Flag any place i2p re-implements logic a
+   reviewers (foundry `/pr-review`, atelier `/ui-review`, pressroom design-review, security
+   `/scan-all`), `i2p-check` to each plugin's `/check`. Flag any place i2p re-implements logic a
    specialist already owns (it must compose, never copy).
 3. **Capability-by-detection:** i2p detects which specialist plugins are active **model-side** (from the
    available skills/commands), never by a brittle filesystem probe, and never claims a power from an

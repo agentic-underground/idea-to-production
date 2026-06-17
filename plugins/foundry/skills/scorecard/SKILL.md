@@ -37,7 +37,7 @@ timestamp themselves, so re-runs stay deterministic). The schema is
 
 **Product** (`SCORECARD.json`): branch/line/fn/stmt coverage (from `coverage-summary.json`), corpus fixture
 count + FP-rate (from a `parity-baseline.json` if the project has one), rule-definition count, test count,
-SENTINEL gate verdict (from `SECURITY-REPORT.md`), and **real** tokens / wall-clock / regressions /
+SECURITY gate verdict (from `SECURITY-REPORT.md`), and **real** tokens / wall-clock / regressions /
 estimation-accuracy from the **last FOUNDRY cycle's `IDEA_COST.jsonl`** (§12 of the builder writes it;
 this reads it). Cost fields are omitted honestly when no cycle recorded them — a shell script cannot
 measure tokens, only a real cycle can.

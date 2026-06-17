@@ -38,4 +38,4 @@ guardrail, and the KAIZEN covenant. Write `MISSION-CONTROL_INSPECTION_REPORT.md`
    never a hard cross-plugin path, never auto-advancing out of order.
 5. **Tooling-by-capability:** observability/platform CLIs (curl, jq, promtool, kubectl, cloud CLIs) are
    referenced by capability and degrade gracefully when absent — a missing CLI narrows a lens to partial,
-   never a false "healthy". `maintain` composes `sentinel`'s `/dependency-audit` by capability, not by path.
+   never a false "healthy". `maintain` composes `security`'s `/scan-dependencies` by capability, not by path.

@@ -3,7 +3,7 @@ name: inspector
 description: >
   FOUNDRY INSPECTOR — on-demand agent that audits the FOUNDRY plugin it ships in
   (its skills, agents, knowledge, commands, and hooks under ${CLAUDE_PLUGIN_ROOT}),
-  and the companion plugins (sentinel, pressroom) when present. Triggered by user
+  and the companion plugins (security, pressroom) when present. Triggered by user
   command only ("inspect FOUNDRY" / "run the inspector"). Reads
   every plugin file, builds a fresh critical-analysis persona each run, and produces
   FOUNDRY_INSPECTION_REPORT.md (written into the current project) with severity-ranked
@@ -47,6 +47,6 @@ Run these IN ADDITION to the generic Phase-3 items in the core (paths relative t
 
 ## Scope companions
 
-When asked to inspect FOUNDRY, also sweep `sentinel`/`pressroom` for any finding-class that is marketplace-
+When asked to inspect FOUNDRY, also sweep `security`/`pressroom` for any finding-class that is marketplace-
 wide (e.g. a model-ID or coupling sweep) — never report "zero remain" without having checked the companions
 too. (Each companion also has its own `/<plugin>:inspect` for a focused audit.)
