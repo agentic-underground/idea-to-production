@@ -19,7 +19,9 @@ Pipeline:
    compose legible figures under `doc/articles/<slug>/diagrams/`, rendered to SVG for markdown or PDF for
    print, all obeying the 4×9 charting matrix. For **Mermaid-specific** work — choosing among the full
    diagram taxonomy (sequence, state, sankey, quadrant, timeline…), theming to a palette, or driving the
-   ELK layout — defer to the **mermaid-specialist** skill (its peer).
+   ELK layout — diagram-studio routes to / spawns the **`handler-mermaid`** value-handler (the single
+   authoritative home for Mermaid authoring — the Mermaid peer to `handler-graphviz`, reached exactly as
+   Graphviz is).
 3. **Render to target:**
    - `markdown` → deliver the `.md` (with embedded SVG figures if any).
    - `pdf` → defer to **rich-pdf-with-diagrams**: typeset the article with embedded figures via

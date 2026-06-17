@@ -1,9 +1,10 @@
 ---
 id: 112
 title: "publish: reclassify mermaid-specialist as an agent-facing value-handler"
-status: PENDING
+status: COMPLETE
 priority: LOW
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "#96 (pressroom→publish rename)"
 ---
 

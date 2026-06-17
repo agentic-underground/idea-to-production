@@ -8,7 +8,7 @@ description: >
   them on a design-fitness rubric against the named canon — typography (Bringhurst, grids, measure/leading,
   widows/orphans) and data-viz (Tufte, Cleveland–McGill, Bertin, ColorBrewer) — returning prioritised,
   principle-citing findings that drive a convergent designer↔reviewer loop until the artefact clears the
-  rubric. Complements WRITER's prose reviewer (which owns the words); this owns the page and the figure.
+  rubric. Complements PUBLISH's prose reviewer /publish:document-review (which owns the words); this owns the page and the figure.
 metadata:
   type: reviewer
   output: a scored, prioritised design critique + a loop verdict (CONVERGED / CONTINUE / HALT)
@@ -18,8 +18,9 @@ model: inherit
 
 # PUBLISH — DESIGN REVIEWER
 
-The visual quality gate. WRITER's prose `reviewer` makes the *words* undeniable; this skill makes the
-*page and the figure* undeniable — typographically sound, visually balanced, and (for charts) honest. It
+The visual quality gate. PUBLISH's prose reviewer ([`/publish:document-review`](../document-review/SKILL.md))
+makes the *words* undeniable; this skill makes the *page and the figure* undeniable — typographically sound,
+visually balanced, and (for charts) honest. It
 is adversarial by stance and grounded by named canon, and it drives a loop that **measurably converges**
 rather than ping-ponging.
 
@@ -84,10 +85,13 @@ for the exact `signal: BEST | LEAST-WORSE | CAP` schema.
 
 ## Boundaries (compose, don't duplicate)
 
-- **WRITER's `reviewer`** owns the *prose* (clarity, accuracy, punchiness). This skill never re-edits words
-  — it reviews how they're *set and laid out*.
-- **The diagram producers** (`diagram-studio`, `mermaid-specialist`, `rich-pdf-with-diagrams`) *make* the
-  figures; this skill *judges* them and hands back the fix. The loop closes between maker and judge.
+- **The prose reviewer** owns the *words* (clarity, accuracy, tone, punchiness, tangents) — surfaced as
+  [`/publish:document-review`](../document-review/SKILL.md) (the copy-review gate, the prose peer to this
+  skill) and shared with WRITER's authoring loop. This skill never re-edits words — it reviews how they're
+  *set and laid out*. **The two compose: it owns the words; this owns the page and the figure.**
+- **The diagram producers** (`diagram-studio` + its `handler-graphviz`/`handler-mermaid` value-handlers,
+  `rich-pdf-with-diagrams`) *make* the figures; this skill *judges* them and hands back the fix. The loop
+  closes between maker and judge.
 - This is PUBLISH's print/data-viz analogue of ATELIER's screen reviewer — **same loop shape**, different
   canon. When both plugins are present, a lesson learned in one is offered to the other.
 
