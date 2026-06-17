@@ -1,9 +1,10 @@
 ---
 id: 24
 title: "The 3-way decision gate — BUILD-handler · MVP · BOTH"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "#23, #20"
 ---
 

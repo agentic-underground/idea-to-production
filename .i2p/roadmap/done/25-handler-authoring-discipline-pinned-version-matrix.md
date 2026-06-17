@@ -1,9 +1,10 @@
 ---
 id: 25
 title: "Handler-authoring discipline — pinned version matrix + FORBIDDEN list"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "— (atomic; PR-B)"
 ---
 

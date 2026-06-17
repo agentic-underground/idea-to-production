@@ -433,10 +433,18 @@ in `${CLAUDE_PLUGIN_ROOT}/agents/handler-{stack}.md`.
 | handler-github-actions | GitHub Actions CI/CD-as-code (workflow YAML, matrix, OIDC, SHA-pinned actions) | `.github/workflows/*.yml`, composite/reusable actions |
 | handler-roadmap-decomposition | Atomic-job breakdown of a ROADMAP item (INVEST slices, dependency graph, phase mapping) | LEAD ENGINEER §5 when a heavy roadmap item must be split into parallelisable jobs — it plans, it does not orchestrate |
 
-When the LEAD ENGINEER identifies a stack not in the pool above, note it in
-`docs/internal/FOUNDRY_PLAN.md` under `## VALUE_HANDLER_POOL Required` with a description
-of what knowledge the new handler needs. The self-improvement protocol (§14)
-will formalise it into an agent file.
+When the LEAD ENGINEER identifies a stack not in the pool above, the missing handler is a **PAUSE, not a
+silent degrade**. Note it in `docs/internal/FOUNDRY_PLAN.md` under `## VALUE_HANDLER_POOL Required` with a
+description of what knowledge the new handler needs — then **STOP and surface the 3-way decision gate**
+(BUILD HANDLER FIRST · MVP WITH EXISTING + `DEGRADED_CAPABILITIES` · BOTH) per the governing protocol
+[`../../knowledge/orchestration/missing-handler-gate.md`](../../knowledge/orchestration/missing-handler-gate.md).
+**Never route the item to the nearest handler on the orchestrator's own authority.** The BUILD path
+authors `handler-<stack>` under the handler-authoring discipline
+([`../../knowledge/orchestration/handler-authoring-discipline.md`](../../knowledge/orchestration/handler-authoring-discipline.md):
+pinned version matrix + FORBIDDEN list); the MVP path discloses `DEGRADED_CAPABILITIES` in
+`FOUNDRY_PLAN.md`; the BOTH path raises the gap via `/mission-control:gemba`, files a DEFERRED
+"Create handler-<stack>" item, and marks the original **awaiting-handler** (§14 formalises the agent file
+once the BUILD/handler-creation work runs).
 
 ---
 
@@ -595,6 +603,13 @@ roadmap cycle, or when the daily inspector surfaces proposals:
    Which stages caused the most review cycles? Which stacks were slowest?
 2. **LEAD ENGINEER proposes improvements** to agent compositions, tier logic,
    reviewer checklists, or VALUE_HANDLER_POOL entries.
+   - **Missing-handler gate.** When a roadmap stack has no handler, that gap is **not** quietly degraded —
+     it is paused and decided through the 3-way gate
+     ([`../../knowledge/orchestration/missing-handler-gate.md`](../../knowledge/orchestration/missing-handler-gate.md)).
+     New handlers authored on the BUILD path follow the handler-authoring discipline
+     ([`../../knowledge/orchestration/handler-authoring-discipline.md`](../../knowledge/orchestration/handler-authoring-discipline.md):
+     pinned matrix + FORBIDDEN list). The BOTH path raises the gap via `/mission-control:gemba` so it
+     becomes a tracked self-improvement item rather than evaporating.
 3. **Inspector proposals** are collated from `FOUNDRY_INSPECTION_REPORT.md`.
 4. Present proposed changes to the user for approval.
 5. On approval, apply the change in the marketplace's source repository and commit it with the
@@ -652,6 +667,8 @@ bug. IDEA_COST.jsonl is written only when both are present in the chain.
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/context-sentinel.md` | Sentinel format and accumulation protocol | Before §10 |
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/testing/test-policy.md` | Test pyramid + coverage standards + enforcement | Before §11 |
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/agent-roster.md` | All agent roles, capabilities, spawn conditions | Before §7–§9 |
+| `${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/missing-handler-gate.md` | Missing-handler PAUSE → 3-way gate (BUILD / MVP+DEGRADED / BOTH) + awaiting-handler deferral/resumption | On a §8 / Phase 4.5 handler gap |
+| `${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/handler-authoring-discipline.md` | Pinned version matrix + FORBIDDEN list + four-wave pipeline for authoring a new value-handler | Before authoring `handler-<stack>` (BUILD path) |
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/architecture/kaizen-covenant.md` | KAIZEN replication covenant | Carried by all artefacts |
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/definition-of-done.md` | Project DoD template — copy to project root | Before §7 (per-item) |
 | `${CLAUDE_PLUGIN_ROOT}/knowledge/orchestration/orchestration-loop.md` | Per-item loop state model + stage routing table | Before §7 (per-item) |
