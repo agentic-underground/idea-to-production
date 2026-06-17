@@ -1,4 +1,4 @@
-# CONCIERGE — welcome experience (runtime contract)
+# i2p — welcome experience (runtime contract)
 
 This project ships a **welcome experience**, defined by its maintainers in
 `.claude/welcome.md` and reproduced below. It tells a fresh arrival what this repository
@@ -19,7 +19,7 @@ is for and the handful of things people come here to do.
 **Do not** re-present this menu later in the conversation, and do not repeat it on a
 resume or after a context compaction — greet at most once, on a genuine cold open.
 
-**Lifecycle-aware.** If this welcome carries a `<!-- concierge:welcome … -->` stamp, it reflects the
+**Lifecycle-aware.** If this welcome carries a `<!-- i2p:welcome … -->` stamp, it reflects the
 repo's idea-to-production phase at the time it was written and is kept up to date automatically as the
 product advances — present it as the *current* state of an evolving product.
 

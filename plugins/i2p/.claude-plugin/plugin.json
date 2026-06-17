@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "i2p",
-  "displayName": "IDEA-TO-PRODUCTION — Marketplace front door & meta-commands",
-  "version": "1.2.2",
-  "description": "The FRONT DOOR of the idea-to-production marketplace — the marketplace-level front door the seven specialist plugins never had. Adds /i2p-help (browse the whole suite's powers, grouped by the DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻ value flow), /i2p-review (a cross-plugin adversarial review that fans out EVERY installed reviewer — code, design, docs, security — into one verdict), /i2p-check (consolidated readiness across all installed plugins), and /i2p-flow (where each plugin sits in the flow and the next command to run). Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator: it delegates to the specialist plugins by capability and never re-implements them. Carries the KAIZEN self-improvement covenant.",
+  "displayName": "IDEA-TO-PRODUCTION — Marketplace front door, arrival layer & meta-commands",
+  "version": "1.3.0",
+  "description": "The FRONT DOOR and ARRIVAL layer of the idea-to-production marketplace — the marketplace-level surface the specialist plugins never had. Adds /i2p-help (browse the whole suite's powers, grouped by the DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻ value flow), /i2p-review (a cross-plugin adversarial review that fans out EVERY installed reviewer — code, design, docs, security — into one verdict), /i2p-check (consolidated readiness across all installed plugins), and /i2p-flow (where each plugin sits in the flow and the next command to run). It also GREETS whoever opens a repo: a SessionStart hook renders a maintainer-authored .claude/welcome.md (/i2p:define-welcome authors and refreshes it, lifecycle-aware), and /i2p:statusline turns on the rich two-line status line (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally), offered once on first activation. Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator: it delegates to the specialist plugins by capability and never re-implements them. Carries the KAIZEN self-improvement covenant.",
   "author": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -24,6 +24,10 @@
     "value-flow",
     "orchestration",
     "discoverability",
+    "welcome",
+    "greeting",
+    "statusline",
+    "status-bar",
     "idea-to-production"
   ],
   "metadata": {
@@ -35,6 +39,6 @@
       "security": "security",
       "publishing": "publish"
     },
-    "note": "commands/, skills/, and hooks/hooks.json are auto-discovered from the plugin root. This plugin is a THIN orchestrator — it composes the seven specialist plugins by capability and degrades cleanly when any are absent. Knowledge lives in knowledge/covenant.md; the canonical homes are in the foundry plugin's knowledge/."
+    "note": "commands/, skills/, agents/, and hooks/hooks.json are auto-discovered from the plugin root. This plugin is a THIN orchestrator — it composes the seven specialist plugins by capability and degrades cleanly when any are absent. It is also the ARRIVAL layer (folded in from the retired concierge): SessionStart hooks render/offer a repo's .claude/welcome.md (hooks/inject-welcome.sh, hooks/offer-welcome.sh) and the doc-alert (hooks/offer-doc-alert.sh); the status line ships in statusline/ — /i2p:statusline runs statusline/install.sh (copies the version-stamped i2p-statusline.sh → ~/.claude, points settings.json at it), a PostToolUse hook (statusline/count-adversarial-catches.sh) feeds the ⚔ caught tally, a Stop hook (statusline/capture-cost.sh) measures token cost, and SessionStart hooks offer it once (hooks/offer-statusline.sh) and detect installed-vs-shipped drift (hooks/check-statusline-drift.sh). Opt-out markers live under ~/.claude/hook-state (the hooks never write the repo). /i2p:check probes i2p's own tool deps (skills/check/requirements.tsv) then consolidates each plugin's check. Knowledge lives in knowledge/covenant.md; the canonical homes are in the foundry plugin's knowledge/."
   }
 }

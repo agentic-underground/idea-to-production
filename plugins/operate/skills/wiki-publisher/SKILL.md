@@ -29,8 +29,8 @@ This skill is strictly a **consumer** of artifacts. It re-runs nothing, invents 
 
 ## When it runs — github origin + one-shot opt-in
 
-The wiki is **opt-in**, offered **at most once per repo**, mirroring CONCIERGE's one-shot welcome offer
-([`../../../concierge/hooks/offer-welcome.sh`](../../../concierge/hooks/offer-welcome.sh)): opt-out state
+The wiki is **opt-in**, offered **at most once per repo**, mirroring i2p's one-shot welcome offer
+([`../../../i2p/hooks/offer-welcome.sh`](../../../i2p/hooks/offer-welcome.sh)): opt-out state
 lives under `~/.claude/hook-state/`, **never** in the repo. The flow:
 
 1. **Detect a GitHub origin.** Read `git remote get-url origin`; proceed only when the host is `github.com`
@@ -50,7 +50,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/skills/wiki-publisher/scripts/wiki-state.sh" --dir "
 
 It prints a single status line — `github=<owner/repo|no> declined=<0|1> optout=<0|1> docs=<count>` — and the
 exact marker paths to write on a decline. It **never** writes the repo and **never** writes state itself
-(the agent writes the marker on the operator's say-so, exactly as CONCIERGE does):
+(the agent writes the marker on the operator's say-so, exactly as i2p does):
 
 ```bash
 # operator declines for THIS repo (never re-offer here):

@@ -6,7 +6,7 @@
 #
 # A "catch" = an adversarial-review artifact whose verdict is not PASS, or that
 # lists at least one CRITICAL/HIGH/MEDIUM finding. Always exits 0; never blocks.
-# Shipped by the `concierge` plugin and wired via hooks/hooks.json — works on any
+# Shipped by i2p and wired via hooks/hooks.json — works on any
 # machine once the plugin is installed; feeds the status line's ⚔ caught widget.
 set -uo pipefail
 

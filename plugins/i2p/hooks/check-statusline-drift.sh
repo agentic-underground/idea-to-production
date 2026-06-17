@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# check-statusline-drift.sh — CONCIERGE SessionStart hook. Detects when the INSTALLED
+# check-statusline-drift.sh — i2p SessionStart hook. Detects when the INSTALLED
 # status line at ~/.claude/statusline-command.sh has drifted from the renderer this
 # plugin ships (statusline/i2p-statusline.sh) — e.g. a renderer edit that never
 # propagated to the installed copy. On drift it emits ONE once-per-session systemMessage
-# offering /concierge:statusline to refresh. Identical (or not installed) → silent.
+# offering /i2p:statusline to refresh. Identical (or not installed) → silent.
 #
 # Never blocks, always exits 0, never writes the user's repo or settings.json. The atomic
 # once-per-session sentinel (mirrors offer-statusline.sh) means it never nags: at most one
@@ -48,8 +48,8 @@ vstr=""
 [ -n "$inst_stamp" ] && [ -n "$ship_stamp" ] && vstr=" (installed v${inst_stamp} → shipped v${ship_stamp})"
 [ -z "$inst_stamp" ] && [ -n "$ship_stamp" ] && vstr=" (installed unstamped → shipped v${ship_stamp})"
 
-MSG="↻ Your idea-to-production status line is out of date${vstr} — the installed copy has drifted from the version this plugin ships. Run /concierge:statusline to refresh it."
-CTX="The installed status line (~/.claude/statusline-command.sh) has DRIFTED from the renderer the concierge plugin ships (statusline/i2p-statusline.sh): their md5 differs${vstr}. If the user is interested, tell them to run /concierge:statusline to re-copy the current renderer. Mention this at most once; do not nag; never edit settings.json yourself."
+MSG="↻ Your idea-to-production status line is out of date${vstr} — the installed copy has drifted from the version this plugin ships. Run /i2p:statusline to refresh it."
+CTX="The installed status line (~/.claude/statusline-command.sh) has DRIFTED from the renderer i2p ships (statusline/i2p-statusline.sh): their md5 differs${vstr}. If the user is interested, tell them to run /i2p:statusline to re-copy the current renderer. Mention this at most once; do not nag; never edit settings.json yourself."
 
 if command -v jq >/dev/null 2>&1; then
   jq -cn --arg m "$MSG" --arg c "$CTX" \

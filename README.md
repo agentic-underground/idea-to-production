@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the nine-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, security, publish, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door and concierge greeter, before gently looping." src="docs/images/masthead.svg">
+<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the eight-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, security, publish, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door, before gently looping." src="docs/images/masthead.svg">
 
 # idea-to-production
 
@@ -10,8 +10,8 @@ disciplined, **test-first** value flow: discover ▸ refine ▸ design ▸ build
 </div>
 
 > **Start here →** **`/i2p-help`** browses every power you have · **`/i2p-flow`** shows the pipeline ·
-> **`/i2p-review`** gives one verdict from every reviewer. The **i2p** plugin is the front door;
-> **concierge** greets whoever opens the repo.
+> **`/i2p-review`** gives one verdict from every reviewer. The **i2p** plugin is the front door — it
+> also greets whoever opens the repo (the welcome + the status line).
 
 ---
 
@@ -77,12 +77,12 @@ Not decoration — these are the ideas the whole system obeys. The philosophical
 
 ## The plugins
 
-Nine composable plugins span the whole arc — the **i2p** front door, the **concierge** greeter, and seven
-specialists. Each stands alone; install only what you need.
+Eight composable plugins span the whole arc — the **i2p** front door (which also greets whoever opens the
+repo) and seven specialists. Each stands alone; install only what you need.
 
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
-| **[i2p](plugins/i2p/)** | The marketplace FRONT DOOR / meta-layer: `/i2p-help` browses every power you have (grouped by the value flow), `/i2p-review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p-check` consolidates readiness, `/i2p-flow` maps the pipeline and your next command. Introduces itself on session start. | A single front door to the whole suite — and one review that pulls in *all* the reviewers at once. |
+| **[i2p](plugins/i2p/)** | The marketplace FRONT DOOR / meta-layer + ARRIVAL layer: `/i2p-help` browses every power you have (grouped by the value flow), `/i2p-review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p-check` consolidates readiness, `/i2p-flow` maps the pipeline and your next command. It also GREETS whoever opens the repo — a `SessionStart` hook renders a maintainer-authored `.claude/welcome.md` (**smart-gated**: greets only on a cold/vague open, steps aside for a concrete task), `/i2p:define-welcome` reads a repo and writes that welcome for you, and `/i2p:statusline` turns on a rich two-line **status line** (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). Introduces itself on session start. | A single front door to the whole suite — one review that pulls in *all* the reviewers at once, plus a greeting and a status bar that surface the whole suite at a glance. |
 | **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/discovery-goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
 | **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
 | **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |
@@ -90,11 +90,10 @@ specialists. Each stands alone; install only what you need.
 | **[publish](plugins/publish/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
 | **[atelier](plugins/atelier/)** | The DESIGN studio: `/ui-review` crawls any SPA's routes (screenshot + accessibility snapshot) and writes a **scored, prioritised** critique citing named canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG 2.2); `/mockup` composes polished screens and flows and runs a **convergent** designer↔reviewer loop until they clear a design-fitness rubric. | Visual work — UIs, mockups, user-flows — that is *artistic, elegant, and accessible*, not first-draft. |
 | **[operate](plugins/operate/)** | The OPERATE phase: keep the live product healthy and feed the next cycle — `/operate-gate` runs go-live + steady-state readiness, `/observability` instruments the four golden signals and SLI→SLO→alerts, `/incident` drives severity-tiered response → runbook + blameless postmortem, `/maintain` keeps dependencies/CVEs/certs current, and `/iterate` turns a production signal into a new OPPORTUNITY that re-enters DISCOVER (↻). | To run what you shipped — observe it, respond to incidents, maintain it, and loop its learnings back to discovery. |
-| **[concierge](plugins/concierge/)** | The ARRIVAL layer: a `SessionStart` hook renders a repo's maintainer-authored `.claude/welcome.md` so the agent greets whoever opens it and offers a conversational decision tree — operate the software, or evolve it — routing them to the right command, runbook, or plugin. **Smart-gated** (greets only on a cold/vague open; steps aside for a concrete task). `/concierge:define-welcome` reads a repo and writes its welcome for you. Also ships the idea-to-production **status line** — `/concierge:statusline` turns on a rich two-line bar (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). | Any repo to greet and orient whoever opens it next — plus a status bar that surfaces the whole suite at a glance. |
 
 ## How they compose
 
-The nine plugins form an **eight-phase cycle** — `DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸
+The eight plugins form an **eight-phase cycle** — `DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸
 PUBLISH ▸ OPERATE ↻` — whose learnings loop back to discovery (the masthead above). **ASSURE** (quality)
 and **SECURE** (security) are deliberately **separate first-class gates**.
 
@@ -145,7 +144,6 @@ Add the marketplace, then install whichever plugins you want:
 /plugin install publish@idea-to-production
 /plugin install atelier@idea-to-production
 /plugin install operate@idea-to-production
-/plugin install concierge@idea-to-production
 ```
 
 Each plugin works on its own — `market-scanner` and `ideator` need no build system to help you find and

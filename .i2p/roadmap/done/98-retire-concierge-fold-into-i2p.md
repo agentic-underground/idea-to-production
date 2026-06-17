@@ -1,9 +1,10 @@
 ---
 id: 98
 title: "Retire concierge → fold into i2p"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-17
+completed: 2026-06-17
 depends_on: "—"
 ---
 

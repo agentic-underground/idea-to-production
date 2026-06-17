@@ -4,7 +4,7 @@
 #   bash install.sh            # copy the renderer to ~/.claude and point settings.json at it
 #   bash install.sh off        # remove the statusLine entry from settings.json
 #
-# Run by /concierge:statusline. Portable: copies the plugin's renderer to
+# Run by /i2p:statusline. Portable: copies the plugin's renderer to
 # ~/.claude/statusline-command.sh (settings.json cannot expand ${CLAUDE_PLUGIN_ROOT}),
 # then atomically sets the statusLine command, preserving all other settings keys.
 # Prints a merry toast on success. Never destructive beyond the statusLine key.
@@ -70,5 +70,5 @@ set_statusline "bash ${DST}" || { echo "✗ failed to update settings.json"; exi
 # --- merry toast ---
 printf "%s\n" "${B}${G}🎉 Status line engaged!${R} ${C}idea-to-production${R} is now live at the bottom of your terminal —"
 printf "%s\n" "   gauges (context · rate limits), the ${B}product-lifecycle phase${R}, and the ${B}⚔ caught${R} reviewer tally."
-printf "%s\n" "   ${Y}Tip:${R} run ${B}/concierge:statusline off${R} to remove it. Restart Claude Code (or /reload) to see it."
+printf "%s\n" "   ${Y}Tip:${R} run ${B}/i2p:statusline off${R} to remove it. Restart Claude Code (or /reload) to see it."
 exit 0

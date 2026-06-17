@@ -27,16 +27,18 @@ core_ok=$(check_identical "plugins/*/knowledge/inspection-core.md")
 # and can never be zero:
 #   • the allowlisted archive (docs/history, examples) and the policy text that DESCRIBES the rule
 #     (inspection-core.md, inspector agents, foundry policy/protocols knowledge);
-#   • the concierge status line (install.sh/scripts + its skill/command/README/manifest) — it MUST write
-#     ~/.claude because settings.json cannot expand ${CLAUDE_PLUGIN_ROOT};
+#   • the i2p status line + welcome hooks (statusline/ scripts + the statusline-install/statusline-widgets
+#     skills + commands + the welcome/offer/drift hooks, folded in from the retired concierge) — they MUST
+#     write ~/.claude because settings.json cannot expand ${CLAUDE_PLUGIN_ROOT}, and opt-out state lives
+#     under ~/.claude/hook-state;
 #   • i2p instrumentation + lifecycle cost state, which live under the global ~/.claude/state/ ledger;
 #   • the scorecard's own files (this script, its SKILL/command/schema) and the glossary/self-improve prose
 #     that name the metric — self-references, not couplings.
 port_viol=$(grep -rIn '~/\.claude' plugins/ 2>/dev/null \
   | grep -vE '/(docs/HISTORY|docs/MIGRATION|docs/DEPRECATED)\.md|/examples/|/docs/historical/' \
   | grep -vE '/knowledge/inspection-core\.md|/agents/inspector\.md|/knowledge/(policy|protocols)/' \
-  | grep -vE '/concierge/(statusline/|skills/statusline-install/|commands/statusline\.md|README\.md|\.claude-plugin/plugin\.json)' \
-  | grep -vE '/i2p/knowledge/instrumentation\.md|/i2p/skills/lifecycle/scripts/cost\.sh' \
+  | grep -vE '/i2p/(statusline/|skills/statusline-install/|skills/statusline-widgets/|commands/statusline\.md|commands/statusline-widgets\.md|hooks/(offer-welcome|offer-statusline|offer-doc-alert|check-statusline-drift)\.sh)' \
+  | grep -vE '/i2p/knowledge/instrumentation\.md|/i2p/skills/lifecycle/scripts/cost\.sh|/i2p/hooks/scripts/offer-cache-update\.sh' \
   | grep -vE '/foundry/skills/scorecard/|/foundry/commands/scorecard\.md|/foundry/knowledge/orchestration/scorecard-schema\.md|/foundry/knowledge/glossary\.md|/foundry/skills/self-improve/SKILL\.md' \
   | wc -l | tr -d ' ')
 

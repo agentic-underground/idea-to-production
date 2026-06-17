@@ -21,4 +21,4 @@ See [`../knowledge/instrumentation.md`](../knowledge/instrumentation.md).
 
 For the model itself (owners, academic lineage, entry/exit signals), see
 [`../knowledge/product-lifecycle.md`](../knowledge/product-lifecycle.md) — or run `/i2p-help`, which
-explains the lifecycle and offers to kick one off. Enable the phase widget with `/concierge:statusline`.
+explains the lifecycle and offers to kick one off. Enable the phase widget with `/i2p:statusline`.

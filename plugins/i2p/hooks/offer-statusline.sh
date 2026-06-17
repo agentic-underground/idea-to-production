@@ -3,7 +3,7 @@
 # offering the idea-to-production status line. A splash, nothing more. Never blocks.
 #
 # Fires at most once (atomic sentinel), and never if the status line is already installed.
-# On accept the user runs /concierge:statusline (which prints the merry toast). This hook
+# On accept the user runs /i2p:statusline (which prints the merry toast). This hook
 # only ASKS — it never writes settings.json (respects user agency).
 set -uo pipefail
 
@@ -23,13 +23,13 @@ fi
 mkdir -p "$STATE_DIR" 2>/dev/null || exit 0
 mkdir "$SENTINEL" 2>/dev/null || exit 0   # lost the race / already offered → silent no-op.
 
-MSG="👋 idea-to-production includes an optional rich status line (context & rate-limit gauges, the product-lifecycle phase, a reviewer-catch tally). Want it? Run /concierge:statusline"
-CTX="The concierge plugin offers an optional status line. If the user shows interest, tell them to run /concierge:statusline (and /concierge:statusline off to remove it). Mention this at most once; do not nag."
+MSG="👋 idea-to-production includes an optional rich status line (context & rate-limit gauges, the product-lifecycle phase, a reviewer-catch tally). Want it? Run /i2p:statusline"
+CTX="i2p offers an optional status line. If the user shows interest, tell them to run /i2p:statusline (and /i2p:statusline off to remove it). Mention this at most once; do not nag."
 
 if command -v jq >/dev/null 2>&1; then
   jq -cn --arg m "$MSG" --arg c "$CTX" \
     '{systemMessage:$m, hookSpecificOutput:{hookEventName:"SessionStart", additionalContext:$c}}'
 else
-  printf '{"systemMessage":"👋 idea-to-production includes an optional rich status line. Run /concierge:statusline to enable it.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"The concierge plugin offers an optional status line; suggest /concierge:statusline once if the user is interested."}}\n'
+  printf '{"systemMessage":"👋 idea-to-production includes an optional rich status line. Run /i2p:statusline to enable it.","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"i2p offers an optional status line; suggest /i2p:statusline once if the user is interested."}}\n'
 fi
 exit 0
