@@ -2,8 +2,8 @@
 
 A buildable sub-project (a deployable *service*, not a Claude Code plugin): a **containerised ComfyUI**
 fronted by a dedicated **MCP server** that lets agents generate images through a narrow, validated, allowlisted
-surface — never raw ComfyUI. It is the secured backend for PRESSROOM's
-[`handler-comfyui`](../plugins/pressroom/agents/handler-comfyui.md).
+surface — never raw ComfyUI. It is the secured backend for PUBLISH's
+[`handler-comfyui`](../plugins/publish/agents/handler-comfyui.md).
 
 ## Why this exists
 
@@ -43,8 +43,8 @@ graph. This single decision removes the arbitrary-node / SSRF class.
 ## Built by dogfooding the marketplace
 
 This is the headline: the marketplace builds its own infrastructure. [`EARS.md`](EARS.md) → **foundry** builds
-`server/` test-first to the 100% coverage floor → **sentinel** runs `/security-gate` + `/secret-scan` +
-`/dependency-audit` → **pressroom** documents it. Then `handler-comfyui` switches from raw `curl` to
+`server/` test-first to the 100% coverage floor → **security** runs `/scan-all` + `/scan-for-secrets` +
+`/scan-dependencies` → **publish** documents it. Then `handler-comfyui` switches from raw `curl` to
 `mcp__comfyui__*` tools and the Phase-0 gap is closed. The build is tracked in the marketplace roadmap tree
 [`.i2p/roadmap/`](../.i2p/roadmap/) as EPIC [73] (Phase 1: items 74–78) + Phase 2 (79–80), migrated under
 roadmap item [47]; the implement-or-archive disposition [45] is resolved (implement).

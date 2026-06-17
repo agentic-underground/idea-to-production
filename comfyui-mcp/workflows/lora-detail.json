@@ -45,5 +45,5 @@
     }
   },
   "8": { "class_type": "VAEDecode", "inputs": { "samples": ["11", 0], "vae": ["4", 2] } },
-  "9": { "class_type": "SaveImage", "inputs": { "filename_prefix": "pressroom_lora", "images": ["8", 0] } }
+  "9": { "class_type": "SaveImage", "inputs": { "filename_prefix": "publish_lora", "images": ["8", 0] } }
 }

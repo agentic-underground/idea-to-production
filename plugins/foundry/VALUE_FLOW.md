@@ -6,8 +6,10 @@
 > FOUNDRY is a **production facility**: it does not store configuration, it carries value.
 
 > **Marketplace spine.** FOUNDRY owns the **BUILD** phase *and* the **ASSURE** quality gate of the
-> marketplace-wide **product lifecycle** — eight phases forming a cycle: DISCOVER → IDEATE → DESIGN →
-> **BUILD** → **ASSURE** → SECURE → PUBLISH → OPERATE ↻ (OPERATE loops back to DISCOVER). ASSURE (quality
+> marketplace-wide **product lifecycle** — nine phases forming a cycle: DISCOVER → IDEATE → DELIVER →
+> DESIGN → **BUILD** ⇄ **ASSURE** ⇄ SECURE → PUBLISH → OPERATE ↻ (DELIVER, owned by flow +
+> foundry:roadmapper, sits between IDEATE and DESIGN; the **BUILD ⇄ ASSURE ⇄ SECURE** realisation loop
+> sends a failed ASSURE/SECURE gate back to BUILD; OPERATE loops back to DISCOVER). ASSURE (quality
 > V&V, foundry) and SECURE (security, the security plugin) are separate first-class gates. The canonical lifecycle
 > model is [`../i2p/knowledge/product-lifecycle.md`](../i2p/knowledge/product-lifecycle.md).
 

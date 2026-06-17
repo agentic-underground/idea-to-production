@@ -75,7 +75,7 @@ declaring victory the moment one option edges out a poor sibling.
 When `BEST-REACHED` **or `CAP`**, the orchestrator: writes the asset to `<doc-dir>/diagrams/NN-name.{svg,png}`;
 embeds `![<alt_text>](diagrams/NN-name.ext)` after the SPEC's `insert_after` line (idempotently — see the
 SKILL's ledger section); appends the site's outcome (`winner`, `final_score`, `signal: BEST | CAP`, `turns`,
-and on `CAP` the residual `cap_note`) to `.pressroom/illustration-ledger.json`. A `CAP` outcome ships the
+and on `CAP` the residual `cap_note`) to `.publish/illustration-ledger.json`. A `CAP` outcome ships the
 best-scoring champion under the bound and records the gap; it is *not* re-attempted on a later resumable pass
 unless the doc's `content_hash` changes. In single-shot mode it stops at "emit the asset" and shows it to the
 user without editing the doc, unless asked.

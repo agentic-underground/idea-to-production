@@ -32,7 +32,7 @@ jobs:
   # Gate the whole release on two invariants that keep binary identity honest (defect [92]):
   #   * the tag must NOT already exist as a release — re-cutting a tag ships different bytes under
   #     the same name, the exact failure that stranded machines on a stale release (the [92] incident,
-  #     under the service's former flow-server-v0.2.0 name); and
+  #     under the service's former server name, the v0.2.0 release before the #97 rename to flow-mcp); and
   #   * the tag version must equal Cargo.toml `version`, so the binary's baked, self-reported
   #     version always matches the tag the pin names.
   preflight:

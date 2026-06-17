@@ -90,7 +90,7 @@ jq --arg pos "$POSITIVE" --arg neg "$NEGATIVE" '
   | .["10"].inputs.scale_by=1.5 | .["11"].inputs.denoise=0.45
 ' "$CLAUDE_PLUGIN_ROOT/knowledge/comfyui-workflows/lora-detail.json" > /tmp/wf.json   # _meta stripped above
 PID=$(curl -sf "$COMFYUI/prompt" -X POST -H 'Content-Type: application/json' \
-        --data "$(jq -n --slurpfile p /tmp/wf.json --arg c "pressroom-$$" '{prompt:$p[0], client_id:$c}')" \
+        --data "$(jq -n --slurpfile p /tmp/wf.json --arg c "publish-$$" '{prompt:$p[0], client_id:$c}')" \
       | jq -r '.prompt_id')
 until curl -sf "$COMFYUI/history/$PID" | jq -e --arg p "$PID" '.[$p].outputs' >/dev/null 2>&1; do sleep 3; done
 read -r FN SUB < <(curl -sf "$COMFYUI/history/$PID" | jq -r --arg p "$PID" '.[$p].outputs[] | .images[0] | "\(.filename) \(.subfolder)"')

@@ -607,13 +607,13 @@ smallest text element above the floor with `layout-check.sh` before assembly.
 **Canon rule affected:** `layout-canon.md` §5 — new "How to apply — author above the floor, don't fix below
 it" authoring guidance appended to the inline-legibility rule (extends, does not duplicate, the §5 detector).
 
-**Figure(s)/animation(s) fixed in this round:** `atelier-critique`, `ideator-converge`, `pressroom-press`.
+**Figure(s)/animation(s) fixed in this round:** `atelier-critique`, `ideator-converge`, `publish-press`.
 
 **Article:** `research/image-craft-taste` README animated-figure corpus.
 
 ### Lesson 0028 — 2026-06-11
 
-**Feedback received:** the concierge-welcome figure's key amber greeting was only ever shown mid-typewriter /
+**Feedback received:** the repo-welcome figure's key amber greeting was only ever shown mid-typewriter /
 mid-dissolve and never settled at full opacity, so the most important sentence read as garbled ("we come —
 corcierge"); the fix held the fully-typed greeting as a settled full-opacity poster beat before any fade.
 
@@ -624,7 +624,7 @@ meaning-bearing sentence only mid-transition. The reveal animates; the message m
 **Canon rule affected:** `raster-toolchain.md` Motion canon — new "SETTLE the key label before you fade it"
 motion rule (placed before "FADES, not hard cuts").
 
-**Figure(s)/animation(s) fixed in this round:** `concierge-welcome`.
+**Figure(s)/animation(s) fixed in this round:** the repo-welcome figure.
 
 **Article:** `research/image-craft-taste` README animated-figure corpus.
 

@@ -17,7 +17,7 @@ model: inherit
 
 The specialist plugins each ship a `/check`. This runs them all and gives you **one** readiness picture,
 so you don't have to remember to probe each plugin separately — and, because i2p now also ships the
-welcome hooks and the status line (folded in from the retired concierge), it **first probes its own**
+welcome hooks and the status line (the arrival layer, folded into i2p), it **first probes its own**
 tool dependencies (`jq`/`bash`/`awk`/`git` — the tools those hooks and the renderer use) before
 consolidating the rest.
 

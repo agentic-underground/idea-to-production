@@ -7,7 +7,7 @@ name: verify
 #     parity, well-formed requirements.tsv, shipped .mcp.json ⟺ 40-mcp.md, and no
 #     Probe cell that fetches-and-executes remote code. See scripts/verify-prereqs.sh.
 #   secret-scan-self (P1-11) — the SECURITY slice of the self-observation substrate: runs
-#     gitleaks (SENTINEL's secret-scan tool) over the tree + git history so the marketplace
+#     gitleaks (SECURITY's secret-scan tool) over the tree + git history so the marketplace
 #     dogfoods its own secret lens. Allowlist: .gitleaks.toml.
 #   marketplace-golden-signals (P2-18) — the HEALTH slice of that SAME substrate: runs
 #     OPERATE's observability lens (the four golden signals) over the marketplace's
@@ -27,15 +27,15 @@ jobs:
       - name: Verify the PREREQUISITES contract
         run: bash scripts/verify-prereqs.sh
 
-  # Cobbler's children (P1-11): the marketplace runs SENTINEL's own secret lens on
-  # ITSELF. We invoke gitleaks — the CLI that SENTINEL's /secret-scan skill wraps —
+  # Cobbler's children (P1-11): the marketplace runs SECURITY's own secret lens on
+  # ITSELF. We invoke gitleaks — the CLI that SECURITY's /scan-for-secrets skill wraps —
   # directly over the working tree AND full git history, the deterministic credential
   # slice of the otherwise agent-driven audit. The deep PII audit (names, addresses,
-  # phone numbers — see plugins/sentinel/skills/pii-audit) stays agent-driven; CI
+  # phone numbers — see plugins/security/skills/scan-for-pii) stays agent-driven; CI
   # covers the part a CLI can prove. gitleaks' default ruleset already detects the
-  # high-signal patterns sentinel targets (AWS AKIA…, -----BEGIN…PRIVATE KEY-----,
+  # high-signal patterns security targets (AWS AKIA…, -----BEGIN…PRIVATE KEY-----,
   # provider tokens, high-entropy generic keys). The maintainer's known-good noreply
-  # email and SENTINEL's own documentation placeholders are allowlisted in
+  # email and SECURITY's own documentation placeholders are allowlisted in
   # .gitleaks.toml so the dogfood flags only REAL findings.
   secret-scan-self:
     runs-on: ubuntu-latest

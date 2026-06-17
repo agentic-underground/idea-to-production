@@ -40,13 +40,13 @@ guardrail, and the KAIZEN covenant. Write `I2P_INSPECTION_REPORT.md` to the proj
    script exists, emits valid JSON, ends with `|| true`, never blocks a prompt, and `tips/tips.tsv` holds
    only ≤25-word, honest, capability-accurate tips. `inject-kaizen.sh` and `KAIZEN.md` are byte-identical
    to the canon (Checks N/O), with exactly ONE `inject-kaizen.sh` SessionStart entry (no duplicate).
-5. **Welcome lifecycle integrity (folded from the retired concierge):** `inject-welcome.sh` (renders when
+5. **Welcome lifecycle integrity (the arrival layer, folded into i2p):** `inject-welcome.sh` (renders when
    `.claude/welcome.md` is present) and `offer-welcome.sh` (offers when absent / refreshes a stale managed
    stamp) are true mirror images; the managed-refresh contract VERIFIES the re-stamp and discloses on
    mismatch (never auto-rewrites in the hook); the `i2p:welcome for_phase=…cycle=…` stamp shape
    matches `skills/define-welcome` and `knowledge/welcome-format.md`. Every hook NEVER writes the user's
-   repo — opt-out/sentinel state lives only under `~/.claude/hook-state` (the `concierge-*` marker names
-   are preserved verbatim so a user who already declined stays declined).
+   repo — opt-out/sentinel state lives only under `~/.claude/hook-state` (the `i2p-*` marker names —
+   `i2p-welcome-*`, `i2p-doc-alert-*`, `i2p-statusline-*` — gate each one-time offer per repo).
 6. **Status-line portability + drift + HUD:** the renderer (`statusline/i2p-statusline.sh`) carries an
    `i2p-statusline-version:` stamp; `statusline/install.sh` copies it to `~/.claude/statusline-command.sh`
    (settings.json can't expand `${CLAUDE_PLUGIN_ROOT}`); `check-statusline-drift.sh` compares

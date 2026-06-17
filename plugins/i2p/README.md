@@ -2,7 +2,7 @@
 
 ![Wide dark branding banner: the "i2p" wordmark and the tagline "every plugin, one front door" beside a faint line-art gateway/threshold motif on a deep graphic band.](diagrams/banner.png)
 
-> The marketplace-level front door. Install the suite and you gain great powers across seven specialist
+> The marketplace-level front door. Install the suite and you gain great powers across eight specialist
 > plugins — **i2p** is the plugin that tells you so, and hands you one verbatim place to drive them all.
 
 ![Hub-and-spoke routing animation: an amber dispatch beam sweeps clockwise around the i2p core, lighting each of the seven ringed specialist plugins — market-scanner, ideator, atelier, foundry, security, publish, operate — teal in turn; when the ring is whole every spoke stays lit and the central i2p hub turns green under the caption "all powers routed — one front door, every plugin lit", teaching that i2p is the conductor that dispatches to every plugin.](../../docs/images/i2p-frontdoor.gif)
@@ -19,14 +19,14 @@ review that pulls in *every* reviewer at once. That is i2p.
 | **`/i2p:review`** | A cross-plugin **adversarial review**. Determines scope, fans out *every installed* specialist reviewer — code (foundry `/pr-review`), design (atelier `/ui-review`), rendered docs (publish design-review), security (security `/scan-all`) — adversarially verifies the serious findings, and returns **one** verdict (BLOCK > NEEDS_REVISION > PASS) in `I2P_REVIEW.md`, naming what it could **not** review. |
 | **`/i2p:check`** | Run every installed plugin's `/check` and consolidate the ✓/✗ readiness into one table. |
 | **`/i2p:flow`** | Show where each installed plugin sits in the value flow and the next command at each stage (Mermaid when publish/atelier are present, else markdown). |
-| **`/i2p:define-welcome`** | Author this repo's welcome experience — i2p greets and routes whoever opens it next (folded in from the retired concierge plugin). |
+| **`/i2p:define-welcome`** | Author this repo's welcome experience — i2p greets and routes whoever opens it next (the arrival layer, folded into i2p). |
 | **`/i2p:statusline`** `[off]` | Turn on (or off) the rich two-line idea-to-production status line — context/rate gauges, the lifecycle phase, the ⚔ reviewer-catch tally. |
 | **`/i2p:statusline-widgets`** | Lay out the status line's line-2 widgets to fit your terminal. |
 
 ## How it composes
 
 i2p is a **thin orchestrator**. It owns no review logic, no dependency checks, no diagram engine of its
-own — it **delegates by capability** to the seven specialist plugins and degrades cleanly when any are
+own — it **delegates by capability** to the eight specialist plugins and degrades cleanly when any are
 absent (reporting the gap, never faking coverage). This is the marketplace's "each plugin lights up the
 others when present" pattern, applied at the top level.
 

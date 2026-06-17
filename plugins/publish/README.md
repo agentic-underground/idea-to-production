@@ -8,7 +8,7 @@ PUBLISH mines a project's artefacts (git history, docs, code) for narrative sign
 publication-grade output: articles that land, standalone diagrams that stay legible, and
 print-quality PDFs with embedded figures.
 
-![PUBLISH's illustrate → review → publish craft: a figure SPEC card (subject, dark 4×9 style, A4-legible) emits TWO options A and B, each a small bar-chart figure; the adversarial design-reviewer sweeps option A then option B with an amber scan, scores both, and crowns B ★ BEST as it clears the 4×9 rubric while option A dims away; the chosen figure then moves along a teal arrow into the README's empty figure slot, which turns teal and reads "published ✓" — the whole illustrate→review→publish loop closing on a settled, published page.](../../docs/images/pressroom-press.gif)
+![PUBLISH's illustrate → review → publish craft: a figure SPEC card (subject, dark 4×9 style, A4-legible) emits TWO options A and B, each a small bar-chart figure; the adversarial design-reviewer sweeps option A then option B with an amber scan, scores both, and crowns B ★ BEST as it clears the 4×9 rubric while option A dims away; the chosen figure then moves along a teal arrow into the README's empty figure slot, which turns teal and reads "published ✓" — the whole illustrate→review→publish loop closing on a settled, published page.](../../docs/images/publish-press.gif)
 
 It works on **any** project, standalone. It is also the **PUBLISHING companion** the
 [`foundry`](../foundry/) plugin hands off to: foundry's value artefact is markdown, and when

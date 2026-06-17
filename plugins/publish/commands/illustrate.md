@@ -13,7 +13,7 @@ Then parse `$ARGUMENTS` into one of four modes:
 
 | `$ARGUMENTS` | Mode | Behaviour |
 |---|---|---|
-| `docs` (or empty) | **trawl / loop** | Walk the doc tree from the entry points (`README.md`, `plugins/foundry/VALUE_FLOW.md`, `plugins/foundry/knowledge/glossary.md`, `first-principles.md`), rank sites tree-wide ([site-ranking](../skills/illustrator/references/site-ranking.md)), and drive each above-floor site through the full pipeline. Resumes from `.pressroom/illustration-ledger.json`; embeds the asset + edits the markdown + appends the ledger on each `BEST`. Best run under `/loop /illustrate docs` so it picks up where it left off. |
+| `docs` (or empty) | **trawl / loop** | Walk the doc tree from the entry points (`README.md`, `plugins/foundry/VALUE_FLOW.md`, `plugins/foundry/knowledge/glossary.md`, `first-principles.md`), rank sites tree-wide ([site-ranking](../skills/illustrator/references/site-ranking.md)), and drive each above-floor site through the full pipeline. Resumes from `.publish/illustration-ledger.json`; embeds the asset + edits the markdown + appends the ledger on each `BEST`. Best run under `/loop /illustrate docs` so it picks up where it left off. |
 | `this` | **current context** | Illustrate the doc/file currently in context (the one just discussed or open). Single-shot per site; shows the asset, does not edit the doc unless asked. |
 | `{filename}` (an existing path) | **one file** | Rank sites in that one file and illustrate each above the floor. |
 | `{content area}` (free text, no such path) | **described section** | Locate the described section by grepping the tree, then illustrate that site. |
