@@ -1,9 +1,10 @@
 ---
 id: 16
 title: "EPIC — KAIZEN UPLIFT: GEMBA feedback reflex + missing-handler decision gate"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "—"
 ---
 
