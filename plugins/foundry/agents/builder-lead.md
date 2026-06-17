@@ -193,7 +193,7 @@ for items with no comparable history.
 
 ## Phase 4.5 — Cycle-Integrity Self-Heal (pre-flight gates)
 
-Before emitting the plan, run these detect-and-degrade checks. Each states what it detects, the safe
+Before emitting the plan, run these detect-and-decide / detect-and-warn checks. Each states what it detects, the safe
 action, and where the governing protocol lives. None of them mutate the codebase; they HALT or WARN.
 
 ### Roster cross-check — reviewer roles & handlers exist (P2-4)

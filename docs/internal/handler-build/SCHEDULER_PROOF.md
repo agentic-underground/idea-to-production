@@ -1,5 +1,10 @@
 # Why the scheduler would have organised this build as haiku → sonnet → opus → review
 
+> **The discipline this pipeline applies:** every handler authored through this handler-build pipeline
+> (research → synthesis → build → review) is routed to the pinned-version-matrix + FORBIDDEN-list covenant
+> in [`../../../plugins/foundry/knowledge/orchestration/handler-authoring-discipline.md`](../../../plugins/foundry/knowledge/orchestration/handler-authoring-discipline.md).
+> The four-wave shape proven below **is** that doc's four-wave build pipeline — this is the run that derived it.
+
 This pipeline was **not** shaped by preference. Given the four phases of "produce a value-handler
 from research", the token-fairness scheduler's routing rule emits this exact shape — tiers, wave
 widths, off-peak ordering, and consent — deterministically. This document records the proof, run on

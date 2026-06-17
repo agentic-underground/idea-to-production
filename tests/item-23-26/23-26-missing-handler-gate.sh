@@ -10,9 +10,9 @@ CHALLENGE="plugins/ideator/knowledge/ideation/challenge-protocol.md"
 IDEA="plugins/ideator/knowledge/ideation/idea-package.md"
 GATE="plugins/foundry/knowledge/orchestration/missing-handler-gate.md"
 DISC="plugins/foundry/knowledge/orchestration/handler-authoring-discipline.md"
-MANIFEST="plugins/foundry/skills/rust-webapp-rollout/references/00-MANIFEST.md"
+HANDLER_BUILD="docs/internal/handler-build"
 
-for f in "$LEAD" "$BUILDER" "$CHALLENGE" "$IDEA" "$GATE" "$DISC" "$MANIFEST"; do
+for f in "$LEAD" "$BUILDER" "$CHALLENGE" "$IDEA" "$GATE" "$DISC"; do
   [ -r "$f" ] || { echo "FAIL: $f not found"; exit 1; }
 done
 
@@ -54,9 +54,12 @@ grep -qi 'pinned version matrix' "$DISC" || { echo "FAIL[25]: discipline doc mus
 grep -q 'FORBIDDEN' "$DISC" || { echo "FAIL[25]: discipline doc must require a FORBIDDEN list"; FAIL=1; }
 grep -qi 'kaizen' "$DISC" || { echo "FAIL[25]: discipline doc must carry the KAIZEN covenant"; FAIL=1; }
 grep -qi 'four-wave' "$DISC" || { echo "FAIL[25]: discipline doc must name the four-wave build pipeline"; FAIL=1; }
-# Referenced by the handler-build pipeline (the rust-webapp MANIFEST) AND #24's BUILD path (the gate doc).
-grep -q 'handler-authoring-discipline.md' "$MANIFEST" \
-  || { echo "FAIL[25]: the handler-build pipeline (MANIFEST) must reference the discipline doc"; FAIL=1; }
+# Referenced by the handler-build pipeline material AND #24's BUILD path (the gate doc).
+# The real forward link: the handler-build pipeline run-of-record routes every handler it authors to
+# the discipline (so "referenced by the handler-build pipeline" is TRUE, not a MANIFEST stand-in).
+[ -d "$HANDLER_BUILD" ] || { echo "FAIL[25]: handler-build pipeline material dir $HANDLER_BUILD not found"; FAIL=1; }
+grep -rq 'handler-authoring-discipline.md' "$HANDLER_BUILD" \
+  || { echo "FAIL[25]: the handler-build pipeline material ($HANDLER_BUILD) must reference the discipline doc"; FAIL=1; }
 grep -q 'handler-authoring-discipline.md' "$GATE" \
   || { echo "FAIL[25]: the gate's BUILD path must reference the discipline doc"; FAIL=1; }
 # The typst PDF pain is flagged as a SEPARATE pressroom self-improvement issue, not fixed here.
