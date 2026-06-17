@@ -1,20 +1,18 @@
 //! Exhaustive MCP JSON-RPC surface contract: tools/list, every one of the
-//! fourteen `tools/call` verbs (happy + error/abuse/malformed-params), the
-//! unknown-tool and unknown-method envelopes, and the 401/no-token gate. Drives
-//! the real axum router via `oneshot`.
+//! fourteen `tools/call` verbs (happy + error/abuse/malformed-params), and the
+//! unknown-tool and unknown-method envelopes. Drives `mcp::dispatch` directly
+//! (the stdio transport's entry point; the HTTP `/mcp` route was removed in
+//! roadmap #39).
 
 use std::sync::Arc;
 
-use crate::api::build_router;
+use crate::api::AppState;
 use crate::auth::Token;
 use crate::domain::ItemId;
+use crate::mcp;
 use crate::store::Store;
 
-use axum::body::Body;
-use axum::http::{Request, StatusCode};
-use http_body_util::BodyExt;
 use serde_json::{json, Value};
-use tower::ServiceExt;
 
 const TOK: &str = "tok";
 
@@ -27,7 +25,7 @@ fn tempdir(tag: &str) -> std::path::PathBuf {
     dir
 }
 
-async fn seeded(tag: &str) -> (axum::Router, Arc<Store>) {
+async fn seeded(tag: &str) -> (AppState, Arc<Store>) {
     let dir = tempdir(tag);
     let store = Arc::new(Store::open(&dir).await.unwrap());
     for s in ["a", "b"] {
@@ -40,28 +38,16 @@ async fn seeded(tag: &str) -> (axum::Router, Arc<Store>) {
             .await
             .unwrap();
     }
-    let router = build_router(Arc::clone(&store), Token::new(TOK), dir.join("static"));
-    (router, store)
+    let state = AppState {
+        store: Arc::clone(&store),
+        token: Token::new(TOK),
+    };
+    (state, store)
 }
 
-async fn rpc(router: &axum::Router, body: Value) -> (StatusCode, Value) {
-    let resp = router
-        .clone()
-        .oneshot(
-            Request::builder()
-                .method("POST")
-                .uri("/mcp")
-                .header("Authorization", format!("Bearer {TOK}"))
-                .header("content-type", "application/json")
-                .body(Body::from(body.to_string()))
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    let status = resp.status();
-    let bytes = resp.into_body().collect().await.unwrap().to_bytes();
-    let v: Value = serde_json::from_slice(&bytes).unwrap_or(Value::Null);
-    (status, v)
+/// Dispatch a JSON-RPC request `Value` and return the response `Value`.
+async fn rpc(state: &AppState, body: Value) -> Value {
+    mcp::dispatch(state, body).await
 }
 
 /// Build a `tools/call` envelope for `name` with `arguments`.
@@ -77,13 +63,12 @@ fn call(id: i64, name: &str, args: Value) -> Value {
 
 #[tokio::test]
 async fn tools_list_enumerates_the_fourteen_verbs() {
-    let (router, _store) = seeded("list").await;
-    let (status, v) = rpc(
-        &router,
+    let (state, _store) = seeded("list").await;
+    let v = rpc(
+        &state,
         json!({"jsonrpc":"2.0","id":1,"method":"tools/list"}),
     )
     .await;
-    assert_eq!(status, StatusCode::OK);
     let tools = v["result"]["tools"].as_array().unwrap();
     // Nine original verbs plus roadmap #15 (render_roadmap), roadmap #4
     // (annotate, request_rewrite), the event-log reader (list_events), and the
@@ -116,9 +101,9 @@ async fn tools_list_enumerates_the_fourteen_verbs() {
 
 #[tokio::test]
 async fn list_events_returns_the_log_newest_last() {
-    let (router, store) = seeded("le-ok").await;
-    let (_s, _) = rpc(&router, call(1, "append_sysmsg", json!({"text":"go"}))).await;
-    let (_s, v) = rpc(&router, call(2, "list_events", json!({}))).await;
+    let (state, store) = seeded("le-ok").await;
+    let _ = rpc(&state, call(1, "append_sysmsg", json!({"text":"go"}))).await;
+    let v = rpc(&state, call(2, "list_events", json!({}))).await;
     let events = v["result"]["events"].as_array().unwrap();
     // Two seed upserts plus the sysmsg, in append order.
     let logged = store.read_events().await.unwrap();
@@ -146,55 +131,55 @@ async fn list_events_read_error_is_internal() {
     log.push_str("{not valid json}\n");
     std::fs::write(dir.join("events.jsonl"), log).unwrap();
 
-    let router = build_router(Arc::clone(&store), Token::new(TOK), dir.join("static"));
-    let (_s, v) = rpc(&router, call(1, "list_events", json!({}))).await;
+    let state = AppState {
+        store,
+        token: Token::new(TOK),
+    };
+    let v = rpc(&state, call(1, "list_events", json!({}))).await;
     assert_eq!(v["error"]["code"], -32603);
     assert_eq!(v["error"]["data"]["error"], "io");
 }
 
 #[tokio::test]
 async fn list_events_filters_by_kind() {
-    let (router, _store) = seeded("le-filter").await;
-    let (_s, _) = rpc(&router, call(1, "append_sysmsg", json!({"text":"x"}))).await;
-    let (_s, v) = rpc(&router, call(2, "list_events", json!({"kind":"sys_msg"}))).await;
+    let (state, _store) = seeded("le-filter").await;
+    let _ = rpc(&state, call(1, "append_sysmsg", json!({"text":"x"}))).await;
+    let v = rpc(&state, call(2, "list_events", json!({"kind":"sys_msg"}))).await;
     let events = v["result"]["events"].as_array().unwrap();
     assert_eq!(events.len(), 1);
     assert_eq!(events[0]["kind"], "sys_msg");
 
     // A non-string `kind` is ignored (returns the full log), not an error.
-    let (_s, v) = rpc(&router, call(3, "list_events", json!({"kind":42}))).await;
+    let v = rpc(&state, call(3, "list_events", json!({"kind":42}))).await;
     let events = v["result"]["events"].as_array().unwrap();
     assert_eq!(events.len(), 3);
 }
 
 #[tokio::test]
 async fn unknown_method_is_method_not_found() {
-    let (router, _store) = seeded("unknown-method").await;
-    let (status, v) = rpc(
-        &router,
+    let (state, _store) = seeded("unknown-method").await;
+    let v = rpc(
+        &state,
         json!({"jsonrpc":"2.0","id":9,"method":"resources/read"}),
     )
     .await;
-    assert_eq!(status, StatusCode::OK);
     assert_eq!(v["error"]["code"], -32601);
     assert_eq!(v["id"], 9);
 }
 
 #[tokio::test]
 async fn missing_method_field_is_method_not_found() {
-    let (router, _store) = seeded("no-method").await;
+    let (state, _store) = seeded("no-method").await;
     // No `method`, no `id`: method defaults to "" (unknown) and id to null.
-    let (status, v) = rpc(&router, json!({"jsonrpc":"2.0"})).await;
-    assert_eq!(status, StatusCode::OK);
+    let v = rpc(&state, json!({"jsonrpc":"2.0"})).await;
     assert_eq!(v["error"]["code"], -32601);
     assert_eq!(v["id"], Value::Null);
 }
 
 #[tokio::test]
 async fn unknown_tool_is_invalid_params() {
-    let (router, _store) = seeded("unknown-tool").await;
-    let (status, v) = rpc(&router, call(2, "delete_everything", json!({}))).await;
-    assert_eq!(status, StatusCode::OK);
+    let (state, _store) = seeded("unknown-tool").await;
+    let v = rpc(&state, call(2, "delete_everything", json!({}))).await;
     assert_eq!(v["error"]["code"], -32602);
     assert!(v["error"]["message"]
         .as_str()
@@ -204,75 +189,54 @@ async fn unknown_tool_is_invalid_params() {
 
 #[tokio::test]
 async fn call_with_no_params_defaults_to_empty_unknown_tool() {
-    let (router, _store) = seeded("no-params").await;
+    let (state, _store) = seeded("no-params").await;
     // tools/call with no params object: name defaults to "" → unknown tool.
-    let (status, v) = rpc(
-        &router,
+    let v = rpc(
+        &state,
         json!({"jsonrpc":"2.0","id":3,"method":"tools/call"}),
     )
     .await;
-    assert_eq!(status, StatusCode::OK);
     assert_eq!(v["error"]["code"], -32602);
-}
-
-#[tokio::test]
-async fn rejects_without_token() {
-    let (router, _store) = seeded("no-token").await;
-    let resp = router
-        .oneshot(
-            Request::builder()
-                .method("POST")
-                .uri("/mcp")
-                .header("content-type", "application/json")
-                .body(Body::from(
-                    json!({"jsonrpc":"2.0","id":1,"method":"tools/list"}).to_string(),
-                ))
-                .unwrap(),
-        )
-        .await
-        .unwrap();
-    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 }
 
 // --- list_items / get_item ------------------------------------------------
 
 #[tokio::test]
 async fn list_items_returns_seeded() {
-    let (router, _store) = seeded("li").await;
-    let (status, v) = rpc(&router, call(1, "list_items", json!({}))).await;
-    assert_eq!(status, StatusCode::OK);
-    // Response shape is now grouped; both seeded items are PENDING/GO.
+    let (state, _store) = seeded("li").await;
+    let v = rpc(&state, call(1, "list_items", json!({}))).await;
+    // Response shape is grouped; both seeded items are PENDING/GO.
     assert_eq!(v["result"]["pending"]["go"].as_array().unwrap().len(), 2);
 }
 
 #[tokio::test]
 async fn get_item_happy() {
-    let (router, _store) = seeded("gi-ok").await;
-    let (_s, v) = rpc(&router, call(1, "get_item", json!({"id":"a"}))).await;
+    let (state, _store) = seeded("gi-ok").await;
+    let v = rpc(&state, call(1, "get_item", json!({"id":"a"}))).await;
     assert_eq!(v["result"]["item"]["id"], "a");
 }
 
 #[tokio::test]
 async fn get_item_unknown_is_typed_error() {
-    let (router, _store) = seeded("gi-unknown").await;
-    let (_s, v) = rpc(&router, call(1, "get_item", json!({"id":"zzz"}))).await;
+    let (state, _store) = seeded("gi-unknown").await;
+    let v = rpc(&state, call(1, "get_item", json!({"id":"zzz"}))).await;
     assert_eq!(v["error"]["code"], -32004);
     assert_eq!(v["error"]["data"]["error"], "unknown");
 }
 
 #[tokio::test]
 async fn get_item_missing_id_arg_is_invalid_params() {
-    let (router, _store) = seeded("gi-noarg").await;
-    let (_s, v) = rpc(&router, call(1, "get_item", json!({}))).await;
+    let (state, _store) = seeded("gi-noarg").await;
+    let v = rpc(&state, call(1, "get_item", json!({}))).await;
     assert_eq!(v["error"]["code"], -32602);
     assert!(v["error"]["message"].as_str().unwrap().contains("id"));
 }
 
 #[tokio::test]
 async fn get_item_bad_slug_is_invalid_params() {
-    let (router, _store) = seeded("gi-badslug").await;
+    let (state, _store) = seeded("gi-badslug").await;
     // A non-empty but invalid slug fails ItemId::new, not the "must be a string" path.
-    let (_s, v) = rpc(&router, call(1, "get_item", json!({"id":"BAD"}))).await;
+    let v = rpc(&state, call(1, "get_item", json!({"id":"BAD"}))).await;
     assert_eq!(v["error"]["code"], -32602);
 }
 
@@ -280,9 +244,9 @@ async fn get_item_bad_slug_is_invalid_params() {
 
 #[tokio::test]
 async fn set_wait_go_happy() {
-    let (router, _store) = seeded("swg-ok").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("swg-ok").await;
+    let v = rpc(
+        &state,
         call(1, "set_wait_go", json!({"id":"a","gate":"wait"})),
     )
     .await;
@@ -291,9 +255,9 @@ async fn set_wait_go_happy() {
 
 #[tokio::test]
 async fn set_wait_go_bad_id_is_invalid_params() {
-    let (router, _store) = seeded("swg-badid").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("swg-badid").await;
+    let v = rpc(
+        &state,
         call(1, "set_wait_go", json!({"id":123,"gate":"go"})),
     )
     .await;
@@ -302,17 +266,17 @@ async fn set_wait_go_bad_id_is_invalid_params() {
 
 #[tokio::test]
 async fn set_wait_go_missing_gate_is_invalid_params() {
-    let (router, _store) = seeded("swg-nogate").await;
-    let (_s, v) = rpc(&router, call(1, "set_wait_go", json!({"id":"a"}))).await;
+    let (state, _store) = seeded("swg-nogate").await;
+    let v = rpc(&state, call(1, "set_wait_go", json!({"id":"a"}))).await;
     assert_eq!(v["error"]["code"], -32602);
     assert!(v["error"]["message"].as_str().unwrap().contains("gate"));
 }
 
 #[tokio::test]
 async fn set_wait_go_bad_gate_value_is_invalid_params() {
-    let (router, _store) = seeded("swg-badgate").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("swg-badgate").await;
+    let v = rpc(
+        &state,
         call(1, "set_wait_go", json!({"id":"a","gate":"halt"})),
     )
     .await;
@@ -321,9 +285,9 @@ async fn set_wait_go_bad_gate_value_is_invalid_params() {
 
 #[tokio::test]
 async fn set_wait_go_unknown_item_is_store_error() {
-    let (router, _store) = seeded("swg-unknown").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("swg-unknown").await;
+    let v = rpc(
+        &state,
         call(1, "set_wait_go", json!({"id":"zzz","gate":"go"})),
     )
     .await;
@@ -335,9 +299,9 @@ async fn set_wait_go_unknown_item_is_store_error() {
 
 #[tokio::test]
 async fn post_status_happy() {
-    let (router, _store) = seeded("ps-ok").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("ps-ok").await;
+    let v = rpc(
+        &state,
         call(1, "post_status", json!({"id":"a","status":"doing"})),
     )
     .await;
@@ -346,9 +310,9 @@ async fn post_status_happy() {
 
 #[tokio::test]
 async fn post_status_bad_id_is_invalid_params() {
-    let (router, _store) = seeded("ps-badid").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("ps-badid").await;
+    let v = rpc(
+        &state,
         call(1, "post_status", json!({"id":42,"status":"do"})),
     )
     .await;
@@ -357,22 +321,22 @@ async fn post_status_bad_id_is_invalid_params() {
 
 #[tokio::test]
 async fn post_status_missing_status_is_invalid_params() {
-    let (router, _store) = seeded("ps-nostatus").await;
-    let (_s, v) = rpc(&router, call(1, "post_status", json!({"id":"a"}))).await;
+    let (state, _store) = seeded("ps-nostatus").await;
+    let v = rpc(&state, call(1, "post_status", json!({"id":"a"}))).await;
     assert_eq!(v["error"]["code"], -32602);
     assert!(v["error"]["message"].as_str().unwrap().contains("status"));
 }
 
 #[tokio::test]
 async fn post_status_blocked_while_wait_is_store_error() {
-    let (router, _store) = seeded("ps-wait").await;
-    let (_s, _) = rpc(
-        &router,
+    let (state, _store) = seeded("ps-wait").await;
+    let _ = rpc(
+        &state,
         call(1, "set_wait_go", json!({"id":"a","gate":"wait"})),
     )
     .await;
-    let (_s, v) = rpc(
-        &router,
+    let v = rpc(
+        &state,
         call(2, "post_status", json!({"id":"a","status":"doing"})),
     )
     .await;
@@ -384,9 +348,9 @@ async fn post_status_blocked_while_wait_is_store_error() {
 
 #[tokio::test]
 async fn append_spend_happy_returns_total() {
-    let (router, _store) = seeded("as-ok").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("as-ok").await;
+    let v = rpc(
+        &state,
         call(1, "append_spend", json!({"id":"a","delta":17})),
     )
     .await;
@@ -395,9 +359,9 @@ async fn append_spend_happy_returns_total() {
 
 #[tokio::test]
 async fn append_spend_bad_id_is_invalid_params() {
-    let (router, _store) = seeded("as-badid").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("as-badid").await;
+    let v = rpc(
+        &state,
         call(1, "append_spend", json!({"id":true,"delta":1})),
     )
     .await;
@@ -406,9 +370,9 @@ async fn append_spend_bad_id_is_invalid_params() {
 
 #[tokio::test]
 async fn append_spend_non_numeric_delta_is_invalid_params() {
-    let (router, _store) = seeded("as-baddelta").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("as-baddelta").await;
+    let v = rpc(
+        &state,
         call(1, "append_spend", json!({"id":"a","delta":"lots"})),
     )
     .await;
@@ -418,9 +382,9 @@ async fn append_spend_non_numeric_delta_is_invalid_params() {
 
 #[tokio::test]
 async fn append_spend_unknown_item_is_store_error() {
-    let (router, _store) = seeded("as-unknown").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("as-unknown").await;
+    let v = rpc(
+        &state,
         call(1, "append_spend", json!({"id":"zzz","delta":1})),
     )
     .await;
@@ -432,9 +396,9 @@ async fn append_spend_unknown_item_is_store_error() {
 
 #[tokio::test]
 async fn set_item_model_happy() {
-    let (router, _store) = seeded("sim-ok").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("sim-ok").await;
+    let v = rpc(
+        &state,
         call(
             1,
             "set_item_model",
@@ -447,9 +411,9 @@ async fn set_item_model_happy() {
 
 #[tokio::test]
 async fn set_item_model_bad_id_is_invalid_params() {
-    let (router, _store) = seeded("sim-badid").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("sim-badid").await;
+    let v = rpc(
+        &state,
         call(1, "set_item_model", json!({"id":1,"model":"x"})),
     )
     .await;
@@ -458,8 +422,8 @@ async fn set_item_model_bad_id_is_invalid_params() {
 
 #[tokio::test]
 async fn set_item_model_missing_model_is_invalid_params() {
-    let (router, _store) = seeded("sim-nomodel").await;
-    let (_s, v) = rpc(&router, call(1, "set_item_model", json!({"id":"a"}))).await;
+    let (state, _store) = seeded("sim-nomodel").await;
+    let v = rpc(&state, call(1, "set_item_model", json!({"id":"a"}))).await;
     assert_eq!(v["error"]["code"], -32602);
     assert!(v["error"]["message"].as_str().unwrap().contains("model"));
 }
@@ -468,9 +432,9 @@ async fn set_item_model_missing_model_is_invalid_params() {
 
 #[tokio::test]
 async fn validate_connection_ok() {
-    let (router, _store) = seeded("vc-ok").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("vc-ok").await;
+    let v = rpc(
+        &state,
         call(1, "validate_connection", json!({"from":"a","to":"b"})),
     )
     .await;
@@ -479,9 +443,9 @@ async fn validate_connection_ok() {
 
 #[tokio::test]
 async fn validate_connection_bad_from_id_is_invalid_params() {
-    let (router, _store) = seeded("vc-badfrom").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("vc-badfrom").await;
+    let v = rpc(
+        &state,
         call(1, "validate_connection", json!({"from":99,"to":"b"})),
     )
     .await;
@@ -490,11 +454,11 @@ async fn validate_connection_bad_from_id_is_invalid_params() {
 
 #[tokio::test]
 async fn validate_connection_bad_to_id_is_invalid_params() {
-    let (router, _store) = seeded("vc-badto").await;
+    let (state, _store) = seeded("vc-badto").await;
     // from is a valid slug; to is a valid string but an invalid slug, exercising
     // arg_pair's second `?`.
-    let (_s, v) = rpc(
-        &router,
+    let v = rpc(
+        &state,
         call(1, "validate_connection", json!({"from":"a","to":"BAD"})),
     )
     .await;
@@ -503,9 +467,9 @@ async fn validate_connection_bad_to_id_is_invalid_params() {
 
 #[tokio::test]
 async fn validate_connection_unknown_is_graph_error() {
-    let (router, _store) = seeded("vc-unknown").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("vc-unknown").await;
+    let v = rpc(
+        &state,
         call(1, "validate_connection", json!({"from":"a","to":"zzz"})),
     )
     .await;
@@ -517,9 +481,9 @@ async fn validate_connection_unknown_is_graph_error() {
 
 #[tokio::test]
 async fn mutate_connection_add_then_remove() {
-    let (router, store) = seeded("mc-ok").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, store) = seeded("mc-ok").await;
+    let v = rpc(
+        &state,
         call(
             1,
             "mutate_connection",
@@ -529,8 +493,8 @@ async fn mutate_connection_add_then_remove() {
     .await;
     assert_eq!(v["result"]["ok"], true);
     assert_eq!(store.snapshot().await.edges().len(), 1);
-    let (_s, v) = rpc(
-        &router,
+    let v = rpc(
+        &state,
         call(
             2,
             "mutate_connection",
@@ -544,9 +508,9 @@ async fn mutate_connection_add_then_remove() {
 
 #[tokio::test]
 async fn mutate_connection_bad_op_is_invalid_params() {
-    let (router, _store) = seeded("mc-badop").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("mc-badop").await;
+    let v = rpc(
+        &state,
         call(
             1,
             "mutate_connection",
@@ -560,9 +524,9 @@ async fn mutate_connection_bad_op_is_invalid_params() {
 
 #[tokio::test]
 async fn mutate_connection_bad_id_is_invalid_params() {
-    let (router, _store) = seeded("mc-badid").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("mc-badid").await;
+    let v = rpc(
+        &state,
         call(
             1,
             "mutate_connection",
@@ -575,9 +539,9 @@ async fn mutate_connection_bad_id_is_invalid_params() {
 
 #[tokio::test]
 async fn mutate_connection_remove_missing_is_broken_dep() {
-    let (router, _store) = seeded("mc-broken").await;
-    let (_s, v) = rpc(
-        &router,
+    let (state, _store) = seeded("mc-broken").await;
+    let v = rpc(
+        &state,
         call(
             1,
             "mutate_connection",
@@ -591,9 +555,9 @@ async fn mutate_connection_remove_missing_is_broken_dep() {
 
 #[tokio::test]
 async fn mutate_connection_cycle_is_graph_error() {
-    let (router, _store) = seeded("mc-cycle").await;
-    let (_s, _) = rpc(
-        &router,
+    let (state, _store) = seeded("mc-cycle").await;
+    let _ = rpc(
+        &state,
         call(
             1,
             "mutate_connection",
@@ -601,8 +565,8 @@ async fn mutate_connection_cycle_is_graph_error() {
         ),
     )
     .await;
-    let (_s, v) = rpc(
-        &router,
+    let v = rpc(
+        &state,
         call(
             2,
             "mutate_connection",
@@ -617,15 +581,15 @@ async fn mutate_connection_cycle_is_graph_error() {
 
 #[tokio::test]
 async fn append_sysmsg_happy() {
-    let (router, _store) = seeded("sm-ok").await;
-    let (_s, v) = rpc(&router, call(1, "append_sysmsg", json!({"text":"go"}))).await;
+    let (state, _store) = seeded("sm-ok").await;
+    let v = rpc(&state, call(1, "append_sysmsg", json!({"text":"go"}))).await;
     assert_eq!(v["result"]["ok"], true);
 }
 
 #[tokio::test]
 async fn append_sysmsg_missing_text_is_invalid_params() {
-    let (router, _store) = seeded("sm-notext").await;
-    let (_s, v) = rpc(&router, call(1, "append_sysmsg", json!({}))).await;
+    let (state, _store) = seeded("sm-notext").await;
+    let v = rpc(&state, call(1, "append_sysmsg", json!({}))).await;
     assert_eq!(v["error"]["code"], -32602);
     assert!(v["error"]["message"].as_str().unwrap().contains("text"));
 }

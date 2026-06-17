@@ -108,14 +108,16 @@ impl Store {
         Ok(store)
     }
 
-    /// Subscribe to the live delta stream (for WS fan-out).
+    /// Subscribe to the live delta stream. (The WebSocket fan-out that consumed
+    /// this was removed in roadmap #39; the channel remains for any in-process
+    /// delta-stream consumer and is exercised by the store contract tests.)
     pub fn subscribe(&self) -> broadcast::Receiver<Event> {
         self.tx.subscribe()
     }
 
-    /// Number of live delta subscribers (one per connected WS client). A
-    /// read-only observability accessor: it lets a caller (and tests) tell when
-    /// a client's stream has ended without reaching into the broadcast channel.
+    /// Number of live delta subscribers. A read-only observability accessor: it
+    /// lets a caller (and tests) tell when a subscriber's stream has ended
+    /// without reaching into the broadcast channel.
     pub fn subscriber_count(&self) -> usize {
         self.tx.receiver_count()
     }
@@ -500,7 +502,9 @@ impl Store {
     // --- internal ---------------------------------------------------------
 
     /// Append the event to the JSONL log, re-render the markdown view, and
-    /// broadcast the delta — all while holding the single lock.
+    /// publish the event on the internal broadcast channel — all while holding
+    /// the single lock. (The channel is retained for an in-process delta-stream
+    /// consumer; the WebSocket fan-out that drove it was removed in roadmap #39.)
     async fn commit(&self, guard: &mut Inner, event: Event) -> Result<(), StoreError> {
         // Serialize first, then append. `into_store_line` is non-generic and maps
         // BOTH arms of the serde result (an `Event` always serializes, but a

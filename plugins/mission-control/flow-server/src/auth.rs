@@ -1,17 +1,11 @@
 //! Bearer-token auth. The shared token is read from a local file (generated on
-//! first run). The same gate guards HTTP, WS, and MCP: every request must carry
-//! `Authorization: Bearer <token>` (or `?token=<token>` for the WS handshake,
-//! which cannot set headers from a browser). A missing/invalid token is 401 and
-//! mutates nothing.
+//! first run). The web UI's HTTP/WS gate was removed in roadmap #39, so the
+//! token is no longer presented over a transport; the type is retained because
+//! `AppState` carries it and `main` still loads/creates the token file, keeping
+//! the shared-secret on disk for any future re-introduction.
 
 use std::path::Path;
 use std::sync::Arc;
-
-use axum::body::Body;
-use axum::extract::State;
-use axum::http::{Request, StatusCode};
-use axum::middleware::Next;
-use axum::response::Response;
 
 /// The shared bearer token.
 #[derive(Debug, Clone)]
@@ -72,32 +66,6 @@ fn generate_token() -> String {
         .unwrap_or(0);
     let pid = std::process::id();
     format!("{nanos:x}{pid:x}")
-}
-
-/// Axum middleware: reject any request lacking a valid bearer token with 401,
-/// before it reaches a handler that could mutate state.
-pub async fn require_token(
-    State(token): State<Token>,
-    request: Request<Body>,
-    next: Next,
-) -> Response {
-    let presented = request
-        .headers()
-        .get(axum::http::header::AUTHORIZATION)
-        .and_then(|v| v.to_str().ok())
-        .and_then(Token::from_bearer_header);
-
-    match presented {
-        Some(p) if token.matches(p) => next.run(request).await,
-        _ => unauthorized(),
-    }
-}
-
-fn unauthorized() -> Response {
-    Response::builder()
-        .status(StatusCode::UNAUTHORIZED)
-        .body(Body::from("missing or invalid bearer token"))
-        .expect("static 401 response is always valid")
 }
 
 #[cfg(test)]

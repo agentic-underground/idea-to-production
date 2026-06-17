@@ -1,24 +1,14 @@
-//! Server configuration: host (default LAN-reachable), port, token path, and
-//! the static-asset directory. Parsed from CLI args in `main.rs`.
+//! Server configuration: the token path, data directory, and roadmap source.
+//! Parsed from CLI args in `main.rs`. The web-UI binding flags (`--host`,
+//! `--port`, `--static`) were removed with the HTTP server in roadmap #39.
 
-use std::net::{IpAddr, Ipv4Addr};
 use std::path::PathBuf;
 
 /// Runtime configuration for the flow server.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Config {
-    /// Bind host. Default `0.0.0.0` (LAN-reachable, per the spec).
-    pub host: IpAddr,
-    /// Bind port.
-    pub port: u16,
-    /// True when `--port` was explicitly supplied by the caller; false when
-    /// defaulted. Used to suppress the "port is ignored" warning in `--mcp`
-    /// mode unless the caller actually passed `--port`.
-    pub port_explicit: bool,
     /// Path to the shared bearer-token file (created on first run).
     pub token_path: PathBuf,
-    /// Directory holding the static frontend assets.
-    pub static_dir: PathBuf,
     /// Directory holding the flow state (JSONL + markdown).
     pub data_dir: PathBuf,
     /// Optional roadmap source to ingest on startup so the board is not blank.
@@ -27,19 +17,15 @@ pub struct Config {
     /// makes `main` fall back to the conventional `.i2p/roadmap/` tree if present,
     /// else an empty store.
     pub roadmap_path: Option<PathBuf>,
-    /// When true, run in stdio JSON-RPC (MCP) mode instead of HTTP server mode.
-    /// Default `false`. Activated by the `--mcp` flag.
+    /// Accepted for back-compat (roadmap #39 made stdio the only transport, so
+    /// the flag is a harmless no-op). Default `false`; set by the `--mcp` flag.
     pub mcp: bool,
 }
 
 impl Default for Config {
     fn default() -> Self {
         Config {
-            host: IpAddr::V4(Ipv4Addr::UNSPECIFIED),
-            port: 7421,
-            port_explicit: false,
             token_path: PathBuf::from(".flow/token"),
-            static_dir: PathBuf::from("static"),
             data_dir: PathBuf::from(".flow"),
             roadmap_path: None,
             mcp: false,
@@ -48,36 +34,17 @@ impl Default for Config {
 }
 
 impl Config {
-    /// Parse `--host`, `--port`, `--token`, `--static`, `--data`, `--roadmap`
-    /// from an argument iterator (excluding argv[0]). Unknown flags are an error
-    /// so a typo never silently runs the default.
+    /// Parse `--token`, `--data`, `--roadmap`, and `--mcp` from an argument
+    /// iterator (excluding argv[0]). Unknown flags are an error so a typo never
+    /// silently runs the default.
     pub fn from_args<I: IntoIterator<Item = String>>(args: I) -> Result<Self, ConfigError> {
         let mut cfg = Config::default();
         let mut it = args.into_iter();
         while let Some(flag) = it.next() {
             match flag.as_str() {
-                "--host" => {
-                    let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
-                    cfg.host = v.parse().map_err(|_| ConfigError::BadValue {
-                        flag: "--host".into(),
-                        value: v,
-                    })?;
-                }
-                "--port" => {
-                    let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
-                    cfg.port = v.parse().map_err(|_| ConfigError::BadValue {
-                        flag: "--port".into(),
-                        value: v,
-                    })?;
-                    cfg.port_explicit = true;
-                }
                 "--token" => {
                     let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
                     cfg.token_path = PathBuf::from(v);
-                }
-                "--static" => {
-                    let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
-                    cfg.static_dir = PathBuf::from(v);
                 }
                 "--data" => {
                     let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
@@ -124,33 +91,30 @@ mod tests {
     }
 
     #[test]
-    fn default_is_lan_reachable() {
+    fn default_paths() {
         let cfg = Config::default();
-        assert_eq!(cfg.host, IpAddr::V4(Ipv4Addr::UNSPECIFIED));
-        assert_eq!(cfg.port, 7421);
         assert_eq!(cfg.token_path, PathBuf::from(".flow/token"));
+        assert_eq!(cfg.data_dir, PathBuf::from(".flow"));
+        assert_eq!(cfg.roadmap_path, None);
+        assert!(!cfg.mcp);
     }
 
     #[test]
     fn parses_all_flags() {
         let cfg = Config::from_args(argv(&[
-            "--host",
-            "127.0.0.1",
-            "--port",
-            "9000",
             "--token",
             "/tmp/t",
-            "--static",
-            "/srv/s",
             "--data",
             "/srv/d",
+            "--roadmap",
+            "/repo/ROADMAP.md",
+            "--mcp",
         ]))
         .unwrap();
-        assert_eq!(cfg.host, IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)));
-        assert_eq!(cfg.port, 9000);
         assert_eq!(cfg.token_path, PathBuf::from("/tmp/t"));
-        assert_eq!(cfg.static_dir, PathBuf::from("/srv/s"));
         assert_eq!(cfg.data_dir, PathBuf::from("/srv/d"));
+        assert_eq!(cfg.roadmap_path, Some(PathBuf::from("/repo/ROADMAP.md")));
+        assert!(cfg.mcp);
     }
 
     #[test]
@@ -182,43 +146,15 @@ mod tests {
     }
 
     #[test]
-    fn missing_value_errors() {
-        assert_eq!(
-            Config::from_args(argv(&["--port"])),
-            Err(ConfigError::MissingValue {
-                flag: "--port".into()
-            })
-        );
-    }
-
-    #[test]
     fn missing_value_errors_for_every_flag() {
         // Each value-taking flag reports MissingValue when its value is absent.
-        for flag in ["--host", "--port", "--token", "--static", "--data"] {
+        for flag in ["--token", "--data", "--roadmap"] {
             assert_eq!(
                 Config::from_args(argv(&[flag])),
                 Err(ConfigError::MissingValue { flag: flag.into() }),
                 "flag {flag} should require a value"
             );
         }
-    }
-
-    #[test]
-    fn bad_value_errors() {
-        assert_eq!(
-            Config::from_args(argv(&["--port", "notnum"])),
-            Err(ConfigError::BadValue {
-                flag: "--port".into(),
-                value: "notnum".into()
-            })
-        );
-        assert_eq!(
-            Config::from_args(argv(&["--host", "notip"])),
-            Err(ConfigError::BadValue {
-                flag: "--host".into(),
-                value: "notip".into()
-            })
-        );
     }
 
     #[test]
@@ -231,26 +167,20 @@ mod tests {
         );
     }
 
-    // T37-4: port_explicit tracking tests
+    // The web-UI binding flags were removed in roadmap #39; passing one is now an
+    // unknown-flag error rather than a recognised option.
     #[test]
-    fn port_explicit_when_supplied() {
-        let cfg = Config::from_args(argv(&["--port", "9000"])).unwrap();
-        assert!(
-            cfg.port_explicit,
-            "--port supplied must set port_explicit to true"
-        );
+    fn removed_web_flags_are_unknown() {
+        for flag in ["--host", "--port", "--static"] {
+            assert_eq!(
+                Config::from_args(argv(&[flag, "x"])),
+                Err(ConfigError::UnknownFlag { flag: flag.into() }),
+                "removed flag {flag} should be rejected"
+            );
+        }
     }
 
-    #[test]
-    fn port_not_explicit_when_absent() {
-        let cfg = Config::from_args(argv(&[])).unwrap();
-        assert!(
-            !cfg.port_explicit,
-            "--port absent must leave port_explicit as false"
-        );
-    }
-
-    // T37-2: --mcp flag tests
+    // --mcp flag tests
     #[test]
     fn mcp_flag_absent_is_false() {
         let cfg = Config::from_args(argv(&[])).unwrap();

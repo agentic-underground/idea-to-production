@@ -1,5 +1,6 @@
 //! Event schema. Each mutation produces an [`Event`] serialized as one JSONL
-//! line (the append-only write-ahead record) and broadcast as a WS delta.
+//! line (the append-only write-ahead record); the MCP surface reads the log back
+//! via `list_events`.
 
 use serde::{Deserialize, Serialize};
 
