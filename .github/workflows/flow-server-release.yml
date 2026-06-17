@@ -2,12 +2,12 @@ name: flow-server release
 
 # Build the flow-server MCP binary for every supported platform and publish it as a
 # GitHub Release with a SHA256SUMS manifest. The plugin launcher
-# (plugins/mission-control/flow-server/bin/flow-server-mcp) runs a PINNED release: it reads
+# (plugins/operate/flow-server/bin/flow-server-mcp) runs a PINNED release: it reads
 # bin/RELEASE for the tag and verifies the retrieved asset against the COMMITTED bin/SHA256SUMS
 # — so a destination machine runs the server WITHOUT a Rust toolchain and deterministically.
 #
 # Cut a release (the bump-and-cut flow — see flow-server/README.md):
-#   1. Bump plugins/mission-control/flow-server/Cargo.toml `version` (NEVER re-cut a tag).
+#   1. Bump plugins/operate/flow-server/Cargo.toml `version` (NEVER re-cut a tag).
 #   2. Push the matching tag:  git tag flow-server-v0.2.1 && git push --tags
 #   3. This workflow's `preflight` refuses a re-cut tag or a tag≠Cargo version, then builds +
 #      publishes the assets + SHA256SUMS.
@@ -49,7 +49,7 @@ jobs:
             *) echo "::error::tag '$tag' is not of the form flow-server-vX.Y.Z"; exit 1 ;;
           esac
           cargover="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' \
-                      plugins/mission-control/flow-server/Cargo.toml | head -n1)"
+                      plugins/operate/flow-server/Cargo.toml | head -n1)"
           if [ "$tagver" != "$cargover" ]; then
             echo "::error::tag version ($tagver) != Cargo.toml version ($cargover) — bump Cargo.toml to match the tag before cutting."
             exit 1
@@ -68,7 +68,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: plugins/mission-control/flow-server
+        working-directory: plugins/operate/flow-server
     strategy:
       fail-fast: false
       matrix:
@@ -111,7 +111,7 @@ jobs:
         with:
           name: flow-server-${{ matrix.target }}
           path: |
-            plugins/mission-control/flow-server/flow-server-${{ matrix.target }}*
+            plugins/operate/flow-server/flow-server-${{ matrix.target }}*
           if-no-files-found: error
 
   release:
@@ -147,5 +147,5 @@ jobs:
           gh release create "$tag" \
             --repo "${{ github.repository }}" \
             --title "$tag" \
-            --notes "flow-server MCP binary for the mission-control plugin. The plugin launcher runs a PINNED release: it reads bin/RELEASE for the tag and verifies the retrieved asset against the COMMITTED bin/SHA256SUMS. To activate this release, copy this SHA256SUMS into plugins/mission-control/flow-server/bin/SHA256SUMS and set bin/RELEASE to this tag, then commit." \
+            --notes "flow-server MCP binary for the operate plugin. The plugin launcher runs a PINNED release: it reads bin/RELEASE for the tag and verifies the retrieved asset against the COMMITTED bin/SHA256SUMS. To activate this release, copy this SHA256SUMS into plugins/operate/flow-server/bin/SHA256SUMS and set bin/RELEASE to this tag, then commit." \
             "${assets[@]}"

@@ -442,7 +442,7 @@ description of what knowledge the new handler needs — then **STOP and surface 
 authors `handler-<stack>` under the handler-authoring discipline
 ([`../../knowledge/orchestration/handler-authoring-discipline.md`](../../knowledge/orchestration/handler-authoring-discipline.md):
 pinned version matrix + FORBIDDEN list); the MVP path discloses `DEGRADED_CAPABILITIES` in
-`FOUNDRY_PLAN.md`; the BOTH path raises the gap via `/mission-control:gemba`, files a DEFERRED
+`FOUNDRY_PLAN.md`; the BOTH path raises the gap via `/operate:gemba`, files a DEFERRED
 "Create handler-<stack>" item, and marks the original **awaiting-handler** (§14 formalises the agent file
 once the BUILD/handler-creation work runs).
 
@@ -608,7 +608,7 @@ roadmap cycle, or when the daily inspector surfaces proposals:
      ([`../../knowledge/orchestration/missing-handler-gate.md`](../../knowledge/orchestration/missing-handler-gate.md)).
      New handlers authored on the BUILD path follow the handler-authoring discipline
      ([`../../knowledge/orchestration/handler-authoring-discipline.md`](../../knowledge/orchestration/handler-authoring-discipline.md):
-     pinned matrix + FORBIDDEN list). The BOTH path raises the gap via `/mission-control:gemba` so it
+     pinned matrix + FORBIDDEN list). The BOTH path raises the gap via `/operate:gemba` so it
      becomes a tracked self-improvement item rather than evaporating.
 3. **Inspector proposals** are collated from `FOUNDRY_INSPECTION_REPORT.md`.
 4. Present proposed changes to the user for approval.

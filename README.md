@@ -67,7 +67,7 @@ Not decoration — these are the ideas the whole system obeys. The philosophical
 
 ### ⑤ Every piece, one map
 
-<img width="820" alt="Conceptual-domain map: upstream discovery (market-scanner → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (security, pressroom, atelier, mission-control) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.svg">
+<img width="820" alt="Conceptual-domain map: upstream discovery (market-scanner → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (security, pressroom, atelier, operate) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.svg">
 
 *Upstream discovery → the foundry conveyor → cross-cutting companions. Nine plugins, one value flow.*
 
@@ -89,7 +89,7 @@ specialists. Each stands alone; install only what you need.
 | **[security](plugins/security/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
 | **[pressroom](plugins/pressroom/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
 | **[atelier](plugins/atelier/)** | The DESIGN studio: `/ui-review` crawls any SPA's routes (screenshot + accessibility snapshot) and writes a **scored, prioritised** critique citing named canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG 2.2); `/mockup` composes polished screens and flows and runs a **convergent** designer↔reviewer loop until they clear a design-fitness rubric. | Visual work — UIs, mockups, user-flows — that is *artistic, elegant, and accessible*, not first-draft. |
-| **[mission-control](plugins/mission-control/)** | The OPERATE phase: keep the live product healthy and feed the next cycle — `/operate-gate` runs go-live + steady-state readiness, `/observability` instruments the four golden signals and SLI→SLO→alerts, `/incident` drives severity-tiered response → runbook + blameless postmortem, `/maintain` keeps dependencies/CVEs/certs current, and `/iterate` turns a production signal into a new OPPORTUNITY that re-enters DISCOVER (↻). | To run what you shipped — observe it, respond to incidents, maintain it, and loop its learnings back to discovery. |
+| **[operate](plugins/operate/)** | The OPERATE phase: keep the live product healthy and feed the next cycle — `/operate-gate` runs go-live + steady-state readiness, `/observability` instruments the four golden signals and SLI→SLO→alerts, `/incident` drives severity-tiered response → runbook + blameless postmortem, `/maintain` keeps dependencies/CVEs/certs current, and `/iterate` turns a production signal into a new OPPORTUNITY that re-enters DISCOVER (↻). | To run what you shipped — observe it, respond to incidents, maintain it, and loop its learnings back to discovery. |
 | **[concierge](plugins/concierge/)** | The ARRIVAL layer: a `SessionStart` hook renders a repo's maintainer-authored `.claude/welcome.md` so the agent greets whoever opens it and offers a conversational decision tree — operate the software, or evolve it — routing them to the right command, runbook, or plugin. **Smart-gated** (greets only on a cold/vague open; steps aside for a concrete task). `/concierge:define-welcome` reads a repo and writes its welcome for you. Also ships the idea-to-production **status line** — `/concierge:statusline` turns on a rich two-line bar (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). | Any repo to greet and orient whoever opens it next — plus a status bar that surfaces the whole suite at a glance. |
 
 ## How they compose
@@ -109,7 +109,7 @@ and **SECURE** (security) are deliberately **separate first-class gates**.
 | **ASSURE** | foundry | `/pr-review` (quality V&V) |
 | **SECURE** | security | `/scan-all` → SECURITY-REPORT.md |
 | **PUBLISH** | pressroom | `/publish` — articles & PDFs |
-| **OPERATE** | mission-control | observe · `/incident` · `/iterate` |
+| **OPERATE** | operate | observe · `/incident` · `/iterate` |
 
 **Three concerns cross-cut every phase:**
 
@@ -144,7 +144,7 @@ Add the marketplace, then install whichever plugins you want:
 /plugin install security@idea-to-production
 /plugin install pressroom@idea-to-production
 /plugin install atelier@idea-to-production
-/plugin install mission-control@idea-to-production
+/plugin install operate@idea-to-production
 /plugin install concierge@idea-to-production
 ```
 
@@ -153,11 +153,11 @@ shape an idea, and `security` and `pressroom` are useful on any repository, not 
 
 ### Verify the flow MCP is installed & running
 
-`mission-control` ships an MCP server — **flow-server** — that answers *"what's on the roadmap"* by local
+`operate` ships an MCP server — **flow-server** — that answers *"what's on the roadmap"* by local
 compute at ~0 tokens (the `render_roadmap` verb) and carries items across the board. Confirm it end-to-end:
 
-1. **Install / update + restart.** After `/plugin install mission-control@idea-to-production` (or
-   `/plugin marketplace update idea-to-production` && `/plugin update mission-control`), **restart Claude
+1. **Install / update + restart.** After `/plugin install operate@idea-to-production` (or
+   `/plugin marketplace update idea-to-production` && `/plugin update operate`), **restart Claude
    Code** — a plugin's MCP config is read only at startup (`/reload-plugins` does *not* pick up new MCP
    servers).
 2. **Approve it once.** Run `/mcp`; `flow-server` shows as `⏸ Pending approval` — approve it. This one-time
@@ -171,7 +171,7 @@ compute at ~0 tokens (the `render_roadmap` verb) and carries items across the bo
 
 **Troubleshooting.** `/flow hello` shows `items: 0` or `version` below `0.2.0`, or *"what's on the
 roadmap"* comes back empty against a populated `.i2p/roadmap/` tree ⇒ the pinned MCP binary is **stale** or
-the server isn't approved. Run **`/mission-control:flow-setup`** for a guided, verified walkthrough. (No
+the server isn't approved. Run **`/operate:flow-setup`** for a guided, verified walkthrough. (No
 `mcp__…__flow-server__*` tools at all ⇒ not connected yet — repeat steps 1–2.)
 
 ## Concepts & glossary

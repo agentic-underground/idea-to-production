@@ -130,7 +130,7 @@ explicitly accepted-with-rationale (record the disposition in the report).
 
 **On BLOCK or repeated NEEDS_REVISION → fire the GEMBA reflex (#22).** A BLOCK verdict, or the same
 class of finding surviving more than one revision, is a *gemba* signal that the gap is systemic. When
-`mission-control` is installed, prompt **`/mission-control:gemba`** to capture the gap and route it
+`operate` is installed, prompt **`/operate:gemba`** to capture the gap and route it
 (SELF → a `self-improve` PR; elsewhere → the learning ledger + a consented issue) so the defect class
 is fixed upstream once — never let a hard stop pass uncaptured.
 

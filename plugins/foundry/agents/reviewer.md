@@ -86,7 +86,7 @@ A clean lens does not offset another lens's unresolved CRITICAL.
 **GEMBA reflex on a hard stop (#22).** When you issue **BLOCK**, or the change reaches you on a
 **repeated NEEDS_REVISION** (the same defect surviving more than one revision), that is a *gemba*
 signal — the gap is likely systemic, not a one-off. Name it in your verdict rationale and — when
-`mission-control` is installed — prompt **`/mission-control:gemba`** to capture it and route it (SELF →
+`operate` is installed — prompt **`/operate:gemba`** to capture it and route it (SELF →
 a `self-improve` PR; elsewhere → the learning ledger + a consented issue), so the class of defect is
 fixed upstream once. Do not let a BLOCK pass without naming the systemic gap.
 

@@ -97,7 +97,7 @@ digraph DomainArchB {
                fillcolor="#3f3320:#241c10", color="#e0af68"]
     atelier [label=<<b>atelier</b><br/><font point-size="9" color="#cbb6f0">DESIGN &middot; usability</font>>,
              fillcolor="#352f50:#1f1b2e", color="#bb9af7"]
-    mission [label=<<b>mission-control</b><br/><font point-size="9" color="#cbb6f0">OPERATE</font>>,
+    mission [label=<<b>operate</b><br/><font point-size="9" color="#cbb6f0">OPERATE</font>>,
              fillcolor="#352f50:#1f1b2e", color="#bb9af7"]
 
     // clean 2×2 grid DIRECTLY beneath the title bar (no L-shaped spill)

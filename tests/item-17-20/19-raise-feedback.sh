@@ -3,7 +3,7 @@
 # Run from the repo root: bash tests/item-17-20/19-raise-feedback.sh
 # Uses a MOCK `gh` on PATH — NEVER touches a real GitHub repo.
 FAIL=0
-R="plugins/mission-control/skills/gemba/scripts/raise-feedback.sh"
+R="plugins/operate/skills/gemba/scripts/raise-feedback.sh"
 [ -r "$R" ] || { echo "FAIL: $R not found"; exit 1; }
 command -v jq >/dev/null 2>&1 || { echo "SKIP: jq not installed"; exit 0; }
 bash -n "$R" || { echo "FAIL: syntax error in $R"; exit 1; }

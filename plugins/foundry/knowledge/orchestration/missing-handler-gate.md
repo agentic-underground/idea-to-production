@@ -42,7 +42,7 @@ prevent.
 
 ### Option 3 — BOTH (MVP now + handler later)
 Do the MVP (Option 2, with its `DEGRADED_CAPABILITIES` disclosure) **and** schedule the real handler:
-1. Raise the new-handler feedback via **`/mission-control:gemba`** (capture → route → raise) so the gap
+1. Raise the new-handler feedback via **`/operate:gemba`** (capture → route → raise) so the gap
    becomes a tracked, de-duplicated issue instead of evaporating.
 2. File a **DEFERRED "Create handler-<stack>"** roadmap item (the handler-creation work, to be built under
    the authoring discipline).

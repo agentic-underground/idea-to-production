@@ -9,7 +9,7 @@ description: >
 metadata:
   type: orchestrator
   output: .i2p/lifecycle.json (current_phase + history) + a phase report
-  composes: [market-scanner, ideator, atelier, foundry, security, pressroom, mission-control — by capability]
+  composes: [market-scanner, ideator, atelier, foundry, security, pressroom, operate — by capability]
 model: inherit
 ---
 
@@ -76,7 +76,7 @@ the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
 | foundry (adversarial quality review PASS — `/pr-review`) | `done ASSURE` | SECURE |
 | security (scan-all PASS) | `done SECURE` | PUBLISH |
 | pressroom (publication out) | `done PUBLISH` | OPERATE |
-| mission-control (operate learning → next cycle) | `done OPERATE` | DISCOVER ↻ |
+| operate (operate learning → next cycle) | `done OPERATE` | DISCOVER ↻ |
 
 You can also drive it by hand here with `done`/`advance`/`set`.
 

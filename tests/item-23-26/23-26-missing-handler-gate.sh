@@ -44,7 +44,7 @@ done
 grep -q 'DEGRADED_CAPABILITIES' "$GATE" || { echo "FAIL[24]: gate doc must name DEGRADED_CAPABILITIES"; FAIL=1; }
 grep -q 'FOUNDRY_PLAN.md' "$GATE" || { echo "FAIL[24]: gate doc must disclose DEGRADED_CAPABILITIES in FOUNDRY_PLAN.md"; FAIL=1; }
 # BOTH path raises feedback via gemba + files a DEFERRED handler item + awaiting-handler.
-grep -q '/mission-control:gemba' "$GATE" || { echo "FAIL[24]: BOTH path must raise feedback via /mission-control:gemba"; FAIL=1; }
+grep -q '/operate:gemba' "$GATE" || { echo "FAIL[24]: BOTH path must raise feedback via /operate:gemba"; FAIL=1; }
 grep -qi 'DEFERRED .Create handler' "$GATE" || { echo "FAIL[24]: BOTH path must file a DEFERRED 'Create handler-<stack>' item"; FAIL=1; }
 grep -qi 'awaiting-handler' "$GATE" || { echo "FAIL[24]: BOTH path must mark the original awaiting-handler"; FAIL=1; }
 

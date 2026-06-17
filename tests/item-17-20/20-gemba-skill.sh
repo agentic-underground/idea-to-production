@@ -2,10 +2,10 @@
 # Test: [20] the gemba skill — SKILL.md frontmatter, /gemba command, README mention, script wiring.
 # Run from the repo root: bash tests/item-17-20/20-gemba-skill.sh
 FAIL=0
-SKILL="plugins/mission-control/skills/gemba/SKILL.md"
-CMD="plugins/mission-control/commands/gemba.md"
-README="plugins/mission-control/README.md"
-DIR="plugins/mission-control/skills/gemba/scripts"
+SKILL="plugins/operate/skills/gemba/SKILL.md"
+CMD="plugins/operate/commands/gemba.md"
+README="plugins/operate/README.md"
+DIR="plugins/operate/skills/gemba/scripts"
 
 [ -r "$SKILL" ] || { echo "FAIL: $SKILL not found"; exit 1; }
 

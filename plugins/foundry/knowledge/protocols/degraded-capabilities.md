@@ -45,7 +45,7 @@ The same three-field record travels two ways depending on the producer's situati
    marker. Downstream agents inherit it the same way they inherit sentinels — by reading the
    marker from accumulated context.
 
-2. **State file** (the durable, cross-process case — a hook or mission-control writing a record
+2. **State file** (the durable, cross-process case — a hook or operate writing a record
    that must survive a crashed skill/MCP and be read by a later process). Canonical path:
 
    ```
@@ -84,7 +84,7 @@ without a destructive migration (the same discipline as `cost.json` cycle-indexi
 | Producer | When it emits | Carrier |
 |---|---|---|
 | **Agents / skills** (P1-15) | A tool/MCP/lens they need is unavailable **at point-of-use** — discovered when they reach for it, not at session start. They emit the inline marker in their handoff output AND, when a durable writer is reachable, merge it into the state file. | inline marker (+ state file when possible) |
-| **mission-control** (P1-24, co-author) | It owns the OPERATE runtime surface; when an observability/incident lens cannot run because a declared MCP or telemetry source is dead, it emits a degraded record. mission-control owns the **canon and the consumer** of the OPERATE view — but per the heal-itself rule it does **not** host the liveness *detector* in its own skills (a crash would blind it). See [`mission-control/knowledge/operate-canon.md`](../../../mission-control/knowledge/operate-canon.md). | state file |
+| **operate** (P1-24, co-author) | It owns the OPERATE runtime surface; when an observability/incident lens cannot run because a declared MCP or telemetry source is dead, it emits a degraded record. operate owns the **canon and the consumer** of the OPERATE view — but per the heal-itself rule it does **not** host the liveness *detector* in its own skills (a crash would blind it). See [`operate/knowledge/operate-canon.md`](../../../operate/knowledge/operate-canon.md). | state file |
 | **SessionStart hook substrate** (P1-24) | A **mid-session MCP-liveness ping** of each declared MCP server; on no-response it writes the record to the state file. It lives in the hook substrate (not inside any skill/MCP) precisely so it survives the crash it is detecting — the same crash-surviving layer as the P1-8 hook heartbeat. | state file |
 
 **Detect-only.** Every emit point is DETECT, never auto-restart/auto-heal. Emitting the signal
@@ -124,7 +124,7 @@ Any skill/agent/instrument that reads degraded-capabilities MUST honour all thre
 - **P1-15** — agents emit at point-of-use; downstream skips route around + disclose (carrier §1, contract §3).
 - **P1-16** — headless/CI routing reads `mcp.*` degradations to pick headless-safe phases.
 - **P1-17** — scorecard reads the state file → marks the affected coverage dimension PARTIAL.
-- **P1-24** — mission-control / SessionStart liveness ping is the MCP-death **emitter** (§2).
+- **P1-24** — operate / SessionStart liveness ping is the MCP-death **emitter** (§2).
 
 ---
 

@@ -37,7 +37,7 @@ For each plugin that is **installed** and ships a check, run it, passing `$ARGUM
 | atelier | `/atelier:check` |
 | security | `/security:check` |
 | pressroom | `/pressroom:check` |
-| mission-control | `/mission-control:check` |
+| operate | `/operate:check` |
 
 Prefer running them in parallel. Do **not** re-implement any probe here — each plugin's check reads its
 own canonical `skills/check/requirements.tsv`.

@@ -60,7 +60,7 @@ handlers (`handler-rust-webapp`, `handler-rust-tauri`) were built:
 
 The typst-based PDF rendering thrash in **pressroom** is the *same disease* (version/tooling drift) but a
 **different patient**. It is **NOT** fixed here. It is a standalone `SELF_IMPROVEMENT` issue to harden
-pressroom's PDF path (raised via `/mission-control:gemba` → pressroom). This doc governs *FOUNDRY
+pressroom's PDF path (raised via `/operate:gemba` → pressroom). This doc governs *FOUNDRY
 value-handler authoring*; it does not reach across the plugin boundary into pressroom's rendering stack.
 
 ## Worked example — the discipline already shipped

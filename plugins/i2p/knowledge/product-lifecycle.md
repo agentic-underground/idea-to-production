@@ -58,7 +58,7 @@ canon. (State-file token in brackets — see `skills/lifecycle/`.)
 | ⑤ | **ASSURE** `[ASSURE]` | foundry | **certify quality** — adversarial V&V: tests green, coverage density, perf-delta, regression, architecture | Verification & Validation · quality gate (PDCA *check* / DMAIC *control*) |
 | ⑥ | **SECURE** `[SECURE]` | security | **certify security** — PII, secrets, supply-chain clear before exposure | secure-by-design · supply-chain integrity · the security gate |
 | ⑦ | **PUBLISH** `[PUBLISH]` | pressroom | announce & document it for its audience | commercialization / launch communication |
-| ⑧ | **OPERATE** `[OPERATE]` | mission-control | keep it alive & improving: observe, respond to incidents, iterate, maintain | PLM **service/operate** · SRE · the market life cycle (introduction→growth) · DMAIC *control* in production |
+| ⑧ | **OPERATE** `[OPERATE]` | operate | keep it alive & improving: observe, respond to incidents, iterate, maintain | PLM **service/operate** · SRE · the market life cycle (introduction→growth) · DMAIC *control* in production |
 | ↻ | *(re-entry)* | market-scanner | OPERATE's learnings open the **next** value cycle | continuous discovery · build-measure-learn |
 
 **ASSURE and SECURE are separate — deliberately.** Quality and security are *different* concerns and must not
@@ -125,7 +125,7 @@ A phase is *entered* when its predecessor's exit signal fires, and *exited* when
   and reports it.
 - This doc is referenced by `foundry/VALUE_FLOW.md` and the glossary so the whole suite shares one spine.
 
-> **Graceful degradation.** An owner plugin may be absent (e.g. `mission-control` for OPERATE). The lifecycle
+> **Graceful degradation.** An owner plugin may be absent (e.g. `operate` for OPERATE). The lifecycle
 > still advances by hand (`done`/`advance`), and surfaces say what installing the owner would unlock — a gap is
 > named, never silently skipped.
 
