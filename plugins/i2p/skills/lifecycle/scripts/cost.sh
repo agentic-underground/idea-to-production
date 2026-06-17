@@ -22,10 +22,12 @@
 # reader of a cycle-indexed file with no lifecycle still defaults to cycle 1, never zeroing.
 set -uo pipefail
 
-PHASES="DISCOVER IDEATE DESIGN BUILD ASSURE SECURE PUBLISH OPERATE"
+PHASES="DISCOVER IDEATE DELIVER DESIGN BUILD ASSURE SECURE PUBLISH OPERATE"
 # Rough seed estimates (tokens). Intentionally approximate — the calibration loop corrects them.
+# DELIVER (roadmap intake → EARS/feature authoring → dependency-ordered decomposition) carries its
+# own non-zero seed, between IDEATE and DESIGN in cost as it is in sequence.
 base_for() { case "$1" in
-  DISCOVER) echo 30000 ;; IDEATE) echo 40000 ;; DESIGN) echo 50000 ;;
+  DISCOVER) echo 30000 ;; IDEATE) echo 40000 ;; DELIVER) echo 45000 ;; DESIGN) echo 50000 ;;
   BUILD) echo 120000 ;; ASSURE) echo 25000 ;; SECURE) echo 25000 ;;
   PUBLISH) echo 30000 ;; OPERATE) echo 40000 ;; *) echo 0 ;;
 esac; }
