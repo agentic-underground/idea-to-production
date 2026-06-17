@@ -6,10 +6,16 @@ The **flow** command is the lightweight value-carry verb: advance one item throu
 `.i2p/roadmap/` lanes without reaching for the heavyweight FOUNDRY cycle, and report the current
 state of value flow. Pick the route by `$ARGUMENTS` (default: `report`).
 
-The **lanes** are exactly the subfolders of `.i2p/roadmap/`, in flow order — today
-**`backlog` → `doing` → `done`** (folder = stage). The carry verb moves an item one lane forward
-(or to a named lane) and records *who is processing it · what they are doing · the running cost* via
-the flow-server's typed MCP telemetry verbs, so the board state is always reportable.
+**Contract — defer to the flow-server, do not paraphrase it.** The lanes, the status vocabulary, and
+the file move are all owned by the flow-server's typed MCP verbs; this command drives them, it does not
+re-implement them. The canonical lane chain (see [`.i2p/roadmap/README.md`](../../../.i2p/roadmap/README.md)) is:
+
+```
+backlog → do → doing → done        (folder = status; backlog is intake)
+```
+
+The board status the verbs accept is **`do` · `doing` · `done`** (the three `post_status` values).
+`backlog` is the intake folder (status `do`); carrying *forward* from it lands in `do`.
 
 ## `report` (default) — render the current value flow
 
@@ -24,23 +30,28 @@ lane folder and its `.md` items. Never print an empty/misleading report when the
 
 ## `carry <item> [to <stage>]` — advance one item
 
-1. **Resolve `<item>`** to exactly one roadmap item — by leading id number (e.g. `41`) or an
-   unambiguous title match across all lane folders. **If zero or more than one match, STOP and ask;
-   never guess** (EARS unwanted-behaviour: ambiguous item → refuse).
-2. **Resolve the target stage.** With `to <stage>`, it must name an existing lane folder under
-   `.i2p/roadmap/`; **if it is not a valid lane, STOP and ask.** Without `to <stage>`, carry the item
-   **one lane forward** in flow order (`backlog`→`doing`→`done`); refuse if it is already in the last
-   lane.
-3. **Move the file** with `git mv .i2p/roadmap/<from>/<file> .i2p/roadmap/<to>/<file>`.
-4. **Update the `status:` front-matter** to match the destination lane:
-   `backlog` → `PENDING`, `doing` → `IN PROGRESS`, `done` → `DONE`.
-5. **Record telemetry** against the item id through the flow-server MCP verbs (each is deferred —
-   `ToolSearch` for `flow-server__<verb>` if absent):
-   - **`post_status`** — set the item's status to the new stage (the authoritative transition).
-   - **`annotate`** — write the **who / what**: the agent/handler processing it and the activity
-     (e.g. `"carried to doing — handler:foundry, implementing #41"`).
-   - **`append_spend`** — add the **cost** (tokens) spent carrying it, if known.
-6. **Report** the move back to the user: `<id> <from> → <to>`, plus the who / what / cost you recorded.
+The flow-server's **`post_status`** is the single writer: it moves the item file between
+`.i2p/roadmap/` folders **and** rewrites its `status:` front-matter itself. So `carry` calls the verbs;
+it never `git mv`s the file or edits front-matter by hand (doing both would double-write and fight the
+server). Each verb is deferred — `ToolSearch` for `flow-server__<verb>` if it's not in your tool list,
+and pass the item id as the slug **`item-N`** (the numeric tree id `N` prefixed with `item-`).
+
+1. **Resolve `<item>`** to exactly one roadmap item — by id number (e.g. `41` → `item-41`) or an
+   unambiguous title match. **If zero or more than one match, STOP and ask; never guess.**
+2. **Resolve the target status** — `to <stage>` must be one of **`do` · `doing` · `done`** (else STOP
+   and ask). Omitted ⇒ the next status forward in the chain (`do`→`doing`→`done`; from the `backlog`
+   intake, forward is `do`). Refuse if already at `done`.
+3. **Check the gate.** Read the item (`get_item item-N`); **if its `gate` is `Wait`, STOP and refuse** —
+   `post_status`/`append_spend` are rejected on a WAIT-gated item. Tell the user to clear it with
+   `set_wait_go item-N go` first. Move nothing until the gate is `Go`.
+4. **`post_status item-N <status>`** — the authoritative transition. The server moves the file to the
+   `<status>` folder and updates `status:` (`do`→PENDING, `doing`→IN PROGRESS, `done`→DONE).
+5. **`append_spend item-N <tokens>`** — add the cost spent carrying it, if known. (Do this *before*
+   step 6 so it is recorded even if a later call gates.)
+6. **`annotate item-N "<who> — <what>"`** — record the who/what on the card (the agent/handler and the
+   activity, e.g. `"handler:foundry — implementing #41"`), mirroring the carriage-agent model. Do this
+   last.
+7. **Report** the move: `item-N <from> → <to>`, plus the who / what / cost you recorded.
 
 ## `ping` / `hello` — MCP health check
 
