@@ -1,14 +1,13 @@
-//! Server configuration: the token path, data directory, and roadmap source.
-//! Parsed from CLI args in `main.rs`. The web-UI binding flags (`--host`,
-//! `--port`, `--static`) were removed with the HTTP server in roadmap #39.
+//! Server configuration: the data directory and roadmap source. Parsed from CLI
+//! args in `main.rs`. The web-UI binding flags (`--host`, `--port`, `--static`)
+//! and the `--token` file flag were removed with the HTTP server in roadmap #39
+//! — stdio has no auth transport, so no token file is loaded.
 
 use std::path::PathBuf;
 
 /// Runtime configuration for the flow server.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Config {
-    /// Path to the shared bearer-token file (created on first run).
-    pub token_path: PathBuf,
     /// Directory holding the flow state (JSONL + markdown).
     pub data_dir: PathBuf,
     /// Optional roadmap source to ingest on startup so the board is not blank.
@@ -25,7 +24,6 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Config {
-            token_path: PathBuf::from(".flow/token"),
             data_dir: PathBuf::from(".flow"),
             roadmap_path: None,
             mcp: false,
@@ -34,18 +32,14 @@ impl Default for Config {
 }
 
 impl Config {
-    /// Parse `--token`, `--data`, `--roadmap`, and `--mcp` from an argument
-    /// iterator (excluding argv[0]). Unknown flags are an error so a typo never
-    /// silently runs the default.
+    /// Parse `--data`, `--roadmap`, and `--mcp` from an argument iterator
+    /// (excluding argv[0]). Unknown flags are an error so a typo never silently
+    /// runs the default.
     pub fn from_args<I: IntoIterator<Item = String>>(args: I) -> Result<Self, ConfigError> {
         let mut cfg = Config::default();
         let mut it = args.into_iter();
         while let Some(flag) = it.next() {
             match flag.as_str() {
-                "--token" => {
-                    let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
-                    cfg.token_path = PathBuf::from(v);
-                }
                 "--data" => {
                     let v = it.next().ok_or(ConfigError::MissingValue { flag })?;
                     cfg.data_dir = PathBuf::from(v);
@@ -93,7 +87,6 @@ mod tests {
     #[test]
     fn default_paths() {
         let cfg = Config::default();
-        assert_eq!(cfg.token_path, PathBuf::from(".flow/token"));
         assert_eq!(cfg.data_dir, PathBuf::from(".flow"));
         assert_eq!(cfg.roadmap_path, None);
         assert!(!cfg.mcp);
@@ -102,8 +95,6 @@ mod tests {
     #[test]
     fn parses_all_flags() {
         let cfg = Config::from_args(argv(&[
-            "--token",
-            "/tmp/t",
             "--data",
             "/srv/d",
             "--roadmap",
@@ -111,7 +102,6 @@ mod tests {
             "--mcp",
         ]))
         .unwrap();
-        assert_eq!(cfg.token_path, PathBuf::from("/tmp/t"));
         assert_eq!(cfg.data_dir, PathBuf::from("/srv/d"));
         assert_eq!(cfg.roadmap_path, Some(PathBuf::from("/repo/ROADMAP.md")));
         assert!(cfg.mcp);
@@ -148,7 +138,7 @@ mod tests {
     #[test]
     fn missing_value_errors_for_every_flag() {
         // Each value-taking flag reports MissingValue when its value is absent.
-        for flag in ["--token", "--data", "--roadmap"] {
+        for flag in ["--data", "--roadmap"] {
             assert_eq!(
                 Config::from_args(argv(&[flag])),
                 Err(ConfigError::MissingValue { flag: flag.into() }),
@@ -167,11 +157,12 @@ mod tests {
         );
     }
 
-    // The web-UI binding flags were removed in roadmap #39; passing one is now an
-    // unknown-flag error rather than a recognised option.
+    // The web-UI binding flags and the token-file flag were removed in roadmap
+    // #39 (stdio has no auth transport); passing one is now an unknown-flag error
+    // rather than a recognised option.
     #[test]
     fn removed_web_flags_are_unknown() {
-        for flag in ["--host", "--port", "--static"] {
+        for flag in ["--host", "--port", "--static", "--token"] {
             assert_eq!(
                 Config::from_args(argv(&[flag, "x"])),
                 Err(ConfigError::UnknownFlag { flag: flag.into() }),

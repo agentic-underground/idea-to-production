@@ -18,8 +18,9 @@ use crate::store::Store;
 pub struct AppState {
     /// The single serialized writer.
     pub store: Arc<Store>,
-    /// The shared bearer token. Retained on the state for back-compat; the
-    /// stdio MCP transport has no auth layer, so it is never read in this path.
+    /// Reserved bearer token. No token file is loaded — the stdio MCP transport
+    /// has no auth layer, so this field is filled with a placeholder and is
+    /// never read. Retained for back-compat against a future authed transport.
     pub token: Token,
 }
 

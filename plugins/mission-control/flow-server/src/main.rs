@@ -93,8 +93,8 @@ async fn run_stdio(store: Arc<Store>) -> Result<(), Box<dyn std::error::Error>> 
     use flow_server::auth::Token;
     use tokio::io::{AsyncBufReadExt, AsyncWriteExt};
 
-    // A dummy token is used because stdio mode has no auth layer — the token
-    // field is never read in this path.
+    // No token file is loaded: stdio has no auth transport, so the reserved
+    // `token` field is filled with a placeholder and is never read in this path.
     let state = AppState {
         store,
         token: Token::new("stdio-noop"),
