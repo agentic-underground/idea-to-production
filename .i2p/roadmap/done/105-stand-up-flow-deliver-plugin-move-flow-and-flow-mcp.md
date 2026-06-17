@@ -1,9 +1,10 @@
 ---
 id: 105
 title: "Stand up the flow (DELIVER) plugin; move flow + flow-mcp out of operate"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "#95 (operate rename), #97 (flow-mcp rename)"
 ---
 

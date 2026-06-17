@@ -28,8 +28,6 @@ and simply emits markdown.
 | **gemba** | capture → route → raise: turn a workface learning into a tracked, de-duplicated feedback issue on the repo that owns it (SELF here / GEMBA on a sibling) | `/gemba` |
 | **maintain** | dependency upkeep, CVE patching, rotation, restore drills, tech-debt | `/maintain [path]` |
 | **wiki-publisher** | opt-in: publish PUBLISH's per-item docs + illustrations to the origin's GitHub `.wiki.git` | `/wiki-publisher [path]` |
-| **flow** | carry value — advance one `.i2p/roadmap/` item to its next lane (recording who/what/cost via the flow-mcp MCP), or report the current flow state | `/flow [report\|carry <item> [to <stage>]\|ping]` |
-| **flow-setup** | finish setting up the **flow-mcp MCP** (the roadmap server — `render_roadmap` answers "what's on the roadmap" at ~0 tokens): pre-cache the binary, walk the one-time `/mcp` approval, verify the connection | `/flow-setup` |
 
 `/operate-gate` is the front door — it certifies a product is **ready to operate** at go-live and gives the
 **steady-state health view** once it's live, composing the other lenses into one report.

@@ -51,12 +51,12 @@ JSON-RPC `dispatch`). The single source of truth is the roadmap markdown + the a
   The MCP verbs are exercised through `mcp::dispatch` directly; `tests/stdio_story.rs` drives the binary
   end-to-end over real stdin/stdout.
 
-← back to the [operate plugin](../README.md) · the [marketplace root](../../../README.md)
+← back to the [flow plugin](../.claude-plugin/plugin.json) · the [marketplace root](../../../README.md)
 
 ## MCP registration (stdio transport)
 
 The flow-mcp server speaks the [MCP stdio transport](https://modelcontextprotocol.io/docs/concepts/transports)
-when started with `--mcp`. The **operate plugin registers it itself** — `../.mcp.json` declares
+when started with `--mcp`. The **flow plugin registers it itself** — `../.mcp.json` declares
 the `flow-mcp` server, so its tools (`list_items`, `render_roadmap`, `post_status`, `set_wait_go`,
 `append_spend`, …) surface as `mcp__flow-mcp__*` in any session where the plugin is enabled, with no
 project-level `.claude/settings.json` entry. (Like every plugin MCP server, it is approval-gated under
@@ -64,7 +64,7 @@ default permissions — `claude mcp list` shows it `⏸ Pending approval` until 
 
 ### Finishing the install (the smooth path)
 
-After installing/updating operate, two one-time steps remain — and the plugin makes both as
+After installing/updating flow, two one-time steps remain — and the plugin makes both as
 frictionless as the harness allows:
 
 1. **Restart Claude Code.** A plugin's `.mcp.json` is read only at startup, so a restart is required
@@ -79,7 +79,7 @@ What the plugin automates around those steps: a SessionStart hook
 ([`hooks/scripts/flow-mcp-onboard.sh`](../hooks/scripts/flow-mcp-onboard.sh)) **pre-warms** the binary in
 the background (so approval starts the server instantly, no transient "connecting/failed") and surfaces a
 gentle one-time nudge; the agent then **detects** whether `mcp__flow-mcp__*` is connected from its own
-tool list and guides only when it isn't. Run **`/operate:flow-setup`** any time for a guided,
+tool list and guides only when it isn't. Run **`/flow:flow-setup`** any time for a guided,
 verified walkthrough (it pre-caches the binary, walks the approval, and confirms the connection with a
 `render_roadmap` probe). Until it's connected, "what's on the roadmap" still works via a direct scan of
 the `.i2p/roadmap/` tree — the MCP path just makes it instant and ~0-token.
@@ -114,7 +114,7 @@ SHA (match/mismatch), the cache dir, and the resolved project root + roadmap ite
 **Cutting a release — the bump-and-cut flow** (NEVER re-cut a tag; bump the version every time):
 
 ```sh
-# 1. bump plugins/operate/flow-mcp/Cargo.toml `version`, then:
+# 1. bump plugins/flow/flow-mcp/Cargo.toml `version`, then:
 git tag flow-mcp-v0.2.3 && git push origin flow-mcp-v0.2.3   # → .github/workflows/flow-mcp-release.yml
 # 2. the workflow's `preflight` refuses a re-cut tag or tag≠Cargo version, then cross-builds
 #    linux/macOS/Windows (x86_64+arm64), publishes each asset + a SHA256SUMS, and notes the next step:

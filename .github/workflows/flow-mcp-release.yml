@@ -2,12 +2,12 @@ name: flow-mcp release
 
 # Build the flow-mcp MCP binary for every supported platform and publish it as a
 # GitHub Release with a SHA256SUMS manifest. The plugin launcher
-# (plugins/operate/flow-mcp/bin/flow-mcp) runs a PINNED release: it reads
+# (plugins/flow/flow-mcp/bin/flow-mcp) runs a PINNED release: it reads
 # bin/RELEASE for the tag and verifies the retrieved asset against the COMMITTED bin/SHA256SUMS
 # — so a destination machine runs the server WITHOUT a Rust toolchain and deterministically.
 #
 # Cut a release (the bump-and-cut flow — see flow-mcp/README.md):
-#   1. Bump plugins/operate/flow-mcp/Cargo.toml `version` (NEVER re-cut a tag).
+#   1. Bump plugins/flow/flow-mcp/Cargo.toml `version` (NEVER re-cut a tag).
 #   2. Push the matching tag:  git tag flow-mcp-v0.2.1 && git push --tags
 #   3. This workflow's `preflight` refuses a re-cut tag or a tag≠Cargo version, then builds +
 #      publishes the assets + SHA256SUMS.
@@ -50,7 +50,7 @@ jobs:
             *) echo "::error::tag '$tag' is not of the form flow-mcp-vX.Y.Z"; exit 1 ;;
           esac
           cargover="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' \
-                      plugins/operate/flow-mcp/Cargo.toml | head -n1)"
+                      plugins/flow/flow-mcp/Cargo.toml | head -n1)"
           if [ "$tagver" != "$cargover" ]; then
             echo "::error::tag version ($tagver) != Cargo.toml version ($cargover) — bump Cargo.toml to match the tag before cutting."
             exit 1
@@ -69,7 +69,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: plugins/operate/flow-mcp
+        working-directory: plugins/flow/flow-mcp
     strategy:
       fail-fast: false
       matrix:
@@ -112,7 +112,7 @@ jobs:
         with:
           name: flow-mcp-${{ matrix.target }}
           path: |
-            plugins/operate/flow-mcp/flow-mcp-${{ matrix.target }}*
+            plugins/flow/flow-mcp/flow-mcp-${{ matrix.target }}*
           if-no-files-found: error
 
   release:
@@ -148,5 +148,5 @@ jobs:
           gh release create "$tag" \
             --repo "${{ github.repository }}" \
             --title "$tag" \
-            --notes "flow-mcp MCP binary for the operate plugin. The plugin launcher runs a PINNED release: it reads bin/RELEASE for the tag and verifies the retrieved asset against the COMMITTED bin/SHA256SUMS. To activate this release, copy this SHA256SUMS into plugins/operate/flow-mcp/bin/SHA256SUMS and set bin/RELEASE to this tag, then commit." \
+            --notes "flow-mcp MCP binary for the flow plugin. The plugin launcher runs a PINNED release: it reads bin/RELEASE for the tag and verifies the retrieved asset against the COMMITTED bin/SHA256SUMS. To activate this release, copy this SHA256SUMS into plugins/flow/flow-mcp/bin/SHA256SUMS and set bin/RELEASE to this tag, then commit." \
             "${assets[@]}"

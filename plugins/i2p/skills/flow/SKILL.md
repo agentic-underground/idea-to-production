@@ -54,9 +54,10 @@ Place only **installed** plugins as live stages. Mark each missing plugin's stag
 "▫ DISCOVER — add `market-scanner` to find what's worth building" / "▫ DELIVER — add the `flow` plugin to
 turn the IDEA package into a dependency-ordered roadmap (with `foundry:roadmapper` authoring the EARS
 specs)" / "▫ OPERATE — add `operate` to observe, respond to incidents, and iterate the live product." A
-user should see both the path they have and the path they could unlock. (The **flow** plugin that owns
-DELIVER is not in this marketplace yet — name the stage and its owner regardless; graceful degradation,
-the gap named not skipped.)
+user should see both the path they have and the path they could unlock. (The **flow** plugin owns
+DELIVER — `/flow` / `/flow-setup`; treat it like any other specialist: list it when installed, mark
+DELIVER dark when it is not — name the stage and its owner regardless; graceful degradation, the gap
+named not skipped.)
 
 ## 3. Trace a path (if asked)
 

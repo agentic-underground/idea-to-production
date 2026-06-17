@@ -481,7 +481,7 @@ fi
 # FAIL). Zero checksum lines is the legitimate bootstrap window (tag bumped, release not yet
 # published) — noted, not failed; smoke-pinned.sh likewise SKIPs there.
 section "P. flow-mcp pinned-release parity (RELEASE ⟺ Cargo ⟺ SHA256SUMS)"
-fs_dir="plugins/operate/flow-mcp"
+fs_dir="plugins/flow/flow-mcp"
 rel_file="$fs_dir/bin/RELEASE"; sums_file="$fs_dir/bin/SHA256SUMS"; cargo_file="$fs_dir/Cargo.toml"
 p_ok=1
 if [ ! -f "$rel_file" ] || [ ! -f "$sums_file" ] || [ ! -f "$cargo_file" ]; then

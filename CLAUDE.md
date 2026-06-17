@@ -3,8 +3,8 @@
 Agent entry point for the **idea-to-production** Claude Code plugin marketplace. Humans
 start at [README.md](./README.md); agents working *on the marketplace itself* start here.
 
-- **What this repo is** — a marketplace of eight composable plugins (the **i2p** front
-  door — which also greets whoever opens a repo — plus seven specialists) that carry software
+- **What this repo is** — a marketplace of nine composable plugins (the **i2p** front
+  door — which also greets whoever opens a repo — plus eight specialists) that carry software
   from IDEA to PRODUCTION. The pillars and plugin tour: [README.md](./README.md). The
   philosophical spine: [`plugins/foundry/knowledge/first-principles.md`](plugins/foundry/knowledge/first-principles.md).
   The operation: [`plugins/foundry/VALUE_FLOW.md`](plugins/foundry/VALUE_FLOW.md).
