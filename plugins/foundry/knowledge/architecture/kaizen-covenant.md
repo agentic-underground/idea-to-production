@@ -66,6 +66,28 @@ its own improvement.
    and a fix is folded back at the *source* so no future build pays for it again — **fix-upstream-once**,
    shipped to all users via PR (§6 of `first-principles.md`).
 
+### The GEMBA reflex — capture and raise, *unprompted*
+
+Principle 5 (*go and see*) is awareness; the **reflex** is the behaviour it demands when a station
+actually hits a wall. When work meets a gap, a failure, a tooling thrash, a reviewer **BLOCK** (or a
+repeated NEEDS_REVISION), or a **missing handler**, the agent does not merely route around it — it
+**stops to capture and raise**, so the lesson lands once, upstream, for everyone:
+
+1. **Capture at the gemba** — record what actually broke at the point it broke (the failing command,
+   the absent capability, the contradicted contract), not a sanitised after-the-fact summary.
+2. **Route by ownership** — if the gap is in **your own** element, fold it back and open a PR
+   (`/<plugin>:self-improve`); if it belongs **elsewhere**, write it to the learning ledger
+   (`.i2p/learnings.jsonl`) and raise a **consented** issue (auto-file same-repo; ask before a sibling
+   repo).
+3. **Close the loop** — an open learning is a re-entry signal: it surfaces for triage until a fix
+   ships. A problem encountered and not captured is **rediscovery** waiting to happen.
+
+The reflex is *always-on*: it fires without being asked, because the KAIZEN canon that names it is
+injected into every session. The capture→route→raise machinery **will be** the GEMBA skill and the
+issue-raiser (`raise-feedback.sh`), with the trigger points (incident action items, reviewer BLOCK,
+the missing-handler gate) wired so the reflex cannot be silently skipped — delivered across epic #93's
+Stream 4 (#18–#20, #22).
+
 ### Self-cleaving — when the defect is *breadth* (muri)
 
 "Halve the distance" usually means going *deeper*. But sometimes the largest remaining defect is
