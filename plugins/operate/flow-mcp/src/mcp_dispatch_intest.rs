@@ -236,7 +236,7 @@ async fn dispatch_initialize_completes_handshake() {
         resp["result"]["capabilities"]["tools"].is_object(),
         "must advertise the tools capability, got: {resp:?}"
     );
-    assert_eq!(resp["result"]["serverInfo"]["name"], "flow-server");
+    assert_eq!(resp["result"]["serverInfo"]["name"], "flow-mcp");
 }
 
 #[tokio::test]

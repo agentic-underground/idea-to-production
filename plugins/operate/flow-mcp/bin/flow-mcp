@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# flow-server-mcp — the MCP launcher the operate plugin registers (see the
-# plugin-root .mcp.json). It obtains the flow-server binary WITHOUT requiring a Rust
+# flow-mcp — the MCP launcher the operate plugin registers (see the
+# plugin-root .mcp.json). It obtains the flow-mcp binary WITHOUT requiring a Rust
 # toolchain on the destination machine, then execs it (the plugin passes `--mcp`).
 #
 # Resolution ladder (first that succeeds wins):
@@ -25,7 +25,7 @@
 # A mismatch is refused (never executed) and falls through to the build fallback. This
 # mirrors the marketplace's pinned-release discipline (verify-prereqs.sh §K: no floating tags).
 #
-# CWD-INDEPENDENCE: the flow-server resolves its roadmap from a RELATIVE `.i2p/roadmap`
+# CWD-INDEPENDENCE: the flow-mcp resolves its roadmap from a RELATIVE `.i2p/roadmap`
 # against its CWD unless given `--roadmap`. The harness may spawn this launcher from any
 # directory, which would silently yield an empty board. So we walk up from $PWD to the
 # project root (the dir holding `.i2p/roadmap/`) and inject an ABSOLUTE `--roadmap` (and a
@@ -35,22 +35,22 @@ set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # CLAUDE_PLUGIN_ROOT (set by the harness for plugin surfaces) = the operate plugin
-# root; else derive it (this script lives at <plugin>/flow-server/bin/flow-server-mcp).
+# root; else derive it (this script lives at <plugin>/flow-mcp/bin/flow-mcp).
 # NOTE: this is the PLUGIN dir, NOT the user's project root — the project root is found by
 # the $PWD walk-up below, never from CLAUDE_PLUGIN_ROOT.
 PLUGIN="${CLAUDE_PLUGIN_ROOT:-$(dirname "$(dirname "$SCRIPT_DIR")")}"
-FS_DIR="$PLUGIN/flow-server"
+FS_DIR="$PLUGIN/flow-mcp"
 REPO="agentic-underground/idea-to-production"
 RELEASE_TAG="$(tr -d '[:space:]' < "$SCRIPT_DIR/RELEASE" 2>/dev/null || true)"
 SUMS_FILE="$SCRIPT_DIR/SHA256SUMS"
-CACHE_BASE="${XDG_CACHE_HOME:-$HOME/.claude}/flow-server"
+CACHE_BASE="${XDG_CACHE_HOME:-$HOME/.claude}/flow-mcp"
 PREWARM_LOG="$CACHE_BASE/prewarm.log"
 # retrieve() is always called as `bin="$(retrieve)"` — a command substitution, i.e. a SUBSHELL.
 # A variable it sets cannot reach the parent, so it records its failure reason to this file and
 # the parent reads it back with read_reason after the call. (File writes DO survive a subshell.)
 REASON_FILE="$CACHE_BASE/.last-reason"
 
-log() { printf 'flow-server-mcp: %s\n' "$*" >&2; }
+log() { printf 'flow-mcp: %s\n' "$*" >&2; }
 set_reason() { mkdir -p "$CACHE_BASE" 2>/dev/null || true; printf '%s' "$*" >"$REASON_FILE" 2>/dev/null || true; }
 read_reason() { cat "$REASON_FILE" 2>/dev/null || true; }
 
@@ -58,7 +58,7 @@ read_reason() { cat "$REASON_FILE" 2>/dev/null || true; }
 # Failures during a background pre-warm are otherwise invisible — this makes them readable.
 prewarm_log() {
   mkdir -p "$CACHE_BASE" 2>/dev/null || return 0
-  printf 'flow-server prewarm[%s]: %s\n' "$RELEASE_TAG" "$*" >>"$PREWARM_LOG" 2>/dev/null || true
+  printf 'flow-mcp prewarm[%s]: %s\n' "$RELEASE_TAG" "$*" >>"$PREWARM_LOG" 2>/dev/null || true
 }
 
 # uname → the Rust target triple used in release asset names.
@@ -82,7 +82,7 @@ asset_name() {  # → the release asset file name for this platform
   local triple ext
   triple="$(target_triple)" || return 1
   ext=""; case "$triple" in *windows*) ext=".exe" ;; esac
-  printf 'flow-server-%s%s' "$triple" "$ext"
+  printf 'flow-mcp-%s%s' "$triple" "$ext"
 }
 
 sha256_of() {  # <file> → lowercase hex digest (or non-zero if no tool)
@@ -118,7 +118,7 @@ retrieve() {
   ext=""; case "$asset" in *.exe) ext=".exe" ;; esac
   expected="$(pinned_sum_for "$asset")"
   cache="$(cache_dir "$expected")"
-  bin="$cache/flow-server${ext}"
+  bin="$cache/flow-mcp${ext}"
 
   # Cached and still matching the COMMITTED pin? Use it (no network).
   if [ -n "$expected" ] && [ -x "$bin" ]; then
@@ -154,8 +154,8 @@ build_from_source() {
   command -v cargo >/dev/null 2>&1 || return 1
   [ -f "$FS_DIR/Cargo.toml" ] || return 1
   log "no verified release binary for this platform; building from source with cargo (dev fallback)…"
-  cargo build --release --manifest-path "$FS_DIR/Cargo.toml" --bin flow-server >&2 || return 1
-  printf '%s' "$FS_DIR/target/release/flow-server"
+  cargo build --release --manifest-path "$FS_DIR/Cargo.toml" --bin flow-mcp >&2 || return 1
+  printf '%s' "$FS_DIR/target/release/flow-mcp"
 }
 
 # Walk up from $PWD to the project root — the nearest ancestor containing a `.i2p/roadmap/`
@@ -176,7 +176,7 @@ find_project_root() {
 # dir, and the resolved project root + whether its roadmap tree was found. Always exits 0.
 doctor() {
   local asset expected cache bin got root
-  echo "flow-server-mcp --doctor"
+  echo "flow-mcp --doctor"
   echo "  plugin dir     : $PLUGIN"
   echo "  pinned tag     : ${RELEASE_TAG:-<unset>}"
   asset="$(asset_name 2>/dev/null || echo '<unsupported platform>')"
@@ -184,7 +184,7 @@ doctor() {
   expected="$(pinned_sum_for "$asset" 2>/dev/null || true)"
   echo "  pinned SHA256  : ${expected:-<none committed>}"
   cache="$(cache_dir "$expected")"
-  bin="$cache/flow-server"; [ -e "${bin}.exe" ] && bin="${bin}.exe"
+  bin="$cache/flow-mcp"; [ -e "${bin}.exe" ] && bin="${bin}.exe"
   echo "  cache dir      : $cache"
   if [ -x "$bin" ]; then
     got="$(sha256_of "$bin" 2>/dev/null || echo '<no sha tool>')"
@@ -253,7 +253,7 @@ main() {
   if bin="$(retrieve)" && [ -n "$bin" ]; then :
   elif bin="$(build_from_source)" && [ -n "$bin" ]; then :
   else
-    log "could not obtain the flow-server binary for this platform ($(uname -sm 2>/dev/null)): $(read_reason || echo unknown)."
+    log "could not obtain the flow-mcp binary for this platform ($(uname -sm 2>/dev/null)): $(read_reason || echo unknown)."
     log "expected a pinned release at https://github.com/${REPO}/releases/tag/${RELEASE_TAG:-<unset>},"
     log "or a Rust toolchain (https://rustup.rs) for the source-build fallback."
     exit 1

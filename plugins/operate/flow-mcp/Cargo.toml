@@ -1,8 +1,8 @@
 [package]
-name = "flow-server"
-version = "0.2.2"
+name = "flow-mcp"
+version = "0.2.3"
 edition = "2021"
-description = "Flow server — sole writer of flow state; exposes the roadmap as an MCP verb surface over stdio (roadmap #1, #39)."
+description = "Flow MCP — sole writer of flow state; exposes the roadmap as an MCP verb surface over stdio (roadmap #1, #39, #97)."
 license = "MIT"
 
 [dependencies]

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# smoke-mcp.sh — spawn the committed flow-server MCP launcher exactly as the plugin's
+# smoke-mcp.sh — spawn the committed flow-mcp MCP launcher exactly as the plugin's
 # .mcp.json registers it, and assert the JSON-RPC handshake completes. This catches the
 # failure class where the shipped command can't start (the regression that motivated the
 # retrieved-artifact work): a launcher that can't produce a runnable binary, or a binary
@@ -10,7 +10,7 @@
 set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LAUNCHER="$SCRIPT_DIR/flow-server-mcp"
+LAUNCHER="$SCRIPT_DIR/flow-mcp"
 
 [ -x "$LAUNCHER" ] || { echo "FAIL: launcher not executable: $LAUNCHER"; exit 1; }
 

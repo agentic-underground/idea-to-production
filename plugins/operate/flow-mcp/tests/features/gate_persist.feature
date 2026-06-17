@@ -8,7 +8,7 @@
 Feature: Gate state persistence across restarts
 
   Background:
-    Given a flow-server is running with a temporary .flow/ directory
+    Given a flow-mcp is running with a temporary .flow/ directory
     And the roadmap contains item "item-a" with title "Alpha" in status PENDING
 
   # --- Happy path: persist and restore ---

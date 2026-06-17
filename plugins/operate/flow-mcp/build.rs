@@ -8,7 +8,7 @@
 //! on PATH, the rev is `unknown` — the build still succeeds.
 //!
 //! Freshness: we deliberately emit NO `rerun-if-changed` directive. The crate lives at
-//! plugins/operate/flow-server/ while `.git` is at the repo root, so a `.git/HEAD`
+//! plugins/operate/flow-mcp/ while `.git` is at the repo root, so a `.git/HEAD`
 //! path (resolved relative to this manifest) would point at a non-existent file — and emitting
 //! ANY rerun-if directive switches Cargo from its default "re-run when any package file
 //! changes" to "re-run ONLY when these paths change", which would freeze the rev. With no

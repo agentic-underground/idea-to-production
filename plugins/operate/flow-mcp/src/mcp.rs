@@ -191,7 +191,7 @@ pub async fn dispatch(state: &AppState, req: Value) -> Value {
                     "protocolVersion": protocol,
                     "capabilities": { "tools": {} },
                     "serverInfo": {
-                        "name": "flow-server",
+                        "name": "flow-mcp",
                         "version": SERVER_VERSION,
                     },
                 }),

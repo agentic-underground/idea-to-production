@@ -1,14 +1,14 @@
 //! Story test for item [37]: subprocess stdio integration.
 //!
-//! Spawns the flow-server binary with --mcp, sends JSON-RPC requests over
+//! Spawns the flow-mcp binary with --mcp, sends JSON-RPC requests over
 //! stdin, reads responses from stdout, and verifies clean exit on stdin close.
 //!
-//! This file lives under `tests/` so cargo sets CARGO_BIN_EXE_flow-server
+//! This file lives under `tests/` so cargo sets CARGO_BIN_EXE_flow-mcp
 //! to the compiled binary path before running the test.
 //!
 //! NOTE: cargo test builds the binary before running integration tests, so
 //! no manual build step is needed. If you see "failed to spawn" errors,
-//! first run: cargo build -p flow-server
+//! first run: cargo build -p flow-mcp
 //!
 //! Traces to: EVT-37-2, EVT-37-3, EVT-37-6, EVT-37-7
 //! Emits: STORY_PROVEN
@@ -36,7 +36,7 @@ fn tempdir(tag: &str) -> std::path::PathBuf {
 #[tokio::test]
 async fn story_stdio_list_items_roundtrip() {
     let dir = tempdir("list-items");
-    let bin = env!("CARGO_BIN_EXE_flow-server");
+    let bin = env!("CARGO_BIN_EXE_flow-mcp");
     let mut child = tokio::process::Command::new(bin)
         .arg("--mcp")
         .arg("--data")
@@ -45,7 +45,7 @@ async fn story_stdio_list_items_roundtrip() {
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::null())
         .spawn()
-        .expect("failed to spawn flow-server --mcp");
+        .expect("failed to spawn flow-mcp --mcp");
 
     let stdin = child.stdin.take().unwrap();
     let stdout = child.stdout.take().unwrap();
@@ -92,7 +92,7 @@ async fn story_stdio_list_items_roundtrip() {
     let status = child.wait().await.unwrap();
     assert!(
         status.success(),
-        "flow-server --mcp must exit 0 on stdin close, got: {status}"
+        "flow-mcp --mcp must exit 0 on stdin close, got: {status}"
     );
 }
 
@@ -100,7 +100,7 @@ async fn story_stdio_list_items_roundtrip() {
 #[tokio::test]
 async fn story_stdio_empty_stdin_exits_cleanly() {
     let dir = tempdir("empty-stdin");
-    let bin = env!("CARGO_BIN_EXE_flow-server");
+    let bin = env!("CARGO_BIN_EXE_flow-mcp");
     let mut child = tokio::process::Command::new(bin)
         .arg("--mcp")
         .arg("--data")
@@ -109,7 +109,7 @@ async fn story_stdio_empty_stdin_exits_cleanly() {
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::null())
         .spawn()
-        .expect("failed to spawn flow-server --mcp");
+        .expect("failed to spawn flow-mcp --mcp");
 
     // Close stdin immediately — no requests sent
     drop(child.stdin.take());
@@ -117,7 +117,7 @@ async fn story_stdio_empty_stdin_exits_cleanly() {
     let status = child.wait().await.unwrap();
     assert!(
         status.success(),
-        "flow-server --mcp must exit 0 when stdin is immediately closed, got: {status}"
+        "flow-mcp --mcp must exit 0 when stdin is immediately closed, got: {status}"
     );
 }
 
@@ -128,7 +128,7 @@ async fn story_stdio_empty_stdin_exits_cleanly() {
 #[tokio::test]
 async fn story_stdio_malformed_json_produces_parse_error() {
     let dir = tempdir("malformed");
-    let bin = env!("CARGO_BIN_EXE_flow-server");
+    let bin = env!("CARGO_BIN_EXE_flow-mcp");
     let mut child = tokio::process::Command::new(bin)
         .arg("--mcp")
         .arg("--data")
@@ -137,7 +137,7 @@ async fn story_stdio_malformed_json_produces_parse_error() {
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::null())
         .spawn()
-        .expect("failed to spawn flow-server --mcp");
+        .expect("failed to spawn flow-mcp --mcp");
 
     let stdin = child.stdin.take().unwrap();
     let stdout = child.stdout.take().unwrap();

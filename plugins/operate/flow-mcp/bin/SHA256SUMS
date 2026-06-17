@@ -1,0 +1,14 @@
+# flow-mcp pinned-release checksums — the integrity source of truth for bin/flow-mcp.
+# One line per published release asset: "<64-hex-sha256>  flow-mcp-<triple>[.exe]".
+#
+# BOOTSTRAP WINDOW (roadmap #97): bin/RELEASE was bumped to flow-mcp-v0.2.3 (the flow-server →
+# flow-mcp rename, incl. a fresh release lineage) but the flow-mcp-v0.2.3 GitHub Release has not
+# been published yet, so no checksums are committed below. While this file carries no asset line
+# for a platform, the launcher resolves the binary by building from source (dev/CI) and
+# smoke-pinned.sh + verify-prereqs §P cleanly SKIP/PASS the bootstrap window. Once the
+# flow-mcp-v0.2.3 release assets are published, paste their checksum lines here (one per platform:
+# x86_64/aarch64 × linux-gnu/apple-darwin, plus x86_64-pc-windows-msvc.exe) to re-arm the
+# deterministic pinned-binary path.
+#
+# To adopt a new release: bump Cargo.toml, cut the tag, publish the assets, then replace these lines
+# + bin/RELEASE.

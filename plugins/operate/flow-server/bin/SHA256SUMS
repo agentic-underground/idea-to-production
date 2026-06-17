@@ -1,9 +1,0 @@
-# flow-server pinned-release checksums — the integrity source of truth for bin/flow-server-mcp.
-# One line per published release asset: "<64-hex-sha256>  flow-server-<triple>[.exe]".
-# Finalized from the flow-server-v0.2.2 GitHub Release (the web-UI-removed, MCP-stdio-only core, #39).
-# To adopt a new release: bump Cargo.toml, cut the tag, then replace these lines + bin/RELEASE.
-2d8e11c4b90235a7f76e8950e9ac612dd0ead186fcaa17f5e17c1696463e905c  flow-server-aarch64-apple-darwin
-dcfe3fbc370d5bbfaa73e32c75f2694bed4a18341c2b7b884a141a2b3e7ee11a  flow-server-aarch64-unknown-linux-gnu
-36435c3572a2261d62a55d814adc7f978ffbd7d72763ad8823851dc24ee21611  flow-server-x86_64-apple-darwin
-554d721c4f231aec1731a29bccc57cb95d3f99ef6149b58cad5848768ee78469 *flow-server-x86_64-pc-windows-msvc.exe
-e6e2608e2760bf693da767e6998fbf210e860fe5df3a6532debc61b82e4e7723  flow-server-x86_64-unknown-linux-gnu
