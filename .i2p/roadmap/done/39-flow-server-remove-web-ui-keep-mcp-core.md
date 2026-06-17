@@ -1,9 +1,10 @@
 ---
 id: 39
 title: "Flow-server — remove the web UI, keep the MCP core"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-15
+completed: 2026-06-17
 depends_on: "—"
 ---
 
