@@ -1,9 +1,10 @@
 ---
 id: 19
 title: "Issue-raiser — `raise-feedback.sh` (gh api · dedup · autonomy)"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "#17"
 ---
 

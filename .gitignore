@@ -24,6 +24,8 @@
 # roadmap tree, which is the durable source of truth and must stay tracked.
 /.i2p/*
 !/.i2p/roadmap/
+# The committed umbrella-org identity template (the live .i2p/identity.json stays ignored).
+!/.i2p/identity.json.example
 /*_INSPECTION_REPORT.md
 # Generated adversarial-review verdict artifacts (pr-review / i2p-review write these to the project root)
 /PR_REVIEW.md

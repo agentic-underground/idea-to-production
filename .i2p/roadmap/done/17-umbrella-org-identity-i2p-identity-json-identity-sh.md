@@ -1,9 +1,10 @@
 ---
 id: 17
 title: "Umbrella-org identity — `.i2p/identity.json` + `identity.sh`"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "— (atomic; PR-A)"
 ---
 
