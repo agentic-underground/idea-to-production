@@ -1,9 +1,10 @@
 ---
 id: 22
 title: "GEMBA trigger points — incident · reviewer-BLOCK · missing-handler"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "#20"
 ---
 

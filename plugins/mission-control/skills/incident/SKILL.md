@@ -86,6 +86,15 @@ latest state per id and **flags un-closed / overdue items** (status `open` past 
 into the lifecycle (it never auto-closes or gates; `--strict` exits non-zero on an overdue item for an
 opt-in gate caller). `/operate-gate` surfaces overdue items in its Open-incidents / Next-actions view.
 
+### Cross-cutting action items → the GEMBA reflex (#22)
+
+When a postmortem action item is **cross-cutting** — it fixes a class of failure that affects more than
+this one product (a marketplace skill, a shared script, a missing handler, a doc that misled) — the
+action-item ledger alone is not enough: the fix belongs *upstream*, for everyone. Prompt
+**`/mission-control:gemba`** for that item to capture it and route it (SELF → a `self-improve` PR;
+elsewhere → the learning ledger + a consented issue). The reflex is what turns a one-off postmortem into
+a fix-upstream-once — every incident that surprised us becomes a durable improvement.
+
 ## Degraded capabilities (point-of-use)
 
 If a tool/MCP/telemetry source you need to triage or mitigate is unavailable **when you reach for it** (a

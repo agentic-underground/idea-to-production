@@ -128,6 +128,12 @@ The verdict is the **highest *unresolved* severity across all roles** — a clea
 does not offset an unresolved security CRITICAL, and a MEDIUM gates only until it is fixed or
 explicitly accepted-with-rationale (record the disposition in the report).
 
+**On BLOCK or repeated NEEDS_REVISION → fire the GEMBA reflex (#22).** A BLOCK verdict, or the same
+class of finding surviving more than one revision, is a *gemba* signal that the gap is systemic. When
+`mission-control` is installed, prompt **`/mission-control:gemba`** to capture the gap and route it
+(SELF → a `self-improve` PR; elsewhere → the learning ledger + a consented issue) so the defect class
+is fixed upstream once — never let a hard stop pass uncaptured.
+
 ## 5. Emit `PR_REVIEW.md`
 
 ```markdown
