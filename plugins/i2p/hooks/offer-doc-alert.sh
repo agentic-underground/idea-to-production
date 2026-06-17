@@ -33,7 +33,7 @@ fi
 
 # --- opt-out gates (state lives under ~/.claude/hook-state, never the repo) ----------------
 STATE_DIR="${HOME_DIR}/.claude/hook-state"
-OPTOUT="${STATE_DIR}/concierge-doc-alert-optout"
+OPTOUT="${STATE_DIR}/i2p-doc-alert-optout"
 [ -e "$OPTOUT" ] && exit 0   # global "never alert in any repo".
 
 hash_path() {  # short, collision-resistant digest of the repo path (graceful tool fallback)
@@ -43,7 +43,7 @@ hash_path() {  # short, collision-resistant digest of the repo path (graceful to
   else printf '%s' "$1" | cksum | tr -d ' ' | cut -c1-12; fi
 }
 repo_key="$(basename "$project_dir" 2>/dev/null | tr -c 'A-Za-z0-9._-' '_')-$(hash_path "$project_dir")"
-SHOWN="${STATE_DIR}/concierge-doc-alert-shown/${repo_key}"
+SHOWN="${STATE_DIR}/i2p-doc-alert-shown/${repo_key}"
 [ -e "$SHOWN" ] && exit 0   # already shown for this repo.
 
 # --- compose the one-time alert ------------------------------------------------------------

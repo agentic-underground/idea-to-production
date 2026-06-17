@@ -16,9 +16,10 @@ understand the *system*; read here to disambiguate a *name*.
 
 The companions are **cross-cutting**: foundry/ideator use them *by capability* when installed
 (graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
-is the eight-phase product-lifecycle **cycle**: **DISCOVER (market-scanner) → IDEATE (ideator) →
-DESIGN (atelier) → BUILD (foundry) → ASSURE (foundry, quality) → SECURE (security) →
-PUBLISH (publish) → OPERATE (operate) ↻** (OPERATE loops back to DISCOVER). Three concerns
+is the nine-phase product-lifecycle **cycle**: **DISCOVER (market-scanner) → IDEATE (ideator) →
+DELIVER (flow + foundry:roadmapper) → DESIGN (atelier) → BUILD ⇄ ASSURE ⇄ SECURE (foundry build,
+foundry quality, security — the realisation loop) → PUBLISH (publish) → OPERATE (operate) ↻**
+(a failed ASSURE/SECURE gate sends work back to BUILD; OPERATE loops back to DISCOVER). Three concerns
 cross-cut every phase — usability (atelier), quality (foundry), security (the security plugin).
 
 ---
@@ -51,39 +52,46 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 ### Marketplace & plugins
 - **idea-to-production** — the marketplace; the repository and the `marketplace.json` `name`. Its
   organising spine is the **product lifecycle** (below).
-- **product lifecycle** — the *creation arc* the suite is organised around: **eight phases forming a
-  cycle** — **DISCOVER → IDEATE → DESIGN → BUILD → ASSURE → SECURE → PUBLISH → OPERATE ↻** (OPERATE loops
-  back to DISCOVER), each owned by one plugin. **ASSURE** (quality V&V, foundry) and **SECURE** (security,
-  the security plugin) are separate first-class gates; three concerns cross-cut every phase — usability (atelier),
+- **product lifecycle** — the *creation arc* the suite is organised around: **nine phases forming a
+  cycle** — **DISCOVER → IDEATE → DELIVER → DESIGN → BUILD ⇄ ASSURE ⇄ SECURE → PUBLISH → OPERATE ↻**
+  (the BUILD ⇄ ASSURE ⇄ SECURE realisation loop sends failed gates back to BUILD; OPERATE loops
+  back to DISCOVER), each owned by one plugin. **DELIVER** (roadmap intake → EARS/feature authoring →
+  decomposition, owner flow + foundry:roadmapper) sits between IDEATE and DESIGN. **ASSURE** (quality V&V,
+  foundry) and **SECURE** (security, the security plugin) are separate first-class gates; three concerns
+  cross-cut every phase — usability (atelier),
   quality (foundry), security (the security plugin). The canonical model (owners, academic lineage, entry/exit
   signals) is `i2p/knowledge/product-lifecycle.md`; tracked per-project in `.i2p/lifecycle.json` and shown
   on the i2p status line. Distinct from the *marketing* product life cycle
   (introduction→growth→maturity→decline), which runs alongside OPERATE.
-- **ASSURE** (lifecycle phase ⑤; gate, owner foundry) — the **quality** certification gate: adversarial
+- **DELIVER** (lifecycle phase ③; owner flow + foundry:roadmapper) — the **planning** phase between IDEATE
+  and DESIGN: roadmap intake → EARS/feature authoring → decomposition into atomic, dependency-ordered
+  build-ready items. A true phase, not a cross-cutting concern.
+- **ASSURE** (lifecycle phase ⑥; gate, owner foundry) — the **quality** certification gate: adversarial
   V&V (tests green, coverage density, perf-delta, regression, architecture). Distinct from SECURE — a
   product can be high-quality and insecure. *(Built-in not inspected-in: quality is engineered from the
   first line of BUILD; ASSURE certifies it.)*
-- **SECURE** (lifecycle phase ⑥; gate, owner security) — the **security** certification gate: PII,
+- **SECURE** (lifecycle phase ⑦; gate, owner security) — the **security** certification gate: PII,
   secrets, supply-chain clear before exposure. Distinct from ASSURE (quality). *(Baked in from the
   beginning — secure-by-design from DISCOVER; SECURE is the pre-exposure certification.)*
-- **OPERATE** (lifecycle phase ⑧; owner `operate`) — the living phase: observe, respond to
+- **OPERATE** (lifecycle phase ⑨; owner `operate`) — the living phase: observe, respond to
   incidents, iterate, and maintain the realised & live product; its learnings open the **next** cycle
   (↻ → DISCOVER). `operate` may not be installed yet — surfaces name what installing it unlocks.
 - **i2p** — the marketplace **front door / meta-layer & arrival layer**: marketplace-level meta-commands
-  (`/i2p:help`, `/i2p:review`, `/i2p:check`, `/i2p:flow`) plus session-start onboarding, and — folded in
-  from the retired concierge — the **repo welcome** (a SessionStart hook renders a repo's
-  `.claude/welcome.md` to greet and route whoever opens it; `/i2p:define-welcome` authors it) and the
-  **idea-to-production status line** (`/i2p:statusline`, offered once on first activation). A thin
-  orchestrator that composes the seven specialists by capability and never re-implements them.
+  (`/i2p:help`, `/i2p:review`, `/i2p:check`, `/i2p:flow`) plus session-start onboarding, and the **repo
+  welcome** (a SessionStart hook renders a repo's `.claude/welcome.md` to greet and route whoever opens
+  it; `/i2p:define-welcome` authors it) and the **idea-to-production status line** (`/i2p:statusline`,
+  offered once on first activation) — the arrival layer folded into i2p. A thin orchestrator that
+  composes the eight specialists by capability and never re-implements them.
 - **first-order instrumentation** — the HUD's always-on instruments, fed by deterministic hooks: the
   **⚔ adversarial-catch counter** (times a reviewer caught something) and the **token-cost tracker**
   (per-phase actual vs a self-calibrating estimate, tokens + $). Canonical:
   `i2p/knowledge/instrumentation.md`; state under `~/.claude/state/` and `<project>/.i2p/cost.json`.
-- **market-scanner / ideator / foundry / security / publish / atelier / operate** — the seven
-  specialist plugins: DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the
-  core conveyor (BUILD + the ASSURE quality gate) / SECURITY companion (the SECURE gate) / PUBLISHING
-  companion / DESIGN companion (make + adversarially review the visuals) / OPERATE companion (run the live
-  product — observe, respond, iterate, maintain — and loop learnings back to DISCOVER).
+- **market-scanner / ideator / flow / foundry / security / publish / atelier / operate** — the eight
+  specialist plugins: DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) /
+  DELIVER (the roadmap board + intake, with foundry:roadmapper) / the core conveyor (BUILD + the ASSURE
+  quality gate) / SECURITY companion (the SECURE gate) / PUBLISHING companion / DESIGN companion (make +
+  adversarially review the visuals) / OPERATE companion (run the live product — observe, respond, iterate,
+  maintain — and loop learnings back to DISCOVER).
 
 ### Orchestration agents (foundry)
 - **founder** — COO/portfolio orchestrator. - **builder-lead** — cycle planner (emits `FOUNDRY_PLAN.md`).

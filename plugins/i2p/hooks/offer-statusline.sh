@@ -12,7 +12,7 @@ set -uo pipefail
 
 SETTINGS="${HOME}/.claude/settings.json"
 STATE_DIR="${HOME}/.claude/hook-state"
-SENTINEL="${STATE_DIR}/concierge-statusline-offered"
+SENTINEL="${STATE_DIR}/i2p-statusline-offered"
 
 # Already installed? (settings.json statusLine points at our renderer) → never offer.
 if [ -f "$SETTINGS" ] && grep -q 'statusline-command.sh' "$SETTINGS" 2>/dev/null; then

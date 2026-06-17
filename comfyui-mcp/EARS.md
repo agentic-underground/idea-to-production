@@ -9,7 +9,7 @@ Every requirement is a test coordinate; the sum of the green tests is the server
   set is `txt2img-basic`, `txt2img-hires-fix`, `lora-detail`, `upscale`, `tricomposite` (each a *fixed* graph
   with a bounded `_meta.fillable` schema; the multi-stage ones add latent hires-fix, a 2-slot LoRA stack, a
   model-based upscale pass, and three feather-composited regions + a unify pass respectively). The live copies
-  ship **inside the PRESSROOM plugin** at `plugins/pressroom/knowledge/comfyui-workflows/` (so the handler
+  ship **inside the PUBLISH plugin** at `plugins/publish/knowledge/comfyui-workflows/` (so the handler
   resolves them under its own `${CLAUDE_PLUGIN_ROOT}`); this project keeps a synced mirror for the future
   server. `SDXL/sd_xl_base_1.0` **does** load and the base+refiner flow works — an earlier "fails to load"
   note was wrong; a refiner template may be added later.
@@ -18,10 +18,10 @@ Every requirement is a test coordinate; the sum of the green tests is the server
   `model_name` (the `upscale` template).
 - **Fillable schema** — per-template, the exact set of fillable paths + their bounds, from the template's
   `_meta.fillable`. The server fills ONLY these; `_meta` is stripped before POST.
-- **Caller** — an authenticated MCP client (PRESSROOM's `handler-comfyui`).
+- **Caller** — an authenticated MCP client (PUBLISH's `handler-comfyui`).
 - **Out of scope — local raster post-processing.** Compositing, SVG↔raster blends, and animation are done
-  **locally** by PRESSROOM's `handler-composite` against its own bounded, parameter-only recipe library
-  ([`raster-toolchain.md`](../plugins/pressroom/knowledge/raster-toolchain.md) — `int()`-validated, no shell
+  **locally** by PUBLISH's `handler-composite` against its own bounded, parameter-only recipe library
+  ([`raster-toolchain.md`](../plugins/publish/knowledge/raster-toolchain.md) — `int()`-validated, no shell
   injection), NOT through this submit-only ComfyUI server. The two share the same allowlist *philosophy*
   (fixed recipe, type-checked slots) but are independent surfaces.
 
@@ -76,6 +76,6 @@ Every requirement is a test coordinate; the sum of the green tests is the server
 ## Non-functional
 - N1. Param validation SHALL run before any network call to ComfyUI.
 - N2. The server SHALL hold no secrets in source; the auth token and endpoint SHALL come from the environment
-  (sentinel `/secret-scan` clean).
+  (security `/scan-for-secrets` clean).
 - N3. 100% line + branch coverage is the build floor (FOUNDRY mandate), including every X-requirement
   rejection path.

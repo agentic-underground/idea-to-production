@@ -123,9 +123,9 @@ Before beginning:
    This applies for both `pr-approval` (AWAITING MERGE) and `direct-merge` (COMPLETE) — in both
    cases the work is done and the card belongs in the DONE column.
 
-   If the flow-server is not reachable (connection refused or token absent), log
+   If the flow-mcp server is not reachable (connection refused or token absent), log
    `[flow-board] not running — board will sync on next restart` and continue.
-   **Do NOT halt delivery for a missing flow-server.**
+   **Do NOT halt delivery for a missing flow-mcp server.**
 
 9. Update plan file: mark checklist complete, add "Completed" section with commit hash and date.
 10. If `IDEA_COST.jsonl` is in use (FOUNDRY context), append the cost record per [`../knowledge/orchestration/idea-cost-schema.md`](../knowledge/orchestration/idea-cost-schema.md).
@@ -212,7 +212,7 @@ handoff:
     - "adversarial review (/foundry:pr-review): PASS"
     - "direct-merge: merged to main + pushed  |  pr-approval: branch pushed + PR opened: {pr_url}"
     - "Roadmap STATUS: COMPLETE (direct-merge) | AWAITING MERGE (pr-approval, until human merges)"
-    - "Flow canvas synced: item-{N} → done (or: flow-server not running)"
+    - "Flow canvas synced: item-{N} → done (or: flow-mcp server not running)"
     - "Plan checklist: all steps ticked"
     - "Reviewer: PASS"
   reviewer_status:

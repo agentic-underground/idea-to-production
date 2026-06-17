@@ -41,7 +41,7 @@ inst_md5="$(md5_of "$INSTALLED")"
 # again, but the SAME unaddressed drift never re-fires within a session.
 mkdir -p "$STATE_DIR" 2>/dev/null || exit 0
 sig="$(printf '%s' "${ship_md5}-${inst_md5}" | { md5sum 2>/dev/null || sha1sum 2>/dev/null; } | awk '{print $1}')"
-SENTINEL="${STATE_DIR}/concierge-statusline-drift-${sig}"
+SENTINEL="${STATE_DIR}/i2p-statusline-drift-${sig}"
 mkdir "$SENTINEL" 2>/dev/null || exit 0   # already offered this exact drift → silent no-op.
 
 vstr=""

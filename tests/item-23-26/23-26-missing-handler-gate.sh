@@ -62,10 +62,10 @@ grep -rq 'handler-authoring-discipline.md' "$HANDLER_BUILD" \
   || { echo "FAIL[25]: the handler-build pipeline material ($HANDLER_BUILD) must reference the discipline doc"; FAIL=1; }
 grep -q 'handler-authoring-discipline.md' "$GATE" \
   || { echo "FAIL[25]: the gate's BUILD path must reference the discipline doc"; FAIL=1; }
-# The typst PDF pain is flagged as a SEPARATE pressroom self-improvement issue, not fixed here.
+# The typst PDF pain is flagged as a SEPARATE publish self-improvement issue, not fixed here.
 grep -qi 'typst' "$DISC" || { echo "FAIL[25]: discipline doc must note the typst PDF pain as a separate issue"; FAIL=1; }
 grep -qi 'SELF_IMPROVEMENT\|self-improvement\|separate' "$DISC" \
-  || { echo "FAIL[25]: typst note must be framed as a separate self-improvement issue for pressroom"; FAIL=1; }
+  || { echo "FAIL[25]: typst note must be framed as a separate self-improvement issue for publish"; FAIL=1; }
 
 # ── #26 — deferral + resumption (awaiting-handler ↔ DEFERRED handler item) ──────
 # AC1: original is awaiting-handler, paired with a DEFERRED handler-creation item.

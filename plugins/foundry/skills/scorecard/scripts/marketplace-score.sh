@@ -28,7 +28,7 @@ core_ok=$(check_identical "plugins/*/knowledge/inspection-core.md")
 #   • the allowlisted archive (docs/history, examples) and the policy text that DESCRIBES the rule
 #     (inspection-core.md, inspector agents, foundry policy/protocols knowledge);
 #   • the i2p status line + welcome hooks (statusline/ scripts + the statusline-install/statusline-widgets
-#     skills + commands + the welcome/offer/drift hooks, folded in from the retired concierge) — they MUST
+#     skills + commands + the welcome/offer/drift hooks — the arrival layer folded into i2p) — they MUST
 #     write ~/.claude because settings.json cannot expand ${CLAUDE_PLUGIN_ROOT}, and opt-out state lives
 #     under ~/.claude/hook-state;
 #   • i2p instrumentation + lifecycle cost state, which live under the global ~/.claude/state/ ledger;

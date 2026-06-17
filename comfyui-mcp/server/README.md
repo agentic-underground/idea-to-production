@@ -8,9 +8,9 @@ build its own infrastructure:
    coverage floor. Every EARS requirement (U/E/X/S/O/N) becomes a failing test first, then the minimum code to
    green it. The X-requirements (reject arbitrary graphs, path traversal, out-of-bounds params, cross-token
    results) are non-negotiable coordinates.
-2. **sentinel** runs the security gate on the result — `/security-gate`, `/secret-scan`, `/dependency-audit`,
+2. **security** runs the security gate on the result — `/scan-all`, `/scan-for-secrets`, `/scan-dependencies`,
    semgrep — and must pass before ship.
-3. **pressroom** documents it and switches [`handler-comfyui`](../../plugins/pressroom/agents/handler-comfyui.md)
+3. **publish** documents it and switches [`handler-comfyui`](../../plugins/publish/agents/handler-comfyui.md)
    from raw `curl` to `mcp__comfyui__*` tools.
 
 ## What foundry will build here
@@ -26,5 +26,5 @@ build its own infrastructure:
 - `comfyui_mcp/auth.py` — token check on every request (`MCP_AUTH_TOKEN`); job ownership by token.
 - `tests/` — one test per EARS requirement; coverage floor enforced in CI.
 
-Until foundry builds it, PRESSROOM's `handler-comfyui` runs the **Phase-0 raw-HTTP MVP** against
+Until foundry builds it, PUBLISH's `handler-comfyui` runs the **Phase-0 raw-HTTP MVP** against
 `$PRESSROOM_COMFYUI_URL` directly (see [`../ROADMAP.md`](../ROADMAP.md)).

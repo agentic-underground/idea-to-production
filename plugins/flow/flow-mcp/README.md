@@ -5,11 +5,11 @@ ingests a project's `.i2p/roadmap/` tree and exposes it to an agent as a **token
 surface over stdio**. It is the **sole serialized writer** of the roadmap markdown + JSONL event log, so
 every read and mutation flows through one authoritative path.
 
-> **Roadmap #39 — web UI removed; #97 — renamed flow-server → flow-mcp.** The service once *also* served
+> **Roadmap #39 — web UI removed; #97 — renamed to `flow-mcp`.** The service once *also* served
 > an interactive SVG governance board over HTTP + a WebSocket delta stream + a REST surface. That web UI
-> was removed in roadmap #39; the binary now runs the MCP stdio core only, so `flow-mcp` (renamed from
-> `flow-server` in #97) is the accurate name. The launcher passes `--mcp` (retained as a harmless no-op —
-> stdio is the only transport), so nothing changes for the registered MCP server.
+> was removed in roadmap #39; the binary now runs the MCP stdio core only, so `flow-mcp` (its name since the
+> #97 rename from the earlier server identity) is accurate. The launcher passes `--mcp` (retained as a
+> harmless no-op — stdio is the only transport), so nothing changes for the registered MCP server.
 
 ## What it does (roadmap items #1, #3–#6, #8, #15)
 
@@ -107,8 +107,8 @@ SHA (match/mismatch), the cache dir, and the resolved project root + roadmap ite
 > **Integrity & determinism posture.** Pinning is the deliberate, owner-chosen posture (it aligns with
 > `scripts/verify-prereqs.sh` §K — no floating tags). Every machine converges on ONE SHA-verified binary;
 > a release is adopted only by a reviewed PR that bumps the pin. This replaced an earlier "track latest"
-> launcher whose tag-keyed cache let a **re-cut** `flow-server-v0.2.0` strand machines on stale bytes
-> (defect [92] — under the service's former `flow-server` name). The binary now also bakes its git rev
+> launcher whose tag-keyed cache let a **re-cut** `v0.2.0` release strand machines on stale bytes
+> (defect [92] — under the service's former server name, before the #97 rename to `flow-mcp`). The binary now also bakes its git rev
 > into the version it self-reports (`ping` → `0.2.3+<rev>`), so two builds are never confusable.
 
 **Cutting a release — the bump-and-cut flow** (NEVER re-cut a tag; bump the version every time):

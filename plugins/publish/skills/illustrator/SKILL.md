@@ -11,7 +11,7 @@ description: >
   typographic + data-viz sub-agents in a comparative (A/B) mode.
 metadata:
   type: orchestrator
-  output: an embedded figure (svg|png|gif|apng|mp4) + a markdown edit + a ledger entry (.pressroom/illustration-ledger.json) in loop mode
+  output: an embedded figure (svg|png|gif|apng|mp4) + a markdown edit + a ledger entry (.publish/illustration-ledger.json) in loop mode
   composes: [handler-graphviz, handler-mermaid, handler-chart, handler-composition, handler-comfyui, handler-composite, design-reviewer]
   shares:
     - ../rich-pdf-with-diagrams/references/charting-matrix.md
@@ -123,7 +123,7 @@ stop. In **loop/`docs`** mode, embed and record — see below.
 ## Loop mode — trawl, embed, ledger
 
 The whole-tree trawl is `/loop`-driven and **idempotent/resumable** via
-`.pressroom/illustration-ledger.json` in the project being illustrated (cwd, beside `.foundry/`):
+`.publish/illustration-ledger.json` in the project being illustrated (cwd, beside `.foundry/`):
 
 ```json
 { "ledger_version": 1, "settings": {"site_floor": 7, "target": 85, "max_turns": 4},

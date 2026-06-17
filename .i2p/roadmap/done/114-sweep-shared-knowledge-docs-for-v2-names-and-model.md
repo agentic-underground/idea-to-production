@@ -1,9 +1,10 @@
 ---
 id: 114
 title: "Sweep shared knowledge docs for the v2 names + model"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "#94, #95, #96, #97, #98, #100"
 ---
 
