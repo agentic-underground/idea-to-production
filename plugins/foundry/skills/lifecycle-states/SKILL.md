@@ -15,6 +15,8 @@ description: >
 
 # Lifecycle States
 
+> Agent-internal — invoked by the FOUNDRY conveyor, not typed directly.
+
 The exit-criteria definitions for the FOUNDRY conveyor. Where `ds-step-*` agents are the
 **executors** and `phase-sensor` is the **detector**, these states are the **gate
 definitions**: each says exactly what must be true to leave one maturity level for the next.

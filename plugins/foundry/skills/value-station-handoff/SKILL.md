@@ -10,6 +10,8 @@ description: >
 
 # VALUE-STATION-HANDOFF
 
+> Agent-internal — invoked by the FOUNDRY conveyor, not typed directly.
+
 Every station is a contract. This skill is the authoritative source for **what must arrive**
 (input), **what must be true to leave** (exit gate), and **what is produced** (artifact).
 Gate-keepers read this and nothing else is assumed.

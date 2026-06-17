@@ -5,6 +5,8 @@ description: Use when orchestrating lifecycle execution of an IDEATOR item acros
 
 # Development System Core
 
+> Agent-internal — invoked by the FOUNDRY conveyor, not typed directly.
+
 ## Purpose
 
 Provide operational guardrails for lifecycle maturity progression. Every stage agent and the orchestrator must consult this skill to understand what "done" means at each maturity level and what actions are prohibited until that maturity is reached.

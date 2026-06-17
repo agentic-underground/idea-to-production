@@ -16,6 +16,8 @@ description: >
 
 # FOUNDRY
 
+> Agent-internal — invoked by the FOUNDRY conveyor, not typed directly.
+
 > *Technical Tooling for Software Evolution*
 
 FOUNDRY is the production orchestrator of the idea-to-production conveyor. It takes a fully

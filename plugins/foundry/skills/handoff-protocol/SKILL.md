@@ -5,6 +5,8 @@ description: Use when one lifecycle agent transfers value to its downstream part
 
 # Handoff Protocol
 
+> Agent-internal — invoked by the FOUNDRY conveyor, not typed directly.
+
 Standardises the carry-over message between SDLC stage agents so execution is deterministic,
 auditable, and resumable by a cold-start agent. This skill is the **trigger**; the canonical
 schema, validation rules, and quality bar live once in:

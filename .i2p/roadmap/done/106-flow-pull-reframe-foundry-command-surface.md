@@ -1,9 +1,10 @@
 ---
 id: 106
 title: "/flow pull + reframe the foundry command surface (user- vs agent-facing)"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "#105"
 ---
 

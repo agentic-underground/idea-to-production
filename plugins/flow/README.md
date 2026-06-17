@@ -13,8 +13,13 @@ IDEA package becomes a dependency-ordered roadmap. It ships the first-party **fl
 
 | Component | What it does | Command |
 |---|---|---|
+| **pull** | the headline verb — pull the **next** `.i2p/roadmap/` backlog item, carry it into the active lane, and drive it through foundry's internal builder to a delivered increment (wraps `/foundry:foundry`; refuses on an empty/ambiguous backlog) | `/flow:pull` |
 | **flow** | carry value — advance one `.i2p/roadmap/` item to its next lane (recording who/what/cost via the flow-mcp MCP), or report the current flow state | `/flow [report\|carry <item> [to <stage>]\|ping]` |
 | **flow-setup** | finish setting up the **flow-mcp MCP** (the roadmap server — `render_roadmap` answers "what's on the roadmap" at ~0 tokens): pre-cache the binary, walk the one-time `/mcp` approval, verify the connection | `/flow-setup` |
+
+`/flow:pull` is the intuitive name for the BUILD cycle: *"I want to pull from the backlog"* maps to
+`/flow:pull`, not to `/foundry:foundry` (the internal engine it wraps). See
+[`commands/pull.md`](commands/pull.md) / [`skills/pull/SKILL.md`](skills/pull/SKILL.md).
 
 ## The flow-mcp MCP
 
