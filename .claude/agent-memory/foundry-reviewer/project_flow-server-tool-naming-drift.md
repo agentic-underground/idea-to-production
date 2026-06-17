@@ -23,3 +23,15 @@ wrong — it is the real tool name. Do flag docs that promise a `set_gate` MCP t
 agent reading the doc and calling `set_gate` over MCP gets method-not-found. Candidate
 KAIZEN fix: align the EARS/README/feature vocabulary to `set_wait_go` (or rename the tool).
 Related: [[project-plugin-count-drift]] is the same doc-vs-source drift class.
+
+**Generalised to ARGUMENT vocabulary, not just tool names (PR #102, item [41]):** the
+`/flow carry` command/skill docs tell the agent to call `post_status` and "set the new
+stage" using the front-matter labels `PENDING`/`IN PROGRESS`/`DONE` (and lane name
+`backlog`). But `post_status` deserializes `Status` via `#[serde(rename_all="lowercase")]`
+(`domain/model.rs:14-22` → `Do`/`Doing`/`Done`) through `arg_enum` (`mcp.rs:308,456`), so
+it ONLY accepts `"do"`/`"doing"`/`"done"` — and there is no enum value for the
+backlog/PENDING state at all. An agent following the doc verbatim gets `invalid_params` on
+the most common move. Flag docs that name an MCP-verb argument value the typed Rust surface
+won't accept, the same way you flag wrong tool names. Note: the `annotate` tool description
+says "(pauses the item)" but `store.annotate` (`store.rs:381`) only appends + commits an
+`Annotated` event — it flips no gate; don't flag a carry route's `annotate` call as pausing.
