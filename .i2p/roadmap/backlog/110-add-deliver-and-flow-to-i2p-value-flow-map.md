@@ -12,8 +12,8 @@ depends_on: "#103 (i2p surfaces v2), #105"
 **Brief Description**
 Surface the new **DELIVER** lifecycle stage in the i2p front door. `i2p-flow` and `i2p-help` SHALL list the
 DELIVER stage with **`/flow`** as its headline command and its artefact, so the value-flow map presents the
-flow/DELIVER spine alongside the other phases (DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸
-PUBLISH ▸ OPERATE ↻ … and now DELIVER).
+flow/DELIVER spine in its canonical slot (DISCOVER ▸ IDEATE ▸ **DELIVER** ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄
+SECURE ▸ PUBLISH ▸ OPERATE↻).
 
 ### User Stories
 - AS a user browsing the marketplace I WANT to see the DELIVER stage with `/flow` as its headline command

@@ -28,8 +28,8 @@ review cleanly.
 - AS a marketplace user reading the glossary or a README I WANT every plugin called by its v2 name
   (security/operate/publish/flow-mcp, i2p with no separate concierge) SO THAT the docs and the installed
   plugins agree and I am never sent to a plugin that no longer exists under that name.
-- AS a user following the value flow I WANT DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ DELIVER
-  ▸ PUBLISH ▸ OPERATE with the BUILD⇄ASSURE⇄SECURE loop shown SO THAT VALUE_FLOW.md and product-lifecycle.md
+- AS a user following the value flow I WANT DISCOVER ▸ IDEATE ▸ DELIVER ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄ SECURE
+  ▸ PUBLISH ▸ OPERATE↻ with the BUILD⇄ASSURE⇄SECURE loop shown SO THAT VALUE_FLOW.md and product-lifecycle.md
   describe the model the marketplace actually runs.
 - AS an agent reading CLAUDE.md / PREREQUISITES I WANT no dangling old codename SO THAT I resolve paths and
   companions against names that exist.
