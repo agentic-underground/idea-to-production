@@ -25,6 +25,7 @@ and simply emits markdown.
 | **observability** | four golden signals · three pillars · SLI→SLO→alert | `/observability [path]` |
 | **incident** | severity, ICS roles, mitigate-first, runbook, blameless postmortem | `/incident [declare\|runbook\|postmortem]` |
 | **iterate** | build-measure-learn → a new OPPORTUNITY re-enters DISCOVER (↻) | `/iterate` |
+| **gemba** | capture → route → raise: turn a workface learning into a tracked, de-duplicated feedback issue on the repo that owns it (SELF here / GEMBA on a sibling) | `/gemba` |
 | **maintain** | dependency upkeep, CVE patching, rotation, restore drills, tech-debt | `/maintain [path]` |
 | **wiki-publisher** | opt-in: publish PRESSROOM's per-item docs + illustrations to the origin's GitHub `.wiki.git` | `/wiki-publisher [path]` |
 | **flow** | carry value — advance one `.i2p/roadmap/` item to its next lane (recording who/what/cost via the flow-server MCP), or report the current flow state | `/flow [report\|carry <item> [to <stage>]\|ping]` |

@@ -1,9 +1,10 @@
 ---
 id: 18
 title: "Learning ledger — `.i2p/learnings.jsonl` + reducer + overdue detector"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "— (atomic; PR-A)"
 ---
 

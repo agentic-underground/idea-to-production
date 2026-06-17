@@ -1,9 +1,10 @@
 ---
 id: 20
 title: "GEMBA reflex skill — `/mission-control:gemba` (capture · route · raise)"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-14
+completed: 2026-06-17
 depends_on: "#17, #18, #19"
 ---
 
