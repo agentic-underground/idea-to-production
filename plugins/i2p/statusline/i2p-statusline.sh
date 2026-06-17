@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# i2p-statusline-version: 4
+# i2p-statusline-version: 5
 # idea-to-production rich status line — two-line layout, wide gauges, caught widget.
 # Reads JSON from stdin, renders a two-line ANSI status bar.
 # Never exits non-zero; all fields degrade gracefully when absent.
@@ -259,8 +259,13 @@ MSEP="   ${DIM}│${R}   "
 
 # ---------------------------------------------------------------------------
 # Product-lifecycle phase widget — reads the project-local .i2p/lifecycle.json
-# (current_phase + phases[]) and renders an 8-pip progress track. Degrades to
-# nothing when the file is absent. The state file is written by the i2p
+# (current_phase + phases[]) and renders a nine-pip progress track for the v2
+# model DISCOVER ▸ IDEATE ▸ DELIVER ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄ SECURE ▸ PUBLISH
+# ▸ OPERATE↻. The three realisation phases BUILD/ASSURE/SECURE are a native LOOP:
+# when current_phase is in that segment the widget surfaces the loop (a ⇄ glyph,
+# with the loop pass ×N when >1) from the additive `loop_state`/`loop_pass`
+# fields (#101). Degrades to nothing when the file is absent, and reads cleanly
+# from a legacy file with no loop fields. The state file is written by the i2p
 # lifecycle helper (/i2p:help kickoff); this only READS it.
 # ---------------------------------------------------------------------------
 lifecycle_widget() {
@@ -269,14 +274,15 @@ lifecycle_widget() {
   [ -n "$proj" ] || return
   local lf="${proj}/.i2p/lifecycle.json"
   [ -r "$lf" ] || return
-  local cur phases cyc cycstr=""
+  local cur phases cyc cycstr="" lstate lpass
   if [ -n "$_jq_ok" ]; then
     cur=$(jq -r '.current_phase // empty' "$lf" 2>/dev/null)
     phases=$(jq -r '(.phases // []) | join(" ")' "$lf" 2>/dev/null)
     cyc=$(jq -r '.cycle // 1' "$lf" 2>/dev/null)
+    lpass=$(jq -r '.loop_pass // 1' "$lf" 2>/dev/null)
   fi
   [ -n "$cur" ] || return
-  [ -n "$phases" ] || phases="DISCOVER IDEATE DESIGN BUILD ASSURE SECURE PUBLISH OPERATE"
+  [ -n "$phases" ] || phases="DISCOVER IDEATE DELIVER DESIGN BUILD ASSURE SECURE PUBLISH OPERATE"
   local i=0 idx=0 total=0 p
   for p in $phases; do total=$((total+1)); [ "$p" = "$cur" ] && idx=$total; done
   local track=""
@@ -291,7 +297,17 @@ lifecycle_widget() {
     fi
   done
   [ "${cyc:-1}" -gt 1 ] 2>/dev/null && cycstr=" ${FG_BMAGENTA}↻${cyc}${R}"
-  LC_OUT="${FG_BBLACK}◆ lifecycle ${R}${track} ${BOLD}${FG_BCYAN}${cur}${R}${DIM} (${idx}/${total})${R}${cycstr}"
+  # Loop indicator — when the live phase is in the BUILD ⇄ ASSURE ⇄ SECURE loop, mark the
+  # segment with a ⇄ glyph and surface the iteration count (loop_pass) when >1, so a re-entry
+  # into BUILD is visible. Additive: absent loop_pass defaults to 1 (no count shown).
+  local loopstr=""
+  case " BUILD ASSURE SECURE " in
+    *" $cur "*)
+      loopstr=" ${FG_BYELLOW}⇄${R}"
+      [ "${lpass:-1}" -gt 1 ] 2>/dev/null && loopstr="${loopstr}${FG_BYELLOW} ×${lpass}${R}"
+      ;;
+  esac
+  LC_OUT="${FG_BBLACK}◆ lifecycle ${R}${track} ${BOLD}${FG_BCYAN}${cur}${R}${DIM} (${idx}/${total})${R}${loopstr}${cycstr}"
 }
 
 # ---------------------------------------------------------------------------

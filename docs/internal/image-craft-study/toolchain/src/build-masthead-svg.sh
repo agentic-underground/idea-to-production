@@ -15,7 +15,7 @@
 # Dark-mode canon: ground #0a0a11, teal #5eead4 (done/active), amber #fbbf24 (current/feedback), text #e8e8ef.
 # Depth recipe (in-SVG only — sheen+pool+rim+drop-shadow, no raster composite) ported from diagram-primitives.sh.
 set -euo pipefail
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../../.." && pwd)"
 OUT="${1:-$ROOT/docs/images/masthead.svg}"
 
 python3 - "$OUT" <<'PY'
@@ -23,10 +23,14 @@ import sys
 OUT = sys.argv[1]
 
 W, H, CY, R = 1320, 420, 235, 18
-STAGES = ["DISCOVER","IDEATE","DESIGN","BUILD","ASSURE","SECURE","PUBLISH","OPERATE"]
-OWNERS = ["scanner","ideator","atelier","foundry","foundry","sentinel","pressroom","mission"]
-N, PAD = 8, 110
+# v2 nine-phase model — DELIVER inserted between IDEATE and DESIGN; BUILD ⇄ ASSURE ⇄ SECURE is a loop.
+STAGES = ["DISCOVER","IDEATE","DELIVER","DESIGN","BUILD","ASSURE","SECURE","PUBLISH","OPERATE"]
+OWNERS = ["scanner","ideator","flow","atelier","foundry","foundry","sentinel","pressroom","mission"]
+N, PAD = len(STAGES), 110
 xs = [round(PAD + i*(W-2*PAD)/(N-1)) for i in range(N)]
+# Index the loop/cycle nodes by NAME so the feedback arc, return arc, and pulse rings stay correct after
+# DELIVER's insertion (no hard-coded magic indices).
+I = {name: STAGES.index(name) for name in ("DISCOVER","DESIGN","BUILD","SECURE","OPERATE")}
 
 TEAL="#5eead4"; AMBER="#fbbf24"; DIM="#3a3a55"; INK="#e8e8ef"; SUB="#cdd2e3"; OWN="#6b7488"
 SWEEP_END = 0.50
@@ -43,13 +47,14 @@ def anim(attr, values, keytimes, **kw):
 P = []
 P.append(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" font-family="DejaVu Sans, Arial, sans-serif">')
 P.append('<title>idea → production — a Claude Code plugin marketplace</title>')
-P.append('<desc>Animated banner (SMIL): the wordmark "idea → production" over the eight-phase value '
-         'conveyor on a rich dark band. An amber value-spark sweeps the rail DISCOVER→OPERATE, lighting each '
-         'glossy teal phase node as it passes; then it travels back along the amber feedback arc (ASSURE &amp; '
-         'SECURE send work back to DESIGN &amp; BUILD) and a teal spark rides the return loop (OPERATE’s '
-         'learnings re-enter DISCOVER), each with its label, before the lit nodes fade out in a wave and the '
-         'cycle repeats. Framed by the i2p front door and concierge greeter. If animation is unavailable the '
-         'banner shows a coherent start frame.</desc>')
+P.append('<desc>Animated banner (SMIL): the wordmark "idea → production" over the nine-phase value '
+         'conveyor on a rich dark band — DISCOVER · IDEATE · DELIVER · DESIGN · BUILD · ASSURE · SECURE · '
+         'PUBLISH · OPERATE. An amber value-spark sweeps the rail DISCOVER→OPERATE, lighting each glossy teal '
+         'phase node as it passes; then it travels back along the amber feedback arc (the BUILD ⇄ ASSURE ⇄ '
+         'SECURE loop — ASSURE &amp; SECURE send work back to DESIGN &amp; BUILD) and a teal spark rides the '
+         'return loop (OPERATE’s learnings re-enter DISCOVER), each with its label, before the lit nodes fade '
+         'out in a wave and the cycle repeats. Framed by the i2p front door and concierge greeter. If '
+         'animation is unavailable the banner shows a coherent start frame.</desc>')
 
 # ---- defs ----
 P.append('<defs>')
@@ -103,16 +108,16 @@ P.append(f'<line x1="{xs[0]}" y1="{CY}" x2="{xs[-1]}" y2="{CY}" stroke="#2a2a40"
 P.append(f'<line x1="{xs[0]}" y1="{CY}" x2="{xs[0]}" y2="{CY}" stroke="{TEAL}" stroke-width="5" opacity="0.5">'
          + f'<animate attributeName="x2" values="{xs[0]};{xs[-1]};{xs[-1]}" keyTimes="0;{SWEEP_END};1" dur="{DUR}" repeatCount="indefinite" calcMode="spline" keySplines="{EASE};0 0 1 1"/>' + '</line>')
 
-# ---- feedback arc (amber): SECURE -> DESIGN ----
+# ---- feedback arc (amber): SECURE -> DESIGN (the BUILD ⇄ ASSURE ⇄ SECURE loop sends work back) ----
 fb_kt = f"0;{FB[0]-0.01:.2f};{FB[0]+0.03:.2f};{FB[1]:.2f};{FB[1]+0.03:.2f};1"
 fb_val = "0.2;0.2;0.95;0.95;0.2;0.2"
-P.append(f'<path d="M {xs[5]} 247 C {xs[5]} 291, {xs[2]} 291, {xs[2]} 247" fill="none" stroke="{AMBER}" stroke-width="3" stroke-dasharray="6 6">' + anim("opacity", fb_val, fb_kt) + '</path>')
-P.append(f'<path d="M {xs[2]-5} 248 l 9 5 l -9 5 z" fill="{AMBER}">' + anim("opacity", fb_val, fb_kt) + '</path>')
+P.append(f'<path d="M {xs[I["SECURE"]]} 247 C {xs[I["SECURE"]]} 291, {xs[I["DESIGN"]]} 291, {xs[I["DESIGN"]]} 247" fill="none" stroke="{AMBER}" stroke-width="3" stroke-dasharray="6 6">' + anim("opacity", fb_val, fb_kt) + '</path>')
+P.append(f'<path d="M {xs[I["DESIGN"]]-5} 248 l 9 5 l -9 5 z" fill="{AMBER}">' + anim("opacity", fb_val, fb_kt) + '</path>')
 
 # ---- return arc (teal): OPERATE -> DISCOVER ----
 ret_kt = f"0;{RET[0]-0.01:.2f};{RET[0]+0.03:.2f};{RET[1]:.2f};1"
 ret_val = "0.2;0.2;0.9;0.9;0.2"
-P.append(f'<path d="M {xs[7]} 249 C {xs[7]+60} 350, {xs[0]-60} 350, {xs[0]} 249" fill="none" stroke="{TEAL}" stroke-width="3.5" stroke-dasharray="7 7">' + anim("opacity", ret_val, ret_kt) + '</path>')
+P.append(f'<path d="M {xs[I["OPERATE"]]} 249 C {xs[I["OPERATE"]]+60} 350, {xs[0]-60} 350, {xs[0]} 249" fill="none" stroke="{TEAL}" stroke-width="3.5" stroke-dasharray="7 7">' + anim("opacity", ret_val, ret_kt) + '</path>')
 
 # ---- nodes: dim base + glossy teal that LIGHTS as the spark passes, then fades out in a right→left wave ----
 def lit_stack(x):
@@ -137,9 +142,9 @@ for i,x in enumerate(xs):
 def ring(x, color, kt, val):
     return (f'<circle cx="{x}" cy="{CY}" r="{R+6}" fill="none" stroke="{color}" stroke-width="2.5" opacity="0">' + anim("opacity", val, kt) + '</circle>')
 fbr_kt=f"0;{FB[0]:.2f};{(FB[0]+FB[1])/2:.2f};{FB[1]+0.03:.2f};1"; fbr_val="0;0;0.9;0;0"
-P.append(ring(xs[2], AMBER, fbr_kt, fbr_val)); P.append(ring(xs[3], AMBER, fbr_kt, fbr_val))
+P.append(ring(xs[I["DESIGN"]], AMBER, fbr_kt, fbr_val)); P.append(ring(xs[I["BUILD"]], AMBER, fbr_kt, fbr_val))
 rr_kt=f"0;{RET[0]:.2f};{(RET[0]+RET[1])/2:.2f};{RET[1]+0.03:.2f};1"; rr_val="0;0;0.9;0;0"
-P.append(ring(xs[0], TEAL, rr_kt, rr_val)); P.append(ring(xs[7], TEAL, rr_kt, rr_val))
+P.append(ring(xs[I["DISCOVER"]], TEAL, rr_kt, rr_val)); P.append(ring(xs[I["OPERATE"]], TEAL, rr_kt, rr_val))
 
 # ---- value sparks: a light-throwing bloom + ring + bright core (above nodes) ----
 def spark(core, halo):
@@ -159,14 +164,14 @@ P.append('<g opacity="0">'
 fbm_kt=f"0;{FB[0]:.2f};{FB[1]:.2f};1"
 P.append('<g opacity="0">'
          + anim("opacity", "0;0;1;1;0;0", f"0;{FB[0]:.2f};{FB[0]+0.03:.2f};{FB[1]:.2f};{FB[1]+0.03:.2f};1")
-         + f'<animateMotion path="M {xs[5]} 247 C {xs[5]} 291, {xs[2]} 291, {xs[2]} 247" dur="{DUR}" '
+         + f'<animateMotion path="M {xs[I["SECURE"]]} 247 C {xs[I["SECURE"]]} 291, {xs[I["DESIGN"]]} 291, {xs[I["DESIGN"]]} 247" dur="{DUR}" '
            f'repeatCount="indefinite" calcMode="spline" keyPoints="0;0;1;1" keyTimes="{fbm_kt}" keySplines="0 0 1 1;{EASE};0 0 1 1"/>'
          + spark("#ffe6a6", AMBER) + '</g>')
 # return spark (teal) — eased ride OPERATE->DISCOVER
 rm_kt=f"0;{RET[0]:.2f};{RET[1]:.2f};1"
 P.append('<g opacity="0">'
          + anim("opacity", "0;0;1;1;0;0", f"0;{RET[0]:.2f};{RET[0]+0.03:.2f};{RET[1]:.2f};{RET[1]+0.03:.2f};1")
-         + f'<animateMotion path="M {xs[7]} 249 C {xs[7]+60} 350, {xs[0]-60} 350, {xs[0]} 249" dur="{DUR}" '
+         + f'<animateMotion path="M {xs[I["OPERATE"]]} 249 C {xs[I["OPERATE"]]+60} 350, {xs[0]-60} 350, {xs[0]} 249" dur="{DUR}" '
            f'repeatCount="indefinite" calcMode="spline" keyPoints="0;0;1;1" keyTimes="{rm_kt}" keySplines="0 0 1 1;{EASE};0 0 1 1"/>'
          + spark("#bff4ea", TEAL) + '</g>')
 

@@ -14,7 +14,7 @@
 #  - The settled POSTER shows BOTH loops, calm, no competing labels.
 # Dark-mode canon: ground #1e1e2e, text #e8e8ef. teal=done/active, amber=current/feedback, dim=pending.
 set -euo pipefail
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"   # repo root
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../../.." && pwd)"   # repo root (src→toolchain→image-craft-study→internal→docs→root)
 OUT="${1:-/tmp/masthead-cycle-build}"; KF="$OUT/kf"; FR="$OUT/fr"; rm -rf "$OUT"; mkdir -p "$KF" "$FR"
 GIF="$ROOT/docs/images/masthead-cycle.gif"
 POSTER="$ROOT/docs/images/masthead-cycle-poster.png"
@@ -23,9 +23,15 @@ GIFSKI="${GIFSKI:-$HOME/.cargo/bin/gifski}"
 M=2          # cross-dissolve tween frames inserted between consecutive keyframes (the fade)
 FPS=13
 
-STAGES=(DISCOVER IDEATE DESIGN BUILD ASSURE SECURE PUBLISH OPERATE)
-OWNERS=(scanner ideator atelier foundry foundry sentinel pressroom mission)
+STAGES=(DISCOVER IDEATE DELIVER DESIGN BUILD ASSURE SECURE PUBLISH OPERATE)
+OWNERS=(scanner ideator flow atelier foundry foundry sentinel pressroom mission)
 N=${#STAGES[@]}
+# Derive the BUILD ⇄ ASSURE ⇄ SECURE loop's node indices from STAGES so the feedback arc and the per-node
+# loop rings stay correct after DELIVER's insertion (no hard-coded magic indices).
+I_DESIGN=-1; I_BUILD=-1; I_ASSURE=-1; I_SECURE=-1
+for _i in "${!STAGES[@]}"; do case "${STAGES[$_i]}" in
+  DESIGN) I_DESIGN=$_i ;; BUILD) I_BUILD=$_i ;; ASSURE) I_ASSURE=$_i ;; SECURE) I_SECURE=$_i ;;
+esac; done
 W=1320; H=360; PAD=92; CY=214; GAP=$(( (W - 2*PAD) / (N-1) ))
 DIM="#3a3a55"; TEAL="#5eead4"; AMBER="#fbbf24"; TXTD="#6b7280"; TXTL="#e8e8ef"; IDEA="#7aa2f7"
 xof(){ echo $(( PAD + $1*GAP )); }
@@ -38,7 +44,9 @@ xof(){ echo $(( PAD + $1*GAP )); }
 #   ret    : return  arc state — 0 dim · 1 glow+label · 2 calm-visible (poster)
 emit_kf() {
   local active=$1 hl=$2 halo=$3 fb=$4 ret=$5 path=$6 i x
-  local x2 x3 x5 fbmid; x2=$(xof 2); x3=$(xof 3); x5=$(xof 5); fbmid=$(( (x2+x5)/2 ))
+  # Feedback arc spans the realisation loop: from SECURE back to DESIGN (the gates send work back to
+  # DESIGN & BUILD). Anchored on the DERIVED loop indices so DELIVER's insertion can't desync it.
+  local xL xR fbmid; xL=$(xof "$I_DESIGN"); xR=$(xof "$I_SECURE"); fbmid=$(( (xL+xR)/2 ))
   {
     printf '<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %d %d">\n' "$W" "$H" "$W" "$H"
     printf '<rect width="100%%" height="100%%" fill="#1e1e2e"/>\n'
@@ -64,9 +72,9 @@ emit_kf() {
     local fbcol fbop fblab; case "$fb" in
       1) fbcol="$AMBER"; fbop=0.95;; 2) fbcol="#9a7430"; fbop=0.6;; *) fbcol="#2a2a40"; fbop=0.5;; esac
     printf '<path d="M %d %d C %d %d, %d %d, %d %d" fill="none" stroke="%s" stroke-width="3.5" opacity="%s" stroke-dasharray="6 6"/>\n' \
-      "$x5" "$((CY+12))" "$x5" "$((CY+54))" "$x2" "$((CY+54))" "$x2" "$((CY+12))" "$fbcol" "$fbop"
+      "$xR" "$((CY+12))" "$xR" "$((CY+54))" "$xL" "$((CY+54))" "$xL" "$((CY+12))" "$fbcol" "$fbop"
     # arrowhead returning into DESIGN/BUILD
-    printf '<path d="M %d %d l 9 5 l -9 5 z" fill="%s" opacity="%s"/>\n' "$((x2-5))" "$((CY+13))" "$fbcol" "$fbop"
+    printf '<path d="M %d %d l 9 5 l -9 5 z" fill="%s" opacity="%s"/>\n' "$((xL-5))" "$((CY+13))" "$fbcol" "$fbop"
     if [ "$fb" -eq 1 ]; then
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="13" font-weight="600" fill="%s" text-anchor="middle">&#8617; ASSURE &amp; SECURE gates can send work back to DESIGN &amp; BUILD</text>\n' "$fbmid" "$((CY+72))" "$AMBER"
     fi
@@ -84,7 +92,7 @@ emit_kf() {
       printf '<text x="%d" y="%d" font-family="DejaVu Sans, Arial, sans-serif" font-size="13" fill="#9aa2c0" text-anchor="middle">a cycle <tspan fill="%s">with feedback</tspan> &#8212; gates send work back, operation reopens discovery</text>\n' "$((W/2))" "$((CY+122))" "$AMBER"
     fi
 
-    # ---- the eight phase nodes ----
+    # ---- the nine phase nodes ----
     for i in $(seq 0 $((N-1))); do
       x=$(xof "$i")
       local col r tcol op
@@ -94,11 +102,11 @@ emit_kf() {
           printf '<circle cx="%d" cy="%d" r="%d" fill="%s" opacity="0.16"/>\n' "$x" "$CY" "$((r+8+halo))" "$AMBER"
         else col="$TEAL"; r=17; tcol="$TXTL"; op=0.94; fi
       else col="$DIM"; r=14; tcol="$TXTD"; op=0.8; fi
-      # feedback beat: ring DESIGN/BUILD/ASSURE/SECURE amber; return beat: ring DISCOVER/OPERATE teal
-      if [ "$fb" -eq 1 ] && { [ "$i" -ge 2 ] && [ "$i" -le 5 ]; }; then
+      # feedback beat: ring DESIGN..SECURE (the realisation loop) amber; return beat: ring DISCOVER/OPERATE teal
+      if [ "$fb" -eq 1 ] && { [ "$i" -ge "$I_DESIGN" ] && [ "$i" -le "$I_SECURE" ]; }; then
         printf '<circle cx="%d" cy="%d" r="%d" fill="none" stroke="%s" stroke-width="2" opacity="0.8"/>\n' "$x" "$CY" "$((r+6))" "$AMBER"
       fi
-      if [ "$ret" -eq 1 ] && { [ "$i" -eq 0 ] || [ "$i" -eq 7 ]; }; then
+      if [ "$ret" -eq 1 ] && { [ "$i" -eq 0 ] || [ "$i" -eq "$((N-1))" ]; }; then
         printf '<circle cx="%d" cy="%d" r="%d" fill="none" stroke="%s" stroke-width="2" opacity="0.8"/>\n' "$x" "$CY" "$((r+6))" "$TEAL"
       fi
       # crafted-depth node stack: body (shadowed) → grounding pool → top-left sheen → lit rim arc → crisp dark rim

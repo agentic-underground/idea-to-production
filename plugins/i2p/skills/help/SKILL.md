@@ -3,7 +3,7 @@ name: help
 description: >
   The marketplace's front door. Use for /i2p:help (or "what can i2p do?",
   "what powers do I have now?", "browse the idea-to-production marketplace", "where do I
-  start?"). Renders the three pillars and the DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸
+  start?"). Renders the three pillars and the DISCOVER ▸ IDEATE ▸ DELIVER ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄
   SECURE ▸ PUBLISH ▸ OPERATE value flow, listing only the plugins currently installed with their
   headline commands and the next thing to run, then points at the deeper docs. Thin: it describes the
   specialists, it does not run them.
@@ -35,9 +35,10 @@ probe the filesystem. The plugins to look for:
 |---|---|---|
 | **market-scanner** | DISCOVER | `/discovery-goal`, `/market-scan` |
 | **ideator** | IDEATE | `/ideate` |
+| **flow** + **foundry:roadmapper** | DELIVER (roadmap intake → EARS/feature → decomposition) | *(flow: add to unlock the roadmap board)*; `/roadmapper` |
 | **atelier** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
-| **foundry** | BUILD + ASSURE (quality gate) | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
-| **security** | SECURE (security gate) | `/scan-all`, `/scan-for-secrets`, `/scan-for-pii`, `/scan-dependencies` |
+| **foundry** | BUILD ⇄ ASSURE (quality gate; loop with SECURE) | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
+| **security** | SECURE (security gate; loop with BUILD/ASSURE) | `/scan-all`, `/scan-for-secrets`, `/scan-for-pii`, `/scan-dependencies` |
 | **publish** | PUBLISH | `/publish`, `/publish:design-review` |
 | **operate** | OPERATE | *(add to unlock — observe, respond to incidents, iterate the live product)* |
 | **i2p** | front door + arrival | `/i2p:help`, `/i2p:review`, `/i2p:check`, `/i2p:flow`, `/i2p:lifecycle`, `/i2p:define-welcome`, `/i2p:statusline` |
@@ -62,15 +63,17 @@ Always include a short **Product Lifecycle** section, because it is the spine th
 around. Summarise the model from [`../../knowledge/product-lifecycle.md`](../../knowledge/product-lifecycle.md):
 
 > **idea-to-production is the *creation arc*** of a product — it begins with **the search for an idea**
-> and carries it into **OPERATE** (realised, live, and kept alive). **Eight phases forming a cycle**, each
+> and carries it into **OPERATE** (realised, live, and kept alive). **Nine phases forming a cycle**, each
 > owned by one plugin:
-> **DISCOVER ①** (market-scanner) → **IDEATE ②** (ideator) → **DESIGN ③** (atelier) → **BUILD ④** (foundry)
-> → **ASSURE ⑤** (foundry — quality V&V) → **SECURE ⑥** (security — security) → **PUBLISH ⑦** (publish)
-> → **OPERATE ⑧** (operate — observe, respond, iterate) ↻ loops back to DISCOVER. **ASSURE and
-> SECURE are separate first-class gates** (quality ≠ security). Three concerns **cross-cut** every phase:
-> usability (atelier), quality (foundry — built-in not inspected-in), security (security — baked in from
-> the start). (The marketing *market life cycle* — introduction→growth→maturity→decline — runs alongside
-> OPERATE.)
+> **DISCOVER ①** (market-scanner) → **IDEATE ②** (ideator) → **DELIVER ③** (the flow plugin + `foundry:roadmapper`
+> — roadmap intake → EARS/feature authoring → dependency-ordered decomposition) → **DESIGN ④** (atelier)
+> → **BUILD ⑤** (foundry) ⇄ **ASSURE ⑥** (foundry — quality V&V) ⇄ **SECURE ⑦** (security — security) →
+> **PUBLISH ⑧** (publish) → **OPERATE ⑨** (operate — observe, respond, iterate) ↻ loops back to DISCOVER.
+> The three realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop** — a failed quality or security
+> gate re-enters BUILD; the loop exits to PUBLISH only when all three are satisfied. **ASSURE and SECURE are
+> separate first-class gates** (quality ≠ security). Three concerns **cross-cut** every phase: usability
+> (atelier), quality (foundry — built-in not inspected-in), security (security — baked in from the start).
+> (The marketing *market life cycle* — introduction→growth→maturity→decline — runs alongside OPERATE.)
 
 Then **offer to kick one off**: ask if they'd like to start a product lifecycle for this project. If yes,
 run `/i2p:lifecycle init` (sets phase DISCOVER) and route them to the first installed owner

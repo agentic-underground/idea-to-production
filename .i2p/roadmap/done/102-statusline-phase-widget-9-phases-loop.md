@@ -1,7 +1,8 @@
 ---
 id: 102
 title: "Statusline phase widget — render 9 phases + the B/A/S loop"
-status: PENDING
+status: COMPLETE
+completed: 2026-06-18
 priority: MEDIUM
 added: 2026-06-17
 depends_on: "#98 (statusline now in i2p), #100, #101"

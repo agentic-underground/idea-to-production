@@ -1,6 +1,6 @@
 <div align="center">
 
-<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the eight-plugin value cycle igniting beneath it — eight phase nodes (DISCOVER · IDEATE · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, atelier, foundry, foundry, security, publish, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door, before gently looping." src="docs/images/masthead.svg">
+<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the nine-phase value cycle igniting beneath it — nine phase nodes (DISCOVER · IDEATE · DELIVER · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, flow, atelier, foundry, foundry, sentinel, pressroom, mission), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back through the BUILD ⇄ ASSURE ⇄ SECURE loop to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door, before gently looping." src="docs/images/masthead.svg">
 
 # idea-to-production
 
@@ -93,9 +93,12 @@ repo) and seven specialists. Each stands alone; install only what you need.
 
 ## How they compose
 
-The eight plugins form an **eight-phase cycle** — `DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸
-PUBLISH ▸ OPERATE ↻` — whose learnings loop back to discovery (the masthead above). **ASSURE** (quality)
-and **SECURE** (security) are deliberately **separate first-class gates**.
+The plugins form a **nine-phase cycle** — `DISCOVER ▸ IDEATE ▸ DELIVER ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄ SECURE ▸
+PUBLISH ▸ OPERATE ↻` — whose learnings loop back to discovery (the masthead above). **DELIVER** (between
+IDEATE and DESIGN) turns the IDEA package into a dependency-ordered roadmap. The three realisation phases
+**BUILD ⇄ ASSURE ⇄ SECURE** form a **loop** — a failed quality or security gate re-enters BUILD; the loop
+exits to PUBLISH only when all three are satisfied. **ASSURE** (quality) and **SECURE** (security) are
+deliberately **separate first-class gates**.
 
 **The next command at each phase:**
 
@@ -103,10 +106,11 @@ and **SECURE** (security) are deliberately **separate first-class gates**.
 |---|---|---|
 | **DISCOVER** | market-scanner | `/discovery-goal` · `/market-scan` → a kept OPPORTUNITY |
 | **IDEATE** | ideator | refine → the **IDEA package** (agent + user-facing faces) |
+| **DELIVER** | flow + `foundry:roadmapper` | roadmap intake → EARS/feature → dependency-ordered decomposition |
 | **DESIGN** | atelier | `/mockup` · `/ui-review` |
-| **BUILD** | foundry | IDEA ▶ ROADMAP ▶ … ▶ STORY ▶ SHIP |
-| **ASSURE** | foundry | `/pr-review` (quality V&V) |
-| **SECURE** | security | `/scan-all` → SECURITY-REPORT.md |
+| **BUILD** | foundry | IDEA ▶ ROADMAP ▶ … ▶ STORY ▶ SHIP *(loop entry)* |
+| **ASSURE** | foundry | `/pr-review` (quality V&V) *(fail → BUILD)* |
+| **SECURE** | security | `/scan-all` → SECURITY-REPORT.md *(fail → BUILD; pass → PUBLISH)* |
 | **PUBLISH** | publish | `/publish` — articles & PDFs |
 | **OPERATE** | operate | observe · `/incident` · `/iterate` |
 
