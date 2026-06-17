@@ -1,9 +1,10 @@
 ---
 id: 100
 title: "Lifecycle phase model v2 — canonical doc (DELIVER + B/A/S loop)"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "—"
 ---
 

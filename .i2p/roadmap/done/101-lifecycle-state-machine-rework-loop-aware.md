@@ -1,9 +1,10 @@
 ---
 id: 101
 title: "Lifecycle state-machine rework — loop-aware lifecycle.sh + json schema"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-17
+completed: 2026-06-18
 depends_on: "#100"
 ---
 
