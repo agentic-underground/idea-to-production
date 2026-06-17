@@ -1,5 +1,5 @@
 ---
-description: Define this repository's welcome experience — read the repo, propose 2–4 conversational "lanes" with concrete decision trees, and write .claude/welcome.md so CONCIERGE greets and routes whoever opens it next.
+description: Define this repository's welcome experience — read the repo, propose 2–4 conversational "lanes" with concrete decision trees, and write .claude/welcome.md so i2p greets and routes whoever opens it next.
 ---
 
 Author this repository's welcome experience. Follow the
@@ -14,12 +14,12 @@ Author this repository's welcome experience. Follow the
    commands and paths (verify they exist).
 4. Write `.claude/welcome.md` in the format from
    [`knowledge/welcome-format.md`](../knowledge/welcome-format.md), and — when a lifecycle is running —
-   lead it with the phase stamp `<!-- concierge:welcome for_phase=… cycle=… product=… generated=… -->`.
+   lead it with the phase stamp `<!-- i2p:welcome for_phase=… cycle=… product=… generated=… -->`.
 5. Tell the user it takes effect next session (reload), and that it is smart-gated —
    it greets only on a cold/vague open and steps aside for a concrete task.
 
 **`refresh` mode:** if `$ARGUMENTS` is `refresh`, run the skill's silent, artifact-driven Refresh mode
 instead — no AskUserQuestion; re-derive the welcome from the current lifecycle phase's artifacts, preserve
-still-valid user lanes, restamp, and emit `↻ refreshed the welcome for <PHASE>`. (CONCIERGE invokes this
+still-valid user lanes, restamp, and emit `↻ refreshed the welcome for <PHASE>`. (i2p invokes this
 automatically to keep a managed welcome current.) Otherwise, if `$ARGUMENTS` names a focus (specific lanes
 or a tone), weave it in.

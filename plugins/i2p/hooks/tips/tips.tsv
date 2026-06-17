@@ -2,8 +2,8 @@
 # Blank lines and #-comments are ignored. Keep them honest: reference real, installed capabilities.
 /i2p-help browses every power you have now, grouped by the value flow — your front door to the whole marketplace.
 /i2p-help explains the product lifecycle — an eight-phase cycle, DISCOVER → … → OPERATE ↻ — and offers to kick one off.
-/i2p-lifecycle starts and tracks a product lifecycle; the concierge status line shows the live phase.
-/concierge:statusline turns on the status line — gauges, the product-lifecycle phase, and the ⚔ caught reviewer tally.
+/i2p-lifecycle starts and tracks a product lifecycle; the i2p status line shows the live phase.
+/i2p:statusline turns on the status line — gauges, the product-lifecycle phase, and the ⚔ caught reviewer tally.
 /i2p-review fans out every installed reviewer — code, design, docs, security — and returns one verdict in I2P_REVIEW.md.
 /i2p-check runs all your plugins' dependency checks at once and merges them into a single readiness table.
 /i2p-flow draws where each plugin sits from idea to production — and tells you the next command to run.

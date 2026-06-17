@@ -2,7 +2,7 @@
 name: statusline-widgets
 description: >
   Edit the line-break layout of the idea-to-production status line's line-2 widgets so the bar fits
-  your terminal. Use for /concierge:statusline-widgets (or "show me the statusline widgets", "I want
+  your terminal. Use for /i2p:statusline-widgets (or "show me the statusline widgets", "I want
   to edit the statusline widgets", "edit the statusline widgets", "make the statusline wrap"). Presents
   the widgets as a choice and assigns each a break attribute — break-before (start on a new line),
   break-after (break after it), or none (flow inline; the terminal soft-wraps). Persists to
@@ -13,14 +13,14 @@ metadata:
 model: inherit
 ---
 
-# concierge — Status-line widget line-break editor
+# i2p — Status-line widget line-break editor
 
 The status line's **line 2** is a row of widgets. By default they all flow on one line and the
 terminal soft-wraps. This skill lets the user place **hard line breaks** per widget so the bar fits a
 narrow terminal — without hand-editing a conf file. (Line 1, the identity row, is always its own line.)
 
 > Line-break control is distinct from **visibility** (whether a segment shows at all). Visibility is
-> `/concierge:statusline`; this skill only sets the `break_<widget>` keys and never changes the `<seg>=0/1`
+> `/i2p:statusline`; this skill only sets the `break_<widget>` keys and never changes the `<seg>=0/1`
 > visibility keys.
 
 ## The configurable widgets (line 2)

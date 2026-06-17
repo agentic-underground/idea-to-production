@@ -40,8 +40,7 @@ probe the filesystem. The plugins to look for:
 | **security** | SECURE (security gate) | `/scan-all`, `/scan-for-secrets`, `/scan-for-pii`, `/scan-dependencies` |
 | **publish** | PUBLISH | `/publish`, `/publish:design-review` |
 | **operate** | OPERATE | *(add to unlock — observe, respond to incidents, iterate the live product)* |
-| **i2p** | front door | `/i2p-help`, `/i2p-review`, `/i2p-check`, `/i2p-flow`, `/i2p-lifecycle` |
-| **concierge** | arrival | `/concierge:define-welcome`, `/concierge:statusline` |
+| **i2p** | front door + arrival | `/i2p-help`, `/i2p-review`, `/i2p-check`, `/i2p-flow`, `/i2p-lifecycle`, `/i2p:define-welcome`, `/i2p:statusline` |
 
 ## 2. Render the menu
 
@@ -77,7 +76,7 @@ Then **offer to kick one off**: ask if they'd like to start a product lifecycle 
 run `/i2p-lifecycle init` (sets phase DISCOVER) and route them to the first installed owner
 (`/market-scan`, or `/ideate` if they already have a validated idea). If a `.i2p/lifecycle.json` already
 exists, report the current phase instead and offer `advance`. Mention that the **status line** shows the
-live phase — offer `/concierge:statusline` if it isn't enabled.
+live phase — offer `/i2p:statusline` if it isn't enabled.
 
 ## 4. Focus mode
 

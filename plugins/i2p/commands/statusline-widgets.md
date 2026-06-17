@@ -20,4 +20,4 @@ Edit the status line's line-2 widget line-breaks. Follow the
 Widgets: `context · rate_5h · rate_7d · lifecycle · session_cost · lifecycle_cost · catches`.
 `none` (default) keeps a widget inline and defers wrapping to the terminal. Remind the user changes
 apply after a restart or `/reload`. Visibility (showing/hiding segments) is the separate
-`/concierge:statusline` command.
+`/i2p:statusline` command.

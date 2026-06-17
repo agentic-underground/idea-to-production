@@ -116,10 +116,10 @@ A phase is *entered* when its predecessor's exit signal fires, and *exited* when
   `done` is **order-safe & idempotent**: it advances *only if* the lifecycle is at that phase, so a plugin can
   never jump it out of order or auto-start it. Helper: `skills/lifecycle/scripts/lifecycle.sh`
   (`init|get|status|done|set|advance`).
-- The **statusline** phase widget (shipped by `concierge`) reads it and shows `◆ lifecycle … (n/8)`.
+- The **statusline** phase widget (shipped by i2p) reads it and shows `◆ lifecycle … (n/8)`.
 - **Token cost is tracked per phase** with a self-calibrating estimator — see
   [`instrumentation.md`](instrumentation.md). `/i2p-lifecycle init` seeds estimates; each phase's
-  actual-vs-estimate is measured (concierge Stop hook) and folded back so estimates improve over time.
+  actual-vs-estimate is measured (i2p Stop hook) and folded back so estimates improve over time.
   The HUD shows `◇ session` spend and `◈ life actual/~estimate (Δ%) · $`.
 - **`/i2p-help`** explains this lifecycle and offers to **kick one off**; **`/i2p-lifecycle`** initialises
   and reports it.

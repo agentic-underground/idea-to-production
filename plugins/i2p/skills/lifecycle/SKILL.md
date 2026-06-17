@@ -33,14 +33,14 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh advance       #
 bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh set <PHASE>   # jump to a phase
 ```
 
-State lives at `<project>/.i2p/lifecycle.json`. The `concierge` status line reads it and renders
+State lives at `<project>/.i2p/lifecycle.json`. The i2p status line reads it and renders
 `◆ lifecycle ●●◉○○○○○ <PHASE> (n/8)`.
 
 ## Token-cost & estimate↔actual calibration
 
 `init` seeds calibration-aware per-phase **token estimates**; `done <PHASE>` folds that phase's
 **actual-vs-estimate** into a global calibration ledger so estimates self-correct over time. Actuals are
-measured automatically by `concierge`'s `capture-cost.sh` Stop hook (`.i2p/cost.json`); the status line
+measured automatically by i2p's `capture-cost.sh` Stop hook (`.i2p/cost.json`); the status line
 shows `◇ … session` and `◈ life actual/~estimate (Δ%) · $`. Report cost with:
 
 ```bash
@@ -57,7 +57,7 @@ When the user wants to start (or `/i2p-help` offered and they accepted):
 2. **Route to the phase owner**: DISCOVER → `/market-scan` (or `/discovery-goal` first); if they already have a
    validated idea, `set IDEATE` and route to `/ideate`. Name only the **installed** plugins; if a phase's
    owner is absent, say what installing it would unlock (graceful degradation, the marketplace pattern).
-3. Tell them the status line will show the phase (offer `/concierge:statusline` if not enabled).
+3. Tell them the status line will show the phase (offer `/i2p:statusline` if not enabled).
 
 ## Advance the lifecycle
 
@@ -80,10 +80,10 @@ the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
 
 You can also drive it by hand here with `done`/`advance`/`set`.
 
-**Keep the welcome in step (by capability).** After advancing — and only when the `concierge` plugin is
-installed and the repo has a `.claude/welcome.md` — run `/concierge:define-welcome refresh` so the repo's
+**Keep the welcome in step (by capability).** After advancing — and only when i2p is
+installed and the repo has a `.claude/welcome.md` — run `/i2p:define-welcome refresh` so the repo's
 front door reflects the new phase's emergent identity. Silent and order-safe; degrades to nothing when
-concierge is absent. (CONCIERGE also auto-detects a stale welcome on the next SessionStart via its
+the welcome surface is absent. (i2p also auto-detects a stale welcome on the next SessionStart via its
 `offer-welcome.sh` hook, so this is a same-session liveness nicety, not the only path.)
 
 ## Self-improvement covenant

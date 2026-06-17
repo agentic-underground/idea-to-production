@@ -1,7 +1,7 @@
 # The `.claude/welcome.md` format
 
 A repository's welcome experience is a single markdown file at `.claude/welcome.md` in
-the project root. CONCIERGE's SessionStart hook injects it **verbatim** (wrapped in the
+the project root. i2p's SessionStart hook injects it **verbatim** (wrapped in the
 runtime contract from `hooks/welcome-preamble.md`) — there is no parser, so the format
 is a convention for the agent and the maintainer, not a schema to satisfy. Keep it
 short: it enters context every session, so it should be pointers and exact commands,
@@ -10,7 +10,7 @@ not prose.
 ## Structure
 
 ```markdown
-<!-- concierge:welcome for_phase=<PHASE> cycle=<N> product=<slug> generated=<iso8601> -->
+<!-- i2p:welcome for_phase=<PHASE> cycle=<N> product=<slug> generated=<iso8601> -->
 (stamp line — ONLY when an idea-to-production lifecycle is running; see "Lifecycle-aware welcomes")
 
 # Welcome to <PROJECT> 👋
@@ -57,13 +57,13 @@ or file path, so the agent can go straight from "I want X" to running it.
 
 When the repo is in an idea-to-production lifecycle (`.i2p/lifecycle.json` present), the welcome is a
 **living** document. It leads with a **phase stamp** —
-`<!-- concierge:welcome for_phase=<PHASE> cycle=<N> product=<slug> generated=<iso8601> -->` — and its
+`<!-- i2p:welcome for_phase=<PHASE> cycle=<N> product=<slug> generated=<iso8601> -->` — and its
 content reflects the product's **emergent identity** at that phase: early on it leads with *what the
 product is becoming and the next command* ("This repo is building **<Name>** — now at BUILD; next: …");
-once the product is concrete it gives the full lanes. CONCIERGE reads the stamp on SessionStart and, when
+once the product is concrete it gives the full lanes. i2p reads the stamp on SessionStart and, when
 the lifecycle has advanced past it, **auto-refreshes** the welcome (silently, via
-`/concierge:define-welcome refresh`) so whoever opens the repo always meets a current front door. A
+`/i2p:define-welcome refresh`) so whoever opens the repo always meets a current front door. A
 hand-authored welcome with **no** stamp is never auto-touched.
 
-Authoring this file by hand is fine; `/concierge:define-welcome` will read the repo and
+Authoring this file by hand is fine; `/i2p:define-welcome` will read the repo and
 draft it with you.

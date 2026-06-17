@@ -3,7 +3,7 @@
 #
 # Read-only. NEVER writes the user's repo and NEVER writes opt-out state — it only DETECTS the
 # situation and prints the exact marker paths the AGENT writes (under ~/.claude/hook-state) on the
-# operator's say-so, mirroring CONCIERGE's offer-welcome.sh. Always exits 0; degrades gracefully when
+# operator's say-so, mirroring i2p's offer-welcome.sh. Always exits 0; degrades gracefully when
 # git is absent or the dir is not a repo.
 #
 # Prints one status line:
@@ -34,7 +34,7 @@ if command -v git >/dev/null 2>&1; then
   esac
 fi
 
-# --- one-shot gate keys (same hashing convention as concierge offer-welcome.sh) ---
+# --- one-shot gate keys (same hashing convention as i2p offer-welcome.sh) ---
 hash_path() {
   if   command -v sha1sum >/dev/null 2>&1; then printf '%s' "$1" | sha1sum | cut -c1-12
   elif command -v shasum  >/dev/null 2>&1; then printf '%s' "$1" | shasum  | cut -c1-12

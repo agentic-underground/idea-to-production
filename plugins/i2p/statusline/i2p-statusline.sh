@@ -4,13 +4,13 @@
 # Reads JSON from stdin, renders a two-line ANSI status bar.
 # Never exits non-zero; all fields degrade gracefully when absent.
 #
-# CANONICAL COPY — shipped by the `concierge` plugin. /concierge:statusline copies this
+# CANONICAL COPY — shipped by i2p. /i2p:statusline copies this
 # to ~/.claude/statusline-command.sh and points settings.json at it (settings.json cannot
-# expand ${CLAUDE_PLUGIN_ROOT}). Edit here; re-run /concierge:statusline to update.
+# expand ${CLAUDE_PLUGIN_ROOT}). Edit here; re-run /i2p:statusline to update.
 #
 # VERSION STAMP (`i2p-statusline-version:` above) — bump it on every renderer change. The
 # SessionStart drift check (hooks/check-statusline-drift.sh) compares the installed copy's
-# stamp/md5 against this shipped renderer and offers /concierge:statusline to refresh on drift.
+# stamp/md5 against this shipped renderer and offers /i2p:statusline to refresh on drift.
 
 set +e
 input=$(cat)
@@ -35,7 +35,7 @@ command -v jq >/dev/null 2>&1 && _jq_ok=1
 #     (context rate_5h rate_7d lifecycle session_cost lifecycle_cost catches).
 #     `before` starts the widget on a new line, `after` breaks after it, `none`
 #     (default) keeps it inline and defers wrapping to the terminal.
-# Configure via /concierge:statusline (visibility) and /concierge:statusline-widgets
+# Configure via /i2p:statusline (visibility) and /i2p:statusline-widgets
 # (line breaks). Unknown/absent keys default to ON / none, so an empty or missing
 # conf reproduces the original two-line behaviour.
 # ---------------------------------------------------------------------------

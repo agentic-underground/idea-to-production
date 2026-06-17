@@ -5,15 +5,15 @@ description: >
   door a developer or operator meets when they open it in an agent harness. Reads the
   repo to infer what it is and the handful of things people come here to do, proposes
   2–4 top-level "lanes" with concrete decision trees, and writes `.claude/welcome.md`
-  in the CONCIERGE format so the SessionStart hook can greet arrivals and route them.
+  in the i2p welcome format so the SessionStart hook can greet arrivals and route them.
   If the repo is in an idea-to-production lifecycle, it also reads the lifecycle phase
   and the product's emergent artifacts so the welcome reflects what the product is
   *becoming*, and stamps the file with its phase. Runs in two modes: interactive
-  **author** (default) and silent **refresh** (`/concierge:define-welcome refresh`),
+  **author** (default) and silent **refresh** (`/i2p:define-welcome refresh`),
   the latter used to keep a managed welcome up to date as phases advance.
   Trigger when the user says "define a welcome experience", "set up a greeting for this
-  repo", "add a front door / concierge", "what should this repo say when opened", or
-  invokes `/concierge:define-welcome`.
+  repo", "add a front door / welcome", "what should this repo say when opened", or
+  invokes `/i2p:define-welcome`.
 metadata:
   type: producer
   output: .claude/welcome.md
@@ -22,7 +22,7 @@ metadata:
 # DEFINE-WELCOME
 
 You are authoring this repository's **welcome experience** — the file
-`.claude/welcome.md` that CONCIERGE's SessionStart hook renders so a future agent can
+`.claude/welcome.md` that i2p's SessionStart hook renders so a future agent can
 greet whoever opens the repo and route them, conversationally, to what they came to do.
 The format and its rules of thumb live in
 [`knowledge/welcome-format.md`](../../knowledge/welcome-format.md) — read it first; this
@@ -95,11 +95,11 @@ voice, optionally closing on a green-gate one-liner), a `## Lanes` summary list,
 `## <Lane>` section per lane with its decision tree. Create the `.claude/` directory if
 absent. Keep it tight.
 
-**Stamp it** when a lifecycle is running, so CONCIERGE can keep the welcome in step with the product —
+**Stamp it** when a lifecycle is running, so i2p can keep the welcome in step with the product —
 lead the file with a phase stamp (an HTML comment, invisible when rendered):
 
 ```
-<!-- concierge:welcome for_phase=<PHASE> cycle=<N> product=<slug-or-name> generated=<iso8601> -->
+<!-- i2p:welcome for_phase=<PHASE> cycle=<N> product=<slug-or-name> generated=<iso8601> -->
 ```
 
 ### 5. Hand back
@@ -111,7 +111,7 @@ moment someone states a concrete task. Offer to refine any lane.
 
 ## Refresh mode (`refresh`)
 
-When invoked as `/concierge:define-welcome refresh` — CONCIERGE triggers this automatically when a
+When invoked as `/i2p:define-welcome refresh` — i2p triggers this automatically when a
 **managed** welcome falls out of step with the lifecycle (the `offer-welcome.sh` hook detects a stale
 phase stamp) — run **silently and artifact-driven**: do **not** use AskUserQuestion. Re-read the
 lifecycle phase + that phase's emergent artifacts, regenerate the greeting and re-prioritise the lanes to
@@ -122,7 +122,7 @@ This keeps the repo's front door current as the product emerges, without interru
 
 **Verify the re-stamp landed (verify-and-disclose, never auto-rewrite).** A silent write failure (the edit
 didn't apply, a path slipped, the stamp wasn't rewritten) must not leave a stale stamp masquerading as
-current. After you regenerate, **re-read** the first `concierge:welcome` stamp line of `.claude/welcome.md`
+current. After you regenerate, **re-read** the first `i2p:welcome` stamp line of `.claude/welcome.md`
 and confirm it now carries `for_phase=<current-phase> cycle=<current-cycle>` matching the lifecycle's
 `current_phase`/`cycle`:
 

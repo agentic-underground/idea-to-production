@@ -6,7 +6,7 @@
 # Idempotently upserts `break_<key>=<value>` into the i2p-statusline conf
 # (default ~/.claude/i2p-statusline.conf, or $CLAUDE_I2P_STATUSLINE_CONF),
 # PRESERVING every other line (visibility keys, other widgets' breaks). Called
-# by the /concierge:statusline-widgets skill for each selected widget. Re-running
+# by the /i2p:statusline-widgets skill for each selected widget. Re-running
 # with the same args is a no-op-equivalent (the line is replaced, never duplicated).
 set -uo pipefail
 

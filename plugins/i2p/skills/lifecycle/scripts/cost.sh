@@ -9,14 +9,14 @@
 #
 # Estimates self-correct: estimate = BASE[phase] × calibration ratio_ewma[phase], where the ratio
 # (actual/estimate) is learned globally across lifecycles in ~/.claude/state/i2p-cost/calibration.json.
-# Actuals are MEASURED by the concierge capture-cost.sh Stop hook (writes <dir>/.i2p/cost.json).
+# Actuals are MEASURED by the i2p capture-cost.sh Stop hook (writes <dir>/.i2p/cost.json).
 # The canonical model + schema is i2p/knowledge/instrumentation.md. Needs jq.
 #
 # CYCLE-INDEXED (P2-20, ADDITIVE — no destructive migration): a product loops OPERATE ↻ DISCOVER,
 # and each new cycle must NOT clobber the prior cycle's cost. cost.json is therefore cycle-indexed:
 # the active cycle is read from .i2p/lifecycle.json's `.cycle` field (default 1 when absent). The
 # schema is additive — an OLD flat file {"phases":…,"totals":…} reads as CYCLE 1, so legacy files
-# and the concierge Stop-hook writer (which keeps writing the flat shape) keep working untouched.
+# and the i2p Stop-hook writer (which keeps writing the flat shape) keep working untouched.
 # Only when a cycle > 1 first accrues does the file grow a top-level `.cycles` map: the pre-existing
 # flat phases/totals fold down into `.cycles["1"]` and the new cycle lands at `.cycles["<n>"]`. A
 # reader of a cycle-indexed file with no lifecycle still defaults to cycle 1, never zeroing.

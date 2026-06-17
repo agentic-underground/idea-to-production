@@ -1,7 +1,7 @@
 # name	probe-command	tier	install-hint
-# Canonical dependency manifest for CONCIERGE. TAB-separated (4 fields). See PREREQUISITES/.
-# CONCIERGE degrades gracefully — its hooks and the status line fall back to pure-bash when a
-# tool is absent, so nothing here is hard-required beyond bash itself.
+# Canonical dependency manifest for i2p (welcome hooks + the status line, folded in from concierge).
+# TAB-separated (4 fields). See PREREQUISITES/. i2p degrades gracefully — its hooks and the status line
+# fall back to pure-bash when a tool is absent, so nothing here is hard-required beyond bash itself.
 bash	command -v bash	required	preinstalled
 jq	command -v jq	recommended	apt install jq (clean JSON for hooks + statusline; pure-bash fallback otherwise)
 git	command -v git	optional	apt install git (statusline branch field; degrades to harness-provided fields)

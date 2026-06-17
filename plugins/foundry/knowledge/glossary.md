@@ -57,7 +57,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   the security plugin) are separate first-class gates; three concerns cross-cut every phase — usability (atelier),
   quality (foundry), security (the security plugin). The canonical model (owners, academic lineage, entry/exit
   signals) is `i2p/knowledge/product-lifecycle.md`; tracked per-project in `.i2p/lifecycle.json` and shown
-  on the concierge status line. Distinct from the *marketing* product life cycle
+  on the i2p status line. Distinct from the *marketing* product life cycle
   (introduction→growth→maturity→decline), which runs alongside OPERATE.
 - **ASSURE** (lifecycle phase ⑤; gate, owner foundry) — the **quality** certification gate: adversarial
   V&V (tests green, coverage density, perf-delta, regression, architecture). Distinct from SECURE — a
@@ -69,16 +69,16 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - **OPERATE** (lifecycle phase ⑧; owner `operate`) — the living phase: observe, respond to
   incidents, iterate, and maintain the realised & live product; its learnings open the **next** cycle
   (↻ → DISCOVER). `operate` may not be installed yet — surfaces name what installing it unlocks.
-- **i2p** — the marketplace **front door / meta-layer**: marketplace-level meta-commands (`/i2p-help`,
-  `/i2p-review`, `/i2p-check`, `/i2p-flow`) plus session-start onboarding. A thin orchestrator that
-  composes the seven specialists by capability and never re-implements them.
+- **i2p** — the marketplace **front door / meta-layer & arrival layer**: marketplace-level meta-commands
+  (`/i2p-help`, `/i2p-review`, `/i2p-check`, `/i2p-flow`) plus session-start onboarding, and — folded in
+  from the retired concierge — the **repo welcome** (a SessionStart hook renders a repo's
+  `.claude/welcome.md` to greet and route whoever opens it; `/i2p:define-welcome` authors it) and the
+  **idea-to-production status line** (`/i2p:statusline`, offered once on first activation). A thin
+  orchestrator that composes the seven specialists by capability and never re-implements them.
 - **first-order instrumentation** — the HUD's always-on instruments, fed by deterministic hooks: the
   **⚔ adversarial-catch counter** (times a reviewer caught something) and the **token-cost tracker**
   (per-phase actual vs a self-calibrating estimate, tokens + $). Canonical:
   `i2p/knowledge/instrumentation.md`; state under `~/.claude/state/` and `<project>/.i2p/cost.json`.
-- **concierge** — the **arrival / greeter**: a SessionStart hook renders a repo's
-  `.claude/welcome.md` to greet and route whoever opens it; `/concierge:define-welcome` authors that
-  welcome; also offers the idea-to-production status line on first activation.
 - **market-scanner / ideator / foundry / security / publish / atelier / operate** — the seven
   specialist plugins: DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the
   core conveyor (BUILD + the ASSURE quality gate) / SECURITY companion (the SECURE gate) / PUBLISHING

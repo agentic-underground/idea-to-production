@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# offer-doc-alert.sh — CONCIERGE SessionStart hook. A one-shot heads-up that announces the
+# offer-doc-alert.sh — i2p SessionStart hook. A one-shot heads-up that announces the
 # repo's new ROADMAP documentation behaviour, exactly once per repo. Unlike offer-welcome.sh
 # (which proposes an action), this hook simply INFORMS: from now on, roadmap items are
 # documented via emoji commits, process-issues (on allowlisted origins), per-item
@@ -49,7 +49,7 @@ SHOWN="${STATE_DIR}/concierge-doc-alert-shown/${repo_key}"
 # --- compose the one-time alert ------------------------------------------------------------
 MSG="🗺️ Heads-up: from now on, ROADMAP items in this repo are documented as you go — emoji-prefixed commits, a process-issue per item (on allowlisted origins only), a per-item professional doc, and the opt-in wiki. (One-time notice.)"
 
-CTX="CONCIERGE one-time DOCUMENTATION ALERT for this repository (not shown here before). Surface it ONCE, near the start of your reply, then continue with whatever the user asked — do not let it derail the actual task. Announce the new ROADMAP documentation behaviour that now applies from here on:
+CTX="i2p one-time DOCUMENTATION ALERT for this repository (not shown here before). Surface it ONCE, near the start of your reply, then continue with whatever the user asked — do not let it derail the actual task. Announce the new ROADMAP documentation behaviour that now applies from here on:
   1. EMOJI COMMITS — each roadmap item's work lands in emoji-prefixed commits documenting it.
   2. PROCESS-ISSUES — a tracking issue is opened per item, but ONLY on allowlisted origins (skip silently on others).
   3. PER-ITEM PROFESSIONAL DOCS — each item gets its own professional documentation page.

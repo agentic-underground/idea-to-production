@@ -9,7 +9,7 @@
 Counts the **times an adversarial reviewer caught something** — a first-class measure of the quality gate
 doing its job.
 
-- **Fed by:** `concierge` PostToolUse(Write|Edit) hook `statusline/count-adversarial-catches.sh`. When an
+- **Fed by:** i2p PostToolUse(Write|Edit) hook `statusline/count-adversarial-catches.sh`. When an
   adversarial-review artifact (`PR_REVIEW.md`, `I2P_REVIEW.md`, `SECURITY-REPORT.md`, `PII-REPORT.md`,
   `*_INSPECTION_REPORT.md`) is written with a non-PASS verdict or a CRITICAL/HIGH/MEDIUM finding, the
   counter increments — deduped by content hash so a re-write never double-counts.
@@ -23,10 +23,10 @@ attributes it to the active product-lifecycle phase, and **compares estimates to
 self-correct over time**.
 
 ### Measure (the engine)
-- **Fed by:** `concierge` **Stop** hook `statusline/capture-cost.sh`. Each turn it incrementally sums the
+- **Fed by:** i2p **Stop** hook `statusline/capture-cost.sh`. Each turn it incrementally sums the
   session transcript's `.message.usage` (input + output + cache-creation + cache-read) across assistant
   messages, checkpointing per session so it only counts the **delta** since last turn. USD is derived per
-  model from `concierge/statusline/model-prices.tsv` (input / output / cache-write-5m / cache-read).
+  model from `statusline/model-prices.tsv` (input / output / cache-write-5m / cache-read).
 - **State:** `~/.claude/state/i2p-cost/session.json` (current session totals — the always-on `◇` widget),
   `<session>.ckpt` (incremental checkpoint), and — when a lifecycle is active in the project — the
   per-phase actuals in `<project>/.i2p/cost.json`.
@@ -57,7 +57,7 @@ the prior cycle's. Cost is therefore **cycle-indexed**, keyed by the lifecycle's
 (`.i2p/lifecycle.json`). The schema is **additive — no destructive migration**:
 
 - The flat shape above **is cycle 1.** A reader with no cycle index — an old flat file, or no
-  running lifecycle — **defaults to cycle 1** and reads it unchanged. The concierge Stop-hook
+  running lifecycle — **defaults to cycle 1** and reads it unchanged. The i2p Stop-hook
   writer (`capture-cost.sh`) keeps writing the flat shape; that is cycle 1 and stays correct.
 - Only when a **cycle > 1 first accrues** does the file grow a top-level `cycles` map: the
   pre-existing flat `phases`/`totals` fold **losslessly** down into `cycles["1"]`, and the new

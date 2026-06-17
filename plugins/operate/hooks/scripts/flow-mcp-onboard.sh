@@ -10,7 +10,7 @@
 #      silent when connected, guide only when not. Hooks cannot see MCP approval state,
 #      so the agent's tool list is the reliable signal, not this hook.
 #
-# Modelled on concierge/hooks/offer-statusline.sh. Always exits 0 (verify-prereqs L).
+# Modelled on i2p/hooks/offer-statusline.sh. Always exits 0 (verify-prereqs L).
 set -uo pipefail
 
 # Drain the SessionStart payload; we don't need it.

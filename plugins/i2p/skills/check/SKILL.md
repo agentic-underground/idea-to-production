@@ -15,14 +15,34 @@ model: inherit
 
 # i2p — Consolidated dependency check
 
-Six plugins each ship a `/check`. This runs them all and gives you **one** readiness picture, so you
-don't have to remember to probe each plugin separately.
+The specialist plugins each ship a `/check`. This runs them all and gives you **one** readiness picture,
+so you don't have to remember to probe each plugin separately — and, because i2p now also ships the
+welcome hooks and the status line (folded in from the retired concierge), it **first probes its own**
+tool dependencies (`jq`/`bash`/`awk`/`git` — the tools those hooks and the renderer use) before
+consolidating the rest.
 
 > **Stance — advisory, never a false PASS.** A missing tool **narrows a capability**, it does not break
 > the marketplace. Report gaps plainly; with `--strict`, surface a non-OK overall status when a
 > **required** tool is missing.
 
 ---
+
+## 0. Probe i2p's own dependencies first
+
+i2p ships SessionStart welcome/status-line hooks and the two-line ANSI status line. They all degrade to a
+pure-bash fallback when a tool is absent (never failing the session), but `jq` gives clean JSON and `awk`
+drives the gauges. Run i2p's own dependency probe and include its rows in the consolidated table under an
+**i2p** group:
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh $ARGUMENTS            # advisory ✓/✗ table
+bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict              # exit 1 if a REQUIRED tool is missing
+```
+
+It reads the canonical manifest [`requirements.tsv`](requirements.tsv) (`name · probe · tier · install-hint`):
+`bash` (required — the shell every hook and the renderer run in), `jq` + `awk` (recommended — clean JSON
+for the hooks and numeric gauges for the status line; pure-bash fallback otherwise), `git` (optional — the
+status line's branch field). A `✗` is never a hard failure here.
 
 ## 1. Run each installed plugin's check
 

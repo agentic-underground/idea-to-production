@@ -1,7 +1,7 @@
 ---
 name: statusline-install
 description: >
-  Install (or remove) the idea-to-production status line. Use for /concierge:statusline (or
+  Install (or remove) the idea-to-production status line. Use for /i2p:statusline (or
   "give me the status bar", "turn on the i2p status line", "enable the fancy statusline",
   "turn off the status line"). Copies the plugin's renderer to ~/.claude and points
   settings.json at it (portable across machines), or removes it with `off`. Prints a merry
@@ -12,7 +12,7 @@ metadata:
 model: inherit
 ---
 
-# concierge — Status-line installer
+# i2p — Status-line installer
 
 The idea-to-production status line is a rich two-line ANSI bar: identity/git/PR/model on line 1;
 context-window + rate-limit gauges, the **product-lifecycle phase**, and the **⚔ caught** reviewer
@@ -38,7 +38,7 @@ Present the output verbatim, then note the bar appears after a **restart or `/re
 
 ## Notes
 - The **⚔ caught** tally is fed automatically by this plugin's PostToolUse hook
-  (`statusline/count-adversarial-catches.sh`) — no setup needed; it works once `concierge` is installed.
+  (`statusline/count-adversarial-catches.sh`) — no setup needed; it works once i2p is installed.
 - The **lifecycle phase** widget lights up once a project has a `.i2p/lifecycle.json` (see `/i2p-help`).
 - Other plugins can add their own segments by dropping an executable printer in
   `~/.claude/state/statusline-widgets.d/*.sh` (fed the same stdin JSON; prints one colored segment).
