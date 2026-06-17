@@ -64,7 +64,7 @@ the same marketplace and are used *automatically if installed*, with clean degra
 - **SECURITY → [`security`](../security/)** — a pre-release gate (PII, secrets, dependency audit).
   When installed, foundry's release path can run `/security:scan-all` before DELIVERY; when absent,
   the gate is skipped with a noted recommendation.
-- **PUBLISHING → [`pressroom`](../pressroom/)** — articles, standalone diagrams, and
+- **PUBLISHING → [`publish`](../publish/)** — articles, standalone diagrams, and
   print-quality PDFs. When installed, foundry can hand markdown to `/publish` for richer output;
   when absent, foundry delivers markdown as-is.
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# publish-wiki.sh — publish PRESSROOM's per-item docs (doc/articles/) to the origin's .wiki.git.
+# publish-wiki.sh — publish PUBLISH's per-item docs (doc/articles/) to the origin's .wiki.git.
 #
 # Read-only against the USER's repo (it only reads doc/articles/); all writes land in a scratch wiki
 # clone under the system temp dir. Idempotent: re-running re-syncs pages. Degrades gracefully — a clean
 # no-op with a named reason when the origin is not GitHub, when git/gh is unavailable, when the wiki has
-# never been enabled, or when there is no PRESSROOM output to publish. Never fabricates content.
+# never been enabled, or when there is no PUBLISH output to publish. Never fabricates content.
 #
 # Exit 0 = published OR a legible, intentional no-op. Exit 1 = a real failure (push refused, etc.).
 set -uo pipefail
@@ -34,7 +34,7 @@ esac
 # --- there must be something #12 produced to publish ---
 SRC="$DIR/doc/articles"
 if [ ! -d "$SRC" ] || [ -z "$(find "$SRC" -type f -name '*.md' 2>/dev/null | head -1)" ]; then
-  note "no-op: no PRESSROOM output to publish (doc/articles/ empty) — run /publish per completed item first"
+  note "no-op: no PUBLISH output to publish (doc/articles/ empty) — run /publish per completed item first"
   exit 0
 fi
 

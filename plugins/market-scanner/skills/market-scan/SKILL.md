@@ -88,7 +88,7 @@ sharpens it.
   refinement into the IDEA package. If absent, write a markdown **opportunity brief** to
   `doc/opportunities/<slug>.md` and tell the user to install `ideator` (or run FOUNDRY's inline ideator)
   to refine it. *(Rich, illustrated opportunity briefs — scorecards as tables, market-sizing charts —
-  are produced by invoking pressroom's `/publish` **by capability** when pressroom is installed; degrade
+  are produced by invoking publish's `/publish` **by capability** when publish is installed; degrade
   to clean markdown when it is absent, and say so.)*
 - **KILL / PARK** → state the verdict and the sinking parameter plainly, record the kill-ledger entry,
   and (in a loop) refine the `/discovery-goal` and propose again.

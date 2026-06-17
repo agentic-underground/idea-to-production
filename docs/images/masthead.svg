@@ -69,11 +69,11 @@
 <circle cx="896" cy="235" r="13" fill="#3a3a55" opacity="0.85"/>
 <g opacity="0"><circle cx="896" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="896" cy="235" r="18" fill="url(#pool)"/><circle cx="896" cy="235" r="18" fill="url(#sheen)"/><path d="M884.8 223.8 A16 16 0 0 1 907.2 223.8" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="896" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.357;0.387;0.916;0.946;1" dur="14s" repeatCount="indefinite" calcMode="linear"/></g>
 <text x="896" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">SECURE</text>
-<text x="896" y="268" font-size="11" fill="#6b7488" text-anchor="middle">sentinel</text>
+<text x="896" y="268" font-size="11" fill="#6b7488" text-anchor="middle">security</text>
 <circle cx="1053" cy="235" r="13" fill="#3a3a55" opacity="0.85"/>
 <g opacity="0"><circle cx="1053" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="1053" cy="235" r="18" fill="url(#pool)"/><circle cx="1053" cy="235" r="18" fill="url(#sheen)"/><path d="M1041.8 223.8 A16 16 0 0 1 1064.2 223.8" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="1053" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.429;0.459;0.908;0.938;1" dur="14s" repeatCount="indefinite" calcMode="linear"/></g>
 <text x="1053" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">PUBLISH</text>
-<text x="1053" y="268" font-size="11" fill="#6b7488" text-anchor="middle">pressroom</text>
+<text x="1053" y="268" font-size="11" fill="#6b7488" text-anchor="middle">publish</text>
 <circle cx="1210" cy="235" r="13" fill="#3a3a55" opacity="0.85"/>
 <g opacity="0"><circle cx="1210" cy="235" r="18" fill="#5eead4" filter="url(#ns)"/><circle cx="1210" cy="235" r="18" fill="url(#pool)"/><circle cx="1210" cy="235" r="18" fill="url(#sheen)"/><path d="M1198.8 223.8 A16 16 0 0 1 1221.2 223.8" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/><circle cx="1210" cy="235" r="18" fill="none" stroke="#0a0a12" stroke-width="1" stroke-opacity="0.55"/><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.5;0.500;0.9;0.93;1" dur="14s" repeatCount="indefinite" calcMode="linear"/></g>
 <text x="1210" y="205" font-size="15" font-weight="600" fill="#e8e8ef" text-anchor="middle">OPERATE</text>

@@ -17,6 +17,6 @@ Search for a product name. Follow the [`name-search` skill](../skills/name-searc
    (charter · where-it-searched · attrition funnel · per-name disposition with separate availability vs
    challenge verdicts · ranked shortlist · top pick with confidence + residual risks).
 
-Write the report to `docs/marketing/naming-report.md` (or stdout); offer to render via pressroom `/publish`.
+Write the report to `docs/marketing/naming-report.md` (or stdout); offer to render via publish `/publish`.
 Set `GITHUB_TOKEN` before a large run to lift the GitHub rate limit. Distinct from `/ideate` (which refines
 a whole idea); this does naming, well.

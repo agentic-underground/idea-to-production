@@ -9,11 +9,11 @@
   loop:
     - "@playwright/mcp"                 # foundry Playwright MCP server
     - playwright                        # foundry Playwright test runner
-    - "@mermaid-js/mermaid-cli"         # pressroom: mmdc
+    - "@mermaid-js/mermaid-cli"         # publish: mmdc
     - typescript-language-server        # foundry LSP (JS/TS)
     - typescript                        # peer of the TS language server
     - pyright                           # foundry LSP (Python) — provides pyright-langserver
-  tags: [foundry, pressroom, lsp, mcp]
+  tags: [foundry, publish, lsp, mcp]
 
 - name: Install the Chromium browser for the Playwright test runner
   ansible.builtin.command: npx --yes playwright install --with-deps chromium

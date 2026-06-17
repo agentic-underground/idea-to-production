@@ -1,8 +1,8 @@
 # name	probe-command	tier	install-hint
 # Canonical dependency manifest for ATELIER. TAB-separated. Probe passes when it exits 0.
 # ATELIER reviews with built-in vision (Read sees PNGs — no API key) and drives live browsers via the
-# Playwright MCP (.mcp.json). Companions (pressroom, foundry, ideator) are PLUGINS, referenced by
-# capability, not probed here. User-flow rendering is pressroom's job (verify via /pressroom:check).
+# Playwright MCP (.mcp.json). Companions (publish, foundry, ideator) are PLUGINS, referenced by
+# capability, not probed here. User-flow rendering is publish's job (verify via /publish:check).
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled
 node	command -v node	recommended	install via Volta (PREREQUISITES/00-core.md) — runs the crawler + npx

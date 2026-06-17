@@ -23,10 +23,10 @@ digraph ValueFlow {
 
   assure [label=<<b>ASSURE</b><br/><font color="#b8bed0" point-size="16">foundry &middot; gate</font>>,
           shape=hexagon, fillcolor="#2a2a3c", color="#9ece6a", penwidth=2.5, margin="0.16,0.08"]
-  secure [label=<<b>SECURE</b><br/><font color="#b8bed0" point-size="16">sentinel &middot; gate</font>>,
+  secure [label=<<b>SECURE</b><br/><font color="#b8bed0" point-size="16">security &middot; gate</font>>,
           shape=hexagon, fillcolor="#2a2a3c", color="#e0af68", penwidth=2.5, margin="0.16,0.08"]
 
-  publish  [label=<<b>PUBLISH</b><br/><font color="#b8bed0" point-size="16">pressroom</font>>,       color="#d8b58a"]
+  publish  [label=<<b>PUBLISH</b><br/><font color="#b8bed0" point-size="16">publish</font>>,       color="#d8b58a"]
   operate  [label=<<b>OPERATE</b><br/><font color="#b8bed0" point-size="16">operate</font>>, color="#e0af68"]
 
   // top row = 4 phases; bottom row = 4 phases (each ~half the original width)

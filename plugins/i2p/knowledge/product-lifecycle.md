@@ -57,7 +57,7 @@ canon. (State-file token in brackets — see `skills/lifecycle/`.)
 | ④ | **BUILD** `[BUILD]` | foundry | realise it test-first through the value conveyor (IDEA▶…▶SHIP) | Double Diamond **Deliver** · NPD development · PLM **Realize** |
 | ⑤ | **ASSURE** `[ASSURE]` | foundry | **certify quality** — adversarial V&V: tests green, coverage density, perf-delta, regression, architecture | Verification & Validation · quality gate (PDCA *check* / DMAIC *control*) |
 | ⑥ | **SECURE** `[SECURE]` | security | **certify security** — PII, secrets, supply-chain clear before exposure | secure-by-design · supply-chain integrity · the security gate |
-| ⑦ | **PUBLISH** `[PUBLISH]` | pressroom | announce & document it for its audience | commercialization / launch communication |
+| ⑦ | **PUBLISH** `[PUBLISH]` | publish | announce & document it for its audience | commercialization / launch communication |
 | ⑧ | **OPERATE** `[OPERATE]` | operate | keep it alive & improving: observe, respond to incidents, iterate, maintain | PLM **service/operate** · SRE · the market life cycle (introduction→growth) · DMAIC *control* in production |
 | ↻ | *(re-entry)* | market-scanner | OPERATE's learnings open the **next** value cycle | continuous discovery · build-measure-learn |
 

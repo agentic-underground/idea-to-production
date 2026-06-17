@@ -3,7 +3,7 @@
   "name": "atelier",
   "displayName": "ATELIER — Design studio & adversarial UI review",
   "version": "1.1.1",
-  "description": "The DESIGN studio — a designer's workshop that both makes and critiques visual work to a commercial-grade standard. /ui-review crawls the navigable routes of any SPA (screenshot + accessibility snapshot per route) and writes a scored, prioritised critique where every finding cites a named principle; /mockup composes polished screens, wireframes, and user-flows and runs them through a convergent designer↔reviewer loop until they clear a design-fitness rubric. The reviewer is a heavyweight expert in the design canon — Gestalt, the UX laws (Fitts/Hick/Miller/Jakob), Nielsen's heuristics, Norman's emotional design, and WCAG 2.2 accessibility. Composes with foundry's frontend design-system and pressroom's graphics by capability; degrades to markdown when absent. Self-improving: design feedback sharpens the canon and the rubric via a PR.",
+  "description": "The DESIGN studio — a designer's workshop that both makes and critiques visual work to a commercial-grade standard. /ui-review crawls the navigable routes of any SPA (screenshot + accessibility snapshot per route) and writes a scored, prioritised critique where every finding cites a named principle; /mockup composes polished screens, wireframes, and user-flows and runs them through a convergent designer↔reviewer loop until they clear a design-fitness rubric. The reviewer is a heavyweight expert in the design canon — Gestalt, the UX laws (Fitts/Hick/Miller/Jakob), Nielsen's heuristics, Norman's emotional design, and WCAG 2.2 accessibility. Composes with foundry's frontend design-system and publish's graphics by capability; degrades to markdown when absent. Self-improving: design feedback sharpens the canon and the rubric via a PR.",
   "author": {
     "name": "whatbirdisthat",
     "email": "95787+whatbirdisthat@users.noreply.github.com",
@@ -28,10 +28,10 @@
   ],
   "metadata": {
     "companions": {
-      "publishing": "pressroom",
+      "publishing": "publish",
       "carriage": "foundry",
       "refinement": "ideator"
     },
-    "note": "skills/ and commands/ are auto-discovered from the plugin root. /ui-review (crawl + critique any SPA) and /mockup (design polished screens/flows) are the front doors. Ships a Playwright MCP (.mcp.json) for live crawl/screenshot/accessibility-snapshot. Composes with foundry's frontend design-system and pressroom's graphics BY CAPABILITY; degrades to markdown when absent."
+    "note": "skills/ and commands/ are auto-discovered from the plugin root. /ui-review (crawl + critique any SPA) and /mockup (design polished screens/flows) are the front doors. Ships a Playwright MCP (.mcp.json) for live crawl/screenshot/accessibility-snapshot. Composes with foundry's frontend design-system and publish's graphics BY CAPABILITY; degrades to markdown when absent."
   }
 }

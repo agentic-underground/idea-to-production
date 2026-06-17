@@ -2,7 +2,7 @@
 
 > **For the Ansible provisioning agent.** A curated, opinionated list of tooling that makes
 > Claude Code + this marketplace (all **five** plugins: market-scanner, ideator, foundry, security,
-> pressroom) genuinely high-powered. Two sections: (A) already present on the reference machine and worth
+> publish) genuinely high-powered. Two sections: (A) already present on the reference machine and worth
 > **pinning** so every box matches, and (B) **high-value additions** currently absent. Reference machine:
 > **Debian 13 (trixie)**, surveyed 2026-06-03; tooling list refreshed 2026-06-05. See the
 > [HANDOFF section in the folder README](README.md) for the rules (canonical `.tsv`, secrets-at-runtime,
@@ -15,14 +15,14 @@
 | `rust-analyzer` | (cargo bin) | Best-in-class Rust LSP → semantic nav + live diagnostics for agents. | `rustup component add rust-analyzer` |
 | `dx` (Dioxus CLI) | — | Drives the Rust/WASM webapp stack. | `cargo install dioxus-cli --locked` |
 | `cargo-zigbuild` + `zig` | zig 0.13 | glibc-correct cross-builds for Vercel's Rust runtime. | `cargo install cargo-zigbuild` + zig release |
-| `typst` | 0.14.2 | Fast, no-TeX typesetting — pressroom's default engine. | `cargo install typst-cli` |
+| `typst` | 0.14.2 | Fast, no-TeX typesetting — publish's default engine. | `cargo install typst-cli` |
 | `uv` / `uvx` | 0.11.17 | Fast Python + **ephemeral tool runner**; launches the Fetch MCP & Python tooling cleanly. | astral install script |
 | `node` (Volta) | 24.16 | Playwright MCP, JS/TS toolchains, mermaid-cli. | Volta |
 | `dotnet` | 10.0.203 | .NET stack availability. | Microsoft apt feed |
 | `rustc`/`cargo` | 1.96 | Rust toolchain. | rustup |
 | `ripgrep` | 15.1 | Fast search everywhere. | apt |
 | `jq` | 1.7 | JSON in scripts/checks. | apt |
-| `gs` (Ghostscript) | — | PDF optimise/merge for pressroom. | apt |
+| `gs` (Ghostscript) | — | PDF optimise/merge for publish. | apt |
 | `pdfinfo` (poppler) | — | PDF verification in build-pdf.sh. | apt (`poppler-utils`) |
 | `libreoffice`/`soffice` | — | docx/odt/pptx ⇄ PDF conversion. | apt |
 | `firefox` | — | a browser (note: Chromium not present — add for Playwright). | apt |
@@ -45,7 +45,7 @@
 ### Security (SECURITY)
 - **`osv-scanner`** (Google OSV, all ecosystems), **`gitleaks`** (secrets), **`cargo-audit`**, **`pip-audit`**, **`govulncheck`**, optionally **`trivy`**/**`grype`**+**`syft`**, **`trufflehog`**.
 
-### Publishing (PRESSROOM)
+### Publishing (PUBLISH)
 - **TeX Live** set (`texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended`) — enables the LaTeX engine.
 - **`graphviz`** (`dot`), **`@mermaid-js/mermaid-cli`** (`mmdc`), **`pandoc`**, **`librsvg2-bin`** (`rsvg-convert`), **`qpdf`**, **`imagemagick`**.
 - A **Libertinus** or **TeX Gyre** font family for the exact Typst look.

@@ -211,7 +211,7 @@ fi
 # ── D′. no-download tsv probes (check D, extended over requirements.tsv) ──────
 # This is the tsv twin of check D: the same fetch-and-execute rule, applied to the
 # requirements.tsv probe cells (column 2). A capability probe may render/launch LOCALLY
-# (the pressroom mmdc row exports a resolver then renders a trivial diagram), but it must
+# (the publish mmdc row exports a resolver then renders a trivial diagram), but it must
 # never DOWNLOAD-AND-RUN a package. Allow-list (mirrors check D + the established tsv idiom):
 #   • any probe containing `command -v …`            (pure presence — never fetches), and
 #   • `npx --no-install …`                           (refuses to auto-install; fails if absent).

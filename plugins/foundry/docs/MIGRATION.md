@@ -52,8 +52,8 @@ In moved files, every `~/.claude/...` reference is rewritten to `${CLAUDE_PLUGIN
 | `agents/foundry-reviewer.md` | `agents/reviewer.md` |
 | `agents/development-system-reviewer.md` | merged into `agents/reviewer.md` (DOCUMENT-REVIEWER role) |
 | `agents/foundry-daily-inspector.md` | `agents/inspector.md` |
-| `skills/rich-pdf-with-diagrams/...` | **RELOCATED** → `pressroom` plugin (see §H) |
-| `skills/writer/SKILL.md` | **RELOCATED** → `pressroom` plugin (see §H) |
+| `skills/rich-pdf-with-diagrams/...` | **RELOCATED** → `publish` plugin (see §H) |
+| `skills/writer/SKILL.md` | **RELOCATED** → `publish` plugin (see §H) |
 
 ---
 
@@ -76,8 +76,8 @@ In moved files, every `~/.claude/...` reference is rewritten to `${CLAUDE_PLUGIN
 | 13 | `state-delivery` | consolidate | `…/states/delivery.md` | ☑ |
 | 14 | `state-production-readiness` | consolidate | `…/states/production-readiness.md` | ☑ |
 | 15 | `pii-audit` | **RELOCATED → `security` plugin** (cross-cutting SECURITY, not value-carrying) | `plugins/security/skills/scan-for-pii/` | ☑ §H |
-| 16 | `writer` | **RELOCATED → `pressroom` plugin** (cross-cutting PUBLISHING) | `plugins/pressroom/skills/writer/` | ☑ §H |
-| 17 | `rich-pdf-with-diagrams` | **RELOCATED → `pressroom` plugin** (cross-cutting PUBLISHING) | `plugins/pressroom/skills/rich-pdf-with-diagrams/` | ☑ §H |
+| 16 | `writer` | **RELOCATED → `publish` plugin** (cross-cutting PUBLISHING) | `plugins/publish/skills/writer/` | ☑ §H |
+| 17 | `rich-pdf-with-diagrams` | **RELOCATED → `publish` plugin** (cross-cutting PUBLISHING) | `plugins/publish/skills/rich-pdf-with-diagrams/` | ☑ §H |
 | — | `hello-world-skill` | **deprecate** (template) | drop / `docs/` | ☑ |
 
 ### Seed plugin skills (resolve dual-presence)
@@ -198,20 +198,20 @@ plugins; DESIGN (`frontend`) was kept in foundry because it *is* an on-line stat
 | Extracted to | Components moved out of foundry | Why |
 |---|---|---|
 | **`security`** (security) | `skills/pii-audit/`, `commands/pii-audit.md` | PII/secret scanning is a pre-release gate, not a value-carriage step. Expanded with scan-for-secrets, scan-dependencies, and a consolidated `/security:scan-all`. |
-| **`pressroom`** (publishing) | `skills/writer/`, `skills/rich-pdf-with-diagrams/` | foundry's value artefact is **markdown**; articles/diagrams/PDF are an optional enrichment. Expanded with `diagram-studio` and `/publish`. |
+| **`publish`** (publishing) | `skills/writer/`, `skills/rich-pdf-with-diagrams/` | foundry's value artefact is **markdown**; articles/diagrams/PDF are an optional enrichment. Expanded with `diagram-studio` and `/publish`. |
 
 **Graceful-enhancement contract.** foundry no longer hard-references these by
 `${CLAUDE_PLUGIN_ROOT}` path (which would break across a plugin boundary). Instead it refers to
-them **by capability** — "if the `security`/`pressroom` plugin is installed, hand off to its
+them **by capability** — "if the `security`/`publish` plugin is installed, hand off to its
 skill; otherwise deliver markdown and note the step was skipped." See `VALUE_FLOW.md §4, §10`.
 
 **Provenance of the relocated files** is the same as their pre-split state (rows 15–17 above and
 the path-rewrite map); the files moved verbatim. Cross-plugin path repairs done at relocation:
-- `pressroom`: `writer` ↔ `rich-pdf-with-diagrams` are now in the same plugin → their mutual
+- `publish`: `writer` ↔ `rich-pdf-with-diagrams` are now in the same plugin → their mutual
   `${CLAUDE_PLUGIN_ROOT}/skills/...` references remain valid and were kept.
-- `pressroom`: `writer`'s former reference to foundry's
+- `publish`: `writer`'s former reference to foundry's
   `knowledge/protocols/commit-message.md` was replaced with a self-contained
-  `skills/writer/references/commit-format.md` so pressroom never assumes foundry is installed.
+  `skills/writer/references/commit-format.md` so publish never assumes foundry is installed.
 
 ---
 

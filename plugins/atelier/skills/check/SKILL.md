@@ -26,6 +26,6 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 [`requirements.tsv`](requirements.tsv) is the single source of truth. The shipped **Playwright MCP**
 (`.mcp.json`) and the committed-snapshot crawler both launch via `npx`/`node`; a Chromium browser is needed
 for live crawls (the MCP downloads its own on first use; the crawler uses the target project's Playwright).
-`gh` is recommended so `self-improve` can open the improvement PR. User-flow rendering is **pressroom**'s
-job via `/publish` — verify those with `/pressroom:check`, not here. Companions (`pressroom`, `foundry`,
+`gh` is recommended so `self-improve` can open the improvement PR. User-flow rendering is **publish**'s
+job via `/publish` — verify those with `/publish:check`, not here. Companions (`publish`, `foundry`,
 `ideator`) are **plugins**, referenced by capability, not probed.

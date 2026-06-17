@@ -33,7 +33,7 @@
       "build": "foundry",
       "design": "atelier",
       "security": "security",
-      "publishing": "pressroom"
+      "publishing": "publish"
     },
     "note": "commands/, skills/, and hooks/hooks.json are auto-discovered from the plugin root. This plugin is a THIN orchestrator — it composes the seven specialist plugins by capability and degrades cleanly when any are absent. Knowledge lives in knowledge/covenant.md; the canonical homes are in the foundry plugin's knowledge/."
   }

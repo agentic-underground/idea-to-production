@@ -5,7 +5,7 @@ description: Browse the idea-to-production marketplace — the powers you have n
 Be the marketplace front door. Follow the [`help` skill](../skills/help/SKILL.md):
 
 1. Enumerate which `idea-to-production` plugins are **currently active** (market-scanner, ideator,
-   foundry, atelier, security, pressroom, operate, and i2p itself) — judge from the skills/commands available to
+   foundry, atelier, security, publish, operate, and i2p itself) — judge from the skills/commands available to
    you this session; do not probe the filesystem.
 2. Render the **three pillars** in one line each, then a compact map of the value flow
    (DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻) showing only the installed

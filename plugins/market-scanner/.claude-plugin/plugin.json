@@ -29,7 +29,7 @@
   "metadata": {
     "companions": {
       "refinement": "ideator",
-      "publishing": "pressroom"
+      "publishing": "publish"
     },
     "note": "skills/ and commands/ are auto-discovered from the plugin root. /market-scan is the front door. Hands a validated opportunity to the ideator plugin (REFINEMENT) when installed; emits a markdown opportunity brief standalone."
   }

@@ -13,11 +13,11 @@
     name: "{{ item.name }}"
     state: present
   loop:
-    - { name: typst-cli }        # pressroom Typst engine  (binary: typst)
+    - { name: typst-cli }        # publish Typst engine  (binary: typst)
     - { name: cargo-audit }      # security SCA (Rust)
     - { name: cargo-nextest }    # faster Rust tests       (optional)
     - { name: dioxus-cli }       # dx — rust webapp        (optional)
     - { name: cargo-zigbuild }   # rust->vercel cross-build (optional; also needs zig)
-  tags: [foundry, pressroom, security]
+  tags: [foundry, publish, security]
 # Note: `typst-cli` installs the `typst` binary; `dioxus-cli` installs `dx`.
 # `zig` is a standalone download — see binaries.yml.

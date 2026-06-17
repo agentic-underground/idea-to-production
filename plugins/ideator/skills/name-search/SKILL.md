@@ -84,7 +84,7 @@ The pipeline: **discover ▸ charter ▸ generate (select veins) ▸ verify ▸ 
    the axis that killed each, per-vein contribution, the rubric scores, and a ranked shortlist with a top
    pick — confidence + residual risks stated honestly (trademark is web-search-only, RDAP is
    availability-not-legal; never asserted as cleared). Write to `docs/marketing/naming-report.md` (or
-   stdout), and offer to render it via pressroom `/publish`.
+   stdout), and offer to render it via publish `/publish`.
 
 ## Honesty rules
 

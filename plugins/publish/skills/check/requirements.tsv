@@ -1,0 +1,26 @@
+# name	probe-command	tier	install-hint
+# Canonical dependency manifest for PUBLISH. TAB-separated. See PREREQUISITES/30-publish.md.
+# Dual-engine: at least ONE of typst / pdflatex is needed to produce a PDF.
+git	command -v git	required	apt install git
+bash	command -v bash	required	preinstalled
+curl	command -v curl	recommended	apt install curl  (ComfyUI REST client for handler-comfyui + model-survey)
+jq	command -v jq	recommended	apt install jq  (JSON wrangling for the ComfyUI harness + journal)
+typst	command -v typst	recommended	cargo install typst-cli  (default engine)
+pdflatex	command -v pdflatex	recommended	apt install texlive-latex-recommended texlive-latex-extra
+pdfinfo	command -v pdfinfo	recommended	apt install poppler-utils  (build verification)
+pdftoppm	command -v pdftoppm	recommended	apt install poppler-utils  (rasterise PDF pages → PNG for the design-reviewer; gs/magick are fallbacks)
+dot	command -v dot	recommended	apt install graphviz
+pandoc	command -v pandoc	recommended	apt install pandoc
+gs	command -v gs	recommended	apt install ghostscript
+lualatex	command -v lualatex	optional	apt install texlive-luatex
+mmdc	bash -c 'command -v mmdc || exit 1; export PUPPETEER_EXECUTABLE_PATH="${PUPPETEER_EXECUTABLE_PATH:-$(command -v chromium||command -v chromium-browser||command -v google-chrome)}"; mmdc -i <(printf "flowchart LR\n a-->b") -o "$(mktemp --suffix=.svg)" >/dev/null 2>&1'	optional	npm i -g @mermaid-js/mermaid-cli
+soffice	command -v soffice || command -v libreoffice	optional	apt install libreoffice
+rsvg-convert	command -v rsvg-convert	optional	apt install librsvg2-bin
+qpdf	command -v qpdf	optional	apt install qpdf
+inkscape	command -v inkscape	optional	apt install inkscape
+magick	command -v magick || command -v convert	optional	apt install imagemagick  (v7 magick; composite/blend/finish + montage for handler-composite & the raster toolchain)
+ffmpeg	command -v ffmpeg	optional	apt install ffmpeg  (frames→MP4/APNG + GIF-palette fallback for handler-composite animation)
+vips	command -v vips	optional	apt install libvips-tools  (fast batch resize/filters + composite fallback for magick)
+gifsicle	command -v gifsicle	optional	apt install gifsicle  (GIF optimise --colors/--lossy for the animation finish)
+gifski	command -v gifski || [ -x "$HOME/.cargo/bin/gifski" ]	optional	cargo install gifski  (high-quality truecolor frames→GIF; installs to ~/.cargo/bin, often off PATH)
+comfyui	bash -c 'curl -sf -m 3 "${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}/system_stats" >/dev/null'	optional	ComfyUI server reachable for handler-comfyui (set PRESSROOM_COMFYUI_URL; default http://10.10.10.163:8188)

@@ -10,4 +10,4 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh $ARGUMENTS
 ```
 
 Advisory by default; `--strict` exits non-zero on a missing **required** tool. The rich dossier's
-renderers belong to pressroom (`/pressroom:check`). See the [`check` skill](../skills/check/SKILL.md).
+renderers belong to publish (`/publish:check`). See the [`check` skill](../skills/check/SKILL.md).

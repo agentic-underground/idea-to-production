@@ -37,11 +37,11 @@ open questions, never silent guesses. Offline, it reasons from you and says so. 
 - **→ ideator** (REFINEMENT): when the **`ideator`** plugin is installed, a kept opportunity is handed to
   `/ideate`, which refines it into the full **IDEA package** for FOUNDRY. Absent, MARKET-SCANNER writes a
   markdown **opportunity brief** you can refine by hand.
-- **→ pressroom** (PUBLISHING): rich, illustrated opportunity briefs (scorecards as tables, market-sizing
-  charts) are produced by invoking [`pressroom`](../pressroom/)'s `/publish` **by capability** when
+- **→ publish** (PUBLISHING): rich, illustrated opportunity briefs (scorecards as tables, market-sizing
+  charts) are produced by invoking [`publish`](../publish/)'s `/publish` **by capability** when
   installed; absent, MARKET-SCANNER emits clean markdown and says the richer step was skipped.
 - It is the upstream entry to the whole conveyor: **DISCOVER (market-scanner) → IDEATE (ideator) → BUILD
-  ([foundry](../foundry/)) → SECURE/PUBLISH (security/pressroom)**. *Graceful enhancement* — no hard
+  ([foundry](../foundry/)) → SECURE/PUBLISH (security/publish)**. *Graceful enhancement* — no hard
   dependency in either direction.
 
 ## Governed by the marketplace covenant

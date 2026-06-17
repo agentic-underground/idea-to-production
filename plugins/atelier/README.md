@@ -45,7 +45,7 @@ another wasteful lap). Every turn must measurably improve or the loop halts.
   INTENT markers, `definition-of-good`, the build-time `design-critic`). ATELIER reviews the **rendered
   experience** of any app and carries the deeper canon; it reads those markers **by capability** when
   foundry is present and *extends* them — never duplicates. Standalone, it works on any repo.
-- **ATELIER → pressroom** — user-flows and chart-style figures are rendered via pressroom's `/publish`
+- **ATELIER → publish** — user-flows and chart-style figures are rendered via publish's `/publish`
   **by capability**; absent, ATELIER emits Mermaid/markdown source and says so.
 - **IDEATOR → ATELIER** — when IDEATOR builds an IDEA dossier's user-flows and mockup screens, it calls
   ATELIER **by capability** so the user sees design-reviewed material, not first drafts.

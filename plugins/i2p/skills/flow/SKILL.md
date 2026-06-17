@@ -8,8 +8,8 @@ description: >
   traces the ordered path to PRODUCTION. Renders Mermaid when a renderer is present, else markdown.
 metadata:
   type: front-door
-  output: a value-flow map + "your next command" (Mermaid when pressroom/atelier present, else markdown)
-  composes: [pressroom/atelier renderers by capability — read-only]
+  output: a value-flow map + "your next command" (Mermaid when publish/atelier present, else markdown)
+  composes: [publish/atelier renderers by capability — read-only]
 model: inherit
 ---
 
@@ -24,7 +24,7 @@ carries VALUE from IDEA to PRODUCTION; this draws the map with only the parts yo
 
 ```
 DISCOVER ────────▶ IDEATE ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
-market-scanner     ideator   atelier   foundry  foundry   security  pressroom  mission-
+market-scanner     ideator   atelier   foundry  foundry   security  publish  mission-
                                        │        (quality) (security)           control
  /discovery-goal +  /ideate  /mockup   IDEA▶…▶  /pr-review /scan-all  /publish  observe ·
  /market-scan                /ui-review  SHIP   (quality)                       iterate ↻→DISCOVER
@@ -54,7 +54,7 @@ plugin is absent (and noting the skip).
 
 ## 4. Render
 
-- If **pressroom** or **atelier** is installed, emit a **Mermaid** `flowchart LR` and defer rendering to
+- If **publish** or **atelier** is installed, emit a **Mermaid** `flowchart LR` and defer rendering to
   their engine (so it's legible wherever it lands).
 - Otherwise, emit the ASCII/markdown map above, tailored to what's installed.
 

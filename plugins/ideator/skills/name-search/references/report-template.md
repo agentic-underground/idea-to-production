@@ -2,7 +2,7 @@
 
 Every name-search emits this report. It is also the quality bar for any marketing naming doc: a report that
 doesn't fill every section hasn't earned a recommendation. Write to `docs/marketing/naming-report.md` in the
-product repo (or stdout). Publishable via pressroom `/publish`.
+product repo (or stdout). Publishable via publish `/publish`.
 
 The cardinal rule: **availability and challenge are two different verdicts in two different columns.** A name
 removed because it is *taken* (availability) is never described with the same word as a name *demoted in the

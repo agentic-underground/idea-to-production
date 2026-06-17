@@ -93,7 +93,7 @@ digraph DomainArchB {
               fontcolor="#f0d6a4", fontsize=12, penwidth=1.8]
     security [label=<<b>security</b><br/><font point-size="9" color="#e8c98f">SECURE</font>>,
               fillcolor="#3f3320:#241c10", color="#e0af68"]
-    pressroom [label=<<b>pressroom</b><br/><font point-size="9" color="#e8c98f">PUBLISH</font>>,
+    publish [label=<<b>publish</b><br/><font point-size="9" color="#e8c98f">PUBLISH</font>>,
                fillcolor="#3f3320:#241c10", color="#e0af68"]
     atelier [label=<<b>atelier</b><br/><font point-size="9" color="#cbb6f0">DESIGN &middot; usability</font>>,
              fillcolor="#352f50:#1f1b2e", color="#bb9af7"]
@@ -101,12 +101,12 @@ digraph DomainArchB {
              fillcolor="#352f50:#1f1b2e", color="#bb9af7"]
 
     // clean 2×2 grid DIRECTLY beneath the title bar (no L-shaped spill)
-    { rank=same; security;  pressroom }
+    { rank=same; security;  publish }
     { rank=same; atelier;   mission }
     co_title  -> security  [style=invis]
-    co_title  -> pressroom [style=invis]
+    co_title  -> publish [style=invis]
     security  -> atelier   [style=invis, weight=10]
-    pressroom -> mission   [style=invis, weight=10]
+    publish -> mission   [style=invis, weight=10]
   }
 
   // ================= cross-lane flow =================
