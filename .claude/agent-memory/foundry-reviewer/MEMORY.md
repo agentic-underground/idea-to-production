@@ -18,3 +18,4 @@
 - [SessionStart bg-detach pattern](project_sessionstart-bg-detach.md) — `( cmd >/dev/null 2>&1 & ) >/dev/null 2>&1` inner redirect severs fd so $(...)/check-L timeout return instantly while bg download runs
 - [Fail-open guard class](project_fail-open-guard-class.md) — guards that treat empty/swallowed-error as SAFE & proceed (gemba dedup spam); always ask "what if the check itself errors?" → fail-closed
 - [Pressroom knowledge scaffold](project_pressroom-knowledge-scaffold.md) — pressroom lacks foundry's knowledge/ tree; foundry-copied handlers import broken knowledge links; target covenant→pressroom/knowledge/covenant.md; CI Check I skips ${CLAUDE_PLUGIN_ROOT} refs so they pass CI yet break at runtime
+- [Missing-handler gate (PR #114)](project_missing-handler-gate.md) — #23-26 pause-and-decide; docs/internal/handler-build/ DOES exist; #25 AC1 "referenced by pipeline" only half-met (MANIFEST != pipeline dir); roadmapper §11.6/§11.7 real
