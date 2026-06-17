@@ -184,7 +184,7 @@ impl Store {
         // Persist the sidecar after the authoritative JSONL commit succeeds.
         // A sidecar write failure is non-fatal: warn and continue.
         if let Err(e) = persist_gates(&guard.flow, &guard.gates_path).await {
-            eprintln!("flow-server: warning — could not write .flow/gates.json: {e}");
+            eprintln!("flow-mcp: warning — could not write .flow/gates.json: {e}");
         }
         Ok(())
     }
@@ -211,7 +211,7 @@ impl Store {
         let map: BTreeMap<String, WaitGate> = match serde_json::from_str(&text) {
             Err(_) => {
                 eprintln!(
-                    "flow-server: warning — .flow/gates.json is malformed; all gates default to go"
+                    "flow-mcp: warning — .flow/gates.json is malformed; all gates default to go"
                 );
                 return;
             }
@@ -719,7 +719,7 @@ async fn write_status_to_tree(tree: &Path, id: &ItemId, status: Status) -> Resul
     };
     if !matches.is_empty() {
         eprintln!(
-            "flow-server: WARNING — {} files share roadmap id {num}; moving the last (the \
+            "flow-mcp: WARNING — {} files share roadmap id {num}; moving the last (the \
              loader's authoritative copy) and leaving the rest. Fix the duplicate.",
             matches.len() + 1
         );

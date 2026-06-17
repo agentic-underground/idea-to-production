@@ -153,14 +153,14 @@ shape an idea, and `security` and `publish` are useful on any repository, not ju
 
 ### Verify the flow MCP is installed & running
 
-`operate` ships an MCP server — **flow-server** — that answers *"what's on the roadmap"* by local
+`operate` ships an MCP server — **flow-mcp** — that answers *"what's on the roadmap"* by local
 compute at ~0 tokens (the `render_roadmap` verb) and carries items across the board. Confirm it end-to-end:
 
 1. **Install / update + restart.** After `/plugin install operate@idea-to-production` (or
    `/plugin marketplace update idea-to-production` && `/plugin update operate`), **restart Claude
    Code** — a plugin's MCP config is read only at startup (`/reload-plugins` does *not* pick up new MCP
    servers).
-2. **Approve it once.** Run `/mcp`; `flow-server` shows as `⏸ Pending approval` — approve it. This one-time
+2. **Approve it once.** Run `/mcp`; `flow-mcp` shows as `⏸ Pending approval` — approve it. This one-time
    approval **cannot** be pre-granted by any setting, CLI command, or launch flag (it's a deliberate
    Claude Code security gate for plugin-shipped MCP servers). The binary is pre-cached, so it connects
    instantly.
@@ -172,7 +172,7 @@ compute at ~0 tokens (the `render_roadmap` verb) and carries items across the bo
 **Troubleshooting.** `/flow hello` shows `items: 0` or `version` below `0.2.0`, or *"what's on the
 roadmap"* comes back empty against a populated `.i2p/roadmap/` tree ⇒ the pinned MCP binary is **stale** or
 the server isn't approved. Run **`/operate:flow-setup`** for a guided, verified walkthrough. (No
-`mcp__…__flow-server__*` tools at all ⇒ not connected yet — repeat steps 1–2.)
+`mcp__…__flow-mcp__*` tools at all ⇒ not connected yet — repeat steps 1–2.)
 
 ## Concepts & glossary
 

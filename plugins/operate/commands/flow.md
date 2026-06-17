@@ -6,8 +6,8 @@ The **flow** command is the lightweight value-carry verb: advance one item throu
 `.i2p/roadmap/` lanes without reaching for the heavyweight FOUNDRY cycle, and report the current
 state of value flow. Pick the route by `$ARGUMENTS` (default: `report`).
 
-**Contract — defer to the flow-server, do not paraphrase it.** The lanes, the status vocabulary, and
-the file move are all owned by the flow-server's typed MCP verbs; this command drives them, it does not
+**Contract — defer to the flow-mcp server, do not paraphrase it.** The lanes, the status vocabulary, and
+the file move are all owned by the flow-mcp server's typed MCP verbs; this command drives them, it does not
 re-implement them. The canonical lane chain (see [`.i2p/roadmap/README.md`](../../../.i2p/roadmap/README.md)) is:
 
 ```
@@ -19,8 +19,8 @@ The board status the verbs accept is **`do` · `doing` · `done`** (the three `p
 
 ## `report` (default) — render the current value flow
 
-Call the MCP verb **`render_roadmap`** (`mcp__…__flow-server__render_roadmap`; it's a deferred tool —
-if it's not in your tool list, `ToolSearch` for `flow-server__render_roadmap` first). Print its text
+Call the MCP verb **`render_roadmap`** (`mcp__…__flow-mcp__render_roadmap`; it's a deferred tool —
+if it's not in your tool list, `ToolSearch` for `flow-mcp__render_roadmap` first). Print its text
 verbatim — it groups items by stage at ~0 LLM tokens. Then, for any item carried this session, append
 its **who / what / cost** (the `annotate` text and `append_spend` total you wrote on carry).
 
@@ -30,10 +30,10 @@ lane folder and its `.md` items. Never print an empty/misleading report when the
 
 ## `carry <item> [to <stage>]` — advance one item
 
-The flow-server's **`post_status`** is the single writer: it moves the item file between
+The flow-mcp server's **`post_status`** is the single writer: it moves the item file between
 `.i2p/roadmap/` folders **and** rewrites its `status:` front-matter itself. So `carry` calls the verbs;
 it never `git mv`s the file or edits front-matter by hand (doing both would double-write and fight the
-server). Each verb is deferred — `ToolSearch` for `flow-server__<verb>` if it's not in your tool list,
+server). Each verb is deferred — `ToolSearch` for `flow-mcp__<verb>` if it's not in your tool list,
 and pass the item id as the slug **`item-N`** (the numeric tree id `N` prefixed with `item-`).
 
 1. **Resolve `<item>`** to exactly one roadmap item — by id number (e.g. `41` → `item-41`) or an
@@ -58,8 +58,8 @@ and pass the item id as the slug **`item-N`** (the numeric tree id `N` prefixed 
 Call the MCP verb **`ping`** and print its `message` ("hello from the flow MCP") plus `version`,
 `items`, and `source`. **Flag staleness:** if `items` is 0 (or `source` is null) while `.i2p/roadmap/`
 has files on disk, the pinned MCP binary is stale — the fix is `/operate:flow-setup` to
-re-cache and re-verify. If you have no `mcp__…__flow-server__*` tools at all, it isn't connected —
-restart Claude Code after install/update, then `/mcp` and approve `flow-server`.
+re-cache and re-verify. If you have no `mcp__…__flow-mcp__*` tools at all, it isn't connected —
+restart Claude Code after install/update, then `/mcp` and approve `flow-mcp`.
 
 ```bash
 # Routing is agent-driven (the verbs above are MCP calls, not shell). Default route: report.
@@ -67,4 +67,4 @@ echo "flow route: ${ARGUMENTS:-report}"
 ```
 
 The web governance board has been removed (roadmap [39]); there is no `start`/`stop`/`url`/`build`
-daemon to control — the flow-server is now a data-only MCP service, and `report` is its on-demand view.
+daemon to control — the flow-mcp server is now a data-only MCP service, and `report` is its on-demand view.

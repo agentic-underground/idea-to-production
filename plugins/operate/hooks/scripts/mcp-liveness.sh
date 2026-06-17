@@ -111,8 +111,8 @@ TIMEOUT=""; command -v timeout >/dev/null 2>&1 && TIMEOUT="timeout 8"
 probe_command() {  # $1 = launch command (npx|uvx|node|python|… or a resident path) → 0 live, 1 dead, 2 undecidable
   local launcher="$1"
   [ -n "$launcher" ] || return 2
-  # A resident-path launcher (a plugin-shipped script/binary, e.g. flow-server's
-  # ${CLAUDE_PLUGIN_ROOT}/.../flow-server-mcp) is checked as a FILE, not via PATH lookup.
+  # A resident-path launcher (a plugin-shipped script/binary, e.g. flow-mcp's
+  # ${CLAUDE_PLUGIN_ROOT}/.../flow-mcp) is checked as a FILE, not via PATH lookup.
   case "$launcher" in
     *'${'*) return 2 ;;                         # an unresolved variable → can't decide, stay silent
     */*)

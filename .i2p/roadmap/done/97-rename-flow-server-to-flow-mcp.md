@@ -1,9 +1,10 @@
 ---
 id: 97
 title: "Rename flow-server → flow-mcp"
-status: PENDING
+status: COMPLETE
 priority: MEDIUM
 added: 2026-06-17
+completed: 2026-06-17
 depends_on: "#95 (operate rename)"
 ---
 

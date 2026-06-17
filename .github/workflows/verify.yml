@@ -57,23 +57,23 @@ jobs:
       - name: Scan tree + git history for committed secrets
         run: gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
 
-  # The retrieved-artifact contract: spawn the flow-server MCP launcher exactly as the
+  # The retrieved-artifact contract: spawn the flow-mcp MCP launcher exactly as the
   # operate plugin's .mcp.json registers it, and assert the JSON-RPC handshake
   # completes. Builds the binary first so the launcher's source-build fallback is a fast
   # no-op; the smoke then drives `initialize` + `tools/list` through the shipped launcher.
   # This is the test two PR reviewers asked for — it mechanically catches a committed MCP
   # command that can't start (the gitignored-binary regression class).
-  flow-server-mcp-smoke:
+  flow-mcp-smoke:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install Rust toolchain
         run: rustup update stable --no-self-update
-      - name: Build flow-server (release)
-        working-directory: plugins/operate/flow-server
-        run: cargo build --release --locked --bin flow-server
+      - name: Build flow-mcp (release)
+        working-directory: plugins/operate/flow-mcp
+        run: cargo build --release --locked --bin flow-mcp
       - name: MCP handshake smoke (spawn the shipped launcher)
-        run: bash plugins/operate/flow-server/bin/smoke-mcp.sh
+        run: bash plugins/operate/flow-mcp/bin/smoke-mcp.sh
 
   # The defect-[92] regression guard: boot the PINNED RELEASE binary (the exact artifact users
   # run — named in bin/RELEASE, SHA-verified against the COMMITTED bin/SHA256SUMS) against the
@@ -83,12 +83,12 @@ jobs:
   # the tree ingest of item [42] → render_roadmap returned empty over MCP. NO Rust toolchain — it
   # downloads the pinned binary, the whole point. It SKIPs in the bootstrap window (bin/SHA256SUMS
   # not yet finalized for a freshly bumped pin) and enforces once the checksums are committed.
-  flow-server-mcp-pinned:
+  flow-mcp-pinned:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Pinned-release MCP renders the roadmap (regression guard for [92])
-        run: bash plugins/operate/flow-server/bin/smoke-pinned.sh
+        run: bash plugins/operate/flow-mcp/bin/smoke-pinned.sh
 
   # Cobbler's children (P2-18): the marketplace runs OPERATE's own OBSERVABILITY
   # lens on ITSELF. This is the HEALTH slice of the same self-observation substrate whose

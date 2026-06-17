@@ -1,14 +1,15 @@
-# Flow server — the roadmap MCP core
+# Flow MCP — the roadmap MCP core
 
 The standing **roadmap-tracking surface** of the idea-to-production value system: one Rust binary that
 ingests a project's `.i2p/roadmap/` tree and exposes it to an agent as a **token-authenticated MCP verb
 surface over stdio**. It is the **sole serialized writer** of the roadmap markdown + JSONL event log, so
 every read and mutation flows through one authoritative path.
 
-> **Roadmap #39 — web UI removed.** The flow-server once *also* served an interactive SVG governance
-> board over HTTP + a WebSocket delta stream + a REST surface. That web UI was removed in roadmap #39;
-> the binary now runs the MCP stdio core only. The launcher passes `--mcp` (retained as a harmless
-> no-op — stdio is the only transport), so nothing changes for the registered MCP server.
+> **Roadmap #39 — web UI removed; #97 — renamed flow-server → flow-mcp.** The service once *also* served
+> an interactive SVG governance board over HTTP + a WebSocket delta stream + a REST surface. That web UI
+> was removed in roadmap #39; the binary now runs the MCP stdio core only, so `flow-mcp` (renamed from
+> `flow-server` in #97) is the accurate name. The launcher passes `--mcp` (retained as a harmless no-op —
+> stdio is the only transport), so nothing changes for the registered MCP server.
 
 ## What it does (roadmap items #1, #3–#6, #8, #15)
 
@@ -25,7 +26,7 @@ every read and mutation flows through one authoritative path.
 ## Run it
 
 ```bash
-cargo run --bin flow-server -- --mcp \
+cargo run --bin flow-mcp -- --mcp \
   --data .flow \
   --roadmap .i2p/roadmap
 # Speaks newline-delimited JSON-RPC on stdin/stdout (the MCP stdio transport).
@@ -54,10 +55,10 @@ JSON-RPC `dispatch`). The single source of truth is the roadmap markdown + the a
 
 ## MCP registration (stdio transport)
 
-The flow-server speaks the [MCP stdio transport](https://modelcontextprotocol.io/docs/concepts/transports)
+The flow-mcp server speaks the [MCP stdio transport](https://modelcontextprotocol.io/docs/concepts/transports)
 when started with `--mcp`. The **operate plugin registers it itself** — `../.mcp.json` declares
-the `flow-server` server, so its tools (`list_items`, `render_roadmap`, `post_status`, `set_wait_go`,
-`append_spend`, …) surface as `mcp__flow-server__*` in any session where the plugin is enabled, with no
+the `flow-mcp` server, so its tools (`list_items`, `render_roadmap`, `post_status`, `set_wait_go`,
+`append_spend`, …) surface as `mcp__flow-mcp__*` in any session where the plugin is enabled, with no
 project-level `.claude/settings.json` entry. (Like every plugin MCP server, it is approval-gated under
 default permissions — `claude mcp list` shows it `⏸ Pending approval` until you approve it.)
 
@@ -67,9 +68,9 @@ After installing/updating operate, two one-time steps remain — and the plugin 
 frictionless as the harness allows:
 
 1. **Restart Claude Code.** A plugin's `.mcp.json` is read only at startup, so a restart is required
-   after an install/update for `flow-server` to appear (`/reload-plugins` loads skills/hooks but **not**
+   after an install/update for `flow-mcp` to appear (`/reload-plugins` loads skills/hooks but **not**
    new MCP servers).
-2. **Approve it once** — run `/mcp`, find `flow-server` (⏸ *Pending approval*), approve. This one-time
+2. **Approve it once** — run `/mcp`, find `flow-mcp` (⏸ *Pending approval*), approve. This one-time
    approval **cannot** be pre-granted by any setting, CLI command, or launch flag — it's a deliberate
    Claude Code security gate for plugin-shipped MCP servers. After approving once, it connects
    immediately and future sessions need nothing.
@@ -77,7 +78,7 @@ frictionless as the harness allows:
 What the plugin automates around those steps: a SessionStart hook
 ([`hooks/scripts/flow-mcp-onboard.sh`](../hooks/scripts/flow-mcp-onboard.sh)) **pre-warms** the binary in
 the background (so approval starts the server instantly, no transient "connecting/failed") and surfaces a
-gentle one-time nudge; the agent then **detects** whether `mcp__flow-server__*` is connected from its own
+gentle one-time nudge; the agent then **detects** whether `mcp__flow-mcp__*` is connected from its own
 tool list and guides only when it isn't. Run **`/operate:flow-setup`** any time for a guided,
 verified walkthrough (it pre-caches the binary, walks the approval, and confirms the connection with a
 `render_roadmap` probe). Until it's connected, "what's on the roadmap" still works via a direct scan of
@@ -85,7 +86,7 @@ the `.i2p/roadmap/` tree — the MCP path just makes it instant and ~0-token.
 
 ### No Rust toolchain required — the launcher retrieves a prebuilt binary
 
-The registered command is the launcher [`bin/flow-server-mcp`](bin/flow-server-mcp), not `cargo`. It
+The registered command is the launcher [`bin/flow-mcp`](bin/flow-mcp), not `cargo`. It
 obtains the binary by this ladder and execs it:
 
 The launcher runs a **pinned release** — [`bin/RELEASE`](bin/RELEASE) names the exact tag and
@@ -100,21 +101,21 @@ The launcher runs a **pinned release** — [`bin/RELEASE`](bin/RELEASE) names th
 3. **Build** — *dev fallback only*: if `cargo` is present and the source is alongside, `cargo build
    --release`. A contributor's machine; never required on a destination.
 
-Diagnose any launch with **`bin/flow-server-mcp --doctor`** — it prints the pin, the expected-vs-cached
+Diagnose any launch with **`bin/flow-mcp --doctor`** — it prints the pin, the expected-vs-cached
 SHA (match/mismatch), the cache dir, and the resolved project root + roadmap item count.
 
 > **Integrity & determinism posture.** Pinning is the deliberate, owner-chosen posture (it aligns with
 > `scripts/verify-prereqs.sh` §K — no floating tags). Every machine converges on ONE SHA-verified binary;
 > a release is adopted only by a reviewed PR that bumps the pin. This replaced an earlier "track latest"
 > launcher whose tag-keyed cache let a **re-cut** `flow-server-v0.2.0` strand machines on stale bytes
-> (defect [92]). The binary now also bakes its git rev into the version it self-reports (`ping` →
-> `0.2.2+<rev>`), so two builds are never confusable.
+> (defect [92] — under the service's former `flow-server` name). The binary now also bakes its git rev
+> into the version it self-reports (`ping` → `0.2.3+<rev>`), so two builds are never confusable.
 
 **Cutting a release — the bump-and-cut flow** (NEVER re-cut a tag; bump the version every time):
 
 ```sh
-# 1. bump plugins/operate/flow-server/Cargo.toml `version`, then:
-git tag flow-server-v0.2.2 && git push origin flow-server-v0.2.2   # → .github/workflows/flow-server-release.yml
+# 1. bump plugins/operate/flow-mcp/Cargo.toml `version`, then:
+git tag flow-mcp-v0.2.3 && git push origin flow-mcp-v0.2.3   # → .github/workflows/flow-mcp-release.yml
 # 2. the workflow's `preflight` refuses a re-cut tag or tag≠Cargo version, then cross-builds
 #    linux/macOS/Windows (x86_64+arm64), publishes each asset + a SHA256SUMS, and notes the next step:
 # 3. copy the published SHA256SUMS lines into bin/SHA256SUMS, set bin/RELEASE to the tag, commit.
@@ -123,13 +124,13 @@ git tag flow-server-v0.2.2 && git push origin flow-server-v0.2.2   # → .github
 The launcher trusts **only** the committed `bin/SHA256SUMS`, so step 3 is what activates a release.
 Between step 1 and step 3 (the *bootstrap window*) destinations without `cargo` cannot fetch a binary
 and devs use the source-build fallback; `verify-prereqs.sh` §P notes the window and `smoke-pinned.sh`
-SKIPs until the checksums are committed. On every PR, `flow-server-mcp-smoke` (in
-`.github/workflows/verify.yml`) spawns the launcher and asserts the handshake; `flow-server-mcp-pinned`
+SKIPs until the checksums are committed. On every PR, `flow-mcp-smoke` (in
+`.github/workflows/verify.yml`) spawns the launcher and asserts the handshake; `flow-mcp-pinned`
 boots the **pinned** release against the tree and asserts the roadmap renders non-empty at the pinned
 version (skipping in the bootstrap window).
 
 The MCP launcher resolves the roadmap **independent of the spawn directory**: it walks up from the
-working directory to the project root (the dir holding `.i2p/roadmap/`) and passes the flow-server an
+working directory to the project root (the dir holding `.i2p/roadmap/`) and passes the flow-mcp server an
 absolute `--roadmap` and a root-anchored `--data`. So the roadmap is populated even when the harness
 spawns the server from somewhere other than the repo root — a stale binary, not a wrong CWD, is the only
 remaining way the roadmap can come up empty.

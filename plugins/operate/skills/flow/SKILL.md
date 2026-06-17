@@ -5,18 +5,18 @@ description: >
   next lane (recording who is processing it · what they are doing · the running cost), and reports the
   current state of value flow. Trigger with /flow [report|carry <item> [to <stage>]|ping] (or "carry 41
   to doing", "advance this item", "what's the flow state?", "report the roadmap flow"). Use this instead
-  of reaching for the heavyweight FOUNDRY cycle just to move an item one stage. The flow-server is a
+  of reaching for the heavyweight FOUNDRY cycle just to move an item one stage. The flow-mcp server is a
   data-only MCP service; carry and report both go through its typed, token-authenticated MCP verbs.
 ---
 
 # flow — carry value, report flow
 
-The flow-server ([`../../flow-server/`](../../flow-server/README.md)) is a **data-only MCP service**: it
+The flow-mcp server ([`../../flow-mcp/`](../../flow-mcp/README.md)) is a **data-only MCP service**: it
 ingests the `.i2p/roadmap/` tree and serves typed verbs for stage transitions and telemetry. There is no
 running web board — the live SVG governance UI was removed (roadmap [39]); `report` is its on-demand
 successor view. This skill is the manual front door for advancing items and reporting state.
 
-## The lanes — owned by the flow-server, not restated here
+## The lanes — owned by the flow-mcp server, not restated here
 
 The canonical lane chain ([`.i2p/roadmap/README.md`](../../../../.i2p/roadmap/README.md)) is
 **`backlog → do → doing → done`** (folder = status; `backlog` is intake). The board status the verbs
@@ -61,7 +61,7 @@ pinned binary (fix: `/operate:flow-setup`).
 
 ## Roadmap resolution
 
-The flow-server resolves its source in order: `$FLOW_ROADMAP` (env override) → the **`.i2p/roadmap/`
+The flow-mcp server resolves its source in order: `$FLOW_ROADMAP` (env override) → the **`.i2p/roadmap/`
 tree** (the authoritative file-per-item source, folder = status; roadmap [42]) → a legacy single
 `ROADMAP.md`. The tree is auto-detected — no pin needed. Item count is the number of `.md` files across
 the lane folders.

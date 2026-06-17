@@ -24,7 +24,7 @@ direct-write path). Every request you make carries the shared bearer token.
    item, that is a **handoff** you report — never a write you make.
 2. **The server owns the files.** You never edit `ROADMAP.md`, `events.jsonl`, or `telemetry.jsonl`.
    You call verbs; the server appends the JSONL ledger, rolls the spend up the dependency tree, and
-   broadcasts the delta. (See [`../flow-server/src/domain/telemetry.rs`](../flow-server/src/domain/telemetry.rs)
+   broadcasts the delta. (See [`../flow-mcp/src/domain/telemetry.rs`](../flow-mcp/src/domain/telemetry.rs)
    for the pure roll-up + record schema you are emitting through.)
 3. **Honour WAIT.** Before any carriage-advance (status or spend) check the gate. WHILE your item is in
    WAIT you advance nothing and accrue no work tokens — the server will refuse you, and you must not
@@ -42,7 +42,7 @@ direct-write path). Every request you make carries the shared bearer token.
    - raises your item's own tally **and every ancestor composite item's rolled-up tally** (a spend on an
      atomic child accrues up the whole dependency tree), and
    - appends one telemetry line — schema and roll-up are defined in
-     [`../flow-server/src/domain/telemetry.rs`](../flow-server/src/domain/telemetry.rs)
+     [`../flow-mcp/src/domain/telemetry.rs`](../flow-mcp/src/domain/telemetry.rs)
      (`{ts, item_id, agent, activity, tokens_delta, tokens_total, ancestors[]}`); do **not** restate or
      reshape it here — emit through the verb and let the server render it.
 4. **Finish** — `post_status(item_id, "done")` when the item's acceptance criteria are met.

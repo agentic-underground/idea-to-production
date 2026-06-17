@@ -1,4 +1,4 @@
-//! Flow server binary: parse config, open the store, ingest the roadmap source,
+//! Flow MCP binary: parse config, open the store, ingest the roadmap source,
 //! restore gates, and run the newline-delimited stdio JSON-RPC (MCP) loop.
 //!
 //! The web governance UI (HTTP + WebSocket + static board) was removed in
@@ -8,9 +8,9 @@
 
 use std::sync::Arc;
 
-use flow_server::config::Config;
-use flow_server::mcp;
-use flow_server::store::Store;
+use flow_mcp::config::Config;
+use flow_mcp::mcp;
+use flow_mcp::store::Store;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -48,7 +48,7 @@ async fn ingest_source(store: &Store, cfg: &Config) -> Result<(), Box<dyn std::e
         // No source resolved — log the cwd we looked in, so a silently-empty board
         // (e.g. the server spawned from the wrong directory) is diagnosable.
         eprintln!(
-            "flow-server: no roadmap source (no --roadmap and no .i2p/roadmap/ under {}); starting empty",
+            "flow-mcp: no roadmap source (no --roadmap and no .i2p/roadmap/ under {}); starting empty",
             std::env::current_dir()
                 .map(|p| p.display().to_string())
                 .unwrap_or_else(|_| ".".into())
@@ -58,7 +58,7 @@ async fn ingest_source(store: &Store, cfg: &Config) -> Result<(), Box<dyn std::e
     if path.is_dir() {
         let n = store.ingest_roadmap_tree(&path).await?;
         eprintln!(
-            "flow-server ingested {n} roadmap item(s) from the {} tree",
+            "flow-mcp ingested {n} roadmap item(s) from the {} tree",
             path.display()
         );
         return Ok(());
@@ -67,12 +67,12 @@ async fn ingest_source(store: &Store, cfg: &Config) -> Result<(), Box<dyn std::e
         Ok(md) => {
             let n = store.ingest_roadmap(&md).await?;
             eprintln!(
-                "flow-server ingested {n} roadmap item(s) from {}",
+                "flow-mcp ingested {n} roadmap item(s) from {}",
                 path.display()
             );
         }
         Err(e) => eprintln!(
-            "flow-server: no roadmap ingested ({}: {e}); starting empty",
+            "flow-mcp: no roadmap ingested ({}: {e}); starting empty",
             path.display()
         ),
     }
@@ -89,8 +89,8 @@ async fn ingest_source(store: &Store, cfg: &Config) -> Result<(), Box<dyn std::e
 /// exits with code 0. On an unparseable line: writes a JSON-RPC -32700 parse
 /// error response and continues reading.
 async fn run_stdio(store: Arc<Store>) -> Result<(), Box<dyn std::error::Error>> {
-    use flow_server::api::AppState;
-    use flow_server::auth::Token;
+    use flow_mcp::api::AppState;
+    use flow_mcp::auth::Token;
     use tokio::io::{AsyncBufReadExt, AsyncWriteExt};
 
     // No token file is loaded: stdio has no auth transport, so the reserved

@@ -19,8 +19,8 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN="$(cd "$SCRIPT_DIR/../.." && pwd)"          # plugins/operate
 ROOT="$(cd "$PLUGIN/../.." && pwd)"                # repo root (where .i2p/roadmap lives)
-FS_DIR="$PLUGIN/flow-server"
-LAUNCHER="$SCRIPT_DIR/flow-server-mcp"
+FS_DIR="$PLUGIN/flow-mcp"
+LAUNCHER="$SCRIPT_DIR/flow-mcp"
 SUMS_FILE="$SCRIPT_DIR/SHA256SUMS"
 TAG="$(tr -d '[:space:]' < "$SCRIPT_DIR/RELEASE")"
 CARGO_VER="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' "$FS_DIR/Cargo.toml" | head -n1)"
@@ -34,7 +34,7 @@ case "$(uname -s)" in
   MINGW*|MSYS*|CYGWIN*) os=pc-windows-msvc; ext=".exe" ;;
   *)                    os=unknown-linux-gnu ;;
 esac
-ASSET="flow-server-${arch}-${os}${ext}"
+ASSET="flow-mcp-${arch}-${os}${ext}"
 
 # Bootstrap-window skip: no committed checksum line for this platform yet → the pinned release
 # has not been published. Cleanly pass (the guard goes live once bin/SHA256SUMS is finalized).
@@ -54,7 +54,7 @@ trap 'rm -rf "$CACHE"' EXIT
 # 1. Retrieve ONLY (no source build) — downloads + SHA-verifies the pinned asset into $CACHE.
 XDG_CACHE_HOME="$CACHE" CLAUDE_PLUGIN_ROOT="$PLUGIN" "$LAUNCHER" --ensure-binary 2>&1 | sed 's/^/  /'
 
-BIN="$(find "$CACHE/flow-server" -type f -name "flow-server${ext}" 2>/dev/null | head -n1)"
+BIN="$(find "$CACHE/flow-mcp" -type f -name "flow-mcp${ext}" 2>/dev/null | head -n1)"
 if [ -z "$BIN" ] || [ ! -x "$BIN" ]; then
   echo "FAIL: could not retrieve + verify the pinned release binary ($TAG, ${arch}). A stale or"
   echo "      mispinned bin/RELEASE / bin/SHA256SUMS — or the release assets are missing."
