@@ -46,9 +46,7 @@ Three verbs repeat across the marketplace and are **not** relisted in each table
 | `/<plugin>:self-improve` | Fold feedback back into the plugin and split over-broad parts |
 
 Every plugin ships `check`, `inspect`, and `self-improve` (consistently named — `i2p` spells its
-own consolidated readiness as `/i2p:check`). The newest plugin, **`flow`** (DELIVER), currently ships a
-focused surface — `/flow:pull`, `/flow:flow` (carry · report · ping), `/flow:flow-setup` — and gains the
-standard trio in a follow-up.
+own consolidated readiness as `/i2p:check`).
 
 ---
 

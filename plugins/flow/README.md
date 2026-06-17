@@ -21,6 +21,16 @@ IDEA package becomes a dependency-ordered roadmap. It ships the first-party **fl
 `/flow:pull`, not to `/foundry:foundry` (the internal engine it wraps). See
 [`commands/pull.md`](commands/pull.md) / [`skills/pull/SKILL.md`](skills/pull/SKILL.md).
 
+## Common to every plugin
+
+Like every `idea-to-production` plugin, FLOW also ships the universal command trio:
+
+| Command | What it does |
+|---|---|
+| `/flow:check` | verify FLOW's external tooling — the flow-mcp launcher's toolchain (`curl`/`sha256sum`/`jq`, with `cargo` as a dev/source-build fallback) — a ✓/✗ table by tier (advisory; `--strict` to fail on a missing required tool) |
+| `/flow:inspect` | audit the FLOW plugin itself — its commands, skills, the flow-mcp binary, and hooks — for drift, gaps, and duplication → a severity-ranked report |
+| `/flow:self-improve` | fold delivery feedback back into FLOW — reflect on one element against the KAIZEN covenant, improve it on a branch, run `/foundry:pr-review`, open a PR (never self-merge) |
+
 ## The flow-mcp MCP
 
 `flow-mcp` is the marketplace's own Rust binary — a launcher that retrieves a **pinned** prebuilt release

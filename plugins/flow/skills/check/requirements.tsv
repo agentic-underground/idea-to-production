@@ -1,0 +1,11 @@
+# name	probe-command	tier	install-hint
+# Canonical dependency manifest for FLOW. TAB-separated. See PREREQUISITES/.
+# FLOW degrades gracefully — the flow-mcp launcher resolves the pinned binary lazily; a missing
+# tool narrows a path (no retrieve, no source-build), it never serves a wrong roadmap answer.
+git	command -v git	required	apt install git
+bash	command -v bash	required	preinstalled
+curl	command -v curl	recommended	apt install curl
+sha256sum	command -v sha256sum || command -v shasum	recommended	coreutils (sha256sum) or perl shasum — verify the pinned flow-mcp asset
+jq	command -v jq	recommended	apt install jq
+cargo	command -v cargo	optional	rustup.rs — dev/source-build fallback for flow-mcp when no pinned release fits this platform
+gh	command -v gh	optional	cli.github.com (inspect release assets / cut a flow-mcp pin)
