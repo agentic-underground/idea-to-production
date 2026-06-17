@@ -10,7 +10,7 @@ description: >
   performs inline critique for its own direct-review path; composed review by capability for other plugins.)
   Accepts an optional lens parameter to focus a pass: LAYOUT-REVIEWER (the legibility gate, runs first),
   HIERARCHY-REVIEWER, INTERACTION-REVIEWER, ACCESSIBILITY-REVIEWER, AESTHETICS-REVIEWER, CONSISTENCY-REVIEWER,
-  or RICHNESS-MOTION-REVIEWER. Default is the full panel. Other plugins (e.g. PRESSROOM's image-aesthetic review) compose the AESTHETICS +
+  or RICHNESS-MOTION-REVIEWER. Default is the full panel. Other plugins (e.g. PUBLISH's image-aesthetic review) compose the AESTHETICS +
   RICHNESS-MOTION lenses by capability. Carries the
   KAIZEN self-improvement covenant.
 tools: Read, Bash, Grep, Glob, mcp__plugin_atelier_playwright__*
@@ -89,7 +89,7 @@ review.
    - **Static screenshot / image** — `Read` the PNG directly (built-in vision, no API key).
    - **Generated/pictorial image or SVG figure** — render it: `rsvg-convert -b "#0b0b12" fig.svg -o fig.png`,
      then `Read` it. **For an animated figure** (`.gif`/`.apng`/`.mp4`) sample **first / 25% / 50% / 75% /
-     last** and build a **1×5 frame-strip** via `magick montage`, bg `#0b0b12` (PRESSROOM's
+     last** and build a **1×5 frame-strip** via `magick montage`, bg `#0b0b12` (PUBLISH's
      `raster-toolchain.md` Recipe 5 by capability, or `magick montage <5 frames> -tile 1x5 -geometry
      640x150+6+6 -background "#0b0b12" strip.png`) — you score the strip, not the live file.
 
@@ -125,7 +125,7 @@ review.
    omitting it silently is not acceptable; the ACCESSIBILITY-REVIEWER lens then rests on visual judgment only.
 
 3. **LAYOUT-DEFECT GATE (run it on every rendered screenshot/frame).** Run the layout-defect checklist —
-   PRESSROOM's `layout-canon.md` (its 8 items + the cost-tiered SVG-math → raster-lint → vision-on-suspicion
+   PUBLISH's `layout-canon.md` (its 8 items + the cost-tiered SVG-math → raster-lint → vision-on-suspicion
    procedure) when present, **probed by capability**; else the inline baseline below. **ANY** trigger →
    automatic `NEEDS_REVISION` (BLOCK on a hard clip), citing the **specific route/frame**:
    - **text clipped / cut at the edge**, or **crossing a border/box** it is meant to sit inside;
@@ -208,7 +208,7 @@ Read your assigned lens from context; if none, run the full panel. Do not mix le
 - **LAYOUT-REVIEWER** — the at-a-glance legibility GATE (runs before the taste lenses): edge-clip, overlap,
   crowding (<10px), vertical clipping, z-index/occlusion, min-text-size, and inline-legibility at ~640px
   (`min_rendered_height = font_size × 640 / svg_width`; masthead self-exempts, banners/hero GIFs
-  class-whitelisted from the aspect advisory). Composes PRESSROOM's `layout-canon.md` + the `layout-reviewer`
+  class-whitelisted from the aspect advisory). Composes PUBLISH's `layout-canon.md` + the `layout-reviewer`
   by capability.
 - **HIERARCHY-REVIEWER** — focal point, scale/weight/contrast, reading path, whitespace (visual-foundations §2).
 - **INTERACTION-REVIEWER** — the UX laws + Nielsen's 10 heuristics; usability of every action (interaction-laws).
@@ -250,7 +250,7 @@ Read your assigned lens from context; if none, run the full panel. Do not mix le
   - **Light-throwing spark, not flat sticker** — a moving highlight must bloom/glow and light what it passes.
   - **One focal** — two equal hot points fighting is a §1 dual-focal failure; demote one.
   For an animation, score from a **frame-strip montage** (and a ~520px downscale of it), not the live file; for a
-  fully-vector (SMIL) figure, seek beats deterministically via `svg.setCurrentTime()`. This is the lens PRESSROOM's
+  fully-vector (SMIL) figure, seek beats deterministically via `svg.setCurrentTime()`. This is the lens PUBLISH's
   image reviewer composes for its scored **Medium-richness** dimension.
 
 ## Reviewing a pictorial image (not a screen)

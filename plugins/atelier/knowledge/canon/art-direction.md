@@ -106,7 +106,7 @@ disciplined colour script, a felt mood, true to its style, zero artifacts. Every
 ## 7. The artifact floor — hard fails that cap any image
 
 > *Below this line, polish is irrelevant. These align with the **Artifact-freedom** hard caps an image
-> reviewer enforces (e.g. PRESSROOM's image rubric). A single instance caps the score regardless of every
+> reviewer enforces (e.g. PUBLISH's image rubric). A single instance caps the score regardless of every
 > other virtue.*
 
 | Hard fail | What disqualifies | Cap |
@@ -157,7 +157,7 @@ disciplined colour script, a felt mood, true to its style, zero artifacts. Every
 > **How the reviewer uses §9:** a still reviewer scores motion from a **frame-strip montage** (sampled frames
 > in one image) — judging motivated-ness, easing legibility, staging, and the final/loop frame. Motivated,
 > eased, well-staged motion with a clean poster = richness 5; motion-for-motion's-sake = 3; jarring/strobing
-> = ≤ 1 (and the accessibility gate bites). Pressroom's image reviewer composes this lens **by capability**.
+> = ≤ 1 (and the accessibility gate bites). Publish's image reviewer composes this lens **by capability**.
 
 ---
 

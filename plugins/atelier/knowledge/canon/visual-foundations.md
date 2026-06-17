@@ -78,6 +78,6 @@ next, and what to ignore. Built from a small set of contrasts:
 
 > **Sources (the canon to cite):** Gestalt school (Wertheimer/Koffka/Köhler); Nielsen Norman Group on
 > visual hierarchy & Gestalt; the 60-30-10 and modular-scale traditions; Bringhurst's measure/leading
-> guidance (deep print treatment lives in pressroom's typography canon). When you cite, name the
+> guidance (deep print treatment lives in publish's typography canon). When you cite, name the
 > principle — *"proximity"*, *"modular scale"*, *"Von Restorff"* — so the fix is teachable and the loop
 > can verify it.

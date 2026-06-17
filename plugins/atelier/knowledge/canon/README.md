@@ -32,7 +32,7 @@
 
 > The first three lenses judge the **screen**; **art direction** judges the **image** — and supplies the
 > named aesthetic theory the screen's *delight* dimension leans on. For a pictorial artefact, walk
-> art-direction first (and the artifact floor before anything). Other plugins (PRESSROOM's image-aesthetic
+> art-direction first (and the artifact floor before anything). Other plugins (PUBLISH's image-aesthetic
 > review) compose this lens by capability.
 
 > **The standard.** ATELIER's bar is not "acceptable" — it is **artistic, elegant, powerful, excellent**.

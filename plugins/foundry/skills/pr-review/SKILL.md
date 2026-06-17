@@ -88,7 +88,7 @@ is downgraded by the agent).
 | **PROMPT-INJECTION-REVIEWER** | LLM prompts, tool/agent definitions, or external data fed into a model (injection, tool-permission scope, exfiltration). |
 | **I18N-REVIEWER** | user-facing strings or locale/number/date/RTL formatting (translation readiness). |
 | **DOC-ACCESSIBILITY-REVIEWER** | a rendered document artefact (PDF/report) — tagging, reading order, contrast, alt text (hard a11y gate). |
-| **DOC-LAYOUT** | a rendered figure / diagram / SVG / generator — the at-a-glance legibility gate (edge-clip, overlap, inline-legibility). **Only when PRESSROOM is installed**, composing its `layout-reviewer` by capability; runs `layout-check.sh` + `raster-lint.sh` on the changed `.svg`/generators as the free mechanical pre-flight. |
+| **DOC-LAYOUT** | a rendered figure / diagram / SVG / generator — the at-a-glance legibility gate (edge-clip, overlap, inline-legibility). **Only when PUBLISH is installed**, composing its `layout-reviewer` by capability; runs `layout-check.sh` + `raster-lint.sh` on the changed `.svg`/generators as the free mechanical pre-flight. |
 
 Scale the panel to the diff: a docs-only change may need only CORRECTNESS + DOCUMENT; a code change
 touching auth pulls in SECURITY + REGRESSION; an API change pulls in API-CONTRACT; an agent/prompt

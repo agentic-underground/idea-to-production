@@ -83,7 +83,7 @@ The marketplace owns **two** consumers that each need a Chromium, and **each fin
 so the *same* browser is often on disk in several places while one consumer still reports "not
 installed". The two resolvers:
 
-- **mmdc / puppeteer** (pressroom renders Mermaid via `mmdc` → puppeteer) — resolves a **pinned Chrome
+- **mmdc / puppeteer** (publish renders Mermaid via `mmdc` → puppeteer) — resolves a **pinned Chrome
   revision** under `~/.cache/puppeteer`, **or** whatever `PUPPETEER_EXECUTABLE_PATH` points at.
 - **Playwright MCP** (`@playwright/mcp`, shipped by `atelier` + `foundry`) — resolves a **slot** under
   `~/.cache/ms-playwright` (`PLAYWRIGHT_BROWSERS_PATH`), including a per-MCP `mcp-chromium-<hash>/` slot.

@@ -313,8 +313,8 @@ pure Rust core), `handler-github-actions` (CI/CD-as-code on GitHub Actions), and
 `handler-roadmap-decomposition` (the atomic-job-breakdown specialist spawned by the LEAD ENGINEER
 during §5 decomposition — it plans, it does not orchestrate). Each carries `model: inherit` and is
 spawned at the phase tier per [`../policy/model-selection.md`](../policy/model-selection.md). The
-`.docx` publishing-output handler (`handler-docx`) lives in the **pressroom** plugin, reachable from
-`/pressroom:publish`.
+`.docx` publishing-output handler (`handler-docx`) lives in the **publish** plugin, reachable from
+`/publish:publish`.
 
 ---
 
@@ -330,7 +330,7 @@ one of them drives the `reviewer` agent:
   `/security:scan-all` when the SECURITY plugin is present. Outcome routing is the project's **merge governance**
   ([`../protocols/merge-governance.md`](../protocols/merge-governance.md)).
 - **`check`** ([`../../skills/check/SKILL.md`](../../skills/check/SKILL.md)) — diagnostic; verifies
-  the plugin's external tool dependencies (`requirements.tsv`). Mirrored in security and pressroom.
+  the plugin's external tool dependencies (`requirements.tsv`). Mirrored in security and publish.
 - **`prerequisites`** ([`../../skills/prerequisites/SKILL.md`](../../skills/prerequisites/SKILL.md)) —
   emits a project-local `PREREQUISITES.md` from the installed plugins' manifests.
 - **`self-improve`** ([`../../skills/self-improve/SKILL.md`](../../skills/self-improve/SKILL.md)) — the

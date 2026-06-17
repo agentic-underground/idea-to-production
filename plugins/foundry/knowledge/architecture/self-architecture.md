@@ -25,7 +25,7 @@ skills/agents as adapters.
 
 At the marketplace level the plugins compose as ports-and-adapters:
 - **foundry** is the core capability.
-- **security** (SECURITY) and **pressroom** (PUBLISHING) are optional **driven ports**, referenced
+- **security** (SECURITY) and **publish** (PUBLISHING) are optional **driven ports**, referenced
   **by capability, never by cross-plugin path**, and degrade gracefully when absent.
 - **commands** and **hooks** are **driving ports** (user/automation entry points); the Claude tools
   (Bash, Read/Write, MCP, LSP) are **driven adapters** to the outside world.

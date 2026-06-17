@@ -11,4 +11,4 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh $ARGUMENTS
 
 Advisory by default; `--strict` exits non-zero on a missing **required** tool. ATELIER reviews with
 built-in vision (no API key); live crawls use the **Playwright MCP** + a Chromium browser. User-flow
-rendering belongs to pressroom (`/pressroom:check`). See the [`check` skill](../skills/check/SKILL.md).
+rendering belongs to publish (`/publish:check`). See the [`check` skill](../skills/check/SKILL.md).

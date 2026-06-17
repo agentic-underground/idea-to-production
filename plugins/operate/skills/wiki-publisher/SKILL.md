@@ -2,14 +2,14 @@
 name: wiki-publisher
 description: >
   Construct a professional GitHub wiki (opt-in) — for any GitHub origin, ask the operator ONCE whether
-  to stand up a wiki, then publish the per-item documentation and illustrations PRESSROOM already produced
+  to stand up a wiki, then publish the per-item documentation and illustrations PUBLISH already produced
   (doc/articles/) to the repo's companion `.wiki.git`. Trigger with /wiki-publisher (or "publish the wiki",
   "build the GitHub wiki", "put the docs on the wiki"). Detects a github.com origin, makes a one-shot
   opt-in offer (decline recorded under ~/.claude/hook-state, never the repo), and on opt-in clones the
   origin's `.wiki.git`, maps each completed-item doc to a wiki page (rewriting embedded illustration paths),
-  and pushes. Consumes PRESSROOM's artifacts — it never re-runs the doc/illustration pipeline. Degrades
+  and pushes. Consumes PUBLISH's artifacts — it never re-runs the doc/illustration pipeline. Degrades
   gracefully: a clean no-op when the origin is not GitHub, when `gh`/`git` is unavailable, or when there
-  is no PRESSROOM output to publish — never failing the session, never inventing content.
+  is no PUBLISH output to publish — never failing the session, never inventing content.
 metadata:
   type: publisher
   lens: documentation-distribution
@@ -20,7 +20,7 @@ metadata:
 # WIKI-PUBLISHER
 
 A live product earns a **professional wiki** — the readable, browsable face of the per-item documentation
-that PRESSROOM (child #12) already wrote. This skill is the **opt-in distributor**: it does not write docs,
+that PUBLISH (child #12) already wrote. This skill is the **opt-in distributor**: it does not write docs,
 it **publishes** the ones that exist to the repo's companion `.wiki.git`. Grounded in the OPERATE
 discipline — distribution is hygiene, and it is the operator's choice, recorded once.
 
@@ -62,12 +62,12 @@ mkdir -p "$HOME/.claude/hook-state/operate-wiki-optout"
 The script emits the resolved `<repo-key>` so the marker path is unambiguous. Only ever write under
 `~/.claude/hook-state` — never into the user's repository.
 
-## What gets published — PRESSROOM's per-item docs
+## What gets published — PUBLISH's per-item docs
 
 The wiki **content source** is the documentation child #12 produces — the per-completed-item documents
-written by PRESSROOM's [WRITER](../../../pressroom/skills/writer/SKILL.md) (under `doc/articles/`, one
+written by PUBLISH's [WRITER](../../../publish/skills/writer/SKILL.md) (under `doc/articles/`, one
 adaptive doc per item with how-to / UI / architecture sections as earned) with the figures
-[ILLUSTRATOR](../../../pressroom/skills/illustrator/SKILL.md) embedded (SVG/PNG, typically beside the doc).
+[ILLUSTRATOR](../../../publish/skills/illustrator/SKILL.md) embedded (SVG/PNG, typically beside the doc).
 WIKI-PUBLISHER consumes these as-is:
 
 | Repo artifact (from #12) | Wiki page |
@@ -76,9 +76,9 @@ WIKI-PUBLISHER consumes these as-is:
 | embedded `![alt](diagrams/…svg\|png)` illustrations | copied alongside the page; the link is rewritten to the wiki-relative path |
 | the set of all per-item docs | a generated `Home.md` index + a `_Sidebar.md` linking every page |
 
-**Degrade gracefully when PRESSROOM is absent.** If `doc/articles/` does not exist or is empty, there is
-nothing #12 produced to publish: **do not fabricate pages** — report *"no PRESSROOM output to publish; run
-PRESSROOM's `/publish` per completed item first"* and stop. If `doc/articles/` exists but holds free-form
+**Degrade gracefully when PUBLISH is absent.** If `doc/articles/` does not exist or is empty, there is
+nothing #12 produced to publish: **do not fabricate pages** — report *"no PUBLISH output to publish; run
+PUBLISH's `/publish` per completed item first"* and stop. If `doc/articles/` exists but holds free-form
 articles rather than per-item docs, publish what is there and say so — never block on the distinction.
 
 ## Publishing to `.wiki.git`
@@ -119,7 +119,7 @@ published".
 
 A short publish report: the origin, the wiki URL, the count of pages published (and skipped, with reason),
 and the next step (the operator can browse `https://github.com/owner/repo/wiki`). On a no-op (non-GitHub,
-declined, no PRESSROOM output, or a missing tool), the report names exactly which precondition was unmet —
+declined, no PUBLISH output, or a missing tool), the report names exactly which precondition was unmet —
 so the no-op is legible, not silent.
 
 ## Self-improvement covenant

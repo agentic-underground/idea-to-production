@@ -19,7 +19,7 @@ differently** — this is the whole source of the pain below:
 
 | Consumer | How it finds a browser | Marketplace-shipped? |
 |---|---|---|
-| **mmdc / puppeteer** (mermaid-cli → puppeteer) | a **pinned Chrome revision** under `~/.cache/puppeteer`, **or** whatever `PUPPETEER_EXECUTABLE_PATH` points at | yes (pressroom uses `mmdc` to render diagrams) |
+| **mmdc / puppeteer** (mermaid-cli → puppeteer) | a **pinned Chrome revision** under `~/.cache/puppeteer`, **or** whatever `PUPPETEER_EXECUTABLE_PATH` points at | yes (publish uses `mmdc` to render diagrams) |
 | **Playwright MCP** (`npx @playwright/mcp`) | a **slot** under `~/.cache/ms-playwright` (`PLAYWRIGHT_BROWSERS_PATH`), including a per-MCP `mcp-chromium-<hash>/` slot | yes (`atelier`, `foundry` `.mcp.json`) |
 
 A browser also lives **system-wide**, discoverable with `command -v chromium`
@@ -76,7 +76,7 @@ Browser-consuming skills link here for the resolver model and TC-BROWSER-1 — t
 
 - `atelier/ui-review` — crawls routes via the Playwright MCP (ms-playwright slot resolver).
 - `atelier/mockup` — screenshots renderable HTML/CSS via the Playwright MCP.
-- `pressroom/rich-pdf-with-diagrams` — renders Mermaid via `mmdc`/puppeteer.
+- `publish/rich-pdf-with-diagrams` — renders Mermaid via `mmdc`/puppeteer.
 - **foundry story phases** — live STORY feedback through the Playwright MCP.
 - **operate's** browser-using skills — runtime/observability surfaces that drive a browser.
 

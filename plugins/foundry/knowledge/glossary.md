@@ -12,13 +12,13 @@ understand the *system*; read here to disambiguate a *name*.
 
 ## 1. The conceptual-domain tree
 
-![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — market-scanner (DISCOVERY front door) → ideator (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), pressroom (PUBLISH), atelier (DESIGN/usability), operate (OPERATE).](diagrams/01-domain-tree.png)
+![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — market-scanner (DISCOVERY front door) → ideator (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), publish (PUBLISH), atelier (DESIGN/usability), operate (OPERATE).](diagrams/01-domain-tree.png)
 
 The companions are **cross-cutting**: foundry/ideator use them *by capability* when installed
 (graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
 is the eight-phase product-lifecycle **cycle**: **DISCOVER (market-scanner) → IDEATE (ideator) →
 DESIGN (atelier) → BUILD (foundry) → ASSURE (foundry, quality) → SECURE (security) →
-PUBLISH (pressroom) → OPERATE (operate) ↻** (OPERATE loops back to DISCOVER). Three concerns
+PUBLISH (publish) → OPERATE (operate) ↻** (OPERATE loops back to DISCOVER). Three concerns
 cross-cut every phase — usability (atelier), quality (foundry), security (the security plugin).
 
 ---
@@ -79,7 +79,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - **concierge** — the **arrival / greeter**: a SessionStart hook renders a repo's
   `.claude/welcome.md` to greet and route whoever opens it; `/concierge:define-welcome` authors that
   welcome; also offers the idea-to-production status line on first activation.
-- **market-scanner / ideator / foundry / security / pressroom / atelier / operate** — the seven
+- **market-scanner / ideator / foundry / security / publish / atelier / operate** — the seven
   specialist plugins: DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the
   core conveyor (BUILD + the ASSURE quality gate) / SECURITY companion (the SECURE gate) / PUBLISHING
   companion / DESIGN companion (make + adversarially review the visuals) / OPERATE companion (run the live
@@ -110,18 +110,18 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **pr-review** (adversarial PR/diff review → one verdict) · **self-improve** (targeted self-cleaving →
   PR) · **prerequisites** (emit PREREQUISITES.md) ·
   **check** (verify tool dependencies). The companions add **check** too (market-scanner, ideator,
-  security, pressroom, atelier, operate).
+  security, publish, atelier, operate).
 
 ### Skills (companion plugins)
 - market-scanner: **goal-setter** · **market-scan** · **self-improve** · **check**.
 - ideator: **ideate** (the IDEA package) · **self-improve** · **check**.
 - security: **scan-for-pii** · **scan-for-secrets** · **scan-dependencies** · **scan-all** · **check**.
-- pressroom: **writer** · **diagram-studio** · **mermaid-specialist** (full Mermaid taxonomy + theming + ELK) ·
+- publish: **writer** · **diagram-studio** · **mermaid-specialist** (full Mermaid taxonomy + theming + ELK) ·
   **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review; agents
   **typographic-reviewer**, **dataviz-reviewer**, **image-aesthetic-reviewer**, **layout-reviewer** — the
   at-a-glance legibility gate run before taste) · **check**. Agent **handler-composite** genuinely **owns
   animated-diagram craft** at BOTH altitudes: the frame-level **Motion canon** — the house linger/timing policy,
-  now codified in [`raster-toolchain.md`](../../pressroom/knowledge/raster-toolchain.md) (no longer trapped as
+  now codified in [`raster-toolchain.md`](../../publish/knowledge/raster-toolchain.md) (no longer trapped as
   script comments) — and the element-level **diagramming/animation language** (below).
 - **motion-language.md** — the element-level diagramming/animation language: a named-element registry
   (**NODE · TOKEN · GATE · RAIL · ARC · SWEEP · STAMP · HALO**) + each element's **motion verbs** (token *rides*,
@@ -139,11 +139,11 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - **Cost-tier doctrine** ≡ **cheap-checks-first** ≡ **vision-on-suspicion** — shared reviewer canon for every
   graphical review: the free deterministic checks (the layout machine) run first, and an expensive pixel/vision
   Read is spent **only when something cheap has flagged a suspect**, never by default. Specified for layout in
-  [`layout-canon.md`](../../pressroom/skills/design-reviewer/references/layout-canon.md) §3; governs all lenses
+  [`layout-canon.md`](../../publish/skills/design-reviewer/references/layout-canon.md) §3; governs all lenses
   via the critique-loop canon.
 - atelier: **ui-review** (crawl + critique any SPA) · **mockup** (design + converge) · **self-improve** ·
   **check**; agent **ui-design-reviewer** (adds a **LAYOUT-REVIEWER** lens — the legibility gate run before
-  taste, composing PRESSROOM's layout canon by capability).
+  taste, composing PUBLISH's layout canon by capability).
 
 ### Commands
 - foundry: **/foundry** · **/inspect** · **/coverage-loop** · **/phase-sensor** · **/rust-webapp-rollout** ·
@@ -151,7 +151,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - market-scanner: **/market-scan** · **/discovery-goal** · **/market-scanner:check**
 - ideator: **/ideate** · **/ideator:check**
 - security: **/scan-all** · **/scan-for-pii** · **/scan-for-secrets** · **/scan-dependencies** · **/security:check**
-- pressroom: **/publish** · **/pressroom:check**
+- publish: **/publish** · **/publish:check**
 - atelier: **/ui-review** · **/mockup** · **/atelier:check**
 
 ### Core concepts
@@ -166,7 +166,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   ([`architecture/pure-core.md`](architecture/pure-core.md)).
 - **Certainty markers** — `THE ONLY WAY` / `GUARDRAIL` / `ANTI-PATTERN` / `WORKED EXAMPLE`
   ([`protocols/certainty-markers.md`](protocols/certainty-markers.md)).
-- **Graceful enhancement** — foundry uses security/pressroom *by capability if installed*, else
+- **Graceful enhancement** — foundry uses security/publish *by capability if installed*, else
   degrades to markdown.
 - **Adversarial PR review** — `/foundry:pr-review` fans the `reviewer` agent across adversarial
   roles (each tries to *refute* the change) → one verdict `PASS | NEEDS_REVISION | BLOCK`
@@ -231,10 +231,10 @@ however it surfaces — *formal* definition · *aliases* · *metaphor*. The dept
   mistake → fold the fix back at the source → ship to all users via PR. → [`first-principles.md`](first-principles.md) §6.
   Its graphics arm is now the **general graphics+animation review→rule→canon loop** (no longer diagram-only):
   every generalisable finding — *especially* an expensive vision finding — folds into the *right* canon
-  (layout → [`layout-canon.md`](../../pressroom/skills/design-reviewer/references/layout-canon.md); animation →
-  the **Motion canon** in [`raster-toolchain.md`](../../pressroom/knowledge/raster-toolchain.md); composition →
+  (layout → [`layout-canon.md`](../../publish/skills/design-reviewer/references/layout-canon.md); animation →
+  the **Motion canon** in [`raster-toolchain.md`](../../publish/knowledge/raster-toolchain.md); composition →
   `charting-matrix.md`), so the bar rises once and never recurs →
-  [`../../pressroom/skills/rich-pdf-with-diagrams/references/self-improvement.md`](../../pressroom/skills/rich-pdf-with-diagrams/references/self-improvement.md).
+  [`../../publish/skills/rich-pdf-with-diagrams/references/self-improvement.md`](../../publish/skills/rich-pdf-with-diagrams/references/self-improvement.md).
 - **The two altitudes** ≡ **workers & orchestrators** ≡ **makers & managers** — pragmatic workers
   (exact patterns + ledgers) and aligned orchestrators (shared philosophy + language).
   → [`first-principles.md`](first-principles.md) §7, [`architecture/self-architecture.md`](architecture/self-architecture.md).

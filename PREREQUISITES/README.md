@@ -1,7 +1,7 @@
 # PREREQUISITES — the software musculature for the `idea-to-production` marketplace
 
 This folder documents every external tool that the marketplace plugins (**market-scanner**, **ideator**,
-**foundry**, **security**, **pressroom**, **atelier**) can use to do their best work, and **how to install
+**foundry**, **security**, **publish**, **atelier**) can use to do their best work, and **how to install
 it** — including paste-ready Ansible fragments under [`ansible/`](ansible/) for machine provisioning.
 (**atelier** reuses foundry's stack: the Playwright MCP + a Chromium browser for live `/ui-review` crawls;
 see [`40-mcp.md`](40-mcp.md) and [`10-foundry.md`](10-foundry.md).)
@@ -27,7 +27,7 @@ see [`40-mcp.md`](40-mcp.md) and [`10-foundry.md`](10-foundry.md).)
 3. **Tiers gate inclusion.** `required` (rare — core promise), `recommended` (install on any real dev
    box), `optional` (stack/lens-specific). A sensible default playbook installs required + recommended.
 4. **Idempotent + plugin-tagged.** The fragments in [`ansible/`](ansible/) use `creates:` / `changed_when`
-   guards and `tags: [foundry, security, …]` so you can subset by capability (`--tags pressroom`).
+   guards and `tags: [foundry, security, …]` so you can subset by capability (`--tags publish`).
 
 **Checklist:**
 - [ ] Run [`ansible/core-bootstrap.yml`](ansible/core-bootstrap.yml) **first** (installs rustup/uv/Volta into the user `$HOME`).
@@ -57,7 +57,7 @@ debuggers, real security scanners, and dual-engine publishing.
 | [`05-discovery.md`](05-discovery.md) | MARKET-SCANNER + IDEATOR: the web-research tier (WebSearch/WebFetch, Fetch MCP, optional Tavily/Exa). |
 | [`10-foundry.md`](10-foundry.md) | FOUNDRY: language toolchains, test runners, Playwright + browser, Context7 docs, debuggers. |
 | [`20-security.md`](20-security.md) | SECURITY: SCA / secret scanners across ecosystems. |
-| [`30-pressroom.md`](30-pressroom.md) | PRESSROOM: dual-engine typesetting (Typst + LaTeX), diagrams, DTP/conversion. |
+| [`30-publish.md`](30-publish.md) | PUBLISH: dual-engine typesetting (Typst + LaTeX), diagrams, DTP/conversion. |
 | [`40-mcp.md`](40-mcp.md) | MCP servers the plugins ship (Playwright, Fetch, Context7) + optional extras, and how plugin MCP works. |
 | [`45-lsp.md`](45-lsp.md) | Language servers wired via the marketplace manifest, + the official LSP companion plugins. |
 | [`50-awesome-software.md`](50-awesome-software.md) | "Software I found that is awesome" — curated for the Ansible provisioning project. |
@@ -81,7 +81,7 @@ Run the per-plugin checks (advisory by default; `--strict` exits non-zero on a m
 /ideator:check
 /foundry:check
 /security:check
-/pressroom:check
+/publish:check
 /atelier:check
 ```
 

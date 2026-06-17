@@ -53,7 +53,7 @@ The **IDEA dossier** the human reviews and iterates on before committing — gra
 
 > **Rendering — by capability (and carefully composed, not first-draft).** Produce the dossier's figures by
 > capability, never re-authoring rendering here:
-> - **Charts, scorecards, market/pricing diagrams** → **pressroom** `/publish` (`pdf` for a print-quality
+> - **Charts, scorecards, market/pricing diagrams** → **publish** `/publish` (`pdf` for a print-quality
 >   dossier, `diagrams` for figures) when installed — the **mermaid-specialist** picks the right diagram
 >   type and themes it, and the **design-reviewer** critiques it.
 > - **User-flows and UI mockups** → **atelier** `/mockup` when installed — it *designs* the flow/screen to

@@ -1,5 +1,5 @@
 ---
-description: Refine an idea into a build-ready IDEA package — an adversarially-challenged dialogue that takes a validated opportunity (from market-scanner) or a raw idea, reaches knowledge-parity, and emits precise agent-facing handoff docs (satisfying FOUNDRY's discovery exit criteria) plus a rich illustrated user-facing dossier (via pressroom), then hands off to FOUNDRY.
+description: Refine an idea into a build-ready IDEA package — an adversarially-challenged dialogue that takes a validated opportunity (from market-scanner) or a raw idea, reaches knowledge-parity, and emits precise agent-facing handoff docs (satisfying FOUNDRY's discovery exit criteria) plus a rich illustrated user-facing dossier (via publish), then hands off to FOUNDRY.
 ---
 
 Refine an idea into the IDEA package. Follow the [`ideate` skill](../skills/ideate/SKILL.md):
@@ -10,7 +10,7 @@ Refine an idea into the IDEA package. Follow the [`ideate` skill](../skills/idea
    value&price · wedge · slice · stack-fit · risks, pressure-testing each, **one focused question at a
    time with a recommended answer + multiple-choice**, disambiguating every shallow area.
 3. **Assemble the IDEA package** to the contract: agent-facing (brief + SMU-seed + first slice + handoff
-   contract — and **verify the exit gate**) + user-facing (rich dossier via pressroom `/publish` when
+   contract — and **verify the exit gate**) + user-facing (rich dossier via publish `/publish` when
    installed, else structured markdown). Iterate with the user; keep both faces in lock-step.
 4. **Hand off** to FOUNDRY when installed (→ roadmap → `/loop /foundry`), else write `doc/idea/<slug>/`.
 

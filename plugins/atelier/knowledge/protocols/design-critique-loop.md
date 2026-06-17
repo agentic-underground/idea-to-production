@@ -78,7 +78,7 @@ to the [`canon/`](../canon/README.md). Each dimension scores **0–5**; the weig
 ## Reuse across the marketplace
 
 This protocol defines the **shape** the marketplace's design loops share (by concept, not by path):
-**pressroom**'s print/DTP & data-viz reviewer adopts the same fitness-function shape and stop conditions
+**publish**'s print/DTP & data-viz reviewer adopts the same fitness-function shape and stop conditions
 with different rubric dimensions (typography/grid for print; Tufte/Cleveland/Bertin for charts). When
 **IDEATOR** asks ATELIER to produce a user-flow or mockup
 for the IDEA dossier, this loop runs first — so the user sees **carefully-composed, design-reviewed**

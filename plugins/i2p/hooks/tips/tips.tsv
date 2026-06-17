@@ -13,6 +13,6 @@ ideator's /ideate turns a raw idea into a build-ready IDEA package — agent-fac
 atelier's /ui-review crawls any running SPA and scores each screen against named design canon and WCAG 2.2.
 atelier's /mockup composes polished screens and runs a designer↔reviewer loop until they clear a design-fitness rubric.
 security's /scan-all catches PII, secrets, and vulnerable dependencies before you ship — one PASS/REVIEW/BLOCK report.
-pressroom's /publish turns your repo into articles, diagrams, or a print-quality PDF with legible figures.
+publish's /publish turns your repo into articles, diagrams, or a print-quality PDF with legible figures.
 Every plugin stands alone and lights up the others automatically when installed — no hard dependencies in any direction.
 The whole suite is self-improving: a lesson learned folds back via PR, so every user inherits the fix.

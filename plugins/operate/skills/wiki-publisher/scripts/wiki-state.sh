@@ -48,7 +48,7 @@ OPTOUT="${STATE_DIR}/operate-wiki-optout"
 declined=0; [ -e "$DECLINED" ] && declined=1
 optout=0;   [ -e "$OPTOUT" ]   && optout=1
 
-# --- count PRESSROOM per-item docs (doc/articles/**.md), if any ---
+# --- count PUBLISH per-item docs (doc/articles/**.md), if any ---
 docs=0
 if [ -d "$DIR/doc/articles" ]; then
   docs="$(find "$DIR/doc/articles" -type f -name '*.md' 2>/dev/null | wc -l | tr -d ' ')"

@@ -36,7 +36,7 @@ For each plugin that is **installed** and ships a check, run it, passing `$ARGUM
 | foundry | `/foundry:check` |
 | atelier | `/atelier:check` |
 | security | `/security:check` |
-| pressroom | `/pressroom:check` |
+| publish | `/publish:check` |
 | operate | `/operate:check` |
 
 Prefer running them in parallel. Do **not** re-implement any probe here — each plugin's check reads its

@@ -9,7 +9,7 @@ Design with ATELIER. Follow the [`mockup` skill](../skills/mockup/SKILL.md):
 2. **Design v0 to the canon** ([canon](../knowledge/canon/README.md)) — name the paradigm, type scale,
    spacing unit, palette, focal point. Don't free-hand.
 3. **Run the convergent loop** ([protocol](../knowledge/protocols/design-critique-loop.md)): render
-   (HTML/CSS screenshotted via the Playwright MCP, or SVG wireframe; user-flows as Mermaid via pressroom
+   (HTML/CSS screenshotted via the Playwright MCP, or SVG wireframe; user-flows as Mermaid via publish
    `/publish` *by capability*) → invoke the **`ui-design-reviewer`** → apply HIGH+MED → re-render → re-score
    until CONVERGED / DIMINISHING-RETURNS (surface the impasse) / CAP.
 4. **Deliver** under `docs/guide/design/mockups/<slug>/` — the artefact + a rationale (the canon choices) + the

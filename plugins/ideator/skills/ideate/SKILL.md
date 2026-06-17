@@ -7,7 +7,7 @@ description: >
   and refines it to knowledge-parity through an adversarially-challenged dialogue (infer-first, one
   question at a time with a recommended answer + multiple-choice). Produces the IDEA package — precise
   agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract, satisfying FOUNDRY's
-  discovery exit criteria) plus a rich illustrated user-facing dossier (via pressroom when installed) —
+  discovery exit criteria) plus a rich illustrated user-facing dossier (via publish when installed) —
   iterated with the user, then handed to FOUNDRY. Use proactively whenever a user wants to make an idea
   real.
 metadata:
@@ -41,7 +41,7 @@ this plugin is installed it owns ideation; FOUNDRY's inline skill is the gracefu
      it passes.
    - **User-facing** (rich): the IDEA dossier — narrative, scorecard table, market/pricing/competition
      charts, **a user-flow, and (for a UI idea) a mockup screen**. Render *by capability*: charts/diagrams
-     via **pressroom `/publish`**; **user-flows and mockups via atelier `/mockup`** (designed to the canon
+     via **publish `/publish`**; **user-flows and mockups via atelier `/mockup`** (designed to the canon
      and design-reviewed before the user sees them — carefully composed, not first-draft). Degrade to
      structured markdown / Mermaid-source otherwise, and say so. The flow/mockup must visualise the **first
      slice** (don't let them drift from it).

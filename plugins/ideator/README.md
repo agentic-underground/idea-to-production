@@ -18,7 +18,7 @@ opportunity (from [`market-scanner`](../market-scanner/)) or a raw idea you alre
   This is what FOUNDRY ingests; it must be unambiguous to a fresh agent with no history.
 - **User-facing** (rich, illustrated): the **IDEA dossier** — opportunity narrative, parameter scorecard,
   market/pricing/competition charts, a **user-flow**, and (for a UI idea) a **mockup screen** — rendered
-  **by capability**: charts via [`pressroom`](../pressroom/)'s `/publish`, and flows/mockups via
+  **by capability**: charts via [`publish`](../publish/)'s `/publish`, and flows/mockups via
   [`atelier`](../atelier/)'s `/mockup` (designed to the canon and **design-reviewed** before you see them —
   carefully composed, not first-draft). Degrades to structured markdown / Mermaid-source otherwise.
 
@@ -64,7 +64,7 @@ one; the marketplace's `PREREQUISITES/05-discovery.md` documents the discovery t
   (by capability) → roadmap → `/loop /foundry` carries it to PRODUCTION. **IDEATOR supersedes FOUNDRY's
   inline ideator**, which remains as the graceful-degradation fallback when this plugin is absent.
 - The arc: **DISCOVER (market-scanner) → IDEATE (ideator) → BUILD (foundry) → SECURE/PUBLISH
-  (security/pressroom)**. *Graceful enhancement* — no hard dependency in any direction.
+  (security/publish)**. *Graceful enhancement* — no hard dependency in any direction.
 
 ## The feedback loop
 

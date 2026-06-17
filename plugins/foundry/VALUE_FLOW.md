@@ -28,7 +28,7 @@ if it must, ask a question back up the line until the answer is found.
 
 ## 1 · The conveyor (the picture)
 
-![The FOUNDRY conveyor, three layers: THE IDEA above the line (the user ⇄ IDEATOR / PRODUCT_MANAGER, knowledge-parity before build) feeds a clear agent-readable brief DOWN into THE CONVEYOR, whose nine value-stations carry value left→right — IDEA (ideator) ▶ ROADMAP (roadmapper) ▶ PLAN ▶ EARS (spec) ▶ FEATURE ▶ TEST (tests) ▶ IMPLEMENT +DESIGN (builder/handlers) ▶ STORY ▶ SHIP (deliver) — with cross-cutting GOVERNANCE (reviewers · perf-delta gates · inspector, in foundry) and companions when installed (PUBLISHING → pressroom · SECURITY → security · DESIGN → atelier) riding the whole carriage; questions flow UP, value flows DOWN.](diagrams/02-conveyor.png)
+![The FOUNDRY conveyor, three layers: THE IDEA above the line (the user ⇄ IDEATOR / PRODUCT_MANAGER, knowledge-parity before build) feeds a clear agent-readable brief DOWN into THE CONVEYOR, whose nine value-stations carry value left→right — IDEA (ideator) ▶ ROADMAP (roadmapper) ▶ PLAN ▶ EARS (spec) ▶ FEATURE ▶ TEST (tests) ▶ IMPLEMENT +DESIGN (builder/handlers) ▶ STORY ▶ SHIP (deliver) — with cross-cutting GOVERNANCE (reviewers · perf-delta gates · inspector, in foundry) and companions when installed (PUBLISHING → publish · SECURITY → security · DESIGN → atelier) riding the whole carriage; questions flow UP, value flows DOWN.](diagrams/02-conveyor.png)
 
 Three layers:
 - **THE IDEA (above):** what we are building, and why. Owned by the PRODUCT_MANAGER.
@@ -113,7 +113,7 @@ cleanly without (**graceful enhancement** — foundry's value artefact is markdo
   (role-parametrised panel), `inspector` (self-improvement audit), `coverage-loop-agent`,
   `flaky-test-fixer`. A reviewer gate and, where relevant, a **performance-delta gate** sit at
   every transition.
-- **PUBLISHING** *(companion: `pressroom` plugin)* — when installed, foundry hands off to its
+- **PUBLISHING** *(companion: `publish` plugin)* — when installed, foundry hands off to its
   `writer`, `diagram-studio` / `mermaid-specialist`, `rich-pdf-with-diagrams`, and `design-reviewer`
   skills (via the `/publish` command) for narrative + print-quality artefacts, themed diagrams, and an
   adversarial print/data-viz design review. When absent, foundry delivers markdown and notes that
@@ -279,7 +279,7 @@ reviewer (panel)                   — gates every transition (PASS / NEEDS_REVI
 | STORY | `lifecycle-states` | ds-step-story-tests, handler-playwright | testing/test-policy (perf-delta) |
 | DELIVERY | `lifecycle-states` | ds-step-7/8/9 | protocols/commit-message, protocols/definition-of-done |
 | GOVERNANCE | `code-quality`, `reviewer-gate` | reviewer, inspector, coverage-loop-agent, flaky-test-fixer | all pillars, testing/* |
-| PUBLISHING *(companion)* | `pressroom` plugin: `writer`, `diagram-studio`, `mermaid-specialist`, `rich-pdf-with-diagrams`, `design-reviewer` (via `/publish`) | writer's reviewer · typographic/dataviz reviewers | — |
+| PUBLISHING *(companion)* | `publish` plugin: `writer`, `diagram-studio`, `mermaid-specialist`, `rich-pdf-with-diagrams`, `design-reviewer` (via `/publish`) | writer's reviewer · typographic/dataviz reviewers | — |
 | SECURITY *(companion)* | `security` plugin: `scan-for-pii`, `scan-for-secrets`, `scan-dependencies` (via `/security:scan-all`) | (parallel audit sub-agents) | — |
 | DESIGN *(companion)* | `atelier` plugin: `ui-review`, `mockup` (via `/ui-review`, `/mockup`) | ui-design-reviewer | — |
 | SENSOR (infra) | `phase-sensor` | (hook) | per-phase notes |
