@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Test: [48] statusline widget line-break control — break-before / break-after / none.
-# Exercises the real renderer (plugins/concierge/statusline/i2p-statusline.sh) with sample
+# Exercises the real renderer (plugins/i2p/statusline/i2p-statusline.sh) with sample
 # stdin JSON and a per-test conf, asserting the line-2 composition acceptance criteria.
 # Run from the repo root: bash tests/item-48/48-line-break-behaviour.sh
 FAIL=0
-R="plugins/concierge/statusline/i2p-statusline.sh"
+R="plugins/i2p/statusline/i2p-statusline.sh"
 [ -r "$R" ] || { echo "FAIL: renderer not found at $R"; exit 1; }
 
 JSON='{"context_window":{"used_percentage":40,"context_window_size":1000000,"total_input_tokens":400000},"rate_limits":{"five_hour":{"used_percentage":30,"resets_at":1750000000},"seven_day":{"used_percentage":12,"resets_at":1750400000}},"cost":{"total_cost_usd":1.0}}'
