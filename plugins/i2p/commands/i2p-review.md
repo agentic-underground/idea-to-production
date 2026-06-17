@@ -12,7 +12,7 @@ Run the marketplace-wide adversarial review. Follow the [`review` skill](../skil
    - code → foundry **`/pr-review`**
    - UI (a running SPA or screenshot) → atelier **`/ui-review`**
    - rendered docs / figures → pressroom **`/pressroom:design-review`** (its layout/legibility gate rides inside this delegation, run before taste)
-   - security → sentinel **`/security-gate`**
+   - security → security **`/scan-all`**
 3. **Adversarially verify** each HIGH/CRITICAL finding (a second pass tries to refute it).
 4. **Synthesise one verdict** with the marketplace rule (BLOCK > NEEDS_REVISION > PASS; verdict = highest
    *unresolved* severity across all lenses) and write **`I2P_REVIEW.md`**.

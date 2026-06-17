@@ -4,7 +4,7 @@ description: >
   Keep the lights on — the maintenance cadence for a live product: dependency upkeep and CVE patching,
   certificate/secret rotation, backup-restore drills, capacity review against saturation trends, and
   budgeted tech-debt paydown. Trigger with /maintain [path] (or "what maintenance is overdue?", "check
-  the dependencies", "is anything stale?", "tech-debt cadence"). Composes sentinel's /dependency-audit
+  the dependencies", "is anything stale?", "tech-debt cadence"). Composes security's /scan-dependencies
   by capability. Produces MAINTENANCE-FINDINGS.md; consumable standalone or by /operate-gate.
   Self-improving: every upkeep emergency becomes a scheduled cadence item.
 metadata:
@@ -31,11 +31,11 @@ product's maintenance on a **cadence** — the rhythm, not the bureaucracy. Grou
 | **Capacity review** | saturation trending toward the constrained resource's ceiling (from `observability`) |
 | **Tech-debt paydown** | debt that raises change-risk, budgeted *alongside* features — not "someday" |
 
-## Dependency upkeep — compose sentinel (by capability)
+## Dependency upkeep — compose security (by capability)
 
-For the dependency/CVE rows, **compose `sentinel`'s `/dependency-audit`** when SENTINEL is installed — it
+For the dependency/CVE rows, **compose `security`'s `/scan-dependencies`** when SECURITY is installed — it
 already parses manifests/lockfiles across ecosystems and flags vulnerable/unpinned/abandoned/typosquat
-packages. Fold its findings into the maintenance report. When SENTINEL is **absent**, fall back to a static
+packages. Fold its findings into the maintenance report. When SECURITY is **absent**, fall back to a static
 read of the manifests and **note the reduced coverage** — never declare deps clean on no audit.
 
 ## Stuck-phase detection (time-in-phase)
@@ -57,11 +57,11 @@ gate.
 
 ## Degraded capabilities (point-of-use)
 
-For the dependency/CVE rows, when SENTINEL (or any tool you reach for) is **absent at point-of-use**, follow
+For the dependency/CVE rows, when SECURITY (or any tool you reach for) is **absent at point-of-use**, follow
 the degraded-capabilities discipline defined once in
 [`../../knowledge/operate-canon.md`](../../knowledge/operate-canon.md) §5 (canonical contract:
 `degraded-capabilities.md`): **emit** a `{capability, reason, since_phase}` record (e.g.
-`{"capability":"lens.dependency-audit","reason":"SENTINEL not installed","since_phase":"OPERATE"}`) — inline
+`{"capability":"lens.scan-dependencies","reason":"SECURITY not installed","since_phase":"OPERATE"}`) — inline
 marker + the `<project>/.i2p/degraded-capabilities.json` state file when reachable — **route around** it (fall
 back to the static manifest read), and **disclose** the reduced coverage as **partial**, never "deps clean on
 no audit".
@@ -75,7 +75,7 @@ significant change is reviewed. (Full change-management ceremony is out of scope
 ## Output
 
 `MAINTENANCE-FINDINGS.md` (or folded into OPERATE-REPORT.md): a cadence table marking each item current /
-due / overdue, the dependency-audit summary, and a prioritised next-actions list (security-relevant upkeep
+due / overdue, the scan-dependencies summary, and a prioritised next-actions list (security-relevant upkeep
 first, then expiring credentials, then debt). Overdue security upkeep pushes the operate-gate verdict to
 WATCH or worse.
 

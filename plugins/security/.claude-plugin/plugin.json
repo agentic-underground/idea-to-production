@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "security",
+  "displayName": "SECURITY — Security & Privacy Gate",
+  "version": "1.3.0",
+  "description": "The pre-release security gate for any repository. The security plugin catches PII, secrets/credentials, and supply-chain risk before they ship. It runs parallel, multi-agent audits across data files, git history, source code, and frontend, then consolidates findings into a single severity-ranked report with an overall PASS / REVIEW / BLOCK verdict. Runs standalone on any project, or serves as the SECURITY gate for the foundry plugin when both are installed. Carries a self-improvement covenant: every missed pattern becomes a rule, every false positive becomes an exclusion.",
+  "author": {
+    "name": "whatbirdisthat",
+    "email": "95787+whatbirdisthat@users.noreply.github.com",
+    "url": "https://github.com/whatbirdisthat"
+  },
+  "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/security",
+  "repository": "https://github.com/whatbirdisthat/idea-to-production",
+  "license": "MIT OR Apache-2.0",
+  "category": "security",
+  "defaultEnabled": true,
+  "keywords": [
+    "security",
+    "privacy",
+    "pii",
+    "secrets",
+    "credentials",
+    "dependency-audit",
+    "supply-chain",
+    "compliance",
+    "gdpr",
+    "ccpa",
+    "audit"
+  ],
+  "metadata": {
+    "note": "skills/ and commands/ are auto-discovered from the plugin root. /scan-all is the consolidated entry point; foundry calls it as its SECURITY station when the security plugin is installed."
+  }
+}

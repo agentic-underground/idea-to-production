@@ -172,7 +172,7 @@ Assume **inputs are hostile and dependencies are guilty until proven innocent.**
 input passes through core validation (parse-don't-validate) before use; untrusted input reaching
 `format!`/paths/process-spawn is a BLOCKER. Recommend `cargo audit` / `cargo deny` for the supply
 chain; justify every new dependency. This mirrors the `reviewer` SECURITY role and the
-`sentinel` plugin's gate when installed.
+`security` plugin's gate when installed.
 
 ---
 

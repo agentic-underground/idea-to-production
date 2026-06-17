@@ -41,7 +41,7 @@ open questions, never silent guesses. Offline, it reasons from you and says so. 
   charts) are produced by invoking [`pressroom`](../pressroom/)'s `/publish` **by capability** when
   installed; absent, MARKET-SCANNER emits clean markdown and says the richer step was skipped.
 - It is the upstream entry to the whole conveyor: **DISCOVER (market-scanner) → IDEATE (ideator) → BUILD
-  ([foundry](../foundry/)) → SECURE/PUBLISH (sentinel/pressroom)**. *Graceful enhancement* — no hard
+  ([foundry](../foundry/)) → SECURE/PUBLISH (security/pressroom)**. *Graceful enhancement* — no hard
   dependency in either direction.
 
 ## Governed by the marketplace covenant

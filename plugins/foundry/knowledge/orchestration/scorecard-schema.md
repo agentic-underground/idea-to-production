@@ -41,7 +41,7 @@ append-only (one line per scoring event), so the series is the proof.
 | `corpus.fixtures` | `tests/corpus/parity-baseline.json` | optional; detection-style products only |
 | `rules` | `find src rules -name '*.rules.*'` | rule-definition file count (a growth/trend proxy) |
 | `tests` | `IDEA_COST.jsonl` `test_count_total`, else a test-file heuristic | authoritative when a cycle recorded it |
-| `security_gate` | `SECURITY-REPORT.md` (SENTINEL) | first PASS/REVIEW/BLOCK token |
+| `security_gate` | `SECURITY-REPORT.md` (SECURITY) | first PASS/REVIEW/BLOCK token |
 | `cost.*` | **last record of `IDEA_COST.jsonl`** | **only a real FOUNDRY cycle records tokens** — omitted (null + note) otherwise; a shell script cannot measure tokens |
 | `coverage_regression` (**P2-1**) | current branch coverage vs the worst of the last N=5 `IDEA_COST.jsonl` `quality.final_branch_coverage_pct` records | detect-auto, **flag-only** (never blocks): `flagged:true` on a drop below the recent floor **unless** the current record carries a `quality.coverage_regression_pragma` reason. Additive — records predating the field are skipped; `flagged:null` when there is no baseline. |
 

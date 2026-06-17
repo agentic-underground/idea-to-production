@@ -24,16 +24,16 @@ carries VALUE from IDEA to PRODUCTION; this draws the map with only the parts yo
 
 ```
 DISCOVER ────────▶ IDEATE ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
-market-scanner     ideator   atelier   foundry  foundry   sentinel  pressroom  mission-
+market-scanner     ideator   atelier   foundry  foundry   security  pressroom  mission-
                                        │        (quality) (security)           control
- /discovery-goal +  /ideate  /mockup   IDEA▶…▶  /pr-review /security  /publish  observe ·
- /market-scan                /ui-review  SHIP   (quality)  -gate                iterate ↻→DISCOVER
+ /discovery-goal +  /ideate  /mockup   IDEA▶…▶  /pr-review /scan-all  /publish  observe ·
+ /market-scan                /ui-review  SHIP   (quality)                       iterate ↻→DISCOVER
 ```
 
 Eight phases forming a **cycle** — OPERATE's learnings loop back to DISCOVER. **ASSURE** (foundry,
-quality V&V) and **SECURE** (sentinel, security) are **separate first-class gates**. Three concerns
+quality V&V) and **SECURE** (security, security) are **separate first-class gates**. Three concerns
 **cross-cut** every phase: usability (atelier/DESIGN), quality (foundry/ASSURE — built-in not
-inspected-in), security (sentinel/SECURE — baked in from the start). For each stage, give: the plugin,
+inspected-in), security (security/SECURE — baked in from the start). For each stage, give: the plugin,
 its **headline command**, and the **artefact** it produces (an OPPORTUNITY → an IDEA package → a
 design-reviewed screen → tested code → a quality PASS → a SECURITY-REPORT → an article/PDF → a live,
 observed product). Ground the wording in `plugins/i2p/knowledge/product-lifecycle.md` (canonical),

@@ -88,7 +88,7 @@ bureaucracy.
   rollback plan, and (for risky change) gated by remaining error budget. Standard/low-risk changes are
   pre-approved; significant changes are reviewed.
 - **Maintenance cadence** — a recurring rhythm so upkeep never becomes an emergency: dependency upgrades
-  and CVE patching (compose `sentinel`'s `/dependency-audit` by capability when installed), certificate and
+  and CVE patching (compose `security`'s `/scan-dependencies` by capability when installed), certificate and
   secret rotation, backup/restore drills, capacity review against saturation trends, and **tech-debt**
   paydown budgeted alongside features.
 - **Continual service improvement (CSI)** — every cycle, ask what one operational thing to make measurably
@@ -101,7 +101,7 @@ bureaucracy.
 ## 5. Degraded capabilities — route around a dead tool/MCP/lens, and DISCLOSE
 
 OPERATE runs against live, fallible infrastructure: an MCP server dies mid-session, a telemetry
-source is unreachable, a companion lens (`sentinel`'s dependency-audit) isn't installed. The
+source is unreachable, a companion lens (`security`'s scan-dependencies) isn't installed. The
 discipline is **detect → degrade → disclose**, made machine-checkable, never a silent pass.
 
 **The contract is defined once**, in
@@ -123,7 +123,7 @@ they do not restate it. Three obligations bind every OPERATE skill (P1-15):
    silently emit an empty result that looks like success.
 3. **DISCLOSE — never a silent pass.** The skip is surfaced in the report, naming the capability,
    the reason, and the phase, and the affected coverage is marked **PARTIAL**, never READY/PASS:
-   *"ran without the dependency-audit lens — SENTINEL not installed; supply-chain coverage PARTIAL."*
+   *"ran without the scan-dependencies lens — SECURITY not installed; supply-chain coverage PARTIAL."*
 
 The SessionStart MCP-liveness hook (`hooks/scripts/mcp-liveness.sh`, P1-24) is the crash-surviving
 *emitter* for mid-session MCP death (it lives in the hook substrate, not in a skill, so it survives

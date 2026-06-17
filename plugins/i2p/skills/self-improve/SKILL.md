@@ -27,7 +27,7 @@ i2p gets sharper from **discoverability feedback** — a user who couldn't find 
 `/i2p-review` that omitted a reviewer, a tip that misdescribed a command, or a new plugin added to the
 marketplace that the front door doesn't yet announce. Each entry is **symptom → which front door surface let
 it through → what would have surfaced it** (e.g. *"the user hand-rolled a security check → `/i2p-help`
-didn't mention sentinel's `/security-gate` at the SECURE stage; add it"*).
+didn't mention security's `/scan-all` at the SECURE stage; add it"*).
 
 ## The loop
 

@@ -180,22 +180,22 @@
 <text text-anchor="start" x="438.5" y="-135.7" font-family="DejaVu Sans" font-size="9.00" fill="#b9d595">frontend (vanilla&#45;JS)</text>
 </g>
 <!-- cell_pillars&#45;&gt;cell_design -->
-<!-- sentinel -->
+<!-- security -->
 <g id="node13" class="node">
-<title>sentinel</title>
+<title>security</title>
 <defs>
 <linearGradient id="l_10" gradientUnits="userSpaceOnUse" x1="650" y1="-523" x2="650" y2="-487" >
 <stop offset="0" style="stop-color:#3f3320;stop-opacity:1.;"/>
 <stop offset="1" style="stop-color:#241c10;stop-opacity:1.;"/>
 </linearGradient>
 </defs>
-<path fill="url(#l_10)" stroke="#e0af68" stroke-width="1.6" d="M675,-523C675,-523 625,-523 625,-523 619,-523 613,-517 613,-511 613,-511 613,-499 613,-499 613,-493 619,-487 625,-487 625,-487 675,-487 675,-487 681,-487 687,-493 687,-499 687,-499 687,-511 687,-511 687,-517 681,-523 675,-523"/>
-<text text-anchor="start" x="625" y="-507.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">sentinel</text>
+<path fill="url(#l_10)" stroke="#e0af68" stroke-width="1.6" d="M675.5,-523C675.5,-523 624.5,-523 624.5,-523 618.5,-523 612.5,-517 612.5,-511 612.5,-511 612.5,-499 612.5,-499 612.5,-493 618.5,-487 624.5,-487 624.5,-487 675.5,-487 675.5,-487 681.5,-487 687.5,-493 687.5,-499 687.5,-499 687.5,-511 687.5,-511 687.5,-517 681.5,-523 675.5,-523"/>
+<text text-anchor="start" x="624.5" y="-507.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">security</text>
 <text text-anchor="start" x="631.5" y="-497.8" font-family="DejaVu Sans" font-size="9.00" fill="#e8c98f">SECURE</text>
 </g>
-<!-- cell_pillars&#45;&gt;sentinel -->
+<!-- cell_pillars&#45;&gt;security -->
 <g id="edge16" class="edge">
-<title>cell_pillars&#45;&gt;sentinel</title>
+<title>cell_pillars&#45;&gt;security</title>
 <path fill="none" stroke="#e0af68" stroke-width="2" stroke-dasharray="5,2" d="M566,-237.29C657.23,-252.18 783.82,-288.6 850.08,-377.66"/>
 <polygon fill="#e0af68" stroke="#e0af68" stroke-width="2" points="847.36,-379.87 856,-386 853.06,-375.82 847.36,-379.87"/>
 <text text-anchor="middle" x="909.5" y="-370" font-family="DejaVu Sans" font-size="10.00" fill="#d6a463">compose by capability</text>
@@ -229,7 +229,7 @@
 <path fill="url(#l_12)" stroke="#e0af68" stroke-width="1.8" d="M849.5,-600C849.5,-600 590.5,-600 590.5,-600 584.5,-600 578.5,-594 578.5,-588 578.5,-588 578.5,-576 578.5,-576 578.5,-570 584.5,-564 590.5,-564 590.5,-564 849.5,-564 849.5,-564 855.5,-564 861.5,-570 861.5,-576 861.5,-576 861.5,-588 861.5,-588 861.5,-594 855.5,-600 849.5,-600"/>
 <text text-anchor="middle" x="720" y="-578.9" font-family="DejaVu Sans" font-size="12.00" fill="#f0d6a4">COMPANIONS &#160;(cross&#45;cutting, by capability)</text>
 </g>
-<!-- co_title&#45;&gt;sentinel -->
+<!-- co_title&#45;&gt;security -->
 <!-- pressroom -->
 <g id="node14" class="node">
 <title>pressroom</title>
@@ -257,7 +257,7 @@
 <text text-anchor="start" x="629.5" y="-418.2" font-family="DejaVu Sans" font-weight="bold" font-size="11.00" fill="#e6e9f0">atelier</text>
 <text text-anchor="start" x="609" y="-408.8" font-family="DejaVu Sans" font-size="9.00" fill="#cbb6f0">DESIGN · usability</text>
 </g>
-<!-- sentinel&#45;&gt;atelier -->
+<!-- security&#45;&gt;atelier -->
 <!-- mission -->
 <g id="node16" class="node">
 <title>mission</title>

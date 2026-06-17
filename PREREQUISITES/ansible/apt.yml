@@ -1,6 +1,6 @@
 # ansible/apt.yml — system packages for the idea-to-production marketplace (Debian/Ubuntu).
 # Include from a play:  - import_tasks: apt.yml   (or paste into a role's tasks/).
-# Idempotent. Tagged by plugin so you can run subsets:  --tags pressroom,sentinel
+# Idempotent. Tagged by plugin so you can run subsets:  --tags pressroom,security
 ---
 - name: Core CLI tooling
   become: true

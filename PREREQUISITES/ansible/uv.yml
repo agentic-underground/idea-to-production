@@ -7,11 +7,11 @@
   changed_when: "'Installed' in uvt.stdout"
   failed_when: uvt.rc != 0 and 'already installed' not in (uvt.stdout + uvt.stderr)
   loop:
-    - pip-audit        # sentinel SCA (Python)
+    - pip-audit        # security SCA (Python)
     - debugpy          # foundry Python debugger
     - pyright          # foundry Python LSP (alternative to npm install)
     - ruff             # foundry Python lint/diagnostics
-  tags: [foundry, sentinel, lsp]
+  tags: [foundry, security, lsp]
 
 # The Fetch MCP (market-scanner, ideator) is launched ephemerally via `uvx mcp-server-fetch`
 # (no install needed). Ensuring uv is present (core-bootstrap.yml) is the only requirement. API

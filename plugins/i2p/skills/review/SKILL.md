@@ -4,14 +4,14 @@ description: >
   The marketplace-wide adversarial review. Use for /i2p-review (or "review everything",
   "full review across all the plugins", "give me one verdict from every reviewer"). Determines
   scope, fans out EVERY installed specialist reviewer — code (foundry /pr-review), design
-  (atelier /ui-review), rendered docs (pressroom design-review), security (sentinel
-  /security-gate) — adversarially verifies the serious findings, and synthesises ONE verdict
+  (atelier /ui-review), rendered docs (pressroom design-review), security (security
+  /scan-all) — adversarially verifies the serious findings, and synthesises ONE verdict
   (PASS / NEEDS_REVISION / BLOCK) in I2P_REVIEW.md, naming what could not be reviewed. Thin: it
   composes the specialists, it does not re-implement review logic.
 metadata:
   type: orchestrator
   output: I2P_REVIEW.md (verdict PASS | NEEDS_REVISION | BLOCK across all lenses)
-  composes: [foundry /pr-review, atelier /ui-review, pressroom design-review, sentinel /security-gate — each if present]
+  composes: [foundry /pr-review, atelier /ui-review, pressroom design-review, security /scan-all — each if present]
 model: inherit
 ---
 
@@ -41,7 +41,7 @@ vs merge-base with `main`), decide which lenses are in scope:
 | a code diff exists | **CODE** | foundry **`/pr-review`** |
 | a running SPA / screenshot is provided | **DESIGN** | atelier **`/ui-review`** |
 | rendered docs / figures (PDF, diagrams) changed | **DOCS** | pressroom **`/pressroom:design-review`** (its layout/legibility gate — edge-clip, overlap, inline-legibility — rides inside this delegation, run before taste) |
-| always (any change can leak/secret/regress deps) | **SECURITY** | sentinel **`/security-gate`** |
+| always (any change can leak/secret/regress deps) | **SECURITY** | security **`/scan-all`** |
 
 Name the lenses you will run and the ones you skip (and why) — no silent narrowing.
 
@@ -52,8 +52,8 @@ Run each in-scope lens whose plugin is **installed**. Each returns findings as
 `CRITICAL | HIGH | MEDIUM | LOW | SUGGESTION`. Prefer running independent lenses **in parallel**.
 
 - foundry `/pr-review` already fans out its own adversarial roles (correctness, security, regression,
-  architecture, performance, docs) and, when sentinel is present, folds in `/security-gate` — let it; do
-  not re-run those roles yourself. If foundry is **absent**, fall back to a direct `/security-gate` for
+  architecture, performance, docs) and, when security is present, folds in `/scan-all` — let it; do
+  not re-run those roles yourself. If foundry is **absent**, fall back to a direct `/scan-all` for
   the SECURITY lens and note that the code lens was unavailable.
 
 ## 3. Adversarially verify
@@ -64,7 +64,7 @@ positive"). Keep it only if it survives. This kills plausible-but-wrong blocks.
 ## 4. Synthesise one verdict
 
 Deduplicate overlapping findings across lenses, then apply the **marketplace verdict rule** (the same
-one foundry's pr-review and sentinel's gate use):
+one foundry's pr-review and security's gate use):
 
 | Verdict | Condition |
 |---|---|

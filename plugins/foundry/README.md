@@ -61,8 +61,8 @@ Without `--fix`, behaviour is unchanged (pure generate-and-stamp).
 foundry's value artefact is **markdown**. Two cross-cutting concerns live in separate plugins in
 the same marketplace and are used *automatically if installed*, with clean degradation if not:
 
-- **SECURITY → [`sentinel`](../sentinel/)** — a pre-release gate (PII, secrets, dependency audit).
-  When installed, foundry's release path can run `/security-gate` before DELIVERY; when absent,
+- **SECURITY → [`security`](../security/)** — a pre-release gate (PII, secrets, dependency audit).
+  When installed, foundry's release path can run `/security:scan-all` before DELIVERY; when absent,
   the gate is skipped with a noted recommendation.
 - **PUBLISHING → [`pressroom`](../pressroom/)** — articles, standalone diagrams, and
   print-quality PDFs. When installed, foundry can hand markdown to `/publish` for richer output;

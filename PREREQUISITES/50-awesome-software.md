@@ -1,7 +1,7 @@
 # 50 — Software I found that is awesome
 
 > **For the Ansible provisioning agent.** A curated, opinionated list of tooling that makes
-> Claude Code + this marketplace (all **five** plugins: market-scanner, ideator, foundry, sentinel,
+> Claude Code + this marketplace (all **five** plugins: market-scanner, ideator, foundry, security,
 > pressroom) genuinely high-powered. Two sections: (A) already present on the reference machine and worth
 > **pinning** so every box matches, and (B) **high-value additions** currently absent. Reference machine:
 > **Debian 13 (trixie)**, surveyed 2026-06-03; tooling list refreshed 2026-06-05. See the
@@ -42,7 +42,7 @@
 - **`lldb`** (gives `rust-lldb`), **`gdb`** — `apt install lldb gdb`
 - **`debugpy`** — `uv tool install debugpy`
 
-### Security (SENTINEL)
+### Security (SECURITY)
 - **`osv-scanner`** (Google OSV, all ecosystems), **`gitleaks`** (secrets), **`cargo-audit`**, **`pip-audit`**, **`govulncheck`**, optionally **`trivy`**/**`grype`**+**`syft`**, **`trufflehog`**.
 
 ### Publishing (PRESSROOM)

@@ -56,7 +56,7 @@ canon. (State-file token in brackets — see `skills/lifecycle/`.)
 | ③ | **DESIGN** `[DESIGN]` | atelier | make the experience usable, elegant, accessible | Double Diamond **Develop** (diverge: solution) · design thinking *ideate/prototype* |
 | ④ | **BUILD** `[BUILD]` | foundry | realise it test-first through the value conveyor (IDEA▶…▶SHIP) | Double Diamond **Deliver** · NPD development · PLM **Realize** |
 | ⑤ | **ASSURE** `[ASSURE]` | foundry | **certify quality** — adversarial V&V: tests green, coverage density, perf-delta, regression, architecture | Verification & Validation · quality gate (PDCA *check* / DMAIC *control*) |
-| ⑥ | **SECURE** `[SECURE]` | sentinel | **certify security** — PII, secrets, supply-chain clear before exposure | secure-by-design · supply-chain integrity · the security gate |
+| ⑥ | **SECURE** `[SECURE]` | security | **certify security** — PII, secrets, supply-chain clear before exposure | secure-by-design · supply-chain integrity · the security gate |
 | ⑦ | **PUBLISH** `[PUBLISH]` | pressroom | announce & document it for its audience | commercialization / launch communication |
 | ⑧ | **OPERATE** `[OPERATE]` | mission-control | keep it alive & improving: observe, respond to incidents, iterate, maintain | PLM **service/operate** · SRE · the market life cycle (introduction→growth) · DMAIC *control* in production |
 | ↻ | *(re-entry)* | market-scanner | OPERATE's learnings open the **next** value cycle | continuous discovery · build-measure-learn |
@@ -76,9 +76,9 @@ Woven through *every* phase from the start, each certified at the gate named abo
 - **Quality (ASSURE, foundry)** — *first-class, built-in not inspected-in.* The test-first conveyor means
   quality is engineered from the first line of BUILD (indeed from the EARS spec); the **ASSURE** gate is where
   foundry's adversarial reviewer panel *certifies* it. Quality is a pillar of the whole suite, not a late check.
-- **Security (SECURE, sentinel)** — *baked in from the beginning.* Secure-by-design starts at DISCOVER
+- **Security (SECURE, security)** — *baked in from the beginning.* Secure-by-design starts at DISCOVER
   (don't pursue opportunities you can't operate safely) and IDEATE (threat-model the concept); the **SECURE**
-  gate is sentinel's pre-exposure certification. Security is never bolted on at the end.
+  gate is security's pre-exposure certification. Security is never bolted on at the end.
 
 ## Binding the domain — five lenses on one arc
 
@@ -104,7 +104,7 @@ A phase is *entered* when its predecessor's exit signal fires, and *exited* when
 - DESIGN → BUILD: design-reviewed surfaces clear the **design-fitness rubric** (when UI is in scope).
 - BUILD → ASSURE: the conveyor reaches **SHIP** (implementation in, tests green, story proven).
 - ASSURE → SECURE: foundry's adversarial **quality review PASSES** (`/pr-review` / reviewer panel).
-- SECURE → PUBLISH: sentinel's **security-gate PASSES**.
+- SECURE → PUBLISH: security's **scan-all PASSES**.
 - PUBLISH → OPERATE: the release artefacts are out; the idea is **realised & live**.
 - OPERATE → DISCOVER (↻): an operate learning (a metric, an incident, a feedback signal) becomes a **new
   opportunity** — the next cycle begins.

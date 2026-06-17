@@ -52,7 +52,7 @@ marked form for any statement whose violation has a real cost.
 - **High-stakes knowledge docs** (the pillars, `testing/test-policy.md`, `architecture/pure-core.md`,
   this `protocols/` set) and **value-handler agents** SHOULD use markers for any rule with a real
   cost of violation.
-- **Skills** carrying deploy/build/security discipline (e.g. `rust-webapp-rollout`, `sentinel`'s
+- **Skills** carrying deploy/build/security discipline (e.g. `rust-webapp-rollout`, `security`'s
   gates) SHOULD use them throughout.
 - Ordinary prose, indices, and READMEs need not be marked — markers are for *consequential* rules,
   not decoration.
