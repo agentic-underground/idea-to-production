@@ -1,7 +1,8 @@
 ---
 id: 108
 title: "Make flow-setup prominent — proactive onboarding offer"
-status: PENDING
+status: COMPLETE
+completed: 2026-06-18
 priority: MEDIUM
 added: 2026-06-17
 depends_on: "#105"

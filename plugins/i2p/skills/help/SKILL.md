@@ -35,7 +35,7 @@ probe the filesystem. The plugins to look for:
 |---|---|---|
 | **market-scanner** | DISCOVER | `/discovery-goal`, `/market-scan` |
 | **ideator** | IDEATE | `/ideate` |
-| **flow** + **foundry:roadmapper** | DELIVER (roadmap intake → EARS/feature → decomposition) | *(flow: add to unlock the roadmap board)*; `/roadmapper` |
+| **flow** + **foundry:roadmapper** | DELIVER (roadmap intake → EARS/feature → decomposition → pull) | `/flow:pull` (headline), `/flow report\|carry`, `/flow:flow-setup`; `/roadmapper` |
 | **atelier** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
 | **foundry** | BUILD ⇄ ASSURE (quality gate; loop with SECURE) | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
 | **security** | SECURE (security gate; loop with BUILD/ASSURE) | `/scan-all`, `/scan-for-secrets`, `/scan-for-pii`, `/scan-dependencies` |
@@ -65,8 +65,9 @@ around. Summarise the model from [`../../knowledge/product-lifecycle.md`](../../
 > **idea-to-production is the *creation arc*** of a product — it begins with **the search for an idea**
 > and carries it into **OPERATE** (realised, live, and kept alive). **Nine phases forming a cycle**, each
 > owned by one plugin:
-> **DISCOVER ①** (market-scanner) → **IDEATE ②** (ideator) → **DELIVER ③** (the flow plugin + `foundry:roadmapper`
-> — roadmap intake → EARS/feature authoring → dependency-ordered decomposition) → **DESIGN ④** (atelier)
+> **DISCOVER ①** (market-scanner) → **IDEATE ②** (ideator) → **DELIVER ③** (the flow plugin — headline
+> **`/flow:pull`** — + `foundry:roadmapper`: roadmap intake → EARS/feature authoring → dependency-ordered
+> decomposition → pull the next item into delivery) → **DESIGN ④** (atelier)
 > → **BUILD ⑤** (foundry) ⇄ **ASSURE ⑥** (foundry — quality V&V) ⇄ **SECURE ⑦** (security — security) →
 > **PUBLISH ⑧** (publish) → **OPERATE ⑨** (operate — observe, respond, iterate) ↻ loops back to DISCOVER.
 > The three realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop** — a failed quality or security

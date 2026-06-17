@@ -1,7 +1,8 @@
 ---
 id: 110
 title: "Add DELIVER + /flow to the i2p value-flow map"
-status: PENDING
+status: COMPLETE
+completed: 2026-06-18
 priority: LOW
 added: 2026-06-17
 depends_on: "#103 (i2p surfaces v2), #105"
