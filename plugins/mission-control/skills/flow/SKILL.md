@@ -1,52 +1,67 @@
 ---
 name: flow
 description: >
-  Run the roadmap flow board — the live SVG governance UI (plugins/mission-control/flow-server). A managed
-  daemon, driven by the mission-control SessionStart + ROADMAP-edit hooks, auto-starts the server bound to
-  the network whenever the project roadmap has ≥1 item and stops it when the roadmap is empty; the clickable
-  URL is advertised in the statusline and on session start. Trigger with /flow [start|stop|status|url|build]
-  (or "is the flow board running?", "what's the board URL?", "start the roadmap board"). Reachable on the LAN,
-  guarded by a bearer token.
+  Carry value through the roadmap — the lightweight verb that advances ONE `.i2p/roadmap/` item to its
+  next lane (recording who is processing it · what they are doing · the running cost), and reports the
+  current state of value flow. Trigger with /flow [report|carry <item> [to <stage>]|ping] (or "carry 41
+  to doing", "advance this item", "what's the flow state?", "report the roadmap flow"). Use this instead
+  of reaching for the heavyweight FOUNDRY cycle just to move an item one stage. The flow-server is a
+  data-only MCP service; carry and report both go through its typed, token-authenticated MCP verbs.
 ---
 
-# flow — the roadmap flow board daemon
+# flow — carry value, report flow
 
-The flow board ([`../../flow-server/`](../../flow-server/README.md)) renders the live roadmap as an
-interactive SVG card-graph. This skill is the **manual front door**; day-to-day the board runs itself.
+The flow-server ([`../../flow-server/`](../../flow-server/README.md)) is a **data-only MCP service**: it
+ingests the `.i2p/roadmap/` tree and serves typed verbs for stage transitions and telemetry. There is no
+running web board — the live SVG governance UI was removed (roadmap [39]); `report` is its on-demand
+successor view. This skill is the manual front door for advancing items and reporting state.
 
-## Lifecycle (automatic)
+## The lanes — owned by the flow-server, not restated here
 
-`flow-server/bin/flowctl.sh` is the managed-daemon controller. Two mission-control hooks call its idempotent
-`ensure`:
+The canonical lane chain ([`.i2p/roadmap/README.md`](../../../../.i2p/roadmap/README.md)) is
+**`backlog → do → doing → done`** (folder = status; `backlog` is intake). The board status the verbs
+accept is the three values **`do · doing · done`**; `backlog` maps to status `do`. **Defer to that
+contract** — the `post_status` verb owns the status vocabulary and the file move; this skill drives the
+verbs rather than paraphrasing the model (a recurring drift this skill must not reintroduce).
 
-- **SessionStart** (`hooks/scripts/flow-advertise.sh`) — starts the board if the roadmap has items, then
-  advertises the URL as a `systemMessage`.
-- **PostToolUse(Edit|Write)** (`hooks/scripts/flow-roadmap-watch.sh`) — on a `ROADMAP.md` edit, re-drives
-  `ensure`: **start** when the roadmap gains its first item, **stop** when it is emptied. (The watcher
-  matches the legacy single-file `ROADMAP.md` only; for the `.i2p/roadmap/` tree the SessionStart
-  `ensure` keeps the board current — extending the watcher to tree edits is tracked by item [39].)
+## `/flow report` (default)
 
-State lives in the project's gitignored `.flow/` dir (`pid`, `port`, `token`, `flow-server.log`). The port is
-a stable per-project value (so the URL is a durable bookmark). The clickable link also renders in the
-statusline via a dropped widget (`~/.claude/state/statusline-widgets.d/flow.sh`), so no edit to the canonical
-statusline renderer is needed.
+Render the current value flow. Call the MCP verb **`render_roadmap`** (a ~0-token rendered table grouped
+by stage) and print it verbatim; for items carried this session, append the **who / what / cost** you
+recorded. If it returns empty while the tree is non-empty, the pinned binary is stale — `ping` to
+confirm, then fall back to scanning the lane folders directly. Never emit an empty report over a
+non-empty tree.
 
-## Manual control — `/flow [start|stop|status|url|build]`
+## `/flow carry <item> [to <stage>]`
 
-Routes to `flowctl.sh`. `build` runs the one-time `cargo build` (the binary is not shipped — `target/` is
-gitignored; the hooks otherwise kick a detached background build on first run).
+`post_status` is the **single writer** — it moves the item file between `.i2p/roadmap/` folders *and*
+rewrites its `status:` front-matter. So carry calls the verbs and never `git mv`s or edits front-matter
+by hand. Pass ids as the slug **`item-N`**.
 
-## Security
+1. **Resolve the item** to exactly one file (id `N` → `item-N`, or unambiguous title). Zero/many
+   matches → **stop and ask, never guess**.
+2. **Resolve the status** — a named `to <stage>` must be one of `do · doing · done` (else stop and ask);
+   omitted means the next status forward (`do`→`doing`→`done`; from `backlog`, forward is `do`). Refuse
+   past `done`.
+3. **Check the gate** — read the item (`get_item`); if its `gate` is `Wait`, **refuse the carry** (the
+   server rejects `post_status`/`append_spend` on a WAIT item) and tell the user to `set_wait_go … go`
+   first. Move nothing until it is `Go`.
+4. **`post_status item-N <status>`** — the authoritative transition (server moves the file + updates
+   `status:`).
+5. **`append_spend item-N <tokens>`** — the cost, recorded before the annotation so a later call can't
+   drop it.
+6. **`annotate item-N "<who> — <what>"`** — who is processing it + the activity, last. This mirrors the
+   **carriage-agent** who/what/cost model ([`../../agents/`](../../agents)): one carry, one annotated
+   transition, so state is always reportable.
 
-`--host 0.0.0.0` makes the board reachable by anyone on the LAN. The **bearer token** (`.flow/token`,
-gitignored) is the only guard and the advertised URL embeds it — treat the URL as a secret on a shared
-network. `FLOW_HOST=127.0.0.1` binds localhost-only without code changes.
+## `/flow ping`
+
+MCP health check — prints the server `message`, `version`, `items`, and `source`, and flags a stale
+pinned binary (fix: `/mission-control:flow-setup`).
 
 ## Roadmap resolution
 
-`flowctl` serves the project roadmap, resolved in order: `$FLOW_ROADMAP` (env override — **pinned** to
-`.flow/roadmap` when set, so a project with a non-standard roadmap location keeps auto-running across
-hook-driven sessions) → `.flow/roadmap` (a previously-pinned path) → the **`.i2p/roadmap/` tree** (the
-authoritative file-per-item source, folder = status; roadmap [42]) → legacy `ROADMAP.md` → `doc/ROADMAP.md`
-→ `docs/ROADMAP.md`. Item count is the number of `.md` files across the tree's status folders (or `## [N]`
-headings for a legacy single file). The `.i2p/roadmap/` tree is auto-detected — no `FLOW_ROADMAP` pin needed.
+The flow-server resolves its source in order: `$FLOW_ROADMAP` (env override) → the **`.i2p/roadmap/`
+tree** (the authoritative file-per-item source, folder = status; roadmap [42]) → a legacy single
+`ROADMAP.md`. The tree is auto-detected — no pin needed. Item count is the number of `.md` files across
+the lane folders.

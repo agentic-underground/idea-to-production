@@ -27,7 +27,7 @@ and simply emits markdown.
 | **iterate** | build-measure-learn → a new OPPORTUNITY re-enters DISCOVER (↻) | `/iterate` |
 | **maintain** | dependency upkeep, CVE patching, rotation, restore drills, tech-debt | `/maintain [path]` |
 | **wiki-publisher** | opt-in: publish PRESSROOM's per-item docs + illustrations to the origin's GitHub `.wiki.git` | `/wiki-publisher [path]` |
-| **flow** | the roadmap flow board — auto-run daemon serving the live SVG governance UI on the network, clickable URL in the statusline | `/flow [start\|stop\|status\|url\|build]` |
+| **flow** | carry value — advance one `.i2p/roadmap/` item to its next lane (recording who/what/cost via the flow-server MCP), or report the current flow state | `/flow [report\|carry <item> [to <stage>]\|ping]` |
 | **flow-setup** | finish setting up the **flow-server MCP** (the roadmap server — `render_roadmap` answers "what's on the roadmap" at ~0 tokens): pre-cache the binary, walk the one-time `/mcp` approval, verify the connection | `/flow-setup` |
 
 `/operate-gate` is the front door — it certifies a product is **ready to operate** at go-live and gives the

@@ -167,7 +167,7 @@ compute at ~0 tokens (the `render_roadmap` verb) and carries items across the bo
 3. **Prove the roundtrip.** Run **`/flow hello`** → it calls the MCP and prints **"hello from the flow
    MCP"** plus the server `version` and roadmap `items` count. Then ask *"what's on the roadmap"* → you
    should get the rendered table (via `render_roadmap`), not a file listing.
-4. **Health any time:** `/flow status` reports the MCP (version / items / source) and the board.
+4. **Health any time:** `/flow ping` reports the MCP (version / items / source) and flags a stale pinned binary.
 
 **Troubleshooting.** `/flow hello` shows `items: 0` or `version` below `0.2.0`, or *"what's on the
 roadmap"* comes back empty against a populated `.i2p/roadmap/` tree ⇒ the pinned MCP binary is **stale** or
