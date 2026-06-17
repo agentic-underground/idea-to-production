@@ -9,32 +9,38 @@ description: >
 metadata:
   type: orchestrator
   output: .i2p/lifecycle.json (current_phase + history) + a phase report
-  composes: [market-scanner, ideator, atelier, foundry, security, publish, operate — by capability]
+  composes: [market-scanner, ideator, flow + foundry:roadmapper (DELIVER), atelier, foundry, security, publish, operate — by capability]
 model: inherit
 ---
 
 # i2p — Product lifecycle
 
-One spine for the whole suite — **eight phases that form a cycle**: **DISCOVER ① → IDEATE ② → DESIGN ③ →
-BUILD ④ → ASSURE ⑤ → SECURE ⑥ → PUBLISH ⑦ → OPERATE ⑧ ↻**. ASSURE (quality) and SECURE (security) are
-**separate first-class gates**; OPERATE is the living-in-production phase whose learnings loop back to
-DISCOVER. The canonical model (owners, the three cross-cutting concerns, academic lineage, entry/exit
-signals, domain binding) is
+One spine for the whole suite — **nine phases that form a cycle**: **DISCOVER ① → IDEATE ② → DELIVER ③ →
+DESIGN ④ → BUILD ⑤ ⇄ ASSURE ⑥ ⇄ SECURE ⑦ → PUBLISH ⑧ → OPERATE ⑨ ↻**. **DELIVER** (between IDEATE and
+DESIGN, owned by the flow plugin + `foundry:roadmapper`) turns the IDEA package into a dependency-ordered
+roadmap. The three realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop** — a failed quality or
+security gate re-enters BUILD (the `fail` back-edge), and the loop exits to PUBLISH only when all three are
+satisfied. ASSURE (quality) and SECURE (security) are **separate first-class gates**; OPERATE is the
+living-in-production phase whose learnings loop back to DISCOVER. The canonical model (owners, the three
+cross-cutting concerns, academic lineage, entry/exit signals, domain binding) is
 [`../../knowledge/product-lifecycle.md`](../../knowledge/product-lifecycle.md). This skill is the thin
 driver over the state file.
 
 ## Commands
 
 ```bash
-bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh status        # where are we?
-bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh init [name]   # start at DISCOVER
-bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh done <PHASE>  # mark PHASE done → next (order-safe)
-bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh advance       # next phase (unconditional)
-bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh set <PHASE>   # jump to a phase
+bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh status              # where are we?
+bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh init [name]         # start at DISCOVER
+bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh done <PHASE>        # mark PHASE done → next (order-safe)
+bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh fail <ASSURE|SECURE> # loop back-edge: failed gate → re-enter BUILD (loop_pass++)
+bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh advance             # next phase (unconditional)
+bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh set <PHASE>         # jump to a phase
 ```
 
-State lives at `<project>/.i2p/lifecycle.json`. The i2p status line reads it and renders
-`◆ lifecycle ●●◉○○○○○ <PHASE> (n/8)`.
+State lives at `<project>/.i2p/lifecycle.json` — `current_phase` plus the additive **loop fields**
+`loop_state` (the live BUILD/ASSURE/SECURE position) and `loop_pass` (the loop iteration count), written
+by `done`/`fail`. The i2p status line reads it and renders `◆ lifecycle ●●◉○○○○○○ <PHASE> (n/9)`, marking
+the loop with a `⇄` (and `⇄ ×N` for the iteration) while in BUILD/ASSURE/SECURE.
 
 ## Token-cost & estimate↔actual calibration
 
@@ -70,15 +76,23 @@ the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
 | Owner | Marks done | → advances to |
 |---|---|---|
 | market-scanner (kept OPPORTUNITY, challenger upholds) | `done DISCOVER` | IDEATE |
-| ideator (IDEA package handed off, challenger READY) | `done IDEATE` | DESIGN |
-| atelier (design phase concluded) | `done DESIGN` | BUILD |
-| foundry (item SHIPs — tests green, story proven) | `done BUILD` | ASSURE |
-| foundry (adversarial quality review PASS — `/pr-review`) | `done ASSURE` | SECURE |
-| security (scan-all PASS) | `done SECURE` | PUBLISH |
+| ideator (IDEA package handed off, challenger READY) | `done IDEATE` | DELIVER |
+| flow + `foundry:roadmapper` (dependency-ordered roadmap of build-ready items) | `done DELIVER` | DESIGN |
+| atelier (design phase concluded) | `done DESIGN` | BUILD *(loop entry)* |
+| foundry (item SHIPs — tests green, story proven) | `done BUILD` | ASSURE *(loop)* |
+| foundry (adversarial quality review PASS — `/pr-review`) | `done ASSURE` | SECURE *(loop)* |
+| security (scan-all PASS — all three satisfied) | `done SECURE` | PUBLISH *(loop exit)* |
 | publish (publication out) | `done PUBLISH` | OPERATE |
 | operate (operate learning → next cycle) | `done OPERATE` | DISCOVER ↻ |
 
-You can also drive it by hand here with `done`/`advance`/`set`.
+**The loop back-edge — `fail <ASSURE|SECURE>`.** Distinct from `done`: a failed quality (ASSURE) or
+security (SECURE) gate does **not** advance — it re-enters **BUILD**, sets `loop_state` back to BUILD, and
+increments `loop_pass` (the iteration is recorded in history). The owner of the failing gate calls
+`fail <its-gate>` instead of `done`. Like `done` it is order-safe (a no-op unless the lifecycle is at that
+gate) and rejects a non-gate argument. So BUILD ⇄ ASSURE ⇄ SECURE iterate until the work is simultaneously
+shipped, quality-certified, and security-certified, then `done SECURE` exits the loop to PUBLISH.
+
+You can also drive it by hand here with `done`/`fail`/`advance`/`set`.
 
 **Keep the welcome in step (by capability).** After advancing — and only when i2p is
 installed and the repo has a `.claude/welcome.md` — run `/i2p:define-welcome refresh` so the repo's

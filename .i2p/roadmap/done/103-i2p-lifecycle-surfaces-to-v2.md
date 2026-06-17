@@ -1,7 +1,8 @@
 ---
 id: 103
 title: "i2p lifecycle surfaces to v2 — i2p-flow/help/lifecycle"
-status: PENDING
+status: COMPLETE
+completed: 2026-06-18
 priority: MEDIUM
 added: 2026-06-17
 depends_on: "#100"

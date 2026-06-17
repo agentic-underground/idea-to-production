@@ -1,7 +1,8 @@
 ---
 id: 104
 title: "Regenerate lifecycle/masthead art for the v2 model"
-status: PENDING
+status: COMPLETE
+completed: 2026-06-18
 priority: LOW
 added: 2026-06-17
 depends_on: "#100"

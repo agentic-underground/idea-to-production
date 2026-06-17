@@ -1,7 +1,7 @@
 # i2p rotating tips — one per line, each ≤25 words, no leading "Did you know?" (the hook adds it).
 # Blank lines and #-comments are ignored. Keep them honest: reference real, installed capabilities.
 /i2p:help browses every power you have now, grouped by the value flow — your front door to the whole marketplace.
-/i2p:help explains the product lifecycle — an eight-phase cycle, DISCOVER → … → OPERATE ↻ — and offers to kick one off.
+/i2p:help explains the product lifecycle — a nine-phase cycle, DISCOVER → … → DELIVER → … → OPERATE ↻ — and offers to kick one off.
 /i2p:lifecycle starts and tracks a product lifecycle; the i2p status line shows the live phase.
 /i2p:statusline turns on the status line — gauges, the product-lifecycle phase, and the ⚔ caught reviewer tally.
 /i2p:review fans out every installed reviewer — code, design, docs, security — and returns one verdict in I2P_REVIEW.md.

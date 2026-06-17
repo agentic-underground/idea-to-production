@@ -1,5 +1,5 @@
 ---
-description: Start or report the idea-to-production PRODUCT LIFECYCLE — DISCOVER ▸ IDEATE ▸ DESIGN ▸ BUILD ▸ ASSURE ▸ SECURE ▸ PUBLISH ▸ OPERATE ↻ (eight phases forming a cycle). Tracks .i2p/lifecycle.json; the status line shows the phase.
+description: Start or report the idea-to-production PRODUCT LIFECYCLE — DISCOVER ▸ IDEATE ▸ DELIVER ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄ SECURE ▸ PUBLISH ▸ OPERATE ↻ (nine phases forming a cycle, with the BUILD ⇄ ASSURE ⇄ SECURE loop). Tracks .i2p/lifecycle.json; the status line shows the phase.
 ---
 
 Drive the product lifecycle. Follow the [`lifecycle` skill](../skills/lifecycle/SKILL.md):
@@ -13,6 +13,8 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/lifecycle/scripts/lifecycle.sh $ARGUMENTS
   (`/market-scan`, then `/ideate`, …) — naming only installed plugins.
 - `done <PHASE>` → mark a phase complete; advances to the next **only if** currently at `<PHASE>`
   (order-safe, idempotent). This is what each owning plugin calls at its exit signal.
+- `fail <ASSURE|SECURE>` → the loop **back-edge**: a failed quality/security gate re-enters **BUILD**
+  (records the loop iteration in `loop_pass`) instead of advancing. Order-safe; only the two loop gates.
 - `advance` / `set <PHASE>` → move through the phases by hand.
 
 For **token-cost** (actual vs estimate per phase, + the self-calibrating estimator) run the sibling
