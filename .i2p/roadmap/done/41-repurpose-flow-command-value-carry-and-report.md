@@ -1,9 +1,10 @@
 ---
 id: 41
 title: "Repurpose /mission-control:flow → value-carry + report"
-status: PENDING
+status: COMPLETE
 priority: HIGH
 added: 2026-06-15
+completed: 2026-06-17
 depends_on: "#1 (server verbs), #42 (tree source)"
 ---
 
