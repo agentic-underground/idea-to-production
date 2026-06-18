@@ -138,14 +138,12 @@ class TestDomain < Minitest::Test
     assert_empty Telemetry.ancestors(f, iid("d"))
   end
 
-  def test_grafana_payload_shape # @EARS-FLOW-097
+  def test_telemetry_record_shape # @EARS-FLOW-044
     rec = Telemetry.record(ts: 1, item_id: iid("a"), agent: "carriage-agent", activity: "spend",
                            tokens_delta: 10, tokens_total: 10, ancestors: [iid("b")])
-    payload = Telemetry.grafana_payload([rec])
-    assert_equal 1, payload["streams"].length
-    assert_equal "a", payload["streams"][0]["stream"]["item_id"]
-    assert_equal "1000000", payload["streams"][0]["values"][0][0] # ms -> ns
-    assert_empty Telemetry.grafana_payload([])["streams"]
+    assert_equal "a", rec["item_id"]
+    assert_equal ["b"], rec["ancestors"]
+    assert_equal 10, rec["tokens_delta"]
   end
 
   # ── annotation + render + event (EARS-FLOW-061/073/088/091) ──────────────────

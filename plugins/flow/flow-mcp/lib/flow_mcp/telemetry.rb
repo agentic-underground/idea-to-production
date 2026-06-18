@@ -4,10 +4,10 @@ require "json"
 require_relative "ids"
 
 module FlowMcp
-  # Token telemetry — pure core (EARS-FLOW-038/044/045/097). Ancestor roll-up over
-  # the dependency graph, the JSONL telemetry record, and the Grafana/Loki push
-  # payload builder. The thin IO that appends a line / pushes to Grafana lives in
-  # the Store.
+  # Token telemetry — pure core (EARS-FLOW-038/044/045). Ancestor roll-up over the
+  # dependency graph and the JSONL telemetry record. The thin IO that appends a line
+  # to the telemetry ledger lives in the Store; the ledger (telemetry.jsonl) is the
+  # single telemetry sink (EARS-FLOW-097).
   module Telemetry
     module_function
 
@@ -44,17 +44,5 @@ module FlowMcp
     end
 
     def to_jsonl(rec) = JSON.generate(rec)
-
-    # Build the Loki push body (one stream per event). Pure: the actual transport
-    # (and graceful no-op when GRAFANA_URL is absent) lives in the Store.
-    def grafana_payload(records)
-      streams = records.map do |ev|
-        {
-          "stream" => { "job" => "flow-telemetry", "item_id" => ev["item_id"], "agent" => ev["agent"] },
-          "values" => [[((ev["ts"] * 1_000_000)).to_s, JSON.generate(ev)]]
-        }
-      end
-      { "streams" => streams }
-    end
   end
 end

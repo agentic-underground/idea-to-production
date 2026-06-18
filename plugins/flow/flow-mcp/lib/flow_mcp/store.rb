@@ -11,15 +11,20 @@ require_relative "history"
 require_relative "errors"
 
 module FlowMcp
-  # The ONE serialized writer of flow state (EARS-FLOW-088/089). Every mutation
-  # goes through a verb method here; there is no direct-write path. The in-memory
-  # Flow, the append-only JSONL event log, the rendered markdown board, the gate
-  # sidecar, and the telemetry ledger are all written from here.
+  # The ONE serialized writer of flow state (EARS-FLOW-088/089).
+  #
+  # Ownership model (EARS-FLOW-088): the `.i2p/roadmap/` tree OWNS item identity —
+  # existence, title, status (folder), declared deps — and is re-ingested each boot.
+  # The append-only event log OWNS runtime state — gate, tokens, model, draft,
+  # runtime edge mutations, annotations — and survives restarts by replay.
+  #
+  # Startup is ingest→replay (EARS-FLOW-077): `Store.open` builds an empty Flow and
+  # loads the event log into memory; the caller ingests the tree, then calls
+  # `replay!` to layer runtime deltas on top. Ingest is idempotent and NOT journaled
+  # (so the log never grows across restarts); replay is non-clobbering.
   class Store
     SPEND_AGENT = "carriage-agent"
     SPEND_ACTIVITY = "spend"
-
-    attr_reader :grafana_pushes # test observability (EARS-FLOW-097)
 
     def self.open(dir)
       new(dir)
@@ -35,36 +40,46 @@ module FlowMcp
       @doc_dir = File.join(File.dirname(File.absolute_path(@dir)), "doc")
       @annotations_dir = File.join(@dir, "annotations")
       @roadmap_tree = nil
-      @grafana_pushes = []
-
       @flow = Flow.new
-      replay!
-      write_markdown!
+      @annotations = Hash.new { |h, k| h[k] = [] } # id(string) -> [text]
+      # Load + parse the log into memory now; a malformed line aborts the open
+      # (EARS-FLOW-091). Not yet applied — replay! does that, after ingest.
+      @events = load_events
+      @replayed = false
     end
 
-    # A consistent view of the flow for reads. The stdio loop is single-threaded,
-    # so the live flow is already a consistent snapshot.
+    # A consistent view of the flow for reads (single-threaded stdio loop).
     def snapshot = @flow
 
     def roadmap_source = @roadmap_tree
 
-    # Read + parse the full JSONL event log (EARS-FLOW-070).
-    def read_events
-      out = []
-      return out unless File.exist?(@jsonl_path)
+    # The in-memory event log (EARS-FLOW-070) — no per-call disk re-read.
+    def read_events = @events
 
-      File.foreach(@jsonl_path) do |line|
-        s = line.strip
-        next if s.empty?
+    # Annotation texts for an item in log order (EARS-FLOW-019), from the in-memory
+    # index — no per-call scan of the whole log.
+    def annotations_for(id) = (@annotations[id.to_s] || []).dup
 
-        out << Event.from_jsonl(s)
-      end
-      out
+    # Apply the loaded event log onto the (already-ingested) flow, then render the
+    # board. Call AFTER ingest (EARS-FLOW-077/078): replay layers runtime deltas on
+    # top of the tree-ingested items without clobbering them.
+    def replay!
+      return if @replayed
+
+      @events.each { |ev| apply_event(ev) }
+      @replayed = true
+      write_markdown!
+      nil
     end
 
     # ── mutation verbs (the only write path) ────────────────────────────────────
 
+    # Create an item NOT sourced from the tree (test/seed + non-tree callers). A
+    # genuine new item is journaled so it survives restart via replay; tree items
+    # are NOT journaled (they survive via the tree). Idempotent on an existing id.
     def upsert_item(id, title, model)
+      return if @flow.contains?(id)
+
       @flow.upsert_item(Item.new(id, title, model))
       commit(Event.item_upserted(id, title))
     end
@@ -73,39 +88,11 @@ module FlowMcp
       @flow.set_gate(id, gate)               # raises FlowError.unknown
       commit(Event.gate_set(id, gate))
       begin
-        persist_gates!                       # EARS-FLOW-027 (atomic)
-      rescue StandardError => e              # EARS-FLOW-028 (warn-and-continue)
+        persist_gates!                       # EARS-FLOW-092 (atomic external view)
+      rescue StandardError => e              # warn-and-continue: the log is authoritative
         warn "flow-mcp: warning — could not write gates.json: #{e.message}"
       end
       nil
-    end
-
-    # Restore gate state from gates.json (EARS-FLOW-093/094). Infallible: missing
-    # -> all GO; malformed -> warn + all GO; stale id -> silently skipped. MUST run
-    # AFTER ingest (EARS-FLOW-078).
-    def restore_gates
-      return unless File.exist?(@gates_path)
-
-      text = File.read(@gates_path)
-      map =
-        begin
-          JSON.parse(text)
-        rescue JSON::ParserError
-          warn "flow-mcp: warning — gates.json is malformed; all gates default to go"
-          return
-        end
-      return unless map.is_a?(Hash)
-
-      map.each do |id_str, gate|
-        id = ItemId.parse(id_str)
-        next unless id && GATES.include?(gate)
-
-        begin
-          @flow.set_gate(id, gate)
-        rescue FlowError
-          # stale id -> discard (EARS-FLOW-094)
-        end
-      end
     end
 
     def post_status(id, status)
@@ -113,7 +100,7 @@ module FlowMcp
       @flow.advance_status(id, status)       # raises waiting/unknown
       if @roadmap_tree
         begin
-          write_status_to_tree!(id, status)  # EARS-FLOW-033
+          write_status_to_tree!(id, status)  # EARS-FLOW-033 (the tree owns status)
         rescue StandardError => e
           @flow.advance_status(id, prior) if prior  # rollback (EARS-FLOW-034)
           raise e
@@ -126,14 +113,13 @@ module FlowMcp
       total = @flow.append_spend(id, delta)  # raises waiting/unknown
       ancs = Telemetry.ancestors(@flow, id)
       ancs.each { |a| @flow.accrue_tokens(a, delta) }  # roll-up (EARS-FLOW-038/039)
-      commit(Event.spend_appended(id, delta, total))
+      commit(Event.spend_appended(id, delta, total, ancs)) # ancestors stored (EARS-FLOW-103)
 
       rec = Telemetry.record(
         ts: now_millis, item_id: id, agent: SPEND_AGENT, activity: SPEND_ACTIVITY,
         tokens_delta: delta, tokens_total: total, ancestors: ancs
       )
-      append_line!(@telemetry_path, Telemetry.to_jsonl(rec))  # EARS-FLOW-044
-      push_to_grafana([rec])                                   # EARS-FLOW-097
+      append_line!(@telemetry_path, Telemetry.to_jsonl(rec))  # EARS-FLOW-044/097 (the sink)
       total
     end
 
@@ -175,7 +161,7 @@ module FlowMcp
       draft
     end
 
-    # ── ingest ──────────────────────────────────────────────────────────────────
+    # ── ingest (idempotent, NOT journaled) ──────────────────────────────────────
 
     def ingest_roadmap(md)
       apply_roadmap(History.parse_roadmap(md))
@@ -188,59 +174,75 @@ module FlowMcp
 
     private
 
+    # Build in-memory items/edges from the tree. The tree owns identity, so this is
+    # NOT journaled (no event growth across restarts, EARS-FLOW-088) and is
+    # non-clobbering: an item already present (e.g. from a prior ingest) keeps its
+    # runtime fields; only title + status are refreshed from the tree.
     def apply_roadmap(roadmap)
-      events = []
       roadmap.items.each do |item|
-        @flow.upsert_item(Item.new(item.id, item.title, item.model))
-        # status is part of identity on the board; set on the just-upserted item
-        # (it is GO, so advance_status never refuses here).
-        @flow.advance_status(item.id, item.status)
-        events << Event.item_upserted(item.id, item.title)
+        @flow.upsert_item(Item.new(item.id, item.title, item.model)) unless @flow.contains?(item.id)
+        existing = @flow.get(item.id)
+        existing.title = item.title
+        existing.status = item.status # tree owns status; bypasses the WAIT gate
       end
-      roadmap.edges.each do |edge|
-        begin
-          @flow.add_connection(edge.from, edge.to)  # refused edge -> skip (EARS-FLOW-086)
-          events << Event.connection_added(edge.from, edge.to)
-        rescue GraphError
-          next
-        end
-      end
-      events.each { |ev| commit(ev) }
+      roadmap.edges.each { |edge| safe { @flow.add_connection(edge.from, edge.to) } } # refused edge -> skip
       roadmap.items.length
     end
 
-    # Append the event, then re-render the markdown board, under the one writer.
+    # Append to the log + memory, refresh the annotation index, re-render the board —
+    # all through the one writer.
     def commit(event)
       append_line!(@jsonl_path, Event.to_jsonl(event))
+      @events << event
+      index_annotation(event)
       write_markdown!
       nil
     end
 
-    def replay!
-      return unless File.exist?(@jsonl_path)
+    def index_annotation(event)
+      @annotations[event["id"]] << event["text"] if event["kind"] == "annotated"
+    end
+
+    # Parse the log file into events (skip blanks; a malformed/unknown-kind line
+    # raises, aborting the open — EARS-FLOW-091).
+    def load_events
+      out = []
+      return out unless File.exist?(@jsonl_path)
 
       File.foreach(@jsonl_path) do |line|
         s = line.strip
         next if s.empty?
 
-        apply_event(Event.from_jsonl(s))  # malformed -> raises, aborts open (EARS-FLOW-091)
+        out << Event.from_jsonl(s)
       end
+      out
     end
 
-    # Best-effort replay of one event (EARS-FLOW-090). A logged verb the domain
-    # would now refuse is simply skipped rather than aborting replay.
+    # Apply one logged event onto the flow during replay (EARS-FLOW-090). Replay is
+    # non-clobbering (item_upserted only creates if absent) and deterministic (spend
+    # uses the stored ancestor set). A logged verb the domain would now refuse is
+    # skipped rather than aborting replay.
     def apply_event(ev)
       case ev["kind"]
       when "item_upserted"
-        @flow.upsert_item(Item.new(ItemId.new(ev["id"]), ev["title"], "claude-sonnet-4-6"))
+        id = ItemId.new(ev["id"])
+        @flow.upsert_item(Item.new(id, ev["title"], "claude-sonnet-4-6")) unless @flow.contains?(id)
       when "gate_set"
         safe { @flow.set_gate(ItemId.new(ev["id"]), ev["gate"]) }
       when "status_posted"
-        safe { @flow.advance_status(ItemId.new(ev["id"]), ev["status"]) }
+        # The tree owns status (post_status writes back, ingest re-reads), so replay
+        # is a no-op in tree mode (never reverts a tree edit). With no tree there is
+        # nothing to own it, so apply it to keep status durable.
+        unless @roadmap_tree
+          item = @flow.get(ItemId.new(ev["id"]))
+          item.status = ev["status"] if item && STATUSES.include?(ev["status"])
+        end
       when "spend_appended"
         id = ItemId.new(ev["id"])
         safe { @flow.append_spend(id, ev["delta"]) }
-        Telemetry.ancestors(@flow, id).each { |a| safe { @flow.accrue_tokens(a, ev["delta"]) } }
+        ancs = ev["ancestors"] ? ev["ancestors"].filter_map { |a| ItemId.parse(a) }
+                               : Telemetry.ancestors(@flow, id) # legacy logs
+        ancs.each { |a| safe { @flow.accrue_tokens(a, ev["delta"]) } }
       when "model_set"
         safe { @flow.set_model(ItemId.new(ev["id"]), ev["model"]) }
       when "connection_added"
@@ -249,7 +251,9 @@ module FlowMcp
         safe { @flow.remove_connection(ItemId.new(ev["from"]), ItemId.new(ev["to"])) }
       when "rewrite_requested"
         safe { @flow.bump_draft(ItemId.new(ev["id"])) }
-        # annotated / sys_msg are no-ops on in-memory state (EARS-FLOW-090)
+      when "annotated"
+        @annotations[ev["id"]] << ev["text"] # rebuild the in-memory index
+        # sys_msg is a no-op on in-memory state (EARS-FLOW-090)
       end
     end
 
@@ -259,7 +263,8 @@ module FlowMcp
       nil
     end
 
-    # Write the id->gate map atomically (sorted keys) (EARS-FLOW-092).
+    # Write the id->gate map atomically (sorted keys) (EARS-FLOW-092). A
+    # human-readable external view; the event log is the authoritative gate record.
     def persist_gates!
       map = {}
       @flow.items_in_order.sort_by { |i| i.id.to_s }.each { |i| map[i.id.to_s] = i.gate }
@@ -385,20 +390,5 @@ module FlowMcp
     end
 
     def now_millis = (Time.now.to_f * 1000).to_i
-
-    # Best-effort telemetry push (EARS-FLOW-097). Absent GRAFANA_URL is a pure
-    # no-op; a present endpoint resolves the payload but does not transmit (the
-    # ledger is the source of truth, a spend never fails on the push). Recorded
-    # for test observability.
-    def push_to_grafana(records)
-      base = ENV["GRAFANA_URL"]
-      if base.nil? || base.empty?
-        @grafana_pushes << :no_endpoint
-        return :no_endpoint
-      end
-      _payload = Telemetry.grafana_payload(records) # built, not transmitted
-      @grafana_pushes << :attempted
-      :attempted
-    end
   end
 end

@@ -64,10 +64,10 @@ Feature: Startup, configuration and roadmap ingest
   # --- startup ordering ---
 
   @EARS-FLOW-077 @EARS-FLOW-078
-  Scenario: gate restore runs after ingest so a restored WAIT survives
+  Scenario: startup is ingest then replay, so a runtime WAIT survives a restart
     Given a roadmap tree with item 1 "Alpha" in folder "do"
-    And the gates sidecar contains {"item-1": "wait"}
-    When the server starts with that tree as the roadmap source
+    And item "item-1" was set to WAIT in a previous run (a gate_set event is in the log)
+    When the server starts with that tree as the roadmap source (ingest then replay)
     Then item "item-1" has gate "wait"
 
   # --- graceful degradation (unhappy) ---

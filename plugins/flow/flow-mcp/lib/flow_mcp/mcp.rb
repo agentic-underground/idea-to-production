@@ -83,10 +83,9 @@ module FlowMcp
         ok(id, { "message" => "hello from the flow MCP", "version" => server_version,
                  "items" => items, "source" => store.roadmap_source&.to_s })
       when "list_items"
-        events = store.read_events
         groups = { "pending" => { "wait" => [], "go" => [] }, "in_progress" => [], "done" => [] }
         flow.items_in_order.each do |i|
-          v = item_json(i, deps_for(i, flow.edges), annotations_for(i, events))
+          v = item_json(i, deps_for(i, flow.edges), store.annotations_for(i.id))
           case i.status
           when "do"   then groups["pending"][i.gate == "wait" ? "wait" : "go"] << v
           when "doing" then groups["in_progress"] << v
@@ -99,8 +98,7 @@ module FlowMcp
         item = flow.get(item_id)
         return rpc_error(id, -32004, "unknown item", { "error" => "unknown" }) unless item
 
-        events = store.read_events
-        ok(id, { "item" => item_json(item, deps_for(item, flow.edges), annotations_for(item, events)) })
+        ok(id, { "item" => item_json(item, deps_for(item, flow.edges), store.annotations_for(item.id)) })
       when "set_wait_go"
         item_id = arg_id(args, "id")
         gate = arg_enum(args, "gate", GATES)
@@ -248,10 +246,6 @@ module FlowMcp
 
     def deps_for(item, edges)
       edges.select { |e| e.from == item.id }.map { |e| e.to.to_s }
-    end
-
-    def annotations_for(item, events)
-      events.select { |e| e["kind"] == "annotated" && e["id"] == item.id.to_s }.map { |e| e["text"] }
     end
 
     # ── response builders ────────────────────────────────────────────────────────

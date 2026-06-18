@@ -13,11 +13,14 @@ module FlowMcp
     module_function
 
     # Boot from CLI args and serve until EOF. Returns the process exit code.
+    # Startup is ingest→replay (EARS-FLOW-077): open an empty store, ingest the tree
+    # (which owns item identity), then replay the event log (which owns runtime state
+    # — gate/tokens/model/draft — and is layered on top without clobbering).
     def run(argv, input: $stdin, output: $stdout)
       cfg = Config.from_args(argv)
       store = Store.open(cfg.data_dir)
       ingest_source(store, cfg)
-      store.restore_gates
+      store.replay!
       serve(store, input, output)
       0
     end
