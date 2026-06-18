@@ -2,9 +2,16 @@
 
 [Model Context Protocol](https://modelcontextprotocol.io) servers give agents real, interactive
 capabilities beyond text + Bash. The marketplace ships **four** — three keyless third-party launchers
-(Context7 takes an optional rate-limit key) and its own first-party **flow-mcp** (a retrieved,
-pinned, SHA256-verified Rust binary) — declared in each plugin's root `.mcp.json`, plus
+(Context7 takes an optional rate-limit key) and its own first-party **flow-mcp** (an interpreted **Ruby**
+server — Ruby ≥ 3.3.8, standard library only) — declared in each plugin's root `.mcp.json`, plus
 documented optional extras.
+
+> **Language choice — do NOT compile a plugin MCP.** Write a plugin's MCP server in an **interpreted**
+> language (Ruby/Python/Node), never a compiled one (Rust/Go/…). The marketplace shipped `flow-mcp` as a
+> pinned Rust binary first and it was chronically broken — release-sync friction, stale binary caches,
+> undead binaries, zero call visibility — so it was re-homed to Ruby. If you are scaffolding an MCP and
+> reach for a compiled language, read the post-mortem first:
+> [`../plugins/foundry/knowledge/architecture/mcp-language-choice.md`](../plugins/foundry/knowledge/architecture/mcp-language-choice.md).
 
 ## How a plugin ships an MCP server
 
@@ -25,20 +32,18 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
   `enabledMcpjsonServers` in settings, but a **plugin-shipped** server (like `flow-mcp`) **cannot** —
   no setting, `claude mcp` subcommand, or launch flag (incl. `--dangerously-skip-permissions`, which
   gates *tools*, not MCP-server trust) pre-approves it. The one-time interactive approval is mandatory
-  by design. flow smooths this: it pre-warms the `flow-mcp` binary and offers
-  **`/flow:flow-setup`** to walk + verify the approval (see its [README](../plugins/flow/flow-mcp/README.md#finishing-the-install-the-smooth-path)).
+  by design. flow smooths this: it detects whether a compliant Ruby is present and offers
+  **`/flow:flow-setup`** to walk + verify the approval (see its [README](../plugins/flow/flow-mcp/README.md#finishing-the-install)).
 - **Pinned for reproducibility.** The three third-party servers fetch and execute remote code at
   launch, so the shipped configs pin an **explicit version** (never a floating `@latest`) — a fetched
   server can't change underneath you. The current pins: `@playwright/mcp@0.0.75`,
   `@upstash/context7-mcp@3.1.0`, `uvx mcp-server-fetch@2026.6.4`.
   `scripts/verify-prereqs.sh` check K asserts every ephemeral-runner `.mcp.json` server carries such a
-  pin. **`flow-mcp` is first-party and the rule still holds**: a resident-binary command (so check K
-  exempts it) that runs a **pinned release** — the launcher reads the exact tag from
-  `flow-mcp/bin/RELEASE` and verifies each retrieved asset against the **committed** `bin/SHA256SUMS`,
-  refusing any binary whose digest doesn't match. Every machine converges on one SHA-verified binary;
-  a release is adopted only by a reviewed PR that bumps the pin (the determinism the earlier
-  latest-tracking launcher gave up — see the
-  [flow-mcp README](../plugins/flow/flow-mcp/README.md#no-rust-toolchain-required--the-launcher-retrieves-a-prebuilt-binary)).
+  pin. **`flow-mcp` is exempt because it is not fetched**: it is a resident command — the launcher
+  `flow-mcp/bin/flow-mcp` finds the host's Ruby (≥ 3.3.8) and execs the source server. There is no
+  package to pin, no release to download, no checksum to verify — an interpreted server has no
+  artifact-drift (see the [flow-mcp README](../plugins/flow/flow-mcp/README.md#the-launcher) and the
+  [language-choice post-mortem](../plugins/foundry/knowledge/architecture/mcp-language-choice.md)).
 - Manual fallback (no plugin): `claude mcp add playwright -- npx -y @playwright/mcp@0.0.75`.
 
 ## Shipped by the marketplace
@@ -48,7 +53,7 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
 | `fetch` | market-scanner, ideator | `uvx mcp-server-fetch@2026.6.4` | `mcp__fetch__*` | Keyless web research: fetch a URL and extract it as **markdown in chunks** — competitor pricing, docs, forum threads. Grounds the discovery scorecard / IDEA package in real evidence. |
 | `context7` | foundry | `npx -y @upstash/context7-mcp@3.1.0` | `mcp__context7__*` | **Version-specific** library docs + examples for 9,000+ libraries, injected into context — handlers code against the current API, not the training cutoff. |
 | `playwright` | foundry, atelier | `npx -y @playwright/mcp@0.0.75` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. foundry uses it for STORY feedback; atelier for `/ui-review` crawl + a11y snapshot. |
-| `flow-mcp` | flow | `${CLAUDE_PLUGIN_ROOT}/flow-mcp/bin/flow-mcp` — a launcher that retrieves the **pinned** prebuilt binary (tag in `bin/RELEASE`) from GitHub Releases and SHA256-verifies it against the **committed** `bin/SHA256SUMS` (no Rust toolchain on the destination; source-builds only as a dev fallback) | `mcp__flow-mcp__*` | The roadmap flow board's MCP surface. `render_roadmap` answers "what's on the roadmap" by local compute (~0 LLM tokens); `list_items`/`post_status`/`set_wait_go`/`append_spend`/… read and carry roadmap items. **First-party** — the marketplace's own Rust binary, not a fetched package. |
+| `flow-mcp` | flow | `${CLAUDE_PLUGIN_ROOT}/flow-mcp/bin/flow-mcp` — a launcher that finds the host's **Ruby ≥ 3.3.8** and execs the interpreted server `exe/flow-mcp` (stdlib only; nothing fetched, pinned, or built). No compliant Ruby → it points at the `/flow:flow-by-hand` markdown fallback. | `mcp__flow-mcp__*` | The roadmap flow board's MCP surface. `render_roadmap` answers "what's on the roadmap" by local compute (~0 LLM tokens); `list_items`/`post_status`/`set_wait_go`/`append_spend`/… read and carry roadmap items. **First-party** — the marketplace's own Ruby server, not a fetched package. |
 
 Prereqs: `fetch` needs `uv`/`uvx`; `context7` + `playwright` need `node`/`npx` (Playwright's
 browser auto-downloads on first use). All three run **keyless** — nothing to provision but the launcher

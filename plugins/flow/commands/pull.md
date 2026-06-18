@@ -24,7 +24,7 @@ definition, do not invent your own):
    are all already `done`.
 
 Use the flow-mcp `render_roadmap` / `list_items` verbs to read the tree (the same source `/flow report`
-uses); do not ad-hoc-scan unless the binary is stale (see [`flow.md`](flow.md) `ping`).
+uses); do not ad-hoc-scan unless the server returns empty on a populated tree (see [`flow.md`](flow.md) `ping`).
 
 ## 2. Refuse on empty or ambiguous — never guess
 

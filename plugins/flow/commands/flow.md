@@ -24,8 +24,9 @@ if it's not in your tool list, `ToolSearch` for `flow-mcp__render_roadmap` first
 verbatim — it groups items by stage at ~0 LLM tokens. Then, for any item carried this session, append
 its **who / what / cost** (the `annotate` text and `append_spend` total you wrote on carry).
 
-If `render_roadmap` returns empty while `.i2p/roadmap/` has files on disk, the pinned MCP binary is
-stale — call **`ping`** (below) to confirm, then fall back to scanning the tree directly: list each
+If `render_roadmap` returns empty while `.i2p/roadmap/` has files on disk, call **`ping`** (below — it
+reports `version`/`items`/`source`) to diagnose: ensure Ruby >= 3.3.8 and that flow-mcp is approved in
+`/mcp`. Then fall back to scanning the tree directly (or the `/flow:flow-by-hand` runbook): list each
 lane folder and its `.md` items. Never print an empty/misleading report when the tree is non-empty.
 
 ## `carry <item> [to <stage>]` — advance one item
@@ -56,9 +57,10 @@ and pass the item id as the slug **`item-N`** (the numeric tree id `N` prefixed 
 ## `ping` / `hello` — MCP health check
 
 Call the MCP verb **`ping`** and print its `message` ("hello from the flow MCP") plus `version`,
-`items`, and `source`. **Flag staleness:** if `items` is 0 (or `source` is null) while `.i2p/roadmap/`
-has files on disk, the pinned MCP binary is stale — the fix is `/flow:flow-setup` to
-re-cache and re-verify. If you have no `mcp__…__flow-mcp__*` tools at all, it isn't connected —
+`items`, and `source`. **Diagnose an empty board:** if `items` is 0 (or `source` is null) while
+`.i2p/roadmap/` has files on disk, ensure Ruby >= 3.3.8 and that flow-mcp is approved in `/mcp` — the fix
+is `/flow:flow-setup` to confirm Ruby and re-verify the connection (or operate by hand via
+`/flow:flow-by-hand`). If you have no `mcp__…__flow-mcp__*` tools at all, it isn't connected —
 restart Claude Code after install/update, then `/mcp` and approve `flow-mcp`.
 
 ```bash

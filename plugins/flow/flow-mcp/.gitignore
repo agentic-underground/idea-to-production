@@ -1,4 +1,2 @@
-/target
-/static/node_modules
-/static/coverage
+# flow-mcp runtime state (the server writes its event log / board / sidecars here).
 /.flow/

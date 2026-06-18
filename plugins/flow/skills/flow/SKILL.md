@@ -28,9 +28,10 @@ verbs rather than paraphrasing the model (a recurring drift this skill must not 
 
 Render the current value flow. Call the MCP verb **`render_roadmap`** (a ~0-token rendered table grouped
 by stage) and print it verbatim; for items carried this session, append the **who / what / cost** you
-recorded. If it returns empty while the tree is non-empty, the pinned binary is stale — `ping` to
-confirm, then fall back to scanning the lane folders directly. Never emit an empty report over a
-non-empty tree.
+recorded. If it returns empty while the tree is non-empty, `ping` to diagnose (it reports
+`version`/`items`/`source`; ensure Ruby >= 3.3.8 and that flow-mcp is approved in `/mcp`), then fall back
+to scanning the lane folders directly (or the `/flow:flow-by-hand` runbook). Never emit an empty report
+over a non-empty tree.
 
 ## `/flow carry <item> [to <stage>]`
 
@@ -56,8 +57,9 @@ by hand. Pass ids as the slug **`item-N`**.
 
 ## `/flow ping`
 
-MCP health check — prints the server `message`, `version`, `items`, and `source`, and flags a stale
-pinned binary (fix: `/flow:flow-setup`).
+MCP health check — prints the server `message`, `version`, `items`, and `source`; an empty board on a
+populated tree means flow-mcp isn't serving it (fix: `/flow:flow-setup` to confirm Ruby >= 3.3.8 and the
+`/mcp` approval).
 
 ## Roadmap resolution
 
@@ -73,8 +75,8 @@ The `/flow` surface is a **thin command layer over the `flow-mcp` MCP verbs**: t
 writer of the roadmap markdown + JSONL event log. They are **never typed directly** (`/mcp__…` is not a
 command); `/flow`, `/flow:pull`, and `/flow:flow-setup` *call* them. This is the binding map (folded here
 from the slash-command catalog's MCP appendix so the surface and its backend live in one place); it
-matches the 14 verbs shipped in [`../../flow-mcp/src/mcp.rs`](../../flow-mcp/src/mcp.rs) exactly — a
-documented verb that is not in the binary (or vice versa) is drift to reconcile, never a phantom.
+matches the 14 verbs shipped in [`../../flow-mcp/lib/flow_mcp/mcp.rb`](../../flow-mcp/lib/flow_mcp/mcp.rb) exactly — a
+documented verb that is not in the server (or vice versa) is drift to reconcile, never a phantom.
 
 **Read verbs** (no mutation — safe, ~0 LLM tokens):
 
@@ -85,7 +87,7 @@ documented verb that is not in the binary (or vice versa) is drift to reconcile,
 | `get_item` | One item incl. deps + annotations + **gate** | `/flow carry` (gate check), `/flow:pull` |
 | `list_events` | The append-only JSONL event log (optional `kind` filter) | flow telemetry / audit |
 | `validate_connection` | Check a `from→to` dependency edge without writing | dependency-graph guard |
-| `ping` | Health check — `message` · `version` · `items` · `source`; flags a stale pinned binary | `/flow ping`, `/flow:flow-setup` |
+| `ping` | Health check — `message` · `version` · `items` · `source`; diagnoses an empty board on a populated tree | `/flow ping`, `/flow:flow-setup` |
 
 **Mutating verbs** (the writer path — the server moves files + rewrites front-matter itself, so callers
 never `git mv` or hand-edit):
