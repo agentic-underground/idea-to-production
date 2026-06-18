@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+# Dev tasks for the flow-mcp Ruby reference. Runs on bare Debian-13 system Ruby
+# (minitest is bundled; no `gem install`, no `bundle` required). On the fleet,
+# bundler — if ever needed — is `bundle3.3`, never bare `bundle`.
+
+require "rake/testtask"
+
+Rake::TestTask.new(:test) do |t|
+  t.libs << "test" << "lib"
+  t.test_files = FileList["test/test_*.rb"]
+  t.warning = false
+end
+
+desc "Run the test suite with line+branch coverage (stdlib Coverage)"
+task :coverage do
+  ruby "test/cov_report.rb"
+end
+
+desc "stdio smoke: boot the server and exchange a few JSON-RPC messages"
+task :smoke do
+  sh "ruby", "test/smoke.rb"
+end
+
+task default: :coverage

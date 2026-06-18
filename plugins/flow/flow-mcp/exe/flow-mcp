@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# flow-mcp stdio entrypoint. Resolves lib/ relative to this file so it runs the
+# same whether invoked directly or via the bin/flow-mcp launcher. Top-level
+# rescue emits a full backtrace to stderr (EARS-FLOW-096) — the visibility the
+# retired compiled build lacked — and exits non-zero.
+
+$LOAD_PATH.unshift(File.expand_path("../lib", __dir__))
+
+require "flow_mcp"
+
+begin
+  exit FlowMcp::Server.run(ARGV)
+rescue FlowMcp::ConfigError => e
+  warn "flow-mcp: configuration error: #{e.message}"
+  exit 2
+rescue StandardError => e
+  warn "flow-mcp: fatal: #{e.class}: #{e.message}"
+  warn e.backtrace.join("\n")
+  exit 1
+end
