@@ -1,71 +1,61 @@
 #!/usr/bin/env bash
-# flow-mcp-onboard.sh — SessionStart hook. Two jobs, both non-blocking and fail-silent:
+# flow-mcp-onboard.sh — SessionStart hook for the Ruby flow-mcp. Non-blocking,
+# fail-silent, always exits 0 (verify-prereqs L). Two jobs:
 #
-#   1. PRE-WARM the flow-mcp MCP binary in the background, so when the user approves
-#      the server it starts instantly (no first-call download/compile that reads as a
-#      transient "connecting/failed" in /mcp). Retrieve-only — never a cargo build.
-#   2. A PROACTIVE, INSTRUCTIONAL SETUP OFFER toward finishing the one-time MCP approval
-#      (item [108] — "if this needs user-intervention to set up, the user must be prompted
-#      with instructions"). The visible message is a splash; the real work is the
-#      additionalContext, which tells the agent to RECONCILE against its own mcp__flow-mcp__*
-#      tools — stay silent when connected, guide with step-by-step instructions when not.
-#      Hooks cannot see MCP approval state, so the agent's tool list is the reliable signal.
-#      Mirrors the i2p offer scripts' opt-out discipline: a DURABLE decline marker under
-#      ~/.claude/hook-state suppresses the offer forever; a per-version sentinel keeps an
-#      already-onboarded user from being re-offered every session.
-#
-# Modelled on i2p/hooks/offer-statusline.sh + offer-welcome.sh (opt-out markers). Always
-# exits 0 (verify-prereqs L).
+#   1. A STANDING routing rule (every session, invisible additionalContext): answer
+#      roadmap reads via the flow-mcp MCP verbs, not ad-hoc ls/cat of the tree.
+#   2. A PROACTIVE, INSTRUCTIONAL SETUP OFFER when the server is not yet connected.
+#      flow-mcp is now an interpreted Ruby server (>= 3.3.8, stdlib only) — there is
+#      NO binary to pre-warm. The offer adapts to whether a compliant Ruby exists:
+#        - Ruby present  -> finish the one-time /mcp approval (the server starts via
+#          `ruby`, instantly).
+#        - Ruby absent   -> install Ruby >= 3.3.8, OR use the markdown fallback
+#          runbook (/flow:flow-by-hand) now.
+#      Hooks cannot see MCP approval state, so the agent reconciles against its own
+#      mcp__…__flow-mcp__* tool list. Opt-out discipline mirrors the i2p offers: a
+#      durable marker under ~/.claude/hook-state suppresses it forever; a per-version
+#      sentinel keeps an onboarded user from being re-offered every session.
 set -uo pipefail
 
 # Drain the SessionStart payload; we don't need it.
 [ -t 0 ] || cat >/dev/null 2>&1 || true
 
-# In CI / automation there is no user to onboard and no point pre-fetching — skip both.
+# In CI / automation there is no user to onboard — skip.
 [ -n "${CI:-}" ] && exit 0
 
-# CLAUDE_PLUGIN_ROOT (set for plugin hooks) = the flow plugin root; else derive.
 PLUGIN="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
-LAUNCHER="$PLUGIN/flow-mcp/bin/flow-mcp"
 
-# 1. Pre-warm — detached, never blocks the hook's return. Its stderr (the resolve/verify
-#    reason) is APPENDED to the flow-mcp prewarm log so a failed pre-warm is diagnosable
-#    instead of vanishing (the launcher also self-logs structured reasons there, and surfaces
-#    them via `flow-mcp --doctor`); stdout is dropped.
-if [ -x "$LAUNCHER" ]; then
-  PREWARM_LOG="${XDG_CACHE_HOME:-$HOME/.claude}/flow-mcp/prewarm.log"
-  mkdir -p "$(dirname "$PREWARM_LOG")" 2>/dev/null || true
-  ( "$LAUNCHER" --ensure-binary >/dev/null 2>>"$PREWARM_LOG" & ) >/dev/null 2>&1 || true
-fi
+# Detect a Ruby >= 3.3.8 (the launcher's resolution, in miniature).
+RUBY_PRESENT=0
+for c in "${FLOW_MCP_RUBY:-}" ruby ruby3.3 ruby3.4 \
+         /opt/homebrew/opt/ruby/bin/ruby /usr/local/opt/ruby/bin/ruby \
+         "${HOME}/.rbenv/shims/ruby" "${HOME}/.asdf/shims/ruby"; do
+  [ -n "$c" ] || continue
+  command -v "$c" >/dev/null 2>&1 || continue
+  if "$c" -e 'exit(Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.3.8") ? 0 : 1)' >/dev/null 2>&1; then
+    RUBY_PRESENT=1
+    break
+  fi
+done
 
-# 2a. STANDING routing rule (R4 / item [92]) — emitted EVERY session as invisible
-#     additionalContext so the agent always answers roadmap reads via the MCP, not by
-#     ad-hoc ls/cat of the tree. This must NOT be one-time: a fresh agent in any later
-#     session needs the rule too (that routing gap is the defect [92] L2).
-ROUTING="To answer \"what's on the roadmap\" or read roadmap items, call the flow-mcp MCP verb render_roadmap (or list_items) — the ~0-token authoritative path. It is a DEFERRED tool: if mcp__…__flow-mcp__render_roadmap is not already in your tool list, ToolSearch for 'flow-mcp__render_roadmap' first. Do NOT ls/cat/head the .i2p/roadmap/ tree to answer roadmap questions; that raw-file path is the slow fallback. If render_roadmap returns empty against a non-empty .i2p/roadmap/ tree, the pinned MCP binary is stale — call the ping verb (it reports version/items/source) and suggest /flow:flow-setup."
+# 1. STANDING routing rule — emitted every session (a fresh agent needs it too).
+ROUTING="To answer \"what's on the roadmap\" or read roadmap items, call the flow-mcp MCP verb render_roadmap (or list_items) — the ~0-token authoritative path. It is a DEFERRED tool: if mcp__…__flow-mcp__render_roadmap is not already in your tool list, ToolSearch for 'flow-mcp__render_roadmap' first. Do NOT ls/cat/head the .i2p/roadmap/ tree to answer roadmap questions; that raw-file path is the slow fallback. If render_roadmap returns empty against a non-empty .i2p/roadmap/ tree, call the ping verb (it reports version/items/source) to diagnose."
 
-# 2b. PROACTIVE SETUP OFFER (the VISIBLE part) — one prominent, instructional prompt to
-#     finish the flow-mcp one-time setup when it is unconnected. Item [108]: the owner's
-#     directive is "if this needs user-intervention to set up, the user must be prompted
-#     with instructions." Two gates, both mirroring the i2p offer scripts' opt-out discipline:
-#       - a DURABLE opt-out marker  ~/.claude/hook-state/flow-flow-mcp-setup-optout  — a user
-#         who declined is NEVER re-prompted (the AGENT writes it, on the user's say-so, with
-#         the exact command embedded in the context below);
-#       - a per-version sentinel so an already-onboarded user isn't re-offered every session
-#         (a version bump re-offers once, in case a new setup step landed).
-#     Graceful: hooks cannot see MCP approval state, so the agent reconciles against its own
-#     mcp__…__flow-mcp__* tool list — when CONNECTED it stays silent and writes nothing; the
-#     visible splash and instructions only matter when the server is absent.
+# 2. PROACTIVE SETUP OFFER (visible splash + agent instructions), opt-out gated.
 VER="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PLUGIN/.claude-plugin/plugin.json" 2>/dev/null | head -n1)"
 STATE_DIR="${HOME}/.claude/hook-state"
 OPTOUT="${STATE_DIR}/flow-flow-mcp-setup-optout"
 SENTINEL="${STATE_DIR}/flow-flow-mcp-onboarded-${VER:-x}"
 SETUP_MSG=""
 SETUP_CTX=""
-# Opt-out wins: a declined user is never re-prompted (no splash, no setup context).
 if [ ! -e "$OPTOUT" ] && mkdir -p "$STATE_DIR" 2>/dev/null && mkdir "$SENTINEL" 2>/dev/null; then
-  SETUP_MSG="⬢ flow ships a roadmap MCP (flow-mcp) that answers \"what's on the roadmap\" instantly at ~0 tokens. If it isn't connected yet, finish the one-time setup: run /flow:flow-setup (or restart Claude Code, then /mcp → approve 'flow-mcp')."
-  SETUP_CTX=" SETUP OFFER (item [108], proactive + instructional): FIRST reconcile against your OWN tools — if you HAVE mcp__…__flow-mcp__* tools the server is already connected, so say NOTHING about setup and do not mention this offer. If you do NOT have them, the server isn't connected — surface the setup offer ONCE, with these exact steps: (a) restart Claude Code if flow was just installed/updated (a plugin's .mcp.json is read only at startup; /reload-plugins does NOT load new MCP servers); (b) run /mcp, find 'flow-mcp' (⏸ Pending approval), and approve it — this one-time approval cannot be pre-granted by any setting, CLI, or launch flag (a deliberate Claude Code security gate); the binary is pre-cached so it connects instantly; (c) /flow:flow-setup gives a guided, verified walkthrough that confirms the connection. ON DECLINE (user says \"don't ask again\" / \"stop offering this\"): run  mkdir -p '${OPTOUT}'  so this offer is never shown again — write ONLY under ~/.claude/hook-state, never into the user's repo. Never nag; raise this at most once."
+  if [ "$RUBY_PRESENT" = 1 ]; then
+    SETUP_MSG="⬢ flow ships a roadmap MCP (flow-mcp, a Ruby server — no binary). If it isn't connected yet, finish the one-time setup: restart Claude Code, then /mcp → approve 'flow-mcp'."
+    SETUP_CTX=" SETUP OFFER (proactive + instructional): FIRST reconcile against your OWN tools — if you HAVE mcp__…__flow-mcp__* tools the server is already connected, so say NOTHING about setup. If you do NOT have them, surface the offer ONCE with these exact steps: (a) restart Claude Code if flow was just installed/updated (a plugin's .mcp.json is read only at startup; /reload-plugins does NOT load new MCP servers); (b) run /mcp, find 'flow-mcp' (⏸ Pending approval), and approve it — this one-time approval cannot be pre-granted by any setting/flag (a Claude Code security gate). The server runs on the host's Ruby (>= 3.3.8), so it connects immediately. ON DECLINE (\"don't ask again\"): run  mkdir -p '${OPTOUT}'  — write ONLY under ~/.claude/hook-state, never the user's repo. Raise this at most once."
+  else
+    SETUP_MSG="⬢ flow ships a roadmap MCP (flow-mcp, a Ruby server). No Ruby >= 3.3.8 was found on this host. Either install Ruby >= 3.3.8, or use the markdown fallback runbook now: /flow:flow-by-hand."
+    SETUP_CTX=" SETUP OFFER (no compliant Ruby): FIRST reconcile against your OWN tools — if you already HAVE mcp__…__flow-mcp__* tools, say NOTHING. Otherwise surface ONCE: flow-mcp needs Ruby >= 3.3.8 (Debian/Ubuntu: 'apt-get install ruby'; macOS: 'brew install ruby'; or rbenv/asdf), after which restart Claude Code and approve 'flow-mcp' in /mcp. UNTIL Ruby is installed, operate the roadmap via the markdown fallback runbook — load the /flow:flow-by-hand skill and follow its per-verb procedure over the .flow/ files directly (same semantics, slower, no server). ON DECLINE (\"don't ask again\"): run  mkdir -p '${OPTOUT}'  — write ONLY under ~/.claude/hook-state. Raise this at most once."
+  fi
 fi
 
 CTX="${ROUTING}${SETUP_CTX}"
@@ -78,7 +68,6 @@ if command -v jq >/dev/null 2>&1; then
       '{hookSpecificOutput:{hookEventName:"SessionStart", additionalContext:$c}}'
   fi
 else
-  # No jq: emit the standing routing rule (ASCII-safe), drop the optional systemMessage.
-  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Answer roadmap questions via the flow-mcp MCP verb render_roadmap (ToolSearch for flow-mcp__render_roadmap if deferred); do not ls/cat the .i2p/roadmap/ tree. If it returns empty, the pinned binary is stale — call ping and run /flow:flow-setup."}}\n'
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Answer roadmap questions via the flow-mcp MCP verb render_roadmap (ToolSearch for flow-mcp__render_roadmap if deferred); do not ls/cat the .i2p/roadmap/ tree. If flow-mcp is not connected, ensure Ruby >= 3.3.8 then approve it in /mcp, or use the /flow:flow-by-hand fallback."}}\n'
 fi
 exit 0

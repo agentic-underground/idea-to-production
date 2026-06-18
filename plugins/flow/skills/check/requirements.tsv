@@ -1,11 +1,10 @@
 # name	probe-command	tier	install-hint
 # Canonical dependency manifest for FLOW. TAB-separated. See PREREQUISITES/.
-# FLOW degrades gracefully — the flow-mcp launcher resolves the pinned binary lazily; a missing
-# tool narrows a path (no retrieve, no source-build), it never serves a wrong roadmap answer.
+# FLOW degrades gracefully — when no Ruby >= 3.3.8 is present the flow-mcp server cannot run, but the
+# /flow:flow-by-hand markdown runbook operates the roadmap by hand. flow-mcp is a Ruby reference
+# (stdlib only, no gems): on the Debian-13 fleet the system `ruby` already satisfies the floor.
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled
-curl	command -v curl	recommended	apt install curl
-sha256sum	command -v sha256sum || command -v shasum	recommended	coreutils (sha256sum) or perl shasum — verify the pinned flow-mcp asset
-jq	command -v jq	recommended	apt install jq
-cargo	command -v cargo	optional	rustup.rs — dev/source-build fallback for flow-mcp when no pinned release fits this platform
-gh	command -v gh	optional	cli.github.com (inspect release assets / cut a flow-mcp pin)
+ruby	ruby -e 'exit(Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.3.8") ? 0 : 1)' || ruby3.3 -e 'exit 0'	required	apt install ruby (Debian 13 ships 3.3.8); macOS: brew install ruby; or rbenv/asdf — runs flow-mcp
+jq	command -v jq	recommended	apt install jq — parse the MCP/roadmap JSON in hooks
+gh	command -v gh	optional	cli.github.com — inspect repo/releases
