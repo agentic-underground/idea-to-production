@@ -196,8 +196,10 @@ class TestMcp < Minitest::Test
     assert(@store.snapshot.edges.any? { |e| e.from.to_s == "item-2" && e.to.to_s == "item-1" })
     # unknown dependency -> refused, nothing created
     assert_domain_error(call(@store, "create_item", { "title" => "X", "depends_on" => ["item-99"] }), -32000, "unknown")
-    # malformed dependency id -> invalid params
+    # malformed dependency id -> invalid params (string and non-string both -32602)
     assert_equal(-32602, call(@store, "create_item", { "title" => "X", "depends_on" => ["Bad Id"] })["error"]["code"])
+    assert_equal(-32602, call(@store, "create_item", { "title" => "X", "depends_on" => [5] })["error"]["code"])
+    assert_equal(-32602, call(@store, "create_item", { "title" => "X", "depends_on" => "item-1" })["error"]["code"])
     # missing title -> invalid params
     assert_equal(-32602, call(@store, "create_item", {})["error"]["code"])
     # delete

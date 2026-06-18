@@ -17,7 +17,9 @@ module FlowMcp
     module_function
 
     def item_upserted(id, title) = { "kind" => "item_upserted", "id" => id.to_s, "title" => title }
-    def item_created(id, title) = { "kind" => "item_created", "id" => id.to_s, "title" => title }
+    # `status` is carried so a created item's status survives restart even in
+    # no-tree mode (where the tree folder cannot own it) — EARS-FLOW-104/106.
+    def item_created(id, title, status) = { "kind" => "item_created", "id" => id.to_s, "title" => title, "status" => status }
     def item_deleted(id) = { "kind" => "item_deleted", "id" => id.to_s }
     def gate_set(id, gate) = { "kind" => "gate_set", "id" => id.to_s, "gate" => gate }
     def status_posted(id, status) = { "kind" => "status_posted", "id" => id.to_s, "status" => status }

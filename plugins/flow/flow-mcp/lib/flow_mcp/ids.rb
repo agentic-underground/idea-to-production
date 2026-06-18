@@ -19,7 +19,8 @@ module FlowMcp
     # Parse +candidate+ into an ItemId or raise IdError. The single construction
     # path; downstream code never re-checks the invariants.
     def initialize(candidate)
-      raise IdError, "item id must not be empty" if candidate.nil? || candidate.empty?
+      raise IdError, "item id must be a string" unless candidate.is_a?(String)
+      raise IdError, "item id must not be empty" if candidate.empty?
 
       got = candidate.length
       if got > MAX_LEN

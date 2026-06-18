@@ -176,7 +176,7 @@ module FlowMcp
       @flow.upsert_item(Item.new(id, title, DEFAULT_MODEL))
       @flow.get(id).status = status
       write_item_to_tree!(num, title, status, deps) if @roadmap_tree
-      commit(Event.item_created(id, title))
+      commit(Event.item_created(id, title, status))
       deps.each do |d|
         @flow.add_connection(id, d)
         commit(Event.connection_added(id, d))
@@ -259,9 +259,15 @@ module FlowMcp
     # skipped rather than aborting replay.
     def apply_event(ev)
       case ev["kind"]
-      when "item_upserted", "item_created"
+      when "item_upserted"
         id = ItemId.new(ev["id"])
         @flow.upsert_item(Item.new(id, ev["title"], DEFAULT_MODEL)) unless @flow.contains?(id)
+      when "item_created"
+        id = ItemId.new(ev["id"])
+        unless @flow.contains?(id) # tree mode: the tree already created it (and owns status)
+          @flow.upsert_item(Item.new(id, ev["title"], DEFAULT_MODEL))
+          @flow.get(id).status = ev["status"] if STATUSES.include?(ev["status"]) # no-tree: status survives
+        end
       when "item_deleted"
         @flow.remove_item(ItemId.new(ev["id"])) # remove-if-present (no-op if already gone)
       when "gate_set"
@@ -393,8 +399,12 @@ module FlowMcp
     # ── create / delete tree write-back (EARS-FLOW-104/105) ─────────────────────
 
     def write_item_to_tree!(num, title, status, deps)
+      # Collapse whitespace (incl. newlines) so the title can never break the flat
+      # front-matter fence — a multi-line / `---`-bearing title would otherwise
+      # corrupt the file and drop fields on re-ingest.
+      safe_title = title.gsub(/\s+/, " ").strip
       dep_str = deps.empty? ? "—" : deps.map { |d| "##{d.to_s.delete_prefix('item-')}" }.join(", ")
-      body = "---\nid: #{num}\ntitle: #{title}\nstatus: #{TREE_LABEL.fetch(status)}\n" \
+      body = "---\nid: #{num}\ntitle: #{safe_title}\nstatus: #{TREE_LABEL.fetch(status)}\n" \
              "depends_on: \"#{dep_str}\"\n---\n"
       dir = File.join(@roadmap_tree, TREE_FOLDER.fetch(status))
       FileUtils.mkdir_p(dir)

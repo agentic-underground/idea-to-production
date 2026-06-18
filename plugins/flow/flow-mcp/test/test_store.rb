@@ -283,6 +283,27 @@ class TestStore < Minitest::Test
     end
   end
 
+  def test_created_item_status_survives_restart_no_tree # @EARS-FLOW-104 @EARS-FLOW-106
+    with_tmpdir do |root|
+      s = Store.open(data_dir(root))
+      newid = s.create_item("Bravo", status: "doing") # no tree -> item_created carries status
+      assert_equal "item-1", newid
+      s2 = Store.open(data_dir(root)); s2.replay! # no ingest (no tree)
+      assert_equal "doing", s2.snapshot.get(iid("item-1")).status
+    end
+  end
+
+  def test_create_item_sanitizes_title_so_front_matter_round_trips # @EARS-FLOW-104
+    with_tmpdir do |root|
+      tree = build_tree(root, ["do", 1, "Alpha"])
+      s = reopen(root, tree: tree)
+      s.create_item("Bad\n---\ntitle: hijack", status: "do", depends_on: [iid("item-1")])
+      s2 = reopen(root, tree: tree) # re-ingest must not have lost depends_on to a broken fence
+      assert(s2.snapshot.edges.any? { |e| e.from.to_s == "item-2" && e.to.to_s == "item-1" })
+      refute_includes s2.snapshot.get(iid("item-2")).title, "\n"
+    end
+  end
+
   def test_delete_item_removes_file_prunes_deps_survives_restart # @EARS-FLOW-105 @EARS-FLOW-106
     with_tmpdir do |root|
       tree = File.join(root, ".i2p", "roadmap")
