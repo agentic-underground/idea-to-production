@@ -1,5 +1,5 @@
-# Covers: EARS-FLOW-096, EARS-FLOW-097, EARS-FLOW-099 .. EARS-FLOW-101 (observability, Grafana
-#         best-effort, Ruby floor, fallback runbook parity).
+# Covers: EARS-FLOW-096, EARS-FLOW-097, EARS-FLOW-099 .. EARS-FLOW-101 (observability, telemetry
+#         ledger as the single sink, Ruby floor, fallback runbook parity).
 
 Feature: Runtime, observability and the markdown fallback
 
@@ -13,13 +13,13 @@ Feature: Runtime, observability and the markdown fallback
     And the response is an error with code -32603
 
   @EARS-FLOW-097
-  Scenario: telemetry push is best-effort and absent GRAFANA_URL never fails a spend
+  Scenario: a spend records to the telemetry ledger and never pushes externally
     Given a running flow-mcp with a temporary data directory
     And the store contains an item "item-a" titled "Alpha"
-    And GRAFANA_URL is unset
     When I call "append_spend" with {"id": "item-a", "delta": 10}
     Then the response result total is 10
-    And no telemetry push was attempted
+    And one telemetry record was appended to telemetry.jsonl
+    And no external telemetry endpoint is contacted
 
   # --- Ruby floor ---
 

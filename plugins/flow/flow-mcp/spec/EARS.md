@@ -235,10 +235,11 @@
 ## 13. Startup, configuration & ingest
 
 - **EARS-FLOW-077** — On startup the server SHALL, in order: open (creating if absent) the data
-  directory, replay the event log to reconstruct in-memory state, ingest the roadmap source, then
-  restore gates from the sidecar.
-- **EARS-FLOW-078** — Gate restoration SHALL run strictly after roadmap ingest, because ingesting an
-  item resets its gate to the GO default; restoring earlier would be overwritten.
+  directory and load the event log into memory, **ingest** the roadmap source to establish items, then
+  **replay** the event log to layer runtime state on top (ingest → replay).
+- **EARS-FLOW-078** — Replay SHALL run strictly **after** ingest, so the runtime fields the log carries
+  (gate, tokens, model, draft) are layered onto the freshly-ingested items and are not reset; gates are
+  restored by replaying `gate_set` events (the log is authoritative), not by reading the sidecar.
 - **EARS-FLOW-079** — The server SHALL resolve the data directory from `--data` (default `.flow`) and
   the roadmap source from `--roadmap`, and SHALL accept `--mcp` as a no-op.
 - **EARS-FLOW-080** — IF a known flag is supplied without its value, THEN THE SYSTEM SHALL exit with a
@@ -263,25 +264,32 @@
 
 ## 14. Persistence & replay
 
-- **EARS-FLOW-088** — The append-only event log (`events.jsonl`, one `kind`-tagged JSON object per
-  line) SHALL be the authoritative record of mutations; the markdown board, gate sidecar, and
-  telemetry ledger SHALL be derived artifacts.
-- **EARS-FLOW-089** — WHEN any mutation commits, THE SYSTEM SHALL append its event to `events.jsonl`
-  and re-render the markdown board (`ROADMAP.flow.md`) under a single serialized writer so the files
-  never interleave or corrupt.
-- **EARS-FLOW-090** — On open, THE SYSTEM SHALL replay each logged event to rebuild state; a replayed
-  `spend_appended` SHALL re-apply both the own-spend and the ancestor roll-up, and `annotated` /
-  `sys_msg` events SHALL be no-ops on in-memory state.
-- **EARS-FLOW-091** — A blank line in `events.jsonl` SHALL be skipped during replay; a line that is
-  not a valid event — malformed JSON **or** a recognised-JSON object with an unknown event `kind` —
-  SHALL abort the open with an error rather than silently dropping state.
+- **EARS-FLOW-088** — Ownership: the `.i2p/roadmap/` tree OWNS item identity (existence, title, status,
+  declared deps) and is re-ingested each boot; the append-only event log (`events.jsonl`, one
+  `kind`-tagged JSON object per line) OWNS runtime state (gate, tokens, model, draft, runtime edge
+  mutations, annotations). The markdown board, gate sidecar, and telemetry ledger SHALL be derived
+  artifacts.
+- **EARS-FLOW-089** — WHEN any **runtime mutation** commits, THE SYSTEM SHALL append its event to
+  `events.jsonl` and re-render the markdown board (`ROADMAP.flow.md`) under a single serialized writer
+  so the files never interleave or corrupt. **Ingest SHALL NOT journal events** (the tree is the
+  durable record of identity), so the log does not grow across restarts.
+- **EARS-FLOW-090** — Replay SHALL be non-clobbering and deterministic: an `item_upserted` SHALL create
+  an item only if absent (never reset an existing item's runtime fields); a `spend_appended` SHALL
+  re-apply the own-spend plus the roll-up onto its **stored ancestor set**; `status_posted` SHALL be a
+  no-op WHERE a tree owns the status (and apply it only when there is no tree); `annotated` SHALL
+  rebuild the annotation index; `sys_msg` SHALL be a no-op.
+- **EARS-FLOW-091** — A blank line in `events.jsonl` SHALL be skipped on load; a line that is not a
+  valid event — malformed JSON **or** a recognised-JSON object with an unknown event `kind` — SHALL
+  abort the open with an error rather than silently dropping state.
 - **EARS-FLOW-092** — The `gates.json` sidecar SHALL be a single JSON object mapping item id → `"wait"`
-  / `"go"`, serialized in sorted-key order.
-- **EARS-FLOW-093** — IF `gates.json` is missing, empty, or malformed on startup, THEN THE SYSTEM
-  SHALL leave every gate at the GO default and (for a malformed file) emit a warning, never failing
-  startup.
-- **EARS-FLOW-094** — WHILE restoring gates, IF an id in `gates.json` is not a current item, THEN THE
-  SYSTEM SHALL silently discard that entry.
+  / `"go"`, serialized in sorted-key order, written on every gate change as a human-readable external
+  view.
+- **EARS-FLOW-093** — The `gates.json` sidecar SHALL NOT be read on startup: gate state is restored by
+  replaying `gate_set` events (the event log is authoritative). A missing, empty, or malformed sidecar
+  SHALL therefore never affect startup.
+- **EARS-FLOW-094** — Runtime state recorded via MCP verbs — token spend (with its ancestor roll-up),
+  assigned model, draft count, and WAIT/GO gate — SHALL survive a restart that re-ingests the tree
+  (replay layers it back onto the ingested items).
 - **EARS-FLOW-095** — A store-level IO or serialization failure on a write path SHALL surface as
   `error.code = -32603` (internal error) and SHALL NOT be conflated with a domain refusal.
 
@@ -290,13 +298,11 @@
 - **EARS-FLOW-096** — The server SHALL write structured diagnostics (warnings, ingest counts, startup
   state) to stderr, and SHALL emit a full backtrace to stderr on an unexpected internal error, so any
   fault is investigable from the live session (the visibility the retired compiled build lacked).
-- **EARS-FLOW-097** — WHERE the environment variable `GRAFANA_URL` is set, THE SYSTEM SHALL resolve
-  the Loki push endpoint and build the push payload, and MAY then transmit it best-effort
-  (fire-and-forget). IF `GRAFANA_URL` is unset, THEN no push is prepared (a pure no-op). IF a
-  transmission is attempted and fails, THEN THE SYSTEM SHALL continue without error. In every case the
-  telemetry ledger — not Grafana — remains the source of truth, and a spend SHALL NEVER fail on
-  account of the push. (The retired Rust reference built the payload but did not transmit; the `MAY`
-  leaves a port free to actually send without diverging from the contract.)
+- **EARS-FLOW-097** — Telemetry SHALL be recorded to the append-only ledger `telemetry.jsonl` (one
+  record per spend), which is the single telemetry sink. The server SHALL NOT push to any external
+  endpoint, and a spend SHALL NEVER fail on account of telemetry. (The retired Rust reference carried a
+  Grafana/Loki push shim that built a payload but never transmitted; it is removed — the ledger is the
+  sink.)
 - **EARS-FLOW-098** — The server's reported `version` SHALL identify the running build distinctly
   enough that `ping` can prove which build is live.
 
@@ -307,6 +313,15 @@
 - **EARS-FLOW-100** — IF no Ruby ≥ 3.3.8 is available on the host, THEN the launcher SHALL exit
   non-zero with an actionable message and SHALL point the operator at the markdown fallback runbook,
   rather than silently doing nothing.
-- **EARS-FLOW-101** — The markdown fallback runbook SHALL define, for each of the 14 verbs, a by-hand
-  procedure over the same on-disk files (`events.jsonl`, `gates.json`, `ROADMAP.flow.md`, the roadmap
-  tree) that yields the same resulting state this specification requires of the server.
+- **EARS-FLOW-101** — The markdown fallback runbook SHALL define, for each verb, a by-hand procedure
+  over the same on-disk files (`events.jsonl`, `gates.json`, `ROADMAP.flow.md`, the roadmap tree) that
+  yields the same resulting state this specification requires of the server.
+
+## 17. Restart integrity (no-growth · deterministic roll-up)
+
+- **EARS-FLOW-102** — Re-ingesting the same roadmap tree across restarts SHALL NOT grow the event log:
+  ingest is idempotent and unjournaled, so `events.jsonl` carries only runtime-mutation events and
+  `list_events` SHALL NOT accumulate duplicate `item_upserted`/`connection_added` entries per boot.
+- **EARS-FLOW-103** — A `spend_appended` event SHALL carry the transitive ancestor set used for its
+  roll-up, and replay SHALL apply that stored set (not a recomputation from the current graph), so a
+  restart reproduces the same rolled-up tallies even after intervening edge changes.

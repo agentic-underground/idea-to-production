@@ -20,8 +20,12 @@ module FlowMcp
     def gate_set(id, gate) = { "kind" => "gate_set", "id" => id.to_s, "gate" => gate }
     def status_posted(id, status) = { "kind" => "status_posted", "id" => id.to_s, "status" => status }
 
-    def spend_appended(id, delta, total)
-      { "kind" => "spend_appended", "id" => id.to_s, "delta" => delta, "total" => total }
+    # `ancestors` is the transitive-ancestor set at spend time, stored in the event
+    # so replay applies the exact historical roll-up rather than recomputing it from
+    # a later graph (EARS-FLOW-103).
+    def spend_appended(id, delta, total, ancestors)
+      { "kind" => "spend_appended", "id" => id.to_s, "delta" => delta, "total" => total,
+        "ancestors" => ancestors.map(&:to_s) }
     end
 
     def model_set(id, model) = { "kind" => "model_set", "id" => id.to_s, "model" => model }

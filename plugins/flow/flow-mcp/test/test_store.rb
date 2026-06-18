@@ -8,29 +8,83 @@ class TestStore < Minitest::Test
 
   def data_dir(root) = File.join(root, ".flow")
 
-  # ── persistence + replay (EARS-FLOW-088..091) ───────────────────────────────
+  # Reopen a store the way Server.run does: open (empty) -> ingest tree -> replay.
+  def reopen(root, tree: nil)
+    s = Store.open(data_dir(root))
+    s.ingest_roadmap_tree(tree) if tree
+    s.replay!
+    s
+  end
 
-  def test_spend_rollup_survives_restart # @EARS-FLOW-088 @EARS-FLOW-090
+  # ── persistence + replay (EARS-FLOW-088..094, 102, 103) ─────────────────────
+
+  # THE WART regression: runtime state (tokens + roll-up, model, draft) must
+  # survive a restart instead of being clobbered by re-ingest.
+  def test_runtime_state_survives_restart # @EARS-FLOW-090 @EARS-FLOW-094 @EARS-FLOW-103
     with_tmpdir do |root|
       s = Store.open(data_dir(root))
       seed(s, "child"); seed(s, "parent")
       s.mutate_connection("add", iid("child"), iid("parent"))
       s.append_spend(iid("child"), 100)
+      s.set_item_model(iid("child"), "claude-opus-4-8")
+      s.request_rewrite(iid("child"), "redo")
+      # the spend event carries its ancestor set (103)
+      spend = s.read_events.find { |e| e["kind"] == "spend_appended" }
+      assert_equal ["parent"], spend["ancestors"]
 
-      s2 = Store.open(data_dir(root))
+      s2 = reopen(root)
       assert_equal 100, s2.snapshot.get(iid("child")).tokens
-      assert_equal 100, s2.snapshot.get(iid("parent")).tokens
+      assert_equal 100, s2.snapshot.get(iid("parent")).tokens  # roll-up survived
+      assert_equal "claude-opus-4-8", s2.snapshot.get(iid("child")).model
+      assert_equal 1, s2.snapshot.get(iid("child")).draft
     end
   end
 
-  def test_annotate_and_sysmsg_are_noops_on_replay # @EARS-FLOW-090
+  # Replay uses the STORED ancestor set, not a recomputation from a graph the tree
+  # has since grown — so a restart reproduces the exact historical roll-up (103).
+  def test_replay_uses_stored_ancestors_not_current_graph # @EARS-FLOW-103
+    with_tmpdir do |root|
+      tree = File.join(root, ".i2p", "roadmap")
+      FileUtils.mkdir_p(File.join(tree, "do"))
+      File.write(File.join(tree, "do", "1.md"), "---\nid: 1\ntitle: Child\ndepends_on: \"#2\"\n---\n")
+      File.write(File.join(tree, "do", "2.md"), "---\nid: 2\ntitle: Parent\n---\n")
+      s = reopen(root, tree: tree)
+      s.append_spend(iid("item-1"), 100) # ancestors at spend time = [item-2]
+
+      # The tree grows a new dependency #3 AFTER the spend.
+      File.write(File.join(tree, "do", "3.md"), "---\nid: 3\ntitle: Epic\n---\n")
+      File.write(File.join(tree, "do", "1.md"), "---\nid: 1\ntitle: Child\ndepends_on: \"#2, #3\"\n---\n")
+
+      s2 = reopen(root, tree: tree)
+      assert_equal 100, s2.snapshot.get(iid("item-2")).tokens
+      assert_equal 0, s2.snapshot.get(iid("item-3")).tokens # NOT recomputed onto the new edge
+    end
+  end
+
+  # Re-ingesting the same tree across restarts must not append events (102).
+  def test_reingest_does_not_grow_the_log # @EARS-FLOW-088 @EARS-FLOW-102
+    with_tmpdir do |root|
+      tree = build_tree(root, ["do", 1, "Alpha"])
+      s = reopen(root, tree: tree)
+      s.append_spend(iid("item-1"), 5) # one genuine runtime event
+      log = File.join(data_dir(root), "events.jsonl")
+      before = File.readlines(log).count { |l| !l.strip.empty? }
+      2.times { reopen(root, tree: tree) }
+      after = File.readlines(log).count { |l| !l.strip.empty? }
+      assert_equal before, after, "re-ingest must not append events"
+      assert_equal 0, reopen(root, tree: tree).read_events.count { |e| e["kind"] == "item_upserted" }
+    end
+  end
+
+  def test_annotations_survive_restart_sysmsg_is_noop # @EARS-FLOW-090
     with_tmpdir do |root|
       s = Store.open(data_dir(root))
       seed(s, "child")
       s.append_sysmsg("hi")
       s.annotate(iid("child"), "note")
-      s2 = Store.open(data_dir(root))
+      s2 = reopen(root)
       assert_equal "do", s2.snapshot.get(iid("child")).status
+      assert_equal ["note"], s2.annotations_for(iid("child")) # index rebuilt on replay
     end
   end
 
@@ -84,31 +138,26 @@ class TestStore < Minitest::Test
     end
   end
 
-  def test_restore_missing_malformed_and_stale # @EARS-FLOW-093 @EARS-FLOW-094
+  def test_gates_restore_from_log_sidecar_not_read # @EARS-FLOW-093
     with_tmpdir do |root|
       s = Store.open(data_dir(root))
-      s.restore_gates # missing sidecar -> no-op, no raise
-      File.write(File.join(data_dir(root), "gates.json"), "{not json}")
-      out = capture_stderr { s.restore_gates }
-      assert_match(/malformed/, out)
-      # stale id discarded, known id applied
       seed(s, "item-a")
-      File.write(File.join(data_dir(root), "gates.json"), JSON.generate({ "ghost" => "wait", "item-a" => "wait" }))
-      s.restore_gates
-      assert_equal "wait", s.snapshot.get(iid("item-a")).gate
+      s.set_gate(iid("item-a"), "wait")
+      # corrupt the sidecar: it is a write-only external view and is never read on
+      # startup, so this must not affect restore (gates come from the event log).
+      File.write(File.join(data_dir(root), "gates.json"), "{not json}")
+      s2 = reopen(root)
+      assert_equal "wait", s2.snapshot.get(iid("item-a")).gate
     end
   end
 
-  def test_restore_runs_after_ingest_clobber # @EARS-FLOW-077 @EARS-FLOW-078
+  def test_runtime_wait_survives_ingest_then_replay # @EARS-FLOW-077 @EARS-FLOW-078
     with_tmpdir do |root|
-      tree = File.join(root, ".i2p", "roadmap")
-      FileUtils.mkdir_p(File.join(tree, "do"))
-      File.write(File.join(tree, "do", "01.md"), "---\nid: 1\ntitle: Alpha\nstatus: PENDING\n---\n")
-      s = Store.open(data_dir(root))
-      s.ingest_roadmap_tree(tree)            # upsert resets gate to go
-      File.write(File.join(data_dir(root), "gates.json"), JSON.generate({ "item-1" => "wait" }))
-      s.restore_gates                        # re-applies after ingest
-      assert_equal "wait", s.snapshot.get(iid("item-1")).gate
+      tree = build_tree(root, ["do", 1, "Alpha"])
+      s = reopen(root, tree: tree)
+      s.set_gate(iid("item-1"), "wait")      # runtime gate, logged
+      s2 = reopen(root, tree: tree)          # ingest (gate->go default) THEN replay (gate->wait)
+      assert_equal "wait", s2.snapshot.get(iid("item-1")).gate
     end
   end
 
@@ -190,9 +239,9 @@ class TestStore < Minitest::Test
     end
   end
 
-  # ── telemetry + grafana (EARS-FLOW-044/045/097) ─────────────────────────────
+  # ── telemetry ledger is the single sink (EARS-FLOW-044/045/097) ─────────────
 
-  def test_spend_appends_telemetry_record # @EARS-FLOW-044 @EARS-FLOW-045
+  def test_spend_appends_telemetry_record # @EARS-FLOW-044 @EARS-FLOW-045 @EARS-FLOW-097
     with_tmpdir do |root|
       s = Store.open(data_dir(root))
       seed(s, "child"); seed(s, "parent")
@@ -207,19 +256,6 @@ class TestStore < Minitest::Test
     end
   end
 
-  def test_grafana_attempted_when_endpoint_set # @EARS-FLOW-097
-    with_tmpdir do |root|
-      old = ENV["GRAFANA_URL"]
-      ENV["GRAFANA_URL"] = "http://localhost:3100"
-      s = Store.open(data_dir(root))
-      seed(s, "item-a")
-      s.append_spend(iid("item-a"), 10)
-      assert_equal [:attempted], s.grafana_pushes
-    ensure
-      old ? ENV["GRAFANA_URL"] = old : ENV.delete("GRAFANA_URL")
-    end
-  end
-
   def test_ingest_single_file_via_store # @EARS-FLOW-084 @EARS-FLOW-086
     with_tmpdir do |root|
       s = Store.open(data_dir(root))
@@ -227,18 +263,6 @@ class TestStore < Minitest::Test
       assert_equal 2, n
       assert s.snapshot.get(iid("item-1"))
       assert_operator s.snapshot.edges.length, :<=, 1 # one cyclic edge skipped by the graph validator
-    end
-  end
-
-  def test_grafana_no_endpoint_when_unset # @EARS-FLOW-097
-    with_tmpdir do |root|
-      old = ENV.delete("GRAFANA_URL")
-      s = Store.open(data_dir(root))
-      seed(s, "item-a")
-      s.append_spend(iid("item-a"), 10)
-      assert_equal [:no_endpoint], s.grafana_pushes
-    ensure
-      ENV["GRAFANA_URL"] = old if old
     end
   end
 

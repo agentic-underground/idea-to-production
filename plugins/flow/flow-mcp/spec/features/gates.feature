@@ -1,5 +1,5 @@
-# Covers: EARS-FLOW-023 .. EARS-FLOW-028 (set_wait_go), EARS-FLOW-092 .. EARS-FLOW-094 (gate sidecar
-#         + restore), and the warn-and-continue sidecar contract.
+# Covers: EARS-FLOW-023 .. EARS-FLOW-028 (set_wait_go), EARS-FLOW-092/093 (gate sidecar is a
+#         write-only external view; gates restore from the event log), warn-and-continue.
 
 Feature: WAIT/GO governance gate
 
@@ -41,22 +41,19 @@ Feature: WAIT/GO governance gate
     And no event was appended to the log
 
   @EARS-FLOW-093
-  Scenario: a malformed gates sidecar defaults all gates to GO without failing startup
+  Scenario: gate state is restored from the event log on restart (sidecar not read)
+    Given item "item-a" is in WAIT
+    When the server restarts (ingest then replay) with the same data directory
+    Then item "item-a" has gate "wait"
+
+  @EARS-FLOW-093
+  Scenario: a malformed gates sidecar does not affect startup (it is never read)
     Given the gates sidecar contains the bytes "{not valid json}"
     When the server restarts with the same data directory
     Then the server is healthy
-    And item "item-a" has gate "go"
-    And a warning was emitted to stderr matching "malformed|gates"
+    And no error occurred during startup
 
   # --- abuse ---
-
-  @EARS-FLOW-094
-  Scenario: a stale id in the sidecar is silently discarded on restore
-    Given the gates sidecar contains {"ghost": "wait", "item-a": "wait"}
-    When the server restarts with the same data directory
-    Then the server is healthy
-    And item "item-a" has gate "wait"
-    And no error occurred during startup
 
   @EARS-FLOW-028
   Scenario: a sidecar write failure still reports the gate change as successful
