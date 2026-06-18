@@ -34,10 +34,11 @@
 - **EARS-FLOW-006** — WHEN the server receives a `tools/list` request, THE SYSTEM SHALL respond with
   `result.tools` as an array in which every element has `name`, `description`, and an `inputSchema`
   object.
-- **EARS-FLOW-007** — The `tools/list` result SHALL contain exactly the 14 verbs `ping`,
+- **EARS-FLOW-007** — The `tools/list` result SHALL contain exactly the 16 verbs `ping`,
   `list_items`, `get_item`, `set_wait_go`, `post_status`, `append_spend`, `set_item_model`,
   `validate_connection`, `mutate_connection`, `append_sysmsg`, `render_roadmap`, `annotate`,
-  `request_rewrite`, `list_events` — and every advertised name SHALL be dispatchable by `tools/call`.
+  `request_rewrite`, `list_events`, `create_item`, `delete_item` — and every advertised name SHALL be
+  dispatchable by `tools/call`.
 - **EARS-FLOW-008** — The `inputSchema` of each arg-taking verb SHALL declare its real `properties`
   and `required` fields (not a hollow `{"type":"object"}`), with the `status` enum
   `["do","doing","done"]`, the `gate` enum `["wait","go"]`, and the `op` enum `["add","remove"]`.
@@ -325,3 +326,23 @@
 - **EARS-FLOW-103** — A `spend_appended` event SHALL carry the transitive ancestor set used for its
   roll-up, and replay SHALL apply that stored set (not a recomputation from the current graph), so a
   restart reproduces the same rolled-up tallies even after intervening edge changes.
+
+## 18. Item lifecycle — `create_item`, `delete_item`
+
+- **EARS-FLOW-104** — WHEN `create_item` is called with a `title` (and optional `status` in
+  `{do,doing,done}`, default `do`, and optional `depends_on` list), THE SYSTEM SHALL assign the next
+  free `item-N` id (max existing numeric id + 1), add the item with that status and dependencies, and
+  respond `{"id": "<new id>"}`. WHERE a tree owns identity, it SHALL write the new item back to the
+  tree (`<status-folder>/<N>.md` with `id`/`title`/`status`/`depends_on` front-matter). `create_item`
+  is WAIT-independent.
+- **EARS-FLOW-105** — WHEN `delete_item` is called with a known id, THE SYSTEM SHALL remove the item
+  and every edge incident on it, and respond `{"ok": true}`; WHERE a tree owns identity, it SHALL
+  delete the item's tree file and prune the id from other items' `depends_on`. IF the id is unknown,
+  THEN THE SYSTEM SHALL respond with `error.code = -32000` and `error.data.error = "unknown"`.
+  `delete_item` is WAIT-independent.
+- **EARS-FLOW-106** — A `create_item` / `delete_item` SHALL survive a restart: in tree mode via the
+  written/removed tree file (re-ingest), and in every mode via the `item_created` / `item_deleted`
+  events (replay) — without growing the log on subsequent restarts.
+- **EARS-FLOW-107** — IF `create_item` names a `depends_on` entry that is not a known item, THEN THE
+  SYSTEM SHALL refuse with `error.code = -32000` and `error.data.error = "unknown"`, creating nothing;
+  a malformed dependency id SHALL be `error.code = -32602` (invalid params).

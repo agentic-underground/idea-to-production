@@ -22,9 +22,9 @@ Feature: JSON-RPC stdio transport and MCP handshake
     Then the response result protocolVersion is "2024-11-05"
 
   @EARS-FLOW-006 @EARS-FLOW-007 @EARS-FLOW-008
-  Scenario: tools/list advertises all 14 dispatchable verbs with real schemas
+  Scenario: tools/list advertises all 16 dispatchable verbs with real schemas
     When I send a "tools/list" request
-    Then the response result tools has exactly 14 entries
+    Then the response result tools has exactly 16 entries
     And every tool entry has "name", "description" and an "inputSchema" object
     And the tool "post_status" inputSchema requires "id" and "status"
     And the tool "post_status" inputSchema "status" enum is ["do","doing","done"]

@@ -25,6 +25,7 @@ module FlowMcp
   class Store
     SPEND_AGENT = "carriage-agent"
     SPEND_ACTIVITY = "spend"
+    DEFAULT_MODEL = "claude-sonnet-4-6"
 
     def self.open(dir)
       new(dir)
@@ -161,6 +162,40 @@ module FlowMcp
       draft
     end
 
+    # Create a new roadmap item (EARS-FLOW-104). Assigns the next free `item-N` id,
+    # writes it back to the tree (WHERE a tree owns identity), and journals
+    # `item_created` (+ a `connection_added` per dependency) so it survives a restart
+    # in tree mode (via re-ingest) AND in no-tree mode (via replay). WAIT-independent.
+    # Returns the new id. An unknown dependency is refused (EARS-FLOW-107).
+    def create_item(title, status: "do", depends_on: [])
+      deps = depends_on.map { |d| d.is_a?(ItemId) ? d : ItemId.new(d) }
+      deps.each { |d| raise GraphError.unknown(d) unless @flow.contains?(d) }
+
+      num = History.next_item_number(@flow.items_in_order.map(&:id))
+      id = ItemId.new("item-#{num}")
+      @flow.upsert_item(Item.new(id, title, DEFAULT_MODEL))
+      @flow.get(id).status = status
+      write_item_to_tree!(num, title, status, deps) if @roadmap_tree
+      commit(Event.item_created(id, title))
+      deps.each do |d|
+        @flow.add_connection(id, d)
+        commit(Event.connection_added(id, d))
+      end
+      id.to_s
+    end
+
+    # Delete a roadmap item (EARS-FLOW-105): drop the item + every incident edge,
+    # remove its tree file and prune it from dependents' deps (WHERE a tree), and
+    # journal `item_deleted`. WAIT-independent. Unknown id -> FlowError.unknown.
+    def delete_item(id)
+      raise FlowError.unknown(id) unless @flow.contains?(id)
+
+      @flow.remove_item(id)
+      delete_from_tree!(id) if @roadmap_tree
+      commit(Event.item_deleted(id))
+      nil
+    end
+
     # ── ingest (idempotent, NOT journaled) ──────────────────────────────────────
 
     def ingest_roadmap(md)
@@ -224,9 +259,11 @@ module FlowMcp
     # skipped rather than aborting replay.
     def apply_event(ev)
       case ev["kind"]
-      when "item_upserted"
+      when "item_upserted", "item_created"
         id = ItemId.new(ev["id"])
-        @flow.upsert_item(Item.new(id, ev["title"], "claude-sonnet-4-6")) unless @flow.contains?(id)
+        @flow.upsert_item(Item.new(id, ev["title"], DEFAULT_MODEL)) unless @flow.contains?(id)
+      when "item_deleted"
+        @flow.remove_item(ItemId.new(ev["id"])) # remove-if-present (no-op if already gone)
       when "gate_set"
         safe { @flow.set_gate(ItemId.new(ev["id"]), ev["gate"]) }
       when "status_posted"
@@ -310,7 +347,7 @@ module FlowMcp
              "moving the last (the loader's authoritative copy) and leaving the rest. Fix the duplicate."
       end
 
-      updated = rewrite_status_front_matter(contents, TREE_LABEL.fetch(status))
+      updated = rewrite_front_matter_field(contents, "status", TREE_LABEL.fetch(status))
       dest_dir = File.join(@roadmap_tree, TREE_FOLDER.fetch(status))
       begin
         FileUtils.mkdir_p(dest_dir)
@@ -325,8 +362,8 @@ module FlowMcp
       end
     end
 
-    # Replace the first `status:` line inside the leading front-matter fence.
-    def rewrite_status_front_matter(contents, label)
+    # Replace the first `<key>:` line inside the leading front-matter fence.
+    def rewrite_front_matter_field(contents, key, value)
       out = +""
       in_fm = false
       replaced = false
@@ -342,15 +379,64 @@ module FlowMcp
           out << line
           next
         end
-        if in_fm && !replaced && t.start_with?("status:")
+        if in_fm && !replaced && t.start_with?("#{key}:")
           indent = line[/\A\s*/]
-          out << "#{indent}status: #{label}\n"
+          out << "#{indent}#{key}: #{value}\n"
           replaced = true
           next
         end
         out << line
       end
       out
+    end
+
+    # ── create / delete tree write-back (EARS-FLOW-104/105) ─────────────────────
+
+    def write_item_to_tree!(num, title, status, deps)
+      dep_str = deps.empty? ? "—" : deps.map { |d| "##{d.to_s.delete_prefix('item-')}" }.join(", ")
+      body = "---\nid: #{num}\ntitle: #{title}\nstatus: #{TREE_LABEL.fetch(status)}\n" \
+             "depends_on: \"#{dep_str}\"\n---\n"
+      dir = File.join(@roadmap_tree, TREE_FOLDER.fetch(status))
+      FileUtils.mkdir_p(dir)
+      File.write(File.join(dir, "#{num}.md"), body)
+    rescue SystemCallError => e
+      raise StoreIoError, "tree write failed: #{e.message}"
+    end
+
+    # Delete the item's tree file and prune it from every other item's depends_on
+    # (so a re-ingest does not carry a dangling dependency).
+    def delete_from_tree!(id)
+      num = id.to_s.delete_prefix("item-")
+      History::TREE_FOLDERS.each do |folder|
+        dir = File.join(@roadmap_tree, folder)
+        next unless File.directory?(dir)
+
+        Dir.children(dir).each do |name|
+          next unless name.end_with?(".md")
+
+          path = File.join(dir, name)
+          contents = (File.read(path) rescue next)
+          if History.parse_front_matter(contents)["id"] == num
+            File.delete(path)
+          else
+            prune_dep_in_file!(path, contents, num)
+          end
+        end
+      end
+    rescue SystemCallError => e
+      raise StoreIoError, "tree delete failed: #{e.message}"
+    end
+
+    def prune_dep_in_file!(path, contents, removed_num)
+      raw = History.parse_front_matter(contents)["depends_on"]
+      return unless raw
+
+      nums = raw.split(/[,\s]+/).filter_map { |t| t.strip.delete_prefix("#")[/\A[0-9]+\z/] }
+      return unless nums.include?(removed_num)
+
+      kept = nums.reject { |n| n == removed_num }
+      dep_str = kept.empty? ? "—" : kept.map { |n| "##{n}" }.join(", ")
+      File.write(path, rewrite_front_matter_field(contents, "depends_on", "\"#{dep_str}\""))
     end
 
     # ── IO + render helpers ─────────────────────────────────────────────────────

@@ -10,13 +10,15 @@ module FlowMcp
   # no bespoke (de)serialization and render directly in `list_events`.
   module Event
     KINDS = %w[
-      item_upserted gate_set status_posted spend_appended model_set
-      connection_added connection_removed annotated rewrite_requested sys_msg
+      item_upserted item_created item_deleted gate_set status_posted spend_appended
+      model_set connection_added connection_removed annotated rewrite_requested sys_msg
     ].freeze
 
     module_function
 
     def item_upserted(id, title) = { "kind" => "item_upserted", "id" => id.to_s, "title" => title }
+    def item_created(id, title) = { "kind" => "item_created", "id" => id.to_s, "title" => title }
+    def item_deleted(id) = { "kind" => "item_deleted", "id" => id.to_s }
     def gate_set(id, gate) = { "kind" => "gate_set", "id" => id.to_s, "gate" => gate }
     def status_posted(id, status) = { "kind" => "status_posted", "id" => id.to_s, "status" => status }
 

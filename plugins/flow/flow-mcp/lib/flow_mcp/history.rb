@@ -46,6 +46,13 @@ module FlowMcp
       ItemId.parse("item-#{num.strip.downcase}")
     end
 
+    # The next free item number given the current item ids: max numeric suffix + 1
+    # (1 when none) — so create_item assigns a stable, non-colliding `item-N`.
+    def next_item_number(ids)
+      max = ids.filter_map { |id| id.to_s.delete_prefix("item-")[/\A[0-9]+\z/]&.to_i }.max || 0
+      max + 1
+    end
+
     # ── legacy single-file ROADMAP.md ──────────────────────────────────────────
 
     def parse_roadmap(md)

@@ -3,7 +3,7 @@ name: flow-by-hand
 description: >
   The markdown fallback for FLOW's roadmap MCP. Use this when the flow-mcp server is NOT available —
   no Ruby >= 3.3.8 on the host, or the MCP is not connected — and you still need to read or advance the
-  roadmap. It is the agent-driven equivalent of the 14 flow-mcp verbs: you perform each verb BY HAND
+  roadmap. It is the agent-driven equivalent of the flow-mcp verbs: you perform each verb BY HAND
   over the same on-disk files (.flow/ + the .i2p/roadmap/ tree), with the same semantics the server
   guarantees (../../flow-mcp/spec/EARS.md), just slower and with no dedicated process. Trigger with
   /flow:flow-by-hand, or when the onboard hook reports no compliant Ruby. Prefer the real MCP whenever
@@ -34,8 +34,9 @@ All paths below are relative to that root.
   `id` (a number N → item id `item-N`), `title`, `status` (`PENDING`/`IN PROGRESS`/`COMPLETE`),
   `depends_on` (`"#1, #2"` or `—`). **This tree is the source of truth for item existence/title/status.**
 - **`.flow/events.jsonl`** — append-only event log, one `kind`-tagged JSON object per line. The
-  record of mutations. Kinds: `item_upserted, gate_set, status_posted, spend_appended, model_set,
-  connection_added, connection_removed, annotated, rewrite_requested, sys_msg`.
+  record of mutations. Kinds: `item_created, item_deleted, gate_set, status_posted, spend_appended,
+  model_set, connection_added, connection_removed, annotated, rewrite_requested, sys_msg`
+  (`item_upserted` also appears in legacy logs).
 - **`.flow/gates.json`** — `{ "item-1": "wait"|"go", … }`, sorted by key. The WAIT/GO gate per item.
 - **`.flow/ROADMAP.flow.md`** — a rendered board (derived; you may regenerate it but readers should
   not rely on it being fresh in fallback mode).
@@ -45,7 +46,7 @@ All paths below are relative to that root.
 > Reconstruct an item's current state by reading the tree (existence/title/status) and folding the
 > events (gate, tokens, draft, model) — newest event wins per field.
 
-## The 14 verbs, by hand
+## The verbs, by hand
 
 **Reads (no mutation):**
 - **render_roadmap / list_items** — read the tree (and fold gates/tokens from the files). Group by
@@ -81,13 +82,22 @@ All paths below are relative to that root.
   `rewrite_requested` events), append `{"kind":"rewrite_requested","id":"<id>","comment":"<…>","draft":<n>}`.
   Allowed even while WAIT.
 - **append_sysmsg `<text>`** — append `{"kind":"sys_msg","text":"<text>"}`.
+- **create_item `<title> [status] [deps]`** — pick the next free number N (max existing id + 1); write
+  `.i2p/roadmap/<status-folder>/<N>.md` with `id`/`title`/`status`/`depends_on` front-matter; append
+  `{"kind":"item_created","id":"item-N","title":"<title>"}` (+ a `connection_added` per dep). The tree
+  owns identity, so the file is the durable record.
+- **delete_item `<id>`** — delete the item's tree file; prune the id from other items' `depends_on`;
+  append `{"kind":"item_deleted","id":"<id>"}`.
 
 ## Discipline
-- **WAIT gates `post_status` and `append_spend` only** — never `set_wait_go`, `request_rewrite`, or the
-  ancestor roll-up.
-- **Append, never rewrite** `events.jsonl`. It is the authoritative history.
+- **WAIT gates `post_status` and `append_spend` only** — never `set_wait_go`, `request_rewrite`,
+  `create_item`/`delete_item`, or the ancestor roll-up.
+- **Append, never rewrite** `events.jsonl` (except pruning a deleted item's id from a `depends_on`
+  front-matter line in the tree). It is the authoritative runtime history.
 - Keep `gates.json` valid JSON, sorted by key.
-- When the real MCP becomes available again, it replays `events.jsonl` and re-ingests the tree, so your
-  by-hand edits are picked up — **stay faithful to the formats above** so that hand-off is clean.
+- **Ownership:** the `.i2p/roadmap/` tree owns identity (existence/title/status/deps); `events.jsonl`
+  owns runtime (gate/tokens/model/draft/annotations). When the real MCP returns it **ingests the tree
+  then replays `events.jsonl`** (ingest → replay), so both your tree edits and your event appends are
+  picked up — **stay faithful to the formats above** so the hand-off is clean.
 - This is the slow path: as soon as a Ruby ≥ 3.3.8 is installed and `flow-mcp` is approved in `/mcp`,
   go back to the real verbs.

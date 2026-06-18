@@ -29,10 +29,10 @@ class TestMcp < Minitest::Test
     assert_nil dispatch({ "method" => "initialized" })
   end
 
-  def test_tools_list_has_14_dispatchable_with_schemas # @EARS-FLOW-006 @EARS-FLOW-007 @EARS-FLOW-008
+  def test_tools_list_has_16_dispatchable_with_schemas # @EARS-FLOW-006 @EARS-FLOW-007 @EARS-FLOW-008
     r = dispatch({ "id" => 1, "method" => "tools/list" })
     tools = r["result"]["tools"]
-    assert_equal 14, tools.length
+    assert_equal 16, tools.length
     tools.each do |t|
       assert t["name"] && t["description"] && t["inputSchema"].is_a?(Hash)
     end
@@ -184,6 +184,26 @@ class TestMcp < Minitest::Test
     @store.set_gate(iid("item-a"), "wait")
     assert_equal 2, result(call(@store, "request_rewrite", { "id" => "item-a", "comment" => "again" }))["draft"]
     assert_domain_error(call(@store, "request_rewrite", { "id" => "item-z", "comment" => "x" }), -32000, "unknown")
+  end
+
+  # ── item lifecycle (EARS-FLOW-104/105/107) ──────────────────────────────────
+
+  def test_create_and_delete_item # @EARS-FLOW-104 @EARS-FLOW-105 @EARS-FLOW-107
+    seed(@store, "item-1", "Alpha")
+    r = result(call(@store, "create_item", { "title" => "Bravo", "status" => "doing", "depends_on" => ["item-1"] }))
+    assert_equal "item-2", r["id"]
+    assert_equal "doing", @store.snapshot.get(iid("item-2")).status
+    assert(@store.snapshot.edges.any? { |e| e.from.to_s == "item-2" && e.to.to_s == "item-1" })
+    # unknown dependency -> refused, nothing created
+    assert_domain_error(call(@store, "create_item", { "title" => "X", "depends_on" => ["item-99"] }), -32000, "unknown")
+    # malformed dependency id -> invalid params
+    assert_equal(-32602, call(@store, "create_item", { "title" => "X", "depends_on" => ["Bad Id"] })["error"]["code"])
+    # missing title -> invalid params
+    assert_equal(-32602, call(@store, "create_item", {})["error"]["code"])
+    # delete
+    assert_equal({ "ok" => true }, result(call(@store, "delete_item", { "id" => "item-2" })))
+    assert_nil @store.snapshot.get(iid("item-2"))
+    assert_domain_error(call(@store, "delete_item", { "id" => "item-99" }), -32000, "unknown")
   end
 
   # ── events + render + ping (EARS-FLOW-068..076) ─────────────────────────────
