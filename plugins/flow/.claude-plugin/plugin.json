@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "flow",
   "displayName": "FLOW — Deliver the roadmap flow",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "The DELIVER-stage plugin — the roadmap flow surface and its deterministic MCP backend, living together. /flow pings and reports the roadmap flow MCP (flow-mcp), and /flow-setup walks the one-time approval and verifies the connection. The bundled first-party flow-mcp Ruby server (Ruby >= 3.3.8, standard library only) answers \"what's on the roadmap\" by local compute (render_roadmap / list_items, ~0 LLM tokens) and carries roadmap items through their lifecycle (post_status, set_wait_go, append_spend, …). Self-contained and standalone-installable: the /flow command and its MCP backend resolve through ${CLAUDE_PLUGIN_ROOT} only, with no dependency on any sibling plugin. Carries the KAIZEN self-improvement covenant.",
   "author": {
     "name": "whatbirdisthat",

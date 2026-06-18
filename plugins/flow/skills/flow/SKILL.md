@@ -102,6 +102,8 @@ never `git mv` or hand-edit):
 | `mutate_connection` | Add/remove a dependency edge (`op: add|remove`) | dependency-graph editing |
 | `request_rewrite` | Bump an item's draft# with a comment | rewrite request |
 | `append_sysmsg` | Append to the system-message feed | sysmsg feed |
+| `create_item` | Author a new roadmap item — writes it back to the `.i2p/roadmap/` tree | roadmap authoring |
+| `delete_item` | Remove an item — deletes its tree file + dependent edges | roadmap authoring |
 
 So `/flow report` → `render_roadmap`; `/flow carry` (and `/flow:pull`) → `get_item` (gate) ·
 `post_status` · `append_spend` · `annotate`; `/flow ping` → `ping`. Each is a **deferred** tool —

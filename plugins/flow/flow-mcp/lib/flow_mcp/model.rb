@@ -51,6 +51,17 @@ module FlowMcp
     def items_in_order = @order.map { |id| @items[id] }.compact
     def edges = @edges
 
+    # Remove an item and every edge incident on it (EARS-FLOW-105). Returns false
+    # if the item was absent.
+    def remove_item(id)
+      return false unless @items.key?(id)
+
+      @items.delete(id)
+      @order.delete(id)
+      @edges.reject! { |e| e.from == id || e.to == id }
+      true
+    end
+
     # Reorder the display sequence; the new order must be a permutation of the
     # existing ids, else the order is left unchanged and false returned.
     def reorder(new_order)

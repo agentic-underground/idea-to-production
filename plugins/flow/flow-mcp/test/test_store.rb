@@ -266,6 +266,62 @@ class TestStore < Minitest::Test
     end
   end
 
+  # ── item lifecycle: tree write-back + restart (EARS-FLOW-104/105/106) ───────
+
+  def test_create_item_writes_tree_and_survives_restart # @EARS-FLOW-104 @EARS-FLOW-106
+    with_tmpdir do |root|
+      tree = build_tree(root, ["do", 1, "Alpha"])
+      s = reopen(root, tree: tree)
+      newid = s.create_item("Bravo", status: "doing", depends_on: [iid("item-1")])
+      assert_equal "item-2", newid
+      assert File.exist?(File.join(tree, "doing", "2.md"))
+      assert_match(/depends_on: "#1"/, File.read(File.join(tree, "doing", "2.md")))
+
+      s2 = reopen(root, tree: tree)
+      assert_equal "doing", s2.snapshot.get(iid("item-2")).status
+      assert(s2.snapshot.edges.any? { |e| e.from.to_s == "item-2" && e.to.to_s == "item-1" })
+    end
+  end
+
+  def test_created_item_status_survives_restart_no_tree # @EARS-FLOW-104 @EARS-FLOW-106
+    with_tmpdir do |root|
+      s = Store.open(data_dir(root))
+      newid = s.create_item("Bravo", status: "doing") # no tree -> item_created carries status
+      assert_equal "item-1", newid
+      s2 = Store.open(data_dir(root)); s2.replay! # no ingest (no tree)
+      assert_equal "doing", s2.snapshot.get(iid("item-1")).status
+    end
+  end
+
+  def test_create_item_sanitizes_title_so_front_matter_round_trips # @EARS-FLOW-104
+    with_tmpdir do |root|
+      tree = build_tree(root, ["do", 1, "Alpha"])
+      s = reopen(root, tree: tree)
+      s.create_item("Bad\n---\ntitle: hijack", status: "do", depends_on: [iid("item-1")])
+      s2 = reopen(root, tree: tree) # re-ingest must not have lost depends_on to a broken fence
+      assert(s2.snapshot.edges.any? { |e| e.from.to_s == "item-2" && e.to.to_s == "item-1" })
+      refute_includes s2.snapshot.get(iid("item-2")).title, "\n"
+    end
+  end
+
+  def test_delete_item_removes_file_prunes_deps_survives_restart # @EARS-FLOW-105 @EARS-FLOW-106
+    with_tmpdir do |root|
+      tree = File.join(root, ".i2p", "roadmap")
+      FileUtils.mkdir_p(File.join(tree, "do"))
+      File.write(File.join(tree, "do", "1.md"), "---\nid: 1\ntitle: Alpha\n---\n")
+      File.write(File.join(tree, "do", "2.md"), "---\nid: 2\ntitle: Bravo\ndepends_on: \"#1\"\n---\n")
+      s = reopen(root, tree: tree)
+      s.delete_item(iid("item-1"))
+      refute File.exist?(File.join(tree, "do", "1.md"))
+      assert_match(/depends_on: "—"/, File.read(File.join(tree, "do", "2.md"))) # pruned
+
+      s2 = reopen(root, tree: tree)
+      assert_nil s2.snapshot.get(iid("item-1"))
+      assert s2.snapshot.get(iid("item-2"))
+      refute(s2.snapshot.edges.any? { |e| e.to.to_s == "item-1" })
+    end
+  end
+
   # ── internal error mapping (EARS-FLOW-095/096) ──────────────────────────────
 
   def test_store_io_error_maps_to_minus_32603 # @EARS-FLOW-095

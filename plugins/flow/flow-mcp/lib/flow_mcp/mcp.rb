@@ -31,7 +31,9 @@ module FlowMcp
       ["render_roadmap", "Render 'what's on the roadmap' as text — ~0 LLM tokens."],
       ["annotate", "Annotate an item's plan (pauses the item)."],
       ["request_rewrite", "Request a plan rewrite, bumping the draft number."],
-      ["list_events", "Read the append-only event log, oldest first."]
+      ["list_events", "Read the append-only event log, oldest first."],
+      ["create_item", "Create a new roadmap item (writes it back to the .i2p/roadmap tree)."],
+      ["delete_item", "Delete a roadmap item (removes its tree file and dependent edges)."]
     ].freeze
 
     # Internal sentinel for argument-shape failures -> JSON-RPC -32602.
@@ -158,6 +160,16 @@ module FlowMcp
         events = store.read_events
         events = events.select { |e| e["kind"] == kind } if kind
         ok(id, { "events" => events })
+      when "create_item"
+        title = arg_string(args, "title")
+        status = args.key?("status") ? arg_enum(args, "status", STATUSES) : "do"
+        deps = args["depends_on"] || []
+        raise InvalidParams, "depends_on must be an array of item ids" unless deps.is_a?(Array)
+
+        ok(id, { "id" => store.create_item(title, status: status, depends_on: deps) })
+      when "delete_item"
+        store.delete_item(arg_id(args, "id"))
+        ok(id, { "ok" => true })
       else
         rpc_error(id, -32602, "unknown tool: #{name}", nil)
       end
@@ -200,6 +212,12 @@ module FlowMcp
       when "annotate" then obj.call({ "id" => id, "text" => { "type" => "string", "description" => "Annotation text." } }, %w[id text])
       when "request_rewrite" then obj.call({ "id" => id, "comment" => { "type" => "string", "description" => "Rewrite request." } }, %w[id comment])
       when "list_events" then { "type" => "object", "properties" => { "kind" => { "type" => "string", "description" => "Optional event-kind filter." } } }
+      when "create_item"
+        obj.call({ "title" => { "type" => "string", "description" => "Item title." },
+                   "status" => { "type" => "string", "enum" => %w[do doing done], "description" => "Initial status (default do)." },
+                   "depends_on" => { "type" => "array", "items" => { "type" => "string" }, "description" => "Item ids this item depends on." } },
+                 %w[title])
+      when "delete_item" then obj.call({ "id" => id }, ["id"])
       else { "type" => "object" }
       end
     end
