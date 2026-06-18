@@ -57,38 +57,30 @@ jobs:
       - name: Scan tree + git history for committed secrets
         run: gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
 
-  # The retrieved-artifact contract: spawn the flow-mcp MCP launcher exactly as the
-  # flow plugin's .mcp.json registers it, and assert the JSON-RPC handshake
-  # completes. Builds the binary first so the launcher's source-build fallback is a fast
-  # no-op; the smoke then drives `initialize` + `tools/list` through the shipped launcher.
-  # This is the test two PR reviewers asked for — it mechanically catches a committed MCP
-  # command that can't start (the gitignored-binary regression class).
-  flow-mcp-smoke:
+  # flow-mcp is an interpreted Ruby reference (>= 3.3.8, standard library only) — there is
+  # no binary to build, pin, or download. This job validates it the way the fleet runs it:
+  #   1. the test suite + line/branch coverage on bare system Ruby (minitest is bundled; NO
+  #      `gem install`, NO `bundle` — the stdlib Gherkin runner + stdlib Coverage), and
+  #   2. an end-to-end stdio handshake through the SHIPPED launcher exactly as the flow
+  #      plugin's .mcp.json registers it (the launcher must resolve Ruby and serve), which
+  #      mechanically catches a committed MCP command that can't start.
+  flow-mcp-ruby:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Rust toolchain
-        run: rustup update stable --no-self-update
-      - name: Build flow-mcp (release)
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.8'   # the fleet floor (Debian 13 system Ruby)
+      - name: Test suite + line/branch coverage (stdlib only — no bundle/gems)
         working-directory: plugins/flow/flow-mcp
-        run: cargo build --release --locked --bin flow-mcp
-      - name: MCP handshake smoke (spawn the shipped launcher)
-        run: bash plugins/flow/flow-mcp/bin/smoke-mcp.sh
-
-  # The defect-[92] regression guard: boot the PINNED RELEASE binary (the exact artifact users
-  # run — named in bin/RELEASE, SHA-verified against the COMMITTED bin/SHA256SUMS) against the
-  # repo's .i2p/roadmap/ tree with a FRESH store, and assert the MCP renders it NON-empty AND
-  # self-reports the pinned crate version. This closes the gap that let [92] ship: the smoke job
-  # above builds from SOURCE (always current) and was green while a stale release binary predated
-  # the tree ingest of item [42] → render_roadmap returned empty over MCP. NO Rust toolchain — it
-  # downloads the pinned binary, the whole point. It SKIPs in the bootstrap window (bin/SHA256SUMS
-  # not yet finalized for a freshly bumped pin) and enforces once the checksums are committed.
-  flow-mcp-pinned:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Pinned-release MCP renders the roadmap (regression guard for [92])
-        run: bash plugins/flow/flow-mcp/bin/smoke-pinned.sh
+        run: ruby test/cov_report.rb
+      - name: stdio smoke through the shipped launcher (Ruby resolution + roadmap injection)
+        run: |
+          set -euo pipefail
+          req='{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"ping","arguments":{}}}'
+          out="$(printf '%s\n' "$req" | plugins/flow/flow-mcp/bin/flow-mcp --mcp)"
+          echo "$out"
+          echo "$out" | grep -q 'hello from the flow MCP'
 
   # Cobbler's children (P2-18): the marketplace runs OPERATE's own OBSERVABILITY
   # lens on ITSELF. This is the HEALTH slice of the same self-observation substrate whose

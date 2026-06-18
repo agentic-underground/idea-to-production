@@ -5,6 +5,6 @@
 # (stdlib only, no gems): on the Debian-13 fleet the system `ruby` already satisfies the floor.
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled
-ruby	ruby -e 'exit(Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.3.8") ? 0 : 1)' || ruby3.3 -e 'exit 0'	required	apt install ruby (Debian 13 ships 3.3.8); macOS: brew install ruby; or rbenv/asdf — runs flow-mcp
+ruby	ruby -e 'exit(Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.3.8") ? 0 : 1)' || ruby3.3 -e 'exit(Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("3.3.8") ? 0 : 1)'	required	apt install ruby (Debian 13 ships 3.3.8); macOS: brew install ruby; or rbenv/asdf — runs flow-mcp
 jq	command -v jq	recommended	apt install jq — parse the MCP/roadmap JSON in hooks
 gh	command -v gh	optional	cli.github.com — inspect repo/releases
