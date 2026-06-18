@@ -17,7 +17,7 @@ metadata:
 # FLOW — Self-improve
 
 The delivery half of the marketplace's self-improving loop. A carry that **stalled** (an item stuck in a
-lane, an empty board where a roadmap existed, a stale binary serving an old answer) or a verb that
+lane, an empty board where a roadmap existed, the server not serving a populated tree) or a verb that
 **over-reached** (a wrapper that re-implemented what foundry already owns) is the signal: the fix is a
 *better-articulated verb, flow-mcp contract, or reference*, fixed once, upstream — not heroics.
 (Covenant: [`../../knowledge/covenant.md`](../../knowledge/covenant.md).)
@@ -27,21 +27,21 @@ lane, an empty board where a roadmap existed, a stale binary serving an old answ
 FLOW gets sharper from two sources:
 
 1. **Outcome feedback** — a delivery that the carry surface should have handled cleanly: `/flow:pull` came
-   up empty on a populated `.i2p/roadmap/`, the board served a stale answer (a binary the pin should have
-   refused), a state move recorded the wrong who/what/cost, or `/flow-setup` left the MCP unreachable.
-   Arrives as a delivery-feedback entry (symptom → which verb/contract/binary path failed → what would have
-   carried it correctly).
+   up empty on a populated `.i2p/roadmap/`, the board came up empty on a populated tree (flow-mcp not
+   serving it — Ruby missing or the `/mcp` approval not granted), a state move recorded the wrong
+   who/what/cost, or `/flow-setup` left the MCP unreachable. Arrives as a delivery-feedback entry (symptom →
+   which verb/contract/server path failed → what would have carried it correctly).
 2. **Recurring friction/duplication** — the same carry step keeps needing a manual nudge (→ automate or
    tighten the verb), or a skill restates what the flow-mcp README / foundry conveyor already owns
    (→ reference-not-restate), or a verb has grown a second responsibility (→ **cleave** it).
 
 ## The loop
 
-1. **Reflect** on the target element (a carry verb — `flow`, `pull`, `flow-setup`; the flow-mcp pinned
+1. **Reflect** on the target element (a carry verb — `flow`, `pull`, `flow-setup`; the flow-mcp server
    contract; the `check` manifest; the `covenant`; a knowledge doc) against the covenant + pillars: is a
    verb doing more than one thing? does `/flow:pull` re-implement foundry instead of composing it? does the
-   binary serve a non-deterministic answer? does a skill restate what a reference already owns?
-2. **Decide**: sharpen a verb · tighten the flow-mcp pinned-release contract · fix a degrade-gracefully gap
+   server serve a non-deterministic answer? does a skill restate what a reference already owns?
+2. **Decide**: sharpen a verb · tighten the flow-mcp server contract · fix a degrade-gracefully gap
    in a hook · correct the `check` tiers to reality · reference-not-restate · **cleave** an over-broad
    element. If the element is already tight, say so and stop.
 3. **Apply on a branch** (surgical, one concern). Pin the stall/duplication so it cannot regress.
