@@ -53,7 +53,8 @@ class TestStore < Minitest::Test
       s.post_status(iid("item-a"), "doing")
       md = File.read(File.join(data_dir(root), "ROADMAP.flow.md"))
       assert_includes md, "## DOING"
-      assert_includes md, "[item-a] Alpha (doing/go"
+      # capitalized status/gate match the Rust enum Debug bytes (fleet oracle diffs this)
+      assert_includes md, "[item-a] Alpha (Doing/Go"
     end
   end
 

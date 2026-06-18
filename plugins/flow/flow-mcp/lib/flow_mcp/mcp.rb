@@ -44,6 +44,11 @@ module FlowMcp
     # Dispatch one JSON-RPC request, returning a response Hash, or nil for a
     # notification that must receive no response (EARS-FLOW-005).
     def dispatch(store, req)
+      # A valid-JSON line that is not an object (e.g. `5`, `[]`, `true`) carries no
+      # id/method; treat it as a no-id notification (no response) rather than
+      # crashing the loop — matches the Rust reference's graceful handling.
+      return nil unless req.is_a?(Hash)
+
       id = req["id"]
       method = req["method"].to_s
 
@@ -226,7 +231,7 @@ module FlowMcp
 
     def arg_u64(args, key)
       v = args[key]
-      raise InvalidParams, "#{key} must be a non-negative integer" unless v.is_a?(Integer) && v >= 0
+      raise InvalidParams, "#{key} must be a u64" unless v.is_a?(Integer) && v >= 0 && v <= FlowMcp::U64_MAX
 
       v
     end

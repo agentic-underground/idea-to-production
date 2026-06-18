@@ -31,6 +31,17 @@ class TestServer < Minitest::Test
     assert_equal 4, responses.length # 5 inputs minus the 1 notification (no response)
   end
 
+  def test_non_object_json_line_does_not_crash_the_loop # @EARS-FLOW-001 @EARS-FLOW-009
+    store = fresh_store
+    responses = serve(store, [
+      "5",                                                                  # valid JSON, not an object
+      "[1,2,3]",                                                            # array
+      '{"jsonrpc":"2.0","id":9,"method":"tools/call","params":{"name":"ping","arguments":{}}}'
+    ])
+    # The non-object lines produce no response; the later request still answers.
+    assert_equal [9], responses.map { |r| r["id"] }
+  end
+
   def test_ingest_source_single_file_and_tree_and_absent # @EARS-FLOW-082 @EARS-FLOW-083 @EARS-FLOW-084 @EARS-FLOW-085
     # single file
     with_tmpdir do |root|

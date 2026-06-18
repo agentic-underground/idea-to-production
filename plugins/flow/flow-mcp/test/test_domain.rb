@@ -81,6 +81,9 @@ class TestDomain < Minitest::Test
     assert_equal 1, f.bump_draft(iid("a"))
     assert_equal 2, f.bump_draft(iid("a"))
     assert_raises(FlowMcp::FlowError) { f.bump_draft(iid("z")) }
+    # draft saturates at u32 max (matches the Rust reference's u32 field)
+    f.get(iid("a")).draft = FlowMcp::U32_MAX
+    assert_equal FlowMcp::U32_MAX, f.bump_draft(iid("a"))
   end
 
   def test_validate_connection_unknown_self_and_cycle # @EARS-FLOW-051 @EARS-FLOW-052

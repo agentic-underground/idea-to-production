@@ -362,6 +362,11 @@ module FlowMcp
       raise StoreIoError, "append failed (#{path}): #{e.message}"
     end
 
+    # Capitalized status/gate match the Rust reference's enum Debug formatting
+    # ({:?}) so ROADMAP.flow.md is byte-identical across implementations.
+    MD_STATUS = { "do" => "Do", "doing" => "Doing", "done" => "Done" }.freeze
+    MD_GATE = { "go" => "Go", "wait" => "Wait" }.freeze
+
     def write_markdown!
       out = +"# Flow board\n\n"
       [["## DO", "do"], ["## DOING", "doing"], ["## DONE", "done"]].each do |heading, status|
@@ -369,7 +374,8 @@ module FlowMcp
         @flow.items_in_order.each do |item|
           next unless item.status == status
 
-          out << "- [#{item.id}] #{item.title} (#{status}/#{item.gate}, #{item.tokens} tok, #{item.model})\n"
+          out << "- [#{item.id}] #{item.title} (#{MD_STATUS[item.status]}/#{MD_GATE[item.gate]}, " \
+                 "#{item.tokens} tok, #{item.model})\n"
         end
         out << "\n"
       end

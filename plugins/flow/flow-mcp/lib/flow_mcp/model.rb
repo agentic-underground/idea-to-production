@@ -5,8 +5,10 @@ require_relative "errors"
 
 module FlowMcp
   # Cap token tallies at the unsigned 64-bit maximum (EARS-FLOW-043) so the Ruby
-  # port matches the retired Rust reference's saturating u64 arithmetic.
+  # port matches the retired Rust reference's saturating u64 arithmetic. The draft
+  # counter is a u32 in the reference, so it saturates one ceiling lower.
   U64_MAX = (2**64) - 1
+  U32_MAX = (2**32) - 1
 
   STATUSES = %w[do doing done].freeze
   GATES = %w[wait go].freeze
@@ -102,7 +104,7 @@ module FlowMcp
     # Increment the draft counter and return it. NOT WAIT-gated (EARS-FLOW-065).
     def bump_draft(id)
       item = fetch!(id)
-      item.draft = [item.draft + 1, U64_MAX].min
+      item.draft = [item.draft + 1, U32_MAX].min
       item.draft
     end
 

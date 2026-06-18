@@ -48,9 +48,6 @@ module FeatureSteps
       [/\Athe store contains an item "(.+?)" titled "(.+?)"\z/, lambda { |w, m, _s|
         w.store.upsert_item(w.iid(m[1]), m[2], "claude-sonnet-4-6")
       }],
-      [/\Athe store contains an item "(.+?)" titled "(.+?)"\z/i, lambda { |w, m, _s|
-        w.store.upsert_item(w.iid(m[1]), m[2], "claude-sonnet-4-6")
-      }],
       [/\Aitem "(.+?)" is in WAIT\z/, lambda { |w, m, _s| w.store.set_gate(w.iid(m[1]), "wait") }],
       [/\Aa dependency "(.+?)" -> "(.+?)"\z/, lambda { |w, m, _s|
         w.store.mutate_connection("add", w.iid(m[1]), w.iid(m[2]))
@@ -177,7 +174,8 @@ module FeatureSteps
         assert(coll.is_a?(Array) && coll.any? { |i| i["id"] == m[2] }, "#{m[1]} missing #{m[2]}")
       }],
       [/\Athe response result "(.+?)" is empty\z/, lambda { |w, m, _s|
-        assert(Array(dig_path(w.resp["result"], m[1])).empty?, "#{m[1]} not empty")
+        val = dig_path(w.resp["result"], m[1])
+        assert(val.is_a?(Array) && val.empty?, "#{m[1]} is not a present empty array: #{val.inspect}")
       }],
       [/\Athe response result item "(.+?)" is "(.+?)"\z/, lambda { |w, m, _s|
         assert(w.resp.dig("result", "item", m[1]) == m[2], "item.#{m[1]} != #{m[2]}")

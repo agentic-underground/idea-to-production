@@ -135,6 +135,8 @@ class TestMcp < Minitest::Test
     assert_domain_error(call(@store, "append_spend", { "id" => "child", "delta" => 1 }), -32000, "waiting")
     assert_equal(-32602, call(@store, "append_spend", { "id" => "child" })["error"]["code"])
     assert_equal(-32602, call(@store, "append_spend", { "id" => "child", "delta" => -5 })["error"]["code"])
+    # delta above u64::MAX is rejected (matches Rust serde as_u64), not saturated
+    assert_equal(-32602, call(@store, "append_spend", { "id" => "child", "delta" => 2**64 })["error"]["code"])
   end
 
   # ── model (EARS-FLOW-046..048) ──────────────────────────────────────────────
