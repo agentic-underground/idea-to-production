@@ -1,29 +1,15 @@
 # .pipeline/verify — idea-to-production build gate (epic 0000). Deterministic, offline, fast.
-#
-# A real CI gate, grown from the seed. Three deterministic, offline checks — the ones this repo
-# can actually support — each fails the gate (set -e) on the first violation:
-#   1. MANIFESTS — every plugin/marketplace manifest PARSES (json.load) and CONFORMS to its schema
-#      (required fields + types + semver + source paths resolve + marketplace ⟺ plugin.json agree).
+# A real CI gate grown from the seed. Three offline checks; each is ONE self-contained line that
+# fails the gate (|| exit 1) — the runner executes this file line-by-line, so no statement may span
+# multiple lines (the seed's single-line idiom is the contract; a multi-line `for…do…done` breaks it).
+#   1. MANIFESTS — every plugin/marketplace manifest PARSES (json.load) AND conforms to its schema.
 #   2. PYTHON    — every tracked .py compiles (py_compile).
-#   3. TESTS     — the tests/ behaviour suite passes (each tests/**/*.sh exits 0; SKIP is allowed).
-#
-# It does NOT touch the marketplace plugins or the flow-server/MCP surface — only reads them. The
-# flow-mcp Ruby suite + stdio smoke and the PREREQUISITES contract are covered externally by
-# .github/workflows/verify.yml; this gate stays fast and dependency-light (python3 + bash only).
-set -e
-
-# 1. manifests parse (seed check, kept) ...
-for f in $(git ls-files '*.claude-plugin/*.json'); do
-  python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f"
-done
-# ... and conform to their schema.
-python3 scripts/ci/check_manifests.py
-
-# 2. tracked Python compiles.
-python3 -m py_compile $(git ls-files '*.py')
+#   3. TESTS     — the tests/ behaviour suite is green (each tests/**/*.sh exits 0; SKIP is allowed).
+# Reads, never modifies, the marketplace plugins and the flow-server/MCP surface. The flow-mcp Ruby
+# suite + the PREREQUISITES contract stay covered externally by .github/workflows/verify.yml.
+for f in $(git ls-files '*.claude-plugin/*.json'); do python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" || exit 1; done
+python3 scripts/ci/check_manifests.py || exit 1
+python3 -m py_compile $(git ls-files '*.py') || exit 1
 echo "python OK"
-
-# 3. tests/ behaviour suite is green.
-bash scripts/ci/run_tests.sh
-
+bash scripts/ci/run_tests.sh || exit 1
 echo "gate OK — manifests + python + tests"
