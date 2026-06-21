@@ -1,6 +1,15 @@
-# .pipeline/verify — idea-to-production build gate (SEED). Deterministic, offline, fast.
-# Validates every plugin/marketplace manifest parses + the tracked Python compiles. Epic 0000 grows this
-# into a real CI gate. Does NOT touch the marketplace plugins or the flow-server/MCP surface.
+# .pipeline/verify — idea-to-production build gate (epic 0000). Deterministic, offline, fast.
+# A real CI gate grown from the seed. Three offline checks; each is ONE self-contained line that
+# fails the gate (|| exit 1) — the runner executes this file line-by-line, so no statement may span
+# multiple lines (the seed's single-line idiom is the contract; a multi-line `for…do…done` breaks it).
+#   1. MANIFESTS — every plugin/marketplace manifest PARSES (json.load) AND conforms to its schema.
+#   2. PYTHON    — every tracked .py compiles (py_compile).
+#   3. TESTS     — the tests/ behaviour suite is green (each tests/**/*.sh exits 0; SKIP is allowed).
+# Reads, never modifies, the marketplace plugins and the flow-server/MCP surface. The flow-mcp Ruby
+# suite + the PREREQUISITES contract stay covered externally by .github/workflows/verify.yml.
 for f in $(git ls-files '*.claude-plugin/*.json'); do python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" || exit 1; done
-python3 -m py_compile $(git ls-files '*.py')
-echo "manifests + python OK"
+python3 scripts/ci/check_manifests.py || exit 1
+python3 -m py_compile $(git ls-files '*.py') || exit 1
+echo "python OK"
+bash scripts/ci/run_tests.sh || exit 1
+echo "gate OK — manifests + python + tests"
