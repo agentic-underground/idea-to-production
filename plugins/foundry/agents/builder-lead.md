@@ -7,7 +7,10 @@ description: >
   decomposes every item into parallelisable tasks, estimates token budgets,
   and produces the FOUNDRY_PLAN.md that drives the entire production cycle.
   Also creates and maintains the SUBJECT_MATTER_UNDERSTANDING document.
-  Spawned once per FOUNDRY cycle at the start of §5.
+  Spawned once per FOUNDRY cycle at the start of §5. ALSO serves roadmapper's
+  AUTHORING sub-cycle: given a single capability (or a re-decomposition), it
+  decomposes it into FLEET v2 EPIC/PLAN structure (vertical slices + shared-infra
+  map + dependency DAG) for roadmapper to emit — no FOUNDRY_PLAN.md in that mode.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
 color: yellow

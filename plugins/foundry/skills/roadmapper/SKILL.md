@@ -46,9 +46,11 @@ A skill for capturing, formalising, and implementing software features using a s
    non-i2p projects without the pipeline.
 
 > **Read vs. write — scope note.** This resolution order governs **reads** ("what's on the roadmap").
-> Native **v2 emission** (CAPTURE/PLAN writing `.pipeline.md` + `EPIC_NNNN.md` + `PLAN_NNNN.md`) is
-> landing incrementally; until it does, §3 CAPTURE still authors the legacy surface. Do not infer from
-> this section that §3 already emits v2.
+> Native **v2 emission** is live: §3 CAPTURE writes the v2 artifacts (`.pipeline.md` + `EPIC_NNNN.md` +
+> `PLAN_NNNN.md`) for an i2p project, and §3.5 models authoring as a value task. What is still deferred
+> is build **dispatch**: §6 / §11 GO-mode still drive the legacy pull-and-build flow; re-routing
+> `ship N`/`build N` to the FLEET engine, and FOUNDRY's PLAN-scope build behavior, land in later PRs of
+> this migration.
 
 The roadmap is a living document intended to be read and acted upon by both humans and AI agents. Every entry is self-contained: it carries enough context that a fresh agent, with no prior conversation history, can pick up the item and implement it correctly.
 
@@ -147,7 +149,7 @@ cross-slice shared-infra map and the EPIC-level `depends_on`):
 | **Epic** | `NNNN` |
 | **Constructs** | what this capability produces |
 | **Branch** | `pipeline/NNNN-slug` |
-| **Depends on** | — | <!-- or: EPIC_MMMM (space/comma-separated) -->
+| **Depends on** | — _(or `EPIC_MMMM`, space/comma-separated, for EPICs that must land first)_ |
 
 ## Plans
 | order | plan | state |
@@ -176,7 +178,7 @@ PLAN doc** as the sections below:
 | --- | --- |
 | **Plan** | `NNNN` |
 | **Epic** | `MMMM` |
-| **Depends on** | — | <!-- or: PLAN_KKKK (PLANs whose work must land first) -->
+| **Depends on** | — _(or `PLAN_KKKK`, space/comma-separated, for PLANs whose work must land first)_ |
 
 **Brief**: one to three sentences — what this slice does and why it matters.
 
@@ -215,6 +217,14 @@ the engine owns sync, land, PR/issue, and the `state` column (touching them is a
 > **Why the Construction process matters:** the FLEET engine's plan-build prompt literally reads "the
 > plan's Construction process" — so this section **is** the bridge that hands the slice to FOUNDRY.
 > Keep it accurate; a vague Construction process produces a vague build.
+
+> **Sequencing dependency.** The "branch-HEAD `DELIVERY_COMPLETE`, no `git push`, no STATUS mutation"
+> contract above is FOUNDRY's **PLAN-scope build behavior, which lands in a later PR of this migration**
+> (the FOUNDRY re-cast). Today's FOUNDRY (`ds-step-9-commit-push`) still pushes and writes STATUS. So:
+> author this section now (it is the correct target), but **do not point a live FLEET engine at these
+> PLAN docs on a real project until that re-cast has landed** — until then a build would push the plan
+> branch out of band of the engine. The engine's calamity guard already blocks the dangerous half (an
+> edit to `.pipeline.md`/`## Plans`).
 
 After writing/updating the artifacts, immediately follow §3.4.
 
@@ -307,8 +317,10 @@ EOF
   present): leading-`|` manifest rows, 4-digit `order`, single-line `**Branch**`, `## Plans` =
   `order|plan|state`.
 - If the push/PR fails (network, conflict), report the error to the user and do not retry silently.
-- This protocol applies wherever the skill authors roadmap intent: §3.3 (new EPIC/PLAN), §3.5
-  (re-decomposition), and §11.5 (DISCUSS spec edits). State transitions are the engine's, not here.
+- This protocol applies wherever the skill authors v2 roadmap intent: §3.3 (new EPIC/PLAN) and §3.5
+  (re-decomposition / adding a PLAN). For a v2 project, a spec refinement is a `PLAN_NNNN.md` edit per
+  §3.3/§3.5 — NOT a §11.5 DISCUSS edit (§11 still uses legacy STATUS/entry vocabulary; its v2
+  conversion lands with the trigger-dispatch PR). State transitions are the engine's, not here.
 
 ---
 
