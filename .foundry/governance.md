@@ -23,9 +23,11 @@ above maps onto the engine's registry fields (`~/.claude/pipeline-projects.json`
 
 | `.foundry/governance.md` | engine registry | engine behaviour on a GREEN plan |
 |---|---|---|
-| **`direct-merge`** (this repo) | `delivery: pr`, `admin_merge: true`, `merge_mode: merge` | opens a PR and **`gh pr merge --admin`**'s its own PR — continuous delivery, never pauses |
+| **`direct-merge`** (this repo) | `delivery: pr`, `admin_merge: true` | opens a PR and **`gh pr merge --admin`**'s its own PR — continuous delivery, never pauses |
 | `pr-approval` | `delivery: pr`, `admin_merge: false` | opens a PR and marks the EPIC **`delivered`** (fire-and-forget; a human merges) |
 
-The remote is GitHub (`origin`), so `delivery` is `pr` (a git.local remote would be `direct`). The
-repo-declared `.pipeline/verify` gate is what unlocks merging; keep this mapping and the registry in
-agreement when the merge mode changes.
+For a **v2 EPIC** (one carrying a `## Plans` table — the shape `/roadmapper` emits), landing is governed
+by `delivery` + `admin_merge` **only**; the registry's `merge_mode` field applies to the v1 *flat* build
+path and is inert for v2 EPICs (it is still written for back-compat). The remote is GitHub (`origin`), so
+`delivery` is `pr` (a git.local remote would be `direct`). The repo-declared `.pipeline/verify` gate is
+what unlocks merging; keep this mapping and the registry in agreement when the merge mode changes.

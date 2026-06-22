@@ -22,6 +22,8 @@ command -v jq >/dev/null 2>&1 || { echo "jq is required (the registry is JSON)";
 # PLAN's '## Construction process', which the engine's plan-build prompt reads). direct-merge governance
 # → delivery:pr + admin_merge:true (the engine admin-merges its own PR). branch_prefix/merge_target/
 # remote match this repo; forbidden_mutation guards the manifest the engine rewrites in place.
+# NOTE: v2 EPICs (with a `## Plans` table) land by delivery+admin_merge; `merge_mode` governs only the
+# v1 flat-build path and is inert for v2 — kept here for back-compat with a flat epic.
 entry="$(jq -n --arg repo "$repo" '{
   repo: $repo,
   manifest: "docs/roadmap/.pipeline.md",
