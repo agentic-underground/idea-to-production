@@ -36,7 +36,9 @@ A skill for capturing, formalising, and implementing software features using a s
    marketplace): when present, answer via its deterministic surface (`/pipeline:status`,
    `pipeline-cron.sh status`/`next`, `pipeline-report`). When it is **not** installed, parse the
    artifacts above **structurally** (by the leading-`|` columns, never as prose). Authoring/emission of
-   these artifacts is roadmapper's job — see §3 CAPTURE.
+   these artifacts is roadmapper's job — see §3 CAPTURE. The full, version-pinned grammar (the contract
+   the engine parses) is vendored at
+   [`references/fleet-pipeline-standard.md`](references/fleet-pipeline-standard.md).
 2. **`.i2p/roadmap/{backlog,do,doing,done}/{id}-{slug}.md`** — **LEGACY history.** The old file-per-item
    flow tree. Surfaced read-only and clearly labelled "legacy"; its backlog is migrated into the v2
    pipeline (do not write new items here, and do not treat it as a source of truth).
