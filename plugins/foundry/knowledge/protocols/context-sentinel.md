@@ -158,15 +158,19 @@ Emitted by `ds-step-8-commit-message` after commit message passes reviewer.
 SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{commit_hash}
 ```
 
-Status is `COMPLETE` when the change is **on `main`** and the roadmap entry updated.
 Payload: short commit hash (7 chars). This is the true end-of-life sentinel — FOUNDRY's
 IDEA_COST.jsonl record is written only when both `STORY_PROVEN` (Phase 5) and
-`DELIVERY_COMPLETE` (this step) are present in the chain.
+`DELIVERY_COMPLETE` (this step) are present in the chain (in **both** invocation modes below).
 
-**Mode-aware** (per [`merge-governance.md`](merge-governance.md)): emitted by `ds-step-9-commit-push`
-only when the change actually reaches `main` — immediately under `direct-merge` (it merges + pushes),
-or **deferred until the human merges the PR** under `pr-approval` (where `AWAITING_MERGE` is emitted
-first — see below).
+**Invocation-mode-aware** — what `COMPLETE` asserts depends on how FOUNDRY was invoked:
+- **Standalone cycle** (per [`merge-governance.md`](merge-governance.md)): `COMPLETE` means the change
+  is **on `main`** and the roadmap entry updated — emitted by `ds-step-9-commit-push` only when the
+  change actually reaches `main` (immediately under `direct-merge`; or **deferred until the human
+  merges the PR** under `pr-approval`, where `AWAITING_MERGE` is emitted first — see below).
+- **Engine PLAN-scope** (FLEET continuous-delivery engine, builder §2.5): `COMPLETE` means the slice
+  is **GREEN on the build branch**, keyed to **branch HEAD** (`git rev-parse --short HEAD`) — NOT on
+  `main`. The agent does not push or mutate STATUS; the **engine** re-runs the gate on the branch and
+  lands it. IDEA_COST is still written here (cost-of-record is branch-keyed, not merge-keyed).
 
 ### AWAITING_MERGE
 

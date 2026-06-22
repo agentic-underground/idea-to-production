@@ -1,6 +1,6 @@
 ---
 name: ds-step-9-commit-push
-description: Executes commit and push transaction, updates roadmap/plan completion metadata, and returns final delivery evidence. Spawned after COMMIT_MSG_READY sentinel is present.
+description: Finalizes delivery. Standalone cycle — executes commit + push, updates roadmap/plan completion metadata, returns delivery evidence. Engine PLAN-scope (FLEET) — commits the green slice to the build branch and emits DELIVERY_COMPLETE keyed to branch HEAD for the engine to land (NO push, NO roadmap/STATUS mutation). Spawned after COMMIT_MSG_READY sentinel is present.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
 color: purple
@@ -28,10 +28,22 @@ This agent runs in one of two modes; everything below branches on it:
 - **Standalone** — a human-run FOUNDRY cycle (or a legacy `ROADMAP.md` project). Full publish path:
   push + PR/merge per `.foundry/governance.md`, roadmap STATUS update, etc. (the original behaviour).
 
-**Detect:** engine PLAN-scope if the build target is a `docs/roadmap/PLAN_NNNN.md` on a
-`pipeline/NNNN-*` branch (or the orchestrator/handoff set an engine/PLAN-scope flag). Otherwise
-standalone. When unsure, prefer engine mode's *non-mutating* path and report — never push/STATUS-mutate
-speculatively.
+**Detect — in priority order (do NOT key on engine-configurable literals first):**
+1. **Authoritative:** the orchestrator/handoff that spawned you declared PLAN-scope — i.e. this run
+   entered via builder **§2.5 "deliver ONE plan `(EPIC_NNNN, PLAN_NNNN)`"**. If your spawn context says
+   PLAN-scope, you are in engine mode. (This is the signal to rely on.)
+2. **Robust fingerprint** (when the flag is absent): you are building a **single PLAN doc** in a
+   **disposable engine clone** (a detached/throwaway checkout under the engine's state dir) with a
+   `.pipeline.md` **manifest present** in the repo. These are not project-configurable.
+3. **Corroborating only:** the branch matches the project's `branch_prefix` (e.g. `pipeline/NNNN-*`)
+   and the PLAN doc lives under the registry `epic_glob` dir (e.g. `docs/roadmap/`). **These are
+   registry-configurable** (`branch_prefix`/`epic_glob` are per-project) — never use them as the SOLE
+   signal; a project with a non-default prefix would be misclassified.
+
+Otherwise standalone. **When unsure, take engine mode's *non-mutating* path** (commit to branch, emit
+branch-HEAD `DELIVERY_COMPLETE`, report) and surface the ambiguity — never `git push` or mutate STATUS
+speculatively, because a wrongful push in engine mode strands the branch out of the engine's land
+sequence (and the engine's calamity guard does NOT catch a stray branch push).
 
 ## Context Requirements
 
@@ -88,12 +100,13 @@ Before beginning:
     - **Graceful skip (no halt).** If the owner is **not** allowlisted, or `gh` is missing/unauthenticated:
       **skip** issue + PR automation, **report the gap** in the completion report ("origin `<owner>` not
       allowlisted" / "`gh` unavailable — commits + local docs only"), and continue. Never block delivery on this.
-5. **— ENGINE PLAN-SCOPE STOPS HERE.** If in engine mode (see *Delivery mode*): you have committed to
-   the branch (step 3) and the adversarial gate has PASSed (step 4). **Do NOT** run steps 5, 6b, 7, 8 —
-   no push, no PR/issue, no roadmap STATUS, no flow-board sync (the engine owns all of that; touching
-   `.pipeline.md`/`## Plans` is a calamity). Record `IDEA_COST.jsonl` (step 10) if STORY_PROVEN is
-   present, emit `DELIVERY_COMPLETE` keyed to **branch HEAD** (`git rev-parse --short HEAD`), report the
-   green branch, and stop. **The steps below are STANDALONE mode only.**
+4c. **— ENGINE PLAN-SCOPE STOP GATE.** If in engine mode (see *Delivery mode*): you have committed to
+    the branch (step 3) and the adversarial gate has PASSed (step 4). **Do NOT run the STANDALONE steps
+    5, 6b, 7, 8** — no push, no PR/issue, no roadmap STATUS, no flow-board sync (the engine owns all of
+    that; touching `.pipeline.md`/`## Plans` is a calamity). Record `IDEA_COST.jsonl` (step 10) if
+    STORY_PROVEN is present, emit `DELIVERY_COMPLETE` keyed to **branch HEAD**
+    (`git rev-parse --short HEAD`), report the green branch, and stop. **Steps 5–9 below are STANDALONE
+    mode only.**
 
 5. **(Standalone) Branch on merge governance** — read `.foundry/governance.md` (absent ⇒ default `pr-approval`;
    see [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md)):

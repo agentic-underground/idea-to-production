@@ -714,7 +714,7 @@ only step authorised to do so. No item may advance to Phase 6 (DELIVERY) without
 | Sentinel | Owner | Status when emitted |
 |---|---|---|
 | `STORY_PROVEN` | `ds-step-story-tests` (Phase 5) | `PASS` (line+branch coverage = 100%, UI gate passed, performance assertions pass) |
-| `DELIVERY_COMPLETE` | `ds-step-9-commit-push` (Phase 6) | `COMPLETE` (commit pushed, roadmap closed) |
+| `DELIVERY_COMPLETE` | `ds-step-9-commit-push` (Phase 6) | `COMPLETE` — standalone: commit pushed + roadmap closed; engine PLAN-scope: GREEN on the build branch (keyed to branch HEAD), engine lands |
 
 `STORY_PROVEN` and `DELIVERY_COMPLETE` are different signals. Past versions of
 this pipeline conflated them by having step-9 emit STORY_PROVEN — that was a
