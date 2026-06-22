@@ -39,7 +39,10 @@ for c in "${FLOW_MCP_RUBY:-}" ruby ruby3.3 ruby3.4 \
 done
 
 # 1. STANDING routing rule — emitted every session (a fresh agent needs it too).
-ROUTING="To answer \"what's on the roadmap\" or read roadmap items, call the flow-mcp MCP verb render_roadmap (or list_items) — the ~0-token authoritative path. It is a DEFERRED tool: if mcp__…__flow-mcp__render_roadmap is not already in your tool list, ToolSearch for 'flow-mcp__render_roadmap' first. Do NOT ls/cat/head the .i2p/roadmap/ tree to answer roadmap questions; that raw-file path is the slow fallback. If render_roadmap returns empty against a non-empty .i2p/roadmap/ tree, call the ping verb (it reports version/items/source) to diagnose."
+# NOTE: the canonical roadmap-read rule is now the v2 FLEET pipeline (docs/roadmap/), injected by the
+# i2p plugin's SessionStart (hooks/scripts/roadmap-routing.sh). flow-mcp's render_roadmap reads the
+# LEGACY .i2p/roadmap/ tree only and is being retired — do NOT re-point roadmap reads at it here.
+ROUTING="To answer \"what's on the roadmap\" or read roadmap items, use the FLEET v2 pipeline at docs/roadmap/ — via the 'pipeline' plugin's deterministic surface (/pipeline:status, pipeline-cron.sh status/next) when installed, else a STRUCTURAL parse of docs/roadmap/.pipeline.md + each EPIC_NNNN.md '## Plans' table (leading-| columns order|epic|state — not prose). The .i2p/roadmap/ tree (and flow-mcp render_roadmap, which reads it) is LEGACY history; do not present it as the live roadmap."
 
 # 2. PROACTIVE SETUP OFFER (visible splash + agent instructions), opt-out gated.
 VER="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PLUGIN/.claude-plugin/plugin.json" 2>/dev/null | head -n1)"
@@ -68,6 +71,6 @@ if command -v jq >/dev/null 2>&1; then
       '{hookSpecificOutput:{hookEventName:"SessionStart", additionalContext:$c}}'
   fi
 else
-  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Answer roadmap questions via the flow-mcp MCP verb render_roadmap (ToolSearch for flow-mcp__render_roadmap if deferred); do not ls/cat the .i2p/roadmap/ tree. If flow-mcp is not connected, ensure Ruby >= 3.3.8 then approve it in /mcp, or use the /flow:flow-by-hand fallback."}}\n'
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Answer roadmap questions from the FLEET v2 pipeline at docs/roadmap/ — the pipeline plugin (/pipeline:status) when installed, else a structural parse of docs/roadmap/.pipeline.md + each EPIC_NNNN.md ## Plans table. The .i2p/roadmap/ tree (flow-mcp render_roadmap) is LEGACY history, not the live roadmap."}}\n'
 fi
 exit 0

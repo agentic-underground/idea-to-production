@@ -21,17 +21,22 @@ A skill for capturing, formalising, and implementing software features using a s
 ## 1. OVERVIEW
 
 **Roadmap location — resolve in this order:**
-1. **`.i2p/roadmap/{backlog,do,doing,done}/{id}-{slug}.md`** — an **idea-to-production project**: the
-   roadmap is a **file-per-item tree** and the **status is the folder** (`backlog`→PENDING/DEFERRED,
-   `do`→groomed/next, `doing`→IN PROGRESS, `done`→COMPLETE). When this tree exists it is the **single
-   source of truth** — never fall back to a monolithic file. Each item file carries YAML front-matter
-   (`id, title, status, priority, added, depends_on, …`) followed by the entry body (§3.3 schema).
-   A status change = **move the file** between folders (and update its `status:` front-matter).
-2. **`ROADMAP.md`** in the project root, or **`docs/ROADMAP.md`** / **`doc/ROADMAP.md`** if a docs folder
-   exists (prefer the docs folder) — the legacy single-file roadmap, for projects without the tree.
+1. **The FLEET v2 pipeline (`docs/roadmap/`)** — the **canonical surface**. The roadmap *is* the
+   pipeline the FLEET continuous-delivery engine drains: a `docs/roadmap/.pipeline.md` manifest (one
+   row per EPIC, state in the manifest), one `EPIC_NNNN.md` per capability (a section-scoped `## Plans`
+   table + shared-infra map + `depends_on`), and one `PLAN_NNNN.md` per vertical slice. Reads resolve
+   through the `pipeline` plugin's deterministic surface when installed (`/pipeline:status`,
+   `pipeline-cron.sh status`/`next`) — never prose-parse the files for a status answer; the grammar is
+   load-bearing (leading-`|` rows, 4-digit `order`, single-line `**Branch**`). Authoring/emission of
+   these artifacts is roadmapper's job — see §3 CAPTURE.
+2. **`.i2p/roadmap/{backlog,do,doing,done}/{id}-{slug}.md`** — **LEGACY history.** The old file-per-item
+   flow tree. Surfaced read-only and clearly labelled "legacy"; its backlog is migrated into the v2
+   pipeline (do not write new items here, and do not treat it as a source of truth).
+3. **`ROADMAP.md`** / **`docs/ROADMAP.md`** / **`doc/ROADMAP.md`** — legacy single-file roadmap, for
+   non-i2p projects without the pipeline.
 
-If neither exists yet, create the `.i2p/roadmap/` tree for an i2p project (it has a `.i2p/` dir), else a
-single `ROADMAP.md` from the §7 template.
+If no roadmap exists yet, create the v2 pipeline under `docs/roadmap/` (§3 CAPTURE) for an i2p project,
+else a single `ROADMAP.md` from the §7 template.
 
 The roadmap is a living document intended to be read and acted upon by both humans and AI agents. Every entry is self-contained: it carries enough context that a fresh agent, with no prior conversation history, can pick up the item and implement it correctly.
 
@@ -445,18 +450,21 @@ After pushing:
 When the user asks what is on the roadmap:
 
 > **Do not ad-hoc-read raw roadmap files. Answer through the roadmapper resolution path:**
-> 1. **Flow-server MCP (preferred).** If the operate flow server is reachable, call its
->    `render_roadmap` (or `list_items`) verb and present the returned view verbatim — authoritative
->    (the same source the board uses), deterministic, ~0 LLM tokens (the server renders the table).
->    Pass any filter ("in progress", "what's next", "check status") through to the verb.
-> 2. **The `.i2p/roadmap/` tree.** If there is no server, enumerate the tree by folder
->    (`backlog`/`do`/`doing`/`done` = the status grouping) and read each item's front-matter to render
->    the table below — the folder IS the status, so this is a structured scan, not prose-parsing.
-> 3. **Legacy `ROADMAP.md`.** Only for projects without the tree.
+> 1. **The FLEET v2 pipeline (preferred).** If the `pipeline` plugin is installed, answer from its
+>    deterministic surface — `/pipeline:status` (or `pipeline-cron.sh status`/`next`,
+>    `pipeline-report`) — which parses `docs/roadmap/.pipeline.md` + each `EPIC_NNNN.md`'s `## Plans`
+>    table structurally. Present the returned view; this is authoritative, deterministic, ~0 LLM
+>    tokens. If the plugin is not installed, parse `docs/roadmap/.pipeline.md` (the manifest rows) +
+>    the per-EPIC `## Plans` tables **structurally** (leading-`|` columns `order | epic | state`),
+>    not as prose.
+> 2. **The `.i2p/roadmap/` tree — LEGACY.** Only to surface historical items, clearly labelled
+>    "legacy". Enumerate by folder (`backlog`/`do`/`doing`/`done`). Never present it as the live
+>    roadmap; its backlog migrates into the v2 pipeline.
+> 3. **Legacy `ROADMAP.md`.** Only for non-i2p projects without the pipeline.
 >
 > Always note which path you used.
 
-1. Resolve the roadmap source (above) — the `.i2p/roadmap/` tree, or the legacy file.
+1. Resolve the roadmap source (above) — the v2 pipeline (`docs/roadmap/`), else legacy.
 2. Display a summary table:
 
 ```
