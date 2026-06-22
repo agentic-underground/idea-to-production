@@ -42,7 +42,7 @@ done
 # NOTE: the canonical roadmap-read rule is now the v2 FLEET pipeline (docs/roadmap/), injected by the
 # i2p plugin's SessionStart (hooks/scripts/roadmap-routing.sh). flow-mcp's render_roadmap reads the
 # LEGACY .i2p/roadmap/ tree only and is being retired — do NOT re-point roadmap reads at it here.
-ROUTING="To answer \"what's on the roadmap\" or read roadmap items, use the FLEET v2 pipeline at docs/roadmap/ — via the 'pipeline' plugin's deterministic surface (/pipeline:status, pipeline-cron.sh status/next) when installed, else a STRUCTURAL parse of docs/roadmap/.pipeline.md + each EPIC_NNNN.md '## Plans' table (leading-| columns order|epic|state — not prose). The .i2p/roadmap/ tree (and flow-mcp render_roadmap, which reads it) is LEGACY history; do not present it as the live roadmap."
+ROUTING="To answer \"what's on the roadmap\" or read roadmap items, use the FLEET v2 pipeline at docs/roadmap/ — via the external 'pipeline' FLEET plugin's surface (/pipeline:status, pipeline-cron.sh status/next) when installed, else a STRUCTURAL parse (by leading-| columns, not prose) of the docs/roadmap/.pipeline.md manifest (order|epic|state|constructs|branch) and each EPIC_NNNN.md's '## Plans' table (order|plan|state). The .i2p/roadmap/ tree (and flow-mcp render_roadmap, which reads it) is LEGACY history; do not present it as the live roadmap."
 
 # 2. PROACTIVE SETUP OFFER (visible splash + agent instructions), opt-out gated.
 VER="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PLUGIN/.claude-plugin/plugin.json" 2>/dev/null | head -n1)"
@@ -71,6 +71,6 @@ if command -v jq >/dev/null 2>&1; then
       '{hookSpecificOutput:{hookEventName:"SessionStart", additionalContext:$c}}'
   fi
 else
-  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Answer roadmap questions from the FLEET v2 pipeline at docs/roadmap/ — the pipeline plugin (/pipeline:status) when installed, else a structural parse of docs/roadmap/.pipeline.md + each EPIC_NNNN.md ## Plans table. The .i2p/roadmap/ tree (flow-mcp render_roadmap) is LEGACY history, not the live roadmap."}}\n'
+  printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Answer roadmap questions from the FLEET v2 pipeline at docs/roadmap/ — the external pipeline FLEET plugin (/pipeline:status) when installed, else a structural parse (by leading-| columns) of the docs/roadmap/.pipeline.md manifest (order|epic|state|constructs|branch) and each EPIC_NNNN.md ## Plans table (order|plan|state). The .i2p/roadmap/ tree (flow-mcp render_roadmap) is LEGACY history, not the live roadmap."}}\n'
 fi
 exit 0

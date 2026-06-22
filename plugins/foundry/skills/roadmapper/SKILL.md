@@ -22,12 +22,20 @@ A skill for capturing, formalising, and implementing software features using a s
 
 **Roadmap location — resolve in this order:**
 1. **The FLEET v2 pipeline (`docs/roadmap/`)** — the **canonical surface**. The roadmap *is* the
-   pipeline the FLEET continuous-delivery engine drains: a `docs/roadmap/.pipeline.md` manifest (one
-   row per EPIC, state in the manifest), one `EPIC_NNNN.md` per capability (a section-scoped `## Plans`
-   table + shared-infra map + `depends_on`), and one `PLAN_NNNN.md` per vertical slice. Reads resolve
-   through the `pipeline` plugin's deterministic surface when installed (`/pipeline:status`,
-   `pipeline-cron.sh status`/`next`) — never prose-parse the files for a status answer; the grammar is
-   load-bearing (leading-`|` rows, 4-digit `order`, single-line `**Branch**`). Authoring/emission of
+   pipeline the FLEET continuous-delivery engine drains. Three load-bearing artifacts, each parsed by
+   the engine with a regex — keep the grammar exact:
+   - `docs/roadmap/.pipeline.md` — the EPIC **manifest**: 5 leading-`|` columns
+     `order | epic | state | constructs | branch`, one row per EPIC (state lives here).
+   - `EPIC_NNNN.md` per capability — a `## Metadata` block (single-line `**Branch**`), a section-scoped
+     `## Plans` table with 3 columns `order | plan | state`, a shared-infra map, and `depends_on`.
+   - `PLAN_NNNN.md` per vertical slice — back-references its `**Epic**`; no state (state is the epic's
+     `## Plans` row).
+
+   `order` is always exactly 4 digits. **Reads resolve through the `pipeline` plugin** — an **external
+   FLEET marketplace plugin** (installed separately, like `token-fairness`; not shipped in this
+   marketplace): when present, answer via its deterministic surface (`/pipeline:status`,
+   `pipeline-cron.sh status`/`next`, `pipeline-report`). When it is **not** installed, parse the
+   artifacts above **structurally** (by the leading-`|` columns, never as prose). Authoring/emission of
    these artifacts is roadmapper's job — see §3 CAPTURE.
 2. **`.i2p/roadmap/{backlog,do,doing,done}/{id}-{slug}.md`** — **LEGACY history.** The old file-per-item
    flow tree. Surfaced read-only and clearly labelled "legacy"; its backlog is migrated into the v2
@@ -35,8 +43,10 @@ A skill for capturing, formalising, and implementing software features using a s
 3. **`ROADMAP.md`** / **`docs/ROADMAP.md`** / **`doc/ROADMAP.md`** — legacy single-file roadmap, for
    non-i2p projects without the pipeline.
 
-If no roadmap exists yet, create the v2 pipeline under `docs/roadmap/` (§3 CAPTURE) for an i2p project,
-else a single `ROADMAP.md` from the §7 template.
+> **Read vs. write — scope note.** This resolution order governs **reads** ("what's on the roadmap").
+> Native **v2 emission** (CAPTURE/PLAN writing `.pipeline.md` + `EPIC_NNNN.md` + `PLAN_NNNN.md`) is
+> landing incrementally; until it does, §3 CAPTURE still authors the legacy surface. Do not infer from
+> this section that §3 already emits v2.
 
 The roadmap is a living document intended to be read and acted upon by both humans and AI agents. Every entry is self-contained: it carries enough context that a fresh agent, with no prior conversation history, can pick up the item and implement it correctly.
 
@@ -450,13 +460,13 @@ After pushing:
 When the user asks what is on the roadmap:
 
 > **Do not ad-hoc-read raw roadmap files. Answer through the roadmapper resolution path:**
-> 1. **The FLEET v2 pipeline (preferred).** If the `pipeline` plugin is installed, answer from its
->    deterministic surface — `/pipeline:status` (or `pipeline-cron.sh status`/`next`,
->    `pipeline-report`) — which parses `docs/roadmap/.pipeline.md` + each `EPIC_NNNN.md`'s `## Plans`
->    table structurally. Present the returned view; this is authoritative, deterministic, ~0 LLM
->    tokens. If the plugin is not installed, parse `docs/roadmap/.pipeline.md` (the manifest rows) +
->    the per-EPIC `## Plans` tables **structurally** (leading-`|` columns `order | epic | state`),
->    not as prose.
+> 1. **The FLEET v2 pipeline (preferred).** If the `pipeline` plugin (an **external FLEET marketplace
+>    plugin**, installed separately) is present, answer from its deterministic surface —
+>    `/pipeline:status` (or `pipeline-cron.sh status`/`next`, `pipeline-report`). Present the returned
+>    view; authoritative, deterministic, ~0 LLM tokens. If it is not installed, parse the artifacts
+>    **structurally** (by leading-`|` columns, not as prose): the `docs/roadmap/.pipeline.md` manifest
+>    (`order | epic | state | constructs | branch`, one row per EPIC) for top-level state, then each
+>    `EPIC_NNNN.md`'s section-scoped `## Plans` table (`order | plan | state`) for its slices.
 > 2. **The `.i2p/roadmap/` tree — LEGACY.** Only to surface historical items, clearly labelled
 >    "legacy". Enumerate by folder (`backlog`/`do`/`doing`/`done`). Never present it as the live
 >    roadmap; its backlog migrates into the v2 pipeline.
