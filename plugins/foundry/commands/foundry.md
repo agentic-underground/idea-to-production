@@ -4,13 +4,12 @@ description: Run the FOUNDRY production cycle — ingest the ROADMAP, plan, tier
 
 Run a FOUNDRY cycle.
 
-> **This is the internal BUILD engine.** The intuitive user-facing verb is
-> [`/flow:pull`](../../flow/commands/pull.md), which selects the next `.i2p/roadmap/` backlog item,
-> carries it, and drives it through *this* command. The owner's directive (roadmap [106],
-> [`docs/SLASH_COMMANDS.md`](../../../docs/SLASH_COMMANDS.md)) is that `/foundry:foundry` is
-> non-intuitive — *"I want to pull from the backlog" ≠ "/foundry:foundry"* — so prefer `/flow:pull`.
-> `/foundry:foundry` remains available as the engine `/flow:pull` wraps (e.g. to run the whole backlog,
-> or an estimate-only cycle).
+> **This is the standalone BUILD cycle** (a human-run, whole-`ROADMAP.md` orchestration). For an i2p
+> **v2 pipeline** project, day-to-day delivery is the **FLEET continuous-delivery engine's** job, not
+> this command: author the roadmap with **`/roadmapper`** (which emits the `docs/roadmap/` v2 EPIC/PLAN
+> pipeline), then let the engine drain it (`/pipeline:run`, status via `/pipeline:status`) — the engine
+> invokes FOUNDRY's **PLAN-scope entry** (builder §2.5) per slice. `/foundry:foundry` remains for a
+> deliberate one-off cycle on a legacy `ROADMAP.md`, or an estimate-only run.
 
 1. Read `${CLAUDE_PLUGIN_ROOT}/VALUE_FLOW.md` to ground yourself in the conveyor, the three
    pillars, and the orchestration hierarchy (§9).

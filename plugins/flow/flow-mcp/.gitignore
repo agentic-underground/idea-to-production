@@ -1,2 +1,0 @@
-# flow-mcp runtime state (the server writes its event log / board / sidecars here).
-/.flow/

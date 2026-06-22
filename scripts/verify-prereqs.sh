@@ -492,13 +492,12 @@ else
   [ "$k_ok" -eq 1 ] && pass "every ephemeral-runner .mcp.json server pins an explicit @<version> (resident-binary servers exempt)"
 fi
 
-# ── P. (retired) flow-mcp pinned-release parity ──────────────────────────────
-# flow-mcp was re-homed from a compiled, SHA-pinned Rust binary to an interpreted Ruby server
-# (Ruby >= 3.3.8, stdlib only). There is no release artifact to pin, so the RELEASE ⟺ Cargo ⟺
-# SHA256SUMS parity check is gone — an interpreted server has no artifact-drift to guard against.
-# The Ruby server is exercised on every PR by the `flow-mcp-ruby` job in .github/workflows/verify.yml
-# (test suite + line/branch coverage + a stdio handshake through the shipped launcher). The lesson is
-# recorded in plugins/foundry/knowledge/architecture/mcp-language-choice.md.
+# ── (retired check) flow-mcp release/artifact parity ─────────────────────────
+# The marketplace once shipped a roadmap MCP (flow-mcp): first a SHA-pinned Rust binary (with a
+# RELEASE ⟺ Cargo ⟺ SHA256SUMS parity check), then an interpreted Ruby server. The whole flow plugin
+# has since been RETIRED (the FLEET continuous-delivery engine supersedes it), so this check and its
+# CI job are gone. The language-choice lesson survives in
+# plugins/foundry/knowledge/architecture/mcp-language-choice.md.
 
 # ── L. hooks smoke-exec (P1-8) ───────────────────────────────────────────────
 # For every plugins/*/hooks/hooks.json, resolve each declared command's script path

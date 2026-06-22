@@ -1,9 +1,0 @@
-{
-  "mcpServers": {
-    "flow-mcp": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/flow-mcp/bin/flow-mcp",
-      "args": ["--mcp"],
-      "env": {}
-    }
-  }
-}

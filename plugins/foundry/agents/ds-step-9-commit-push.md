@@ -148,24 +148,9 @@ Before beginning:
 7. Update roadmap entry: change `STATUS: IN PROGRESS` → `STATUS: COMPLETE`, add completion date.
    (In `pr-approval` mode, hold the item at `STATUS: AWAITING MERGE` until the human merges the PR,
    then flip to `COMPLETE`.)
-8. **Sync flow canvas.** After updating ROADMAP.md, push the status to the live flow board so the
-   card moves to DONE without waiting for a server restart. The item id is `item-{N}` where N is
-   the roadmap item number.
-
-   Preferred: invoke MCP tool `post_status` with `id="item-{N}"` and `status="done"`.
-   Fallback (if MCP tool is unavailable):
-   ```
-   curl -sf -X POST http://localhost:8000/api/items/item-{N}/status \
-        -H "Authorization: Bearer ${FLOW_TOKEN}" \
-        -H "Content-Type: application/json" \
-        -d '{"status":"done"}'
-   ```
-   This applies for both `pr-approval` (AWAITING MERGE) and `direct-merge` (COMPLETE) — in both
-   cases the work is done and the card belongs in the DONE column.
-
-   If the flow-mcp server is not reachable (connection refused or token absent), log
-   `[flow-board] not running — board will sync on next restart` and continue.
-   **Do NOT halt delivery for a missing flow-mcp server.**
+8. *(Reserved — the live flow board was retired with the `flow` plugin. Roadmap state on a v2 project
+   is the FLEET engine's manifest `state` column; on a legacy `ROADMAP.md` project it is the STATUS
+   field updated in step 7. No separate board to sync.)*
 
 9. Update plan file: mark checklist complete, add "Completed" section with commit hash and date.
 10. If `IDEA_COST.jsonl` is in use (FOUNDRY context), append the cost record per [`../knowledge/orchestration/idea-cost-schema.md`](../knowledge/orchestration/idea-cost-schema.md).
@@ -189,7 +174,7 @@ Before beginning:
 - **`direct-merge` (standalone):** merged to `main`; roadmap entry **STATUS: COMPLETE**
   **`pr-approval` (standalone):** branch pushed + **PR opened** (URL); roadmap entry **STATUS: AWAITING
   MERGE** (flips to COMPLETE only once the human merges the PR)
-- Flow canvas synced: `item-{N}` → `done` (standalone only; or log message if server not running)
+- *(No flow-board sync — the `flow` plugin/board was retired; v2 state is the engine's manifest column, legacy state is the STATUS field.)*
 - Updated plan completion section (date, hash)
 - Optional: IDEA_COST.jsonl record appended (**only after the change is on `main`** — see Sentinel Emission)
 - Optional: CHANGELOG.md entry added
@@ -265,7 +250,7 @@ handoff:
     - "adversarial review (/foundry:pr-review): PASS"
     - "direct-merge: merged to main + pushed  |  pr-approval: branch pushed + PR opened: {pr_url}"
     - "Roadmap STATUS: COMPLETE (direct-merge) | AWAITING MERGE (pr-approval, until human merges)"
-    - "Flow canvas synced: item-{N} → done (or: flow-mcp server not running)"
+    - "Roadmap state: engine manifest column (v2) / STATUS field (legacy) — no separate board"
     - "Plan checklist: all steps ticked"
     - "Reviewer: PASS"
   reviewer_status:

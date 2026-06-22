@@ -47,7 +47,7 @@ skills/agents keep working, they are simply not presented as user commands. Pref
 
 | Command / skill | What it is |
 |---|---|
-| [`/foundry:foundry`](commands/foundry.md) | the production cycle — **the internal engine that [`/flow:pull`](../flow/commands/pull.md) wraps.** The owner's directive (roadmap [106], `docs/SLASH_COMMANDS.md`) is that `/foundry:foundry` is non-intuitive: *"I want to pull from the backlog"* → **`/flow:pull`** is the intended verb; `/foundry:foundry` remains available as the engine it drives. |
+| [`/foundry:foundry`](commands/foundry.md) | the **standalone** production cycle (whole-`ROADMAP.md`). For a v2 pipeline project, delivery is the external **FLEET engine** draining a `/roadmapper`-authored `docs/roadmap/` pipeline (the engine invokes FOUNDRY's PLAN-scope entry per slice); `/foundry:foundry` remains for a deliberate one-off cycle or an estimate-only run. |
 | [`/foundry:pr-review`](commands/pr-review.md) | adversarial PR / diff review → one PASS / NEEDS_REVISION / BLOCK verdict |
 | [`/foundry:coverage-loop`](commands/coverage-loop.md) | pin the least-covered behaviour, loop until every behaviour is pinned |
 | [`/foundry:phase-sensor`](commands/phase-sensor.md) | detect each item's dev phase, install the right next-stage skill |

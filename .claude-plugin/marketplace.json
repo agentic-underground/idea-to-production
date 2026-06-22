@@ -274,32 +274,6 @@
         "maintenance",
         "build-measure-learn"
       ]
-    },
-    {
-      "name": "flow",
-      "source": "./plugins/flow",
-      "displayName": "FLOW — Deliver the roadmap flow",
-      "description": "The DELIVER-stage plugin — the roadmap flow surface and its deterministic MCP backend, living together. /flow pings and reports the roadmap flow MCP (flow-mcp); /flow-setup walks the one-time approval and verifies the connection. The bundled first-party flow-mcp Ruby server (Ruby >= 3.3.8, standard library only) answers \"what's on the roadmap\" by local compute (render_roadmap / list_items, ~0 LLM tokens) and carries roadmap items through their lifecycle (post_status, set_wait_go, append_spend, …); when no Ruby is present the /flow:flow-by-hand markdown runbook operates the roadmap by hand. The /flow command and its MCP backend resolve through ${CLAUDE_PLUGIN_ROOT} only, with no dependency on any sibling plugin — install it standalone, or alongside operate as the DELIVER companion. Carries the KAIZEN self-improvement covenant.",
-      "version": "0.4.0",
-      "author": {
-        "name": "whatbirdisthat",
-        "email": "95787+whatbirdisthat@users.noreply.github.com",
-        "url": "https://github.com/whatbirdisthat"
-      },
-      "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/flow",
-      "repository": "https://github.com/whatbirdisthat/idea-to-production",
-      "license": "MIT OR Apache-2.0",
-      "category": "workflow",
-      "keywords": [
-        "flow",
-        "deliver",
-        "roadmap",
-        "mcp",
-        "value-flow",
-        "render-roadmap",
-        "lifecycle",
-        "first-party"
-      ]
     }
   ]
 }

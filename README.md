@@ -85,8 +85,7 @@ repo) and eight specialists. Each stands alone; install only what you need.
 | **[i2p](plugins/i2p/)** | The marketplace FRONT DOOR / meta-layer + ARRIVAL layer: `/i2p:help` browses every power you have (grouped by the value flow), `/i2p:review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p:check` consolidates readiness, `/i2p:flow` maps the pipeline and your next command. It also GREETS whoever opens the repo — a `SessionStart` hook renders a maintainer-authored `.claude/welcome.md` (**smart-gated**: greets only on a cold/vague open, steps aside for a concrete task), `/i2p:define-welcome` reads a repo and writes that welcome for you, and `/i2p:statusline` turns on a rich two-line **status line** (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). Introduces itself on session start. | A single front door to the whole suite — one review that pulls in *all* the reviewers at once, plus a greeting and a status bar that surface the whole suite at a glance. |
 | **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/discovery-goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
 | **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
-| **[flow](plugins/flow/)** | The DELIVER stage: `/flow` carries roadmap value — pings/reports the roadmap **flow-mcp** MCP (its `render_roadmap`/`list_items` verbs answer "what's on the roadmap" at ~0 LLM tokens) and advances a `.i2p/roadmap/` item to its next lane; `/flow-setup` walks the one-time MCP approval and verifies the connection. Ships the first-party flow-mcp Ruby server alongside the command. | A roadmap surface and a deterministic, ~0-token "what's on the roadmap" answer that travels with the project. |
-| **[foundry](plugins/foundry/)** | The value conveyor: IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). | A disciplined, test-first, vertical-slice production system. |
+| **[foundry](plugins/foundry/)** | The DELIVER + BUILD value conveyor: `/roadmapper` authors the **FLEET v2 pipeline** (`docs/roadmap/` EPIC/PLAN docs — the canonical roadmap, answering "what's on the roadmap" via the external FLEET pipeline plugin) and drives IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). The external **FLEET continuous-delivery engine** drains that pipeline, invoking FOUNDRY's PLAN-scope build per slice. | A disciplined, test-first, vertical-slice production system whose roadmap is a continuously-delivered pipeline. |
 | **[security](plugins/security/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
 | **[publish](plugins/publish/)** | Publishing: narrative articles mined from git history & docs, standalone diagrams (Graphviz/Mermaid), and print-quality PDFs with A4-legible figures. | Documentation and release artefacts that look professionally published. |
 | **[atelier](plugins/atelier/)** | The DESIGN studio: `/ui-review` crawls any SPA's routes (screenshot + accessibility snapshot) and writes a **scored, prioritised** critique citing named canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG 2.2); `/mockup` composes polished screens and flows and runs a **convergent** designer↔reviewer loop until they clear a design-fitness rubric. | Visual work — UIs, mockups, user-flows — that is *artistic, elegant, and accessible*, not first-draft. |
@@ -107,7 +106,7 @@ deliberately **separate first-class gates**.
 |---|---|---|
 | **DISCOVER** | market-scanner | `/discovery-goal` · `/market-scan` → a kept OPPORTUNITY |
 | **IDEATE** | ideator | refine → the **IDEA package** (agent + user-facing faces) |
-| **DELIVER** | flow + `foundry:roadmapper` | roadmap intake → EARS/feature → dependency-ordered decomposition |
+| **DELIVER** | `foundry:roadmapper` (+ external FLEET engine) | `/roadmapper` authors the v2 `docs/roadmap/` pipeline; the FLEET engine drains it |
 | **DESIGN** | atelier | `/mockup` · `/ui-review` |
 | **BUILD** | foundry | IDEA ▶ ROADMAP ▶ … ▶ STORY ▶ SHIP *(loop entry)* |
 | **ASSURE** | foundry | `/pr-review` (quality V&V) *(fail → BUILD)* |
@@ -154,30 +153,22 @@ Add the marketplace, then install whichever plugins you want:
 Each plugin works on its own — `market-scanner` and `ideator` need no build system to help you find and
 shape an idea, and `security` and `publish` are useful on any repository, not just foundry projects.
 
-### Verify the flow MCP is installed & running
+### "What's on the roadmap" — the FLEET v2 pipeline
 
-`flow` ships an MCP server — **flow-mcp**, an interpreted **Ruby** server (Ruby ≥ 3.3.8, standard
-library only) — that answers *"what's on the roadmap"* by local compute at ~0 tokens (the
-`render_roadmap` verb) and carries items across the board. Confirm it end-to-end:
+The roadmap **is** the FLEET continuous-delivery pipeline, authored by **`/roadmapper`** into
+`docs/roadmap/` (a `.pipeline.md` manifest + `EPIC_NNNN.md`/`PLAN_NNNN.md` docs). To read it:
 
-1. **Install / update + restart.** After `/plugin install flow@idea-to-production` (or
-   `/plugin marketplace update idea-to-production` && `/plugin update flow`), **restart Claude
-   Code** — a plugin's MCP config is read only at startup (`/reload-plugins` does *not* pick up new MCP
-   servers).
-2. **Approve it once.** Run `/mcp`; `flow-mcp` shows as `⏸ Pending approval` — approve it. This one-time
-   approval **cannot** be pre-granted by any setting, CLI command, or launch flag (it's a deliberate
-   Claude Code security gate for plugin-shipped MCP servers). The server runs on the host's Ruby, so it
-   connects immediately.
-3. **Prove the roundtrip.** Run **`/flow hello`** → it calls the MCP and prints **"hello from the flow
-   MCP"** plus the server `version` and roadmap `items` count. Then ask *"what's on the roadmap"* → you
-   should get the rendered table (via `render_roadmap`), not a file listing.
-4. **Health any time:** `/flow ping` reports the MCP (version / items / source).
+- If the external **FLEET `pipeline` plugin** is installed (a separate marketplace, like `token-fairness`),
+  answer from its deterministic surface — **`/pipeline:status`** (or `pipeline-cron.sh status`/`next`) —
+  authoritative and ~0 LLM tokens.
+- Otherwise, parse the v2 artifacts **structurally** (by their leading-`|` columns): the
+  `docs/roadmap/.pipeline.md` manifest (`order | epic | state | constructs | branch`) and each
+  `EPIC_NNNN.md`'s `## Plans` table (`order | plan | state`).
 
-**Troubleshooting.** `/flow hello` shows `items: 0`, or *"what's on the roadmap"* comes back empty
-against a populated `.i2p/roadmap/` tree ⇒ the server isn't approved, or no Ruby ≥ 3.3.8 is present. Run
-**`/flow:flow-setup`** for a guided, verified walkthrough; with no compliant Ruby, use the
-**`/flow:flow-by-hand`** markdown fallback meanwhile. (No `mcp__…__flow-mcp__*` tools at all ⇒ not
-connected yet — repeat steps 1–2.)
+To **build**, the FLEET engine drains the pipeline continuously (`/pipeline:run`,
+`/pipeline:unattended`); a single item is a GO kick-off via `/roadmapper` (which the engine builds
+through FOUNDRY's PLAN-scope entry). *(The legacy in-repo `flow` plugin and its `flow-mcp` server have
+been retired — the FLEET engine supersedes them.)*
 
 ## Concepts & glossary
 
