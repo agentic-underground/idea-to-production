@@ -1,6 +1,8 @@
 # .pipeline/verify — idea-to-production build gate (SEED). Deterministic, offline, fast.
-# Validates every plugin/marketplace manifest parses + the tracked Python compiles. Epic 0000 grows this
-# into a real CI gate. Does NOT touch the marketplace plugins or the flow-server/MCP surface.
+# Validates every plugin/marketplace manifest parses + has the required schema shape, and the tracked
+# Python compiles. Epic 0001 grows this into a real CI gate. Does NOT touch the marketplace plugins or
+# the flow-server/MCP surface.
 for f in $(git ls-files '*.claude-plugin/*.json'); do python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" || exit 1; done
+python3 scripts/ci/check_manifests.py $(git ls-files '*.claude-plugin/*.json') || exit 1
 python3 -m py_compile $(git ls-files '*.py')
 echo "manifests + python OK"
