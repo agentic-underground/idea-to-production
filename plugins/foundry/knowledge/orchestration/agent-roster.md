@@ -246,7 +246,7 @@ See each agent file in `${CLAUDE_PLUGIN_ROOT}/agents/ds-step-*.md` for the full 
 | `ds-step-story-tests` | STORY-AGENT (E2E) | `GREEN_RUN_COMPLETE` | `STORY_PROVEN` | **opus** |
 | `ds-step-7-sync` | DELIVERY-AGENT (sync) | `STORY_PROVEN` | `SYNC_COMPLETE` | sonnet (default) |
 | `ds-step-8-commit-message` | DELIVERY-AGENT (message) | `SYNC_COMPLETE` | `COMMIT_MSG_READY` | sonnet (default) |
-| `ds-step-9-commit-push` | DELIVERY-AGENT (push) | `COMMIT_MSG_READY` | `DELIVERY_COMPLETE` | sonnet (default) |
+| `ds-step-9-commit-push` | DELIVERY-AGENT (push / branch-deliver) | `COMMIT_MSG_READY` | `DELIVERY_COMPLETE` | sonnet (default) |
 | `handler-architect` | ARCHITECT (any phase) | EARS spec | `ARCHITECTURE_DECIDED` | **opus** |
 
 Each step agent carries:

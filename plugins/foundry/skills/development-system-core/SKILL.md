@@ -20,8 +20,8 @@ Provide operational guardrails for lifecycle maturity progression. Every stage a
 | M2 | Behavior documented | Gherkin scenarios cover happy/unhappy/abuse; mapped to EARS IDs |
 | M3 | Tests authored | Failing tests prove gap; infrastructure stable; gap map documented |
 | M4 | Implemented | Implementation satisfies tests; spec intent confirmed |
-| M5 | Release workflow complete | Sync, commit, push, roadmap/plan closure done |
-| M6 | DoD audit complete | All Definition Of Done gates satisfied; orchestrator marks COMPLETE |
+| M5 | Release workflow complete | Sync + commit done, suite green. **Standalone:** push + roadmap/plan closure done. **Engine PLAN-scope:** committed to **branch HEAD** only — push/PR/land/STATUS are deferred to the FLEET engine (the agent does NOT push or mutate `.pipeline.md`) |
+| M6 | DoD audit complete | All Definition Of Done gates satisfied. **Standalone:** orchestrator marks COMPLETE. **Engine PLAN-scope:** `DELIVERY_COMPLETE` keyed to branch HEAD; the engine marks the PLAN `completed` on land |
 
 ## Required Checks Per Stage
 
@@ -40,8 +40,9 @@ Before a stage agent can mark its stage complete:
 | Writing test code | M2 (Gherkin approved) |
 | Writing production code | M3 (tests RED, gap map documented) |
 | Running green test suite | M4 (implementation complete) |
-| Committing and pushing | M5 (post-sync green suite confirmed) |
-| Marking item COMPLETE | M6 (global DoD audit passed) |
+| Committing (to the build branch) | M5 (post-sync green suite confirmed) |
+| Pushing / opening a PR / mutating roadmap STATUS | M5 **and standalone mode only** — in engine PLAN-scope these are the engine's, never the agent's |
+| Marking item COMPLETE / `completed` | M6 standalone (orchestrator); engine PLAN-scope: the engine marks `completed` on land |
 
 ## Commands For Agents
 
