@@ -49,6 +49,16 @@
 #      `command -v <lsp>` presence row), so the presence≠capability lesson is actually applied; and
 #      (2) every such capability probe obeys the no-download invariant (check G's deny set, scoped to
 #      the LSP class) — it may launch the server locally but must never fetch-and-run a package.
+#   P. roadmap v2 conformance — the roadmap IS the FLEET v2 pipeline (docs/roadmap/), whose grammar is
+#      regex-parsed by the engine. Asserts the on-disk artifacts conform (manifest rows: leading `|`,
+#      4-digit `order`, `order|epic|state`; each EPIC_NNNN.md: single-line `**Branch**` scrape + any
+#      `## Plans` table is `order|plan|state` not the manifest grammar) AND that the vendored
+#      references/fleet-pipeline-standard.md declares the pinned schema-version and — when the external
+#      FLEET source is present on the box — is byte-identical to it (FAIL LOUD on drift → human re-vendor).
+#      A fresh repo with no docs/roadmap/.pipeline.md passes. The gate-content assertion (.pipeline/verify
+#      includes the coverage floor) lands with PR-3, which grows the gate.
+#      (Check I also skips ``` fenced code blocks, so illustrative links in a vendored grammar's sample
+#      tables are not mistaken for real doc links.)
 #
 # Flag:
 #   --fix  guarded canonical re-sync — when the canonical-copy parity checks (A check.sh,
@@ -342,8 +352,12 @@ section "I. internal doc links resolve"
 broken_links="$(
   { find plugins \( -name node_modules -o -name target -o -name .venv \) -prune -o -name '*.md' -print; ls PREREQUISITES/*.md 2>/dev/null; ls ./*.md 2>/dev/null; } | sort -u | while IFS= read -r f; do
     dir="$(dirname "$f")"
-    # awk emits one link target per line, after blanking inline-code spans so links inside `…` are skipped.
+    # awk emits one link target per line. It skips ``` fenced code blocks entirely (their links are
+    # illustrative examples, not real doc links — e.g. a vendored grammar's sample manifest rows), and
+    # blanks inline-code spans so links inside `…` are skipped too.
     awk '
+      /^[[:space:]]*```/ { infence = !infence; next }
+      infence { next }
       {
         line=$0
         while (match(line, /`[^`]*`/)) line = substr(line,1,RSTART-1) substr(line,RSTART+RLENGTH)
@@ -575,6 +589,78 @@ else
   pass "$(printf '%s\n' "$m_caps" | grep -c .) capability-grade LSP probe(s) present, all no-download (JSON-RPC initialize over stdio, never an install)"
 fi
 rm -f "$m_err"
+
+# ── P. roadmap v2 conformance (FLEET pipeline grammar + vendored-standard pin) ─
+# The roadmap IS the FLEET v2 pipeline (docs/roadmap/). Its grammar is load-bearing — the engine
+# parses it with regex/awk, so a wrong shape silently skips or mis-reads the project. This check
+# asserts the on-disk artifacts conform AND that the vendored standard has not drifted from FLEET.
+#
+#   (1) .pipeline.md manifest rows: leading `|`, first 3 columns `order | epic | state`, order = 4 digits.
+#   (2) each EPIC_NNNN.md: a single-physical-line `**Branch**` whose scrape (pipeline/NNNN-slug) is
+#       non-empty and equals the manifest's branch cell; and any `## Plans` table uses `order|plan|state`.
+#   (3) the vendored references/fleet-pipeline-standard.md carries the pinned schema-version, and — when
+#       the external FLEET source is present on this box — is byte-identical to it (FAIL LOUD on drift →
+#       forces a human re-vendor + pin bump). RE-VENDOR OWNER: foundry maintainer, on any FLEET schema bump.
+#
+# NOTE: the gate-content assertion (.pipeline/verify must include the coverage-floor command) is added
+# alongside PR-3, which GROWS .pipeline/verify into the DoD gate — asserting it before the gate grows
+# would red the seed gate. Grammar + vendor-pin land here (PR-2); gate-content parity lands with PR-3.
+EXPECTED_SCHEMA_VERSION="017"   # the FLEET v2 plan schema (doc 017) the vendored copy validated against
+section "P. roadmap v2 conformance"
+vendored_std="plugins/foundry/skills/roadmapper/references/fleet-pipeline-standard.md"
+manifest="docs/roadmap/.pipeline.md"
+p_fail=0
+
+# (3a) vendored standard exists + carries the pinned schema-version token
+if [ ! -f "$vendored_std" ]; then
+  fail "vendored FLEET standard missing: $vendored_std"; p_fail=1
+elif ! grep -qE "schema .${EXPECTED_SCHEMA_VERSION}|v2 \(${EXPECTED_SCHEMA_VERSION}\)" "$vendored_std"; then
+  fail "vendored FLEET standard does not declare the pinned schema-version ${EXPECTED_SCHEMA_VERSION} (re-vendor + bump EXPECTED_SCHEMA_VERSION)"; p_fail=1
+fi
+# (3b) opportunistic drift compare against the live external FLEET source (CI: absent → skipped)
+fleet_src=""
+for c in \
+  "$HOME/.local/share/fleet/pipeline-marketplace/pipeline/skills/roadmap-to-pipeline/references/fleet-pipeline-standard.md" \
+  "$HOME"/.claude/plugins/cache/fleet-pipeline/pipeline/*/skills/roadmap-to-pipeline/references/fleet-pipeline-standard.md; do
+  [ -f "$c" ] && { fleet_src="$c"; break; }
+done
+if [ -f "$vendored_std" ] && [ -n "$fleet_src" ]; then
+  if [ "$(md5sum < "$vendored_std")" != "$(md5sum < "$fleet_src")" ]; then
+    fail "vendored FLEET standard has DRIFTED from the live source ($fleet_src) — re-vendor (cp) and bump the schema-version pin if the grammar changed"; p_fail=1
+  fi
+fi
+
+# (1)+(2) on-disk artifact grammar — only when a v2 roadmap exists (a fresh repo legitimately has none)
+if [ -f "$manifest" ]; then
+  # (1) manifest pipeline rows (skip the header + separator rows): leading |, order=4 digits, col2 over EPIC_/epic
+  while IFS= read -r row; do
+    case "$row" in
+      '| order '*|'| ---'*|'|---'*) continue ;;   # header / separator
+      '|'*) ;;                                      # a data row
+      *) continue ;;                               # not a table row
+    esac
+    ord="$(printf '%s' "$row" | awk -F'|' '{gsub(/[` ]/,"",$2); print $2}')"
+    if ! printf '%s' "$ord" | grep -qE '^[0-9]{4}$'; then
+      fail "manifest row order not 4 digits: $row"; p_fail=1
+    fi
+  done < "$manifest"
+  # (2) per-EPIC docs
+  while IFS= read -r epic; do
+    [ -f "$epic" ] || continue
+    # single-physical-line **Branch** scrape
+    br="$(grep -E '\*\*Branch\*\*' "$epic" | grep -oE 'pipeline/[0-9]{4}-[A-Za-z0-9._-]+' | head -1)"
+    if [ -z "$br" ]; then
+      fail "$epic: **Branch** scrape empty (must be one physical line: \`pipeline/NNNN-slug\`)"; p_fail=1
+    fi
+    # any ## Plans table must use the 3-col plan grammar, not the manifest's epic grammar
+    if grep -qE '^\| order \| epic \|' "$epic"; then
+      fail "$epic: a '## Plans' table uses the manifest grammar (order|epic|state) — it must be order|plan|state"; p_fail=1
+    fi
+  done < <(ls docs/roadmap/EPIC_*.md 2>/dev/null)
+  [ "$p_fail" -eq 0 ] && pass "roadmap v2 artifacts conform (manifest 4-digit order, EPIC **Branch** scrape, ## Plans grammar) + vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${fleet_src:+ (drift-checked vs live FLEET)}"
+else
+  [ "$p_fail" -eq 0 ] && pass "no docs/roadmap/.pipeline.md yet (no v2 roadmap to conform); vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${fleet_src:+ (drift-checked vs live FLEET)}"
+fi
 
 # ── --fix: guarded canonical re-sync ─────────────────────────────────────────
 # Only acts when --fix was passed. Re-syncs the drifted canonical copies registered by checks A/E/F/N/O
