@@ -114,7 +114,7 @@ For the full pattern — both resolvers, the TC-BROWSER-1 ledger entry, the `--f
 
 ## Optional extras worth wiring (not shipped by default)
 
-Grouped by what they amplify. The shipped four cover the common case keylessly; these need an API key,
+Grouped by what they amplify. The shipped three cover the common case keylessly; these need an API key,
 a token, or an app-runtime — wire them when the workflow is core and you can supply the secret at runtime.
 
 **Deeper research (discovery/ideation):**

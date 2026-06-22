@@ -81,7 +81,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   welcome** (a SessionStart hook renders a repo's `.claude/welcome.md` to greet and route whoever opens
   it; `/i2p:define-welcome` authors it) and the **idea-to-production status line** (`/i2p:statusline`,
   offered once on first activation) — the arrival layer folded into i2p. A thin orchestrator that
-  composes the eight specialists by capability and never re-implements them.
+  composes the seven specialists by capability and never re-implements them.
 - **first-order instrumentation** — the HUD's always-on instruments, fed by deterministic hooks: the
   **⚔ adversarial-catch counter** (times a reviewer caught something) and the **token-cost tracker**
   (per-phase actual vs a self-calibrating estimate, tokens + $). Canonical:

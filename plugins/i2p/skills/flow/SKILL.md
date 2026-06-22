@@ -26,8 +26,8 @@ carries VALUE from IDEA to PRODUCTION; this draws the map with only the parts yo
                                             ┌──────── fail ◀───────┐
                                             ▼                      │
 DISCOVER ──▶ IDEATE ─▶ DELIVER ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
-market-       ideator  flow +     atelier   foundry  foundry   security  publish  mission-
-scanner                roadmapper                    (quality) (security)          control
+market-       ideator  roadmapper atelier   foundry  foundry   security  publish  operate
+scanner                (+FLEET)                      (quality) (security)
                                             └──── BUILD ⇄ ASSURE ⇄ SECURE loop ────┘
  /discovery-  /ideate  /roadmapper /mockup  IDEA▶…▶ /pr-review /scan-all /publish  observe ·
  goal +                (+FLEET eng) /ui-rev   SHIP   (quality)                      iterate ↻→DISCOVER

@@ -1,10 +1,10 @@
 <div align="center">
 
-<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the nine-phase value cycle igniting beneath it — nine phase nodes (DISCOVER · IDEATE · DELIVER · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, flow, atelier, foundry, foundry, security, publish, operate), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back through the BUILD ⇄ ASSURE ⇄ SECURE loop to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door, before gently looping." src="docs/images/masthead.svg">
+<img width="100%" alt="idea-to-production masthead: the wordmark “idea → production” above the nine-phase value cycle igniting beneath it — nine phase nodes (DISCOVER · IDEATE · DELIVER · DESIGN · BUILD · ASSURE · SECURE · PUBLISH · OPERATE), each labelled with its owning plugin (scanner, ideator, foundry, atelier, foundry, foundry, security, publish, operate), light teal one at a time, each lingering with a soft pulse then cross-fading to the next; then an amber feedback arc glows to show the ASSURE & SECURE gates can send work back through the BUILD ⇄ ASSURE ⇄ SECURE loop to DESIGN & BUILD; then the dashed teal return loop-arc glows as OPERATE’s learnings re-enter DISCOVER and the loop closes; finally it settles for a long beat on the complete cycle showing both feedback loops, framed by the i2p front door, before gently looping." src="docs/images/masthead.svg">
 
 # idea-to-production
 
-**Carry software from the spark of an IDEA to PRODUCTION** — nine composable Claude Code plugins, one
+**Carry software from the spark of an IDEA to PRODUCTION** — eight composable Claude Code plugins, one
 disciplined, **test-first** value flow: discover ▸ refine ▸ design ▸ build ▸ assure ▸ secure ▸ publish ▸ operate.
 
 </div>
@@ -69,7 +69,7 @@ Not decoration — these are the ideas the whole system obeys. The philosophical
 
 <img width="820" alt="Conceptual-domain map: upstream discovery (market-scanner → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (security, publish, atelier, operate) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.svg">
 
-*Upstream discovery → the foundry conveyor → cross-cutting companions. Nine plugins, one value flow.*
+*Upstream discovery → the foundry conveyor → cross-cutting companions. Eight plugins, one value flow.*
 
 </div>
 
@@ -77,8 +77,8 @@ Not decoration — these are the ideas the whole system obeys. The philosophical
 
 ## The plugins
 
-Nine composable plugins span the whole arc — the **i2p** front door (which also greets whoever opens the
-repo) and eight specialists. Each stands alone; install only what you need.
+Eight composable plugins span the whole arc — the **i2p** front door (which also greets whoever opens the
+repo) and seven specialists. Each stands alone; install only what you need.
 
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
@@ -176,7 +176,7 @@ New here? [`plugins/foundry/knowledge/glossary.md`](plugins/foundry/knowledge/gl
 concept, plugin, agent, skill, and command, draws the conceptual-domain tree, and settles the
 **foundry vs forge vs founder** question. The system itself is described in
 [`plugins/foundry/VALUE_FLOW.md`](plugins/foundry/VALUE_FLOW.md). For a phase-by-phase catalog of
-every slash command across all nine plugins, see [`docs/SLASH_COMMANDS.md`](docs/SLASH_COMMANDS.md).
+every slash command across all eight plugins, see [`docs/SLASH_COMMANDS.md`](docs/SLASH_COMMANDS.md).
 
 ## License
 

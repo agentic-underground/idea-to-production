@@ -1,6 +1,6 @@
 # Slash commands
 
-Every slash command the **idea-to-production** marketplace makes available, across its nine
+Every slash command the **idea-to-production** marketplace makes available, across its eight
 plugins. In Claude Code both a plugin's `commands/` and its user-facing `skills/` are typed the
 same way — `/<plugin>:<name>` — so they are listed together here. Bracketed `[a·b·c]` after a
 command shows its common arguments; most also accept free-form scope text.
