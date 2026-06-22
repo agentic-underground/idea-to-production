@@ -55,8 +55,11 @@
 #      `## Plans` table is `order|plan|state` not the manifest grammar) AND that the vendored
 #      references/fleet-pipeline-standard.md declares the pinned schema-version and — when the external
 #      FLEET source is present on the box — is byte-identical to it (FAIL LOUD on drift → human re-vendor).
-#      A fresh repo with no docs/roadmap/.pipeline.md passes. The gate-content assertion (.pipeline/verify
-#      includes the coverage floor) lands with PR-3, which grows the gate.
+#      A fresh repo with no docs/roadmap/.pipeline.md passes. NOTE: the DoD-content of an emitted PLAN's
+#      `.pipeline/verify` (coverage floor / flaky / BDD) is enforced PER EMITTED PROJECT by roadmapper's
+#      PLAN "Definition of done" template + FOUNDRY's own DoD audit — NOT asserted here. This marketplace
+#      meta-repo has no application test-suite to floor (its own gate is EPIC_0001's deterministic
+#      manifest+python checks), so check P guards the GRAMMAR + vendored-standard pin, not gate content.
 #      (Check I also skips ``` fenced code blocks, so illustrative links in a vendored grammar's sample
 #      tables are not mistaken for real doc links.)
 #
@@ -606,9 +609,10 @@ rm -f "$m_err"
 #       the external FLEET source is present on this box — is byte-identical to it (FAIL LOUD on drift →
 #       forces a human re-vendor + pin bump). RE-VENDOR OWNER: foundry maintainer, on any FLEET schema bump.
 #
-# NOTE: the gate-content assertion (.pipeline/verify must include the coverage-floor command) is added
-# alongside PR-3, which GROWS .pipeline/verify into the DoD gate — asserting it before the gate grows
-# would red the seed gate. Grammar + vendor-pin land here (PR-2); gate-content parity lands with PR-3.
+# NOTE: gate CONTENT (coverage floor / flaky / BDD) is NOT asserted here. The DoD floors of an emitted
+# PLAN's .pipeline/verify are roadmapper's PLAN "Definition of done" template + FOUNDRY's per-build DoD
+# audit, enforced per emitted project. This marketplace meta-repo has no application test-suite to floor
+# (its gate is EPIC_0001's deterministic manifest+python checks). Check P guards GRAMMAR + vendor-pin.
 EXPECTED_SCHEMA_VERSION="017"   # the FLEET v2 plan schema (doc 017) the vendored copy validated against
 section "P. roadmap v2 conformance"
 vendored_std="plugins/foundry/skills/roadmapper/references/fleet-pipeline-standard.md"
