@@ -46,11 +46,10 @@ A skill for capturing, formalising, and implementing software features using a s
    non-i2p projects without the pipeline.
 
 > **Read vs. write — scope note.** This resolution order governs **reads** ("what's on the roadmap").
-> Native **v2 emission** is live: §3 CAPTURE writes the v2 artifacts (`.pipeline.md` + `EPIC_NNNN.md` +
-> `PLAN_NNNN.md`) for an i2p project, and §3.5 models authoring as a value task. What is still deferred
-> is build **dispatch**: §6 / §11 GO-mode still drive the legacy pull-and-build flow; re-routing
-> `ship N`/`build N` to the FLEET engine, and FOUNDRY's PLAN-scope build behavior, land in later PRs of
-> this migration.
+> Native **v2 emission** is live (§3 CAPTURE writes `.pipeline.md` + `EPIC_NNNN.md` + `PLAN_NNNN.md`;
+> §3.5 models authoring as a value task), and **v2 build dispatch is live too**: a GO hook on a v2
+> EPIC/PLAN kicks the FLEET engine off (§11.4), which runs FOUNDRY's PLAN-scope build (builder §2.5).
+> The legacy `ROADMAP.md` pull-and-build flow (§6 / §11 legacy path) remains for non-pipeline projects.
 
 The roadmap is a living document intended to be read and acted upon by both humans and AI agents. Every entry is self-contained: it carries enough context that a fresh agent, with no prior conversation history, can pick up the item and implement it correctly.
 
@@ -69,8 +68,8 @@ The roadmap is a living document intended to be read and acted upon by both huma
 | "pull the next feature" | → §6 PULL & PLAN |
 | Selects a feature from the roadmap display | → §6 PULL & PLAN |
 | "implement [feature name]" | → §6 PULL & PLAN |
-| "ship it" / "make it" / "green light" / "full send" / "just build" | → §11 GO mode for resolved item |
-| "ship N" / "go N" / "build N" (N = item number) | → §11 GO mode, item N |
+| "ship it" / "make it" / "green light" / "full send" / "just build" | → §11 GO mode (v2: engine kick-off · legacy: DEV_SYSTEM) |
+| "ship N" / "go N" / "build N" / "ship epic-NNNN" | → §11 GO mode, item N (v2: engine kick-off) |
 | "talk through" / "spec it" / "flesh out" / "plan it" / "scope it" | → §11 DISCUSS mode for resolved item |
 | "update N" / "edit N" / "add to N" | → §11 DISCUSS mode, item N |
 | "pick it up" / "where were we" / "resume work" | → §11 RESUME protocol |
@@ -218,13 +217,12 @@ the engine owns sync, land, PR/issue, and the `state` column (touching them is a
 > plan's Construction process" — so this section **is** the bridge that hands the slice to FOUNDRY.
 > Keep it accurate; a vague Construction process produces a vague build.
 
-> **Sequencing dependency.** The "branch-HEAD `DELIVERY_COMPLETE`, no `git push`, no STATUS mutation"
-> contract above is FOUNDRY's **PLAN-scope build behavior, which lands in a later PR of this migration**
-> (the FOUNDRY re-cast). Today's FOUNDRY (`ds-step-9-commit-push`) still pushes and writes STATUS. So:
-> author this section now (it is the correct target), but **do not point a live FLEET engine at these
-> PLAN docs on a real project until that re-cast has landed** — until then a build would push the plan
-> branch out of band of the engine. The engine's calamity guard already blocks the dangerous half (an
-> edit to `.pipeline.md`/`## Plans`).
+> **Engine contract (live).** The "branch-HEAD `DELIVERY_COMPLETE`, no `git push`, no STATUS mutation"
+> contract above is FOUNDRY's **PLAN-scope build behavior** (builder §2.5 + `ds-step-9-commit-push`
+> engine mode) — now live. When the FLEET engine builds this PLAN it drives FOUNDRY scoped to
+> `(EPIC, PLAN)`, lands on its own, and owns the `state` column; the engine's calamity guard rejects any
+> build that edits `.pipeline.md`/`## Plans`. So write this section as the real bridge: a vague
+> Construction process produces a vague build.
 
 After writing/updating the artifacts, immediately follow §3.4.
 
@@ -319,8 +317,9 @@ EOF
 - If the push/PR fails (network, conflict), report the error to the user and do not retry silently.
 - This protocol applies wherever the skill authors v2 roadmap intent: §3.3 (new EPIC/PLAN) and §3.5
   (re-decomposition / adding a PLAN). For a v2 project, a spec refinement is a `PLAN_NNNN.md` edit per
-  §3.3/§3.5 — NOT a §11.5 DISCUSS edit (§11 still uses legacy STATUS/entry vocabulary; its v2
-  conversion lands with the trigger-dispatch PR). State transitions are the engine's, not here.
+  §3.3/§3.5 — NOT a §11.5 DISCUSS edit (§11.5 DISCUSS uses legacy STATUS/entry vocabulary, retained for
+  legacy `ROADMAP.md` projects; v2 GO-mode is engine kick-off per §11.4). State transitions are the
+  engine's, not here.
 
 ---
 
@@ -534,6 +533,10 @@ After pushing:
    under **direct-merge** (merged to `main`) → `STATUS: IN PROGRESS` → `STATUS: COMPLETE` + completion date;
    under **pr-approval** (branch pushed, PR opened) → `STATUS: IN PROGRESS` → `STATUS: AWAITING MERGE`,
    flipping to `COMPLETE` only once the human merges the PR.
+   > **Legacy / standalone path only.** For a v2 pipeline project the engine owns land + STATUS: it
+   > marks the PLAN `completed` on merge, or `delivered` (PR open, fire-and-forget) under
+   > `admin_merge:false`. `delivered` is **not** FOUNDRY's blocking `AWAITING MERGE` — the engine never
+   > halts on it; it moves to the next PLAN. roadmapper does not write v2 STATUS by hand.
 2. Update `doc/[FEATURE_TITLE]_PLAN.md`: mark the checklist complete, add a "Completed" section with the commit hash and date.
 3. If the project uses a changelog (`CHANGELOG.md`), add an entry.
 
@@ -590,12 +593,12 @@ These shortcuts bypass the need to re-state the full trigger phrase after seeing
 
 ## 6. PULL & PLAN ("Pull the next feature")
 
-> **v2 note (build dispatch is moving to the engine).** For an i2p v2 pipeline, *building* the next
-> slice is the FLEET engine's job, not roadmapper's: the engine picks the next `available` PLAN in
-> dependency order, runs its `## Construction process` (which invokes FOUNDRY), and owns the `state`
-> column. roadmapper's job is to **author** the PLANs (§3) so they are build-ready. The legacy
-> pull-and-drive flow below applies to non-pipeline (`ROADMAP.md`) projects; the engine-kickoff
-> re-routing of "ship N"/"build N" for v2 lands with the trigger-dispatch work (§11 / a later PR).
+> **v2 note (build dispatch is the engine's).** For an i2p v2 pipeline, *building* the next slice is the
+> FLEET engine's job, not roadmapper's: the engine picks the next `available` PLAN in dependency order,
+> runs its `## Construction process` (which invokes FOUNDRY — builder §2.5), and owns the `state`
+> column. roadmapper's job is to **author** the PLANs (§3) so they are build-ready; a GO hook on a v2
+> item is an engine kick-off (§11.4). The legacy pull-and-drive flow below applies to non-pipeline
+> (`ROADMAP.md`) projects only.
 
 "Next" means the first item with `STATUS: PENDING` in roadmap order (top to bottom),
 **unless** the user specifies a different item by number or name.
@@ -730,6 +733,13 @@ The **commit point** — the moment GO is authorized — freezes the spec. Befor
 
 The Status Legend in §7 ROADMAP FILE TEMPLATE should include **SUSPENDED** for items paused mid-implementation.
 
+> **v2 pipeline projects use a different lifecycle.** The STATUS model above (PENDING / IN PROGRESS /
+> AWAITING MERGE / COMPLETE) is the **legacy `ROADMAP.md`** model. For a v2 `docs/roadmap/` project,
+> lifecycle state is the **engine's manifest `state` column** (`available` → `engaged` → `completed`,
+> plus `delivered`) — roadmapper does not drive it (§11.4 v2 path). Note `delivered` (PR open under
+> `admin_merge:false`) is **fire-and-forget**, NOT FOUNDRY's blocking `AWAITING MERGE`: the engine
+> never halts on it — it marks the item `delivered` and moves to the next PLAN.
+
 ---
 
 ### 11.3 GO/DISCUSS Mode Dispatch
@@ -738,7 +748,7 @@ Mode is determined by the user's invocation phrase, resolved in this order:
 
 | User phrase pattern | Mode | Entry point |
 |---|---|---|
-| GO hook: "ship it", "make it", "green light", "full send", "just build", "ship N", "go N", "build N" | **GO** | §11.4 |
+| GO hook: "ship it", "make it", "green light", "full send", "just build", "ship N", "go N", "build N", "ship epic-NNNN" | **GO** | §11.4 (v2: engine kick-off; legacy: DEV_SYSTEM) |
 | DISCUSS hook: "talk through", "spec it", "flesh out", "plan it", "scope it", "update N", "edit N" | **DISCUSS** | §11.5 |
 | Resume hook: "pick it up", "where were we", "resume work" | **RESUME** | §11.6 |
 | Bare reference only: "roadmap 3", "item 5", "[feature name]" with no mode hook | **SURFACE** | Display full entry, ask GO or DISCUSS |
@@ -750,7 +760,31 @@ If the user enters a GO or DISCUSS hook without a resolved item (§11.1 produced
 
 ### 11.4 GO Mode — Rules
 
-GO mode is the executive phase. The spec is frozen. The DEV_SYSTEM (§4) runs.
+GO mode is the executive phase: "build this now". **It dispatches differently by roadmap kind.**
+
+#### v2 pipeline project (`docs/roadmap/`) — GO = engine kick-off
+
+For a v2 project, building is the **FLEET continuous-delivery engine's** job, not roadmapper's. A GO
+hook on a resolved EPIC/PLAN **kicks the engine off immediately** for that item; roadmapper does **not**
+drive the DEV_SYSTEM directly and does **not** mutate state (the engine owns the manifest `state`
+column and the land).
+
+- **Kick off now:** invoke the `pipeline` plugin (external FLEET marketplace plugin) — `/pipeline:run`
+  for the build pulse, or a targeted `pipeline-cron.sh build <NNNN>` for a specific EPIC — to build the
+  resolved `EPIC_NNNN`/`PLAN_NNNN` now. The engine selects the next `available` PLAN in dependency
+  order, runs its `## Construction process` (which invokes FOUNDRY's PLAN-scope entry — builder §2.5),
+  re-runs `.pipeline/verify`, and lands per governance.
+- **What roadmapper MAY do:** confirm the item is build-ready (conformant v2 docs), report the kick-off,
+  and surface where to watch progress (`/pipeline:status`).
+- **What roadmapper MUST NOT do:** drive DEV_SYSTEM Steps 0–9 itself; edit `.pipeline.md` / the EPIC
+  `## Plans` `state` (an engine calamity); set `engaged`/`completed` by hand. If a spec gap is found,
+  the fix is a PLAN edit (§3.3/§3.5) then re-kick — not an in-place GO mutation.
+- **If the `pipeline` plugin is not installed:** tell the user the engine isn't available here and offer
+  the standalone path (`/foundry:foundry` PLAN-scope on the resolved PLAN) as a manual fallback.
+
+#### Legacy project (`ROADMAP.md`, no pipeline) — GO = DEV_SYSTEM
+
+The spec is frozen; the DEV_SYSTEM (§4) runs in-session.
 
 **What the agent MAY do:**
 - Execute Development System Steps 0–9 in order
@@ -831,10 +865,10 @@ When the roadmapper skill is invoked fresh (no roadmap item already in context f
 
 ```
 Quick reference — mode hooks:
-  green light / ship it / make it / full send  →  GO (implement now)
-  talk through / spec it / flesh out / plan it →  DISCUSS (refine spec)
-  pick it up / where were we / resume work     →  RESUME (continue in-progress)
-  what's next / in progress / check status     →  QUERY (status overview)
+  green light / ship it / build N / ship epic-NNNN → GO (v2: kick the FLEET engine off now · legacy: DEV_SYSTEM)
+  talk through / spec it / flesh out / plan it     → DISCUSS (refine spec)
+  pick it up / where were we / resume work         → RESUME (continue in-progress)
+  what's next / in progress / check status         → QUERY (status overview)
 ```
 
 ---

@@ -67,6 +67,15 @@ completion in `IDEA_COST.jsonl` so the system gets smarter with every cycle.
 | "run the foundry" / "process the roadmap" / "orchestrate" | → §3 ROADMAP INGESTION (standalone cycle) |
 | "ship the backlog" / "build everything" / "start FOUNDRY" | → §3 ROADMAP INGESTION (standalone cycle) |
 | "run a foundry cycle" / "full send" | → §3 ROADMAP INGESTION (standalone cycle) |
+
+> **v2 pipeline projects: the engine drains the backlog continuously — don't run a standalone cycle.**
+> For a `docs/roadmap/` v2 project, "ship the backlog" / "build everything" is the **FLEET engine's**
+> standing job: its hourly ticker is a continuity/resume heartbeat (not a 1-per-hour throttle) that
+> **drains the dependency tree** PLAN-by-PLAN, parks at the rate-limit, and resumes next window. Start/
+> resume it with `/pipeline:run` (and `/pipeline:unattended` for overnight autonomy); regulate heat
+> with `/pipeline:stop` then re-`run` — NOT by slowing a cycle. The §3 standalone ingestion path below
+> is for **legacy `ROADMAP.md`** projects (or a deliberate one-off human-run cycle); on a v2 project,
+> kicking a single item is GO-mode engine kick-off (roadmapper §11.4), and the engine handles the rest.
 | "what would this cost?" / "estimate the backlog" | → §4.3 TOKEN ESTIMATION only |
 | "inspect FOUNDRY" / "run the inspector" | → §13 INSPECTION PROTOCOL |
 | "add to FOUNDRY" / "update FOUNDRY knowledge" | → §14 SELF-IMPROVEMENT |
