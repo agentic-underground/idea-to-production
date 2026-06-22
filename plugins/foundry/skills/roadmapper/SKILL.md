@@ -69,8 +69,8 @@ The roadmap is a living document intended to be read and acted upon by both huma
 | "pull the next feature" | → §6 PULL & PLAN |
 | Selects a feature from the roadmap display | → §6 PULL & PLAN |
 | "implement [feature name]" | → §6 PULL & PLAN |
-| "ship it" / "make it" / "green light" / "full send" / "just build" | → §11 GO mode for resolved item |
-| "ship N" / "go N" / "build N" (N = item number) | → §11 GO mode, item N |
+| "ship it" / "make it" / "green light" / "full send" / "just build" | → §11 GO mode (v2: engine kick-off · legacy: DEV_SYSTEM) |
+| "ship N" / "go N" / "build N" / "ship epic-NNNN" | → §11 GO mode, item N (v2: engine kick-off) |
 | "talk through" / "spec it" / "flesh out" / "plan it" / "scope it" | → §11 DISCUSS mode for resolved item |
 | "update N" / "edit N" / "add to N" | → §11 DISCUSS mode, item N |
 | "pick it up" / "where were we" / "resume work" | → §11 RESUME protocol |
@@ -534,6 +534,10 @@ After pushing:
    under **direct-merge** (merged to `main`) → `STATUS: IN PROGRESS` → `STATUS: COMPLETE` + completion date;
    under **pr-approval** (branch pushed, PR opened) → `STATUS: IN PROGRESS` → `STATUS: AWAITING MERGE`,
    flipping to `COMPLETE` only once the human merges the PR.
+   > **Legacy / standalone path only.** For a v2 pipeline project the engine owns land + STATUS: it
+   > marks the PLAN `completed` on merge, or `delivered` (PR open, fire-and-forget) under
+   > `admin_merge:false`. `delivered` is **not** FOUNDRY's blocking `AWAITING MERGE` — the engine never
+   > halts on it; it moves to the next PLAN. roadmapper does not write v2 STATUS by hand.
 2. Update `doc/[FEATURE_TITLE]_PLAN.md`: mark the checklist complete, add a "Completed" section with the commit hash and date.
 3. If the project uses a changelog (`CHANGELOG.md`), add an entry.
 
@@ -730,6 +734,13 @@ The **commit point** — the moment GO is authorized — freezes the spec. Befor
 
 The Status Legend in §7 ROADMAP FILE TEMPLATE should include **SUSPENDED** for items paused mid-implementation.
 
+> **v2 pipeline projects use a different lifecycle.** The STATUS model above (PENDING / IN PROGRESS /
+> AWAITING MERGE / COMPLETE) is the **legacy `ROADMAP.md`** model. For a v2 `docs/roadmap/` project,
+> lifecycle state is the **engine's manifest `state` column** (`available` → `engaged` → `completed`,
+> plus `delivered`) — roadmapper does not drive it (§11.4 v2 path). Note `delivered` (PR open under
+> `admin_merge:false`) is **fire-and-forget**, NOT FOUNDRY's blocking `AWAITING MERGE`: the engine
+> never halts on it — it marks the item `delivered` and moves to the next PLAN.
+
 ---
 
 ### 11.3 GO/DISCUSS Mode Dispatch
@@ -738,7 +749,7 @@ Mode is determined by the user's invocation phrase, resolved in this order:
 
 | User phrase pattern | Mode | Entry point |
 |---|---|---|
-| GO hook: "ship it", "make it", "green light", "full send", "just build", "ship N", "go N", "build N" | **GO** | §11.4 |
+| GO hook: "ship it", "make it", "green light", "full send", "just build", "ship N", "go N", "build N", "ship epic-NNNN" | **GO** | §11.4 (v2: engine kick-off; legacy: DEV_SYSTEM) |
 | DISCUSS hook: "talk through", "spec it", "flesh out", "plan it", "scope it", "update N", "edit N" | **DISCUSS** | §11.5 |
 | Resume hook: "pick it up", "where were we", "resume work" | **RESUME** | §11.6 |
 | Bare reference only: "roadmap 3", "item 5", "[feature name]" with no mode hook | **SURFACE** | Display full entry, ask GO or DISCUSS |
@@ -750,7 +761,31 @@ If the user enters a GO or DISCUSS hook without a resolved item (§11.1 produced
 
 ### 11.4 GO Mode — Rules
 
-GO mode is the executive phase. The spec is frozen. The DEV_SYSTEM (§4) runs.
+GO mode is the executive phase: "build this now". **It dispatches differently by roadmap kind.**
+
+#### v2 pipeline project (`docs/roadmap/`) — GO = engine kick-off
+
+For a v2 project, building is the **FLEET continuous-delivery engine's** job, not roadmapper's. A GO
+hook on a resolved EPIC/PLAN **kicks the engine off immediately** for that item; roadmapper does **not**
+drive the DEV_SYSTEM directly and does **not** mutate state (the engine owns the manifest `state`
+column and the land).
+
+- **Kick off now:** invoke the `pipeline` plugin (external FLEET marketplace plugin) — `/pipeline:run`
+  for the build pulse, or a targeted `pipeline-cron.sh build <NNNN>` for a specific EPIC — to build the
+  resolved `EPIC_NNNN`/`PLAN_NNNN` now. The engine selects the next `available` PLAN in dependency
+  order, runs its `## Construction process` (which invokes FOUNDRY's PLAN-scope entry — builder §2.5),
+  re-runs `.pipeline/verify`, and lands per governance.
+- **What roadmapper MAY do:** confirm the item is build-ready (conformant v2 docs), report the kick-off,
+  and surface where to watch progress (`/pipeline:status`).
+- **What roadmapper MUST NOT do:** drive DEV_SYSTEM Steps 0–9 itself; edit `.pipeline.md` / the EPIC
+  `## Plans` `state` (an engine calamity); set `engaged`/`completed` by hand. If a spec gap is found,
+  the fix is a PLAN edit (§3.3/§3.5) then re-kick — not an in-place GO mutation.
+- **If the `pipeline` plugin is not installed:** tell the user the engine isn't available here and offer
+  the standalone path (`/foundry:foundry` PLAN-scope on the resolved PLAN) as a manual fallback.
+
+#### Legacy project (`ROADMAP.md`, no pipeline) — GO = DEV_SYSTEM
+
+The spec is frozen; the DEV_SYSTEM (§4) runs in-session.
 
 **What the agent MAY do:**
 - Execute Development System Steps 0–9 in order
@@ -831,10 +866,10 @@ When the roadmapper skill is invoked fresh (no roadmap item already in context f
 
 ```
 Quick reference — mode hooks:
-  green light / ship it / make it / full send  →  GO (implement now)
-  talk through / spec it / flesh out / plan it →  DISCUSS (refine spec)
-  pick it up / where were we / resume work     →  RESUME (continue in-progress)
-  what's next / in progress / check status     →  QUERY (status overview)
+  green light / ship it / build N / ship epic-NNNN → GO (v2: kick the FLEET engine off now · legacy: DEV_SYSTEM)
+  talk through / spec it / flesh out / plan it     → DISCUSS (refine spec)
+  pick it up / where were we / resume work         → RESUME (continue in-progress)
+  what's next / in progress / check status         → QUERY (status overview)
 ```
 
 ---
