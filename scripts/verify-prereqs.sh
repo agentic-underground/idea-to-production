@@ -354,9 +354,13 @@ broken_links="$(
     dir="$(dirname "$f")"
     # awk emits one link target per line. It skips ``` fenced code blocks entirely (their links are
     # illustrative examples, not real doc links — e.g. a vendored grammar's sample manifest rows), and
-    # blanks inline-code spans so links inside `…` are skipped too.
+    # blanks inline-code spans so links inside `…` are skipped too. The fence toggle matches only a TRUE
+    # fence delimiter — a leading run of ≥3 backticks followed by an optional info string with NO further
+    # backticks (`^\s*```+[^`]*$`). A prose line that merely starts with a backtick run but contains more
+    # backticks later (an inline span like ```` ```mermaid ````) is NOT a fence and must not toggle, else
+    # an unbalanced toggle would silently blind the rest of the file to link-checking.
     awk '
-      /^[[:space:]]*```/ { infence = !infence; next }
+      /^[[:space:]]*```+[^`]*$/ { infence = !infence; next }
       infence { next }
       {
         line=$0
@@ -617,17 +621,26 @@ if [ ! -f "$vendored_std" ]; then
 elif ! grep -qE "schema .${EXPECTED_SCHEMA_VERSION}|v2 \(${EXPECTED_SCHEMA_VERSION}\)" "$vendored_std"; then
   fail "vendored FLEET standard does not declare the pinned schema-version ${EXPECTED_SCHEMA_VERSION} (re-vendor + bump EXPECTED_SCHEMA_VERSION)"; p_fail=1
 fi
-# (3b) opportunistic drift compare against the live external FLEET source (CI: absent → skipped)
-fleet_src=""
-for c in \
-  "$HOME/.local/share/fleet/pipeline-marketplace/pipeline/skills/roadmap-to-pipeline/references/fleet-pipeline-standard.md" \
-  "$HOME"/.claude/plugins/cache/fleet-pipeline/pipeline/*/skills/roadmap-to-pipeline/references/fleet-pipeline-standard.md; do
-  [ -f "$c" ] && { fleet_src="$c"; break; }
-done
-if [ -f "$vendored_std" ] && [ -n "$fleet_src" ]; then
-  if [ "$(md5sum < "$vendored_std")" != "$(md5sum < "$fleet_src")" ]; then
-    fail "vendored FLEET standard has DRIFTED from the live source ($fleet_src) — re-vendor (cp) and bump the schema-version pin if the grammar changed"; p_fail=1
+# (3b) opportunistic drift compare against the live external FLEET source(s) on this box (CI: absent →
+# skipped). A box may carry MORE THAN ONE copy at different schema versions (e.g. a v2 monorepo checkout
+# + a stale v1-only plugin cache). Only a copy that ALSO declares the pinned schema-version counts as a
+# drift ORACLE — a stale v1 copy must never be treated as the truth. FAIL only if ≥1 same-version oracle
+# exists and the vendored copy matches NONE of them.
+drift_note=""
+if [ -f "$vendored_std" ]; then
+  vmd5="$(md5sum < "$vendored_std")"; oracle_found=0; oracle_match=0
+  for c in \
+    "$HOME/.local/share/fleet/pipeline-marketplace/pipeline/skills/roadmap-to-pipeline/references/fleet-pipeline-standard.md" \
+    "$HOME"/.claude/plugins/cache/fleet-pipeline/pipeline/*/skills/roadmap-to-pipeline/references/fleet-pipeline-standard.md; do
+    [ -f "$c" ] || continue
+    grep -qE "schema .${EXPECTED_SCHEMA_VERSION}|v2 \(${EXPECTED_SCHEMA_VERSION}\)" "$c" || continue   # same-version copies only are oracles
+    oracle_found=1
+    [ "$(md5sum < "$c")" = "$vmd5" ] && oracle_match=1
+  done
+  if [ "$oracle_found" -eq 1 ] && [ "$oracle_match" -eq 0 ]; then
+    fail "vendored FLEET standard has DRIFTED from every same-version (${EXPECTED_SCHEMA_VERSION}) live source on this box — re-vendor (cp) and bump the schema-version pin if the grammar changed"; p_fail=1
   fi
+  [ "$oracle_match" -eq 1 ] && drift_note=" (drift-checked vs live FLEET)"
 fi
 
 # (1)+(2) on-disk artifact grammar — only when a v2 roadmap exists (a fresh repo legitimately has none)
@@ -657,9 +670,9 @@ if [ -f "$manifest" ]; then
       fail "$epic: a '## Plans' table uses the manifest grammar (order|epic|state) — it must be order|plan|state"; p_fail=1
     fi
   done < <(ls docs/roadmap/EPIC_*.md 2>/dev/null)
-  [ "$p_fail" -eq 0 ] && pass "roadmap v2 artifacts conform (manifest 4-digit order, EPIC **Branch** scrape, ## Plans grammar) + vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${fleet_src:+ (drift-checked vs live FLEET)}"
+  [ "$p_fail" -eq 0 ] && pass "roadmap v2 artifacts conform (manifest 4-digit order, EPIC **Branch** scrape, ## Plans grammar) + vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${drift_note}"
 else
-  [ "$p_fail" -eq 0 ] && pass "no docs/roadmap/.pipeline.md yet (no v2 roadmap to conform); vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${fleet_src:+ (drift-checked vs live FLEET)}"
+  [ "$p_fail" -eq 0 ] && pass "no docs/roadmap/.pipeline.md yet (no v2 roadmap to conform); vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${drift_note}"
 fi
 
 # ── --fix: guarded canonical re-sync ─────────────────────────────────────────
