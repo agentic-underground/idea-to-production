@@ -11,7 +11,27 @@ memory: project
 
 ## Stage Intent
 
-Finalize and publish the change set, then close all lifecycle bookkeeping artifacts. This step completes the delivery transaction and records the item as shipped.
+Finalize the change set, then close lifecycle bookkeeping. This step completes the delivery transaction
+and records the item as shipped (standalone), or hands a green branch to the FLEET engine (PLAN-scope).
+
+## Delivery mode — determine FIRST
+
+This agent runs in one of two modes; everything below branches on it:
+
+- **Engine PLAN-scope** — you are building a single `docs/roadmap/PLAN_NNNN.md` slice that the **FLEET
+  continuous-delivery engine** invoked (builder §2.5): a disposable clone on a `pipeline/NNNN-slug`
+  branch, with a `.pipeline.md` manifest present. **In this mode you commit to the branch and STOP** —
+  you do **NOT** `git push`, open a PR/issue, mutate roadmap STATUS or `.pipeline.md`/`## Plans`, or
+  sync a flow board. The engine owns sync-to-target, push, PR/issue, marking `completed`, and the EPIC
+  roll-up. (Editing `.pipeline.md` or the EPIC `## Plans` table is an engine **calamity** — never.)
+  Emit `DELIVERY_COMPLETE` keyed to **branch HEAD**.
+- **Standalone** — a human-run FOUNDRY cycle (or a legacy `ROADMAP.md` project). Full publish path:
+  push + PR/merge per `.foundry/governance.md`, roadmap STATUS update, etc. (the original behaviour).
+
+**Detect:** engine PLAN-scope if the build target is a `docs/roadmap/PLAN_NNNN.md` on a
+`pipeline/NNNN-*` branch (or the orchestrator/handoff set an engine/PLAN-scope flag). Otherwise
+standalone. When unsure, prefer engine mode's *non-mutating* path and report — never push/STATUS-mutate
+speculatively.
 
 ## Context Requirements
 
@@ -68,7 +88,14 @@ Before beginning:
     - **Graceful skip (no halt).** If the owner is **not** allowlisted, or `gh` is missing/unauthenticated:
       **skip** issue + PR automation, **report the gap** in the completion report ("origin `<owner>` not
       allowlisted" / "`gh` unavailable — commits + local docs only"), and continue. Never block delivery on this.
-5. **Branch on merge governance** — read `.foundry/governance.md` (absent ⇒ default `pr-approval`;
+5. **— ENGINE PLAN-SCOPE STOPS HERE.** If in engine mode (see *Delivery mode*): you have committed to
+   the branch (step 3) and the adversarial gate has PASSed (step 4). **Do NOT** run steps 5, 6b, 7, 8 —
+   no push, no PR/issue, no roadmap STATUS, no flow-board sync (the engine owns all of that; touching
+   `.pipeline.md`/`## Plans` is a calamity). Record `IDEA_COST.jsonl` (step 10) if STORY_PROVEN is
+   present, emit `DELIVERY_COMPLETE` keyed to **branch HEAD** (`git rev-parse --short HEAD`), report the
+   green branch, and stop. **The steps below are STANDALONE mode only.**
+
+5. **(Standalone) Branch on merge governance** — read `.foundry/governance.md` (absent ⇒ default `pr-approval`;
    see [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md)):
    - **`pr-approval`**: `git push` the feature branch and **open a PR targeting `main`** (stacked PRs
      are opt-in and need prior user approval — see the PR-base policy in `merge-governance.md`) whose
@@ -142,11 +169,14 @@ Before beginning:
 
 (Mode-aware — read `.foundry/governance.md`; see [`../knowledge/protocols/merge-governance.md`](../knowledge/protocols/merge-governance.md).)
 
-- Commit hash and push confirmation
-- **`direct-merge`:** merged to `main`; roadmap entry **STATUS: COMPLETE**
-  **`pr-approval`:** branch pushed + **PR opened** (URL); roadmap entry **STATUS: AWAITING MERGE**
-  (flips to COMPLETE only once the human merges the PR)
-- Flow canvas synced: `item-{N}` → `done` (or log message if server not running)
+- Commit hash
+- **Engine PLAN-scope:** green tree committed to the **branch** (HEAD sha); `DELIVERY_COMPLETE` keyed
+  to branch HEAD; **no push, no PR, no STATUS mutation, no flow sync** — the engine lands it. Report the
+  branch + HEAD sha so the engine can re-run the gate and land.
+- **`direct-merge` (standalone):** merged to `main`; roadmap entry **STATUS: COMPLETE**
+  **`pr-approval` (standalone):** branch pushed + **PR opened** (URL); roadmap entry **STATUS: AWAITING
+  MERGE** (flips to COMPLETE only once the human merges the PR)
+- Flow canvas synced: `item-{N}` → `done` (standalone only; or log message if server not running)
 - Updated plan completion section (date, hash)
 - Optional: IDEA_COST.jsonl record appended (**only after the change is on `main`** — see Sentinel Emission)
 - Optional: CHANGELOG.md entry added
@@ -165,7 +195,16 @@ Send completion report document to `reviewer` for final audit. This is the final
 
 ## Sentinel Emission
 
-`DELIVERY_COMPLETE` means **the change is on `main`** — it must not fire for an unmerged change.
+**Engine PLAN-scope** — `DELIVERY_COMPLETE` is keyed to **branch HEAD** (the engine re-runs the gate
+on the branch and lands it; the agent never pushes). Emit, after a green tree + adversarial PASS:
+```
+SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{branch_head_short_sha}
+```
+This is the completion signal the engine + IDEA_COST consume; it asserts "green on the build branch",
+NOT "on main". Do not wait for a merge — the engine owns that.
+
+**Standalone** — `DELIVERY_COMPLETE` means **the change is on `main`** — it must not fire for an
+unmerged change.
 
 - **`direct-merge`** (merged + pushed): emit, on success —
   ```
@@ -177,7 +216,8 @@ Send completion report document to `reviewer` for final audit. This is the final
   ```
   and emit `DELIVERY_COMPLETE::COMPLETE` only once the human's merge is confirmed.
 
-Payload: short commit hash (first 7 chars), or the PR URL/branch for `AWAITING_MERGE`.
+Payload: short commit hash (first 7 chars) — branch HEAD (engine) or the merge commit on `main`
+(standalone direct-merge) — or the PR URL/branch for `AWAITING_MERGE`.
 
 **This step does NOT emit `STORY_PROVEN`.** That sentinel is owned exclusively by
 `ds-step-story-tests` (Phase 5 — story tests). `ds-step-9` cannot know the

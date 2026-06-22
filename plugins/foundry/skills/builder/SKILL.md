@@ -38,6 +38,15 @@ completion in `IDEA_COST.jsonl` so the system gets smarter with every cycle.
 > VALUE_HANDLER_POOL agents. FOUNDRY's only direct writes are to
 > `docs/internal/FOUNDRY_PLAN.md` and `IDEA_COST.jsonl`.
 >
+> **Two invocation modes.** *(1) Standalone cycle* — a human runs "the foundry"; FOUNDRY ingests a
+> whole roadmap, tiers it, and writes `FOUNDRY_PLAN.md` (the classic path, §3–§6). *(2) Engine
+> PLAN-scope* — the **FLEET continuous-delivery engine** invokes FOUNDRY to deliver **ONE plan** given
+> `(EPIC_NNNN, PLAN_NNNN)` (§2.5). In PLAN-scope FOUNDRY does **not** ingest a roadmap, tier, write
+> `FOUNDRY_PLAN.md`, or budget the window (the engine owns scheduling + budget + land); its only direct
+> writes are the branch commits + `IDEA_COST.jsonl`. The PHASE_POOL, reviewer panel, sentinel chain,
+> and DoD floors are **identical** in both modes — only the entry, scheduling, and the M5/M6 land step
+> differ.
+>
 > **CODE_QUALITY is the knowledge-home for all code design and review decisions.**
 > FOUNDRY defers to it at every implementation and review stage.
 >
@@ -54,9 +63,10 @@ completion in `IDEA_COST.jsonl` so the system gets smarter with every cycle.
 
 | User says / does | Entry point |
 |---|---|
-| "run the foundry" / "process the roadmap" / "orchestrate" | → §3 ROADMAP INGESTION |
-| "ship the backlog" / "build everything" / "start FOUNDRY" | → §3 ROADMAP INGESTION |
-| "run a foundry cycle" / "full send" | → §3 ROADMAP INGESTION |
+| FLEET engine: "deliver ONE plan `(EPIC_NNNN, PLAN_NNNN)`" | → **§2.5 PLAN-SCOPE ENTRY** |
+| "run the foundry" / "process the roadmap" / "orchestrate" | → §3 ROADMAP INGESTION (standalone cycle) |
+| "ship the backlog" / "build everything" / "start FOUNDRY" | → §3 ROADMAP INGESTION (standalone cycle) |
+| "run a foundry cycle" / "full send" | → §3 ROADMAP INGESTION (standalone cycle) |
 | "what would this cost?" / "estimate the backlog" | → §4.3 TOKEN ESTIMATION only |
 | "inspect FOUNDRY" / "run the inspector" | → §13 INSPECTION PROTOCOL |
 | "add to FOUNDRY" / "update FOUNDRY knowledge" | → §14 SELF-IMPROVEMENT |
@@ -66,11 +76,14 @@ completion in `IDEA_COST.jsonl` so the system gets smarter with every cycle.
 
 ## 2. PRE-FLIGHT SCAN
 
-Before any processing, silently check:
+This PRE-FLIGHT governs the **standalone cycle** (§3–§6). The engine **PLAN-scope** entry (§2.5) has
+its own, lighter pre-flight and needs no ROADMAP.md. Before any standalone processing, silently check:
 
 1. Locate `ROADMAP.md` or `doc/ROADMAP.md`. If absent, stop and tell the user:
-   > "No ROADMAP.md found. FOUNDRY requires a populated roadmap. Run IDEATOR
+   > "No ROADMAP.md found. FOUNDRY (standalone cycle) requires a populated roadmap. Run IDEATOR
    > then ROADMAPPER to create one, then return here."
+   > *(To build a single v2 pipeline slice instead, use the PLAN-scope entry — §2.5 — which reads
+   > `docs/roadmap/PLAN_NNNN.md` directly and needs no `ROADMAP.md`.)*
 2. Read `IDEA_COST.jsonl` (project root or `doc/`) if it exists — extract
    average token cost per item type for budget estimation.
 3. Identify the project stack: scan `package.json`, `pyproject.toml`,
@@ -86,7 +99,50 @@ roadmap, or a conflict between existing artefacts and roadmap status).
 
 ---
 
+## 2.5 PLAN-SCOPE ENTRY (engine-invoked — deliver ONE plan)
+
+**The new primary entry point.** The FLEET continuous-delivery engine drives delivery PLAN-by-PLAN; for
+each, it invokes FOUNDRY to **deliver ONE plan** given `(EPIC_NNNN, PLAN_NNNN)` against the existing
+checkout (a disposable clone on the `pipeline/NNNN-slug` branch), then stop. You are in PLAN-scope mode
+whenever your task is a single `(EPIC_NNNN, PLAN_NNNN)` pair (equivalently: the engine's plan-build
+prompt handed you a `docs/roadmap/PLAN_NNNN.md` to build) — **not** a whole roadmap.
+
+**Lighter pre-flight (no ROADMAP.md):**
+1. Read `docs/roadmap/PLAN_NNNN.md` (the slice: EARS / acceptance / **Construction process** / DoD) and
+   its parent `docs/roadmap/EPIC_NNNN.md` (capability intent + shared-infra map). You MAY skim sibling
+   PLANs in the EPIC's `## Plans` table for cohesion — but implement **only this PLAN**.
+2. Identify the project stack (as in §2 PRE-FLIGHT item 3) for VALUE_HANDLER_POOL selection.
+
+**What PLAN-scope SHEDS (the engine owns these — do NOT do them here):**
+- **§3 ROADMAP INGESTION, §4 TIER ASSIGNMENT, §6 TIERED PRODUCTION** — there is no backlog to ingest,
+  tier, or loop; you build exactly one slice.
+- **§4.2 tier budget cap + intra-pass token budgeting** — the engine owns the rate-limit window,
+  per-round `$` cap, and resume-forever continuity. Do not self-budget or defer on token grounds; build
+  until done or until the engine's round cap stops you (it resumes you next round/tick).
+- **`FOUNDRY_PLAN.md`** — roadmapper already authored the EPIC/PLAN structure; do not re-plan it.
+
+**What PLAN-scope KEEPS (identical to a standalone item):** the full **§7 PHASE_POOL PIPELINE**
+(Phase 0→6) for this one PLAN, the **§8 VALUE_HANDLER_POOL**, the **§9 REVIEWER PANEL**, the
+**§10 sentinel chain** (incl. `STORY_PROVEN` + `DELIVERY_COMPLETE`), the **§11 test policy** (100%
+coverage floor, flaky-ban, BDD density), and the **§12 IDEA_COST write**.
+
+**M5/M6 are re-targeted to branch-HEAD (the engine lands, not FOUNDRY):**
+- Drive the slice to a **GREEN tree on the build branch**; run the full DoD (incl. `.pipeline/verify`).
+- `ds-step-9-commit-push` runs in **engine mode**: commit to the branch, run the adversarial gate, and
+  emit `DELIVERY_COMPLETE` **keyed to branch HEAD** — then **STOP. No `git push`, no PR/issue, no
+  `.pipeline.md`/`## Plans` STATUS mutation, no flow-board sync.** The engine owns sync-to-target,
+  push, PR/issue, marking `completed`, and the EPIC roll-up. (Editing `.pipeline.md` or the EPIC's
+  `## Plans` table from a build is an engine **calamity** — never do it.)
+- `STORY_PROVEN` (Phase 5) and `DELIVERY_COMPLETE` (branch-HEAD) still gate the `IDEA_COST.jsonl`
+  write — the cost-of-record is preserved; only push/STATUS are shed.
+
+Then proceed to **§7 PHASE_POOL PIPELINE** for this one PLAN. Skip §3–§6.
+
+---
+
 ## 3. ROADMAP INGESTION
+
+> **Standalone cycle only.** The engine PLAN-scope entry (§2.5) skips §3–§6 entirely.
 
 Read the full roadmap. For each entry extract:
 
@@ -394,20 +450,27 @@ SENTINEL::STORY_PROVEN::ROADMAP-{N}::PASS::{story_test_count}::{final_line_cover
 **Spawn:** `ds-step-7-sync`, then `ds-step-8-commit-message`, then `ds-step-9-commit-push` in sequence
 **Prerequisite:** STORY_PROVEN sentinel must be present.
 **Input:** All accumulated sentinels + final green test run output
-**Output:** Feature committed and pushed; roadmap STATUS updated to COMPLETE
+**Output (standalone):** Feature committed + pushed; roadmap STATUS updated to COMPLETE
+**Output (engine PLAN-scope §2.5):** slice committed to the **branch**; `DELIVERY_COMPLETE` keyed to
+branch HEAD; **the engine** does sync/push/PR/STATUS/land
 
 Steps within this phase:
-1. **Sync** (`ds-step-7-sync`): rebase against upstream; re-run tests after rebase
+1. **Sync** (`ds-step-7-sync`): rebase against upstream; re-run tests after rebase. *(Engine mode: the
+   engine manages the build branch vs. merge-target; this is a branch re-orient, not a push.)*
 2. **Commit message** (`ds-step-8-commit-message`): write WHY/WHAT/TESTING/ROADMAP message per
    `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/commit-message.md`
-3. **Commit + push** (`ds-step-9-commit-push`): stage, commit, push; update roadmap STATUS → COMPLETE
+3. **Commit + deliver** (`ds-step-9-commit-push`): stage + commit. **Standalone:** push + update roadmap
+   STATUS → COMPLETE (per `.foundry/governance.md`). **Engine PLAN-scope:** stop at the branch commit —
+   **no push, no STATUS/`.pipeline.md` mutation, no flow-board sync**; the engine lands it.
 
 **Context sentinel on completion:**
 ```
-SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{commit_hash}
+SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{commit_hash}     # standalone: {hash} on main
+SENTINEL::DELIVERY_COMPLETE::ROADMAP-{N}::COMPLETE::{branch_head_sha} # engine: keyed to branch HEAD
 ```
 
-→ Item is marked COMPLETE in roadmap. IDEA_COST recording (§12) is triggered.
+→ Standalone: item marked COMPLETE in roadmap. Engine: the engine marks the PLAN `completed` on land.
+IDEA_COST recording (§12) is triggered in both modes (gated on STORY_PROVEN + DELIVERY_COMPLETE).
 
 ---
 
