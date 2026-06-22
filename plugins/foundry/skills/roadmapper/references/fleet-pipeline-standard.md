@@ -24,6 +24,11 @@ Modern projects use the **3-level** shape (continuous delivery). Prefer this whe
     **PR** opens; with the registry **`admin_merge: true`** grant the engine `gh pr merge --admin`'s its
     own PR (continuous delivery, never pauses); without it, the EPIC is marked `delivered` (PR open).
 - **Floor unchanged:** nothing lands without a GREEN repo-declared `.pipeline/verify`. Never blind-merge.
+- **Roadmap-authoring units:** when an epic/plan's job IS to write the roadmap (e.g. migrate v1→v2,
+  decompose a capability), declare `| **Authoring** | \`true\` |` in its `## Metadata` so the builder's
+  forbidden-mutation guard stands down and the agent may create/edit the manifest + EPIC/PLAN docs. It
+  still cannot merge/push/lease or mark its OWN row `completed`, and the GREEN gate still applies. This is
+  how a project's FIRST pipeline job can be "bring the roadmap onto v2."
 
 `.pipeline.md` (the EPIC manifest) keeps the SAME 5-column grammar below; only the `epic` column links
 `EPIC_NNNN.md` and the state gains a terminal `delivered`. The `EPIC_{order}.md` form goes in the registry
