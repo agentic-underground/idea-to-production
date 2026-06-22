@@ -46,9 +46,11 @@ A skill for capturing, formalising, and implementing software features using a s
    non-i2p projects without the pipeline.
 
 > **Read vs. write — scope note.** This resolution order governs **reads** ("what's on the roadmap").
-> Native **v2 emission** (CAPTURE/PLAN writing `.pipeline.md` + `EPIC_NNNN.md` + `PLAN_NNNN.md`) is
-> landing incrementally; until it does, §3 CAPTURE still authors the legacy surface. Do not infer from
-> this section that §3 already emits v2.
+> Native **v2 emission** is live: §3 CAPTURE writes the v2 artifacts (`.pipeline.md` + `EPIC_NNNN.md` +
+> `PLAN_NNNN.md`) for an i2p project, and §3.5 models authoring as a value task. What is still deferred
+> is build **dispatch**: §6 / §11 GO-mode still drive the legacy pull-and-build flow; re-routing
+> `ship N`/`build N` to the FLEET engine, and FOUNDRY's PLAN-scope build behavior, land in later PRs of
+> this migration.
 
 The roadmap is a living document intended to be read and acted upon by both humans and AI agents. Every entry is self-contained: it carries enough context that a fresh agent, with no prior conversation history, can pick up the item and implement it correctly.
 
@@ -112,146 +114,185 @@ Once the intent is clear, **scan the project** before writing anything:
 Note what you find — you will use this to write the implementation plan and to avoid
 duplicating work.
 
-### 3.3 Write the Roadmap Entry
+### 3.3 Write the v2 pipeline artifacts (EPIC + PLAN + manifest)
 
-Each roadmap entry has the following structure:
+For an i2p project the roadmap **is** the FLEET v2 pipeline (§1). A capture writes/updates THREE
+artifacts under `docs/roadmap/` (full grammar: [`references/fleet-pipeline-standard.md`](references/fleet-pipeline-standard.md)):
+the `.pipeline.md` **manifest**, one `EPIC_NNNN.md` per capability, and one `PLAN_NNNN.md` per
+vertical slice. **Decomposing a capability into EPIC + PLANs is a value task — orchestrate it, do not
+free-hand it (§3.5).** Numbering: `NNNN` is a **global** 4-digit id across all EPIC_/PLAN_ files (the
+next free integer, zero-padded); the engine addresses items by it.
+
+> *(For a non-i2p project without a pipeline, fall back to the legacy single-file `ROADMAP.md` entry
+> via the §7 template. The structure below is the i2p-native path.)*
+
+**The manifest — `docs/roadmap/.pipeline.md`** (one row per EPIC; **state lives here**, never in the
+EPIC/PLAN docs; the engine owns the state column — you author the row, you do not later hand-edit its
+state):
 
 ```markdown
-## [N] TITLE
-> STATUS: PENDING | IN PROGRESS | AWAITING MERGE | COMPLETE | DEFERRED
-> ADDED: YYYY-MM-DD
-> PRIORITY: HIGH | MEDIUM | LOW
+# <project> pipeline (v2)
+| order | epic | state | constructs | branch |
+| --- | --- | --- | --- | --- |
+| `0001` | [EPIC_0001.md](./EPIC_0001.md) | `available` | CI gate hardening (1 plan) | `pipeline/0001-ci` |
+```
 
-> **`AWAITING MERGE`** — used only under `pr-approval` merge governance
-> ([`../../knowledge/protocols/merge-governance.md`](../../knowledge/protocols/merge-governance.md)):
-> the change is built, has **PASSed** the adversarial review, and its PR is open for a human to
-> merge. It is *not* `IN PROGRESS` (so the phase-sensor takes no further phase action) and *not yet*
-> `COMPLETE` (it isn't on `main`); it flips to `COMPLETE` when the human merges the PR.
+**The EPIC — `docs/roadmap/EPIC_NNNN.md`** (a capability = an ordered set of PLANs; carries the
+cross-slice shared-infra map and the EPIC-level `depends_on`):
 
-**Brief Description**
-One to three sentences. Plain language. What the feature does and why it matters.
+```markdown
+# <Imperative epic title>
 
-### User Stories
+## Metadata
+| | |
+| --- | --- |
+| **Epic** | `NNNN` |
+| **Constructs** | what this capability produces |
+| **Branch** | `pipeline/NNNN-slug` |
+| **Depends on** | — _(or `EPIC_MMMM`, space/comma-separated, for EPICs that must land first)_ |
+
+## Plans
+| order | plan | state |
+| --- | --- | --- |
+| `0000` | [PLAN_MMMM.md](./PLAN_MMMM.md) | `available` |
+
+## Shared infrastructure
+- Infra/components multiple PLANs in this EPIC touch (lift shared setup into the earliest PLAN so a
+  later PLAN never rebuilds it). Name each shared piece + which PLAN owns its creation.
+```
+
+> **THE single most common breakage: `**Branch**` and its value MUST be on ONE physical line** — the
+> engine scrapes it with `grep -oE 'pipeline/[0-9]{4}-[A-Za-z0-9-]+'`. Keep the manifest `branch` cell
+> and the EPIC `**Branch**` value identical. `order` is always exactly 4 digits.
+
+**The PLAN — `docs/roadmap/PLAN_NNNN.md`** (one reviewable **vertical slice** = one DEV_SYSTEM pass;
+**self-contained** so a fresh agent — or the engine — can build it without other context; **no state**,
+state is the EPIC's `## Plans` row). The rich spec the legacy entry used to carry lives **inside the
+PLAN doc** as the sections below:
+
+```markdown
+# <Imperative plan title>
+
+## Metadata
+| | |
+| --- | --- |
+| **Plan** | `NNNN` |
+| **Epic** | `MMMM` |
+| **Depends on** | — _(or `PLAN_KKKK`, space/comma-separated, for PLANs whose work must land first)_ |
+
+**Brief**: one to three sentences — what this slice does and why it matters.
+
+## User stories
 - AS A <actor> I WANT <capability> SO THAT <outcome>
-- AS A <actor> I WANT <capability> SO THAT <outcome>
-  (one per distinct actor/outcome pair)
 
-### EARS Specification
-(Easy Approach to Requirements Syntax — formal, agent-readable)
+## EARS specification
+(Use whichever forms apply — Ubiquitous `SHALL`, Event-driven `WHEN…SHALL`, Unwanted `IF…THEN…SHALL`,
+State-driven `WHILE…SHALL`, Optional `WHERE…SHALL`. Each statement: one behaviour, unique `EARS-{NNN}`
+id, independently testable. Full forms: `${CLAUDE_PLUGIN_ROOT}/knowledge/specs/ears.md`.)
 
-**Ubiquitous requirements** (always true):
-- The system SHALL <behaviour>.
+## Acceptance criteria
+Numbered, concrete, testable outcomes (Given … When … Then …).
 
-**Event-driven requirements** (when something happens):
-- WHEN <trigger> THE SYSTEM SHALL <response>.
+## Human interface test plan
+(When the slice adds/changes a UI element — for each, the full gesture path: navigate → find →
+verify visible → act → verify UI reacts → verify data persists after reload. Consumed by the
+EARS/FEATURE/STORY phases so every interactive element gets a browser-level story test.)
 
-**Unwanted behaviour requirements** (guard clauses):
-- IF <condition> THEN THE SYSTEM SHALL <safeguard>.
+## Implementation notes
+- Components/modules likely affected (from the §3.2 scan); patterns/utilities to reuse; known risks;
+  external dependencies / API contracts.
 
-**State-driven requirements** (while in a state):
-- WHILE <state> THE SYSTEM SHALL <behaviour>.
+## Construction process
+Build THIS plan by invoking FOUNDRY scoped to `(EPIC_MMMM, PLAN_NNNN)`: drive DEV_SYSTEM M0→M6 to a
+GREEN tree **on this branch**, emit `STORY_PROVEN` + `DELIVERY_COMPLETE` keyed to **branch HEAD**, and
+write `IDEA_COST.jsonl`. **Do NOT `git push` or edit `.pipeline.md` / the EPIC's `## Plans` table** —
+the engine owns sync, land, PR/issue, and the `state` column (touching them is an engine calamity).
 
-**Optional feature requirements** (if configured):
-- WHERE <feature flag / config> THE SYSTEM SHALL <behaviour>.
-
-(Use whichever EARS forms apply. Not all five are required for every feature.)
-
-### Acceptance Criteria
-Numbered list of concrete, testable outcomes. Written as facts, not steps.
-1. Given … When … Then …
-2. …
-
-### Implementation Notes
-- Components / modules likely affected (from the codebase scan in §3.2).
-- Patterns or utilities to reuse.
-- Known risks or open questions.
-- External dependencies or API contracts.
-
-### Human Interface Test Plan
-(Complete this section when the feature adds or changes any user-facing UI element.)
-
-For each interactive element introduced or changed, describe the full human gesture path:
-
-```
-- [Element name / location]: navigate → find element → verify visible → act → verify UI reacts → verify data persists after reload
+## Definition of done
+- `.pipeline/verify` is GREEN (the deterministic gate the engine re-runs — incl. the coverage floor).
+- The slice's functional/acceptance checks pass; the human-interface test plan (if any) is proven by
+  a story test.
 ```
 
-Example:
-```
-- [Edit button on round row]: navigate to Rounds panel → find "Edit" button for Round 3 →
-  click Edit → verify a date input appears and is editable → type "2026-08-15" → click "Save" →
-  verify round list shows "15 Aug 2026" → reload page → verify date still shows "15 Aug 2026"
-- [Delete button on round row]: click "Delete" for Round 3 → verify inline confirmation prompt
-  appears → click "Confirm" → verify Round 3 row is gone → reload → verify Round 3 still absent
-```
+> **Why the Construction process matters:** the FLEET engine's plan-build prompt literally reads "the
+> plan's Construction process" — so this section **is** the bridge that hands the slice to FOUNDRY.
+> Keep it accurate; a vague Construction process produces a vague build.
 
-This section is consumed by EARS-AGENT (Step 1), FEATURE-AGENT (Step 2), and STORY-AGENT (Step 5)
-to ensure every interactive element has a browser-level story test. Any UI element not listed here
-will be missing an interaction test.
+> **Sequencing dependency.** The "branch-HEAD `DELIVERY_COMPLETE`, no `git push`, no STATUS mutation"
+> contract above is FOUNDRY's **PLAN-scope build behavior, which lands in a later PR of this migration**
+> (the FOUNDRY re-cast). Today's FOUNDRY (`ds-step-9-commit-push`) still pushes and writes STATUS. So:
+> author this section now (it is the correct target), but **do not point a live FLEET engine at these
+> PLAN docs on a real project until that re-cast has landed** — until then a build would push the plan
+> branch out of band of the engine. The engine's calamity guard already blocks the dangerous half (an
+> edit to `.pipeline.md`/`## Plans`).
 
-### Development Plan Reference
-When this feature is selected for implementation, a detailed plan will be written to: `doc/[FEATURE_TITLE]_PLAN.md` 
-The plan follows THE DEVELOPMENT SYSTEM (§4).
-```
-
-Append the new entry to the roadmap file and save it. Then immediately follow §3.4.
+After writing/updating the artifacts, immediately follow §3.4.
 
 ---
 
 ### 3.4 COMMIT AFTER EVERY ROADMAP WRITE
 
-**Any change to `ROADMAP.md` — new entry, status update, DEFER/RESTORE, DISCUSS edit, or
-completion — MUST be committed and pushed immediately after the file is saved.** The roadmap
-is the shared record of intent; a local-only edit is invisible to other agents and developers.
+**Any roadmap-authoring change — a new EPIC/PLAN, a spec refinement, a re-decomposition, or adding a
+PLAN to an EPIC — MUST be committed immediately after the artifacts are saved.** The roadmap is the
+shared record of intent; a local-only edit is invisible to the engine and to other agents. (For an
+i2p project this stages the v2 `docs/roadmap/` artifacts; for a legacy project, `ROADMAP.md`.)
 
-#### Commit message format for roadmap-only changes
+> **Authoring writes, not state writes.** Under the v2 pipeline you author/refine EPIC and PLAN docs
+> and the manifest **row**; you do **not** commit `state` transitions (`available`→`engaged`→
+> `completed`) — the FLEET engine owns the state column and lands completions. Do not hand-edit a
+> PLAN's state to "mark it done".
+
+#### Commit message format for roadmap-authoring changes
 
 Use the FOUNDRY commit format (from `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/commit-message.md`)
-adapted for a documentation-only change. The TESTING line is omitted when no code changes.
+adapted for a documentation change. The TESTING line is omitted when no code changes.
 
-**Adding a new entry:**
+**Adding a new EPIC + its PLANs:**
 ```
-📝 docs(roadmap): add [N] [TITLE]
+📝 docs(roadmap): add EPIC_NNNN [TITLE] (+ M plan(s))
 
 WHY:
-[One sentence: why this entry is being captured and what problem it addresses.]
+[One sentence: why this capability is being captured and what problem it addresses.]
 
 WHAT:
-- 📝 doc/ROADMAP.md: add entry [N] [TITLE] (STATUS: PENDING, PRIORITY: [X])
+- 📝 docs/roadmap/.pipeline.md: add row `NNNN` (state `available`)
+- 📝 docs/roadmap/EPIC_NNNN.md: new epic (## Plans + shared-infra + depends_on)
+- 📝 docs/roadmap/PLAN_MMMM.md: new vertical slice (EARS/acceptance/Construction process)
 
-ROADMAP: [N] captured
+ROADMAP: EPIC_NNNN captured
 ```
 
-**Status change (IN PROGRESS, COMPLETE, DEFERRED, RESTORED):**
+**Adding a PLAN to an existing EPIC / re-decomposition:**
 ```
-📝 docs(roadmap): mark [N] [TITLE] [STATUS]
+📝 docs(roadmap): add PLAN_MMMM to EPIC_NNNN [TITLE]
 
 WHY:
-[One sentence: what triggered the status change.]
+[One sentence.]
 
 WHAT:
-- 📝 doc/ROADMAP.md: [N] [TITLE] → STATUS: [NEW STATUS]
+- 📝 docs/roadmap/EPIC_NNNN.md: append PLAN_MMMM row to ## Plans; update depends_on/next order
+- 📝 docs/roadmap/PLAN_MMMM.md: new vertical slice
 
-ROADMAP: [closes / updates] #[N]
+ROADMAP: EPIC_NNNN updated
 ```
 
-**DISCUSS mode spec edit (no status change):**
+**Spec refinement (no new item):**
 ```
-📝 docs(roadmap): refine spec for [N] [TITLE]
+📝 docs(roadmap): refine spec for PLAN_MMMM [TITLE]
 
 WHY:
 [One sentence: what was clarified or corrected.]
 
 WHAT:
-- 📝 doc/ROADMAP.md: [N] [TITLE] — updated [EARS / acceptance criteria / implementation notes]
+- 📝 docs/roadmap/PLAN_MMMM.md: updated [EARS / acceptance criteria / Construction process]
 
-ROADMAP: [N] updated
+ROADMAP: PLAN_MMMM updated
 ```
 
 #### Commit/push sequence
 
 ```bash
-git add doc/ROADMAP.md          # stage only the roadmap file
+git add docs/roadmap/            # stage only the roadmap artifacts (or ROADMAP.md for legacy)
 git commit -m "$(cat <<'EOF'
 📝 docs(roadmap): <summary>
 
@@ -259,24 +300,65 @@ WHY:
 <motivation>
 
 WHAT:
-- 📝 doc/ROADMAP.md: <description>
+- 📝 docs/roadmap/<file>: <description>
 
 ROADMAP: <reference>
 EOF
 )"
-git push origin main
+# Push per the project's git workflow (this repo: branch → PR → merge per .foundry/governance.md;
+# a legacy project may push the default branch directly).
 ```
 
 #### Rules
 
-- Stage **only** `doc/ROADMAP.md` (or the equivalent roadmap path) — never batch unrelated
-  changes into the roadmap commit.
-- If the roadmap file is inside a project that uses a non-`main` default branch, push to
-  that branch instead.
-- If the push fails (network, conflict), report the error to the user and do not retry
-  silently — the user must resolve it.
-- This protocol applies at every point in the skill that modifies ROADMAP.md: §3.3 (new
-  entry), §6 (status → IN PROGRESS), §9 (status → COMPLETE), §11.7 (DEFER/RESTORE).
+- Stage **only** the roadmap artifacts (`docs/roadmap/` for v2, or `ROADMAP.md` for legacy) — never
+  batch unrelated changes into the roadmap commit.
+- Conform to the grammar before committing (run `scripts/verify-prereqs.sh` check P locally if
+  present): leading-`|` manifest rows, 4-digit `order`, single-line `**Branch**`, `## Plans` =
+  `order|plan|state`.
+- If the push/PR fails (network, conflict), report the error to the user and do not retry silently.
+- This protocol applies wherever the skill authors v2 roadmap intent: §3.3 (new EPIC/PLAN) and §3.5
+  (re-decomposition / adding a PLAN). For a v2 project, a spec refinement is a `PLAN_NNNN.md` edit per
+  §3.3/§3.5 — NOT a §11.5 DISCUSS edit (§11 still uses legacy STATUS/entry vocabulary; its v2
+  conversion lands with the trigger-dispatch PR). State transitions are the engine's, not here.
+
+---
+
+### 3.5 Roadmap authoring IS a value task — orchestrate the planners
+
+Producing or revising EPIC/PLAN material is itself **value work**, carried by the same value-handler
+discipline FOUNDRY uses for implementation. roadmapper is the **orchestrator of authoring, not the
+sole author**: for anything beyond a trivial single-slice capture, it spawns the planner value-handlers
+to carve the structure, then writes their result into the v2 artifacts (§3.3). This runs **in-session**
+(the FLEET engine only ever consumes finished, conformance-passing docs — it does not schedule
+authoring).
+
+**When to orchestrate (vs. author inline):**
+- *Trivial* — a single, obviously-thin vertical slice (one EARS journey, passes the Thinness Test on
+  sight): author one `PLAN_NNNN.md` under its EPIC directly.
+- *Non-trivial* — a capability that is more than one slice, or any re-decomposition / "add a PLAN to
+  an EPIC": **orchestrate** (below).
+
+**The authoring value task:**
+1. **Decompose.** Spawn `builder-lead` (LEAD_ENGINEER) in its **authoring sub-cycle**; it spawns
+   `handler-roadmap-decomposition` (opus-pinned) to carve the capability into INVEST-sized,
+   dependency-ordered vertical slices, a named shared-infrastructure map, and an acyclic dependency
+   DAG + "next" order. Each slice's thinness is judged by the `vertical-slice` skill
+   ([`../vertical-slice/SKILL.md`](../vertical-slice/SKILL.md)) — its 4-of-4 Thinness Test is the
+   PLAN-admission test.
+2. **Emit.** Write the decomposition into the v2 artifacts (§3.3): the `EPIC_NNNN.md` (`## Plans` +
+   shared-infra + `depends_on`), one `PLAN_NNNN.md` per slice (with EARS/acceptance/Construction
+   process), and the `.pipeline.md` manifest row.
+3. **Gate.** The authoring task is GREEN only when the artifacts pass the **conformance gate** —
+   `scripts/verify-prereqs.sh` check P (grammar + vendored-standard pin) and the decomposition
+   handler's own NetworkX acyclicity check (`SENTINEL::PLAN_COMPLETE`). A RED conformance check means
+   the docs are mis-shaped — fix before committing (§3.4).
+4. **Account.** Record the authoring spend to `IDEA_COST.jsonl` (the same cost-of-record FOUNDRY
+   writes), so planning cost is visible alongside build cost.
+
+**Maintain the dependency map.** roadmapper owns the EPIC- and PLAN-level `depends_on` graph: whenever
+a PLAN is added to an EPIC, update the map and re-emit the dependency-respecting "next" order, so the
+engine drains slices in an order that never starts a PLAN whose dependencies have not landed.
 
 ---
 
@@ -508,10 +590,17 @@ These shortcuts bypass the need to re-state the full trigger phrase after seeing
 
 ## 6. PULL & PLAN ("Pull the next feature")
 
+> **v2 note (build dispatch is moving to the engine).** For an i2p v2 pipeline, *building* the next
+> slice is the FLEET engine's job, not roadmapper's: the engine picks the next `available` PLAN in
+> dependency order, runs its `## Construction process` (which invokes FOUNDRY), and owns the `state`
+> column. roadmapper's job is to **author** the PLANs (§3) so they are build-ready. The legacy
+> pull-and-drive flow below applies to non-pipeline (`ROADMAP.md`) projects; the engine-kickoff
+> re-routing of "ship N"/"build N" for v2 lands with the trigger-dispatch work (§11 / a later PR).
+
 "Next" means the first item with `STATUS: PENDING` in roadmap order (top to bottom),
 **unless** the user specifies a different item by number or name.
 
-Steps:
+Steps (legacy `ROADMAP.md` projects):
 
 1. Read the full roadmap entry for the selected feature.
 2. Change its `STATUS` to `IN PROGRESS` in the roadmap file and save.
