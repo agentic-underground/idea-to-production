@@ -17,7 +17,7 @@ model: inherit
 
 One spine for the whole suite — **nine phases that form a cycle**: **DISCOVER ① → IDEATE ② → DELIVER ③ →
 DESIGN ④ → BUILD ⑤ ⇄ ASSURE ⑥ ⇄ SECURE ⑦ → PUBLISH ⑧ → OPERATE ⑨ ↻**. **DELIVER** (between IDEATE and
-DESIGN, owned by the flow plugin + `foundry:roadmapper`) turns the IDEA package into a dependency-ordered
+DESIGN, owned by `foundry:roadmapper` + the external FLEET engine) turns the IDEA package into a dependency-ordered
 roadmap. The three realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop** — a failed quality or
 security gate re-enters BUILD (the `fail` back-edge), and the loop exits to PUBLISH only when all three are
 satisfied. ASSURE (quality) and SECURE (security) are **separate first-class gates**; OPERATE is the

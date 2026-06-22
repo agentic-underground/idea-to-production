@@ -10,7 +10,7 @@ Be the marketplace front door. Follow the [`help` skill](../skills/help/SKILL.md
 2. Render the **three pillars** in one line each, then a compact map of the value flow
    (DISCOVER ▸ IDEATE ▸ DELIVER ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄ SECURE ▸ PUBLISH ▸ OPERATE ↻) showing only the
    installed plugins, each with its headline command(s) and a one-line "run this when you want…". Place
-   **DELIVER** between IDEATE and DESIGN, owned by the flow plugin (DELIVER) + `foundry:roadmapper`, and draw
+   **DELIVER** between IDEATE and DESIGN, owned by `foundry:roadmapper` (+ the external FLEET engine), and draw
    BUILD ⇄ ASSURE ⇄ SECURE as a **loop** (a failed gate re-enters BUILD).
 3. Surface the sibling meta-commands: `/i2p:review`, `/i2p:check`, `/i2p:flow`.
 4. Point to deeper docs: the marketplace `README.md`, `plugins/foundry/knowledge/glossary.md`, and
