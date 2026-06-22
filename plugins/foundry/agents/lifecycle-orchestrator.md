@@ -275,9 +275,12 @@ Triggered when the user sends the merge confirmation signal ("merged", "done",
    ```
    Use `gh pr view {pr_number} --json mergeCommit` to get the merge commit hash (first 7 chars).
 
-4. **Sync flow canvas.** Invoke MCP tool `post_status` with `id="item-{N}"` and `status="done"`
-   (or the curl fallback from step-9 Action #8). This is idempotent — safe to repeat if step-9
-   already set the card to `done`.
+4. **Status sink (Reserved — no live board).** The live flow board/canvas was retired with the
+   `flow` plugin (commit `da07db8`), so there is **no separate board to sync** — mirroring
+   `ds-step-9` Action #8. On a v2 project the roadmap state is the FLEET engine's manifest `state`
+   column (the engine owns it); on a legacy `ROADMAP.md` project it is the STATUS field set in
+   step 2 above. This step is therefore a graceful no-op: completion MUST NOT fail because a status
+   sink is unreachable (EARS-005) — never call the retired `post_status` canvas tool.
 
 5. **Run the Global DoD Audit** against `DEFINITION_OF_DONE.md` (as defined above).
 
