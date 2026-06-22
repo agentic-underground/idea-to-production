@@ -7,8 +7,8 @@
 
 > **Marketplace spine.** FOUNDRY owns the **BUILD** phase *and* the **ASSURE** quality gate of the
 > marketplace-wide **product lifecycle** — nine phases forming a cycle: DISCOVER → IDEATE → DELIVER →
-> DESIGN → **BUILD** ⇄ **ASSURE** ⇄ SECURE → PUBLISH → OPERATE ↻ (DELIVER, owned by flow +
-> foundry:roadmapper, sits between IDEATE and DESIGN; the **BUILD ⇄ ASSURE ⇄ SECURE** realisation loop
+> DESIGN → **BUILD** ⇄ **ASSURE** ⇄ SECURE → PUBLISH → OPERATE ↻ (DELIVER, owned by
+> foundry:roadmapper + the external FLEET engine, sits between IDEATE and DESIGN; the **BUILD ⇄ ASSURE ⇄ SECURE** realisation loop
 > sends a failed ASSURE/SECURE gate back to BUILD; OPERATE loops back to DISCOVER). ASSURE (quality
 > V&V, foundry) and SECURE (security, the security plugin) are separate first-class gates. The canonical lifecycle
 > model is [`../i2p/knowledge/product-lifecycle.md`](../i2p/knowledge/product-lifecycle.md).
