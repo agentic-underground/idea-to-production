@@ -13,7 +13,7 @@ site:
   doc: README.md                 # repo-relative path to the doc being illustrated
   anchor: "## Value flow"         # the heading or quoted line the figure attaches to
   insert_after: "<exact source line>"   # the line after which the embed is inserted (loop mode)
-intent: "Show idea→production flow across the 9 plugins, left to right, in a single read."
+intent: "Show idea→production flow across the 8 plugins, left to right, in a single read."
 message: "One takeaway: each plugin is a phase gate; the output of one is the input to the next."
 audience: "an engineer skimming the README for the first time"
 handler: handler-graphviz         # the chosen value handler (decision table in SKILL.md §2)
