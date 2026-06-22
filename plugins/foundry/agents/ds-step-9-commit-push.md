@@ -102,7 +102,7 @@ Before beginning:
       allowlisted" / "`gh` unavailable — commits + local docs only"), and continue. Never block delivery on this.
 4c. **— ENGINE PLAN-SCOPE STOP GATE.** If in engine mode (see *Delivery mode*): you have committed to
     the branch (step 3) and the adversarial gate has PASSed (step 4). **Do NOT run the STANDALONE steps
-    5, 6b, 7, 8** — no push, no PR/issue, no roadmap STATUS, no flow-board sync (the engine owns all of
+    5–9 (5, 6, 6b, 7, 8, 9)** — no push, no PR/issue, no roadmap STATUS, no flow-board sync (the engine owns all of
     that; touching `.pipeline.md`/`## Plans` is a calamity). Record `IDEA_COST.jsonl` (step 10) if
     STORY_PROVEN is present, emit `DELIVERY_COMPLETE` keyed to **branch HEAD**
     (`git rev-parse --short HEAD`), report the green branch, and stop. **Steps 5–9 below are STANDALONE
