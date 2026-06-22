@@ -25,7 +25,7 @@ OUT = sys.argv[1]
 W, H, CY, R = 1320, 420, 235, 18
 # v2 nine-phase model — DELIVER inserted between IDEATE and DESIGN; BUILD ⇄ ASSURE ⇄ SECURE is a loop.
 STAGES = ["DISCOVER","IDEATE","DELIVER","DESIGN","BUILD","ASSURE","SECURE","PUBLISH","OPERATE"]
-OWNERS = ["scanner","ideator","flow","atelier","foundry","foundry","sentinel","pressroom","mission"]
+OWNERS = ["scanner","ideator","foundry","atelier","foundry","foundry","security","publish","operate"]
 N, PAD = len(STAGES), 110
 xs = [round(PAD + i*(W-2*PAD)/(N-1)) for i in range(N)]
 # Index the loop/cycle nodes by NAME so the feedback arc, return arc, and pulse rings stay correct after
@@ -88,7 +88,7 @@ P.append('</g>')
 # ---- microline + wordmark + subtitle ----
 P.append(f'<text x="{cx}" y="36" font-size="14" font-weight="700" letter-spacing="4" fill="#9aa2c0" text-anchor="middle">A  CLAUDE  CODE  PLUGIN  MARKETPLACE</text>')
 P.append(f'<text x="{cx}" y="92" font-size="52" font-weight="700" text-anchor="middle"><tspan fill="#7aa2f7">idea</tspan><tspan fill="#9aa2c0">  &#8594;  </tspan><tspan fill="{AMBER}">production</tspan></text>')
-P.append(f'<text x="{cx}" y="126" font-size="16" letter-spacing="1" fill="{SUB}" text-anchor="middle">nine composable plugins carry VALUE from the spark of an idea to a shipped product</text>')
+P.append(f'<text x="{cx}" y="126" font-size="16" letter-spacing="1" fill="{SUB}" text-anchor="middle">eight composable plugins carry VALUE from the spark of an idea to a shipped product</text>')
 
 # ---- front-door / greeter terminals (i2p & concierge — the plugins that bracket the flow) ----
 P.append(f'<circle cx="54" cy="{CY}" r="7.5" fill="none" stroke="#a78bfa" stroke-width="2.5"/>')

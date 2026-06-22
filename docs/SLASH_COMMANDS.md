@@ -1,6 +1,6 @@
 # Slash commands
 
-Every slash command the **idea-to-production** marketplace makes available, across its nine
+Every slash command the **idea-to-production** marketplace makes available, across its eight
 plugins. In Claude Code both a plugin's `commands/` and its user-facing `skills/` are typed the
 same way — `/<plugin>:<name>` — so they are listed together here. Bracketed `[a·b·c]` after a
 command shows its common arguments; most also accept free-form scope text.
@@ -23,17 +23,18 @@ together once all are satisfied and the roadmap item is complete.
 | **▸** | *front door* (+ session greeter) | `i2p` | [↓](#i2p--front-door) |
 | **1** | DISCOVER | `market-scanner` | [↓](#market-scanner--discover) |
 | **2** | IDEATE | `ideator` | [↓](#ideator--ideate) |
-| **3** | DELIVER | `flow` (+ `foundry:roadmapper`) | [↓](#flow--deliver) |
+| **3** | DELIVER | `foundry:roadmapper` (+ external FLEET engine) | [↓](#foundryroadmapper--deliver) |
 | **4** | DESIGN | `atelier` | [↓](#atelier--design) |
 | **5** | BUILD ⇄ ASSURE | `foundry` | [↓](#foundry--build--assure) |
 | **6** | SECURE | `security` | [↓](#security--secure) |
 | **7** | PUBLISH | `publish` | [↓](#publish--publish) |
 | **8** | OPERATE ↻ | `operate` | [↓](#operate--operate-) |
 
-**DELIVER** is the moment IDEAS are formally moved into the roadmap — written into EARS and
-features, then analysed and decomposed into atomic work items (or dependency chains: "b needs a",
-"z needs y needs x"). `/flow:pull` is the intuitive verb that carries the next backlog item into
-build; `foundry:roadmapper` does the intake → EARS/feature → decomposition.
+**DELIVER** is the moment IDEAS are formally moved into the roadmap — the **FLEET v2 pipeline**
+(`docs/roadmap/` EPIC/PLAN docs), written into EARS and features and decomposed into dependency-ordered
+vertical slices. **`/roadmapper`** authors that pipeline (intake → EARS/feature → decomposition, modelled
+as a value task); the external **FLEET continuous-delivery engine** then drains it, building each slice
+through FOUNDRY's PLAN-scope entry.
 
 ## Common to every plugin
 
@@ -84,19 +85,22 @@ Turn a validated opportunity into a build-ready idea.
 | `/ideator:ideate` | Refine an idea into a build-ready IDEA package, then hand off to foundry |
 | `/ideator:name` | Coin a distinctive, availability-checked product name (skill: `name-search`) |
 
-## flow — DELIVER
+## foundry:roadmapper — DELIVER
 
-Move ideas into the roadmap and carry them toward build. The DELIVER plugin; ships the `flow-mcp`
-roadmap MCP binary.
+Move ideas into the roadmap and let the pipeline carry them toward build. DELIVER is owned by
+**`/roadmapper`** (which authors the FLEET v2 `docs/roadmap/` pipeline) plus the **external FLEET
+continuous-delivery engine** (a separate marketplace plugin — `/pipeline:run`, `/pipeline:status`,
+`/pipeline:unattended` — that drains the pipeline and builds each slice through FOUNDRY's PLAN-scope
+entry).
 
 | Command | What it does |
 |---|---|
-| `/flow:pull` | Pull the next backlog item and drive it to a delivered increment (wraps foundry's builder) |
-| `/flow:flow` `[carry·report·ping]` | Carry an item to its next lane (who/what/cost), or report the flow state |
-| `/flow:flow-setup` | Finish the `flow-mcp` one-time setup — pre-cache the binary, approve, verify |
+| `/roadmapper` | Author / refine the v2 pipeline: capture an idea → EARS/feature → dependency-ordered EPIC/PLAN decomposition (a value task); a GO hook kicks the FLEET engine off for the resolved item |
+| `/pipeline:status` *(external FLEET plugin)* | Read "what's on the roadmap" from the deterministic pipeline surface |
+| `/pipeline:run` *(external FLEET plugin)* | Start/resume the engine draining the pipeline continuously |
 
-The roadmap intake half of DELIVER — turning a captured idea into EARS specs, `.feature` files, and
-a dependency-ordered decomposition — is `/foundry:roadmapper` (listed under foundry below).
+*(The legacy in-repo `flow` plugin — `/flow:pull`, `/flow:flow`, the `flow-mcp` server — has been
+retired; the FLEET engine supersedes it.)*
 
 ## atelier — DESIGN
 
@@ -114,7 +118,7 @@ loop — a failed gate re-enters BUILD.)
 
 | Command | What it does |
 |---|---|
-| `/foundry:foundry` `[scaffold·gate·deploy·verify]` | The internal BUILD engine — drives roadmap items idea→product (the intuitive verb is `/flow:pull`, which wraps it) |
+| `/foundry:foundry` `[scaffold·gate·deploy·verify]` | The standalone BUILD cycle — drives a whole `ROADMAP.md` idea→product. For a v2 pipeline, day-to-day delivery is the external FLEET engine draining a `/roadmapper`-authored `docs/roadmap/` pipeline (engine → FOUNDRY PLAN-scope per slice); this command remains for a one-off cycle or estimate-only run |
 | `/foundry:roadmapper` | Manage `ROADMAP.md` / `.i2p/roadmap/` — capture, write EARS specs, decompose, drive through stages (the DELIVER intake) |
 | `/foundry:vertical-slice` | Cut and drive one thin, end-to-end, shippable increment |
 | `/foundry:phase-sensor` | Detect each in-progress feature's phase and install the next skill |
@@ -174,14 +178,14 @@ Keep the live product alive and improving.
 | `/operate:gemba` | Capture a learning at the workface, route it by identity, raise a tracked feedback issue |
 | `/operate:wiki-publisher` | Publish per-item docs to the origin's GitHub wiki (opt-in) |
 
-The roadmap **flow board** and its MCP control moved to the `flow` plugin (DELIVER) — see
-`/flow:flow` and `/flow:flow-setup` above.
+The roadmap itself is the **FLEET v2 pipeline** (`docs/roadmap/`), authored by `/roadmapper` (DELIVER)
+and drained by the external FLEET continuous-delivery engine — see the foundry:roadmapper section above.
 
 ---
 
 ## Appendix — MCP servers
 
-The marketplace ships four MCP servers. These expose **tools**, **not** slash commands — there are
+The marketplace ships three MCP servers. These expose **tools**, **not** slash commands — there are
 no `/mcp__…` commands to type.
 
 | Server | Shipped by | What it provides |
@@ -189,13 +193,10 @@ no `/mcp__…` commands to type.
 | `context7` | foundry | Fetch current documentation for a library, framework, SDK, or CLI |
 | `fetch` | ideator, market-scanner | Retrieve and read web page content |
 | `playwright` | atelier, foundry | Drive a real browser — navigate, screenshot, accessibility snapshot |
-| `flow-mcp` | flow | The roadmap deterministic layer — local CPU compute over `.i2p/roadmap/` (no model reasoning over its data) |
 
-The **flow-mcp** verbs are tools the plugin calls for you (reached through `/flow:flow` and
-`/flow:pull`, never typed directly): `render_roadmap`, `list_items`, `get_item`, `post_status`,
-`set_wait_go`, `append_spend`, `set_item_model`, `validate_connection`, `mutate_connection`,
-`annotate`, `request_rewrite`, `append_sysmsg`, `list_events`, `ping`. `render_roadmap` answers
-"what's on the roadmap" by local compute at ~0 tokens.
+The roadmap deterministic layer ("what's on the roadmap" at ~0 LLM tokens) is now provided by the
+**external FLEET `pipeline` plugin** (`/pipeline:status`, `pipeline-cron.sh`) over the v2
+`docs/roadmap/` pipeline — the in-repo `flow-mcp` server that previously served it has been retired.
 
 ---
 

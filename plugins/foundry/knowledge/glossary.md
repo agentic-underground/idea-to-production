@@ -17,7 +17,7 @@ understand the *system*; read here to disambiguate a *name*.
 The companions are **cross-cutting**: foundry/ideator use them *by capability* when installed
 (graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
 is the nine-phase product-lifecycle **cycle**: **DISCOVER (market-scanner) → IDEATE (ideator) →
-DELIVER (flow + foundry:roadmapper) → DESIGN (atelier) → BUILD ⇄ ASSURE ⇄ SECURE (foundry build,
+DELIVER (foundry:roadmapper + FLEET engine) → DESIGN (atelier) → BUILD ⇄ ASSURE ⇄ SECURE (foundry build,
 foundry quality, security — the realisation loop) → PUBLISH (publish) → OPERATE (operate) ↻**
 (a failed ASSURE/SECURE gate sends work back to BUILD; OPERATE loops back to DISCOVER). Three concerns
 cross-cut every phase — usability (atelier), quality (foundry), security (the security plugin).
@@ -56,14 +56,14 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   cycle** — **DISCOVER → IDEATE → DELIVER → DESIGN → BUILD ⇄ ASSURE ⇄ SECURE → PUBLISH → OPERATE ↻**
   (the BUILD ⇄ ASSURE ⇄ SECURE realisation loop sends failed gates back to BUILD; OPERATE loops
   back to DISCOVER), each owned by one plugin. **DELIVER** (roadmap intake → EARS/feature authoring →
-  decomposition, owner flow + foundry:roadmapper) sits between IDEATE and DESIGN. **ASSURE** (quality V&V,
+  decomposition, owner foundry:roadmapper + FLEET engine) sits between IDEATE and DESIGN. **ASSURE** (quality V&V,
   foundry) and **SECURE** (security, the security plugin) are separate first-class gates; three concerns
   cross-cut every phase — usability (atelier),
   quality (foundry), security (the security plugin). The canonical model (owners, academic lineage, entry/exit
   signals) is `i2p/knowledge/product-lifecycle.md`; tracked per-project in `.i2p/lifecycle.json` and shown
   on the i2p status line. Distinct from the *marketing* product life cycle
   (introduction→growth→maturity→decline), which runs alongside OPERATE.
-- **DELIVER** (lifecycle phase ③; owner flow + foundry:roadmapper) — the **planning** phase between IDEATE
+- **DELIVER** (lifecycle phase ③; owner foundry:roadmapper + the external FLEET engine) — the **planning** phase between IDEATE
   and DESIGN: roadmap intake → EARS/feature authoring → decomposition into atomic, dependency-ordered
   build-ready items. A true phase, not a cross-cutting concern.
 - **ASSURE** (lifecycle phase ⑥; gate, owner foundry) — the **quality** certification gate: adversarial
@@ -81,7 +81,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   welcome** (a SessionStart hook renders a repo's `.claude/welcome.md` to greet and route whoever opens
   it; `/i2p:define-welcome` authors it) and the **idea-to-production status line** (`/i2p:statusline`,
   offered once on first activation) — the arrival layer folded into i2p. A thin orchestrator that
-  composes the eight specialists by capability and never re-implements them.
+  composes the seven specialists by capability and never re-implements them.
 - **first-order instrumentation** — the HUD's always-on instruments, fed by deterministic hooks: the
   **⚔ adversarial-catch counter** (times a reviewer caught something) and the **token-cost tracker**
   (per-phase actual vs a self-calibrating estimate, tokens + $). Canonical:

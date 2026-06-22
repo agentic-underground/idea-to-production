@@ -5,6 +5,11 @@
 > marketplace's own mistake — shipping `flow-mcp` as a compiled Rust binary — and the reasoning that
 > overturned it. If you are scaffolding an MCP for a plugin and reach for a compiled language, read this
 > first.
+>
+> **Historical note.** The `flow` plugin and its `flow-mcp` server (and all `plugins/flow/…` paths
+> referenced below) have since been **fully retired** — the FLEET continuous-delivery engine superseded
+> them. This document is kept as the language-choice post-mortem; its `flow-mcp` references are history,
+> not live code.
 
 ## What we did, and why it failed
 

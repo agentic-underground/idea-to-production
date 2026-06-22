@@ -2,7 +2,7 @@
 
 ![Wide dark branding banner: the "i2p" wordmark and the tagline "every plugin, one front door" beside a faint line-art gateway/threshold motif on a deep graphic band.](diagrams/banner.png)
 
-> The marketplace-level front door. Install the suite and you gain great powers across eight specialist
+> The marketplace-level front door. Install the suite and you gain great powers across seven specialist
 > plugins — **i2p** is the plugin that tells you so, and hands you one verbatim place to drive them all.
 
 ![Hub-and-spoke routing animation: an amber dispatch beam sweeps clockwise around the i2p core, lighting each of the seven ringed specialist plugins — market-scanner, ideator, atelier, foundry, security, publish, operate — teal in turn; when the ring is whole every spoke stays lit and the central i2p hub turns green under the caption "all powers routed — one front door, every plugin lit", teaching that i2p is the conductor that dispatches to every plugin.](../../docs/images/i2p-frontdoor.gif)
@@ -26,7 +26,7 @@ review that pulls in *every* reviewer at once. That is i2p.
 ## How it composes
 
 i2p is a **thin orchestrator**. It owns no review logic, no dependency checks, no diagram engine of its
-own — it **delegates by capability** to the eight specialist plugins and degrades cleanly when any are
+own — it **delegates by capability** to the seven specialist plugins and degrades cleanly when any are
 absent (reporting the gap, never faking coverage). This is the marketplace's "each plugin lights up the
 others when present" pattern, applied at the top level.
 

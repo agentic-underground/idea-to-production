@@ -5,7 +5,7 @@
 # SessionStart hook fires together. Cross-plugin dedup is an atomic per-(session,source) sentinel;
 # the canon re-injects on startup/resume/clear/compact so it is never omitted.
 #
-# CANONICAL COPY — byte-identical across all nine plugins (CI: scripts/verify-prereqs.sh
+# CANONICAL COPY — byte-identical across all eight plugins (CI: scripts/verify-prereqs.sh
 # Check O) and reads the byte-identical per-plugin KAIZEN.md (Check N). Edits start at the
 # repo-root KAIZEN.md / this file and are mirrored outward. The script touches only the
 # temp dir; it never reads or writes the user's project. It uses an independent sentinel

@@ -26,19 +26,20 @@ carries VALUE from IDEA to PRODUCTION; this draws the map with only the parts yo
                                             ┌──────── fail ◀───────┐
                                             ▼                      │
 DISCOVER ──▶ IDEATE ─▶ DELIVER ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
-market-       ideator  flow +     atelier   foundry  foundry   security  publish  mission-
-scanner                roadmapper                    (quality) (security)          control
+market-       ideator  roadmapper atelier   foundry  foundry   security  publish  operate
+scanner                (+FLEET)                      (quality) (security)
                                             └──── BUILD ⇄ ASSURE ⇄ SECURE loop ────┘
- /discovery-  /ideate  /flow:pull  /mockup  IDEA▶…▶ /pr-review /scan-all /publish  observe ·
- goal +                +/roadmapper /ui-rev   SHIP   (quality)                      iterate ↻→DISCOVER
+ /discovery-  /ideate  /roadmapper /mockup  IDEA▶…▶ /pr-review /scan-all /publish  observe ·
+ goal +                (+FLEET eng) /ui-rev   SHIP   (quality)                      iterate ↻→DISCOVER
  /market-scan
 ```
 
 Nine phases forming a **cycle** — OPERATE's learnings loop back to DISCOVER. **DELIVER** sits between
-IDEATE and DESIGN: it turns the IDEA package into a dependency-ordered roadmap and pulls the next item
-into delivery (intake → EARS/feature authoring → decomposition → **`/flow:pull`** the next item),
-owned by **the flow plugin (DELIVER) — headline `/flow:pull`, artefact a dependency-ordered roadmap +
-a delivered increment — plus `foundry:roadmapper`** (EARS/feature authoring). The three
+IDEATE and DESIGN: it turns the IDEA package into the **FLEET v2 pipeline** — a dependency-ordered
+roadmap of EPIC/PLAN docs (intake → EARS/feature authoring → decomposition) — owned by
+**`foundry:roadmapper`** (headline **`/roadmapper`**, artefact the `docs/roadmap/` pipeline); the
+external **FLEET continuous-delivery engine** then drains it (building each slice via FOUNDRY's
+PLAN-scope entry). The three
 realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop**, not a straight line — a failed quality or
 security gate sends the work *back* to BUILD (the `fail` back-edge), and the loop exits to PUBLISH only
 when all three are satisfied. **ASSURE** (foundry, quality V&V) and **SECURE** (security, security) are
@@ -53,14 +54,14 @@ marketplace `README.md` composition diagram.
 ## 2. Light vs dark
 
 Place only **installed** plugins as live stages. Mark each missing plugin's stage as dark:
-"▫ DISCOVER — add `market-scanner` to find what's worth building" / "▫ DELIVER — add the `flow` plugin to
-turn the IDEA package into a dependency-ordered roadmap and pull the next item with `/flow:pull` (with
-`foundry:roadmapper` authoring the EARS specs)" / "▫ OPERATE — add `operate` to observe, respond to
-incidents, and iterate the live product." A user should see both the path they have and the path they
-could unlock. (The **flow** plugin owns DELIVER — **headline `/flow:pull`** (also `/flow report|carry`
-and `/flow:flow-setup` for the one-time MCP setup); treat it like any other specialist: list it as a LIVE
-stage with `/flow:pull` when installed, mark DELIVER dark when it is not — name the stage and its owner
-regardless; graceful degradation, the gap named not skipped.)
+"▫ DISCOVER — add `market-scanner` to find what's worth building" / "▫ DELIVER — add `foundry` for
+`/roadmapper` to author the FLEET v2 `docs/roadmap/` pipeline (and the external FLEET engine to drain
+it)" / "▫ OPERATE — add `operate` to observe, respond to incidents, and iterate the live product." A user
+should see both the path they have and the path they could unlock. (DELIVER is owned by
+**`foundry:roadmapper`** — **headline `/roadmapper`**; the external FLEET `pipeline` plugin supplies the
+build engine — `/pipeline:status`, `/pipeline:run`. Treat DELIVER as a LIVE stage when `foundry` is
+installed, dark when it is not — name the stage and its owner regardless; graceful degradation, the gap
+named not skipped.)
 
 ## 3. Trace a path (if asked)
 

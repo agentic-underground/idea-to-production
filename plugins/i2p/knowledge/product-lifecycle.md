@@ -58,7 +58,7 @@ DESIGN, and the **BUILD/ASSURE/SECURE loop** (the ⇄).
 |---|---|---|---|---|
 | ① | **DISCOVER** `[DISCOVER]` | market-scanner | find a problem worth solving; kill weak ideas early | Fuzzy Front End (opportunity identification) · Double Diamond **Discover** (diverge: problem) |
 | ② | **IDEATE** `[IDEATE]` | ideator | turn the opportunity into a build-ready IDEA package at knowledge-parity | Double Diamond **Define** (converge: concept) · NPD concept development · design-thinking *empathize/define* |
-| ③ | **DELIVER** `[DELIVER]` | flow + `foundry:roadmapper` | turn the IDEA package into a roadmap: intake → EARS/feature authoring → decomposition into atomic, dependency-ordered build-ready items | NPD planning · PLM **plan** · Kahn topological work-ordering · agile backlog decomposition (INVEST, vertical slices) |
+| ③ | **DELIVER** `[DELIVER]` | `foundry:roadmapper` (+ external FLEET engine) | turn the IDEA package into the FLEET v2 pipeline: intake → EARS/feature authoring → decomposition into atomic, dependency-ordered build-ready EPIC/PLAN slices; the FLEET engine drains it | NPD planning · PLM **plan** · Kahn topological work-ordering · agile backlog decomposition (INVEST, vertical slices) |
 | ④ | **DESIGN** `[DESIGN]` | atelier | make the experience usable, elegant, accessible | Double Diamond **Develop** (diverge: solution) · design thinking *ideate/prototype* |
 | ⑤ | **BUILD** `[BUILD]` | foundry | realise it test-first through the value conveyor (IDEA▶…▶SHIP) — *loop entry* | Double Diamond **Deliver** · NPD development · PLM **Realize** |
 | ⑥ | **ASSURE** `[ASSURE]` | foundry | **certify quality** — adversarial V&V: tests green, coverage density, perf-delta, regression, architecture; *fail → re-enter BUILD* | Verification & Validation · quality gate (PDCA *check* / DMAIC *control*) |
@@ -147,7 +147,7 @@ loop phases (BUILD, ASSURE, SECURE) are a special case — their **transitions a
 - IDEATE → DELIVER: a **handoff-contract-complete IDEA package** (foundry discovery exit criteria; READY from the
   independent challenger).
 - DELIVER → DESIGN: a **decomposed, dependency-ordered set of build-ready items** (EARS-specified, topologically
-  ordered roadmap from flow + `foundry:roadmapper`).
+  ordered v2 pipeline from `foundry:roadmapper`, drained by the external FLEET engine).
 - DESIGN → BUILD: design-reviewed surfaces clear the **design-fitness rubric** (when UI is in scope) — *enters the
   loop at BUILD*.
 - BUILD → ASSURE *(loop)*: the conveyor reaches **SHIP** (implementation in, tests green, story proven).

@@ -60,7 +60,7 @@ fi
 
 # ── 4. Enumerate shipped MCP servers → newline list of "name<TAB>command" ────────────────
 # Source A (preferred): the marketplace plugins/*/.mcp.json. The hook lives at
-# plugins/flow/hooks/scripts/; walk up to find a plugins/ tree with siblings.
+# plugins/i2p/hooks/scripts/; walk up to find a plugins/ tree with siblings.
 # Source B (fallback): the harness's installed MCP config under ~/.claude, when present.
 # Dedup by server name (the same server, e.g. playwright, ships in several plugins).
 hook_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -111,8 +111,8 @@ TIMEOUT=""; command -v timeout >/dev/null 2>&1 && TIMEOUT="timeout 8"
 probe_command() {  # $1 = launch command (npx|uvx|node|python|… or a resident path) → 0 live, 1 dead, 2 undecidable
   local launcher="$1"
   [ -n "$launcher" ] || return 2
-  # A resident-path launcher (a plugin-shipped script/binary, e.g. flow-mcp's
-  # ${CLAUDE_PLUGIN_ROOT}/.../flow-mcp) is checked as a FILE, not via PATH lookup.
+  # A resident-path launcher (a plugin-shipped script/binary, e.g. a
+  # ${CLAUDE_PLUGIN_ROOT}/.../<server> command) is checked as a FILE, not via PATH lookup.
   case "$launcher" in
     *'${'*) return 2 ;;                         # an unresolved variable → can't decide, stay silent
     */*)
@@ -161,7 +161,7 @@ done <<< "$servers"
 mkdir -p "$I2P_DIR" 2>/dev/null || exit 0
 STATE="${I2P_DIR}/degraded-capabilities.json"
 ts="$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo "")"
-emitter="flow:sessionstart-mcp-liveness"
+emitter="i2p:sessionstart-mcp-liveness"
 
 # Existing doc (tolerate absent/corrupt: corrupt → start fresh rather than crash).
 base='{"schema":"degraded-capabilities/1.0","degraded":[]}'

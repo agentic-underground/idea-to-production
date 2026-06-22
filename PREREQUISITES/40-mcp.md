@@ -1,16 +1,16 @@
 # 40 — MCP servers
 
 [Model Context Protocol](https://modelcontextprotocol.io) servers give agents real, interactive
-capabilities beyond text + Bash. The marketplace ships **four** — three keyless third-party launchers
-(Context7 takes an optional rate-limit key) and its own first-party **flow-mcp** (an interpreted **Ruby**
-server — Ruby ≥ 3.3.8, standard library only) — declared in each plugin's root `.mcp.json`, plus
+capabilities beyond text + Bash. The marketplace ships **three** keyless third-party launchers
+(Context7 takes an optional rate-limit key) — declared in each plugin's root `.mcp.json` — plus
 documented optional extras.
 
-> **Language choice — do NOT compile a plugin MCP.** Write a plugin's MCP server in an **interpreted**
-> language (Ruby/Python/Node), never a compiled one (Rust/Go/…). The marketplace shipped `flow-mcp` as a
-> pinned Rust binary first and it was chronically broken — release-sync friction, stale binary caches,
-> undead binaries, zero call visibility — so it was re-homed to Ruby. If you are scaffolding an MCP and
-> reach for a compiled language, read the post-mortem first:
+> **Language choice — do NOT compile a plugin MCP.** If you ship a first-party plugin MCP server, write
+> it in an **interpreted** language (Ruby/Python/Node), never a compiled one (Rust/Go/…). The
+> marketplace's now-retired roadmap MCP (`flow-mcp`) shipped first as a pinned Rust binary and was
+> chronically broken — release-sync friction, stale binary caches, undead binaries, zero call
+> visibility — so it was re-homed to Ruby before the FLEET continuous-delivery engine superseded it
+> entirely. If you are scaffolding an MCP and reach for a compiled language, read the post-mortem first:
 > [`../plugins/foundry/knowledge/architecture/mcp-language-choice.md`](../plugins/foundry/knowledge/architecture/mcp-language-choice.md).
 
 ## How a plugin ships an MCP server
@@ -29,21 +29,17 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
   `claude mcp list` shows them as `⏸ Pending approval`, and Claude Code does not connect to (run) a
   plugin/project MCP server until you approve it once via `/mcp`. **Pre-approval differs by scope:** a
   *project*-root `.mcp.json` server can be pre-trusted via `enableAllProjectMcpServers` /
-  `enabledMcpjsonServers` in settings, but a **plugin-shipped** server (like `flow-mcp`) **cannot** —
-  no setting, `claude mcp` subcommand, or launch flag (incl. `--dangerously-skip-permissions`, which
-  gates *tools*, not MCP-server trust) pre-approves it. The one-time interactive approval is mandatory
-  by design. flow smooths this: it detects whether a compliant Ruby is present and offers
-  **`/flow:flow-setup`** to walk + verify the approval (see its [README](../plugins/flow/flow-mcp/README.md#finishing-the-install)).
+  `enabledMcpjsonServers` in settings, but a **plugin-shipped** server **cannot** — no setting,
+  `claude mcp` subcommand, or launch flag (incl. `--dangerously-skip-permissions`, which gates *tools*,
+  not MCP-server trust) pre-approves it. The one-time interactive approval is mandatory by design.
 - **Pinned for reproducibility.** The three third-party servers fetch and execute remote code at
   launch, so the shipped configs pin an **explicit version** (never a floating `@latest`) — a fetched
   server can't change underneath you. The current pins: `@playwright/mcp@0.0.75`,
   `@upstash/context7-mcp@3.1.0`, `uvx mcp-server-fetch@2026.6.4`.
   `scripts/verify-prereqs.sh` check K asserts every ephemeral-runner `.mcp.json` server carries such a
-  pin. **`flow-mcp` is exempt because it is not fetched**: it is a resident command — the launcher
-  `flow-mcp/bin/flow-mcp` finds the host's Ruby (≥ 3.3.8) and execs the source server. There is no
-  package to pin, no release to download, no checksum to verify — an interpreted server has no
-  artifact-drift (see the [flow-mcp README](../plugins/flow/flow-mcp/README.md#the-launcher) and the
-  [language-choice post-mortem](../plugins/foundry/knowledge/architecture/mcp-language-choice.md)).
+  pin. (A resident, interpreted first-party server — were the marketplace to ship one again — would be
+  exempt: nothing fetched, no package to pin, no artifact-drift. See the
+  [language-choice post-mortem](../plugins/foundry/knowledge/architecture/mcp-language-choice.md).)
 - Manual fallback (no plugin): `claude mcp add playwright -- npx -y @playwright/mcp@0.0.75`.
 
 ## Shipped by the marketplace
@@ -53,7 +49,6 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
 | `fetch` | market-scanner, ideator | `uvx mcp-server-fetch@2026.6.4` | `mcp__fetch__*` | Keyless web research: fetch a URL and extract it as **markdown in chunks** — competitor pricing, docs, forum threads. Grounds the discovery scorecard / IDEA package in real evidence. |
 | `context7` | foundry | `npx -y @upstash/context7-mcp@3.1.0` | `mcp__context7__*` | **Version-specific** library docs + examples for 9,000+ libraries, injected into context — handlers code against the current API, not the training cutoff. |
 | `playwright` | foundry, atelier | `npx -y @playwright/mcp@0.0.75` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. foundry uses it for STORY feedback; atelier for `/ui-review` crawl + a11y snapshot. |
-| `flow-mcp` | flow | `${CLAUDE_PLUGIN_ROOT}/flow-mcp/bin/flow-mcp` — a launcher that finds the host's **Ruby ≥ 3.3.8** and execs the interpreted server `exe/flow-mcp` (stdlib only; nothing fetched, pinned, or built). No compliant Ruby → it points at the `/flow:flow-by-hand` markdown fallback. | `mcp__flow-mcp__*` | The roadmap flow board's MCP surface. `render_roadmap` answers "what's on the roadmap" by local compute (~0 LLM tokens); `list_items`/`post_status`/`set_wait_go`/`append_spend`/… read and carry roadmap items. **First-party** — the marketplace's own Ruby server, not a fetched package. |
 
 Prereqs: `fetch` needs `uv`/`uvx`; `context7` + `playwright` need `node`/`npx` (Playwright's
 browser auto-downloads on first use). All three run **keyless** — nothing to provision but the launcher
@@ -119,7 +114,7 @@ For the full pattern — both resolvers, the TC-BROWSER-1 ledger entry, the `--f
 
 ## Optional extras worth wiring (not shipped by default)
 
-Grouped by what they amplify. The shipped four cover the common case keylessly; these need an API key,
+Grouped by what they amplify. The shipped three cover the common case keylessly; these need an API key,
 a token, or an app-runtime — wire them when the workflow is core and you can supply the secret at runtime.
 
 **Deeper research (discovery/ideation):**

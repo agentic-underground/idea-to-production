@@ -24,7 +24,7 @@ M=2          # cross-dissolve tween frames inserted between consecutive keyframe
 FPS=13
 
 STAGES=(DISCOVER IDEATE DELIVER DESIGN BUILD ASSURE SECURE PUBLISH OPERATE)
-OWNERS=(scanner ideator flow atelier foundry foundry sentinel pressroom mission)
+OWNERS=(scanner ideator foundry atelier foundry foundry security publish operate)
 N=${#STAGES[@]}
 # Derive the BUILD ⇄ ASSURE ⇄ SECURE loop's node indices from STAGES so the feedback arc and the per-node
 # loop rings stay correct after DELIVER's insertion (no hard-coded magic indices).
@@ -63,7 +63,7 @@ emit_kf() {
     # ---- microline + dominant WORDMARK + subtitle (static) ----
     printf '<text x="%d" y="40" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="4" fill="#9aa2c0" text-anchor="middle">A  CLAUDE  CODE  PLUGIN  MARKETPLACE</text>\n' "$((W/2))"
     printf '<text x="%d" y="96" font-family="DejaVu Sans, Arial, sans-serif" font-size="54" font-weight="700" text-anchor="middle"><tspan fill="%s">idea</tspan><tspan fill="#9aa2c0">  &#8594;  </tspan><tspan fill="%s">production</tspan></text>\n' "$((W/2))" "$IDEA" "$AMBER"
-    printf '<text x="%d" y="132" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" letter-spacing="1" fill="#e6e9f0" text-anchor="middle">nine composable plugins carry VALUE from the spark of an idea to a shipped product</text>\n' "$((W/2))"
+    printf '<text x="%d" y="132" font-family="DejaVu Sans, Arial, sans-serif" font-size="17" letter-spacing="1" fill="#e6e9f0" text-anchor="middle">eight composable plugins carry VALUE from the spark of an idea to a shipped product</text>\n' "$((W/2))"
     # ---- baseline rail + lit portion ----
     printf '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="#2a2a40" stroke-width="5"/>\n' "$PAD" "$CY" "$((W-PAD))" "$CY"
     [ "$active" -gt 1 ] && printf '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="5" opacity="0.5"/>\n' "$PAD" "$CY" "$(xof $((active-1)))" "$CY" "$TEAL"

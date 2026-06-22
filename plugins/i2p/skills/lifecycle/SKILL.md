@@ -9,7 +9,7 @@ description: >
 metadata:
   type: orchestrator
   output: .i2p/lifecycle.json (current_phase + history) + a phase report
-  composes: [market-scanner, ideator, flow + foundry:roadmapper (DELIVER), atelier, foundry, security, publish, operate — by capability]
+  composes: [market-scanner, ideator, foundry:roadmapper + FLEET engine (DELIVER), atelier, foundry, security, publish, operate — by capability]
 model: inherit
 ---
 
@@ -17,7 +17,7 @@ model: inherit
 
 One spine for the whole suite — **nine phases that form a cycle**: **DISCOVER ① → IDEATE ② → DELIVER ③ →
 DESIGN ④ → BUILD ⑤ ⇄ ASSURE ⑥ ⇄ SECURE ⑦ → PUBLISH ⑧ → OPERATE ⑨ ↻**. **DELIVER** (between IDEATE and
-DESIGN, owned by the flow plugin + `foundry:roadmapper`) turns the IDEA package into a dependency-ordered
+DESIGN, owned by `foundry:roadmapper` + the external FLEET engine) turns the IDEA package into a dependency-ordered
 roadmap. The three realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop** — a failed quality or
 security gate re-enters BUILD (the `fail` back-edge), and the loop exits to PUBLISH only when all three are
 satisfied. ASSURE (quality) and SECURE (security) are **separate first-class gates**; OPERATE is the
@@ -77,7 +77,7 @@ the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
 |---|---|---|
 | market-scanner (kept OPPORTUNITY, challenger upholds) | `done DISCOVER` | IDEATE |
 | ideator (IDEA package handed off, challenger READY) | `done IDEATE` | DELIVER |
-| flow + `foundry:roadmapper` (dependency-ordered roadmap of build-ready items) | `done DELIVER` | DESIGN |
+| `foundry:roadmapper` + FLEET engine (dependency-ordered v2 pipeline of build-ready items) | `done DELIVER` | DESIGN |
 | atelier (design phase concluded) | `done DESIGN` | BUILD *(loop entry)* |
 | foundry (item SHIPs — tests green, story proven) | `done BUILD` | ASSURE *(loop)* |
 | foundry (adversarial quality review PASS — `/pr-review`) | `done ASSURE` | SECURE *(loop)* |

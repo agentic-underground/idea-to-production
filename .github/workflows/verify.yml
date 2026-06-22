@@ -57,31 +57,6 @@ jobs:
       - name: Scan tree + git history for committed secrets
         run: gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
 
-  # flow-mcp is an interpreted Ruby reference (>= 3.3.8, standard library only) — there is
-  # no binary to build, pin, or download. This job validates it the way the fleet runs it:
-  #   1. the test suite + line/branch coverage on bare system Ruby (minitest is bundled; NO
-  #      `gem install`, NO `bundle` — the stdlib Gherkin runner + stdlib Coverage), and
-  #   2. an end-to-end stdio handshake through the SHIPPED launcher exactly as the flow
-  #      plugin's .mcp.json registers it (the launcher must resolve Ruby and serve), which
-  #      mechanically catches a committed MCP command that can't start.
-  flow-mcp-ruby:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3.8'   # the fleet floor (Debian 13 system Ruby)
-      - name: Test suite + line/branch coverage (stdlib only — no bundle/gems)
-        working-directory: plugins/flow/flow-mcp
-        run: ruby test/cov_report.rb
-      - name: stdio smoke through the shipped launcher (Ruby resolution + roadmap injection)
-        run: |
-          set -euo pipefail
-          req='{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"ping","arguments":{}}}'
-          out="$(printf '%s\n' "$req" | plugins/flow/flow-mcp/bin/flow-mcp --mcp)"
-          echo "$out"
-          echo "$out" | grep -q 'hello from the flow MCP'
-
   # Cobbler's children (P2-18): the marketplace runs OPERATE's own OBSERVABILITY
   # lens on ITSELF. This is the HEALTH slice of the same self-observation substrate whose
   # SECURITY slice is the secret-scan-self job above — together they dogfood the two lenses
