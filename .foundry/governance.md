@@ -14,3 +14,18 @@
 > To switch: tell FOUNDRY "give FOUNDRY merge autonomy" (→ `direct-merge`) or "require PR approvals"
 > (→ `pr-approval`), or edit the `**Merge mode:**` line above. The adversarial review gate is
 > always-on in either mode; the mode only decides who merges after a PASS.
+
+## FLEET continuous-delivery engine — governance mapping
+
+When the external **FLEET engine** drains this repo's v2 pipeline (`docs/roadmap/`), the merge mode
+above maps onto the engine's registry fields (`~/.claude/pipeline-projects.json`) as follows
+(see [`../scripts/register-with-fleet.sh`](../scripts/register-with-fleet.sh)):
+
+| `.foundry/governance.md` | engine registry | engine behaviour on a GREEN plan |
+|---|---|---|
+| **`direct-merge`** (this repo) | `delivery: pr`, `admin_merge: true`, `merge_mode: merge` | opens a PR and **`gh pr merge --admin`**'s its own PR — continuous delivery, never pauses |
+| `pr-approval` | `delivery: pr`, `admin_merge: false` | opens a PR and marks the EPIC **`delivered`** (fire-and-forget; a human merges) |
+
+The remote is GitHub (`origin`), so `delivery` is `pr` (a git.local remote would be `direct`). The
+repo-declared `.pipeline/verify` gate is what unlocks merging; keep this mapping and the registry in
+agreement when the merge mode changes.
