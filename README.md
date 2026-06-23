@@ -156,14 +156,16 @@ shape an idea, and `security` and `publish` are useful on any repository, not ju
 ### "What's on the roadmap" — the FLEET v2 pipeline
 
 The roadmap **is** the FLEET continuous-delivery pipeline, authored by **`/roadmapper`** into
-`docs/roadmap/` (a `.pipeline.md` manifest + `EPIC_NNNN.md`/`PLAN_NNNN.md` docs). To read it:
+`docs/roadmap/` as `EPIC_NNNN.md`/`PLAN_NNNN.md` docs. **For this repo, state + schedule live on the org
+GitHub Project (v2) board** (board mode); the local `.pipeline.md` manifest has been retired. To read it:
 
 - If the external **FLEET `pipeline` plugin** is installed (a separate marketplace, like `token-fairness`),
   answer from its deterministic surface — **`/pipeline:status`** (or `pipeline-cron.sh status`/`next`) —
   authoritative and ~0 LLM tokens.
-- Otherwise, parse the v2 artifacts **structurally** (by their leading-`|` columns): the
-  `docs/roadmap/.pipeline.md` manifest (`order | epic | state | constructs | branch`) and each
-  `EPIC_NNNN.md`'s `## Plans` table (`order | plan | state`).
+- Otherwise: this repo is **board mode** — read state from the **GitHub Project board** (the
+  `EPIC_NNNN.md`/`PLAN_NNNN.md` docs are the build instructions, not the state). *(A `local_file`-mode
+  project instead parses `docs/roadmap/.pipeline.md` structurally — `order | epic | state | constructs |
+  branch` — plus each `EPIC_NNNN.md`'s `## Plans` table `order | plan | state`.)*
 
 To **build**, the FLEET engine drains the pipeline continuously (`/pipeline:run`,
 `/pipeline:unattended`); a single item is a GO kick-off via `/roadmapper` (which the engine builds
