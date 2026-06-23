@@ -136,8 +136,9 @@ second** — never silently flip a repo that already has an authored pipeline:
    reads that manifest's `state` column and the EPICs' `## Plans` tables, so switching mid-stream (and
    silently dropping `.pipeline.md`) would split-brain the repo, the exact failure §1 prevents. Moving a
    populated repo onto the board is a deliberate, one-time **`/roadmap-to-pipeline`** migration, never an
-   implicit roadmapper switch. *(This is why a github.com repo that already authored a manifest — like
-   this one — keeps writing `.pipeline.md`.)*
+   implicit roadmapper switch. *(So a github.com repo that already authored a `.pipeline.md` stays
+   `local_file` until that deliberate migration retires the manifest — as idea-to-production itself did
+   once its board was populated; it now has no `.pipeline.md` and authors board-natively.)*
 2. **Otherwise choose by registry, then origin:**
    - **`github_board` mode** — the registry already declares `board: github_project`, **or** (for a repo
      with no existing `.pipeline.md`) *all* of: the origin URL contains `github.com`; `gh project list

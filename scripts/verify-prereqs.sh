@@ -601,9 +601,12 @@ rm -f "$m_err"
 # parses it with regex/awk, so a wrong shape silently skips or mis-reads the project. This check
 # asserts the on-disk artifacts conform AND that the vendored standard has not drifted from FLEET.
 #
-#   (1) .pipeline.md manifest rows: leading `|`, first 3 columns `order | epic | state`, order = 4 digits.
-#   (2) each EPIC_NNNN.md: a single-physical-line `**Branch**` whose scrape (pipeline/NNNN-slug) is
-#       non-empty and equals the manifest's branch cell; and any `## Plans` table uses `order|plan|state`.
+#   (1) .pipeline.md manifest rows (manifest/local_file mode ONLY — board-mode repos retire the manifest
+#       and hold state on a GitHub Project, so its ABSENCE is valid): leading `|`, first 3 columns
+#       `order | epic | state`, order = 4 digits.
+#   (2) each EPIC_NNNN.md (validated whenever EPIC docs exist, in BOTH modes): a single-physical-line
+#       `**Branch**` whose scrape (pipeline/NNNN-slug) is non-empty; and any `## Plans` table uses
+#       `order|plan|state`. (This is the live-roadmap grammar floor that survives manifest retirement.)
 #   (3) the vendored references/fleet-pipeline-standard.md carries the pinned schema-version, and — when
 #       the external FLEET source is present on this box — is byte-identical to it (FAIL LOUD on drift →
 #       forces a human re-vendor + pin bump). RE-VENDOR OWNER: foundry maintainer, on any FLEET schema bump.
@@ -646,9 +649,11 @@ if [ -f "$vendored_std" ]; then
   [ "$oracle_match" -eq 1 ] && drift_note=" (drift-checked vs live FLEET)"
 fi
 
-# (1)+(2) on-disk artifact grammar — only when a v2 roadmap exists (a fresh repo legitimately has none)
+# (1)+(2) on-disk artifact grammar. The manifest is OPTIONAL — board-mode repos retire it (state lives
+# on the GitHub Project), so its absence is valid; but the EPIC/PLAN docs remain and ARE still validated.
+epics_present=0; ls docs/roadmap/EPIC_*.md >/dev/null 2>&1 && epics_present=1
+# (1) manifest pipeline rows — manifest/local_file mode only (skip header + separator rows)
 if [ -f "$manifest" ]; then
-  # (1) manifest pipeline rows (skip the header + separator rows): leading |, order=4 digits, col2 over EPIC_/epic
   while IFS= read -r row; do
     case "$row" in
       '| order '*|'| ---'*|'|---'*) continue ;;   # header / separator
@@ -660,7 +665,10 @@ if [ -f "$manifest" ]; then
       fail "manifest row order not 4 digits: $row"; p_fail=1
     fi
   done < "$manifest"
-  # (2) per-EPIC docs
+fi
+# (2) per-EPIC docs — validated whenever ANY EPIC doc exists (covers BOTH manifest and board mode); this
+# is the live-roadmap grammar floor that survives manifest retirement.
+if [ "$epics_present" -eq 1 ]; then
   while IFS= read -r epic; do
     [ -f "$epic" ] || continue
     # single-physical-line **Branch** scrape
@@ -673,9 +681,16 @@ if [ -f "$manifest" ]; then
       fail "$epic: a '## Plans' table uses the manifest grammar (order|epic|state) — it must be order|plan|state"; p_fail=1
     fi
   done < <(ls docs/roadmap/EPIC_*.md 2>/dev/null)
-  [ "$p_fail" -eq 0 ] && pass "roadmap v2 artifacts conform (manifest 4-digit order, EPIC **Branch** scrape, ## Plans grammar) + vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${drift_note}"
-else
-  [ "$p_fail" -eq 0 ] && pass "no docs/roadmap/.pipeline.md yet (no v2 roadmap to conform); vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${drift_note}"
+fi
+# pass messaging by mode
+if [ "$p_fail" -eq 0 ]; then
+  if [ -f "$manifest" ]; then
+    pass "roadmap v2 artifacts conform (manifest 4-digit order, EPIC **Branch** scrape, ## Plans grammar) + vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${drift_note}"
+  elif [ "$epics_present" -eq 1 ]; then
+    pass "board-mode roadmap: EPIC docs conform (**Branch** scrape, ## Plans grammar); no .pipeline.md (board authoritative) + vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${drift_note}"
+  else
+    pass "no docs/roadmap roadmap yet (no v2 roadmap to conform); vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${drift_note}"
+  fi
 fi
 
 # ── --fix: guarded canonical re-sync ─────────────────────────────────────────

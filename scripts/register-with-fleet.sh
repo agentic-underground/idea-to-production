@@ -18,12 +18,17 @@ reg="${HOME}/.claude/pipeline-projects.json"
 
 command -v jq >/dev/null 2>&1 || { echo "jq is required (the registry is JSON)"; exit 1; }
 
-# The project entry — standard v2 fields (no bespoke engine field; the FOUNDRY bridge rides in each
-# PLAN's '## Construction process', which the engine's plan-build prompt reads). direct-merge governance
-# → delivery:pr + admin_merge:true (the engine admin-merges its own PR). branch_prefix/merge_target/
-# remote match this repo; forbidden_mutation guards the manifest the engine rewrites in place.
-# NOTE: v2 EPICs (with a `## Plans` table) land by delivery+admin_merge; `merge_mode` governs only the
-# v1 flat-build path and is inert for v2 — kept here for back-compat with a flat epic.
+# The project entry — v2 fields in BOARD mode (018). This repo's roadmap state + schedule live on a
+# GitHub Project (v2) Kanban (board: github_project, owned by the agentic-underground org), NOT in a
+# local .pipeline.md manifest — that manifest has been retired (the board is the single source of truth).
+# The FOUNDRY bridge still rides in each PLAN's '## Construction process', which the engine's plan-build
+# prompt reads. direct-merge governance → delivery:pr + admin_merge:true (the engine admin-merges its own
+# PR). branch_prefix/merge_target/remote match this repo.
+# NOTES:
+#  • `manifest` is kept ONLY so the engine can resolve docs via its dirname (docs/roadmap/) in board mode
+#    — the file itself no longer exists; the board, not the manifest, holds state.
+#  • no `forbidden_mutation` — there is no manifest for the engine to rewrite/guard any more.
+#  • `merge_mode` governs only the v1 flat-build path and is inert for v2 — kept for back-compat.
 entry="$(jq -n --arg repo "$repo" '{
   repo: $repo,
   manifest: "docs/roadmap/.pipeline.md",
@@ -32,7 +37,8 @@ entry="$(jq -n --arg repo "$repo" '{
   branch_prefix: "pipeline",
   merge_target: "main",
   remote: "origin",
-  forbidden_mutation: "docs/roadmap/.pipeline.md",
+  board: "github_project",
+  project_owner: "agentic-underground",
   delivery: "pr",
   admin_merge: true,
   merge_mode: "merge",
