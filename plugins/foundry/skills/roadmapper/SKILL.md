@@ -46,7 +46,8 @@ A skill for capturing, formalising, and implementing software features using a s
    non-i2p projects without the pipeline.
 
 > **Read vs. write — scope note.** This resolution order governs **reads** ("what's on the roadmap").
-> Native **v2 emission** is live (§3 CAPTURE writes `.pipeline.md` + `EPIC_NNNN.md` + `PLAN_NNNN.md`;
+> Native **v2 emission** is live (§3 CAPTURE writes `.pipeline.md` + `EPIC_NNNN.md` + `PLAN_NNNN.md` in
+> `local_file` mode — `github_board` mode places these on the board instead, see the modes note below;
 > §3.5 models authoring as a value task), and **v2 build dispatch is live too**: a GO hook on a v2
 > EPIC/PLAN kicks the FLEET engine off (§11.4), which runs FOUNDRY's PLAN-scope build (builder §2.5).
 > The legacy `ROADMAP.md` pull-and-build flow (§6 / §11 legacy path) remains for non-pipeline projects.
@@ -127,18 +128,28 @@ duplicating work.
 
 ### 3.2.1 Detect the origin — choose the authoring mode
 
-Before writing anything, resolve which mode §3.3 uses. Reuse the established github detector
-(`plugins/operate/skills/gemba/scripts/identity.sh` — `git_remote_owner`/`git_remote_repo`); the
-load-bearing test is **`github.com` in the origin URL** (the same substring test the FLEET engine's
-`pcfg_delivery` uses).
+Before writing anything, resolve which mode §3.3 uses. The decision is **on-disk shape first, origin
+second** — never silently flip a repo that already has an authored pipeline:
 
-- **`github_board` mode** — *all* of: the origin URL contains `github.com`; `gh project list --owner
-  <owner>` succeeds (a project-scope token is present); and the `pipeline` plugin's
-  `pipeline-gh-project.sh` is resolvable. → author onto the board (§3.3-B).
-- **`local_file` mode** — anything else (git.local / other host / no remote / missing project scope /
-  pipeline tool absent). → today's artifact write (§3.3). If the repo *is* github but a guard failed
-  (e.g. no project scope), say so in one line and proceed in local_file mode — **never half-create on
-  GitHub**.
+1. **An existing `local_file` pipeline pins `local_file` mode.** If `docs/roadmap/.pipeline.md` already
+   exists with EPIC rows, stay in `local_file` mode **regardless of origin or registry** — the engine
+   reads that manifest's `state` column and the EPICs' `## Plans` tables, so switching mid-stream (and
+   silently dropping `.pipeline.md`) would split-brain the repo, the exact failure §1 prevents. Moving a
+   populated repo onto the board is a deliberate, one-time **`/roadmap-to-pipeline`** migration, never an
+   implicit roadmapper switch. *(This is why a github.com repo that already authored a manifest — like
+   this one — keeps writing `.pipeline.md`.)*
+2. **Otherwise choose by registry, then origin:**
+   - **`github_board` mode** — the registry already declares `board: github_project`, **or** (for a repo
+     with no existing `.pipeline.md`) *all* of: the origin URL contains `github.com`; `gh project list
+     --owner <owner>` succeeds (a project-scope token is present); and the `pipeline` plugin's
+     `pipeline-gh-project.sh` is resolvable. → author onto the board (§3.3-B). Reuse the established
+     github detector (`plugins/operate/skills/gemba/scripts/identity.sh` —
+     `git_remote_owner`/`git_remote_repo`); the load-bearing test is **`github.com` in the origin URL**
+     (the same substring test the FLEET engine's `pcfg_delivery` uses).
+   - **`local_file` mode** — anything else (git.local / other host / no remote / missing project scope /
+     pipeline tool absent). → today's artifact write (§3.3). If the repo *is* github but a guard failed
+     (e.g. no project scope), say so in one line and proceed in `local_file` mode — **never half-create
+     on GitHub**.
 
 ### 3.2.2 Bootstrap the board registry (github_board mode only)
 
@@ -149,7 +160,13 @@ engine reads it to know the board is authoritative). Use the standard's jq snipp
 owner. Two subtleties the engine depends on: keep `manifest` pointing at `docs/roadmap/.pipeline.md`
 **even though it is never written** — the engine uses its **dirname** to locate the docs in board mode;
 and keep `epic_glob` **literal** `docs/roadmap/EPIC_{order}.md` — the engine derives the PLAN-doc path by
-substituting `EPIC`→`PLAN`, so the word `EPIC` must appear. Merge, never clobber other projects.
+substituting `EPIC`→`PLAN`, so the word `EPIC` must appear (use this exact form even if the vendored
+reference's example glob differs). Merge, never clobber other projects.
+
+> **If an entry for *this* project already exists, do not clobber it.** §3.2.2 fires only on a *missing*
+> entry. When one is present, surface its `board` / `merge_mode` / `qualify` to the user and change them
+> **only on explicit confirmation** — an existing `merge_mode: merge` is a deliberate prior decision, not
+> a default to silently downgrade to `propose`.
 
 ### 3.3 Write the v2 pipeline artifacts (EPIC + PLAN + manifest)
 
@@ -284,7 +301,10 @@ the environment.
 2. **Create the EPIC item.** `pipeline-gh-project.sh ensure-epic-item NNNN "<short description>"` →
    the EPIC Issue + board Item, seeded in **Backlog**. (FLEET titles it `EPIC NNNN: <description>`; keep
    the description readable within ~70 visible chars before the board UI truncates.)
-3. **Create each PLAN sub-item.** With a 3-digit per-epic plan sequence `SSS` (`001`, `002`, …):
+3. **Create each PLAN sub-item.** **github_board mode replaces local_file's global `PLAN_MMMM.md`
+   numbering with a per-epic composite `PLAN_NNNN.SSS.md`** — `NNNN` is the parent EPIC's 4-digit order
+   and `SSS` is a **3-digit sequence within that epic** (`001`, `002`, …), not a global counter. With
+   that `SSS`:
    `pipeline-gh-project.sh ensure-plan-subitem NNNN "NNNN.SSS" "<short description>"` → a native
    sub-issue of the EPIC + board Sub-item, seeded in **Backlog**. **Naming contract:** passing the plan
    arg as the composite `NNNN.SSS` makes the engine derive the plan-doc path as
@@ -296,6 +316,8 @@ the environment.
    auto-body with the **full content of its local doc**, led by a **clickable link** to the doc on the
    default branch, e.g.
    `📄 [docs/roadmap/PLAN_0001.001.md](https://github.com/<owner>/<repo>/blob/<default-branch>/docs/roadmap/PLAN_0001.001.md)`
+   Resolve `<default-branch>` with `gh repo view <owner>/<repo> --json defaultBranchRef -q
+   .defaultBranchRef.name` (do **not** assume `main` — the link must not 404).
    Compose the body to a temp file and apply `roadmapper-gh-fields.sh set-body <issue#> <file>` — it
    re-appends FLEET's `<!-- pipeline-… -->` idempotency marker, so **never strip that marker** from your
    body. The Issue must *show* what will happen — a bare reference is not enough.
@@ -309,8 +331,9 @@ the environment.
 
 > **Idempotent re-author.** Every verb is find-or-create keyed on the FLEET body marker, so re-running
 > updates rather than duplicates. Sanity-check the naming contract after authoring:
-> `pipeline-cron.sh next-plan EPIC_NNNN` returns `NNNN.SSS`, and the derived `docs/roadmap/PLAN_NNNN.SSS.md`
-> exists.
+> `pipeline-cron.sh next-plan EPIC_NNNN` emits `NNNN.SSS` as its **first tab-field** (the derived
+> `PLAN_NNNN.SSS.md` is the second) — confirm that `docs/roadmap/PLAN_NNNN.SSS.md` exists. (For the bare
+> order alone, `pipeline-gh-project.sh next-plan NNNN` returns just `NNNN.SSS`.)
 
 #### 3.3-G Conversational metadata grooming (github_board mode)
 
@@ -459,7 +482,9 @@ authoring).
    PLAN-admission test.
 2. **Emit.** Write the decomposition into the v2 artifacts (§3.3): the `EPIC_NNNN.md` (`## Plans` +
    shared-infra + `depends_on`), one `PLAN_NNNN.md` per slice (with EARS/acceptance/Construction
-   process), and the `.pipeline.md` manifest row.
+   process), and the `.pipeline.md` manifest row. *(In **`github_board` mode** (§3.2.1): omit the
+   `## Plans` table and the `.pipeline.md` row, name each plan `PLAN_NNNN.SSS.md`, and place + enrich the
+   board items per §3.3-B instead.)*
 3. **Gate.** The authoring task is GREEN only when the artifacts pass the **conformance gate** —
    `scripts/verify-prereqs.sh` check P (grammar + vendored-standard pin) and the decomposition
    handler's own NetworkX acyclicity check (`SENTINEL::PLAN_COMPLETE`). A RED conformance check means

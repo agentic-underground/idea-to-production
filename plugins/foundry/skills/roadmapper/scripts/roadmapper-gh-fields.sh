@@ -33,13 +33,27 @@ _find_ghp() {
 }
 GHP="$(_find_ghp)" || { echo "roadmapper-gh-fields: cannot find pipeline-gh-project.sh (set PIPELINE_GH_PROJECT)" >&2; exit 1; }
 # shellcheck source=/dev/null
-. "$GHP"                       # → ghp_graphql, _ghp_cache(_get), _ghp_items, _ghp_repo_slug, ghp_ensure_project, pcfg_resolve
+. "$GHP"                       # → ghp_graphql, _ghp_cache(_get), _ghp_items, _ghp_repo_slug, pcfg_resolve
 pcfg_resolve >/dev/null 2>&1 || true   # populate CFG_REPO/CFG_REMOTE/CFG_PROJECT_OWNER from PIPELINE_PROJECT
 
-_need_cache() {   # ensure the per-project field cache exists (build it via ensure-project if absent)
+# Fail LOUD (not silently at runtime) if a FLEET update drifted the private surface we source — turns a
+# silent enrichment no-op into a clear, actionable error. (Reviewer: untested private-API coupling.)
+_assert_fleet_api() {
+  local fn missing=""
+  for fn in ghp_graphql _ghp_cache _ghp_cache_get _ghp_items _ghp_repo_slug; do
+    declare -F "$fn" >/dev/null 2>&1 || missing+=" $fn"
+  done
+  [[ -z "$missing" ]] || { echo "roadmapper-gh-fields: FLEET board tool drifted — missing expected function(s):$missing (update this helper to match $GHP)." >&2; exit 1; }
+}
+_assert_fleet_api
+
+# Require the per-project field cache (built by `pipeline-gh-project.sh ensure-project`, §3.3-B step 1).
+# Fails closed — a field SETTER must never create/mutate the project as a side effect (read-modify-write
+# on an already-ensured board only).
+_need_cache() {
   [[ -n "$(_ghp_cache_get '.project_id')" ]] && return 0
-  ghp_ensure_project >/dev/null 2>&1 && [[ -n "$(_ghp_cache_get '.project_id')" ]] && return 0
-  echo "roadmapper-gh-fields: project not resolvable — is PIPELINE_PROJECT set and the board ensured?" >&2; return 1
+  echo "roadmapper-gh-fields: board not ensured for this project — run 'pipeline-gh-project.sh ensure-project' first (§3.3-B step 1)." >&2
+  return 1
 }
 
 # board item node id for a given issue number (this repo's items, by board order)
@@ -79,9 +93,13 @@ cmd_set_priority() {   # issue# Urgent|High|Medium|Low
   item="$(_item_for_issue "$issue")"; [[ -n "$item" ]] || { echo "roadmapper-gh-fields: no board item for issue #$issue" >&2; return 1; }
   pid="$(_ghp_cache_get '.project_id')"
   fid="$(_ghp_cache_get '.fields.Priority.id')"
-  oid="$(_ghp_cache_get ".fields.Priority.options[\"$opt\"]")"
+  # bind $opt as DATA via jq --arg — never splice it into the jq program (CWE-917 jq-path injection).
+  oid="$(jq -r --arg o "$opt" '.fields.Priority.options[$o] // empty' "$(_ghp_cache)" 2>/dev/null)"
   [[ -n "$fid" && -n "$oid" ]] || { echo "roadmapper-gh-fields: no Priority option '$opt' on board" >&2; return 1; }
-  ghp_graphql -f query="mutation{updateProjectV2ItemFieldValue(input:{projectId:\"$pid\",itemId:\"$item\",fieldId:\"$fid\",value:{singleSelectOptionId:\"$oid\"}}){projectV2Item{id}}}" >/dev/null \
+  # parameterised mutation — operands bound via -f, NOT interpolated into the query string (CWE-89 class).
+  # shellcheck disable=SC2016  # $p/$i/$f/$o are GraphQL variables (bound via -f), NOT shell expansions.
+  ghp_graphql -f query='mutation($p:ID!,$i:ID!,$f:ID!,$o:String!){updateProjectV2ItemFieldValue(input:{projectId:$p,itemId:$i,fieldId:$f,value:{singleSelectOptionId:$o}}){projectV2Item{id}}}' \
+    -f p="$pid" -f i="$item" -f f="$fid" -f o="$oid" >/dev/null \
     && echo "issue #$issue Priority=$opt"
 }
 
