@@ -199,3 +199,43 @@ Rules that protect against a blind merge:
 
 Safe default for a freshly-migrated project: `merge_mode: propose`, `qualify` both `false`. It will open
 PRs on green; flip to `merge` / set `qualify` only once a human has reviewed the gate.
+
+---
+
+## v2 board variant (018) — a GitHub Project IS the board (github-origin repos only)
+
+For a repo whose origin is **GitHub**, you may put the schedule + state on a **user-owned GitHub Project
+(v2) Kanban** instead of the local `.pipeline.md`. The board is then **authoritative**: the engine reads
+`next` from the **To Do** column and writes Status there. This is opt-in (the default stays the manifest);
+once chosen it is **sticky** (the registry `board` field). Full spec: `docs/massive-uplift/018_github_projects_board.md`.
+
+**Mapping:** EPIC = a GitHub **Issue** = a Project **item**; PLAN = a native **sub-issue** of that epic =
+a Project **sub-item**. **Status columns ↔ state:** `Backlog`=staged (the gate — not picked) ·
+`To Do`=available (engine picks the **top** by board position) · `In Progress`=engaged · `Done`=completed ·
+`Delivered`=PR open, no admin grant. **"Next" = the top card of To Do.** Backlog is the human gate: items
+land there with fields set; the operator promotes Backlog→To Do to hand an epic to the autonomous line.
+
+**What changes vs the manifest path:**
+- **No `.pipeline.md`** and **no `## Plans` table** — the board holds the EPIC→PLAN hierarchy + every
+  item's state. You still write the **`EPIC_NNNN.md` / `PLAN_NNNN.md` docs** (the build instructions the
+  agent reads), but the EPIC doc OMITS `## Plans`.
+- The **registry entry** carries `board: github_project` (+ `project_owner` if not `@me`); `delivery` and
+  `admin_merge` work exactly as the github manifest path. `manifest`/`forbidden_mutation` are unused in
+  board mode (the engine never reads them) — set `epic_glob` so the builder can find `EPIC_NNNN.md`.
+- The board itself is created/updated by the **bundled board tool** (a sibling of the engine):
+  `../../scripts/pipeline-gh-project.sh`. Requires a `gh` logged in with a **`project`-scope** token.
+
+**The board tool — verbs you call when producing (idempotent, search-before-create):**
+```sh
+GHP=../../scripts/pipeline-gh-project.sh        # relative to this skill; PIPELINE_PROJECT=<id> selects the repo
+PIPELINE_PROJECT=<id> bash "$GHP" ensure-project                 # find-or-create + link the Project, columns + fields
+PIPELINE_PROJECT=<id> bash "$GHP" ensure-epic-item   NNNN "<title>"   # Issue + board item, seeded Backlog
+PIPELINE_PROJECT=<id> bash "$GHP" ensure-plan-subitem EPIC PLAN "<t>"  # sub-issue of the epic + board sub-item, Backlog
+PIPELINE_PROJECT=<id> bash "$GHP" board                          # render the board by column (verify)
+PIPELINE_PROJECT=<id> bash "$GHP" next                           # what the engine would pick (proves the gate)
+```
+`ensure-*` set **Status + Pipeline Order** on each item and the **title/body** on the issue; richer fields
+(Priority/Size/Estimate/dates) are board metadata you can set later in the UI — they don't gate scheduling.
+
+**Floor unchanged:** the GREEN `.pipeline/verify` gate, the lease, and the no-blind-merge rule all still
+apply. The board changes *where next/state live*, not whether work is allowed to land.
