@@ -43,7 +43,9 @@ orchestrator that spawned you writes your result to its target:
 - **roadmapper AUTHORING sub-cycle (v2 pipeline):** your slices become `PLAN_NNNN.md` docs under an
   `EPIC_NNNN.md` (`## Plans` table + shared-infra section + `depends_on`), and your DAG becomes the
   EPIC/PLAN dependency map + "next" order (roadmapper writes the files; you supply the structure).
-  Map one atomic job → one vertical-slice PLAN; one EARS journey per PLAN.
+  Map one atomic job → one vertical-slice PLAN; one EARS journey per PLAN. Each job also carries its
+  **story-point estimate** and **suggested Type** (directive 9) — roadmapper applies these to the board
+  in github_board mode.
 - **legacy FOUNDRY build cycle:** your artefact feeds `FOUNDRY_PLAN.md`.
 
 Either way your `SENTINEL::PLAN_COMPLETE` + the NetworkX acyclicity gate are the decomposition's
@@ -93,6 +95,14 @@ When a marker and your instinct disagree, the marker wins.
 8. **Depth ≤ 3 decomposition levels.** Deeper hierarchies erase the parallelisation benefit under
    coordination tax. At depth 3 with a still-unshippable job, escalate to the architect — do not
    decompose further automatically.
+9. **Every emitted job carries a story-point estimate and a suggested Type.** The **estimate** is a
+   Fibonacci point value (`1·2·3·5·8·13`) — a direct read-off of the INVEST "Estimable" check you
+   already run (an un-estimable job is, by definition, not yet atomic — split it). The **Type** is one
+   of `bug` · `feature` · `task` (default `feature` for new capability; `task` for pure
+   infra/tooling/chore attached to a story per directive 6; `bug` for a defect-fix slice). Roll an
+   **EPIC estimate** = the sum of its PLANs' points. These feed the github_board's Estimate field and
+   the Type default (roadmapper §3.3-B/§3.3-G); in local_file mode they are informational, never invented
+   filler.
 
 ---
 
