@@ -1,11 +1,13 @@
 ---
 name: plugin-count-drift
-description: Hardcoded plugin-count numbers in docs/figures drift from the live set (nine); prefer count-agnostic phrasing
+description: Hardcoded plugin-count numbers in docs/figures drift from the live set; prefer count-agnostic phrasing. As of flow-retirement (PR #150) the count is EIGHT.
 metadata:
   type: project
 ---
 
-The marketplace has **nine** plugins (atelier, concierge, foundry, i2p, ideator, market-scanner, mission-control, pressroom, sentinel). Each ships a byte-identical KAIZEN.md (CI Check N) and inject-kaizen.sh (CI Check O) — verify-prereqs.sh §N/§O. (The former SOUL.md/inject-soul.sh canon and its Checks E/F were retired.)
+The marketplace has **eight** plugins as of 2026-06 (i2p, market-scanner, ideator, foundry, security, publish, atelier, operate) — the in-repo `flow` plugin (DELIVER + flow-mcp Ruby server) was RETIRED in PR #150, DELIVER re-homed to `foundry:roadmapper` + the external FLEET `pipeline` engine. CLAUDE.md says "eight composable plugins (i2p + seven specialists)"; marketplace.json lists 8 sources. (Older memory said nine with different plugin names — that snapshot is superseded; verify against `grep '"source": "./plugins/' .claude-plugin/marketplace.json | wc -l`.) Each ships a byte-identical KAIZEN.md (CI Check N) and inject-kaizen.sh (CI Check O) — verify-prereqs.sh §N/§O.
+
+**PR #150 lesson (flow retirement count-drift):** the editor deleted the flow row from README's plugin table (→ 8 rows) and updated CLAUDE.md to "eight", but left README's prose "nine composable / Nine plugins / all nine plugins" (L7, L72, L80, L179), SLASH_COMMANDS L3 "across its nine plugins", and the masthead alt-text (L3, still naming `flow` as DELIVER owner) un-decremented. Classic: count lives in prose + table + figure alt-text, which drift independently. When reviewing a plugin add/remove PR, grep ALL of: `nine|eight|seven specialist|all (nine|eight)`, the masthead/figure alt-texts, and any per-phase owner list.
 
 Recurring defect: docs and embedded figures hardcode a stale multiplicity. context-building-pipeline.md said "six" (prose L73/74/107) and figure 02 rendered "×6 / 6 callers race / never 6×" in both image and alt text. The canonical inject-soul.sh even disagrees with itself (header "all nine plugins" vs L34 "8 hooks / 8x").
 
