@@ -158,7 +158,7 @@ Full recipes: the [raster-toolchain canon](../../../knowledge/raster-toolchain.m
 **Fully-vector motion (animated SVG / SMIL):** GitHub renders repo `.svg` via `<img>` including gradients,
 filters, **and SMIL animation** — so a self-animating `.svg` is a first-class hero/diagram format (crisp,
 tiny, deterministic). Author the `t=0` frame to be a coherent static fallback (pure SMIL **cannot** gate
-`prefers-reduced-motion`), and verify each beat deterministically via the Playwright MCP
+`prefers-reduced-motion`), and verify each beat deterministically via the chrome-devtools MCP
 (`svg.pauseAnimations(); svg.setCurrentTime(t)`) on both grounds + at downscale. Recipe: raster-toolchain
 **Recipe 4b**.
 

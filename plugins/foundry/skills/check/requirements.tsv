@@ -12,11 +12,11 @@ rust-analyzer	command -v rust-analyzer	recommended	rustup component add rust-ana
 typescript-language-server	command -v typescript-language-server	recommended	npm i -g typescript-language-server typescript
 pyright	command -v pyright-langserver || command -v pyright	recommended	npm i -g pyright (or uv tool install pyright)
 pyright-lsp-capability	command -v pyright-langserver >/dev/null 2>&1 || exit 1; init='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"processId":null,"rootUri":null,"capabilities":{}}}'; { printf 'Content-Length: %d\r\n\r\n%s' "${#init}" "$init"; sleep 4; } | timeout 20 pyright-langserver --stdio 2>/dev/null | head -c 8000 | grep -q '"id":1'	optional	capability-grade LSP probe (no-download): JSON-RPC initialize handshake — presence of pyright-langserver is NOT enough
-playwright-mcp	command -v npx	recommended	npm i -g @playwright/mcp (launched via npx)
+chrome-devtools-mcp	command -v chromium || command -v chromium-browser	recommended	HOST-PROVIDED MCP (driven, not shipped): the host registers chrome-devtools pointed at the system Chromium for live web-handler feedback. Needs a system browser — apt-get install -y chromium
 context7-mcp	command -v npx	recommended	npx -y @upstash/context7-mcp (up-to-date, version-specific library docs — knowledge-parity for handlers)
 gh	command -v gh	recommended	GitHub CLI (cli.github.com) — required by /foundry:pr-review for PR-number review and --post
-playwright	command -v playwright || npx --no-install playwright --version	recommended	npm i -g playwright && npx playwright install chromium
-chromium	npx --no-install playwright install --dry-run chromium 2>/dev/null || command -v chromium || command -v chromium-browser	recommended	npx playwright install --with-deps chromium
+playwright	command -v playwright || npx --no-install playwright --version	recommended	npm i -g playwright && npx playwright install chromium — the committed STORY-test runner (separate from the browser MCP)
+chromium	chromium --headless=new --no-sandbox --dump-dom about:blank >/dev/null 2>&1 || chromium-browser --headless=new --no-sandbox --dump-dom about:blank >/dev/null 2>&1	recommended	apt-get install -y chromium — ONE BROWSER: chrome-devtools drives the system Chromium (real-launch probe, not a presence check)
 lldb	command -v lldb || command -v rust-lldb	recommended	apt install lldb
 debugpy	python3 -c 'import debugpy'	recommended	uv tool install debugpy
 gdb	command -v gdb	optional	apt install gdb

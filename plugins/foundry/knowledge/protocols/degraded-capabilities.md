@@ -21,8 +21,8 @@ A degraded capability is a structured record with exactly three required fields:
 
 | Field | Type | Meaning |
 |---|---|---|
-| `capability` | string | A stable, dotted identifier for the unavailable capability — e.g. `mcp.playwright`, `mcp.context7`, `lens.security`, `tool.mmdc`, `tool.browser`. Namespaced by kind (`mcp.` / `lens.` / `tool.`) so consumers can match on a family. |
-| `reason` | string | A concrete, human-readable cause — not "unavailable". E.g. `"playwright MCP did not respond to liveness ping"`, `"no system browser on PATH"`, `"SECURITY not installed"`. |
+| `capability` | string | A stable, dotted identifier for the unavailable capability — e.g. `mcp.chrome-devtools`, `mcp.context7`, `lens.security`, `tool.mmdc`, `tool.browser`. Namespaced by kind (`mcp.` / `lens.` / `tool.`) so consumers can match on a family. |
+| `reason` | string | A concrete, human-readable cause — not "unavailable". E.g. `"chrome-devtools MCP did not respond to liveness ping"`, `"no system browser on PATH"`, `"SECURITY not installed"`. |
 | `since_phase` | string | The lifecycle/dev-system phase at which the degradation was first observed (e.g. `DESIGN`, `IMPL`, `OPERATE`, or a dev-system step id like `ds-step-5`). Lets a consumer tell a degradation that has persisted across phases from a fresh one. |
 
 Optional fields a producer MAY add (consumers must tolerate their absence):
@@ -38,7 +38,7 @@ The same three-field record travels two ways depending on the producer's situati
    point-of-use case). A single line, greppable, machine-parseable:
 
    ```
-   DEGRADED_CAPABILITIES: [{"capability":"mcp.playwright","reason":"MCP did not respond","since_phase":"DESIGN"}]
+   DEGRADED_CAPABILITIES: [{"capability":"mcp.chrome-devtools","reason":"MCP did not respond","since_phase":"DESIGN"}]
    ```
 
    The value is a JSON array (one or more records) so multiple degradations accumulate on one
@@ -59,7 +59,7 @@ The same three-field record travels two ways depending on the producer's situati
    {
      "schema": "degraded-capabilities/1.0",
      "degraded": [
-       { "capability": "mcp.playwright", "reason": "liveness ping timed out",
+       { "capability": "mcp.chrome-devtools", "reason": "liveness ping timed out",
          "since_phase": "DESIGN", "emitter": "sessionstart-mcp-liveness", "ts": "2026-06-07T12:00:00Z" }
      ]
    }
@@ -130,13 +130,13 @@ Any skill/agent/instrument that reads degraded-capabilities MUST honour all thre
 
 ## 4 · Worked example
 
-A DESIGN-phase mockup needs the Playwright MCP to screenshot a route; the MCP died mid-session.
+A DESIGN-phase mockup needs the chrome-devtools MCP to screenshot a route; the MCP died mid-session.
 
 1. **Emit** — the SessionStart liveness ping already wrote to `<project>/.i2p/degraded-capabilities.json`:
-   `{"capability":"mcp.playwright","reason":"liveness ping timed out","since_phase":"DESIGN"}`. The
+   `{"capability":"mcp.chrome-devtools","reason":"liveness ping timed out","since_phase":"DESIGN"}`. The
    mockup skill, reaching for the MCP and finding it gone, also emits the inline marker in its handoff.
 2. **Route** — the design step takes its no-MCP fallback (an SVG wireframe) instead of failing.
-3. **Disclose** — output states: *"Rendered as a wireframe — Playwright MCP unavailable (liveness ping
+3. **Disclose** — output states: *"Rendered as a wireframe — chrome-devtools MCP unavailable (liveness ping
    timed out, since DESIGN). Screenshot-grade review skipped."*
 4. **Score** — `/foundry:scorecard` reads the state file and marks the design-review coverage dimension
    **PARTIAL**, not PASS.

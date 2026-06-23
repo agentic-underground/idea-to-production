@@ -3,7 +3,7 @@
 This folder documents every external tool that the marketplace plugins (**market-scanner**, **ideator**,
 **foundry**, **security**, **publish**, **atelier**) can use to do their best work, and **how to install
 it** — including paste-ready Ansible fragments under [`ansible/`](ansible/) for machine provisioning.
-(**atelier** reuses foundry's stack: the Playwright MCP + a Chromium browser for live `/ui-review` crawls;
+(**atelier** reuses foundry's stack: the chrome-devtools MCP + a Chromium browser for live `/ui-review` crawls;
 see [`40-mcp.md`](40-mcp.md) and [`10-foundry.md`](10-foundry.md).)
 
 ---

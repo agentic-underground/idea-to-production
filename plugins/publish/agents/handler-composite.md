@@ -24,7 +24,7 @@ the two jobs no other handler does: **SVG↔raster blends** (raster atmosphere +
 [Recipe 4b](../knowledge/raster-toolchain.md#recipe-4b--animated-svg-via-smil-the-vector-native-loop), the
 preferred path for a crisp README hero/diagram: a `SPARK` that sweeps-and-lights nodes, rides the
 feedback/return arcs, eases via `keySplines`, and resets in a graceful wave — verified beat-by-beat with the
-Playwright MCP `svg.setCurrentTime()`, with a coherent `t=0` static fallback since SMIL can't gate
+chrome-devtools MCP `svg.setCurrentTime()`, with a coherent `t=0` static fallback since SMIL can't gate
 reduced-motion). Your knowledge base is the
 **[raster-toolchain canon](../knowledge/raster-toolchain.md)** — use its **proven, parameter-only recipes**;
 never assemble an arbitrary shell command from SPEC text. **You produce one finished asset; you do not
@@ -91,8 +91,9 @@ Write outputs under `<doc-dir>/diagrams/NN-name.{gif|apng|mp4|jpg|png}` (+ `NN-n
 ### 3. Adversarial self-review (assume it's wrong)
 - **Build a frame-strip** (Recipe 5: `magick montage` of sampled frames) and **Read it** — does the motion
   read? Is each step legible? Is the colour-script coherent across frames?
-- **Animated SVG (SMIL):** seek each beat deterministically — serve over `http://`, then via the Playwright
-  MCP `svg.pauseAnimations(); svg.setCurrentTime(t)` → screenshot (Chrome `--virtual-time-budget` mis-seeks
+- **Animated SVG (SMIL):** seek each beat deterministically — serve over `http://`, then via the
+  chrome-devtools MCP (`evaluate_script` → `svg.pauseAnimations(); svg.setCurrentTime(t)`, then
+  `take_screenshot`) (Chrome `--virtual-time-budget` mis-seeks
   SMIL; don't trust it). Confirm: nodes light **and hold** as the spark passes; the spark **throws light**
   (bloom), not a flat dot; motion is **eased** (not linear); the loop **resets in a graceful wave**, not a
   snap; the `t=0` frame is a coherent static fallback.

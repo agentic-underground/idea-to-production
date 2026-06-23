@@ -7,8 +7,7 @@
     global: true
     state: present
   loop:
-    - "@playwright/mcp"                 # foundry Playwright MCP server
-    - playwright                        # foundry Playwright test runner
+    - playwright                        # foundry Playwright test runner (committed STORY tests; NOT a browser MCP)
     - "@mermaid-js/mermaid-cli"         # publish: mmdc
     - typescript-language-server        # foundry LSP (JS/TS)
     - typescript                        # peer of the TS language server
@@ -20,7 +19,8 @@
   register: pw
   changed_when: "'downloading' in pw.stdout | lower"
   tags: [foundry, playwright]
-# The @playwright/mcp server downloads its own browser on first use; this step is for the CLI runner.
+# ONE BROWSER: the marketplace ships no browser MCP — the host-provided chrome-devtools MCP drives the
+# system Chromium (apt-managed). This step installs a browser only for the Playwright STORY-test runner.
 # The Context7 MCP (foundry) launches ephemerally via `npx -y @upstash/context7-mcp` (no install needed,
 # keyless by default); ensuring node/npm is present is the only requirement. Same for optional npx-based
 # MCPs (Tavily, Exa) — their API keys are runtime env, never stored in the playbook.

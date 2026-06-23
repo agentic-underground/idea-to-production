@@ -12,61 +12,81 @@
 
 ---
 
-## 1. Two resolvers, one browser, many slots
+## 1. ONE BROWSER — one binary per host, two consumers
 
-The marketplace owns exactly **two** browser consumers, and **each resolves a browser
-differently** — this is the whole source of the pain below:
+The marketplace consolidates on **exactly one browser per host** — the system Chromium
+(`command -v chromium`/`chromium-browser`/`google-chrome`; on FLEET the apt `/usr/bin/chromium`).
+Both marketplace consumers point at that one binary:
 
-| Consumer | How it finds a browser | Marketplace-shipped? |
+| Consumer | How it finds the browser | Marketplace-shipped? |
 |---|---|---|
-| **mmdc / puppeteer** (mermaid-cli → puppeteer) | a **pinned Chrome revision** under `~/.cache/puppeteer`, **or** whatever `PUPPETEER_EXECUTABLE_PATH` points at | yes (publish uses `mmdc` to render diagrams) |
-| **Playwright MCP** (`npx @playwright/mcp`) | a **slot** under `~/.cache/ms-playwright` (`PLAYWRIGHT_BROWSERS_PATH`), including a per-MCP `mcp-chromium-<hash>/` slot | yes (`atelier`, `foundry` `.mcp.json`) |
+| **mmdc / puppeteer** (mermaid-cli → puppeteer) | whatever `PUPPETEER_EXECUTABLE_PATH` points at (the system Chromium), `PUPPETEER_SKIP_DOWNLOAD=1` | yes (publish renders diagrams) |
+| **`chrome-devtools` MCP** (navigate/click/fill/screenshot/a11y/console/network) | **host-provided** — the host registers it pointed at the system Chromium (`--executablePath … --isolated`) | **no — host-provided, not bundled** |
 
-A browser also lives **system-wide**, discoverable with `command -v chromium`
-(`chromium-browser`, `google-chrome`). The decisive fact: **the same browser is usually on disk
-in several places at once** — a system `chromium`, a populated puppeteer revision, one or more
-ms-playwright slots — and a tool reports "not installed" only because **its own** resolver points
-at an empty or mismatched location, not because no browser exists.
+> **History (the collision this fixed).** The marketplace once shipped a `@playwright/mcp` server in
+> `atelier`/`foundry` `.mcp.json`. It defaulted to a Google-Chrome channel headless hosts don't
+> install, *and* it pinned/GC'd browsers in the shared `~/.cache/ms-playwright` — its registry GC
+> deleted other tools' pinned browser (the "flappy chromium" bug). The **ONE BROWSER** cutover removed
+> it in favour of the host `chrome-devtools` driving the single system Chromium. There is no
+> `~/.cache/ms-playwright` slot in the picture any more.
 
-> A presence probe (`command -v chromium`) answers "is a browser on the box?" — **not** "can
-> *this consumer* launch one?" Those are different questions; conflating them is the trap below.
+> A presence probe (`command -v chromium`) answers "is a browser on the box?" — **not** "can it
+> actually launch?" Those are different questions; conflating them is the trap below (and the reason
+> the readiness probe must drive a real browser action, not just a handshake).
 
 ---
 
 ## 2. Ledger entries
 
 ### TC-BROWSER-1 — "browser not installed" while a browser is on disk
-- Symptom: mmdc / a browser MCP reports "could not find Chrome / not installed", yet
+- Symptom: mmdc / a browser consumer reports "could not find Chrome / not installed", yet
   `command -v chromium` succeeds and another tool just rendered with it.
-- Cause: each consumer resolves a browser differently (pinned puppeteer revision, an
-  ms-playwright slot incl. mcp-chromium-<hash>, /opt/google/chrome). A presence check
-  passes while the consumer's own slot is empty/mismatched. "Install" re-downloads what
-  exists, often into yet another slot.
-- Fix → THE ONLY WAY: DIAGNOSE before installing. Locate any real browser, re-point the
-  consumer (PUPPETEER_EXECUTABLE_PATH for puppeteer/mmdc; repair the ms-playwright stub
-  for the MCP), then VERIFY the healed path launches. If one tool just rendered with a
-  browser, every sibling "not installed" is a WIRING lie. See ensure-browser.sh (P0-3).
+- Cause: a consumer resolves a browser by its **own** wiring (puppeteer's pinned revision or
+  `PUPPETEER_EXECUTABLE_PATH`; a stray `~/.cache/puppeteer` / `~/.cache/ms-playwright` left by an old
+  install). A presence check passes while the consumer's own pointer is empty/mismatched. "Install"
+  re-downloads what already exists, often into yet another cache.
+- Fix → THE ONLY WAY: DIAGNOSE before installing. Locate any real browser, **re-point the consumer at
+  the system Chromium** (`PUPPETEER_EXECUTABLE_PATH` for puppeteer/mmdc; `--executablePath` for the
+  chrome-devtools MCP), then VERIFY the path launches. If one tool just rendered with a browser, every
+  sibling "not installed" is a WIRING lie. See `ensure-browser.sh` (P0-3).
 
 The repair tool is [`scripts/ensure-browser.sh`](../../../../scripts/ensure-browser.sh): `--check`
-diagnoses (locate every browser on disk, name the empty slot); `--fix` re-points the resolver and
-atomically repairs an empty ms-playwright stub, then **verifies the healed slot actually launches**
-before reporting success. A heal that can't prove itself is not a heal.
+diagnoses (locate every browser on disk); `--fix` re-points the resolver at the system Chromium and
+**verifies it actually launches** before reporting success. A heal that can't prove itself is not a heal.
 
 ---
 
 ## 3. THE ONLY WAY — the behavioural rule
 
-> **THE ONLY WAY:** on "browser not installed", **LOCATE** an existing browser (system `PATH`, a
-> populated `ms-playwright` slot, or the puppeteer cache) and **RE-POINT** the tool
+> **THE ONLY WAY:** on "browser not installed", **LOCATE** an existing browser (system `PATH` or the
+> puppeteer cache) and **RE-POINT** the tool at it
 > (`export PUPPETEER_EXECUTABLE_PATH=…`; run `scripts/ensure-browser.sh --fix`); **NEVER install
 > before diagnosing — a sibling tool that just rendered proves a browser exists.**
 
 The reasoning travels with the rule (per `guardrails-ledger.md`): reinstalling is the *expensive
-wrong move* — it re-downloads a browser that is already present, frequently into a third slot,
+wrong move* — it re-downloads a browser that is already present, frequently into a third cache,
 leaving the failing consumer still mis-wired and the disk fatter. The 5-second diagnosis
-(`ls ~/.cache/ms-playwright`, `command -v chromium`) settles it. Installing fresh is justified
-*only* when the diagnosis finds **no** browser anywhere — and then it is the documented last
-resort (`npx playwright install --with-deps chromium`), not the reflex.
+(`command -v chromium`, `ls ~/.cache/puppeteer`) settles it. Installing fresh (`apt-get install -y
+chromium`) is justified *only* when the diagnosis finds **no** browser anywhere — the last resort, not
+the reflex.
+
+---
+
+## 4. Browser-MCP rules — the ONE BROWSER maintenance contract
+
+Any browser MCP the marketplace ever ships (today: **none** — it depends on the host `chrome-devtools`)
+MUST obey all five, or it recreates the collision the cutover fixed:
+
+1. **Never default to `channel: chrome`.** That assumes Google Chrome at `/opt/google/chrome/chrome`,
+   which headless/server hosts don't install. Default to a bundled chromium **or** a host-supplied
+   executable.
+2. **Never pin/download a browser into a shared cache** (`~/.cache/ms-playwright`) that another tool's
+   registry GC can prune — that is what caused the flappy-browser collisions.
+3. **Always honour an executable-path / env override** so a host can supply its own browser
+   (`--executablePath`, or read `${BROWSER_EXEC}`/`PUPPETEER_EXECUTABLE_PATH`).
+4. **Prefer the host's system browser when present.** One browser per host = fewer version/GC collisions.
+5. **A handshake is not health.** If you gate on MCP health, exercise a **real browser action**
+   (launch → navigate → screenshot), never just `initialize`.
 
 ---
 
@@ -74,12 +94,13 @@ resort (`npx playwright install --with-deps chromium`), not the reflex.
 
 Browser-consuming skills link here for the resolver model and TC-BROWSER-1 — they do not restate it:
 
-- `atelier/ui-review` — crawls routes via the Playwright MCP (ms-playwright slot resolver).
-- `atelier/mockup` — screenshots renderable HTML/CSS via the Playwright MCP.
-- `publish/rich-pdf-with-diagrams` — renders Mermaid via `mmdc`/puppeteer.
-- **foundry story phases** — live STORY feedback through the Playwright MCP.
+- `atelier/ui-review` — crawls routes via the chrome-devtools MCP (host-provided, system Chromium).
+- `atelier/mockup` — screenshots renderable HTML/CSS via the chrome-devtools MCP.
+- `publish/rich-pdf-with-diagrams` — renders Mermaid via `mmdc`/puppeteer (system Chromium).
+- **foundry story phases** — live feedback through the chrome-devtools MCP; the committed STORY test
+  uses the Playwright **runner** (a per-project browser, separate from the marketplace MCP).
 - **operate's** browser-using skills — runtime/observability surfaces that drive a browser.
 
-Discovery/install prose for both resolvers lives in the marketplace
+Discovery/install prose lives in the marketplace
 [`PREREQUISITES/40-mcp.md`](../../../../PREREQUISITES/40-mcp.md) ("Headless-browser discovery");
-this doc owns the *pattern* and the *ledger*, that doc owns the *setup env*.
+this doc owns the *pattern*, the *ledger*, and the *browser-MCP rules*; that doc owns the *setup env*.

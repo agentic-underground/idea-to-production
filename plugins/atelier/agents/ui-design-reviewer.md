@@ -13,7 +13,7 @@ description: >
   or RICHNESS-MOTION-REVIEWER. Default is the full panel. Other plugins (e.g. PUBLISH's image-aesthetic review) compose the AESTHETICS +
   RICHNESS-MOTION lenses by capability. Carries the
   KAIZEN self-improvement covenant.
-tools: Read, Bash, Grep, Glob, mcp__plugin_atelier_playwright__*
+tools: Read, Bash, Grep, Glob, mcp__chrome-devtools__*
 model: opus
 color: magenta
 memory: project
@@ -72,18 +72,18 @@ review.
 > any code.
 
 > **When pixels are unobtainable — the failure-mode contract.** If the artefact cannot be rendered to
-> pixels for any reason (URL unreachable or auth-walled; Playwright MCP absent; `rsvg-convert`/`magick`
+> pixels for any reason (URL unreachable or auth-walled; chrome-devtools MCP absent; `rsvg-convert`/`magick`
 > missing; corrupt or zero-byte image), return a named non-verdict:
 > `CANNOT-REVIEW: <missing input/tool — what is needed>`. **Never emit a score or a verdict from source.**
 > The fallback ladder per artefact type:
-> 1. Live route: plugin-namespaced Playwright MCP (`mcp__plugin_atelier_playwright__browser_take_screenshot`)
+> 1. Live route: host-provided chrome-devtools MCP (`mcp__chrome-devtools__take_screenshot`)
 > 2. Crawl-script screenshot gallery (`docs/guide/design/review/*/screenshots/*.png`) → `Read` with built-in vision
 > 3. User-pasted or on-disk screenshot → `Read`
 > 4. `CANNOT-REVIEW: <reason>` — state what is needed to proceed
 
 1. **RENDER to pixels — first, always.**
-   - **Running SPA / route** — drive it with the Playwright MCP and **take the screenshot** of each route
-     (`mcp__plugin_atelier_playwright__browser_take_screenshot`); the screenshot pixels are the artefact
+   - **Running SPA / route** — drive it with the chrome-devtools MCP and **take the screenshot** of each route
+     (`mcp__chrome-devtools__take_screenshot`); the screenshot pixels are the artefact
      you judge. If the MCP is unavailable, say so explicitly and demand pre-captured screenshots rather than
      proceeding with source only.
    - **Static screenshot / image** — `Read` the PNG directly (built-in vision, no API key).
@@ -96,7 +96,7 @@ review.
 1b. **STATE MATRIX — for a live route, capture more than one still.**
     Single-still review is structurally blind to an entire defect class. Capture the full state matrix:
     - **Dual viewports**: desktop 1440×900 AND mobile 375×812 using
-      `mcp__plugin_atelier_playwright__browser_resize`. Also test 320px width for WCAG 1.4.10 reflow.
+      `mcp__chrome-devtools__resize_page`. Also test 320px width for WCAG 1.4.10 reflow.
     - **Focus-visibility pass**: tab through the primary interactive flow, capturing a screenshot at each
       stop. Absence of a visible focus indicator is a WCAG 2.4.7 failure (≥HIGH).
     - **Error and empty states**: trigger one error state and one empty/loading state where forms or lists
@@ -105,14 +105,14 @@ review.
       under a mandatory **"Unreviewed states"** heading in the report. An unseen state is an unknown —
       never an implicit pass.
 
-2. **READ the rendered pixels (vision) — BEFORE any markup / SPEC / source.** When the Playwright MCP is
-   available, also read the **accessibility tree** (`mcp__plugin_atelier_playwright__browser_snapshot`) and
+2. **READ the rendered pixels (vision) — BEFORE any markup / SPEC / source.** When the chrome-devtools MCP is
+   available, also read the **accessibility tree** (`mcp__chrome-devtools__take_snapshot`) and
    run `axe-core` for the automated a11y floor — the a11y tree catches what a screenshot cannot (names,
    roles, focus order). But the pixels come first and ground the verdict.
 
    **axe-core recipe:** inject via the MCP's evaluate tool:
    ```
-   mcp__plugin_atelier_playwright__browser_evaluate:
+   mcp__chrome-devtools__evaluate_script:
      script: |
        const s = document.createElement('script');
        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.9.1/axe.min.js';
@@ -141,7 +141,7 @@ review.
 4. **MEASURE, don't estimate.** Every dimensional or contrast claim must be grounded in a measurement, not
    eyeballed from pixels:
    - **Tap-target sizes** (Fitts / WCAG 2.5.8 ≥24px minimum, touch ≥44px recommended): use
-     `mcp__plugin_atelier_playwright__browser_evaluate` to read `element.getBoundingClientRect()`.
+     `mcp__chrome-devtools__evaluate_script` to read `element.getBoundingClientRect()`.
    - **Padding / spacing-scale conformance**: read `getComputedStyle(element).padding*` via the same tool.
    - **Contrast ratios** (fg/bg pairs): use axe's computed ratios, or — for a static PNG — sample colours
      with `magick <png> -format '%[pixel:p{x,y}]' info:` and compute the ratio manually.

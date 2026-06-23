@@ -24,7 +24,8 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
 - Tools surface to agents as **`mcp__<server>__<tool>`**; an agent's `tools:` frontmatter may use
   the wildcard `mcp__<server>__*`.
 - A subagent inherits the project/user MCP servers; to grant the tools to a restricted handler, add
-  the `mcp__…__*` name to its `tools:` list (FOUNDRY's web handlers do this for `playwright`).
+  the `mcp__…__*` name to its `tools:` list (FOUNDRY's web handlers do this for the host-provided
+  `chrome-devtools`).
 - `.mcp.json` servers are **approval-gated under default permissions**: on first session
   `claude mcp list` shows them as `⏸ Pending approval`, and Claude Code does not connect to (run) a
   plugin/project MCP server until you approve it once via `/mcp`. **Pre-approval differs by scope:** a
@@ -32,15 +33,20 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
   `enabledMcpjsonServers` in settings, but a **plugin-shipped** server **cannot** — no setting,
   `claude mcp` subcommand, or launch flag (incl. `--dangerously-skip-permissions`, which gates *tools*,
   not MCP-server trust) pre-approves it. The one-time interactive approval is mandatory by design.
-- **Pinned for reproducibility.** The three third-party servers fetch and execute remote code at
+- **Pinned for reproducibility.** The third-party servers fetch and execute remote code at
   launch, so the shipped configs pin an **explicit version** (never a floating `@latest`) — a fetched
-  server can't change underneath you. The current pins: `@playwright/mcp@0.0.75`,
-  `@upstash/context7-mcp@3.1.0`, `uvx mcp-server-fetch@2026.6.4`.
+  server can't change underneath you. The current pins: `@upstash/context7-mcp@3.1.0`,
+  `uvx mcp-server-fetch@2026.6.4`.
+- **No browser MCP is shipped.** The marketplace drives a browser through the **host-provided
+  `chrome-devtools`** MCP (ONE BROWSER — the host points it at the system Chromium). Shipping a browser
+  MCP is forbidden by the [browser-MCP rules](../plugins/foundry/knowledge/tooling/headless-browser.md)
+  (a shipped `@playwright/mcp` defaulted to a Chrome channel headless hosts don't install and its cache
+  GC corrupted the shared browser — removed in the ONE BROWSER cutover).
   `scripts/verify-prereqs.sh` check K asserts every ephemeral-runner `.mcp.json` server carries such a
   pin. (A resident, interpreted first-party server — were the marketplace to ship one again — would be
   exempt: nothing fetched, no package to pin, no artifact-drift. See the
   [language-choice post-mortem](../plugins/foundry/knowledge/architecture/mcp-language-choice.md).)
-- Manual fallback (no plugin): `claude mcp add playwright -- npx -y @playwright/mcp@0.0.75`.
+- Manual fallback (no host MCP, off-fleet): `claude mcp add chrome-devtools -- npx -y chrome-devtools-mcp@latest --headless --isolated` (omit `--executablePath` off-fleet so it auto-manages its own Chrome-for-Testing; on a host with a system browser, point it at that). *(`@latest` is fine here — the pin rule above + check K govern **shipped** `.mcp.json` servers; this is an off-fleet manual command, not a shipped config. Pin a version if you want reproducibility.)*
 
 ## Shipped by the marketplace
 
@@ -48,11 +54,15 @@ A plugin declares servers in a `.mcp.json` at its **plugin root**:
 |---|---|---|---|---|
 | `fetch` | market-scanner, ideator | `uvx mcp-server-fetch@2026.6.4` | `mcp__fetch__*` | Keyless web research: fetch a URL and extract it as **markdown in chunks** — competitor pricing, docs, forum threads. Grounds the discovery scorecard / IDEA package in real evidence. |
 | `context7` | foundry | `npx -y @upstash/context7-mcp@3.1.0` | `mcp__context7__*` | **Version-specific** library docs + examples for 9,000+ libraries, injected into context — handlers code against the current API, not the training cutoff. |
-| `playwright` | foundry, atelier | `npx -y @playwright/mcp@0.0.75` | `mcp__playwright__*` | Live browser: navigate, accessibility-tree snapshot, screenshot, console/network. foundry uses it for STORY feedback; atelier for `/ui-review` crawl + a11y snapshot. |
 
-Prereqs: `fetch` needs `uv`/`uvx`; `context7` + `playwright` need `node`/`npx` (Playwright's
-browser auto-downloads on first use). All three run **keyless** — nothing to provision but the launcher
-(Context7 takes an optional key only to raise rate limits).
+> **Browser (`chrome-devtools`) is NOT shipped — it is host-provided** (driven, not bundled). The host
+> registers `chrome-devtools` pointed at the system Chromium; foundry's web handlers + atelier's
+> `/ui-review`/`/mockup` use `mcp__chrome-devtools__*` for live browser feedback, and degrade gracefully
+> when it is absent (see the headless table below). This is the ONE BROWSER posture — the marketplace
+> ships no browser MCP of its own.
+
+Prereqs: `fetch` needs `uv`/`uvx`; `context7` needs `node`/`npx`. Both run **keyless** — nothing to
+provision but the launcher (Context7 takes an optional key only to raise rate limits).
 
 ## headless_capable — which phases need a spawnable MCP/browser, which are headless-safe
 
@@ -68,8 +78,8 @@ prose guidance; the runtime contract it serves is
 | DISCOVER / IDEATE web research (`fetch`) | `mcp.fetch` (web fetch) | **degrades** | fall back to user-supplied evidence; disclose research is un-grounded |
 | BUILD — most DEV_SYSTEM phases (EARS, FEATURE, TEST, IMPLEMENT, commit) | no | **yes — headless-safe** | run normally |
 | BUILD — `context7` version-specific docs lookup | `mcp.context7` (nice-to-have) | **yes (degrades)** | code against the training cutoff; disclose docs were not version-checked |
-| BUILD/ASSURE — STORY browser/E2E tests (`ds-step-story-tests`, PLAYWRIGHT-AGENT) | `mcp.playwright` + a real Chromium | **no — requires browser** | skip browser story tests; run CLI/API journey tests where the interface allows; disclose the browser lens did not run |
-| DESIGN — `atelier:mockup` / `atelier:ui-review` (screenshot + a11y crawl) | `mcp.playwright` + browser | **no — requires browser** | emit an SVG/wireframe fallback or skip; disclose screenshot-grade review skipped |
+| BUILD/ASSURE — STORY browser/E2E tests (`ds-step-story-tests`, PLAYWRIGHT-AGENT) | a real Chromium (Playwright test runner) | **no — requires browser** | skip browser story tests; run CLI/API journey tests where the interface allows; disclose the browser lens did not run |
+| DESIGN — `atelier:mockup` / `atelier:ui-review` (screenshot + a11y crawl) | `mcp.chrome-devtools` + browser | **no — requires browser** | emit an SVG/wireframe fallback or skip; disclose screenshot-grade review skipped |
 
 **The rule:** a headless-safe phase runs unchanged; an MCP/browser-dependent phase, when its MCP can't
 spawn (a `mcp.*` DEGRADED record is present, or `CI`/no-display is detected), takes its degraded-but-valid
@@ -77,36 +87,34 @@ fallback **and discloses the gap** — it never reports a clean pass over a lens
 phase-sensor / lifecycle-orchestrator route on this table; the scorecard (P1-17) marks the affected
 coverage PARTIAL.
 
-## Headless-browser discovery (the two marketplace resolvers)
+## Headless-browser discovery (ONE BROWSER)
 
-The marketplace owns **two** consumers that each need a Chromium, and **each finds one differently** —
-so the *same* browser is often on disk in several places while one consumer still reports "not
-installed". The two resolvers:
+The marketplace consolidates on **one browser per host** — the system Chromium
+(`command -v chromium`/`chromium-browser`/`google-chrome`). Both marketplace consumers point at it:
 
-- **mmdc / puppeteer** (publish renders Mermaid via `mmdc` → puppeteer) — resolves a **pinned Chrome
-  revision** under `~/.cache/puppeteer`, **or** whatever `PUPPETEER_EXECUTABLE_PATH` points at.
-- **Playwright MCP** (`@playwright/mcp`, shipped by `atelier` + `foundry`) — resolves a **slot** under
-  `~/.cache/ms-playwright` (`PLAYWRIGHT_BROWSERS_PATH`), including a per-MCP `mcp-chromium-<hash>/` slot.
+- **mmdc / puppeteer** (publish renders Mermaid via `mmdc` → puppeteer) — resolves whatever
+  `PUPPETEER_EXECUTABLE_PATH` points at (the system Chromium), `PUPPETEER_SKIP_DOWNLOAD=1`.
+- **`chrome-devtools` MCP** (host-provided, not shipped) — the host registers it pointed at the system
+  Chromium (`--executablePath /usr/bin/chromium --isolated` on FLEET).
 
-A browser also lives system-wide (`command -v chromium`/`chromium-browser`/`google-chrome`). A
-**presence** probe answers "is a browser on the box?" — not "can *this consumer* launch one?"; that
-gap is the recurring failure, captured as **TC-BROWSER-1**.
+No `~/.cache/ms-playwright` slot is involved any more — the browser MCP that used it
+(`@playwright/mcp`) was removed in the ONE BROWSER cutover precisely because its registry GC corrupted
+that shared cache. A **presence** probe answers "is a browser on the box?" — not "can it actually
+launch?"; the gap is the recurring failure **TC-BROWSER-1**, so probe a **real launch**, never just
+`command -v`.
 
-**Env single-source-of-truth.** One resolver, resolved **once at setup** by
+**Env single-source-of-truth.** Resolved **once at setup** by
 [`scripts/ensure-browser.sh`](../scripts/ensure-browser.sh) into the user's shell / CI env — never baked
 into `.mcp.json`:
 
 ```sh
-export PUPPETEER_EXECUTABLE_PATH="$(command -v chromium||command -v chromium-browser||command -v google-chrome)"   # or a cache-resident binary
+export PUPPETEER_EXECUTABLE_PATH="$(command -v chromium||command -v chromium-browser||command -v google-chrome)"
 export PUPPETEER_SKIP_DOWNLOAD=1
-export PLAYWRIGHT_BROWSERS_PATH="${PLAYWRIGHT_BROWSERS_PATH:-$HOME/.cache/ms-playwright}"
 ```
 
-These are machine-specific paths, so they are **resolved into the env by `ensure-browser.sh`, NEVER
-written into a shipped `.mcp.json`** — every shipped server carries `env: {}` on purpose. This is the
-**capability-not-path** rule: a shipped config declares the *capability* (a browser MCP), the setup
-step supplies the *path* the local machine actually has. Bake a path in and the config is wrong on the
-next machine; resolve it at setup and it is right on every machine.
+This is the **capability-not-path** rule: the config declares the *capability*, setup supplies the
+*path* the local machine has. (The Playwright **test runner**, if a built project uses it for committed
+story tests, manages its own browser separately — that is a per-project concern, not a marketplace MCP.)
 
 For the full pattern — both resolvers, the TC-BROWSER-1 ledger entry, the `--fix` repair, and the
 `THE ONLY WAY` "diagnose-before-installing" rule — see

@@ -1,7 +1,7 @@
 # Live Feedback, Debuggers & Language Servers
 
 > Canonical reference for the **feedback musculature** available to FOUNDRY value-handlers:
-> the Playwright MCP (live browser), CLI debuggers (no new language required), and LSP
+> the chrome-devtools MCP (live browser), CLI debuggers (no new language required), and LSP
 > servers (semantic navigation/diagnostics). One copy; handlers link here.
 >
 > Reachability of every tool named here is verified by `/foundry:check`
@@ -11,18 +11,21 @@
 
 ---
 
-## 1. Playwright MCP — live, exploratory browser feedback
+## 1. chrome-devtools MCP — live, exploratory browser feedback
 
-FOUNDRY ships a `playwright` MCP server ([`../../.mcp.json`](../../.mcp.json), package
-`@playwright/mcp`). Web value-handlers are granted the `mcp__playwright__*` tools. The server
-manages its own browser; first use downloads it. Under **default permissions**, `.mcp.json` servers
-require a **one-time approval** in the session (`claude mcp list` shows them as ⏸ pending until
-approved) — this is the safety default, not an absolute guarantee (a permissive permission mode or
-pre-approval changes it). Fuller detail is in the marketplace source's `PREREQUISITES/40-mcp.md`.
+FOUNDRY does **not** ship a browser MCP — it relies on the **host-provided `chrome-devtools` MCP**
+(one browser per host: the system Chromium it is pointed at). Web value-handlers are granted the
+`mcp__chrome-devtools__*` tools; when that MCP is present they drive that one browser, and when it is
+absent they degrade gracefully (the test contract below still holds). *(History: FOUNDRY/ATELIER once
+shipped a `@playwright/mcp` server in `.mcp.json`; it defaulted to a Google Chrome channel headless
+hosts don't install and its registry GC corrupted the shared browser cache — the "ONE BROWSER" cutover
+removed it in favour of the host chrome-devtools. See [`headless-browser.md`](./headless-browser.md).)*
+Under **default permissions** a host/user-registered MCP still requires approval before it connects;
+fuller detail is in the marketplace source's `PREREQUISITES/40-mcp.md`.
 
 **The dividing line — MCP for feedback, the CLI runner for the contract:**
 
-| Use the **Playwright MCP** (`mcp__playwright__*`) for… | Use **`npx playwright test`** (the CLI runner) for… |
+| Use the **chrome-devtools MCP** (`mcp__chrome-devtools__*`) for… | Use **`npx playwright test`** (the CLI runner) for… |
 |---|---|
 | Live, exploratory work *during* implementation: navigate, click, fill, read the **accessibility tree**, screenshot, inspect console/network. | The **committed, deterministic STORY test** — the durable artefact that pins behaviour and runs in CI. |
 | Answering "does this actually render / behave right *now*?" without writing a throwaway test. | The test contract (see [`../testing/test-policy.md`](../testing/test-policy.md)). |

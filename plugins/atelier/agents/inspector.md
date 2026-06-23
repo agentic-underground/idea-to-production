@@ -29,5 +29,5 @@ guardrail, and the KAIZEN covenant. Write `ATELIER_INSPECTION_REPORT.md` to the 
    `ui-design-reviewer` agent and the `mockup`/`ui-review` skills — not restated divergently.
 3. **Reviewer wiring:** the `ui-design-reviewer` agent's lenses (HIERARCHY/INTERACTION/ACCESSIBILITY/
    AESTHETICS/CONSISTENCY) are all reachable from `ui-review`'s panel.
-4. **Playwright by capability:** browser-driven review references the Playwright MCP by capability and
+4. **Playwright by capability:** browser-driven review references the chrome-devtools MCP by capability and
    degrades to screenshot critique — no hard machine coupling.

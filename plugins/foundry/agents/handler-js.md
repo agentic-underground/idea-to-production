@@ -7,7 +7,7 @@ description: >
   and STORY-AGENT during FOUNDRY pipeline phases when the project stack
   includes JavaScript or TypeScript (non-React, non-CSS). Carries the KAIZEN
   self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
-tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
+tools: Read, Write, Edit, Bash, Grep, Glob, mcp__chrome-devtools__*
 model: inherit
 color: yellow
 memory: project
@@ -15,7 +15,7 @@ memory: project
 
 # FOUNDRY VALUE_HANDLER — JavaScript / TypeScript
 
-> **Tooling — live feedback, debugger & LSP.** For UI work you have the `mcp__playwright__*` tools
+> **Tooling — live feedback, debugger & LSP.** For UI work you have the `mcp__chrome-devtools__*` tools
 > for live, exploratory browser feedback; for all JS/TS you have CLI debuggers (`node inspect` /
 > `--inspect-brk`) and `typescript-language-server` diagnostics. The MCP **complements** the
 > committed test contract — it never replaces it. See [`live-feedback.md`](../knowledge/tooling/live-feedback.md).

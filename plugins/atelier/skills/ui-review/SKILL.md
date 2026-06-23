@@ -4,7 +4,7 @@ description: >
   Adversarially review the design of any running app or screenshot — and write a scored, prioritised
   critique. Trigger with /ui-review (or "review the UI", "critique this design/screen", "design review",
   "what does the UI look like", "audit the accessibility of this page"). Crawls the navigable routes of an
-  SPA via the Playwright MCP (screenshot + accessibility snapshot per route), or critiques a screenshot you
+  SPA via the chrome-devtools MCP (screenshot + accessibility snapshot per route), or critiques a screenshot you
   paste. Grounds every finding in named design canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG
   2.2) and scores it on the design-fitness rubric. Use proactively whenever someone wants to know whether a
   UI is good — and why.
@@ -41,7 +41,7 @@ whole SPA or a single pasted screenshot. It is adversarial by stance and grounde
    ambiguous which graphical elements/routes to review** — many routes, auth-walled areas, embedded
    canvases/maps/charts — **ask the user** which surfaces matter (offer a sensible default: all top-level
    nav routes + their primary states). Never guess the scope of a review.
-2. **Enumerate the navigable surface.** Prefer the **Playwright MCP** (`mcp__playwright__*`): navigate to
+2. **Enumerate the navigable surface.** Prefer the **chrome-devtools MCP** (`mcp__chrome-devtools__*`): navigate to
    the base URL, read the **accessibility snapshot** + same-origin links/nav to discover routes, and visit
    each. Capture, per route: a **screenshot** (desktop 1440×900 **and** mobile 375×812) and the **a11y
    tree**. For a committed snapshot instead, run the crawler script (below). If the MCP is unavailable,

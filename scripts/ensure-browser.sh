@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 # ensure-browser.sh — idempotent DETECT → HEAL → VERIFY for the headless browser
-# the marketplace's two browser resolvers (puppeteer/mmdc and the Playwright MCP)
-# depend on. It is the self-verifying browser heal and the single source of truth
-# for the browser env (PUPPETEER_EXECUTABLE_PATH / ms-playwright slot).
+# the marketplace's consumers depend on. ONE BROWSER: the system Chromium drives
+# BOTH puppeteer/mmdc (PUPPETEER_EXECUTABLE_PATH) and the host-provided chrome-devtools
+# MCP. The self-verifying browser heal + the single source of truth for the browser env.
 #
 # The incident it answers: "browser not installed" is reported while a real,
-# launchable Chrome already sits on disk in a sibling cache slot. The ONLY WAY is
-# DIAGNOSE before installing — locate an existing browser, re-point the consumer
-# (PUPPETEER_EXECUTABLE_PATH for puppeteer/mmdc; repair the empty ms-playwright
-# stub slot for the MCP), then VERIFY the healed path actually launches.
+# launchable Chrome already sits on disk. The ONLY WAY is DIAGNOSE before installing —
+# locate an existing browser, re-point the consumer at the system Chromium
+# (PUPPETEER_EXECUTABLE_PATH for puppeteer/mmdc; --executablePath for chrome-devtools),
+# then VERIFY the healed path actually launches.
+#
+# NOTE (ONE BROWSER cutover): the marketplace no longer ships a Playwright MCP, so no
+# marketplace consumer uses ~/.cache/ms-playwright. The ms-playwright stub-healing below
+# is retained only to repair a LOCALLY-installed Playwright test runner's slot if present;
+# it is vestigial for the marketplace itself and a candidate for removal.
 #
 # Modes:
 #   --check   diagnose only (DEFAULT) — print what was found where, what is a
@@ -196,7 +201,7 @@ heal_stubs() {
 
     # a full-chromium stub. We need a populated donor of the same family.
     if [ -z "$populated" ] || [ ! -x "$populated/chrome" ]; then
-      SKIPPED+=("$slot$TAB""no populated chromium donor on disk — run: npx playwright install --with-deps chromium")
+      SKIPPED+=("$slot$TAB""no populated chromium donor on disk — run: apt-get install -y chromium (ONE BROWSER system browser)")
       continue
     fi
 
@@ -221,7 +226,7 @@ heal_stubs() {
       if is_launchable "$slot/chrome"; then
         HEALED+=("$slot")
       else
-        SKIPPED+=("$slot$TAB""healed symlink does NOT launch — manual fix: npx playwright install --with-deps chromium")
+        SKIPPED+=("$slot$TAB""healed symlink does NOT launch — manual fix: apt-get install -y chromium (ONE BROWSER system browser)")
       fi
     else
       SKIPPED+=("$slot$TAB""could not replace stub dir (permissions?) — manual fix needed")
@@ -246,7 +251,7 @@ resolve_browser
 if [ "$PRINT_ENV" -eq 1 ]; then
   [ "$MODE" = "fix" ] && heal_stubs 1 >/dev/null 2>&1
   if [ -z "$RESOLVED" ]; then
-    printf '# ensure-browser: no launchable browser found — run: npx playwright install --with-deps chromium\n' >&2
+    printf '# ensure-browser: no launchable browser found — run: apt-get install -y chromium (ONE BROWSER system browser)\n' >&2
     exit 3
   fi
   print_env_block
@@ -279,7 +284,7 @@ say "${bold}RESOLVE — launchable browser the consumers will use${reset}"
 if [ -z "$RESOLVED" ]; then
   bad "no chrome binary resolved on this machine"
   say ""
-  say "  ${bold}Remediation:${reset} npx playwright install --with-deps chromium"
+  say "  ${bold}Remediation:${reset} apt-get install -y chromium (ONE BROWSER system browser)"
   exit 3
 fi
 ok "resolved: ${bold}$RESOLVED${reset}"

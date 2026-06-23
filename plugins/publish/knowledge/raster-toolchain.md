@@ -126,7 +126,7 @@ that same clock via `<animate>` (state/opacity) or `<animateMotion>` (path trave
   this limitation; the alt-text must describe the motion.
 
 **Verify each beat DETERMINISTICALLY** (Chrome `--virtual-time-budget` mis-seeks SMIL — do not trust it).
-Serve the SVG over `http://` and seek with the Playwright MCP:
+Serve the SVG over `http://` and seek with the chrome-devtools MCP:
 ```js
 const s = document.querySelector('svg'); s.pauseAnimations(); s.setCurrentTime(8.0);   // → screenshot
 ```

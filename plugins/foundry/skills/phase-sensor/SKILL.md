@@ -45,7 +45,7 @@ the per-phase `headless_capable` map is the table in `PREREQUISITES/40-mcp.md` (
 Detect "MCPs can't spawn" two ways (either is sufficient):
 
 1. **A DEGRADED record is present** — `<project>/.i2p/degraded-capabilities.json` carries an `mcp.*`
-   capability (e.g. `mcp.playwright`, `mcp.fetch`), written by the SessionStart liveness ping (P1-24)
+   capability (e.g. `mcp.chrome-devtools`, `mcp.fetch`), written by the SessionStart liveness ping (P1-24)
    or emitted at point-of-use (P1-15).
 2. **A headless/CI environment** — `CI` is set, or there is no display/browser
    (`$DISPLAY` empty AND no `chromium`/`google-chrome` on PATH AND no `PUPPETEER_EXECUTABLE_PATH`).

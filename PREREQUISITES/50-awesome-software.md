@@ -17,7 +17,7 @@
 | `cargo-zigbuild` + `zig` | zig 0.13 | glibc-correct cross-builds for Vercel's Rust runtime. | `cargo install cargo-zigbuild` + zig release |
 | `typst` | 0.14.2 | Fast, no-TeX typesetting — publish's default engine. | `cargo install typst-cli` |
 | `uv` / `uvx` | 0.11.17 | Fast Python + **ephemeral tool runner**; launches the Fetch MCP & Python tooling cleanly. | astral install script |
-| `node` (Volta) | 24.16 | Playwright MCP, JS/TS toolchains, mermaid-cli. | Volta |
+| `node` (Volta) | 24.16 | chrome-devtools MCP, JS/TS toolchains, mermaid-cli. | Volta |
 | `dotnet` | 10.0.203 | .NET stack availability. | Microsoft apt feed |
 | `rustc`/`cargo` | 1.96 | Rust toolchain. | rustup |
 | `ripgrep` | 15.1 | Fast search everywhere. | apt |
@@ -34,7 +34,7 @@
 - **Optional, key-gated** (document, don't bake keys): **Tavily** (`npx -y tavily-mcp@latest` + `TAVILY_API_KEY`) and **Exa** (`npx -y exa-mcp-server` + `EXA_API_KEY`) for deep market research; **official GitHub MCP** (remote HTTP + PAT — *not* the deprecated `@modelcontextprotocol/server-github`). Full detail in [`40-mcp.md`](40-mcp.md).
 
 ### Feedback & code intelligence
-- **`@playwright/mcp` + Chromium** — live browser feedback for web handlers. `npm i -g @playwright/mcp playwright && npx playwright install --with-deps chromium`
+- **host `chrome-devtools` MCP + system Chromium** — live browser feedback for web handlers (ONE BROWSER; the marketplace ships no browser MCP — the host registers chrome-devtools pointed at the system Chromium). `apt-get install -y chromium` (+ `npm i -g playwright` only for the committed STORY-test runner).
 - **`typescript-language-server` + `typescript`**, **`pyright`** — LSP for JS/TS and Python. `npm i -g …`
 - **`gopls`** — Go LSP, if Go is used. `go install golang.org/x/tools/gopls@latest`
 

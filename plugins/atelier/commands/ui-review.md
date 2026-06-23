@@ -7,7 +7,7 @@ Review a UI with ATELIER. Follow the [`ui-review` skill](../skills/ui-review/SKI
 1. **Recover intent + scope.** What is the app for, and for whom (read foundry `@front-end` markers by
    capability if present)? Find the dev-server URL. **If which routes / graphical elements to review is
    ambiguous, ask the user** (default: all top-level nav routes + their primary states).
-2. **Crawl** via the Playwright MCP (`mcp__playwright__*`) — screenshot (desktop + mobile) and read the
+2. **Crawl** via the chrome-devtools MCP (`mcp__chrome-devtools__*`) — screenshot (desktop + mobile) and read the
    **accessibility tree** per route; run `axe-core` when available. Or critique a **pasted screenshot**
    ad-hoc. Committed-snapshot fallback: `BASE_URL=… node ${CLAUDE_PLUGIN_ROOT}/skills/ui-review/scripts/crawl.mjs`.
 3. **Critique** each surface against the canon (visual-foundations → interaction-laws → accessibility),

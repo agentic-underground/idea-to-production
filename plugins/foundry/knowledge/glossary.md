@@ -186,7 +186,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - **AWAITING MERGE** — a roadmap status / `AWAITING_MERGE` sentinel: under `pr-approval` the item is
   built and review-PASSed with its PR open, but not yet on `main` — terminal-pending, flips to
   `COMPLETE` on the human merge.
-- **Live feedback (Playwright MCP)** — the `mcp__playwright__*` tools for exploratory browser
+- **Live feedback (chrome-devtools MCP)** — the `mcp__chrome-devtools__*` tools for exploratory browser
   feedback during dev; complements, never replaces, the committed test contract
   ([`tooling/live-feedback.md`](tooling/live-feedback.md)).
 
