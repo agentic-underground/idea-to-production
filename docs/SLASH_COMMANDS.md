@@ -185,14 +185,17 @@ and drained by the external FLEET continuous-delivery engine — see the foundry
 
 ## Appendix — MCP servers
 
-The marketplace ships three MCP servers. These expose **tools**, **not** slash commands — there are
+The marketplace ships two MCP servers. These expose **tools**, **not** slash commands — there are
 no `/mcp__…` commands to type.
 
 | Server | Shipped by | What it provides |
 |---|---|---|
 | `context7` | foundry | Fetch current documentation for a library, framework, SDK, or CLI |
 | `fetch` | ideator, market-scanner | Retrieve and read web page content |
-| `playwright` | atelier, foundry | Drive a real browser — navigate, screenshot, accessibility snapshot |
+
+Browser driving (navigate, screenshot, accessibility snapshot — used by atelier and the foundry web
+handlers) is **not** shipped: per the ONE BROWSER cutover the marketplace uses the **host-provided
+`chrome-devtools`** MCP, pointed at the system Chromium, and bundles no browser server of its own.
 
 The roadmap deterministic layer ("what's on the roadmap" at ~0 LLM tokens) is now provided by the
 **external FLEET `pipeline` plugin** (`/pipeline:status`, `pipeline-cron.sh`) over the v2
