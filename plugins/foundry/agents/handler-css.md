@@ -7,7 +7,7 @@ description: >
   IMPLEMENT-AGENT, and STORY-AGENT during FOUNDRY pipeline phases when the
   project stack includes CSS or styling work. Carries the KAIZEN self-improvement
   covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
-tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
+tools: Read, Write, Edit, Bash, Grep, Glob, mcp__chrome-devtools__*
 model: inherit
 color: magenta
 memory: project
@@ -15,7 +15,7 @@ memory: project
 
 # FOUNDRY VALUE_HANDLER — CSS / SCSS
 
-> **Tooling — live feedback, debugger & LSP.** You have the `mcp__playwright__*` tools for live,
+> **Tooling — live feedback, debugger & LSP.** You have the `mcp__chrome-devtools__*` tools for live,
 > exploratory visual feedback (screenshot at breakpoints, inspect computed styles, check dark
 > mode / responsive layout), plus CLI debuggers and semantic LSP diagnostics. The MCP
 > **complements** the committed test/visual-regression contract — it never replaces it.

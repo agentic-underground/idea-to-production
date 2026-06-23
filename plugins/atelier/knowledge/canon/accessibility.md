@@ -26,7 +26,7 @@
 > a label actually describes its control, whether an error message is *useful* — needs a human-or-agent
 > judgment. ATELIER does both:
 
-1. **Automated pass (when available):** run `axe-core` via the Playwright MCP (`mcp__playwright__*`) or
+1. **Automated pass (when available):** run `axe-core` via the chrome-devtools MCP (`mcp__chrome-devtools__*`) or
    note that it's unavailable. Treat its findings as a *floor*, not a ceiling.
 2. **Structural pass:** read the **accessibility snapshot** (the a11y tree) — names, roles, states, focus
    order, headings. This is what assistive tech actually exposes; it catches what a screenshot can't.

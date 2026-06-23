@@ -32,6 +32,6 @@
       "carriage": "foundry",
       "refinement": "ideator"
     },
-    "note": "skills/ and commands/ are auto-discovered from the plugin root. /ui-review (crawl + critique any SPA) and /mockup (design polished screens/flows) are the front doors. Ships a Playwright MCP (.mcp.json) for live crawl/screenshot/accessibility-snapshot. Composes with foundry's frontend design-system and publish's graphics BY CAPABILITY; degrades to markdown when absent."
+    "note": "skills/ and commands/ are auto-discovered from the plugin root. /ui-review (crawl + critique any SPA) and /mockup (design polished screens/flows) are the front doors. Uses the host-provided chrome-devtools MCP (ONE BROWSER — bundles none) for live crawl/screenshot/accessibility-snapshot. Composes with foundry's frontend design-system and publish's graphics BY CAPABILITY; degrades to markdown when absent."
   }
 }

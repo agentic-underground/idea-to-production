@@ -4,7 +4,7 @@ description: >
   Design a polished UI mockup, wireframe, or user-flow — carefully composed and design-reviewed, not a
   first draft. Trigger with /mockup (or "mock up a screen for…", "design a wireframe", "draw the user
   flow", "sketch the onboarding screens"). Generates the artefact (renderable HTML/CSS screenshotted via
-  the Playwright MCP, or an SVG wireframe; user-flows as Mermaid via publish by capability), then runs
+  the chrome-devtools MCP, or an SVG wireframe; user-flows as Mermaid via publish by capability), then runs
   the convergent designer↔reviewer loop until it clears the design-fitness rubric. This is the capability
   IDEATOR calls so the user sees commercial-grade material, not whipped-up sketches.
 metadata:
@@ -28,7 +28,7 @@ draft: it is the artefact *after* the loop has raised it to the rubric.
 
 | Ask | Artefact | How |
 |---|---|---|
-| A screen / page mockup | A rendered PNG (and the source) | Compose **HTML/CSS** to the canon (modular type scale, 8-pt spacing, disciplined palette, WCAG-AA contrast), render + screenshot via the Playwright MCP (`mcp__playwright__*`) at desktop + mobile. |
+| A screen / page mockup | A rendered PNG (and the source) | Compose **HTML/CSS** to the canon (modular type scale, 8-pt spacing, disciplined palette, WCAG-AA contrast), render + screenshot via the chrome-devtools MCP (`mcp__chrome-devtools__*`) at desktop + mobile. |
 | A low-fidelity **wireframe** | An SVG / greyscale layout | Structure-first: hierarchy, grouping, and flow without colour/branding distraction. |
 | A **user-flow** | A Mermaid `flowchart` / `journey` | Author the flow, then render it via **publish** `/publish` (format `diagrams`) **by capability** when installed; else emit Mermaid source in a fenced block. Obey the legibility law (≤~4 wide; decompose otherwise). |
 

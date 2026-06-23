@@ -2,7 +2,7 @@
 name: check
 description: >
   Verify that FOUNDRY's external tool dependencies are installed and reachable on this machine —
-  language toolchains, test runners, the Playwright MCP + a browser, debuggers, and language
+  language toolchains, test runners, the chrome-devtools MCP + a browser, debuggers, and language
   servers. Trigger with /foundry:check (or "check foundry prerequisites", "are my foundry tools
   installed?"). Runs a fast ✓/✗ probe grouped by tier (required / recommended / optional). Advisory
   by default (never blocks); pass --strict to fail when a required tool is missing. Reads the
@@ -34,7 +34,7 @@ The canonical list is [`requirements.tsv`](requirements.tsv) (TAB-separated:
 
 - **required** — FOUNDRY's core needs it (`git`, `bash`).
 - **recommended** — materially better: language toolchains, `rust-analyzer`/TS/Python LSP, the
-  Playwright MCP + a browser, `lldb`/`debugpy`.
+  chrome-devtools MCP + a browser, `lldb`/`debugpy`.
 - **optional** — stack-specific: `dx`, `zig`, `cargo-zigbuild`, `vercel`, `cargo-nextest`, …
 
 ## Interpreting the result

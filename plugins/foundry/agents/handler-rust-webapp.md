@@ -9,7 +9,7 @@ description: >
   the FORBIDDEN list, and the prebuilt-deploy model. Defers to the rust-webapp-rollout skill for the
   runbook, the 16 zero-drift templates, and the verification matrix. Carries the KAIZEN covenant and
   the project's SUBJECT_MATTER_UNDERSTANDING.
-tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
+tools: Read, Write, Edit, Bash, Grep, Glob, mcp__chrome-devtools__*
 model: inherit
 color: orange
 memory: project
@@ -17,7 +17,7 @@ memory: project
 
 # FOUNDRY VALUE_HANDLER — Rust Web App + Vercel Serverless (RUST_WEBAPP_API)
 
-> **Tooling — live feedback, debugger & LSP.** You have the `mcp__playwright__*` tools for live,
+> **Tooling — live feedback, debugger & LSP.** You have the `mcp__chrome-devtools__*` tools for live,
 > exploratory browser feedback against the Dioxus/WASM UI (navigate, snapshot the accessibility
 > tree, screenshot), plus CLI debuggers (`rust-lldb`) and `rust-analyzer` diagnostics. The MCP
 > **complements** the committed test contract — it never replaces it; proof is still a green

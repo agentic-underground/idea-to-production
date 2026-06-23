@@ -1,6 +1,6 @@
 # Crawl configuration — `crawl.mjs`
 
-The committed-snapshot fallback for `/ui-review` when the Playwright MCP isn't available. Target-agnostic:
+The committed-snapshot fallback for `/ui-review` when the chrome-devtools MCP isn't available. Target-agnostic:
 no hardcoded panels, selectors, or ports — it reads the app's own same-origin links.
 
 | Env var | Required | Default | Meaning |
@@ -26,6 +26,6 @@ npx playwright install chromium`) — the script loads it from the project's `no
 `/atelier:check`. The output is a gallery `README.md` + `screenshots/*.png`; the reviewer reads the PNGs
 with built-in vision (no API key).
 
-> **Prefer the live MCP path** (`mcp__playwright__*`) when available — it also exposes the **accessibility
+> **Prefer the live MCP path** (`mcp__chrome-devtools__*`) when available — it also exposes the **accessibility
 > tree** and can run `axe-core`, which a static screenshot cannot. This script exists for committed
 > baselines and for sessions without the MCP.

@@ -60,5 +60,6 @@ ATELIER holds the **three pillars** (knowledge-parity, quality-first, waste-elim
 missed, the canon or the rubric is **sharpened via a PR**, so every future review, for all users, catches
 it by default.
 
-Ships a **Playwright MCP** ([`.mcp.json`](.mcp.json)) for live crawl/screenshot/accessibility-snapshot.
-Verify your tools with **`/atelier:check`**. Dual-licensed **MIT OR Apache-2.0**.
+Drives the **host-provided `chrome-devtools` MCP** (ONE BROWSER — not bundled) for live
+crawl/screenshot/accessibility-snapshot, and degrades to a committed-snapshot crawler / pasted
+screenshots when it's absent. Verify your tools with **`/atelier:check`**. Dual-licensed **MIT OR Apache-2.0**.

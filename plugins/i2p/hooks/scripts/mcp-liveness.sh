@@ -62,7 +62,7 @@ fi
 # Source A (preferred): the marketplace plugins/*/.mcp.json. The hook lives at
 # plugins/i2p/hooks/scripts/; walk up to find a plugins/ tree with siblings.
 # Source B (fallback): the harness's installed MCP config under ~/.claude, when present.
-# Dedup by server name (the same server, e.g. playwright, ships in several plugins).
+# Dedup by server name (the same server, e.g. context7, may ship in several plugins).
 hook_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 servers=""   # accumulates "name\tcommand" lines
 

@@ -4,7 +4,7 @@
  *
  * Discovers the navigable surface of ANY running web app and photographs each route at one or more
  * viewports, then writes a self-contained gallery the reviewer reads with built-in vision (no API key).
- * This is the committed-snapshot fallback; the primary live path is the Playwright MCP (mcp__playwright__*).
+ * This is the committed-snapshot fallback; the primary live path is the chrome-devtools MCP (mcp__chrome-devtools__*).
  *
  *   BASE_URL=http://localhost:5173 node crawl.mjs
  *
@@ -44,7 +44,7 @@ async function loadChromium() {
     try { return createRequire(join(base, 'package.json'))('@playwright/test').chromium; } catch (_) { /* try next */ }
   }
   try { return (await import('playwright')).chromium; } catch (_) { /* fall through */ }
-  console.error('ATELIER crawl: Playwright not found. Install it in the target project (npm i -D @playwright/test && npx playwright install chromium), or use the Playwright MCP live path.');
+  console.error('ATELIER crawl: Playwright not found. Install it in the target project (npm i -D @playwright/test && npx playwright install chromium), or use the chrome-devtools MCP live path.');
   process.exit(3);
 }
 

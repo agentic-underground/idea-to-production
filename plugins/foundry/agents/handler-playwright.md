@@ -7,7 +7,7 @@ description: >
   FOUNDRY Phase 5 when the project has a web UI, REST API surface, or any
   user-facing interface requiring story-level validation. Carries the KAIZEN
   self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
-tools: Read, Write, Edit, Bash, Grep, Glob, mcp__playwright__*
+tools: Read, Write, Edit, Bash, Grep, Glob, mcp__chrome-devtools__*
 model: inherit
 color: green
 memory: project
@@ -15,7 +15,7 @@ memory: project
 
 # FOUNDRY VALUE_HANDLER — Playwright (Story Tests)
 
-> **Tooling — live feedback, debugger & LSP.** You have the `mcp__playwright__*` tools for live,
+> **Tooling — live feedback, debugger & LSP.** You have the `mcp__chrome-devtools__*` tools for live,
 > exploratory browser feedback (navigate, snapshot the accessibility tree, screenshot, read
 > console/network), plus CLI debuggers and semantic LSP diagnostics. The MCP **complements** the
 > committed test contract — it never replaces it; proof is still a green committed test.

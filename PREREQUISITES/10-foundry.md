@@ -1,8 +1,9 @@
 # 10 — FOUNDRY prerequisites
 
 FOUNDRY drives idea→production across many stacks. It needs the toolchain for whatever stack a given
-roadmap item uses, plus the **feedback musculature**: a live browser (Playwright MCP), language
-servers (LSP), and debuggers. See [`live-feedback.md`](../plugins/foundry/knowledge/tooling/live-feedback.md)
+roadmap item uses, plus the **feedback musculature**: a live browser (the host-provided
+`chrome-devtools` MCP — ONE BROWSER), language servers (LSP), and debuggers. See
+[`live-feedback.md`](../plugins/foundry/knowledge/tooling/live-feedback.md)
 for how handlers use these.
 
 ## Language toolchains & test runners
@@ -21,17 +22,17 @@ for how handlers use these.
 
 \* per-stack — only needed when the project uses that stack.
 
-## Playwright (browser feedback + story tests)
+## Browser (chrome-devtools MCP feedback + Playwright story tests)
 
 | Tool | Tier | Probe | Why |
 |---|---|---|---|
-| Playwright MCP (`@playwright/mcp`) | recommended | `command -v npx` | Live, exploratory browser feedback for web handlers (`mcp__playwright__*`). Shipped in [`plugins/foundry/.mcp.json`](../plugins/foundry/.mcp.json). |
-| Playwright test runner | recommended | `npx playwright --version` | The committed, deterministic STORY tests. |
-| A Chromium browser | recommended | `npx playwright install chromium` | The CLI runner needs a browser. The MCP downloads its own on first use. (Only `firefox` is preinstalled on the validated box.) |
+| `chrome-devtools` MCP | recommended | `command -v chromium \|\| command -v chromium-browser` | Live, exploratory browser feedback for web handlers (`mcp__chrome-devtools__*`). **Host-provided** (ONE BROWSER) — not shipped in any `.mcp.json`; the host registers it pointed at the system Chromium. |
+| Playwright test runner | recommended | `npx playwright --version` | The committed, deterministic STORY tests (separate from the browser MCP; manages its own browser per-project). |
+| A Chromium browser | recommended | `chromium --headless=new --dump-dom about:blank` | ONE BROWSER: `chrome-devtools` + `mmdc` both drive the system Chromium. (Only `firefox` is preinstalled on the validated box.) |
 
 ```bash
-npm i -g @playwright/mcp playwright
-npx playwright install --with-deps chromium
+apt-get install -y chromium          # the ONE system browser chrome-devtools + mmdc drive
+npm i -g playwright && npx playwright install chromium   # only if a built project uses the Playwright STORY runner
 ```
 
 ## Up-to-date library docs (Context7 MCP)
