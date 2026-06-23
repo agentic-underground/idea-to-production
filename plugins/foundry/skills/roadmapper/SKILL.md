@@ -51,6 +51,18 @@ A skill for capturing, formalising, and implementing software features using a s
 > EPIC/PLAN kicks the FLEET engine off (§11.4), which runs FOUNDRY's PLAN-scope build (builder §2.5).
 > The legacy `ROADMAP.md` pull-and-build flow (§6 / §11 legacy path) remains for non-pipeline projects.
 
+> **Origin-aware emission — two modes (decided in §3.2.1).** roadmapper detects the repo's git origin
+> and authors accordingly:
+> - **git.local / other host / no remote → `local_file` mode** (the default; everything above): the
+>   three `docs/roadmap/` artifacts incl. the `.pipeline.md` manifest.
+> - **github.com origin → `github_board` mode** (§3.3-B): the EPIC/PLAN **docs still land in
+>   `docs/roadmap/`** (the FLEET builder reads them as build instructions), but the **state authority is
+>   a GitHub Project (v2) board** — every EPIC and every PLAN becomes a rich, browsable **Issue** (full
+>   doc content + a clickable doc link + story-point Estimate + labels / Type / assignee / priority),
+>   parked in **Backlog** ("not ready"). **No `.pipeline.md` is written** (the board replaces it — no
+>   split-brain). This is roadmapper getting **in front of** the FLEET `/roadmap-to-pipeline` migrator,
+>   which is now legacy-bootstrap only (one-time migration, or a repo freshly *moved* to GitHub).
+
 The roadmap is a living document intended to be read and acted upon by both humans and AI agents. Every entry is self-contained: it carries enough context that a fresh agent, with no prior conversation history, can pick up the item and implement it correctly.
 
 ---
@@ -113,6 +125,32 @@ Once the intent is clear, **scan the project** before writing anything:
 Note what you find — you will use this to write the implementation plan and to avoid
 duplicating work.
 
+### 3.2.1 Detect the origin — choose the authoring mode
+
+Before writing anything, resolve which mode §3.3 uses. Reuse the established github detector
+(`plugins/operate/skills/gemba/scripts/identity.sh` — `git_remote_owner`/`git_remote_repo`); the
+load-bearing test is **`github.com` in the origin URL** (the same substring test the FLEET engine's
+`pcfg_delivery` uses).
+
+- **`github_board` mode** — *all* of: the origin URL contains `github.com`; `gh project list --owner
+  <owner>` succeeds (a project-scope token is present); and the `pipeline` plugin's
+  `pipeline-gh-project.sh` is resolvable. → author onto the board (§3.3-B).
+- **`local_file` mode** — anything else (git.local / other host / no remote / missing project scope /
+  pipeline tool absent). → today's artifact write (§3.3). If the repo *is* github but a guard failed
+  (e.g. no project scope), say so in one line and proceed in local_file mode — **never half-create on
+  GitHub**.
+
+### 3.2.2 Bootstrap the board registry (github_board mode only)
+
+If `github_board` and the project has no entry in `~/.claude/pipeline-projects.json`, merge one (the
+engine reads it to know the board is authoritative). Use the standard's jq snippet
+([`references/fleet-pipeline-standard.md`](references/fleet-pipeline-standard.md)), **safe-by-default**:
+`board: "github_project"`, `merge_mode: "propose"`, `qualify: false`, `project_owner` from the detected
+owner. Two subtleties the engine depends on: keep `manifest` pointing at `docs/roadmap/.pipeline.md`
+**even though it is never written** — the engine uses its **dirname** to locate the docs in board mode;
+and keep `epic_glob` **literal** `docs/roadmap/EPIC_{order}.md` — the engine derives the PLAN-doc path by
+substituting `EPIC`→`PLAN`, so the word `EPIC` must appear. Merge, never clobber other projects.
+
 ### 3.3 Write the v2 pipeline artifacts (EPIC + PLAN + manifest)
 
 For an i2p project the roadmap **is** the FLEET v2 pipeline (§1). A capture writes/updates THREE
@@ -124,6 +162,12 @@ next free integer, zero-padded); the engine addresses items by it.
 
 > *(For a non-i2p project without a pipeline, fall back to the legacy single-file `ROADMAP.md` entry
 > via the §7 template. The structure below is the i2p-native path.)*
+
+> **Mode gate (§3.2.1).** The templates below are written as for **`local_file` mode**. In
+> **`github_board` mode** you author the **EPIC and PLAN docs from the same templates with two
+> changes** — the EPIC doc **omits the `## Plans` table** (board sub-issues represent plans) and you do
+> **not** write `.pipeline.md` — then follow **§3.3-B** to place + enrich the board items. The manifest
+> template immediately below is `local_file`-only.
 
 **The manifest — `docs/roadmap/.pipeline.md`** (one row per EPIC; **state lives here**, never in the
 EPIC/PLAN docs; the engine owns the state column — you author the row, you do not later hand-edit its
@@ -226,6 +270,69 @@ the engine owns sync, land, PR/issue, and the `state` column (touching them is a
 
 After writing/updating the artifacts, immediately follow §3.4.
 
+#### 3.3-B github_board mode — place + enrich the board items
+
+After decomposition (§3.5) and writing the local EPIC/PLAN docs (above, minus `.pipeline.md` and minus
+the EPIC `## Plans` table), publish to the GitHub Project (v2) board. Engine board tool =
+`pipeline-gh-project.sh` (vendored — **call it, never edit it**); enrichment the tool doesn't expose =
+roadmapper's `scripts/roadmapper-gh-fields.sh`. Run every verb with `PIPELINE_PROJECT=<project-id>` in
+the environment.
+
+1. **Ensure the board (idempotent).** `pipeline-gh-project.sh ensure-project` — find-or-create the
+   Project, its columns (Backlog / To Do / In Progress / Done / Delivered) and custom fields
+   (Priority, Estimate, …). Re-runs are safe.
+2. **Create the EPIC item.** `pipeline-gh-project.sh ensure-epic-item NNNN "<short description>"` →
+   the EPIC Issue + board Item, seeded in **Backlog**. (FLEET titles it `EPIC NNNN: <description>`; keep
+   the description readable within ~70 visible chars before the board UI truncates.)
+3. **Create each PLAN sub-item.** With a 3-digit per-epic plan sequence `SSS` (`001`, `002`, …):
+   `pipeline-gh-project.sh ensure-plan-subitem NNNN "NNNN.SSS" "<short description>"` → a native
+   sub-issue of the EPIC + board Sub-item, seeded in **Backlog**. **Naming contract:** passing the plan
+   arg as the composite `NNNN.SSS` makes the engine derive the plan-doc path as
+   `docs/roadmap/PLAN_NNNN.SSS.md` — so name the local file **exactly** `PLAN_NNNN.SSS.md` (e.g.
+   `PLAN_0001.001.md`). *(Why: the engine's `next-plan` strips the first dotted segment of the Pipeline
+   Order and substitutes `EPIC`→`PLAN` in `epic_glob`; this yields the desired filename with no FLEET
+   fork. Side-effect: the Pipeline Order field reads `NNNN.NNNN.SSS` — a harmless internal cosmetic.)*
+4. **Enrich every Issue (the browsable backlog).** For each EPIC and PLAN Issue, replace the thin
+   auto-body with the **full content of its local doc**, led by a **clickable link** to the doc on the
+   default branch, e.g.
+   `📄 [docs/roadmap/PLAN_0001.001.md](https://github.com/<owner>/<repo>/blob/<default-branch>/docs/roadmap/PLAN_0001.001.md)`
+   Compose the body to a temp file and apply `roadmapper-gh-fields.sh set-body <issue#> <file>` — it
+   re-appends FLEET's `<!-- pipeline-… -->` idempotency marker, so **never strip that marker** from your
+   body. The Issue must *show* what will happen — a bare reference is not enough.
+5. **Set the board fields.** `roadmapper-gh-fields.sh set-estimate <issue#> <points>` (per-PLAN story
+   points from §3.5; the EPIC gets the rolled-up sum) and `… set-priority <issue#> <Priority>` (§3.3-G;
+   default `Medium`). Get `<issue#>` from the echo of `ensure-epic-item`/`ensure-plan-subitem`, or via
+   `pipeline-gh-project.sh epic-issue NNNN` / `plan-issue NNNN NNNN.SSS`.
+6. **Groom the Issue metadata** per **§3.3-G** (Type · Priority · labels · assignee).
+7. **Leave everything in Backlog.** Authoring never auto-promotes — promotion to To Do ("ready") is the
+   human-gated gesture in **§11.4a**.
+
+> **Idempotent re-author.** Every verb is find-or-create keyed on the FLEET body marker, so re-running
+> updates rather than duplicates. Sanity-check the naming contract after authoring:
+> `pipeline-cron.sh next-plan EPIC_NNNN` returns `NNNN.SSS`, and the derived `docs/roadmap/PLAN_NNNN.SSS.md`
+> exists.
+
+#### 3.3-G Conversational metadata grooming (github_board mode)
+
+Each new Issue carries four metadata fields. Present them **default-first** so the user can accept by
+pressing through — one `AskUserQuestion` per decision with the recommended/default option **first** — and
+only stop to ask when something is genuinely ambiguous. Batch at the EPIC level and inherit to its PLANs;
+infer **Type** per PLAN individually. Every field is overridable.
+
+- **Type** — `feature` (default for a new capability) · `bug` · `task`. Infer from the capture; **if
+  ambiguous, ask**. Prefer native GitHub **issue Types** (`gh issue edit <#> --type <Type>`) when the org
+  has them enabled; otherwise apply a `type:bug|feature|task` **label** (probe once per repo, **§3.3-G**).
+- **Priority** — `Medium` (default) · `Urgent` · `High` · `Low`; set the board's Priority field via
+  `roadmapper-gh-fields.sh set-priority`. Ambiguous → ask.
+- **Labels** — suggest relevant labels drawn from the repo's **standardised set** (`gh label list`),
+  multi-select, **plus a free-text entry** for user-supplied ones; apply with `gh issue edit <#>
+  --add-label`. If a chosen label is **not** in `gh label list` it is new — prompt *"this label is new.
+  still want to use it?"* with **yes / no / text-entry**; on **yes** run `gh label create <name>` then
+  apply, on **text-entry** take the replacement and re-check. Unclear labelling → ask.
+- **Assignee** — `@claude` by default: `gh issue edit <#> --add-assignee claude`. **Best-effort** — if
+  that account isn't assignable on this repo, fall back to adding a `claude` label and note it; never
+  block authoring on the assignee.
+
 ---
 
 ### 3.4 COMMIT AFTER EVERY ROADMAP WRITE
@@ -239,6 +346,11 @@ i2p project this stages the v2 `docs/roadmap/` artifacts; for a legacy project, 
 > and the manifest **row**; you do **not** commit `state` transitions (`available`→`engaged`→
 > `completed`) — the FLEET engine owns the state column and lands completions. Do not hand-edit a
 > PLAN's state to "mark it done".
+
+> **`github_board` mode (§3.2.1).** The commit stages **only the local `docs/roadmap/EPIC_NNNN.md` and
+> `PLAN_NNNN.SSS.md` docs** — there is **no `.pipeline.md`** to stage, and the board/Issue mutations are
+> GitHub-side, not git commits. Everything else below (message format, the one-concern rule) is
+> unchanged. The board's Backlog→To Do promotion (§11.4a) is likewise not a commit.
 
 #### Commit message format for roadmap-authoring changes
 
@@ -358,6 +470,11 @@ authoring).
 **Maintain the dependency map.** roadmapper owns the EPIC- and PLAN-level `depends_on` graph: whenever
 a PLAN is added to an EPIC, update the map and re-emit the dependency-respecting "next" order, so the
 engine drains slices in an order that never starts a PLAN whose dependencies have not landed.
+
+**Estimates + Type (feed the board).** The decomposition handler also emits a per-PLAN **story-point
+estimate** (Fibonacci 1/2/3/5/8/13 — riding its INVEST "Estimable" check) and a suggested **Type**, with
+an EPIC rollup (sum of its PLANs). In `github_board` mode these populate the board's **Estimate** field
+(§3.3-B step 5) and seed the **Type** default (§3.3-G); in `local_file` mode they are informational.
 
 ---
 
@@ -777,10 +894,26 @@ column and the land).
 - **What roadmapper MAY do:** confirm the item is build-ready (conformant v2 docs), report the kick-off,
   and surface where to watch progress (`/pipeline:status`).
 - **What roadmapper MUST NOT do:** drive DEV_SYSTEM Steps 0–9 itself; edit `.pipeline.md` / the EPIC
-  `## Plans` `state` (an engine calamity); set `engaged`/`completed` by hand. If a spec gap is found,
-  the fix is a PLAN edit (§3.3/§3.5) then re-kick — not an in-place GO mutation.
+  `## Plans` `state` (an engine calamity); set `engaged`/`completed` by hand; **(github_board) move a
+  board Item's Status as state-drift** — the engine owns the To Do→In Progress→Done/Delivered moves. The
+  one Status change roadmapper makes is the deliberate, human-gated **Backlog→To Do** promotion (§11.4a).
+  If a spec gap is found, the fix is a PLAN edit (§3.3/§3.5) then re-kick — not an in-place GO mutation.
 - **If the `pipeline` plugin is not installed:** tell the user the engine isn't available here and offer
   the standalone path (`/foundry:foundry` PLAN-scope on the resolved PLAN) as a manual fallback.
+
+#### 11.4a Promote Backlog→To Do — the "ready" gesture (github_board mode)
+
+In `github_board` mode an authored item sits in **Backlog** ("not ready"). Moving it to **To Do**
+("ready") is what makes the FLEET engine eligible to pick it — so it is a **deliberate, human-gated**
+action, the board analogue of GO. After authoring (or on request), roadmapper **asks** which EPIC/PLAN to
+promote, defaulting to *none*, with the warning: *To Do = the engine will build this on its next tick if
+it's next in board order.*
+
+- Promote an EPIC: `pipeline-gh-project.sh set-status NNNN "To Do"`.
+- Promote a PLAN: `pipeline-gh-project.sh set-plan-status NNNN NNNN.SSS "To Do"`.
+
+This is the **only** Status change roadmapper makes; every other column move is the engine's and must
+never be hand-edited (§11.4 MUST NOT).
 
 #### Legacy project (`ROADMAP.md`, no pipeline) — GO = DEV_SYSTEM
 
