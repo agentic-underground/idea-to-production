@@ -2,6 +2,7 @@
 
 - [Marketplace supply-chain risk class](project_marketplace-supply-chain.md) — unpinned third-party exec (@latest/uvx/curl|sh/releases-latest) recurs in .mcp.json & ansible; flag + push systematic fix
 - [Provenance archive is rename-exempt](project_provenance-archive.md) — examples/ + docs/ + rust-webapp-rollout keep old FORGE/forge- names by design; not dangling refs
+- [ONE BROWSER chrome-devtools cutover (PR #244)](project_one-browser-chrome-devtools.md) — drop shipped @playwright/mcp→host chrome-devtools; fixes latent unprefixed-grant bug; check C green; @latest soft-spot at 40-mcp:49
 - [Rewrite-changeset regression patterns](feedback_rewrite-regressions.md) — where to look first when a script/interface is rewritten under a stable caller
 - [Plugin-count drift](project_plugin-count-drift.md) — nine plugins; hardcoded counts in docs/figures/alt-text drift; CI canonical-copy checks N=KAIZEN.md, O=inject-kaizen.sh (SOUL Checks E/F retired)
 - [KAIZEN covenant rename](project_kaizen-covenant-rename.md) — SOLID covenant→KAIZEN (reframe); preserve code-SOLID (solid.md/code-quality/DESIGN-REVIEWER); CI N/O = KAIZEN parity
@@ -28,3 +29,6 @@
 - [Missing-handler gate (PR #114)](project_missing-handler-gate.md) — #23-26 pause-and-decide; docs/internal/handler-build/ DOES exist; #25 AC1 "referenced by pipeline" only half-met (MANIFEST != pipeline dir); roadmapper §11.6/§11.7 real
 - [Flow retirement orphaned emitter — RESOLVED (PR #150/eafadce)](project_flow-retirement-orphaned-emitter.md) — orphaned P1-24 emitter re-homed flow→i2p hook substrate at SAME relative path; generic-path docs stayed accurate; both gates green; PASS
 - [FLEET registry field semantics (PR #151)](project_fleet-registry-field-semantics.md) — engine reads fixed key set; epic_glob {order}→EPIC_NNNN ok; v2 landing = delivery+admin_merge ONLY (merge_mode INERT for v2 EPICs, valid only v1 flat); .pipeline/verify is command-list not exec'd
+- [FLEET jq/GraphQL injection class (PR #179)](project_fleet-graphql-jq-injection-class.md) — board scripts splice into jq "$1" + GraphQL query strings vs binding as data; latent (saved by opaque node ids/fixed menu); set-estimate is the safe sibling
+- [Board-mode forbidden_mutation default (PR #242)](project_board-mode-forbidden-mutation-default.md) — omitting forbidden_mutation silently keeps FLEET default massive-uplift path (not empty); LATENT for i2p (calamity-guard never matches, land is board-path); KAIZEN to engine not a gate
+- [check-P EPIC floor re-keyed (PR #242)](project_checkp-epic-floor-rekey.md) — verify-prereqs §P EPIC **Branch**/## Plans floor now runs on epics_present (board OR manifest), not gated on manifest file; base "Branch==manifest cell" was comment-only never enforced; broken Branch now FAILs, manifest-mode back-compat intact

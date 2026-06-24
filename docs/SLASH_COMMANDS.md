@@ -119,7 +119,7 @@ loop — a failed gate re-enters BUILD.)
 | Command | What it does |
 |---|---|
 | `/foundry:foundry` `[scaffold·gate·deploy·verify]` | The standalone BUILD cycle — drives a whole `ROADMAP.md` idea→product. For a v2 pipeline, day-to-day delivery is the external FLEET engine draining a `/roadmapper`-authored `docs/roadmap/` pipeline (engine → FOUNDRY PLAN-scope per slice); this command remains for a one-off cycle or estimate-only run |
-| `/foundry:roadmapper` | Manage `ROADMAP.md` / `.i2p/roadmap/` — capture, write EARS specs, decompose, drive through stages (the DELIVER intake) |
+| `/foundry:roadmapper` | Manage `ROADMAP.md` — capture, write EARS specs, decompose, drive through stages (the DELIVER intake) |
 | `/foundry:vertical-slice` | Cut and drive one thin, end-to-end, shippable increment |
 | `/foundry:phase-sensor` | Detect each in-progress feature's phase and install the next skill |
 | `/foundry:coverage-loop` | Loop until every behaviour is pinned by a test |

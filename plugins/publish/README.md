@@ -59,9 +59,7 @@ A4 page. The maker↔reviewer loop **measurably improves** the artefact rather t
 - **Standalone** — PUBLISH never assumes another plugin is installed; its writer carries its
   own commit convention.
 
-Planned capabilities (slide decks, multi-format export, citations, web publishing, …) live as items
-in the marketplace roadmap tree [`.i2p/roadmap/`](../../.i2p/roadmap/) (ids 49–58), migrated there under
-roadmap item [47].
+Planned capabilities (slide decks, multi-format export, citations, web publishing, …) are tracked on the GitHub project board.
 
 ## ♻️ Self-improvement covenant — halve the distance to perfection
 

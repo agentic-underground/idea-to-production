@@ -3,8 +3,7 @@ description: Verify FOUNDRY's external tool dependencies are installed and reach
 ---
 
 Run the FOUNDRY dependency check. Execute the check script and present its ✓/✗ table to the user,
-then briefly summarise what (if anything) is missing and how to install it (point at the marketplace
-`PREREQUISITES/` folder and the per-row install hints).
+then briefly summarise what (if anything) is missing and how to install it (use the per-row install hints).
 
 ```bash
 bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh $ARGUMENTS

@@ -146,7 +146,7 @@ yourself; the handler is simply where that discipline is codified for the pipeli
 
 ## Roadmap & scope
 
-This skill's v1 is the design system itself: philosophy, the marker protocol, the element registry + `-help`, the elicitation flow, and the starter elements. Deferred (and tracked) work lives in the marketplace roadmap tree `.i2p/roadmap/` as items 68–72: large datasets & virtualization, large graph-canvases (connected objects on a huge background), the serverless device-swap / distributed-documents research, full automation of adversarial sub-agent spawning, and element-registry growth. Read those before promising anything in those areas.
+This skill's v1 is the design system itself: philosophy, the marker protocol, the element registry + `-help`, the elicitation flow, and the starter elements. Deferred capabilities (large datasets & virtualization, large graph-canvases, serverless device-swap, full automation of adversarial sub-agent spawning, and element-registry growth) are tracked on the GitHub project board.
 
 ## Reference map
 
@@ -156,4 +156,3 @@ This skill's v1 is the design system itself: philosophy, the marker protocol, th
 - `resources/philosophy/*.md` — paradigms, density/cognitive-load, modalities, words-vs-operation, data-binding, accessibility, privacy, look-and-feel, layout-and-flow, architecture-styles, rich-data-presentation.
 - `resources/agents/design-critic.md` — adversarial review procedure (sub-agent spawnable with small, self-contained context).
 - `resources/agents/definition-of-good.md` — the definition-of-good the critic scores against.
-- Deferred capability — items 68–72 in the marketplace roadmap tree `.i2p/roadmap/` (migrated under [47]).

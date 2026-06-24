@@ -38,9 +38,10 @@ It is **silent** when records agree, or when there is no audit log to contradict
 ## Headless / MCP-spawn routing (P1-16)
 
 Before installing the skill for a detected phase, the sensor checks whether that phase **requires a
-spawnable MCP/browser** in an environment that may not have one. The routing contract is
+spawnable MCP/browser** in an environment that may not have one. The capability-record schema and
+consumer contract are in
 [`${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/degraded-capabilities.md`](../../knowledge/protocols/degraded-capabilities.md);
-the per-phase `headless_capable` map is the table in `PREREQUISITES/40-mcp.md` (§ *headless_capable*).
+the per-phase routing decision is the list below.
 
 Detect "MCPs can't spawn" two ways (either is sufficient):
 
@@ -50,7 +51,7 @@ Detect "MCPs can't spawn" two ways (either is sufficient):
 2. **A headless/CI environment** — `CI` is set, or there is no display/browser
    (`$DISPLAY` empty AND no `chromium`/`google-chrome` on PATH AND no `PUPPETEER_EXECUTABLE_PATH`).
 
-When either holds, route per the `headless_capable` table:
+When either holds, route per the phase list below:
 
 - **Headless-safe phases** (EARS, FEATURE, TEST, IMPLEMENT, commit) — install and run **normally**.
 - **MCP/browser-dependent phases** (STORY browser/E2E via `ds-step-story-tests`+PLAYWRIGHT-AGENT;

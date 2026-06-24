@@ -41,7 +41,6 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 PUBLISH is **dual-engine**: you only need **one** typesetter. If `typst ✓` but `pdflatex ✗`, the
 builder simply uses Typst (`build-pdf.sh --engine=auto` handles this). A missing diagram renderer
 narrows figure options, it does not block the article. Each `✗` prints its install hint (the local
-source of truth is this skill's `requirements.tsv`); fuller guidance + Ansible fragments are in the
-marketplace `PREREQUISITES/30-publish.md` when run from the marketplace source tree.
+source of truth is this skill's `requirements.tsv`).
 
 > [`requirements.tsv`](requirements.tsv) is the single source of truth — it is what this check runs.

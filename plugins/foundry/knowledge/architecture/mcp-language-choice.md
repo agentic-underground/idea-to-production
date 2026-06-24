@@ -69,6 +69,3 @@ cannot keep up, *and* you are prepared to own a release pipeline, a pinning/veri
 invalidation story, and the loss of call visibility. For the overwhelmingly common case (a tool surface
 over stdio that reads/writes files and speaks JSON), an interpreted server is the correct, boring choice.
 flow-mcp tried the compiled path so you don't have to.
-
-See also: [`../../../../PREREQUISITES/40-mcp.md`](../../../../PREREQUISITES/40-mcp.md) (how plugins ship
-MCP servers) and the flow-mcp implementation at `plugins/flow/flow-mcp/`.

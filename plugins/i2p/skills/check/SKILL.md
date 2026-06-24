@@ -70,7 +70,7 @@ Then a one-line summary: `<N> present, <M> missing (<K> required)` across the su
 ## 3. Summarise & guide
 
 - Call out the **required** gaps first (these are the ones that matter), then recommended/optional.
-- Point at the marketplace `PREREQUISITES/` folder and the per-row install hints.
+- Point at the per-row install hints.
 - Name any plugin that is **not installed** so the picture is complete (e.g. "security not installed —
   no security tooling checked").
 

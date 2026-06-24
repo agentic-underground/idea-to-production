@@ -62,8 +62,7 @@ magick base.png overlay.png -compose over -composite blend.png               # b
 magick blend.png -quality 88 blend.jpg                                       # ship (JPG for photographic grounds)
 ```
 The overlay SVG carries: a bottom-up `linearGradient` scrim rect (≈0→0.82 alpha) for text legibility, the
-wordmark/tagline as `<text>`, and an optional thin frame. **Proven** end-to-end in
-`docs/internal/image-craft-study/toolchain/` (`out/masthead-blend.jpg`).
+wordmark/tagline as `<text>`, and an optional thin frame. **Proven** end-to-end.
 
 ## Recipe 3 — post-ComfyUI finish (enhance · cutout · colour-script · optimise)
 
@@ -92,7 +91,7 @@ ffmpeg -y -framerate 4 -i frames/f%03d.png -i /tmp/pal.png -lavfi paletteuse=dit
 The `scale=trunc(iw/2)*2:…` filter **auto-rounds to even dimensions** (yuv420p rejects odd width/height — an
 unguarded MP4 hard-crashes; this makes any frame size just work). **Motion is motivated** (a build-up reveals structure; a loop
 breathes) — never gratuitous; honour reduced-motion by always shipping a static poster frame alongside.
-Proven in `docs/internal/image-craft-study/toolchain/` (`src/build-pipeline-frames.sh` → `out/pipeline.{gif,apng,mp4}`).
+Proven.
 **How an assembled animation is *paced*** — the dwell, the breathe, the linger — is governed by the
 [Motion canon](#motion-canon--the-house-motion-policy-the-linger-directive) below; a Recipe-4 figure is built
 **to** that canon (its generator emits a `TIMING.tsv`; `reslow.sh` applies it).
@@ -102,7 +101,7 @@ Proven in `docs/internal/image-craft-study/toolchain/` (`src/build-pipeline-fram
 The **fully-vector** motion path — a single `.svg` that animates itself, no raster framebuffer, no GIF. Use it
 for crisp **README hero / diagram** motion (sharp at any zoom, tiny on disk, deterministic). GitHub renders
 repo `.svg` via `<img>` **including gradients, filters, AND SMIL animation** — so an animated SVG plays inline.
-Proven exemplar: `docs/internal/image-craft-study/toolchain/src/build-masthead-svg.sh` → `docs/images/masthead.svg`
+Proven exemplar: `docs/images/masthead.svg`
 (78→87→91/100 across three design-review passes).
 
 **The shape of a loop.** One master period (`dur="14s" repeatCount="indefinite"`); every element animates over
@@ -139,8 +138,7 @@ generator work.
 
 The house policy for **how an animated figure moves in time**. Recipe 4 *assembles* frames; this canon decides
 how long each frame **lingers**, how it **breathes**, and where the eye is allowed to **rest**. It is the source
-of truth — `docs/internal/image-craft-study/toolchain/src/reslow.sh` is its implementation (the generator-agnostic
-re-timer), and every animated README figure is built **to** this canon. A motion/timing lesson generalises
+of truth — `reslow.sh` is its implementation (the generator-agnostic re-timer), and every animated README figure is built **to** this canon. A motion/timing lesson generalises
 **here**, so every future animation inherits it.
 
 **SLOWER pace · LINGER · breathe.** Animation is for *teaching*, not for showing off frame-rate. Each frame

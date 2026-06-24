@@ -6,9 +6,7 @@
 > paying — see *Out of scope* below). Generalised from the proven
 > [`../../skills/rust-webapp-rollout/references/00-MANIFEST.md`](../../skills/rust-webapp-rollout/references/00-MANIFEST.md)
 > charter and its [FORBIDDEN list](../../skills/rust-webapp-rollout/references/06-guardrails-and-antipatterns.md).
-> Referenced by the handler-build pipeline (its run-of-record,
-> [`../../../../docs/internal/handler-build/SCHEDULER_PROOF.md`](../../../../docs/internal/handler-build/SCHEDULER_PROOF.md),
-> routes every handler it authors here) and by the **BUILD HANDLER FIRST** path of the missing-handler
+> Referenced by the **BUILD HANDLER FIRST** path of the missing-handler
 > 3-way gate ([`missing-handler-gate.md`](missing-handler-gate.md)); never restated.
 
 ## Why this exists

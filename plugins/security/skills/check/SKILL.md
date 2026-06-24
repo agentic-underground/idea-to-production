@@ -38,8 +38,6 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 
 A `✗` is never a hard failure — SECURITY's three core lenses also run on pattern-matching alone and
 **report the gap** rather than passing silently. Each `✗` prints its install hint (the local source
-of truth is this skill's `requirements.tsv`); fuller rationale + Ansible fragments are in the
-marketplace `PREREQUISITES/` folder (`20-security.md`) when run
-from the marketplace source tree.
+of truth is this skill's `requirements.tsv`).
 
 > [`requirements.tsv`](requirements.tsv) is the single source of truth — it is what this check runs.

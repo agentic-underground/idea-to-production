@@ -67,8 +67,8 @@ that case emit the Mermaid source, not a rendered file.
 > the handler shares this same charting-matrix — one legibility discipline, two engines, one handler each.
 
 > **Both renderers are optional external CLIs** — `dot` (Graphviz) and `mmdc` (mermaid-cli) — and
-> may be absent on a given machine. `/publish:check` reports which are present; install guidance is
-> in the marketplace `PREREQUISITES/30-publish.md` (source tree). When the diagram
+> may be absent on a given machine. `/publish:check` reports which are present; use the per-row
+> install hints. When the diagram
 > targets a **Typst** PDF and Graphviz is unavailable, prefer **SVG** output (`dot -Tsvg`) — or author
 > the figure in **Typst-native** drawing (`cetz`) — since Typst embeds SVG directly; LaTeX wants PDF.
 

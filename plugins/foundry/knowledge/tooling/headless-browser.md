@@ -101,6 +101,4 @@ Browser-consuming skills link here for the resolver model and TC-BROWSER-1 — t
   uses the Playwright **runner** (a per-project browser, separate from the marketplace MCP).
 - **operate's** browser-using skills — runtime/observability surfaces that drive a browser.
 
-Discovery/install prose lives in the marketplace
-[`PREREQUISITES/40-mcp.md`](../../../../PREREQUISITES/40-mcp.md) ("Headless-browser discovery");
-this doc owns the *pattern*, the *ledger*, and the *browser-MCP rules*; that doc owns the *setup env*.
+This doc owns the *pattern*, the *ledger*, and the *browser-MCP rules*; setup-env prerequisites are outside its scope.

@@ -41,7 +41,6 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 
 A `✗` is never a hard failure — OPERATE's lenses also reason from whatever telemetry is reachable
 and **report the gap** rather than declaring "healthy" on no evidence. Each `✗` prints its install hint
-(the local source of truth is this skill's `requirements.tsv`); fuller rationale lives in the marketplace
-`PREREQUISITES/` folder when run from the marketplace source tree.
+(the local source of truth is this skill's `requirements.tsv`).
 
 > [`requirements.tsv`](requirements.tsv) is the single source of truth — it is what this check runs.

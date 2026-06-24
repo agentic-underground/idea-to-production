@@ -4,7 +4,7 @@ description: Verify OPERATE's operate tooling (curl, jq, log/metric CLIs) is ins
 
 Run the OPERATE dependency check. Execute the script and present its ✓/✗ table, then summarise
 which tools are missing and which operate lenses will therefore run as "partial coverage" (never a silent
-"healthy"). Point at the install hints and the marketplace `PREREQUISITES/` folder.
+"healthy"). Point at the per-row install hints.
 
 ```bash
 bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh $ARGUMENTS

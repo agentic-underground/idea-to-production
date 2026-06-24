@@ -157,7 +157,7 @@ the dark-key recipe: [prompt-craft](../skills/illustrator/references/prompt-craf
 
 ## Maintainer-proven recipes (mined from the curated favourites — these supersede the defaults)
 
-The marketplace's *measured-on-this-rig* preferences (see `docs/internal/image-craft-study/rig-inventory/maintainer-recipes.md`):
+The marketplace's *measured-on-this-rig* preferences:
 - **Samplers/scheduler:** `dpmpp_sde_gpu` and `dpmpp_3m_sde_gpu` on **karras** (the SDE-GPU family) — not
   `dpmpp_2m`. Upscale passes use `euler` / `normal`.
 - **CFG is LOW for SDXL: 3.5–4.5** (naturalism), with **high steps** (50–60 for a hero base pass, ~31 for
@@ -191,8 +191,7 @@ The marketplace's *measured-on-this-rig* preferences (see `docs/internal/image-c
 
 The [`craft-study`](../skills/craft-study/SKILL.md) ran a **controlled single-variable A/B** per objective
 (baseline vs one named stage, sharing ckpt/prompt/seed/base-res) and scored each with the adversarial image
-reviewer. The gains below are **visible, attributable, reproducible** — not seed luck. (Full evidence:
-`docs/internal/image-craft-study/craft/catalog.md`.)
+reviewer. The gains below are **visible, attributable, reproducible** — not seed luck.
 
 | Objective (ckpt) | Stage tested | Verdict | What the evidence showed |
 |---|---|---|---|
