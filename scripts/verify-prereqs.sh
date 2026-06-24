@@ -10,6 +10,16 @@
 #   B. every requirements.tsv row is well-formed (4 TAB fields, valid tier, non-empty probe).
 #   C. the shipped MCP servers in plugins/*/.mcp.json match the "Shipped by the marketplace"
 #      table in PREREQUISITES/40-mcp.md exactly (no claimed-but-absent / shipped-but-undocumented).
+#   Q. the "## Appendix — MCP servers" table in docs/SLASH_COMMANDS.md matches the SAME real
+#      plugins/*/.mcp.json inventory — sibling to check C, but over the user-facing slash-command
+#      catalog. Asserts three parities so the catalog can't drift when a plugin's .mcp.json changes:
+#      (1) server-set (every shipped server is a row, no row names an unshipped server); (2) the
+#      "Shipped by" column lists exactly the plugin(s) whose .mcp.json declares that server; and
+#      (3) the "ships N MCP servers" count line equals the distinct shipped count (N as a digit or an
+#      English number-word). The host-provided chrome-devtools browser MCP is intentionally NOT in the
+#      table (driven, not shipped) and is narrated in prose outside it — only `|`-rows are parsed, so
+#      that note is correctly ignored. Closes the manifest-changed-but-catalog-doc-not-swept drift
+#      class (the two stale "ships a Playwright MCP" leaks the ONE BROWSER cutover left, #246).
 #   D. no PREREQUISITES/*.md table Probe cell fetches-and-executes remote code
 #      (`npx -y <pkg>` / `uvx <pkg>`) — a probe must check presence, not download a package.
 #   D′. no-download tsv probes: the SAME no-download rule as check D, extended over the
@@ -690,6 +700,101 @@ if [ "$p_fail" -eq 0 ]; then
     pass "board-mode roadmap: EPIC docs conform (**Branch** scrape, ## Plans grammar); no .pipeline.md (board authoritative) + vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${drift_note}"
   else
     pass "no docs/roadmap roadmap yet (no v2 roadmap to conform); vendored standard pinned @${EXPECTED_SCHEMA_VERSION}${drift_note}"
+  fi
+fi
+
+# ── Q. shipped .mcp.json servers ⟺ SLASH_COMMANDS.md "Appendix — MCP servers" ─
+# Check C's sibling, over the user-facing slash-command catalog. The "## Appendix — MCP servers" table
+# in docs/SLASH_COMMANDS.md is hand-maintained and had no binding to the real shipped inventory, so it
+# silently drifted when a plugin's .mcp.json changed (the ONE BROWSER cutover left two stale "ships a
+# Playwright MCP" claims behind — #246). This asserts three parities against plugins/*/.mcp.json:
+# server-set, the "Shipped by" plugin list per server, and the "ships N MCP servers" count line. The
+# host-provided chrome-devtools MCP is driven-not-shipped, lives in prose OUTSIDE the table, and is
+# correctly ignored (only `|`-rows are parsed). python3 (already required by check C) does the parse.
+section "Q. shipped MCP servers ⟺ SLASH_COMMANDS.md appendix"
+if ! command -v python3 >/dev/null 2>&1; then
+  fail "python3 not found — required to read plugins/*/.mcp.json"
+else
+  q_out="$(python3 - <<'PYEOF'
+import json, glob, re, sys
+
+# Real shipped inventory: server -> set(plugin dir names) from every plugins/*/.mcp.json
+shipped = {}
+for f in sorted(glob.glob("plugins/*/.mcp.json")):
+    plugin = f.split("/")[1]
+    try:
+        data = json.load(open(f))
+    except Exception as e:
+        print(f".mcp.json unreadable: {f}: {e}"); sys.exit(1)
+    for srv in (data.get("mcpServers") or {}):
+        shipped.setdefault(srv, set()).add(plugin)
+
+doc = "docs/SLASH_COMMANDS.md"
+try:
+    lines = open(doc).read().splitlines()
+except Exception as e:
+    print(f"{doc} unreadable: {e}"); sys.exit(1)
+
+WORDS = {"zero":0,"one":1,"two":2,"three":3,"four":4,"five":5,"six":6,
+         "seven":7,"eight":8,"nine":9,"ten":10,"eleven":11,"twelve":12}
+in_appendix = False
+table = {}          # server -> set(plugins) as documented
+count_decl = None
+for ln in lines:
+    if ln.startswith("## "):
+        if "Appendix" in ln and "MCP servers" in ln:
+            in_appendix = True; continue
+        elif in_appendix:
+            break       # left the appendix section
+    if not in_appendix:
+        continue
+    m = re.search(r"ships\s+([A-Za-z]+|\d+)\s+MCP servers", ln)
+    if m:
+        tok = m.group(1).lower()
+        count_decl = int(tok) if tok.isdigit() else WORDS.get(tok)
+    if ln.lstrip().startswith("|"):
+        cells = [c.strip() for c in ln.strip().strip("|").split("|")]
+        if not cells:
+            continue
+        if "Server" in cells[0] or set("".join(cells).replace(" ", "")) <= set(":-"):
+            continue    # header row / separator row
+        sm = re.search(r"`([^`]+)`", cells[0])
+        if not sm:
+            continue
+        server = sm.group(1)
+        plugins = set()
+        if len(cells) > 1:
+            for p in cells[1].split(","):
+                p = p.strip().strip("`").strip()
+                if p:
+                    plugins.add(p)
+        table[server] = plugins
+
+errs = []
+sj, st = set(shipped), set(table)
+for s in sorted(sj - st):
+    errs.append(f"`{s}` is shipped (in {', '.join(sorted(shipped[s]))}/.mcp.json) but ABSENT from the appendix table")
+for s in sorted(st - sj):
+    errs.append(f"appendix lists `{s}` but NO plugins/*/.mcp.json ships it")
+for s in sorted(sj & st):
+    if shipped[s] != table[s]:
+        errs.append(f"`{s}` shipped-by mismatch — .mcp.json={{{', '.join(sorted(shipped[s]))}}}, appendix={{{', '.join(sorted(table[s])) or '∅'}}}")
+n = len(shipped)
+if count_decl is None:
+    errs.append(f'no "ships <N> MCP servers" count line found in the appendix (expected N={n})')
+elif count_decl != n:
+    errs.append(f"count line says {count_decl} but {n} server(s) are shipped")
+
+if errs:
+    print("\n".join(errs)); sys.exit(1)
+print(f"{n} shipped server(s) match the appendix (names + shipped-by + count): " + ", ".join(sorted(shipped)))
+PYEOF
+)"
+  if [ $? -eq 0 ]; then
+    pass "$q_out"
+  else
+    fail "SLASH_COMMANDS.md MCP appendix drifted from the shipped .mcp.json inventory:"
+    printf '%s\n' "$q_out" | sed 's/^/      /'
   fi
 fi
 
