@@ -42,8 +42,6 @@ neither re-appended per turn nor omitted.
 
 ## The doors, ranked by how this marketplace thinks about them
 
-![The four doors text uses to reach a Claude Code agent, compared on three axes (WHEN it loads · TOKEN COST · RELIABILITY): (1) memory files (CLAUDE.md + @imports) — session start, cached one-time, always but only for that repo/machine scope; (2) SessionStart hooks (additionalContext) — session start and on resume/clear/compact, cached one-time per event, deterministic when the plugin is enabled (the plugin-native always-on door); (3) UserPromptSubmit hooks — every prompt, re-billed each turn (busts the cache), per-turn (right for dynamic state, wrong for static canon); (4) skills — frontmatter always cheap but the body loads only when invoked, on-demand, only when relevant (for large situational knowledge). Match the door to the document.](diagrams/01-context-doors.png)
-
 ### 1. Memory files — `CLAUDE.md` and `@imports`
 
 `CLAUDE.md` (user-level `~/.claude/CLAUDE.md`, project-level `./CLAUDE.md`, and nested
