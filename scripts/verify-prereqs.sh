@@ -748,10 +748,11 @@ for ln in lines:
             break       # left the appendix section
     if not in_appendix:
         continue
-    m = re.search(r"ships\s+([A-Za-z]+|\d+)\s+MCP servers", ln)
-    if m:
-        tok = m.group(1).lower()
-        count_decl = int(tok) if tok.isdigit() else WORDS.get(tok)
+    if count_decl is None:   # FIRST "ships N MCP servers" wins — a later mention can't mask a wrong headline
+        m = re.search(r"ships\s+([A-Za-z]+|\d+)\s+MCP servers", ln)
+        if m:
+            tok = m.group(1).lower()
+            count_decl = int(tok) if tok.isdigit() else WORDS.get(tok)
     if ln.lstrip().startswith("|"):
         cells = [c.strip() for c in ln.strip().strip("|").split("|")]
         if not cells:
