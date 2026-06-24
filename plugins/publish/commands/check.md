@@ -4,7 +4,7 @@ description: Verify PUBLISH's typesetting/rendering tools (typst/pdflatex, dot, 
 
 Run the PUBLISH dependency check. Execute the script and present its ✓/✗ table, then state which
 PDF engine(s) are available (Typst, LaTeX, or both) and which renderers/DTP tools are present. Point
-at install hints and the marketplace `PREREQUISITES/` folder.
+at the per-row install hints.
 
 ```bash
 bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh $ARGUMENTS

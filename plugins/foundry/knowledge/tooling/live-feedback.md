@@ -6,9 +6,7 @@
 >
 > Reachability of every tool named here is verified by `/foundry:check`
 > ([`../../skills/check/SKILL.md`](../../skills/check/SKILL.md)); the per-plugin
-> `skills/check/requirements.tsv` carries the install hints. Richer install prose lives in the
-> marketplace `PREREQUISITES/` folder when foundry is run from the marketplace source tree.
-
+> `skills/check/requirements.tsv` carries the install hints.
 ---
 
 ## 1. chrome-devtools MCP — live, exploratory browser feedback
@@ -21,7 +19,7 @@ shipped a `@playwright/mcp` server in `.mcp.json`; it defaulted to a Google Chro
 hosts don't install and its registry GC corrupted the shared browser cache — the "ONE BROWSER" cutover
 removed it in favour of the host chrome-devtools. See [`headless-browser.md`](./headless-browser.md).)*
 Under **default permissions** a host/user-registered MCP still requires approval before it connects;
-fuller detail is in the marketplace source's `PREREQUISITES/40-mcp.md`.
+fuller detail is in [`headless-browser.md`](./headless-browser.md).
 
 **The dividing line — MCP for feedback, the CLI runner for the contract:**
 

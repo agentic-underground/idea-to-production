@@ -35,8 +35,7 @@ intent ──▶ chart / labelled text? ──▶ ROUTE TO VECTOR (handler-chart
 The six recipes (A–F), their checkpoints, LoRAs, and exact settings live in the
 [model guide](../../../knowledge/comfyui-model-guide.md) decision table; this doc gives the **stage wiring**.
 
-> **Empirically validated (craft study, controlled A/B, 2026-06-10).** The decision tree is now evidence-backed
-> (full data: `docs/internal/image-craft-study/craft/catalog.md`):
+> **Empirically validated (craft study, controlled A/B, 2026-06-10).** The decision tree is now evidence-backed:
 > - **Latent hires-fix is genre-dependent, not free** — it *helps* landscapes (79→83) and product/marketing
 >   surfaces (68→74) by resolving real micro-texture, but **regresses tight close-up portraits (72→66)**: at
 >   0.45 denoise it scrubs skin/hair into smooth "AI skin" (−17…−20% high-freq detail). **For close-up faces,
@@ -84,7 +83,6 @@ to paste the regions into one latent at fixed offsets → a **4th unifying `KSam
 over the combined latent → `VAEDecode`. **Composition rule:** give the three registers a **vertical
 world-axis** (trunk/column/bolt/tower) and an **aerial→warm depth gradient** so they read as one picture,
 not three stacked tiles. Soften seams with `LatentCompositeMasked` (feathered) or a higher unify-denoise.
-Full mined graph + the taste read: `docs/internal/image-craft-study/rig-inventory/maintainer-recipes.md`.
 
 > **SDXL base + refiner WORKS here (maintainer-preferred).** `SDXL/sd_xl_base_1.0` is the maintainer's primary
 > base; the canonical `KSamplerAdvanced` step-split (base `0→N`, refiner `N→∞`) with proper SDXL dual
@@ -96,8 +94,6 @@ Full mined graph + the taste read: `docs/internal/image-craft-study/rig-inventor
 > `CLIPVisionEncode` → `unCLIPConditioning`) so a reference image's *look* steers the result; **high steps
 > (50–60), low CFG (3.5–4.5), `dpmpp_3m_sde_gpu`/`dpmpp_sde_gpu` · karras**; finished with **UltimateSDUpscale**
 > (`SwinIR_4x`, tiled 1024, denoise 0.25). Resolution via `RecommendedResCalc` / `CM_NearestSDXLResolution`.
-> Full graph: `docs/internal/image-craft-study/rig-inventory/iru-premium-workflow.json`; recipes:
-> `…/maintainer-recipes.md`.
 
 ## Cost / VRAM notes (RTX 3090 24 GB)
 

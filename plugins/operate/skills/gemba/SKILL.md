@@ -39,8 +39,7 @@ ${CLAUDE_PLUGIN_ROOT}/skills/gemba/scripts/raise-feedback.sh  # gh-api issue fil
 ### 1. CAPTURE — write the learning down (durable, schema-versioned)
 
 Pick a stable **event slug** (`<date>-<short-what>`, e.g. `2026-06-17-coverage-gap-x`). Write the
-canonical learnings shape — the same two-file shape as
-[`docs/internal/token-fairness-learnings/…`](../../../../docs/internal/token-fairness-learnings):
+canonical learnings shape — the two-file shape:
 
 ```
 doc/learnings/<slug>/incident-report.md     # what happened, the timeline, root cause(s), metrics

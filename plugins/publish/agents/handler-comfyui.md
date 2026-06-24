@@ -29,9 +29,7 @@ colour script, true to its style. A flat, centred, muddy result is a *failure* h
 COMFYUI="${PRESSROOM_COMFYUI_URL:-http://10.10.10.163:8188}"
 ```
 Never hardcode the IP elsewhere — read `$PRESSROOM_COMFYUI_URL` (default the i9 workstation, ComfyUI port
-8188). The secured MCP server that will eventually front this is the `comfyui-mcp/` sub-project (a separate
-repo-root project, not part of this standalone plugin); until it ships, this handler talks raw HTTP and the
-trust boundary is the LAN (a known, time-boxed gap). Talking raw HTTP, you may fill any of the **allowlisted
+8188). This handler talks raw HTTP; fill any of the **allowlisted
 templates shipped with this plugin** in
 [`knowledge/comfyui-workflows/`](../knowledge/comfyui-workflows/) (`txt2img-basic`, `txt2img-hires-fix`,
 `lora-detail`, `upscale`, `tricomposite`) — never a caller-supplied graph.

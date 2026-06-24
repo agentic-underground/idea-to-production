@@ -4,7 +4,7 @@ description: Verify SECURITY's security scanners (SCA, secrets) are installed an
 
 Run the SECURITY dependency check. Execute the script and present its ✓/✗ table, then summarise
 which scanners are missing and which security lenses will therefore run as "partial coverage" (never
-a silent PASS). Point at the install hints and the marketplace `PREREQUISITES/` folder.
+a silent PASS). Point at the per-row install hints.
 
 ```bash
 bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh $ARGUMENTS

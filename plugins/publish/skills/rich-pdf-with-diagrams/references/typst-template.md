@@ -94,5 +94,4 @@ typst compile article.typ article.pdf
 ```
 
 > **Font note:** this machine ships 168 fonts incl. DejaVu; for the exact look install a Libertinus
-> or TeX Gyre family (see `PREREQUISITES/30-publish.md`). Typst falls back gracefully through the
-> font list above.
+> or TeX Gyre family. Typst falls back gracefully through the font list above.

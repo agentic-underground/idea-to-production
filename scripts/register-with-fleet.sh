@@ -6,7 +6,7 @@
 #
 # The registry is machine-local (~/.claude/pipeline-projects.json), NOT committed; this script is the
 # reproducible, version-controlled way to (re)create i2p's entry on any box. The field values mirror the
-# governance mapping in .foundry/governance.md (direct-merge → delivery:pr + admin_merge:true).
+# governance mapping in CLAUDE.md (## MERGE GOVERNANCE) (direct-merge → delivery:pr + admin_merge:true).
 #
 # Usage:  bash scripts/register-with-fleet.sh            # register/update
 #         PIPELINE_DRY_RUN=1 bash scripts/register-with-fleet.sh   # print the entry, don't write

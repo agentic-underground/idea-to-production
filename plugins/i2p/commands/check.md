@@ -10,7 +10,7 @@ Run the marketplace-wide dependency check. Follow the [`check` skill](../skills/
 1. For each **installed** plugin that ships a `/check` (market-scanner, ideator, foundry, atelier,
    security, publish, operate), run it — pass `$ARGUMENTS` through (e.g. `--strict`, `--tier=recommended`).
 2. Consolidate every ✓/✗ row into **one table grouped by plugin**, then summarise what is missing and
-   how to install it (point at the marketplace `PREREQUISITES/` folder and the per-row hints).
+   how to install it (use the per-row install hints).
 3. Name any plugin that is **not** installed so the picture is complete.
 
 This is advisory — a missing tool narrows a capability, it does not break the marketplace. With

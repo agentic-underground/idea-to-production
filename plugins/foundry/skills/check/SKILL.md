@@ -42,8 +42,5 @@ The canonical list is [`requirements.tsv`](requirements.tsv) (TAB-separated:
 A `✗` is **not** a failure — FOUNDRY degrades gracefully (e.g. no LSP → it falls back to
 `cargo check`/`tsc --noEmit`; no Playwright → web story tests are skipped with a disclosed gap).
 Each `✗` prints its install hint (the local source of truth is this skill's `requirements.tsv`).
-For the full rationale and Ansible fragments, see the marketplace `PREREQUISITES/` folder —
-`10-foundry.md`, `40-mcp.md`, `45-lsp.md` — when foundry is run from the marketplace source tree.
 
-> Keep [`requirements.tsv`](requirements.tsv) as the **single source of truth**: it is what this
-> check executes, and the `PREREQUISITES/` prose is curated to match it.
+> Keep [`requirements.tsv`](requirements.tsv) as the **single source of truth**: it is what this check executes.

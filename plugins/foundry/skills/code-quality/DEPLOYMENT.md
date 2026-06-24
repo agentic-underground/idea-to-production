@@ -272,11 +272,7 @@ add parsing instructions to the agent's `## Phase 0 — Initialise` section.
 
 ## Roadmap — Planned Improvements
 
-The planned code-quality improvements (v1.1 stack-aware analysis, v1.2 pre-commit hook, v1.3 trend
-tracking, v1.4 PR/diff mode, v1.5 ADR integration, v1.6 description optimiser, and the v2.0 multi-agent
-quality pipeline) now live as items in the marketplace roadmap tree
-[`.i2p/roadmap/`](../../../../.i2p/roadmap/) — **ids 81–91** — migrated there under roadmap item [47] so
-all roadmaps share one source of truth. See the `81-`…`91-` item files for the full EARS/AC specs.
+Planned improvements are tracked on the GitHub project board.
 
 ---
 

@@ -53,8 +53,7 @@ Need a name? **`/ideator:name`** (the `name-search` skill) runs a marketing-grad
 Where the challenge turns on a fact about the world — comparable **pricing**, whether an incumbent owns
 the **wedge**, the current **stack** reality — IDEATOR validates against **web research** (built-in
 WebSearch/WebFetch + a shipped, keyless Fetch MCP) before writing the answer into the package; what it
-can't verify is recorded as an open question, not a guess. (Reuses market-scanner's evidence when handed
-one; the marketplace's `PREREQUISITES/05-discovery.md` documents the discovery toolchain.)
+can't verify is recorded as an open question, not a guess. (Reuses market-scanner's evidence when handed one.)
 
 ## How it composes
 

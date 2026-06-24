@@ -1,11 +1,9 @@
 # .gitignore — idea-to-production marketplace
 #
-# Surgical, not blanket. Two directories hold BOTH tracked assets and runtime
-# cruft, so they are never ignored wholesale:
-#   .claude/   → agent-memory/ is a tracked ledger; only runtime files are ignored below.
-#   .foundry/  → MARKETPLACE_SCORECARD.jsonl + governance.md are tracked; never ignore this dir.
-# Inspection reports are tracked ONLY when archived under docs/historical/, so their
-# ignore rules are root-anchored (a leading /) to leave the archives addable.
+# Surgical, not blanket. .claude/ holds BOTH tracked assets (agent-memory/) and
+# runtime cruft — only the runtime files are ignored below.
+# Inspection reports are tracked ONLY when generated at the repo root (a leading /)
+# to leave archived copies under docs/historical/ addable.
 
 # --- Claude Code harness runtime (per-machine / per-session, never shared) ---
 .claude/scheduled_tasks.lock
@@ -15,17 +13,10 @@
 
 # --- Marketplace self-dogfood + lifecycle runtime artifacts (regenerable/transient) ---
 # These appear at the repo root when the marketplace's own scripts run against itself.
-# The durable ledgers (.foundry/MARKETPLACE_SCORECARD.jsonl, docs/historical/*) stay tracked.
 /SCORECARD.json
 /marketplace-health.json
 /IN_PROGRESS.md
 /CHECKPOINT_*.md
-# Ignore .i2p/ runtime state (lifecycle.json, cost.json, events.jsonl, …) — but NOT the
-# roadmap tree, which is the durable source of truth and must stay tracked.
-/.i2p/*
-!/.i2p/roadmap/
-# The committed umbrella-org identity template (the live .i2p/identity.json stays ignored).
-!/.i2p/identity.json.example
 /*_INSPECTION_REPORT.md
 # Generated adversarial-review verdict artifacts (pr-review / i2p-review write these to the project root)
 /PR_REVIEW.md
@@ -37,14 +28,6 @@
 *.swp
 *.swo
 .idea/
-
-# --- ComfyUI model-survey artifacts (generated rasters retained on disk, never in git) ---
-# catalog.md, journal.jsonl, manifest.json, and comfyui-model-survey.pdf stay TRACKED (the durable record);
-# only the large/regenerable images are ignored. Root-anchored to scope them to this one tree.
-/docs/internal/comfyui-experiment/images/
-/docs/internal/comfyui-experiment/thumbs/
-/docs/internal/comfyui-experiment/contact-sheets/
-/docs/internal/comfyui-experiment/.catalog-raw.pdf
 
 # --- Language tooling (defensive: plugins drive local node/python test runs) ---
 node_modules/
@@ -59,34 +42,6 @@ coverage/
 .playwright-mcp/
 _render_*.html
 
-# image-craft-study: track ledgers/catalogs/curated-JSON; ignore large/regenerable rasters
-/docs/internal/image-craft-study/corpus/genres/
-/docs/internal/image-craft-study/corpus/styles/
-/docs/internal/image-craft-study/corpus/scenes/
-/docs/internal/image-craft-study/corpus/diagrams/
-/docs/internal/image-craft-study/corpus/landscapes/
-/docs/internal/image-craft-study/corpus/action/
-/docs/internal/image-craft-study/workflows/raw/
-/docs/internal/image-craft-study/craft/images/
-/docs/internal/image-craft-study/craft/thumbs/
-/docs/internal/image-craft-study/craft/contact-sheets/
-/docs/internal/image-craft-study/craft/validate/
-/docs/internal/image-craft-study/verification/new/
-/docs/internal/image-craft-study/verification/old/
-/docs/internal/image-craft-study/rig-inventory/awesome-contact.jpg
-/docs/internal/image-craft-study/rig-inventory/awesome-recipes.txt
-# toolchain (Phase 8): track src/ scripts + the small proof/ evidence; ignore frames + heavy intermediates
-/docs/internal/image-craft-study/toolchain/frames/
-/docs/internal/image-craft-study/toolchain/lc-frames/
-/docs/internal/image-craft-study/toolchain/out/
-/docs/internal/image-craft-study/toolchain/src/*.png
-# diagram-fail: track the runner + FINDINGS + the downsized evidence jpg; ignore raw rasters
-/docs/internal/image-craft-study/diagram-fail/images/
-/docs/internal/image-craft-study/workflows/reruns/
-
 # Workflow helper scripts (local, not shipped)
 .claude/wf-*.js
 .vite/
-
-# flow-server runtime state (per-project daemon: pid/port/token/log)
-/.flow/

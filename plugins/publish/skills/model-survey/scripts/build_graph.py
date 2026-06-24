@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """build_graph.py — emit a ComfyUI txt2img API graph (deterministic, no model tokens).
 
-Node ids match comfyui-mcp/workflows/txt2img-basic.json plus two extra nodes that move the
+Node ids match the txt2img-basic workflow schema plus two extra nodes that move the
 catalog-thumbnail RESIZE onto the GPU box (10 ImageScaleBy -> 11 SaveImage), so no local image
 tooling is needed. With --no-thumb (validation) those two nodes are omitted.
 

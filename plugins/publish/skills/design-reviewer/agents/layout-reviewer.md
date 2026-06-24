@@ -28,14 +28,11 @@ until the floor is clean. The checklist body lives in the canon — **cite it by
 The cost-tier doctrine made operational. Machine vision is the **expensive** action; the two free tiers
 exist to protect the budget. The order is fixed, and you stop climbing the moment a tier is clean.
 
-1. **SVG-math (free) — `layout-check.sh`.** Run
-   [`layout-check.sh`](../../../../../docs/internal/image-craft-study/toolchain/src/layout-check.sh) on the generator
-   or the `.svg`. One deterministic awk pass: **horizontal + vertical bounds**, the **inline-legibility
+1. **SVG-math (free) — `layout-check.sh`.** Run `layout-check.sh` on the generator or the `.svg`. One deterministic awk pass: **horizontal + vertical bounds**, the **inline-legibility
    rule**, and the **aspect advisory**. A **non-zero exit is already a finding** — exit `1` is a real
    violation (overflow / off-canvas clip / a label under the inline floor), exit `2` is a setup/usage error
    to fix before you trust the pass. Aspect `WARN` lines do not change the exit; read them as an advisory.
-2. **Cheap raster (free) — `raster-lint.sh`.** Run
-   [`raster-lint.sh`](../../../../../docs/internal/image-craft-study/toolchain/src/raster-lint.sh) on the render. It
+2. **Cheap raster (free) — `raster-lint.sh`.** Run `raster-lint.sh` on the render. It
    tiles the rasterised figure and runs deterministic ImageMagick heuristics for the **vision-only** classes
    the maths cannot see: **edge-clip-by-pixel**, **crowding/density**, **thin-bright-line-through-text /
    occlusion**. Exit `0` = **CLEAN** → you may **SKIP the expensive vision Read** (cost saved); exit `1` =

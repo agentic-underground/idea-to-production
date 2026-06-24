@@ -13,7 +13,7 @@ description: >
   catalog are deterministic bash (0 model tokens); only scoring spends tokens, batched one agent per A/B sheet.
 metadata:
   type: experiment
-  output: docs/internal/image-craft-study/craft/{journal.jsonl, catalog.md, contact-sheets/} + folded recipes in knowledge/comfyui-model-guide.md
+  output: image-craft-study/craft/{journal.jsonl, catalog.md, contact-sheets/} + folded recipes in knowledge/comfyui-model-guide.md
   composes: [design-reviewer/image-aesthetic-reviewer]
   loop: run under /loop (self-paced); the phase machine + journal make it resumable and terminating
 model: inherit
@@ -43,7 +43,7 @@ the proven gains into the [model guide](../../knowledge/comfyui-model-guide.md) 
 
 ## The goal (the loop's DONE gate)
 
-Done when, for every objective in `docs/internal/image-craft-study/craft/manifest.json`: both A/B cells are **generated**
+Done when, for every objective in `image-craft-study/craft/manifest.json`: both A/B cells are **generated**
 (journal `status:done` + file on disk) or a load-failure is **journalled as a finding**, each objective is
 **scored** (journal `event:score` with a `named_gain`), recorded in `catalog.md`, and the proven gains are
 **synthesized** into the model guide + workflow strategy. Until then each `/loop` wake advances one phase and
@@ -51,7 +51,7 @@ Done when, for every objective in `docs/internal/image-craft-study/craft/manifes
 
 ## The phase machine
 
-Resolve `CRAFT_DIR=docs/internal/image-craft-study/craft`; `SCRIPTS=${CLAUDE_PLUGIN_ROOT}/skills/craft-study/scripts`. Read
+Resolve `CRAFT_DIR=image-craft-study/craft`; `SCRIPTS=${CLAUDE_PLUGIN_ROOT}/skills/craft-study/scripts`. Read
 `journal.jsonl` to determine the current phase, then run **one increment**:
 
 | Phase | Do | Tokens |
@@ -88,7 +88,7 @@ may consent to run now), since a full sweep is token-intensive in its scoring fa
 
 The study's claims face the steering panel: every promoted gain must survive a reviewer **prompted to refute it**
 ("this 'gain' is seed luck / prompt luck / placebo"). Pass iff each promoted technique is a **visible, named,
-reproducible** improvement over its matched baseline, written to `docs/internal/image-craft-study/gates/gate-03-craft.md`
+reproducible** improvement over its matched baseline, written to `image-craft-study/gates/gate-03-craft.md`
 with the human `STEER:` block. Tested-but-no-gain techniques are recorded so the next cycle does not re-litigate them.
 
 ## Resumability & safety
@@ -97,6 +97,6 @@ with the human `STEER:` block. Tested-but-no-gain techniques are recorded so the
 - **Findings, not crashes:** a checkpoint/LoRA that will not load is journalled (`status:error`, with the node +
   exception) and the pass continues — load-failures are evidence.
 - **Allowlist-bounded:** generation fills ONLY the Phase-5 templates' declared `fillable` paths (parameter-only,
-  no arbitrary node graph) — the same trust boundary `comfyui-mcp/EARS.md` documents.
+  no arbitrary node graph) — parameter-only, no caller-supplied node graphs.
 - **Self-contained:** scripts reuse the sibling `model-survey/scripts/comfyui-lib.sh` and the in-plugin
   `knowledge/comfyui-workflows/` templates via plugin-relative paths only.

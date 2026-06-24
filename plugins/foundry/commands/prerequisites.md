@@ -8,8 +8,8 @@ Generate `PREREQUISITES.md` for this project. Follow the [`prerequisites` skill]
 2. Run each installed plugin's `-check` **command** to capture live ✓/✗ status — `/foundry:check`,
    and `/security:check` / `/publish:check` if those companions are installed (by capability, never
    a cross-plugin filesystem path).
-3. Assemble `PREREQUISITES.md` in the current project root from the marketplace `PREREQUISITES/`
-   folder, scoped to the installed plugins, embedding the live status snapshot.
+3. Assemble `PREREQUISITES.md` in the current project root, scoped to the installed plugins,
+   embedding the live status snapshot.
 
 Then tell the user where it was written and summarise the top missing tools (if any).
 
