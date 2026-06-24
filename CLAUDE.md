@@ -5,9 +5,8 @@ start at [README.md](./README.md); agents working *on the marketplace itself* st
 
 - **What this repo is** — a marketplace of eight composable plugins (the **i2p** front
   door — which also greets whoever opens a repo — plus seven specialists) that carry software
-  from IDEA to PRODUCTION. The roadmap itself is the FLEET v2 continuous-delivery pipeline
-  (`docs/roadmap/`), authored by `/roadmapper` and drained by the external FLEET engine — the
-  in-repo `flow` plugin that once owned DELIVER has been retired. The pillars and plugin tour:
+  from IDEA to PRODUCTION. The roadmap lives on GitHub (project board); the in-repo `flow`
+  plugin that once owned DELIVER has been retired. The pillars and plugin tour:
   [README.md](./README.md). The
   philosophical spine: [`plugins/foundry/knowledge/first-principles.md`](plugins/foundry/knowledge/first-principles.md).
   The operation: [`plugins/foundry/VALUE_FLOW.md`](plugins/foundry/VALUE_FLOW.md).
