@@ -40,7 +40,7 @@ It is **silent** when records agree, or when there is no audit log to contradict
 Before installing the skill for a detected phase, the sensor checks whether that phase **requires a
 spawnable MCP/browser** in an environment that may not have one. The routing contract is
 [`${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/degraded-capabilities.md`](../../knowledge/protocols/degraded-capabilities.md);
-the per-phase `headless_capable` map is the table in [`knowledge/tooling/headless-browser.md`](../../knowledge/tooling/headless-browser.md) (§ *headless_capable*).
+the per-phase headless routing contract lives in [`knowledge/protocols/degraded-capabilities.md`](../../knowledge/protocols/degraded-capabilities.md).
 
 Detect "MCPs can't spawn" two ways (either is sufficient):
 

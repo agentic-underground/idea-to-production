@@ -18,8 +18,7 @@ absent they degrade gracefully (the test contract below still holds). *(History:
 shipped a `@playwright/mcp` server in `.mcp.json`; it defaulted to a Google Chrome channel headless
 hosts don't install and its registry GC corrupted the shared browser cache — the "ONE BROWSER" cutover
 removed it in favour of the host chrome-devtools. See [`headless-browser.md`](./headless-browser.md).)*
-Under **default permissions** a host/user-registered MCP still requires approval before it connects;
-fuller detail is in [`headless-browser.md`](./headless-browser.md).
+Under **default permissions** a host/user-registered MCP still requires approval before it connects.
 
 **The dividing line — MCP for feedback, the CLI runner for the contract:**
 
