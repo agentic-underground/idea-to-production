@@ -38,7 +38,7 @@ The pillars govern the behaviour of **every** element. The user's phrasings are 
 > loading.* It is the hard design rule that rides the whole carriage alongside the pillars.
 > **Home:** [`token-efficiency.md`](token-efficiency.md). · **Binding:** progressive disclosure.
 
-![Three pillars govern every element — Knowledge-parity (understand the ask fully before acting; recurring questions become written answers, never asked twice), Quality-first (built in, not inspected in; engineered across the assurance chain and a perf-delta gate; a gate is never weakened to make progress), and Waste-elimination (alias: muda · mura · muri — waste, unevenness, overburden; remove waste in all seven forms, including rediscovery — a bug caught in development is far cheaper than one in production) — three columns standing under one overarching lintel: token-efficiency (thin skills/fat references · define-once/reference-many · station-scoped loading).](diagrams/03-three-pillars.png)
+![Three pillars govern every element — Knowledge-parity (understand the ask fully before acting; recurring questions become written answers, never asked twice), Quality-first (built in, not inspected in; engineered across the assurance chain and a perf-delta gate; a gate is never weakened to make progress), and Waste-elimination (alias: muda · mura · muri — waste, unevenness, overburden; remove waste in all seven forms, including rediscovery — a bug caught in development is far cheaper than one in production) — three columns standing under one overarching lintel: token-efficiency (thin skills/fat references · define-once/reference-many · station-scoped loading).](diagrams/03-three-pillars.svg)
 
 ---
 
@@ -65,7 +65,7 @@ both senses at once. The *coordinate / location* reading is canonical in
 test-producing agent carries a short pointer to this framing (handlers, the `ds-step-*` test agents,
 and the reviewer's TEST-DESIGN / COVERAGE / BDD roles).
 
-![Tests are coordinates: in the space of all possible implementations (a labelled plane of input × behaviour), a well-formed failing test is a precise coordinate — a surveyor's crosshair fix — that locates the one correct implementation, eliminating the cloud of other candidates. A coordinate placed BEFORE the code is a location (the reason to write code; the code may only turn it green → PASS); a check written AFTER the code is merely a description peeled off afterward.](diagrams/02-tests-coordinates.png)
+![Tests are coordinates: in the space of all possible implementations (a labelled plane of input × behaviour), a well-formed failing test is a precise coordinate — a surveyor's crosshair fix — that locates the one correct implementation, eliminating the cloud of other candidates. A coordinate placed BEFORE the code is a location (the reason to write code; the code may only turn it green → PASS); a check written AFTER the code is merely a description peeled off afterward.](diagrams/02-tests-coordinates.svg)
 
 ---
 
@@ -78,7 +78,7 @@ one-way dependency. · **Metaphor:** a clean room — coordinates can only be pl
 blurs the location. · **Why it matters:** pure ⇒ testable ⇒ coordinate-able ⇒ **maximally parallel**.
 · **Home:** [`architecture/pure-core.md`](architecture/pure-core.md).
 
-![Pure core: the decidable logic (no I/O · no UI · no platform · no panics) is extracted into a pure module — the sacred, testable centre where a coordinate can be placed without side effects blurring the location — and everything else is thin wiring (DOM, I/O adapters, network, render) that consumes it. Dependencies flow one way only, INWARD: the wiring depends on the core, the core depends on nothing. Because independent wiring+core pairs share no mutable state, the work is maximally parallel (pure ⇒ testable ⇒ coordinate-able ⇒ maximally parallel).](diagrams/04-pure-core.png)
+![Pure core: the decidable logic (no I/O · no UI · no platform · no panics) is extracted into a pure module — the sacred, testable centre where a coordinate can be placed without side effects blurring the location — and everything else is thin wiring (DOM, I/O adapters, network, render) that consumes it. Dependencies flow one way only, INWARD: the wiring depends on the core, the core depends on nothing. Because independent wiring+core pairs share no mutable state, the work is maximally parallel (pure ⇒ testable ⇒ coordinate-able ⇒ maximally parallel).](diagrams/04-pure-core.svg)
 
 ---
 
@@ -94,7 +94,7 @@ shipping the improvement to all users via PR (§6). · **Aliases:** the covenant
 self-cleaving; kaizen. · **Home:**
 [`architecture/kaizen-covenant.md`](architecture/kaizen-covenant.md).
 
-![The KAIZEN covenant in two linked motifs. LEFT — the prime law "halve the distance to perfection": a row of rising versions (v1…v5), each closing at least half of the remaining gap up to a dashed perfection line it never quite reaches, because the duty is the rate of approach, not the arrival; a version no closer than the last has not honoured the covenant. RIGHT — the PDCA engine that drives each pass (Plan ▸ Do ▸ Check ▸ Act, clockwise): change against a measured hypothesis, not a hunch — standardise the win, or revert and try again. A footer names the kaizen principles (standardize-then-improve · small reversible steps · gemba/go-and-see · fix-upstream-once · self-cleaving) and the duty to eliminate the three losses: muda (waste), mura (unevenness), and muri (overburden).](diagrams/05-kaizen-covenant.png)
+![The KAIZEN covenant in two linked motifs. LEFT — the prime law "halve the distance to perfection": a row of rising versions (v1…v5), each closing at least half of the remaining gap up to a dashed perfection line it never quite reaches, because the duty is the rate of approach, not the arrival; a version no closer than the last has not honoured the covenant. RIGHT — the PDCA engine that drives each pass (Plan ▸ Do ▸ Check ▸ Act, clockwise): change against a measured hypothesis, not a hunch — standardise the win, or revert and try again. A footer names the kaizen principles (standardize-then-improve · small reversible steps · gemba/go-and-see · fix-upstream-once · self-cleaving) and the duty to eliminate the three losses: muda (waste), mura (unevenness), and muri (overburden).](diagrams/05-kaizen-covenant.svg)
 
 ---
 
