@@ -8,11 +8,15 @@
 # Checks (each prints PASS/FAIL; the script exits 1 if any FAILs):
 #   A. check.sh is byte-identical across all plugins (the canonical-copy promise).
 #   B. every requirements.tsv row is well-formed (4 TAB fields, valid tier, non-empty probe).
-#   C. the shipped MCP servers in plugins/*/.mcp.json match the "Shipped by the marketplace"
-#      table in PREREQUISITES/40-mcp.md exactly (no claimed-but-absent / shipped-but-undocumented).
+#   C. RETIRED — shipped MCP servers ⟺ PREREQUISITES/40-mcp.md. The PREREQUISITES/ folder was
+#      archived out of the repo (PR #250). The invariant is now fully covered by check Q, which
+#      asserts the same MCP server inventory against the live docs/SLASH_COMMANDS.md appendix.
+#   D. RETIRED — no PREREQUISITES/*.md Probe cell fetches remote code. The PREREQUISITES/ folder
+#      was archived out of the repo (PR #250); check G covers the same no-download invariant over
+#      the canonical requirements.tsv probe cells, which remain.
 #   Q. the "## Appendix — MCP servers" table in docs/SLASH_COMMANDS.md matches the SAME real
-#      plugins/*/.mcp.json inventory — sibling to check C, but over the user-facing slash-command
-#      catalog. Asserts three parities so the catalog can't drift when a plugin's .mcp.json changes:
+#      plugins/*/.mcp.json inventory — was a sibling to check C (now the sole MCP-doc parity gate).
+#      Asserts three parities so the catalog can't drift when a plugin's .mcp.json changes:
 #      (1) server-set (every shipped server is a row, no row names an unshipped server); (2) the
 #      "Shipped by" column lists exactly the plugin(s) whose .mcp.json declares that server; and
 #      (3) the "ships N MCP servers" count line equals the distinct shipped count (N as a digit or an
@@ -20,8 +24,6 @@
 #      table (driven, not shipped) and is narrated in prose outside it — only `|`-rows are parsed, so
 #      that note is correctly ignored. Closes the manifest-changed-but-catalog-doc-not-swept drift
 #      class (the two stale "ships a Playwright MCP" leaks the ONE BROWSER cutover left, #246).
-#   D. no PREREQUISITES/*.md table Probe cell fetches-and-executes remote code
-#      (`npx -y <pkg>` / `uvx <pkg>`) — a probe must check presence, not download a package.
 #   D′. no-download tsv probes: the SAME no-download rule as check D, extended over the
 #      requirements.tsv probe cells (column 2) — a capability probe may render/launch locally
 #      but must never `npx -y`/`uvx`/`pip install`/`npm install`/`curl … | sh` a package.
@@ -30,10 +32,10 @@
 #   H. marketplace.json ⟺ plugins/ — every plugins/<name>/ dir has a matching
 #      marketplace.json[].name entry and vice-versa (no orphan dir, no orphan entry), and each
 #      plugin's plugin.json.version equals its marketplace.json entry version.
-#   I. internal doc links resolve — repo-local markdown links in plugins/**/*.md, PREREQUISITES/*.md,
-#      and root *.md that end in a real extension (.md/.sh/.tsv/.json/.svg/.png) point at a file that
-#      exists on disk. Conservative: skips http(s)/mailto/anchors, ${CLAUDE_PLUGIN_ROOT}-relative,
-#      placeholders, and links inside inline-code spans.
+#   I. internal doc links resolve — repo-local markdown links in plugins/**/*.md and root *.md that
+#      end in a real extension (.md/.sh/.tsv/.json/.svg/.png) point at a file that exists on disk.
+#      Conservative: skips http(s)/mailto/anchors, ${CLAUDE_PLUGIN_ROOT}-relative, placeholders,
+#      and links inside inline-code spans.
 #   J. four-mirror guardrail (P1-21) — the conservative SKILL↔mirror floor. For every
 #      plugins/<p>/skills/<s>/ found dynamically: a SKILL.md exists and carries valid frontmatter
 #      (a non-empty `name:` and a `description:`); and every plugin that ships ≥1 skill has a
@@ -163,73 +165,15 @@ while IFS= read -r tsv; do
 done < <(find plugins -path '*/skills/check/requirements.tsv' | sort)
 [ "$tsv_ok" -eq 1 ] && pass "all requirements.tsv rows well-formed (4 fields, valid tier, non-empty probe)"
 
-# ── C. shipped .mcp.json servers ⟺ 40-mcp.md "Shipped" table ──────────────────
-section "C. shipped MCP servers ⟺ 40-mcp.md"
-if ! command -v python3 >/dev/null 2>&1; then
-  fail "python3 not found — required to read plugins/*/.mcp.json"
-else
-shipped_json="$(
-  for f in plugins/*/.mcp.json; do
-    python3 -c "import json,sys; print('\n'.join(json.load(open('$f')).get('mcpServers',{}).keys()))" 2>/dev/null
-  done | sort -u | grep -v '^$'
-)"
-# Parse the table under "## Shipped by the marketplace" until the next "## " heading; the server
-# name is the FIRST backticked token of each body row (assumes the `Server` column stays leftmost).
-shipped_doc="$(
-  awk '
-    /^## Shipped by the marketplace/ { intbl=1; next }
-    intbl && /^## / { exit }
-    intbl && /^\|/ {
-      if ($0 ~ /Server/ || $0 ~ /^\|[ :|-]+\|/) next   # header / separator
-      if (match($0, /`[^`]+`/)) print substr($0, RSTART+1, RLENGTH-2)
-    }
-  ' PREREQUISITES/40-mcp.md | sort -u
-)"
-if [ "$shipped_json" = "$shipped_doc" ]; then
-  pass "shipped servers match: $(echo "$shipped_json" | paste -sd' ' -)"
-else
-  fail "mismatch between .mcp.json and 40-mcp.md 'Shipped' table:"
-  printf "      %bin .mcp.json :%b %s\n" "$dim" "$reset" "$(echo "$shipped_json" | paste -sd' ' -)"
-  printf "      %bin 40-mcp.md :%b %s\n" "$dim" "$reset" "$(echo "$shipped_doc"  | paste -sd' ' -)"
-fi
-fi
+# ── (retired check C) shipped .mcp.json servers ⟺ PREREQUISITES/40-mcp.md ──────
+# The PREREQUISITES/ folder was archived out of the repo (PR #250). The MCP-doc parity
+# invariant is now enforced exclusively by check Q (SLASH_COMMANDS.md appendix), which
+# passed cleanly on both sides of the archive PR. Nothing to run here.
 
-# ── D. no Probe cell fetches-and-executes remote code ────────────────────────
-section "D. Probe cells don't fetch remote code"
-# For every markdown table that has a Probe column, flag any Probe cell whose command would
-# DOWNLOAD AND RUN a package via an ephemeral runner — the property, not a flag-spelling:
-#   • uvx / bunx / pnpm dlx     (always fetch an uninstalled tool), or
-#   • npx -y/--yes …            (auto-install), or
-#   • npx …@scope/pkg / pkg@ver (an explicit remote package spec).
-# A probe must check presence (`command -v <launcher>`), never fetch. Bare `npx <localtool>
-# --version` (e.g. vitest/playwright as project deps) is the established version-style convention
-# and is NOT flagged. The Probe column is located per-table via the separator row, and reset at
-# every table boundary (blank line / non-table line) so adjacent tables can't inherit an index.
-# NOTE: the boolean below is kept on a SINGLE line on purpose — mawk (the default `awk` on
-# Debian/Ubuntu + GitHub's ubuntu-latest) rejects a parenthesised expression split across lines.
-# awk stderr is captured; a parse/runtime error fails the check loudly (never a vacuous PASS).
-d_err="$(mktemp)"
-offenders="$(
-  for f in PREREQUISITES/*.md; do
-    awk -F'|' -v file="$f" '
-      function trim(s){ gsub(/^[ \t]+|[ \t]+$/,"",s); return s }
-      { sep=$0; gsub(/[ \t|:-]/,"",sep) }
-      /^\|/ && sep=="" { pcol=0; n=split(prev,h,"|"); for(i=1;i<=n;i++) if(trim(h[i])=="Probe") pcol=i; indata=1; prev=$0; next }
-      /^[ \t]*$/ || /^[^|]/ { pcol=0; indata=0; prev=$0; next }
-      { if (indata && pcol>0) { p=trim($pcol); gsub(/`/,"",p); if (p !~ /command -v/ && (p ~ /(^|[^[:alnum:]_])(uvx|bunx)([ \t]|$)/ || p ~ /pnpm[ \t]+dlx/ || p ~ /npx[ \t]+(-y|--yes)/ || p ~ /npx[ \t]+[^ \t]*@/)) print file" :: "p } prev=$0 }
-    ' "$f" 2>>"$d_err"
-  done
-)"
-if [ -s "$d_err" ]; then
-  fail "awk error while scanning Probe cells — check D did not run:"; sed 's/^/      /' "$d_err"; rm -f "$d_err"
-elif [ -z "$offenders" ]; then
-  rm -f "$d_err"
-  pass "no Probe cell downloads a package to test presence (use \`command -v …\`)"
-else
-  rm -f "$d_err"
-  fail "Probe cells that fetch-and-execute remote code (use \`command -v <launcher>\` instead):"
-  printf '%s\n' "$offenders" | sed 's/^/      /'
-fi
+# ── (retired check D) no Probe cell in PREREQUISITES/*.md fetches remote code ───
+# The PREREQUISITES/ folder was archived out of the repo (PR #250). The no-download
+# invariant is enforced over the remaining dependency manifests by check G (requirements.tsv
+# probe cells), which continues to pass. Nothing to run here.
 
 # ── D′. no-download tsv probes (check D, extended over requirements.tsv) ──────
 # This is the tsv twin of check D: the same fetch-and-execute rule, applied to the
@@ -363,7 +307,7 @@ fi
 # semantic command-token resolution is noisy and out of scope here; add it as a separate check later.
 section "I. internal doc links resolve"
 broken_links="$(
-  { find plugins \( -name node_modules -o -name target -o -name .venv \) -prune -o -name '*.md' -print; ls PREREQUISITES/*.md 2>/dev/null; ls ./*.md 2>/dev/null; } | sort -u | while IFS= read -r f; do
+  { find plugins \( -name node_modules -o -name target -o -name .venv \) -prune -o -name '*.md' -print; ls ./*.md 2>/dev/null; } | sort -u | while IFS= read -r f; do
     dir="$(dirname "$f")"
     # awk emits one link target per line. It skips ``` fenced code blocks entirely (their links are
     # illustrative examples, not real doc links — e.g. a vendored grammar's sample manifest rows), and
