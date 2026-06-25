@@ -69,6 +69,19 @@ If `$ARGUMENTS` names a starting point — "I have a raw idea", "I have a valida
 PR to ship" — output the **ordered list of commands** from there to PRODUCTION, skipping stages whose
 plugin is absent (and noting the skip).
 
+**The thesis lane (a held proposition).** A common starting point is a raw **product proposition** — "By
+doing X I propose Y, and the value is Z" (a problem/solution/value triad). Two doors enter the flow at the
+front:
+
+- **Confident in the thesis** → enter at **IDEATE** with **`/ideator:ideate "By doing X I propose Y,
+  value Z"`** (raw-idea mode — it recognises the triad and pre-fills the brief).
+- **Unsure the thesis holds** → enter at **DISCOVER** with **`/market-scanner:market-scan`** in its
+  **thesis-validation mode**: hand it the thesis (or an `OPPORTUNITY-*.md` from `/operate:iterate`, closing
+  the ↻ loop) and it *validates that specific thesis* into a `doc/opportunities/<slug>.md` rather than
+  proposing fresh candidates — then `/ideate` refines it.
+
+Trace the rest of the path (DELIVER → … → OPERATE) from whichever door they pick.
+
 ## 4. Render
 
 - If **publish** or **atelier** is installed, emit a **Mermaid** `flowchart LR` and defer rendering to

@@ -6,9 +6,11 @@ description: >
   opportunity", "scan for a niche"). Proposes candidate opportunities that fit the standing /discovery-goal,
   scores each against the market parameter taxonomy (problem severity, demand, market size, willingness-
   to-pay, pricing power, competition, reachability, stack-fit), KILLS weak ones early, narrows to a
-  survivor, and emits a validated OPPORTUNITY (scorecard + evidence + keep/park/kill verdict). Hands the
-  opportunity to the ideator plugin (REFINEMENT) when installed, else writes a markdown opportunity
-  brief. Use it proactively whenever a user is casting about for something to build.
+  survivor, and emits a validated OPPORTUNITY (scorecard + evidence + keep/park/kill verdict). Also runs a
+  THESIS-VALIDATION mode: when handed a user-supplied proposition ("By doing X I propose Y, value Z") or an
+  OPPORTUNITY-*.md from /operate:iterate, it validates THAT specific thesis rather than proposing fresh
+  candidates. Hands the opportunity to the ideator plugin (REFINEMENT) when installed, else writes a
+  markdown opportunity brief. Use it proactively whenever a user is casting about for something to build.
 metadata:
   type: producer
   output: a validated opportunity (scorecard + verdict) → ideator plugin, or a markdown opportunity brief
@@ -55,6 +57,40 @@ earns a keep verdict. It is the spark, made disciplined.
    challenger is handed to the ideator.
 7. **Emit the result** (see Output). For a KILL or PARK, record the reason in the kill ledger (scoring.md)
    so a like candidate is recognised faster next time.
+
+## Thesis-validation mode — when the user already holds a proposition
+
+The default flow above *generates* candidates. But the user often arrives **already holding a thesis** —
+a raw proposition ("**By doing X I propose Y, and the value is Z**"), or an **`OPPORTUNITY-*.md` /
+`doc/opportunities/opportunity-<slug>.md`** handed back from **`/operate:iterate`** (the OPERATE ↻ DISCOVER
+re-entry). In that case **do not propose fresh candidates** — validate *that specific thesis*. Detect this
+mode when `$ARGUMENTS` (or the user's first message) is a proposition, names a triad, or points at an
+`OPPORTUNITY-*.md` / `doc/opportunities/*.md` file.
+
+The flow, in order:
+
+1. **Ingest the thesis.** If handed a file, **read it** — `/iterate`'s brief carries a production-evidence
+   preamble plus the opportunity-brief skeleton (one-sentence candidate, segment, price-band guess, open
+   questions). If handed a bare proposition, parse the triad: X = the action/wedge, Y = the
+   solution/offer, Z = the value/outcome. Restate it back as a single candidate-in-one-sentence for
+   confirmation; infer the segment and price band, don't interrogate.
+2. **Score *this* candidate against the A–E taxonomy** ([`../../knowledge/discovery/parameters.md`](../../knowledge/discovery/parameters.md))
+   — demand → market → willingness-to-pay → competition/moat → reachability/fit — exactly as steps 3–4
+   above, but on the held thesis alone. **Kill on the conjunction, not the average.** Carry any open
+   questions the `/iterate` brief already named straight into the scorecard.
+3. **Ground it in evidence** (the web-research section below) — a held thesis is *more* prone to founder
+   optimism, so check demand, market size, WTP, and competition against real signal and let evidence move
+   marks toward ❌.
+4. **Challenge the thesis to KILL it** — spawn the opportunity challenger (step 6 above) as a fresh-context
+   second party and instruct it to refute the thesis, not to confirm the user's hope. A held thesis is
+   *you-and-the-user* agreeing; that is not adversarial review.
+5. **Verdict.** **UPHOLD** → the thesis is validated; write/emit the opportunity (Output below) and hand to
+   `/ideate`. **PARK / KILL** → say plainly which parameter sinks it and record the kill-ledger entry;
+   offer to generate fresh candidates (the default mode) instead. Never rubber-stamp a held thesis to be
+   encouraging.
+
+The result schema is **identical** to the default mode (see Output) — same `doc/opportunities/<slug>.md`
+brief, so the artefact `/iterate` produced and the artefact `/market-scan` emits are one contract.
 
 ## Ground claims in evidence — use web research
 
