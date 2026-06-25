@@ -36,6 +36,9 @@ vertical slices. **`/roadmapper`** authors that pipeline (intake → EARS/featur
 as a value task); the external **FLEET continuous-delivery engine** then drains it, building each slice
 through FOUNDRY's PLAN-scope entry.
 
+> **Citation form.** Commands are listed in their canonical `/<plugin>:<skill>` form. Short aliases
+> (e.g. `/ideate`, `/market-scan`) also work when unambiguous.
+
 ## Common to every plugin
 
 Three verbs repeat across the marketplace and are **not** relisted in each table below:
