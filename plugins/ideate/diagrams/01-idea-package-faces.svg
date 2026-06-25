@@ -1,6 +1,6 @@
 <svg viewBox="0 0 820 470" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans">
   <title>The IDEA package — two faces, one understanding</title>
-  <desc>One shared understanding (knowledge-parity) sits at the centre as a single core, threaded by a solid green spine. From it two faces derive: an agent-facing face on the left (precise, for FOUNDRY's conveyor — idea brief, SMU-seed, first vertical slice, handoff contract) and a user-facing face on the right (rich and illustrated — opportunity narrative, parameter scorecard, market/pricing/competition charts, user-flow, mockup screen). Two thick green arrows flow outward from the core to each face. A two-way sync binds them: a fact corrected in one face is corrected in both — the faces never disagree.</desc>
+  <desc>One shared understanding (knowledge-parity) sits at the centre as a single core, threaded by a solid green spine. From it two faces derive: an agent-facing face on the left (precise, for DELIVER's conveyor — idea brief, SMU-seed, first vertical slice, handoff contract) and a user-facing face on the right (rich and illustrated — opportunity narrative, parameter scorecard, market/pricing/competition charts, user-flow, mockup screen). Two thick green arrows flow outward from the core to each face. A two-way sync binds them: a fact corrected in one face is corrected in both — the faces never disagree.</desc>
 
   <!-- ====================== TITLE ====================== -->
   <text x="410" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#828aaa">The IDEA package — two faces, one understanding</text>
@@ -44,7 +44,7 @@
       <text x="74" y="293.5">handoff contract</text>
     </g>
     <!-- exit-criteria footnote -->
-    <text x="56" y="386" font-size="11" fill="#b8bed0">satisfies FOUNDRY's discovery exit criteria</text>
+    <text x="56" y="386" font-size="11" fill="#b8bed0">satisfies DELIVER's discovery exit criteria</text>
   </g>
 
   <!-- ====================== USER-FACING FACE (RIGHT) ====================== -->

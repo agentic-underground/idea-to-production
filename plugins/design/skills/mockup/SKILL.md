@@ -35,7 +35,7 @@ draft: it is the artefact *after* the loop has raised it to the rubric.
 ## How to run
 
 1. **Recover intent** (knowledge-parity). Who is the customer, what is the job, what are the constraints
-   (platform, density, brand, modality)? Read foundry `@front-end` INTENT markers / `definition-of-good`
+   (platform, density, brand, modality)? Read deliver `@front-end` INTENT markers / `definition-of-good`
    by capability if present. Confirm rather than assume; **ask when the brief is thin** — one focused
    question at a time, with a recommended answer.
 2. **Design v0** against the canon — don't free-hand. Pick the paradigm, the type scale, the spacing unit,
@@ -60,8 +60,8 @@ draft: it is the artefact *after* the loop has raised it to the rubric.
 
 Carries the KAIZEN covenant. When a delivered mockup later proves weak in a way the loop didn't catch,
 that's a canon/rubric gap → `self-improve` ([`../self-improve/SKILL.md`](../self-improve/SKILL.md)) → PR,
-so the next mockup is better by default. When both DESIGN and foundry are present, offer the lesson to
-foundry's source-level `design-critic` too.
+so the next mockup is better by default. When both DESIGN and deliver are present, offer the lesson to
+deliver's source-level `design-critic` too.
 
 ## Product lifecycle (by capability)
 

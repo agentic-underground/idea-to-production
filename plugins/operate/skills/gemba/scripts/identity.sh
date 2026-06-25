@@ -10,7 +10,7 @@
 #   every resolved target is `<github_org>/<repo>`, so flipping the org re-points every target at once.
 #
 #   WHEN .i2p/identity.json is ABSENT the system SEEDS it from `git remote -v`
-#   (the github.com remote, same resolution as foundry/pr-review's gather-diff.sh) +
+#   (the github.com remote, same resolution as deliver/pr-review's gather-diff.sh) +
 #   the `owner.name` in .claude-plugin/marketplace.json — so the resolver works on a fresh clone.
 #
 # RECORD SCHEMA (schema-versioned, like the other i2p artifacts):
@@ -144,7 +144,7 @@ case "$cmd" in
     #   • its NAME or REPO appears as a whole token (a strong, unambiguous signal ⇒ GEMBA), OR
     #   • ≥2 distinct TOPIC tokens appear as whole tokens (a single generic topic word like
     #     "token"/"scheduler" is too weak — it routes to SELF when ambiguous).
-    # This stops a sibling-topic substring anywhere in the hint (e.g. "the scheduler in foundry",
+    # This stops a sibling-topic substring anywhere in the hint (e.g. "the scheduler in deliver",
     # or "token bucket bug in operate") from hijacking the route to a sibling repo.
     lc_hint="$(printf '%s' "$hint" | tr '[:upper:]' '[:lower:]')"
     printf '%s' "$id" | jq -c --arg org "$org" --arg hint "$lc_hint" '

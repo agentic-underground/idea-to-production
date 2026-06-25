@@ -1,6 +1,6 @@
 # SMU seed — TaskFlow
 
-> Agent-facing. The subject-matter-understanding seed — the domain parity FOUNDRY's builder-lead
+> Agent-facing. The subject-matter-understanding seed — the domain parity DELIVER's builder-lead
 > expands into the full SMU. ~200 words.
 
 **Domain.** Personal task management for a single technical user. The product is a local-first to-do

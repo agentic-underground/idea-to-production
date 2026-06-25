@@ -8,14 +8,14 @@ IDEATE is the **REFINEMENT** phase of the `idea-to-production` marketplace. It t
 opportunity (from [`discover`](../discover/)) or a raw idea you already have, refines it to
 **knowledge-parity** through an adversarially-challenged dialogue, and emits the **IDEA package**.
 
-![IDEATE animated: four scattered fragments — PROBLEM (the pain, sharp), USERS (named actors), CRITERIA (testable success), and SCOPE (explicit edges) — drift in from the corners and dock one-by-one into a central IDEA-package frame, each turning from dim to amber in-flight to teal as it locks and the knowledge-parity meter fills; once all four axes are locked the challenger's READY stamp lands amber and settles teal, captioned "challenger signs off · knowledge-parity reached → hand off to FOUNDRY". The motion teaches IDEATE: a scattered idea is refined axis-by-axis to knowledge-parity until the package is unambiguous and signed off.](../../docs/images/ideate-converge.gif)
+![IDEATE animated: four scattered fragments — PROBLEM (the pain, sharp), USERS (named actors), CRITERIA (testable success), and SCOPE (explicit edges) — drift in from the corners and dock one-by-one into a central IDEA-package frame, each turning from dim to amber in-flight to teal as it locks and the knowledge-parity meter fills; once all four axes are locked the challenger's READY stamp lands amber and settles teal, captioned "challenger signs off · knowledge-parity reached → hand off to DELIVER". The motion teaches IDEATE: a scattered idea is refined axis-by-axis to knowledge-parity until the package is unambiguous and signed off.](../../docs/images/ideate-converge.gif)
 
 ## The IDEA package — two faces, one understanding
 
 - **Agent-facing** (precise, high-clarity, for the conveyor): an **idea brief**, an **SMU-seed**, the
-  **first vertical slice**, and a **handoff contract** — that satisfies FOUNDRY's **discovery exit
+  **first vertical slice**, and a **handoff contract** — that satisfies DELIVER's **discovery exit
   criteria** (actionable problem, named actors, explicit scope, concrete constraints, testable success).
-  This is what FOUNDRY ingests; it must be unambiguous to a fresh agent with no history.
+  This is what DELIVER ingests; it must be unambiguous to a fresh agent with no history.
 - **User-facing** (rich, illustrated): the **IDEA dossier** — opportunity narrative, parameter scorecard,
   market/pricing/competition charts, a **user-flow**, and (for a UI idea) a **mockup screen** — rendered
   **by capability**: charts via [`publish`](../publish/)'s `/publish`, and flows/mockups via
@@ -25,7 +25,7 @@ opportunity (from [`discover`](../discover/)) or a raw idea you already have, re
 The two faces never disagree: a fact corrected in one is corrected in both. The package is **iterated with
 you** until both are right, *then* handed off.
 
-![The IDEA package has two faces from one shared understanding (knowledge-parity, the shared spine): the agent-facing face (precise, for the conveyor) carries the idea brief, SMU-seed, first vertical slice, and handoff contract that satisfy FOUNDRY's discovery exit criteria; the user-facing face (rich, illustrated) carries the opportunity narrative, parameter scorecard, market/pricing/competition charts, and a user-flow / mockup screen — the same facts shown to a human. The two stay in sync: a fact corrected in one face is corrected in both.](diagrams/01-idea-package-faces.png)
+![The IDEA package has two faces from one shared understanding (knowledge-parity, the shared spine): the agent-facing face (precise, for the conveyor) carries the idea brief, SMU-seed, first vertical slice, and handoff contract that satisfy DELIVER's discovery exit criteria; the user-facing face (rich, illustrated) carries the opportunity narrative, parameter scorecard, market/pricing/competition charts, and a user-flow / mockup screen — the same facts shown to a human. The two stay in sync: a fact corrected in one face is corrected in both.](diagrams/01-idea-package-faces.png)
 
 ## Naming a product
 
@@ -59,10 +59,10 @@ can't verify is recorded as an open question, not a guess. (Reuses discover's ev
 
 - **discover → IDEATE**: a kept opportunity is refined here. Or bring your own raw idea — IDEATE
   starts the dialogue from scratch.
-- **IDEATE → foundry**: the agent-facing package is handed to [`foundry`](../foundry/)'s IDEA station
-  (by capability) → roadmap → `/loop /foundry` carries it to PRODUCTION. **IDEATE supersedes FOUNDRY's
+- **IDEATE → deliver**: the agent-facing package is handed to [`deliver`](../deliver/)'s IDEA station
+  (by capability) → roadmap → `/loop /deliver` carries it to PRODUCTION. **IDEATE supersedes DELIVER's
   inline ideate**, which remains as the graceful-degradation fallback when this plugin is absent.
-- The arc: **DISCOVER (discover) → IDEATE (ideate) → BUILD (foundry) → SECURE/PUBLISH
+- The arc: **DISCOVER (discover) → IDEATE (ideate) → BUILD (deliver) → SECURE/PUBLISH
   (secure/publish)**. *Graceful enhancement* — no hard dependency in any direction.
 
 ## The feedback loop

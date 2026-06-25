@@ -2,7 +2,7 @@
 # Canonical dependency manifest for DESIGN. TAB-separated. Probe passes when it exits 0.
 # DESIGN reviews with built-in vision (Read sees PNGs — no API key) and drives live browsers via the
 # host-provided chrome-devtools MCP (ONE BROWSER — not shipped; FLEET/host registers it). Companions
-# (publish, foundry, ideate) are PLUGINS, referenced by capability, not probed here. User-flow
+# (publish, deliver, ideate) are PLUGINS, referenced by capability, not probed here. User-flow
 # rendering is publish's job (verify via /publish:check).
 git	command -v git	required	apt install git
 bash	command -v bash	required	preinstalled

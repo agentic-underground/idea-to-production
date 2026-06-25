@@ -1,6 +1,6 @@
 # First vertical slice — TaskFlow
 
-> Agent-facing. The smallest shippable, end-to-end increment that proves the core value, so FOUNDRY can
+> Agent-facing. The smallest shippable, end-to-end increment that proves the core value, so DELIVER can
 > cut a thin slice immediately rather than boil the ocean.
 
 ## Slice
@@ -37,5 +37,5 @@ THE SYSTEM SHALL persist all tasks so they survive a page reload.
 ## Stack hint
 
 Vanilla JS, single `index.html` + module. State is an array of `{ id, title, done, createdAt }`
-serialised to `localStorage` under one key. No build step required; no backend. Maps to FOUNDRY's
+serialised to `localStorage` under one key. No build step required; no backend. Maps to DELIVER's
 frontend value-handler.

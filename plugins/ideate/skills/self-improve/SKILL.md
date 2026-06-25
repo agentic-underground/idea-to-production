@@ -5,7 +5,7 @@ description: >
   package contract — and by self-cleaving over-broad elements. Trigger with /ideate:self-improve (or
   "the builder hit an ambiguity the brief missed — fix it", "fold this ideation feedback in",
   "self-improve the ideate skill"). Reflects one element against the covenant + pillars, applies the fix
-  on a branch, runs the adversarial review (foundry's /foundry:pr-review if installed), and opens a PR so
+  on a branch, runs the adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so
   every future ideation, for all users, asks the missing question by default.
 metadata:
   type: producer
@@ -22,7 +22,7 @@ package field*, fixed once, upstream — not a louder rule. (Covenant:
 
 ## Feedback intake (cross-project learning)
 
-IDEATE gets sharper from **ideation-feedback** — emitted by FOUNDRY's LEARN station / FOUNDER when a
+IDEATE gets sharper from **ideation-feedback** — emitted by DELIVER's LEARN station / FOUNDER when a
 builder hits an ambiguity the IDEA package should have resolved. Each entry is **symptom → which IDEA-doc
 field was unclear → what would have prevented it** (e.g. *"ACTORS said 'users' → step-1 couldn't write
 EARS; the actor axis needed to force a named role"*).
@@ -42,10 +42,10 @@ EARS; the actor axis needed to force a named role"*).
    `marketplace.json` entry (description + keywords + version), the `README.md`, and
    `skills/check/requirements.tsv` (any new tool, tiered to who actually needs it). A capability that lives
    in only one of these is drift the inspector will flag; bump the version so the marketplace re-syncs.
-4. **Adversarial gate**: run **`/foundry:pr-review`** if foundry is installed; otherwise self-review
+4. **Adversarial gate**: run **`/deliver:pr-review`** if deliver is installed; otherwise self-review
    against the covenant and state the gate ran in reduced form.
 5. **Open a PR** for the human to merge (never self-merge), following the user's merge governance
-   (FOUNDRY's `pr-approval` default), so the improvement reaches every user.
+   (DELIVER's `pr-approval` default), so the improvement reaches every user.
 
 Each pass must leave IDEATE **measurably better at reaching knowledge-parity before hand-off** — at
 least halving the remaining distance. Record the recurring ambiguity class so the next like idea is

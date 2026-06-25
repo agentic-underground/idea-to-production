@@ -2,7 +2,7 @@
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
 > plugin, OPERATE is bound by the **three pillars** and the **KAIZEN self-improvement covenant**.
-> (The canonical, in-depth homes live in the `foundry` plugin's `knowledge/`; this is the local copy a
+> (The canonical, in-depth homes live in the `deliver` plugin's `knowledge/`; this is the local copy a
 > standalone install carries — referenced by concept, not by a cross-plugin path.)
 
 ## The three pillars

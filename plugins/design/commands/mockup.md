@@ -4,7 +4,7 @@ description: Design a polished, design-reviewed UI mockup, wireframe, or user-fl
 
 Design with DESIGN. Follow the [`mockup` skill](../skills/mockup/SKILL.md):
 
-1. **Recover intent.** Customer, job, constraints (platform, density, brand, modality) — read foundry
+1. **Recover intent.** Customer, job, constraints (platform, density, brand, modality) — read deliver
    `@front-end` markers / `definition-of-good` by capability if present; ask when the brief is thin.
 2. **Design v0 to the canon** ([canon](../knowledge/canon/README.md)) — name the paradigm, type scale,
    spacing unit, palette, focal point. Don't free-hand.

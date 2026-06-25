@@ -122,7 +122,7 @@ sharpens it.
   evidence); the **price band**; a **first-slice / stack-fit** note.
 - **Handoff:** if the `ideate` plugin is installed, hand the opportunity to it (`/ideate`) for
   refinement into the IDEA package. If absent, write a markdown **opportunity brief** to
-  `doc/opportunities/<slug>.md` and tell the user to install `ideate` (or run FOUNDRY's inline ideate)
+  `doc/opportunities/<slug>.md` and tell the user to install `ideate` (or run DELIVER's inline ideate)
   to refine it. *(Rich, illustrated opportunity briefs — scorecards as tables, market-sizing charts —
   are produced by invoking publish's `/publish` **by capability** when publish is installed; degrade
   to clean markdown when it is absent, and say so.)*

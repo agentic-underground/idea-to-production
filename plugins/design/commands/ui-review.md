@@ -4,7 +4,7 @@ description: Adversarially review the design of any running SPA or screenshot â€
 
 Review a UI with DESIGN. Follow the [`ui-review` skill](../skills/ui-review/SKILL.md):
 
-1. **Recover intent + scope.** What is the app for, and for whom (read foundry `@front-end` markers by
+1. **Recover intent + scope.** What is the app for, and for whom (read deliver `@front-end` markers by
    capability if present)? Find the dev-server URL. **If which routes / graphical elements to review is
    ambiguous, ask the user** (default: all top-level nav routes + their primary states).
 2. **Crawl** via the chrome-devtools MCP (`mcp__chrome-devtools__*`) â€” screenshot (desktop + mobile) and read the

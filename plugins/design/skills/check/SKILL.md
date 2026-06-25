@@ -28,5 +28,5 @@ MCP** drives the **system Chromium** (ONE BROWSER — design ships no MCP); the 
 launches via `npx`/`node`. A Chromium browser is needed for live crawls (the host points chrome-devtools at
 the system Chromium; the crawler uses the target project's Playwright).
 `gh` is recommended so `self-improve` can open the improvement PR. User-flow rendering is **publish**'s
-job via `/publish` — verify those with `/publish:check`, not here. Companions (`publish`, `foundry`,
+job via `/publish` — verify those with `/publish:check`, not here. Companions (`publish`, `deliver`,
 `ideate`) are **plugins**, referenced by capability, not probed.

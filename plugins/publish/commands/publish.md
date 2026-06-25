@@ -49,7 +49,7 @@ Report the output path(s), word count, the design-review **fitness score** (and 
 and — if a recurring composition failure surfaced — that the lesson was folded into the shared
 charting-matrix via the rich-pdf self-improvement protocol.
 
-This command is also what the `foundry` plugin hands off to (when PUBLISH is installed) to
+This command is also what the `deliver` plugin hands off to (when PUBLISH is installed) to
 upgrade its markdown deliverables into richer published artefacts.
 
 ## Product lifecycle (by capability)

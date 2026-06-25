@@ -110,7 +110,7 @@ invisible alignment edges.
 - Rule 5 added (wide fan-outs wrap to multiple rows).
 - Pattern 3 (Wide fan-out wrap) added to `graphviz-patterns.md`.
 
-**Diagram(s) fixed:** `05-foundry-arch.dot`.
+**Diagram(s) fixed:** `05-deliver-arch.dot`.
 
 **Article:** `FootyManager/doc/articles/may-21/`.
 
@@ -513,7 +513,7 @@ effective magnification.
   `fontsize=12` and `margin="0.22,0.14"` are minimums; for "zoom in"
   feedback, raise to `fontsize=14` and `margin="0.30,0.18"`.
 
-**Diagram(s) fixed:** `05-foundry-arch.dot` (figure 7), `07-inspector-flow.dot` (figure 8).
+**Diagram(s) fixed:** `05-deliver-arch.dot` (figure 7), `07-inspector-flow.dot` (figure 8).
 
 **Article:** `FootyManager/doc/articles/may-21/`.
 

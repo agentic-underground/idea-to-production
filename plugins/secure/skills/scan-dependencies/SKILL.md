@@ -93,7 +93,7 @@ assumption):
 | **Unknown / missing** | no SPDX id, no LICENSE file, "UNLICENSED" | any | HIGH — default is all-rights-reserved, not "free" |
 
 Surface each conflict as a **finding** in the shared format below (`Type: licence`), with the SPDX id and
-the obligation it imposes as the `Detail`. This is the dependency-side analogue of FOUNDRY's
+the obligation it imposes as the `Detail`. This is the dependency-side analogue of DELIVER's
 LICENSING-REVIEWER — when that reviewer runs on a diff it defers to these findings; standalone, this lens
 is the whole-tree sweep.
 
@@ -141,8 +141,8 @@ warning into a **concrete, reviewable proposal** — not by editing the manifest
   proposal is opened, the human decides.
 
 This follows the marketplace's **merge-governance** — every change reaches `main` through an
-adversarial-reviewed PR a human merges (FOUNDRY's `pr-approval` default; run `/foundry:pr-review`
-on the branch when foundry is installed), never a self-merge. It is the same human-gated stance
+adversarial-reviewed PR a human merges (DELIVER's `pr-approval` default; run `/deliver:pr-review`
+on the branch when deliver is installed), never a self-merge. It is the same human-gated stance
 SECURITY's own `self-improve` skill takes, and it honours quality-first
 ([`../../knowledge/covenant.md`](../../knowledge/covenant.md)): the floor is raised by a reviewed
 proposal, not by a silent in-place edit.

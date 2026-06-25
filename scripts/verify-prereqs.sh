@@ -69,7 +69,7 @@
 #      FLEET source is present on the box — is byte-identical to it (FAIL LOUD on drift → human re-vendor).
 #      A fresh repo with no docs/roadmap/.pipeline.md passes. NOTE: the DoD-content of an emitted PLAN's
 #      `.pipeline/verify` (coverage floor / flaky / BDD) is enforced PER EMITTED PROJECT by roadmapper's
-#      PLAN "Definition of done" template + FOUNDRY's own DoD audit — NOT asserted here. This marketplace
+#      PLAN "Definition of done" template + DELIVER's own DoD audit — NOT asserted here. This marketplace
 #      meta-repo has no application test-suite to floor (its own gate is EPIC_0001's deterministic
 #      manifest+python checks), so check P guards the GRAMMAR + vendored-standard pin, not gate content.
 #      (Check I also skips ``` fenced code blocks, so illustrative links in a vendored grammar's sample
@@ -310,7 +310,7 @@ fi
 #   • is NOT inside an inline-code span (`…` — those are rendered-output examples, not live refs), and
 #   • ends in a real, repo-tracked extension: .md .sh .tsv .json .svg .png.
 # It is then resolved against the LINKING FILE's directory (so ../-relative links work) and must exist.
-# FUTURE EXTENSION: this pass deliberately does NOT validate /command tokens (e.g. /foundry:check) —
+# FUTURE EXTENSION: this pass deliberately does NOT validate /command tokens (e.g. /deliver:check) —
 # semantic command-token resolution is noisy and out of scope here; add it as a separate check later.
 section "I. internal doc links resolve"
 broken_links="$(
@@ -458,7 +458,7 @@ fi
 # RELEASE ⟺ Cargo ⟺ SHA256SUMS parity check), then an interpreted Ruby server. The whole flow plugin
 # has since been RETIRED (the FLEET continuous-delivery engine supersedes it), so this check and its
 # CI job are gone. The language-choice lesson survives in
-# plugins/foundry/knowledge/architecture/mcp-language-choice.md.
+# plugins/deliver/knowledge/architecture/mcp-language-choice.md.
 
 # ── L. hooks smoke-exec (P1-8) ───────────────────────────────────────────────
 # For every plugins/*/hooks/hooks.json, resolve each declared command's script path
@@ -570,15 +570,15 @@ rm -f "$m_err"
 #       `order|plan|state`. (This is the live-roadmap grammar floor that survives manifest retirement.)
 #   (3) the vendored references/fleet-pipeline-standard.md carries the pinned schema-version, and — when
 #       the external FLEET source is present on this box — is byte-identical to it (FAIL LOUD on drift →
-#       forces a human re-vendor + pin bump). RE-VENDOR OWNER: foundry maintainer, on any FLEET schema bump.
+#       forces a human re-vendor + pin bump). RE-VENDOR OWNER: deliver maintainer, on any FLEET schema bump.
 #
 # NOTE: gate CONTENT (coverage floor / flaky / BDD) is NOT asserted here. The DoD floors of an emitted
-# PLAN's .pipeline/verify are roadmapper's PLAN "Definition of done" template + FOUNDRY's per-build DoD
+# PLAN's .pipeline/verify are roadmapper's PLAN "Definition of done" template + DELIVER's per-build DoD
 # audit, enforced per emitted project. This marketplace meta-repo has no application test-suite to floor
 # (its gate is EPIC_0001's deterministic manifest+python checks). Check P guards GRAMMAR + vendor-pin.
 EXPECTED_SCHEMA_VERSION="017"   # the FLEET v2 plan schema (doc 017) the vendored copy validated against
 section "P. roadmap v2 conformance"
-vendored_std="plugins/foundry/skills/roadmapper/references/fleet-pipeline-standard.md"
+vendored_std="plugins/deliver/skills/roadmapper/references/fleet-pipeline-standard.md"
 manifest="docs/roadmap/.pipeline.md"
 p_fail=0
 
@@ -766,7 +766,7 @@ fi
 #
 # Two table rows are intentional EXEMPTIONS, justified by the table itself (not silent skips):
 #   • DELIVER → DESIGN is driven by the EXTERNAL FLEET continuous-delivery engine (the table's owner cell
-#     is "foundry:roadmapper + FLEET engine"), so its `done DELIVER` advance lives in the engine, not in
+#     is "deliver:roadmapper + FLEET engine"), so its `done DELIVER` advance lives in the engine, not in
 #     any in-repo plugin file. Asserting an in-repo caller would FAIL on an architecturally-external edge.
 #   • The lifecycle SKILL.md itself documents every verb (it IS the table) — so the owner-dir grep is
 #     scoped to the named owner plugin, never plugins/i2p, so a doc mention can't satisfy a real wiring row.
@@ -777,8 +777,8 @@ lifecycle_rows=(
   "DISCOVER discover done DISCOVER"
   "IDEATE   ideate        done IDEATE"
   "DESIGN   design        done DESIGN"
-  "BUILD    foundry        done BUILD"
-  "ASSURE   foundry        done ASSURE;fail ASSURE"
+  "BUILD    deliver        done BUILD"
+  "ASSURE   deliver        done ASSURE;fail ASSURE"
   "SECURE   secure         done SECURE;fail SECURE"
   "PUBLISH  publish        done PUBLISH"
   "OPERATE  operate        done OPERATE"

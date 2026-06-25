@@ -12,7 +12,7 @@ with a recommended default + multiple-choice; leave blank = "open, surprise me")
 - **Domain / niche interest** — where to look (e.g. "developer tools", "indie creators", "local trades").
 - **Builder edge** — domain insight or unfair advantage the builder brings (founder-market fit).
 - **Target price band** — the intended price range (reconciled later against the value ceiling).
-- **Stack-fit** — which FOUNDRY handlers the build should map to (constrains buildability).
+- **Stack-fit** — which DELIVER handlers the build should map to (constrains buildability).
 - **Effort / time-to-MVP appetite** — days, small weeks, longer.
 - **Constraints** — anything off the table (regulated markets, hardware, etc.).
 

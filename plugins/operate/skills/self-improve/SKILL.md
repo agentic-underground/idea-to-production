@@ -5,7 +5,7 @@ description: >
   cadence — and by self-cleaving over-broad elements. Trigger with /operate:self-improve (or "an
   incident surprised us — fix it", "this alert is noisy", "we missed a signal", "fold this postmortem
   action in", "self-improve the observability skill"). Reflects one element against the covenant + pillars,
-  applies the fix on a branch, runs the adversarial review (foundry's /foundry:pr-review if installed), and
+  applies the fix on a branch, runs the adversarial review (deliver's /deliver:pr-review if installed), and
   opens a PR so every future operate cycle, for all users, is calmer and catches more, sooner.
 metadata:
   type: producer
@@ -41,9 +41,9 @@ OPERATE gets sharper from two sources:
    add/extend a runbook · add a `maintain` cadence item · reference-not-restate. If the element is already
    tight, say so and stop.
 3. **Apply on a branch** (surgical, one concern). Pin the miss/false-alarm so it cannot regress.
-4. **Adversarial gate**: run **`/foundry:pr-review`** if foundry is installed; otherwise self-review against
+4. **Adversarial gate**: run **`/deliver:pr-review`** if deliver is installed; otherwise self-review against
    the covenant and state the gate ran in reduced form.
-5. **Open a PR** for the human to merge (never self-merge), per the user's merge-governance (FOUNDRY's
+5. **Open a PR** for the human to merge (never self-merge), per the user's merge-governance (DELIVER's
    `pr-approval` default), so the improvement reaches every user.
 
 Each pass must leave OPERATE **measurably better at catching real incidents and quieter on benign

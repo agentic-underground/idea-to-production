@@ -34,13 +34,13 @@ open questions, never silent guesses. Offline, it reasons from you and says so. 
 ## How it composes
 
 - **→ ideate** (REFINEMENT): when the **`ideate`** plugin is installed, a kept opportunity is handed to
-  `/ideate`, which refines it into the full **IDEA package** for FOUNDRY. Absent, DISCOVER writes a
+  `/ideate`, which refines it into the full **IDEA package** for DELIVER. Absent, DISCOVER writes a
   markdown **opportunity brief** you can refine by hand.
 - **→ publish** (PUBLISHING): rich, illustrated opportunity briefs (scorecards as tables, market-sizing
   charts) are produced by invoking [`publish`](../publish/)'s `/publish` **by capability** when
   installed; absent, DISCOVER emits clean markdown and says the richer step was skipped.
 - It is the upstream entry to the whole conveyor: **DISCOVER (discover) → IDEATE (ideate) → BUILD
-  ([foundry](../foundry/)) → SECURE/PUBLISH (secure/publish)**. *Graceful enhancement* — no hard
+  ([deliver](../deliver/)) → SECURE/PUBLISH (secure/publish)**. *Graceful enhancement* — no hard
   dependency in either direction.
 
 ## Governed by the marketplace covenant

@@ -9,7 +9,7 @@ Run the marketplace-wide adversarial review. Follow the [`review` skill](../skil
    docs / security).
 2. **Fan out, by capability** — delegate to the specialist plugins that are installed; never
    re-implement their logic:
-   - code → foundry **`/pr-review`**
+   - code → deliver **`/pr-review`**
    - UI (a running SPA or screenshot) → design **`/ui-review`**
    - rendered docs / figures → publish **`/publish:design-review`** (its layout/legibility gate rides inside this delegation, run before taste)
    - security → security **`/scan-all`**

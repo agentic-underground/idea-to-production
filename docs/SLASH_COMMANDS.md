@@ -23,9 +23,9 @@ together once all are satisfied and the roadmap item is complete.
 | **▸** | *front door* (+ session greeter) | `i2p` | [↓](#i2p--front-door) |
 | **1** | DISCOVER | `discover` | [↓](#discover--discover) |
 | **2** | IDEATE | `ideate` | [↓](#ideate--ideate) |
-| **3** | DELIVER | `foundry:roadmapper` (+ external FLEET engine) | [↓](#foundryroadmapper--deliver) |
+| **3** | DELIVER | `deliver:roadmapper` (+ external FLEET engine) | [↓](#deliverroadmapper--deliver) |
 | **4** | DESIGN | `design` | [↓](#design--design) |
-| **5** | BUILD ⇄ ASSURE | `foundry` | [↓](#foundry--build--assure) |
+| **5** | BUILD ⇄ ASSURE | `deliver` | [↓](#deliver--build--assure) |
 | **6** | SECURE | `secure` | [↓](#secure--secure) |
 | **7** | PUBLISH | `publish` | [↓](#publish--publish) |
 | **8** | OPERATE ↻ | `operate` | [↓](#operate--operate-) |
@@ -34,7 +34,7 @@ together once all are satisfied and the roadmap item is complete.
 (`docs/roadmap/` EPIC/PLAN docs), written into EARS and features and decomposed into dependency-ordered
 vertical slices. **`/roadmapper`** authors that pipeline (intake → EARS/feature → decomposition, modelled
 as a value task); the external **FLEET continuous-delivery engine** then drains it, building each slice
-through FOUNDRY's PLAN-scope entry.
+through DELIVER's PLAN-scope entry.
 
 > **Citation form.** Commands are listed in their canonical `/<plugin>:<skill>` form. Short aliases
 > (e.g. `/ideate`, `/market-scan`) also work when unambiguous.
@@ -85,15 +85,15 @@ Turn a validated opportunity into a build-ready idea.
 
 | Command | What it does |
 |---|---|
-| `/ideate:ideate` | Refine an idea into a build-ready IDEA package, then hand off to foundry |
+| `/ideate:ideate` | Refine an idea into a build-ready IDEA package, then hand off to deliver |
 | `/ideate:name` | Coin a distinctive, availability-checked product name (skill: `name-search`) |
 
-## foundry:roadmapper — DELIVER
+## deliver:roadmapper — DELIVER
 
 Move ideas into the roadmap and let the pipeline carry them toward build. DELIVER is owned by
 **`/roadmapper`** (which authors the FLEET v2 `docs/roadmap/` pipeline) plus the **external FLEET
 continuous-delivery engine** (a separate marketplace plugin — `/pipeline:run`, `/pipeline:status`,
-`/pipeline:unattended` — that drains the pipeline and builds each slice through FOUNDRY's PLAN-scope
+`/pipeline:unattended` — that drains the pipeline and builds each slice through DELIVER's PLAN-scope
 entry).
 
 | Command | What it does |
@@ -104,9 +104,9 @@ entry).
 
 The EPIC/PLAN/`.pipeline.md` grammar the engine parses (the DELIVER → FLEET handoff contract) is
 vendored at
-[`../plugins/foundry/skills/roadmapper/references/fleet-pipeline-standard.md`](../plugins/foundry/skills/roadmapper/references/fleet-pipeline-standard.md),
+[`../plugins/deliver/skills/roadmapper/references/fleet-pipeline-standard.md`](../plugins/deliver/skills/roadmapper/references/fleet-pipeline-standard.md),
 with a worked golden sample in
-[`../plugins/foundry/skills/roadmapper/references/examples/`](../plugins/foundry/skills/roadmapper/references/examples/).
+[`../plugins/deliver/skills/roadmapper/references/examples/`](../plugins/deliver/skills/roadmapper/references/examples/).
 
 *(The legacy in-repo `flow` plugin — `/flow:pull`, `/flow:flow`, the `flow-mcp` server — has been
 retired; the FLEET engine supersedes it.)*
@@ -120,28 +120,28 @@ Design the interface before it's built.
 | `/design:mockup` | Design a reviewed UI mockup, wireframe, or user-flow — not a first draft |
 | `/design:ui-review` | Adversarially review a running SPA or screenshot → a scored, prioritised critique |
 
-## foundry — BUILD ⇄ ASSURE
+## deliver — BUILD ⇄ ASSURE
 
 The production cycle: roadmap → product, with the quality gates. (BUILD ⇄ ASSURE ⇄ SECURE is a
 loop — a failed gate re-enters BUILD.)
 
 | Command | What it does |
 |---|---|
-| `/foundry:foundry` `[scaffold·gate·deploy·verify]` | The standalone BUILD cycle — drives a whole `ROADMAP.md` idea→product. For a v2 pipeline, day-to-day delivery is the external FLEET engine draining a `/roadmapper`-authored `docs/roadmap/` pipeline (engine → FOUNDRY PLAN-scope per slice); this command remains for a one-off cycle or estimate-only run |
-| `/foundry:roadmapper` | Manage `ROADMAP.md` — capture, write EARS specs, decompose, drive through stages (the DELIVER intake) |
-| `/foundry:vertical-slice` | Cut and drive one thin, end-to-end, shippable increment |
-| `/foundry:phase-sensor` | Detect each in-progress feature's phase and install the next skill |
-| `/foundry:coverage-loop` | Loop until every behaviour is pinned by a test |
-| `/foundry:pr-review` `[PR#·diff]` | Adversarial PR/diff review → PASS / NEEDS_REVISION / BLOCK |
-| `/foundry:code-quality` | Deep analysis across Clean Code, SOLID, DDD, 12-Factor, … |
-| `/foundry:frontend` | Build information-rich, data-bound web apps in vanilla JS |
-| `/foundry:rust-webapp-rollout` | One-shot full-Rust web app + serverless API, empty dir → production |
-| `/foundry:scorecard` | Emit measured scorecards for the product and the marketplace |
-| `/foundry:prerequisites` `[--fix]` | Generate a project-local `PREREQUISITES.md` |
+| `/deliver:build` `[scaffold·gate·deploy·verify]` | The standalone BUILD cycle — drives a whole `ROADMAP.md` idea→product. For a v2 pipeline, day-to-day delivery is the external FLEET engine draining a `/roadmapper`-authored `docs/roadmap/` pipeline (engine → DELIVER PLAN-scope per slice); this command remains for a one-off cycle or estimate-only run |
+| `/deliver:roadmapper` | Manage `ROADMAP.md` — capture, write EARS specs, decompose, drive through stages (the DELIVER intake) |
+| `/deliver:vertical-slice` | Cut and drive one thin, end-to-end, shippable increment |
+| `/deliver:phase-sensor` | Detect each in-progress feature's phase and install the next skill |
+| `/deliver:coverage-loop` | Loop until every behaviour is pinned by a test |
+| `/deliver:pr-review` `[PR#·diff]` | Adversarial PR/diff review → PASS / NEEDS_REVISION / BLOCK |
+| `/deliver:code-quality` | Deep analysis across Clean Code, SOLID, DDD, 12-Factor, … |
+| `/deliver:frontend` | Build information-rich, data-bound web apps in vanilla JS |
+| `/deliver:rust-webapp-rollout` | One-shot full-Rust web app + serverless API, empty dir → production |
+| `/deliver:scorecard` | Emit measured scorecards for the product and the marketplace |
+| `/deliver:prerequisites` `[--fix]` | Generate a project-local `PREREQUISITES.md` |
 
-*foundry also ships internal conveyor skills — `builder`, `lifecycle-states`, `handoff-protocol`,
+*deliver also ships internal conveyor skills — `builder`, `lifecycle-states`, `handoff-protocol`,
 `reviewer-gate`, `value-station-handoff`, `development-system-core`, `founder-method` — that run
-automatically inside `/foundry:foundry`. They are building blocks, not meant for direct use.*
+automatically inside `/deliver:build`. They are building blocks, not meant for direct use.*
 
 ## secure — SECURE
 
@@ -188,7 +188,7 @@ Keep the live product alive and improving.
 | `/operate:wiki-publisher` | Publish per-item docs to the origin's GitHub wiki (opt-in) |
 
 The roadmap itself is the **FLEET v2 pipeline** (`docs/roadmap/`), authored by `/roadmapper` (DELIVER)
-and drained by the external FLEET continuous-delivery engine — see the foundry:roadmapper section above.
+and drained by the external FLEET continuous-delivery engine — see the deliver:roadmapper section above.
 
 ---
 
@@ -199,10 +199,10 @@ no `/mcp__…` commands to type.
 
 | Server | Shipped by | What it provides |
 |---|---|---|
-| `context7` | foundry | Fetch current documentation for a library, framework, SDK, or CLI |
+| `context7` | deliver | Fetch current documentation for a library, framework, SDK, or CLI |
 | `fetch` | ideate, discover | Retrieve and read web page content |
 
-Browser driving (navigate, screenshot, accessibility snapshot — used by design and the foundry web
+Browser driving (navigate, screenshot, accessibility snapshot — used by design and the deliver web
 handlers) is **not** shipped: per the ONE BROWSER cutover the marketplace uses the **host-provided
 `chrome-devtools`** MCP, pointed at the system Chromium, and bundles no browser server of its own.
 

@@ -4,7 +4,7 @@
 #
 #   cost.sh estimate <dir>          # (re)seed per-phase estimates into <dir>/.i2p/cost.json
 #   cost.sh close <dir> <PHASE>     # fold this phase's actual-vs-estimate into the global calibration
-#   cost.sh record <dir> <PHASE> N  # add an authoritative external actual (e.g. FOUNDRY IDEA_COST) to a phase
+#   cost.sh record <dir> <PHASE> N  # add an authoritative external actual (e.g. DELIVER IDEA_COST) to a phase
 #   cost.sh report <dir>            # print a per-phase actual/estimate table
 #
 # Estimates self-correct: estimate = BASE[phase] × calibration ratio_ewma[phase], where the ratio

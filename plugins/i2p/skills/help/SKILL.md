@@ -35,9 +35,9 @@ probe the filesystem. The plugins to look for:
 |---|---|---|
 | **discover** | DISCOVER | `/discovery-goal`, `/market-scan` |
 | **ideate** | IDEATE | `/ideate` |
-| **foundry:roadmapper** (+ external FLEET engine) | DELIVER (roadmap intake → EARS/feature → decomposition; engine drains it) | `/roadmapper` (headline); external FLEET plugin: `/pipeline:status`, `/pipeline:run` |
+| **deliver:roadmapper** (+ external FLEET engine) | DELIVER (roadmap intake → EARS/feature → decomposition; engine drains it) | `/roadmapper` (headline); external FLEET plugin: `/pipeline:status`, `/pipeline:run` |
 | **design** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
-| **foundry** | BUILD ⇄ ASSURE (quality gate; loop with SECURE) | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
+| **deliver** | BUILD ⇄ ASSURE (quality gate; loop with SECURE) | `/deliver`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
 | **secure** | SECURE (security gate; loop with BUILD/ASSURE) | `/scan-all`, `/scan-for-secrets`, `/scan-for-pii`, `/scan-dependencies` |
 | **publish** | PUBLISH | `/publish`, `/publish:design-review` |
 | **operate** | OPERATE | *(add to unlock — observe, respond to incidents, iterate the live product)* |
@@ -54,8 +54,8 @@ Keep it scannable — a menu, not an essay:
    one-line "run this when you want…". Mark dark stages as "▫ add `<plugin>` to unlock …".
 3. **The meta-commands**: `/i2p:review` (one verdict from every reviewer), `/i2p:check` (consolidated
    readiness), `/i2p:flow` (the flow + your next command), `/i2p:lifecycle` (start/track the lifecycle).
-4. **Go deeper**: marketplace `README.md`; `plugins/foundry/knowledge/glossary.md` (every term);
-   `plugins/foundry/VALUE_FLOW.md` (the system).
+4. **Go deeper**: marketplace `README.md`; `plugins/deliver/knowledge/glossary.md` (every term);
+   `plugins/deliver/VALUE_FLOW.md` (the system).
 
 ## 3. The product lifecycle — explain, then offer to kick one off
 
@@ -65,15 +65,15 @@ around. Summarise the model from [`../../knowledge/product-lifecycle.md`](../../
 > **idea-to-production is the *creation arc*** of a product — it begins with **the search for an idea**
 > and carries it into **OPERATE** (realised, live, and kept alive). **Nine phases forming a cycle**, each
 > owned by one plugin:
-> **DISCOVER ①** (discover) → **IDEATE ②** (ideate) → **DELIVER ③** (`foundry:roadmapper` —
+> **DISCOVER ①** (discover) → **IDEATE ②** (ideate) → **DELIVER ③** (`deliver:roadmapper` —
 > headline **`/roadmapper`** — authors the FLEET v2 `docs/roadmap/` pipeline: intake → EARS/feature →
 > dependency-ordered EPIC/PLAN decomposition; the external FLEET engine drains it) → **DESIGN ④** (design)
-> → **BUILD ⑤** (foundry) ⇄ **ASSURE ⑥** (foundry — quality V&V) ⇄ **SECURE ⑦** (secure — security) →
+> → **BUILD ⑤** (deliver) ⇄ **ASSURE ⑥** (deliver — quality V&V) ⇄ **SECURE ⑦** (secure — security) →
 > **PUBLISH ⑧** (publish) → **OPERATE ⑨** (operate — observe, respond, iterate) ↻ loops back to DISCOVER.
 > The three realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop** — a failed quality or security
 > gate re-enters BUILD; the loop exits to PUBLISH only when all three are satisfied. **ASSURE and SECURE are
 > separate first-class gates** (quality ≠ security). Three concerns **cross-cut** every phase: usability
-> (design), quality (foundry — built-in not inspected-in), security (secure — baked in from the start).
+> (design), quality (deliver — built-in not inspected-in), security (secure — baked in from the start).
 > (The marketing *market life cycle* — introduction→growth→maturity→decline — runs alongside OPERATE.)
 
 Then **offer to kick one off**: ask if they'd like to start a product lifecycle for this project. If yes,

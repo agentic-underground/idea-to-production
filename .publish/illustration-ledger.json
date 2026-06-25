@@ -10,10 +10,10 @@
     "plugins/publish/README.md": { "status": "done", "figures": ["01-pieces-compose.png (composition A/B BEST 87)"], "doc_review": "PASS" },
     "plugins/discover/README.md": { "status": "done", "figures": ["01-discovery-loop.png (mermaid 78)"], "doc_review": "PASS (fixed: /loop /market-scan)" },
     "plugins/ideate/README.md": { "status": "done", "figures": ["01-idea-package-faces.png (composition 84)"], "doc_review": "figure PASS; pre-existing /ideate:self-improve command claim flagged" },
-    "plugins/foundry/README.md": { "status": "done", "figures": ["01-orchestration-hierarchy.png (graphviz 82)"], "doc_review": "PASS" },
-    "plugins/foundry/VALUE_FLOW.md": { "status": "done", "figures": ["02-conveyor.png (composition 88)", "03-quality-chain.png (mermaid BEST 86)"], "doc_review": "PASS" },
-    "plugins/foundry/knowledge/first-principles.md": { "status": "done", "figures": ["03-three-pillars.png (composition 82)", "02-tests-coordinates.png (composition 88)", "04-pure-core.png (composition BEST 87)"], "doc_review": "PASS" },
-    "plugins/foundry/knowledge/glossary.md": { "status": "done", "figures": ["01-domain-tree.png (graphviz 84)"], "doc_review": "figure PASS; pre-existing scorecard-skill omission flagged" },
+    "plugins/deliver/README.md": { "status": "done", "figures": ["01-orchestration-hierarchy.png (graphviz 82)"], "doc_review": "PASS" },
+    "plugins/deliver/VALUE_FLOW.md": { "status": "done", "figures": ["02-conveyor.png (composition 88)", "03-quality-chain.png (mermaid BEST 86)"], "doc_review": "PASS" },
+    "plugins/deliver/knowledge/first-principles.md": { "status": "done", "figures": ["03-three-pillars.png (composition 82)", "02-tests-coordinates.png (composition 88)", "04-pure-core.png (composition BEST 87)"], "doc_review": "PASS" },
+    "plugins/deliver/knowledge/glossary.md": { "status": "done", "figures": ["01-domain-tree.png (graphviz 84)"], "doc_review": "figure PASS; pre-existing scorecard-skill omission flagged" },
     "docs/guide/context-building-pipeline.md": { "status": "done", "figures": ["01-context-doors.png (composition 88)"], "doc_review": "PASS (SOUL retired; 02-soul-sentinel figure removed with the SOUL canon)" }
   },
   "plugin_banners": {
@@ -22,7 +22,7 @@
     "plugins/discover/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art radar-ripples motif over a dark graphic band; rig line-art",
     "plugins/ideate/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art converging-facets motif over a dark graphic band; rig line-art",
     "plugins/design/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art drafting-table motif over a dark graphic band; vector line-art",
-    "plugins/foundry/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art conveyor motif over a dark graphic band; vector line-art",
+    "plugins/deliver/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art conveyor motif over a dark graphic band; vector line-art",
     "plugins/secure/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art gate-and-shield motif over a dark graphic band; vector line-art",
     "plugins/publish/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art printing-press motif over a dark graphic band; vector line-art",
     "plugins/operate/diagrams/banner.png": "wide 1920x400 branding banner; SVG wordmark+tagline+line-art console-ring/telemetry motif over a dark graphic band; vector line-art"
@@ -30,6 +30,6 @@
   "no_figure_restraint": ["docs/internal/comfyui-experiment/README.md","docs/internal/comfyui-experiment/catalog.md","PREREQUISITES/README.md"],
   "deferred_findings_pre_existing": [
     "ideate README advertises /ideate:self-improve command with no backing commands/*.md (self-improve ships as a skill)",
-    "glossary omits the scorecard skill + /foundry:scorecard command from its lists"
+    "glossary omits the scorecard skill + /deliver:scorecard command from its lists"
   ]
 }

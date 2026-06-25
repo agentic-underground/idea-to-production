@@ -179,7 +179,7 @@ diagram should be measured against:
 | Exemplar | What it demonstrates |
 |----------|---------------------|
 | `exemplars/01-system-stack.dot` | Stacked clusters (browser → server → domain → storage), each cluster ≤4 boxes, vertical flow, edge labels |
-| `exemplars/05-foundry-arch.dot` | Central TB flow with a wide fan-out wrapped to 2 rows of handlers; right-side ledger node; clean rank groupings |
+| `exemplars/05-deliver-arch.dot` | Central TB flow with a wide fan-out wrapped to 2 rows of handlers; right-side ledger node; clean rank groupings |
 
 When in doubt, **copy the structure** of one of these. Modifying a good
 exemplar yields better diagrams than designing from scratch.
@@ -280,7 +280,7 @@ skill.
 ## 9. PROVENANCE
 
 This skill was synthesised on 2026-05-22 from feedback gathered while producing an early long-form print
-edition; the two exemplar diagrams (system stack, FOUNDRY architecture) were that article's first
+edition; the two exemplar diagrams (system stack, DELIVER architecture) were that article's first
 successful figures. It is part of the **publish** plugin and **self-improving** — every subsequent
 article using it starts from a stricter baseline than the last.
 

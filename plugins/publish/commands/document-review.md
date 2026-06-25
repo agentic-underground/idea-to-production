@@ -16,7 +16,7 @@ Parse `$ARGUMENTS` for the **document** to review:
 Then:
 
 1. **Recover intent** — what is this document *for*, and for whom? Review against the right bar and register
-   (a spec, a README, and a completion report differ). When `foundry` is installed and the document is a
+   (a spec, a README, and a completion report differ). When `deliver` is installed and the document is a
    typed pipeline artefact, **compose** its `DOCUMENT-REVIEWER` role by capability for the stage-aware
    completeness checklist.
 2. **Load the reviewer persona** — read [`../skills/writer/agents/reviewer.md`](../skills/writer/agents/reviewer.md)

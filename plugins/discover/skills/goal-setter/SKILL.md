@@ -22,7 +22,7 @@ distinct from an IDEA (*one chosen thing to build*). The full field set and the 
 
 1. Read `.discover/goal.md` if present (refining, not starting fresh).
 2. Fill the fields **infer-first** — domain/niche interest, builder edge, target price band, stack-fit
-   (which FOUNDRY handlers), effort/time-to-MVP appetite, hard constraints. Ask only what blocks a
+   (which DELIVER handlers), effort/time-to-MVP appetite, hard constraints. Ask only what blocks a
    decision, **one focused question at a time, each with a recommended answer + multiple-choice**. A
    left-blank field means "open — surprise me", which is valid (a wider search).
 3. Write `.discover/goal.md` (create `.discover/` if absent) and confirm the goal back to the

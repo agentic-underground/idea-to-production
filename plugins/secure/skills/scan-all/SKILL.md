@@ -4,7 +4,7 @@ description: >
   The consolidated pre-release security gate. Runs SECURITY's three audits in parallel —
   scan-for-pii (personal data), scan-for-secrets (credentials), scan-dependencies (supply chain) — then
   merges them into a single SECURITY-REPORT.md with one overall verdict: PASS, REVIEW, or BLOCK.
-  Trigger with /scan-all [scope]. This is the entry point the foundry plugin calls as its
+  Trigger with /scan-all [scope]. This is the entry point the deliver plugin calls as its
   SECURE station before DELIVERY when SECURE is installed; it is equally useful standalone
   before any release or open-sourcing. Degrades gracefully: if a sub-skill or its tooling is
   unavailable, it reports the gap rather than silently passing.
@@ -57,8 +57,8 @@ then:
 
 | Verdict | Condition | Meaning for the line |
 |---|---|---|
-| **BLOCK** | Any CRITICAL finding (live credential, real special-category PII, known-critical/high vuln, private key) | Do **not** ship. foundry's DELIVERY is halted; remediate and re-run. |
-| **REVIEW** | No CRITICAL, but ≥1 HIGH or unresolved MEDIUM | Human decision required before ship. foundry surfaces it up the line (questions flow UP). |
+| **BLOCK** | Any CRITICAL finding (live credential, real special-category PII, known-critical/high vuln, private key) | Do **not** ship. deliver's DELIVERY is halted; remediate and re-run. |
+| **REVIEW** | No CRITICAL, but ≥1 HIGH or unresolved MEDIUM | Human decision required before ship. deliver surfaces it up the line (questions flow UP). |
 | **PASS** | Only LOW/MINIMAL findings, all documented | Clear to ship. Report retained as evidence of diligence. |
 
 The verdict is the **max severity across all three lenses** — a clean PII scan does not offset a
@@ -90,13 +90,13 @@ it returns REVIEW with the gap noted (no-silent-pass).
 
 ---
 
-## Graceful degradation (the foundry contract)
+## Graceful degradation (the deliver contract)
 
-SCAN-ALL is what foundry calls **only if SECURITY is installed**. Within SECURITY, the gate
+SCAN-ALL is what deliver calls **only if SECURITY is installed**. Within SECURITY, the gate
 itself degrades cleanly:
 - A sub-skill whose external tool is missing (e.g. no `pip-audit`) runs its static checks and
   marks that lens **partial coverage** — never a false PASS.
-- Foundry's side of the contract: if SECURITY is absent entirely, foundry skips the gate, ships
+- Deliver's side of the contract: if SECURITY is absent entirely, deliver skips the gate, ships
   markdown, and notes "SECURITY gate skipped — install the `secure` plugin to enable." The
   decision to ship without a gate is always **disclosed**, never silent.
 
@@ -121,7 +121,7 @@ run **cannot return PASS** for that lens; the gate returns REVIEW with the gap n
 diagnostic turns a dead halt into a next action.
 
 **Log the gap to `IN_PROGRESS.md`** (the conveyor's disaster-recovery artifact — the same ledger
-foundry's coverage-loop and phase work resume from) so a halted gate is recoverable across
+deliver's coverage-loop and phase work resume from) so a halted gate is recoverable across
 sessions and surfaces up the line. Append under a `## Security Gate — chain gap` heading:
 
 ```markdown
@@ -137,10 +137,10 @@ is never weakened to make progress — a gap is disclosed and made actionable, n
 
 ---
 
-## When foundry invokes this
+## When deliver invokes this
 
-foundry's release path (before the DELIVERY station, after STORY) checks for SECURITY and, if
-present, runs `/scan-all`. A **BLOCK** verdict halts DELIVERY (consistent with foundry's
+deliver's release path (before the DELIVERY station, after STORY) checks for SECURITY and, if
+present, runs `/scan-all`. A **BLOCK** verdict halts DELIVERY (consistent with deliver's
 "a gate without a check is forbidden" rule); **REVIEW** is surfaced up the line for a human
 decision; **PASS** lets DELIVERY proceed with the report attached to the commit narrative.
 
@@ -159,7 +159,7 @@ The gate carries no detection logic of its own — it composes the three sub-ski
 
 ## Product lifecycle (by capability)
 
-SECURITY owns the **SECURE** phase — the security gate, distinct from foundry's **ASSURE** quality gate
+SECURITY owns the **SECURE** phase — the security gate, distinct from deliver's **ASSURE** quality gate
 that precedes it (quality ≠ security). When the **i2p** plugin is installed, drive the lifecycle from
 the verdict so the marketplace product lifecycle and the status line track the BUILD ⇄ ASSURE ⇄ SECURE
 loop:

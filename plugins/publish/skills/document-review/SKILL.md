@@ -46,8 +46,8 @@ the charts and PDFs already get.
 It does this by **promoting and sharing** — not by forking a third copy of the critique logic. The five
 dimensions below are the same ones WRITER's `agents/reviewer.md` carries (clarity · accuracy · tone ·
 punchiness · tangents); WRITER's per-section authoring loop and this standalone command share **one prose
-bar**, so the two cannot drift. When `foundry` is installed, this skill also **composes** its general
-`DOCUMENT-REVIEWER` role (`foundry`'s `agents/reviewer.md`) by capability for stage-aware document critique
+bar**, so the two cannot drift. When `deliver` is installed, this skill also **composes** its general
+`DOCUMENT-REVIEWER` role (`deliver`'s `agents/reviewer.md`) by capability for stage-aware document critique
 (completeness for the stage, EARS/Gherkin consistency) — reusing that body rather than re-implementing it.
 
 ## Scope — the WORDS only (hard constraint, no overlap with design-reviewer)
@@ -81,7 +81,7 @@ reviewer at an arbitrary document.
 ## How to run
 
 1. **Recover intent.** What is this document *for*, and for whom? A spec, a README, a gap map, and a
-   completion report have different bars and registers — review against the right one. (When `foundry` is
+   completion report have different bars and registers — review against the right one. (When `deliver` is
    present and the document is a typed pipeline artefact, compose its `DOCUMENT-REVIEWER` role for the
    stage-aware completeness checklist.)
 2. **Read the words** — the document supplied (a path, a pasted body, or the current file). **If nothing
@@ -113,7 +113,7 @@ find none, state *"I am not being adversarial enough"* and look again (per the r
 - **WRITER's authoring loop** invokes this same reviewer body per section while drafting an article; this
   command invokes it standalone on any document. **One prose bar, two doors** — they share
   [`../writer/agents/reviewer.md`](../writer/agents/reviewer.md), so they cannot drift.
-- **`foundry`'s `DOCUMENT-REVIEWER`** (when installed) is composed by capability for stage-aware critique of
+- **`deliver`'s `DOCUMENT-REVIEWER`** (when installed) is composed by capability for stage-aware critique of
   typed pipeline artefacts — reused, not re-implemented.
 
 ## Self-improvement covenant

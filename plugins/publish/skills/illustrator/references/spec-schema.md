@@ -1,7 +1,7 @@
 # The illustration SPEC — the graphical value-handler contract
 
 > The single artefact the ILLUSTRATOR hands a graphical value handler. It is the visual analogue of
-> FOUNDRY's stack manifest: the orchestrator decides *what* and *why*; the handler decides *how* and
+> DELIVER's stack manifest: the orchestrator decides *what* and *why*; the handler decides *how* and
 > renders. One schema, every handler — so options are comparable and the A/B loop is fair. The handler
 > receives the SPEC verbatim and emits exactly one asset that satisfies it.
 
@@ -32,7 +32,7 @@ target:
   width_budget_px: 800            # the host's content-column width
   format: svg                     # see output_format
   output_format: svg              # svg|png (vector/comfyui) · gif|apng|mp4|webp (handler-composite motion) · png/jpg (blend)
-alt_text: "Pipeline: ideate → foundry → security → publish, each a phase gate feeding the next."
+alt_text: "Pipeline: ideate → deliver → security → publish, each a phase gate feeding the next."
 ab:
   axis_of_divergence: "orientation: top-to-bottom stack (A) vs staggered left-right ladder (B)"
 ```

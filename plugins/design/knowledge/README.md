@@ -22,7 +22,7 @@ knowledge/
     └── design-critique-loop.md # the design-fitness rubric + the bounded, measurable, anti-ping-pong loop
 ```
 
-> **Compose, don't duplicate.** Where the `foundry` plugin is installed, its `frontend` design-system
+> **Compose, don't duplicate.** Where the `deliver` plugin is installed, its `frontend` design-system
 > owns the *source-level* contract (`@front-end` INTENT markers, `definition-of-good`, the build-time
 > `design-critic`). DESIGN reviews the **rendered experience** of any app and carries the **deeper SOTA
 > canon**; it reads those markers by capability when present and extends them — it never restates them.

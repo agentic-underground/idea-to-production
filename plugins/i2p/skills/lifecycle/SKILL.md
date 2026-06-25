@@ -9,7 +9,7 @@ description: >
 metadata:
   type: orchestrator
   output: .i2p/lifecycle.json (current_phase + history) + a phase report
-  composes: [discover, ideate, foundry:roadmapper + FLEET engine (DELIVER), design, foundry, security, publish, operate — by capability]
+  composes: [discover, ideate, deliver:roadmapper + FLEET engine (DELIVER), design, deliver, security, publish, operate — by capability]
 model: inherit
 ---
 
@@ -17,7 +17,7 @@ model: inherit
 
 One spine for the whole suite — **nine phases that form a cycle**: **DISCOVER ① → IDEATE ② → DELIVER ③ →
 DESIGN ④ → BUILD ⑤ ⇄ ASSURE ⑥ ⇄ SECURE ⑦ → PUBLISH ⑧ → OPERATE ⑨ ↻**. **DELIVER** (between IDEATE and
-DESIGN, owned by `foundry:roadmapper` + the external FLEET engine) turns the IDEA package into a dependency-ordered
+DESIGN, owned by `deliver:roadmapper` + the external FLEET engine) turns the IDEA package into a dependency-ordered
 roadmap. The three realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop** — a failed quality or
 security gate re-enters BUILD (the `fail` back-edge), and the loop exits to PUBLISH only when all three are
 satisfied. ASSURE (quality) and SECURE (security) are **separate first-class gates**; OPERATE is the
@@ -77,10 +77,10 @@ the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
 |---|---|---|
 | discover (kept OPPORTUNITY, challenger upholds) | `done DISCOVER` | IDEATE |
 | ideate (IDEA package handed off, challenger READY) | `done IDEATE` | DELIVER |
-| `foundry:roadmapper` + FLEET engine (dependency-ordered v2 pipeline of build-ready items) | `done DELIVER` | DESIGN |
+| `deliver:roadmapper` + FLEET engine (dependency-ordered v2 pipeline of build-ready items) | `done DELIVER` | DESIGN |
 | design (design phase concluded) | `done DESIGN` | BUILD *(loop entry)* |
-| foundry (item SHIPs — tests green, story proven) | `done BUILD` | ASSURE *(loop)* |
-| foundry (adversarial quality review PASS — `/pr-review`) | `done ASSURE` | SECURE *(loop)* |
+| deliver (item SHIPs — tests green, story proven) | `done BUILD` | ASSURE *(loop)* |
+| deliver (adversarial quality review PASS — `/pr-review`) | `done ASSURE` | SECURE *(loop)* |
 | security (scan-all PASS — all three satisfied) | `done SECURE` | PUBLISH *(loop exit)* |
 | publish (publication out) | `done PUBLISH` | OPERATE |
 | operate (operate learning → next cycle) | `done OPERATE` | DISCOVER ↻ |
