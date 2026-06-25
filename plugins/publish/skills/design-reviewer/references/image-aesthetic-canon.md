@@ -75,16 +75,16 @@ value/notan), colour (harmony schemes, temperature contrast, limited palette, at
 colour script), narrative & mood (implied story, the decisive moment, gesture/line-of-action), and
 style/medium fidelity (excellent *of its declared style*, not a pastiche or "AI sheen").
 
-- **When ATELIER is installed** (graceful enhancement) — the reviewer loads ATELIER's
+- **When DESIGN is installed** (graceful enhancement) — the reviewer loads DESIGN's
   `knowledge/canon/art-direction.md` (the full, exemplar-anchored canon and the entry-level-trap tells) and
-  may compose ATELIER's `ui-design-reviewer` in its **AESTHETICS-REVIEWER** lens directly. This is the richer,
+  may compose DESIGN's `ui-design-reviewer` in its **AESTHETICS-REVIEWER** lens directly. This is the richer,
   authoritative review: every finding names the principle **and a concrete award-winning exemplar** that does
-  it right (*"flat lighting — cf. Leibovitz's three-point key"*). Detect by capability (atelier's plugin root
+  it right (*"flat lighting — cf. Leibovitz's three-point key"*). Detect by capability (design's plugin root
   / canon file present); never hardcode a cross-plugin path — if absent, fall back cleanly to the baseline.
-- **When ATELIER is absent** — use the **inline baseline** below. It is a compact subset sufficient to review
+- **When DESIGN is absent** — use the **inline baseline** below. It is a compact subset sufficient to review
   competently; it keeps PUBLISH fully self-contained.
 
-### Inline baseline (used only when atelier is not present)
+### Inline baseline (used only when design is not present)
 
 Score "Composition & art-direction" against these, in order — a failure of the first two is almost always why
 an image feels "generated":
@@ -103,7 +103,7 @@ an image feels "generated":
 An image that trips two or more of these tells is **competent-but-generated (3-tier)** at best on this
 dimension, however clean and on-prompt — that is the lenience this canon forbids.
 
-**Medium-richness — inline baseline** (used when atelier's §8/§9 is absent). Score against:
+**Medium-richness — inline baseline** (used when design's §8/§9 is absent). Score against:
 1. **Layer/depth** — does the figure use the depth its medium allows (overlapping planes, atmosphere), or is
    it a flat single plane where layering would obviously serve? *Flat-where-depth-belongs = ≤3.*
 2. **Blend fitness** (SVG↔raster) — each layer plays to its medium: vector type/frame **razor-sharp**, raster

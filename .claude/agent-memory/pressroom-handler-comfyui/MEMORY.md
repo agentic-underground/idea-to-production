@@ -6,4 +6,4 @@
 - [concierge hero (dreamshaper)](project_concierge-hero-comfyui.md) — concierge hero.png recipe: dreamshaper_8, 768x512, seed 303, warm-lantern threshold, dark-key
 - [sentinel hero (dreamshaper)](project_sentinel-hero-comfyui.md) — sentinel hero.png recipe: dreamshaper_8, 768x512, seed 410, watchtower + amber summit beacon + cyan rim/veins, dark-key
 - [mission-control hero (protovisionXL)](project_mission-control-hero-comfyui.md) — ops-room hero recipe: protovisionXL, 1216×832, seed 101, abstract screens to dodge illegible-text cap, amber dome focal, dark-key
-- [atelier hero (protovisionXL)](project_atelier-hero-comfyui.md) — atelier hero.png recipe: protovisionXL, 1216×832, seed 614; SDXL solid-chair-vs-cyan-flood tension + "x-ray"=>skeletons trap
+- [design hero (protovisionXL)](project_design-hero-comfyui.md) — design hero.png recipe: protovisionXL, 1216×832, seed 614; SDXL solid-chair-vs-cyan-flood tension + "x-ray"=>skeletons trap

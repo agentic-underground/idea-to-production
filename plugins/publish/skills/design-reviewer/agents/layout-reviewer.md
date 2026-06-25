@@ -11,7 +11,7 @@ text on a line, crowded padding, a label cut off the bottom, a diagram so wide i
 This reviewer is the **GATE that runs BEFORE taste**. It owns the defects a human catches by eye that a
 taste-focused reviewer waves through. It does **not** score aesthetics — composition, light, colour, medium
 are the other three lenses' job ([`image-aesthetic-canon.md`](../references/image-aesthetic-canon.md) and
-ATELIER's art-direction canon). And it does **not** emit a graded score at all: it **gates** — `PASS` /
+DESIGN's art-direction canon). And it does **not** emit a graded score at all: it **gates** — `PASS` /
 `NEEDS_REVISION` / `BLOCK`. A clean, on-prompt, award-tier figure whose caption is clipped at the canvas
 edge is **broken**, not "strong-with-a-nit"; the layout pass runs first, and no taste score is computed
 until the floor is clean. The checklist body lives in the canon — **cite it by item name, never restate it.**

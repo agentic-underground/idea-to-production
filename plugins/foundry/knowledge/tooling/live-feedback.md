@@ -14,7 +14,7 @@
 FOUNDRY does **not** ship a browser MCP — it relies on the **host-provided `chrome-devtools` MCP**
 (one browser per host: the system Chromium it is pointed at). Web value-handlers are granted the
 `mcp__chrome-devtools__*` tools; when that MCP is present they drive that one browser, and when it is
-absent they degrade gracefully (the test contract below still holds). *(History: FOUNDRY/ATELIER once
+absent they degrade gracefully (the test contract below still holds). *(History: FOUNDRY/DESIGN once
 shipped a `@playwright/mcp` server in `.mcp.json`; it defaulted to a Google Chrome channel headless
 hosts don't install and its registry GC corrupted the shared browser cache — the "ONE BROWSER" cutover
 removed it in favour of the host chrome-devtools. See [`headless-browser.md`](./headless-browser.md).)*

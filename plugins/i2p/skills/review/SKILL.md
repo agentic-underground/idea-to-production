@@ -4,14 +4,14 @@ description: >
   The marketplace-wide adversarial review. Use for /i2p:review (or "review everything",
   "full review across all the plugins", "give me one verdict from every reviewer"). Determines
   scope, fans out EVERY installed specialist reviewer — code (foundry /pr-review), design
-  (atelier /ui-review), rendered docs (publish /publish:design-reviewer), security (security
+  (design /ui-review), rendered docs (publish /publish:design-reviewer), security (security
   /scan-all) — adversarially verifies the serious findings, and synthesises ONE verdict
   (PASS / NEEDS_REVISION / BLOCK) in I2P_REVIEW.md, naming what could not be reviewed. Thin: it
   composes the specialists, it does not re-implement review logic.
 metadata:
   type: orchestrator
   output: I2P_REVIEW.md (verdict PASS | NEEDS_REVISION | BLOCK across all lenses)
-  composes: [foundry /pr-review, atelier /ui-review, publish /publish:design-reviewer, security /scan-all — each if present]
+  composes: [foundry /pr-review, design /ui-review, publish /publish:design-reviewer, security /scan-all — each if present]
 model: inherit
 ---
 
@@ -39,7 +39,7 @@ vs merge-base with `main`), decide which lenses are in scope:
 | In scope when… | Lens | Delegate to (if installed) |
 |---|---|---|
 | a code diff exists | **CODE** | foundry **`/pr-review`** |
-| a running SPA / screenshot is provided | **DESIGN** | atelier **`/ui-review`** |
+| a running SPA / screenshot is provided | **DESIGN** | design **`/ui-review`** |
 | rendered docs / figures (PDF, diagrams) changed | **DOCS** | publish **`/publish:design-reviewer`** (its layout/legibility gate — edge-clip, overlap, inline-legibility — rides inside this delegation, run before taste) |
 | always (any change can leak/secret/regress deps) | **SECURITY** | security **`/scan-all`** |
 

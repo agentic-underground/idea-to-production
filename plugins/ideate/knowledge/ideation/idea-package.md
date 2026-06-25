@@ -56,7 +56,7 @@ The **IDEA dossier** the human reviews and iterates on before committing — gra
 > - **Charts, scorecards, market/pricing diagrams** → **publish** `/publish` (`pdf` for a print-quality
 >   dossier, `diagrams` for figures) when installed — the **handler-mermaid** picks the right diagram
 >   type and themes it, and the **design-reviewer** critiques it.
-> - **User-flows and UI mockups** → **atelier** `/mockup` when installed — it *designs* the flow/screen to
+> - **User-flows and UI mockups** → **design** `/mockup` when installed — it *designs* the flow/screen to
 >   the canon and runs the **convergent designer↔reviewer loop** so the user sees a considered artefact,
 >   not a whipped-up sketch. (Flows render as themed Mermaid; mockups as reviewed screens.)
 > - **Companions absent** → degrade to structured markdown (tables, ASCII / Mermaid-**source** figures, a
@@ -91,7 +91,7 @@ doc/idea/<slug>/
   handoff.md      # agent-facing — the handoff contract (Face 1 §4): objective, entry criteria for
                   #   FOUNDRY, what the challenger verified, knowledge-parity confirmation, open questions / accepted risks. Markdown.
   dossier.md      # user-facing — the IDEA dossier (Face 2): narrative summary, PRICE-BAND, naming
-                  #   candidates, the persuade-and-align read. Markdown prose (figures embedded when publish/atelier rendered them).
+                  #   candidates, the persuade-and-align read. Markdown prose (figures embedded when publish/design rendered them).
 ```
 
 A worked reference of this layout ships under

@@ -30,13 +30,13 @@ sneaks a high score:
   / illustrated / sculptural work that commits to a clear visual language OUTSCORES competent photorealism.**
   Photoreal earns a top Composition band only with a genuine, nameable graphic point of view.
 
-## Capability: compose ATELIER's art-direction canon when present
+## Capability: compose DESIGN's art-direction canon when present
 
-The "Composition & art-direction" dimension is scored against named theory. **Probe for ATELIER** (its plugin
+The "Composition & art-direction" dimension is scored against named theory. **Probe for DESIGN** (its plugin
 root / `knowledge/canon/art-direction.md` present — by capability, never a hardcoded cross-plugin path):
 - **Present** → load `art-direction.md` and score against its full canon (composition · light · colour ·
   narrative · style/medium · the award bar + the entry-level-trap tells). You may also defer the aesthetic
-  dimension to ATELIER's `ui-design-reviewer` in its **AESTHETICS-REVIEWER** lens. Cite the principle **and a
+  dimension to DESIGN's `ui-design-reviewer` in its **AESTHETICS-REVIEWER** lens. Cite the principle **and a
   named award-winning exemplar** per finding.
 - **Absent** → use the **inline baseline** in `image-aesthetic-canon.md` (focal hierarchy → light → colour →
   composition → mood/style). PUBLISH reviews competently standalone.

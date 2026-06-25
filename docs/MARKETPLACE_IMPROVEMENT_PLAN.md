@@ -12,7 +12,7 @@ Once every step below is complete, the intended journey reads end-to-end as foll
 2. **DISCOVER (optional validation).** If they're unsure the thesis holds, `/discover:market-scan` now recognises a user-supplied thesis and *validates* it (rather than only proposing fresh candidates), writing a validated `doc/opportunities/<slug>.md`. (Step 7)
 3. **IDEATE → handoff.** `/ideate:ideate` runs the challenged dialogue and writes a fully-specified IDEA package to a **documented file layout** — `doc/idea/<slug>/{brief.md, smu-seed.md, first-slice.md, handoff.md, dossier.md}` — matching a committed worked example the user can compare against. (Step 6)
 4. **DELIVER.** The user types `/foundry:roadmapper` — which now **resolves to a real command** — and gets a `docs/roadmap/` FLEET v2 pipeline (EPIC/PLAN docs) shaped exactly like the committed **golden sample** under `references/`. (Steps 2, 8)
-5. **DESIGN.** The reconciled docs state one truth: whether atelier gates BUILD or cross-cuts it, and the pipeline pauses for atelier at a **defined invocation point** so `done DESIGN` fires on a real boundary. (Step 5)
+5. **DESIGN.** The reconciled docs state one truth: whether design gates BUILD or cross-cuts it, and the pipeline pauses for design at a **defined invocation point** so `done DESIGN` fires on a real boundary. (Step 5)
 6. **BUILD.** FOUNDRY drains each PLAN through the 0–9 conveyor. The LEAD selects handlers via a **documented stack-detection table** (signal → handler), so an Ansible item routes to the now-registered `handler-ansible` instead of surprising the user at the missing-handler gate. (Steps 3, 4)
 7. **BUILD ⇄ ASSURE ⇄ SECURE — the loop now turns.** On a built item, `/foundry:pr-review` calls `/i2p:lifecycle done ASSURE` on PASS (advancing to SECURE) or `/i2p:lifecycle fail ASSURE` on NEEDS_REVISION/BLOCK. `/security:scan-all` calls `/i2p:lifecycle done SECURE` on PASS or `/i2p:lifecycle fail SECURE` on BLOCK. The statusline `⇄ ×N` increments on every loop-back, and a **failure-recovery callout** tells the operator exactly which report to open, what to fix, and what to re-run. The loop is traversable for the first time. (Steps 1, 9)
 8. **PUBLISH → OPERATE.** On all-green, `done SECURE` advances to PUBLISH and onward; OPERATE runs the gate.
@@ -56,11 +56,11 @@ At the end, a product that began as one sentence has a roadmap, tested-and-revie
 
 ### Step 5: Reconcile the DESIGN-phase ordering
 - **Phase:** DESIGN
-- **Plugin:** `plugins/i2p/knowledge/product-lifecycle.md`; `plugins/foundry/VALUE_FLOW.md`; `plugins/atelier/skills/mockup/SKILL.md`
-- **What to build:** State in one place whether DESIGN is a gate BEFORE the engine builds or a cross-cut DURING build (or both). If both, define exactly when the roadmapper/FLEET pipeline pauses for atelier and how atelier's `done DESIGN` fires before the engine starts draining PLANs. Update product-lifecycle.md (phase ④, before BUILD) and VALUE_FLOW.md (station 6b, cross-cuts IMPLEMENT) to agree, and align atelier's `done DESIGN` trigger to the single defined boundary.
+- **Plugin:** `plugins/i2p/knowledge/product-lifecycle.md`; `plugins/foundry/VALUE_FLOW.md`; `plugins/design/skills/mockup/SKILL.md`
+- **What to build:** State in one place whether DESIGN is a gate BEFORE the engine builds or a cross-cut DURING build (or both). If both, define exactly when the roadmapper/FLEET pipeline pauses for design and how design's `done DESIGN` fires before the engine starts draining PLANs. Update product-lifecycle.md (phase ④, before BUILD) and VALUE_FLOW.md (station 6b, cross-cuts IMPLEMENT) to agree, and align design's `done DESIGN` trigger to the single defined boundary.
 - **Effort:** M
 - **Unblocks:** Journey moment 5 — `done DESIGN` fires on a real boundary instead of an undefined one in a FLEET pipeline.
-- **Done when:** product-lifecycle.md and VALUE_FLOW.md describe DESIGN's position and ownership identically; atelier's `done DESIGN` trigger names a concrete pipeline boundary.
+- **Done when:** product-lifecycle.md and VALUE_FLOW.md describe DESIGN's position and ownership identically; design's `done DESIGN` trigger names a concrete pipeline boundary.
 
 ### Step 6: Define the IDEA-package filesystem schema + ship a worked example
 - **Phase:** IDEATE

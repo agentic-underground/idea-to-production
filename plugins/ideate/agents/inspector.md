@@ -36,5 +36,5 @@ Run these IN ADDITION to the core's generic Phase-3 items (paths relative to `${
    candidate list (never one agent per name); `namecheck.sh` has **exactly one home** under the skill (no
    `scripts/namecheck.sh` at the marketplace root, no `~/.claude` copy or `find ~/.claude` fallback); the
    `report-template.md` keeps **availability and challenge verdicts in separate columns**.
-4. **Graceful degradation:** the user-facing dossier renders via publish/atelier **by capability** and
+4. **Graceful degradation:** the user-facing dossier renders via publish/design **by capability** and
    degrades to markdown — never hard-depends on a companion plugin by path.

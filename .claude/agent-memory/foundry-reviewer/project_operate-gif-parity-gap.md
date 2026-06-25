@@ -30,7 +30,7 @@ siblings carry one AND the asset exists on disk:
 - publish → publish-press.gif (:11)
 - security → sentinel-gate.gif (:11)
 - i2p → i2p-frontdoor.gif (:8)
-- atelier → atelier-critique.gif
+- design → design-critique.gif
 
 **Why:** the operate concept GIF was simply never authored. **How to apply:** if a future
 PR claims to "complete" operate's README or restore visual parity, the real fix is

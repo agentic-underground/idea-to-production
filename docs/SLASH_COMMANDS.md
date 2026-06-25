@@ -24,7 +24,7 @@ together once all are satisfied and the roadmap item is complete.
 | **1** | DISCOVER | `discover` | [↓](#discover--discover) |
 | **2** | IDEATE | `ideate` | [↓](#ideate--ideate) |
 | **3** | DELIVER | `foundry:roadmapper` (+ external FLEET engine) | [↓](#foundryroadmapper--deliver) |
-| **4** | DESIGN | `atelier` | [↓](#atelier--design) |
+| **4** | DESIGN | `design` | [↓](#design--design) |
 | **5** | BUILD ⇄ ASSURE | `foundry` | [↓](#foundry--build--assure) |
 | **6** | SECURE | `security` | [↓](#security--secure) |
 | **7** | PUBLISH | `publish` | [↓](#publish--publish) |
@@ -111,14 +111,14 @@ with a worked golden sample in
 *(The legacy in-repo `flow` plugin — `/flow:pull`, `/flow:flow`, the `flow-mcp` server — has been
 retired; the FLEET engine supersedes it.)*
 
-## atelier — DESIGN
+## design — DESIGN
 
 Design the interface before it's built.
 
 | Command | What it does |
 |---|---|
-| `/atelier:mockup` | Design a reviewed UI mockup, wireframe, or user-flow — not a first draft |
-| `/atelier:ui-review` | Adversarially review a running SPA or screenshot → a scored, prioritised critique |
+| `/design:mockup` | Design a reviewed UI mockup, wireframe, or user-flow — not a first draft |
+| `/design:ui-review` | Adversarially review a running SPA or screenshot → a scored, prioritised critique |
 
 ## foundry — BUILD ⇄ ASSURE
 
@@ -202,7 +202,7 @@ no `/mcp__…` commands to type.
 | `context7` | foundry | Fetch current documentation for a library, framework, SDK, or CLI |
 | `fetch` | ideate, discover | Retrieve and read web page content |
 
-Browser driving (navigate, screenshot, accessibility snapshot — used by atelier and the foundry web
+Browser driving (navigate, screenshot, accessibility snapshot — used by design and the foundry web
 handlers) is **not** shipped: per the ONE BROWSER cutover the marketplace uses the **host-provided
 `chrome-devtools`** MCP, pointed at the system Chromium, and bundles no browser server of its own.
 

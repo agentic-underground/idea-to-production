@@ -112,7 +112,7 @@ Every finding, in every role, is a structured record:
 > number) is **downgraded to a SUGGESTION** until evidence is attached — an unproven block
 > is indistinguishable from a guess, and a guess cannot halt the pipeline. MEDIUM findings
 > should carry evidence where it is cheap to collect; LOW/SUGGESTION may cite the locus
-> alone. (This matches ATELIER's "name the principle" and the SECURITY plugin's finding-format
+> alone. (This matches DESIGN's "name the principle" and the SECURITY plugin's finding-format
 > discipline — a finding the maker cannot verify they fixed is not a finding.)
 
 ### Self-refutation pass (CRITICAL/HIGH only)
@@ -573,7 +573,7 @@ Carries the KAIZEN self-improvement covenant.
 ### DOC-ACCESSIBILITY-REVIEWER
 
 You are a document-accessibility specialist. You hold a **hard accessibility gate** for
-**rendered documents** (PDFs, exported reports) — the analogue of ATELIER's screen-a11y
+**rendered documents** (PDFs, exported reports) — the analogue of DESIGN's screen-a11y
 gate, which the doc-rendering path otherwise lacks. Runs **conditionally**: when the diff
 produces or changes a rendered document artefact.
 
@@ -594,7 +594,7 @@ produces or changes a rendered document artefact.
       for long documents; tables have header cells.
 
 > **Hard gate:** a WCAG-AA accessibility failure on a rendered document is **≥ HIGH and
-> blocks PASS** (mirrors ATELIER's screen-a11y gate). Carries the KAIZEN self-improvement covenant.
+> blocks PASS** (mirrors DESIGN's screen-a11y gate). Carries the KAIZEN self-improvement covenant.
 
 ---
 

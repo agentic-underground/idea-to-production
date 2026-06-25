@@ -95,17 +95,17 @@ digraph DomainArchB {
               fillcolor="#3f3320:#241c10", color="#e0af68"]
     publish [label=<<b>publish</b><br/><font point-size="9" color="#e8c98f">PUBLISH</font>>,
                fillcolor="#3f3320:#241c10", color="#e0af68"]
-    atelier [label=<<b>atelier</b><br/><font point-size="9" color="#cbb6f0">DESIGN &middot; usability</font>>,
+    design [label=<<b>design</b><br/><font point-size="9" color="#cbb6f0">DESIGN &middot; usability</font>>,
              fillcolor="#352f50:#1f1b2e", color="#bb9af7"]
     mission [label=<<b>operate</b><br/><font point-size="9" color="#cbb6f0">OPERATE</font>>,
              fillcolor="#352f50:#1f1b2e", color="#bb9af7"]
 
     // clean 2×2 grid DIRECTLY beneath the title bar (no L-shaped spill)
     { rank=same; security;  publish }
-    { rank=same; atelier;   mission }
+    { rank=same; design;   mission }
     co_title  -> security  [style=invis]
     co_title  -> publish [style=invis]
-    security  -> atelier   [style=invis, weight=10]
+    security  -> design   [style=invis, weight=10]
     publish -> mission   [style=invis, weight=10]
   }
 

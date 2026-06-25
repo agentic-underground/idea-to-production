@@ -30,7 +30,7 @@ if it must, ask a question back up the line until the answer is found.
 
 ## 1 · The conveyor (the picture)
 
-![The FOUNDRY conveyor, three layers: THE IDEA above the line (the user ⇄ IDEATE / PRODUCT_MANAGER, knowledge-parity before build) feeds a clear agent-readable brief DOWN into THE CONVEYOR, whose nine value-stations carry value left→right — IDEA (ideate) ▶ ROADMAP (roadmapper) ▶ PLAN ▶ EARS (spec) ▶ FEATURE ▶ TEST (tests) ▶ IMPLEMENT +DESIGN (builder/handlers) ▶ STORY ▶ SHIP (deliver) — with cross-cutting GOVERNANCE (reviewers · perf-delta gates · inspector, in foundry) and companions when installed (PUBLISHING → publish · SECURITY → security · DESIGN → atelier) riding the whole carriage; questions flow UP, value flows DOWN.](diagrams/02-conveyor.png)
+![The FOUNDRY conveyor, three layers: THE IDEA above the line (the user ⇄ IDEATE / PRODUCT_MANAGER, knowledge-parity before build) feeds a clear agent-readable brief DOWN into THE CONVEYOR, whose nine value-stations carry value left→right — IDEA (ideate) ▶ ROADMAP (roadmapper) ▶ PLAN ▶ EARS (spec) ▶ FEATURE ▶ TEST (tests) ▶ IMPLEMENT +DESIGN (builder/handlers) ▶ STORY ▶ SHIP (deliver) — with cross-cutting GOVERNANCE (reviewers · perf-delta gates · inspector, in foundry) and companions when installed (PUBLISHING → publish · SECURITY → security · DESIGN → design) riding the whole carriage; questions flow UP, value flows DOWN.](diagrams/02-conveyor.png)
 
 Three layers:
 - **THE IDEA (above):** what we are building, and why. Owned by the PRODUCT_MANAGER.
@@ -96,7 +96,7 @@ A station with no handler is a defect FOUNDER reports. A gate without a check is
 | 4 | **FEATURE** | behaviour as Gherkin | `lifecycle-states` | ds-step-2-feature-docs | ≥3 scenarios/EARS (happy/unhappy/abuse); BDD-REVIEWER PASS |
 | 5 | **TEST** | failing tests = solution coordinates | `lifecycle-states` | ds-step-3-tests, ds-step-4-first-test-run | genuinely RED; gap map complete |
 | 6 | **IMPLEMENT** | minimal code to green | `lifecycle-states`, `code-quality` | ds-step-5/6, handler-* | all gap-map tests green; 100% coverage floor |
-| 6b| **DESIGN** *(cross-cuts IMPLEMENT)* | usable, accessible surfaces — the DESIGN station **cross-cuts IMPLEMENT**; the **primary atelier gate fires before the engine starts draining PLANs** (see [product-lifecycle](../i2p/knowledge/product-lifecycle.md)) | `frontend` | handler-vanilla-js, handler-css | INTENT-marked; a11y + privacy held |
+| 6b| **DESIGN** *(cross-cuts IMPLEMENT)* | usable, accessible surfaces — the DESIGN station **cross-cuts IMPLEMENT**; the **primary design gate fires before the engine starts draining PLANs** (see [product-lifecycle](../i2p/knowledge/product-lifecycle.md)) | `frontend` | handler-vanilla-js, handler-css | INTENT-marked; a11y + privacy held |
 | 7 | **STORY** | proof through the real interface | `lifecycle-states` | ds-step-story-tests, handler-playwright | STORY_PROVEN; perf-delta gate passed |
 | 8 | **DELIVERY** | shipped + traceable | `lifecycle-states` | ds-step-7/8/9 | synced; commit narrative; roadmap COMPLETE |
 | 9 | **DEPLOY** *(where the product deploys)* | a live artefact | `lifecycle-states` (stack skill, e.g. `rust-webapp-rollout`) | stack handler | built + deployed; live URL/endpoint exists |
@@ -125,7 +125,7 @@ cleanly without (**graceful enhancement** — foundry's value artefact is markdo
   `/security:scan-all` (PII + secret + dependency audit → `SECURITY-REPORT.md`, verdict
   PASS/REVIEW/BLOCK) before DELIVERY. When absent, the gate is skipped with a noted recommendation
   to install `security`.
-- **DESIGN** *(companion: `atelier` plugin)* — when installed, foundry's rendered UI surfaces can be
+- **DESIGN** *(companion: `design` plugin)* — when installed, foundry's rendered UI surfaces can be
   put under `/ui-review` (crawl + adversarial, canon-grounded critique with an accessibility gate), and
   user-flows/mockups composed via `/mockup` in a convergent designer↔reviewer loop. It **composes with**
   foundry's source-level `frontend` design-system (the DESIGN station 6b) by capability — extending the
@@ -287,7 +287,7 @@ lifecycle-orchestrator's internal step-0..9 item loop.
 | GOVERNANCE | `code-quality`, `reviewer-gate` | reviewer, inspector, coverage-loop-agent, flaky-test-fixer | all pillars, testing/* |
 | PUBLISHING *(companion)* | `publish` plugin: `writer`, `diagram-studio`, `handler-mermaid`, `rich-pdf-with-diagrams`, `design-reviewer` (via `/publish`) | writer's reviewer · typographic/dataviz reviewers | — |
 | SECURITY *(companion)* | `security` plugin: `scan-for-pii`, `scan-for-secrets`, `scan-dependencies` (via `/security:scan-all`) | (parallel audit sub-agents) | — |
-| DESIGN *(companion)* | `atelier` plugin: `ui-review`, `mockup` (via `/ui-review`, `/mockup`) | ui-design-reviewer | — |
+| DESIGN *(companion)* | `design` plugin: `ui-review`, `mockup` (via `/ui-review`, `/mockup`) | ui-design-reviewer | — |
 | SENSOR (infra) | `phase-sensor` | (hook) | per-phase notes |
 
 The [`knowledge/README.md`](knowledge/README.md) index says which doc answers which question, and

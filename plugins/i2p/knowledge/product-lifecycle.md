@@ -59,7 +59,7 @@ DESIGN, and the **BUILD/ASSURE/SECURE loop** (the ⇄).
 | ① | **DISCOVER** `[DISCOVER]` | discover | find a problem worth solving; kill weak ideas early | Fuzzy Front End (opportunity identification) · Double Diamond **Discover** (diverge: problem) |
 | ② | **IDEATE** `[IDEATE]` | ideate | turn the opportunity into a build-ready IDEA package at knowledge-parity | Double Diamond **Define** (converge: concept) · NPD concept development · design-thinking *empathize/define* |
 | ③ | **DELIVER** `[DELIVER]` | `foundry:roadmapper` (+ external FLEET engine) | turn the IDEA package into the FLEET v2 pipeline: intake → EARS/feature authoring → decomposition into atomic, dependency-ordered build-ready EPIC/PLAN slices; the FLEET engine drains it | NPD planning · PLM **plan** · Kahn topological work-ordering · agile backlog decomposition (INVEST, vertical slices) |
-| ④ | **DESIGN** `[DESIGN]` | atelier | make the experience usable, elegant, accessible — **DESIGN gates BUILD**: atelier reviews surfaces as part of DELIVER intake; it also **cross-cuts during BUILD** via the frontend design system | Double Diamond **Develop** (diverge: solution) · design thinking *ideate/prototype* |
+| ④ | **DESIGN** `[DESIGN]` | design | make the experience usable, elegant, accessible — **DESIGN gates BUILD**: design reviews surfaces as part of DELIVER intake; it also **cross-cuts during BUILD** via the frontend design system | Double Diamond **Develop** (diverge: solution) · design thinking *ideate/prototype* |
 | ⑤ | **BUILD** `[BUILD]` | foundry | realise it test-first through the value conveyor (IDEA▶…▶SHIP) — *loop entry* | Double Diamond **Deliver** · NPD development · PLM **Realize** |
 | ⑥ | **ASSURE** `[ASSURE]` | foundry | **certify quality** — adversarial V&V: tests green, coverage density, perf-delta, regression, architecture; *fail → re-enter BUILD* | Verification & Validation · quality gate (PDCA *check* / DMAIC *control*) |
 | ⑦ | **SECURE** `[SECURE]` | security | **certify security** — PII, secrets, supply-chain clear before exposure; *fail → re-enter BUILD*, *pass (all three) → exit loop to PUBLISH* | secure-by-design · supply-chain integrity · the security gate |
@@ -116,9 +116,9 @@ product is simultaneously shipped, quality-certified, and security-certified, th
 
 Woven through *every* phase from the start, each certified at the gate named above:
 
-- **Usability (DESIGN, atelier)** — present from IDEATE (you shape the experience as you define the concept).
-  DESIGN has a **primary gate before BUILD** — atelier reviews surfaces against the design-fitness rubric as part
-  of DELIVER intake, before the engine starts draining PLANs — *and* it **cross-cuts during BUILD**, where atelier
+- **Usability (DESIGN, design)** — present from IDEATE (you shape the experience as you define the concept).
+  DESIGN has a **primary gate before BUILD** — design reviews surfaces against the design-fitness rubric as part
+  of DELIVER intake, before the engine starts draining PLANs — *and* it **cross-cuts during BUILD**, where design
   reviews surfaces produced by the frontend design system. Certified at the **DESIGN** gate (design-fitness rubric).
 - **Quality (ASSURE, foundry)** — *first-class, built-in not inspected-in.* The test-first conveyor means
   quality is engineered from the first line of BUILD (indeed from the EARS spec); the **ASSURE** gate is where

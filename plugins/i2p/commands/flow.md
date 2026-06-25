@@ -19,7 +19,7 @@ Explain the value flow. Follow the [`flow` skill](../skills/flow/SKILL.md):
 3. If `$ARGUMENTS` names a starting point (e.g. "I have a raw idea", "I have a PR"), trace just the path
    from there to PRODUCTION as an ordered list of commands, routing through DELIVER and showing the loop
    back-edge (ASSURE/SECURE fail → BUILD).
-4. Render a **Mermaid** flow diagram when publish or atelier is installed (defer to their renderers) —
+4. Render a **Mermaid** flow diagram when publish or design is installed (defer to their renderers) —
    route through DELIVER and draw the BUILD ⇄ ASSURE ⇄ SECURE loop back-edge; otherwise emit a clean
    ASCII/markdown map.
 

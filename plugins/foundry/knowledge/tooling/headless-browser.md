@@ -24,7 +24,7 @@ Both marketplace consumers point at that one binary:
 | **`chrome-devtools` MCP** (navigate/click/fill/screenshot/a11y/console/network) | **host-provided** — the host registers it pointed at the system Chromium (`--executablePath … --isolated`) | **no — host-provided, not bundled** |
 
 > **History (the collision this fixed).** The marketplace once shipped a `@playwright/mcp` server in
-> `atelier`/`foundry` `.mcp.json`. It defaulted to a Google-Chrome channel headless hosts don't
+> `design`/`foundry` `.mcp.json`. It defaulted to a Google-Chrome channel headless hosts don't
 > install, *and* it pinned/GC'd browsers in the shared `~/.cache/ms-playwright` — its registry GC
 > deleted other tools' pinned browser (the "flappy chromium" bug). The **ONE BROWSER** cutover removed
 > it in favour of the host `chrome-devtools` driving the single system Chromium. There is no
@@ -94,8 +94,8 @@ MUST obey all five, or it recreates the collision the cutover fixed:
 
 Browser-consuming skills link here for the resolver model and TC-BROWSER-1 — they do not restate it:
 
-- `atelier/ui-review` — crawls routes via the chrome-devtools MCP (host-provided, system Chromium).
-- `atelier/mockup` — screenshots renderable HTML/CSS via the chrome-devtools MCP.
+- `design/ui-review` — crawls routes via the chrome-devtools MCP (host-provided, system Chromium).
+- `design/mockup` — screenshots renderable HTML/CSS via the chrome-devtools MCP.
 - `publish/rich-pdf-with-diagrams` — renders Mermaid via `mmdc`/puppeteer (system Chromium).
 - **foundry story phases** — live feedback through the chrome-devtools MCP; the committed STORY test
   uses the Playwright **runner** (a per-project browser, separate from the marketplace MCP).
