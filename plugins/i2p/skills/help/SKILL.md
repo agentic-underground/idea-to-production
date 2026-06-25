@@ -33,7 +33,7 @@ probe the filesystem. The plugins to look for:
 
 | Plugin | Stage | Headline commands |
 |---|---|---|
-| **market-scanner** | DISCOVER | `/discovery-goal`, `/market-scan` |
+| **discover** | DISCOVER | `/discovery-goal`, `/market-scan` |
 | **ideator** | IDEATE | `/ideate` |
 | **foundry:roadmapper** (+ external FLEET engine) | DELIVER (roadmap intake → EARS/feature → decomposition; engine drains it) | `/roadmapper` (headline); external FLEET plugin: `/pipeline:status`, `/pipeline:run` |
 | **atelier** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
@@ -65,7 +65,7 @@ around. Summarise the model from [`../../knowledge/product-lifecycle.md`](../../
 > **idea-to-production is the *creation arc*** of a product — it begins with **the search for an idea**
 > and carries it into **OPERATE** (realised, live, and kept alive). **Nine phases forming a cycle**, each
 > owned by one plugin:
-> **DISCOVER ①** (market-scanner) → **IDEATE ②** (ideator) → **DELIVER ③** (`foundry:roadmapper` —
+> **DISCOVER ①** (discover) → **IDEATE ②** (ideator) → **DELIVER ③** (`foundry:roadmapper` —
 > headline **`/roadmapper`** — authors the FLEET v2 `docs/roadmap/` pipeline: intake → EARS/feature →
 > dependency-ordered EPIC/PLAN decomposition; the external FLEET engine drains it) → **DESIGN ④** (atelier)
 > → **BUILD ⑤** (foundry) ⇄ **ASSURE ⑥** (foundry — quality V&V) ⇄ **SECURE ⑦** (security — security) →
@@ -90,7 +90,7 @@ problem/solution/value triad), don't make them start at the meta-menu. Route the
 - **Confident in the thesis** → **`/ideator:ideate "By doing X I propose Y, value Z"`** (raw-idea mode):
   `/ideate` recognises the triad and pre-fills the brief's PROBLEM / SUCCESS-METRIC / PRICE-BAND fields,
   then challenges it to build-ready knowledge-parity.
-- **Unsure the thesis holds** → **`/market-scanner:market-scan`** in its **thesis-validation mode**: hand
+- **Unsure the thesis holds** → **`/discover:market-scan`** in its **thesis-validation mode**: hand
   it the thesis (or an `OPPORTUNITY-*.md` from `/operate:iterate`) and it *validates that specific thesis*
   against the market taxonomy rather than proposing fresh candidates — emitting a validated
   `doc/opportunities/<slug>.md` that `/ideate` then refines.

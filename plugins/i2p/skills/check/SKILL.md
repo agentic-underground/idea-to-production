@@ -51,7 +51,7 @@ For each plugin that is **installed** and ships a check, run it, passing `$ARGUM
 
 | Plugin | Check |
 |---|---|
-| market-scanner | `/market-scanner:check` |
+| discover | `/discover:check` |
 | ideator | `/ideator:check` |
 | foundry | `/foundry:check` |
 | atelier | `/atelier:check` |

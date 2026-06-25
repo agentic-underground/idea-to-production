@@ -48,7 +48,7 @@ asks clarifying questions — one at a time, conversationally — until the brie
 unambiguous, actionable, and self-contained (a fresh agent with no history can act on it).
 
 **Upstream front end (graceful enhancement).** When the **`ideator` plugin** is installed, parity is
-reached *upstream*: `market-scanner` discovers a worth-building opportunity and the `ideator` plugin
+reached *upstream*: `discover` discovers a worth-building opportunity and the `ideator` plugin
 refines it into an **IDEA package** (agent-facing brief + SMU-seed + first slice + handoff contract)
 already challenged to knowledge-parity. FOUNDRY's IDEA station then **receives that package by
 capability** and verifies the discovery exit criteria — it does *not* re-interrogate. When the plugin is

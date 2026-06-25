@@ -16,7 +16,7 @@ with a recommended default + multiple-choice; leave blank = "open, surprise me")
 - **Effort / time-to-MVP appetite** — days, small weeks, longer.
 - **Constraints** — anything off the table (regulated markets, hardware, etc.).
 
-Stored as a project-local marker (e.g. `.market-scanner/goal.md`) so a loop can read it across runs.
+Stored as a project-local marker (e.g. `.discover/goal.md`) so a loop can read it across runs.
 Absent ⇒ the scan asks for the minimum needed before proposing candidates.
 
 ## The loop

@@ -5,7 +5,7 @@
 > The marketplace-level front door. Install the suite and you gain great powers across seven specialist
 > plugins — **i2p** is the plugin that tells you so, and hands you one verbatim place to drive them all.
 
-![Hub-and-spoke routing animation: an amber dispatch beam sweeps clockwise around the i2p core, lighting each of the seven ringed specialist plugins — market-scanner, ideator, atelier, foundry, security, publish, operate — teal in turn; when the ring is whole every spoke stays lit and the central i2p hub turns green under the caption "all powers routed — one front door, every plugin lit", teaching that i2p is the conductor that dispatches to every plugin.](../../docs/images/i2p-frontdoor.gif)
+![Hub-and-spoke routing animation: an amber dispatch beam sweeps clockwise around the i2p core, lighting each of the seven ringed specialist plugins — discover, ideator, atelier, foundry, security, publish, operate — teal in turn; when the ring is whole every spoke stays lit and the central i2p hub turns green under the caption "all powers routed — one front door, every plugin lit", teaching that i2p is the conductor that dispatches to every plugin.](../../docs/images/i2p-frontdoor.gif)
 
 The other seven plugins each stand alone and namespace their commands (`/foundry:*`, `/atelier:*`, …).
 What the marketplace lacked was a **meta surface**: somewhere to ask "what can I do now?" and a single

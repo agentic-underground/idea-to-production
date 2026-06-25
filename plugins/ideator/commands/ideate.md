@@ -1,5 +1,5 @@
 ---
-description: Refine an idea into a build-ready IDEA package — an adversarially-challenged dialogue that takes a validated opportunity (from market-scanner) or a raw idea, reaches knowledge-parity, and emits precise agent-facing handoff docs (satisfying FOUNDRY's discovery exit criteria) plus a rich illustrated user-facing dossier (via publish), then hands off to FOUNDRY.
+description: Refine an idea into a build-ready IDEA package — an adversarially-challenged dialogue that takes a validated opportunity (from discover) or a raw idea, reaches knowledge-parity, and emits precise agent-facing handoff docs (satisfying FOUNDRY's discovery exit criteria) plus a rich illustrated user-facing dossier (via publish), then hands off to FOUNDRY.
 ---
 
 Refine an idea into the IDEA package. Follow the [`ideate` skill](../skills/ideate/SKILL.md):

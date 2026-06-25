@@ -774,7 +774,7 @@ section "R. lifecycle-driver completeness (every advance-table 'done <PHASE>' ha
 # Each entry: "PHASE  owner-dir  verb1[;verb2]" — the advance-table rows, with the loop gates carrying
 # BOTH the done and the fail verb. DELIVER is omitted on purpose (external FLEET engine — see header).
 lifecycle_rows=(
-  "DISCOVER market-scanner done DISCOVER"
+  "DISCOVER discover done DISCOVER"
   "IDEATE   ideator        done IDEATE"
   "DESIGN   atelier        done DESIGN"
   "BUILD    foundry        done BUILD"

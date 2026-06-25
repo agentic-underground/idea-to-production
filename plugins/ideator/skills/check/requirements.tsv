@@ -1,6 +1,6 @@
 # name	probe-command	tier	install-hint
 # Canonical dependency manifest for IDEATOR. TAB-separated. Probe passes when it exits 0.
-# IDEATOR is mostly a dialogue skill. Companions (market-scanner, foundry, publish) are PLUGINS,
+# IDEATOR is mostly a dialogue skill. Companions (discover, foundry, publish) are PLUGINS,
 # referenced by capability, not probed here. The rich user-facing dossier is rendered by publish's
 # own tools (typst/latex/dot) when /publish is invoked — those are publish's deps, checked by
 # /publish:check, not duplicated here.

@@ -104,7 +104,7 @@ A discovery exit criterion is unmet at a level revision cannot patch — the ide
 
 Unmet: [which criterion — Problem / Actors / Scope / Constraints / Success / open questions]
 Why: [the package is built on an undecided foundation]
-Recommendation: return to discovery (or market-scanner) before any handoff to FOUNDRY.
+Recommendation: return to discovery (or discover) before any handoff to FOUNDRY.
 ```
 
 ## KAIZEN Covenant

@@ -12,11 +12,11 @@ understand the *system*; read here to disambiguate a *name*.
 
 ## 1. The conceptual-domain tree
 
-![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — market-scanner (DISCOVERY front door) → ideator (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), publish (PUBLISH), atelier (DESIGN/usability), operate (OPERATE).](diagrams/01-domain-tree.png)
+![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — discover (DISCOVERY front door) → ideator (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), publish (PUBLISH), atelier (DESIGN/usability), operate (OPERATE).](diagrams/01-domain-tree.png)
 
 The companions are **cross-cutting**: foundry/ideator use them *by capability* when installed
 (graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
-is the nine-phase product-lifecycle **cycle**: **DISCOVER (market-scanner) → IDEATE (ideator) →
+is the nine-phase product-lifecycle **cycle**: **DISCOVER (discover) → IDEATE (ideator) →
 DELIVER (foundry:roadmapper + FLEET engine) → DESIGN (atelier) → BUILD ⇄ ASSURE ⇄ SECURE (foundry build,
 foundry quality, security — the realisation loop) → PUBLISH (publish) → OPERATE (operate) ↻**
 (a failed ASSURE/SECURE gate sends work back to BUILD; OPERATE loops back to DISCOVER). Three concerns
@@ -86,7 +86,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **⚔ adversarial-catch counter** (times a reviewer caught something) and the **token-cost tracker**
   (per-phase actual vs a self-calibrating estimate, tokens + $). Canonical:
   `i2p/knowledge/instrumentation.md`; state under `~/.claude/state/` and `<project>/.i2p/cost.json`.
-- **i2p / market-scanner / ideator / foundry / security / publish / atelier / operate** — the front door
+- **i2p / discover / ideator / foundry / security / publish / atelier / operate** — the front door
   plus the seven specialist plugins: FRONT DOOR (the meta-layer + arrival layer; composes the specialists)
   / DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the core conveyor
   (BUILD + the ASSURE quality gate, **and** DELIVER via foundry:roadmapper authoring + the external FLEET
@@ -118,11 +118,11 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **phase-sensor** (infra; PostToolUse hook) · **rust-webapp-rollout** (Rust/WASM/Vercel one-shot) ·
   **pr-review** (adversarial PR/diff review → one verdict) · **self-improve** (targeted self-cleaving →
   PR) · **prerequisites** (emit PREREQUISITES.md) ·
-  **check** (verify tool dependencies). The companions add **check** too (market-scanner, ideator,
+  **check** (verify tool dependencies). The companions add **check** too (discover, ideator,
   security, publish, atelier, operate).
 
 ### Skills (companion plugins)
-- market-scanner: **goal-setter** · **market-scan** · **self-improve** · **check**.
+- discover: **goal-setter** · **market-scan** · **self-improve** · **check**.
 - ideator: **ideate** (the IDEA package) · **self-improve** · **check**.
 - security: **scan-for-pii** · **scan-for-secrets** · **scan-dependencies** · **scan-all** · **check**.
 - publish: **writer** · **diagram-studio** · **handler-mermaid** (full Mermaid taxonomy + theming + ELK) ·
@@ -155,7 +155,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 ### Commands
 - foundry: **/foundry** · **/inspect** · **/coverage-loop** · **/phase-sensor** · **/rust-webapp-rollout** ·
   **/foundry:pr-review** · **/foundry:self-improve** · **/foundry:check** · **/foundry:prerequisites**
-- market-scanner: **/market-scan** · **/discovery-goal** · **/market-scanner:check**
+- discover: **/market-scan** · **/discovery-goal** · **/discover:check**
 - ideator: **/ideate** · **/ideator:check**
 - security: **/scan-all** · **/scan-for-pii** · **/scan-for-secrets** · **/scan-dependencies** · **/security:check**
 - publish: **/publish** · **/publish:check**

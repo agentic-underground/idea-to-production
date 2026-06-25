@@ -1,8 +1,8 @@
 ---
 name: check
 description: >
-  Verify MARKET-SCANNER's external tool dependencies are installed and reachable. Trigger with
-  /market-scanner:check (or "check market-scanner prerequisites"). Runs a fast ✓/✗ probe grouped by
+  Verify DISCOVER's external tool dependencies are installed and reachable. Trigger with
+  /discover:check (or "check discover prerequisites"). Runs a fast ✓/✗ probe grouped by
   tier; advisory by default (never blocks), --strict to fail on a missing required tool. Reads the
   canonical manifest skills/check/requirements.tsv.
 metadata:
@@ -11,9 +11,9 @@ metadata:
 model: claude-haiku-4-5
 ---
 
-# MARKET-SCANNER — Dependency Check
+# DISCOVER — Dependency Check
 
-MARKET-SCANNER is mostly a guided dialogue, so its tool surface is small. This confirms the few it does
+DISCOVER is mostly a guided dialogue, so its tool surface is small. This confirms the few it does
 use are present. It installs nothing — it reports and points at install hints.
 
 ## Run it
