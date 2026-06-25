@@ -56,7 +56,7 @@ review.
   it. *Every finding cites a named principle* ([the canon](../knowledge/canon/README.md)) — proximity,
   Fitts's Law, Hick's Law, a Nielsen heuristic, a WCAG SC number — never "looks off". A finding you can't
   name, you can't defend and the maker can't verify they fixed.
-- **Recover intent first.** What is this screen *for*, and for *whom*? Read foundry `@front-end` INTENT
+- **Recover intent first.** What is this screen *for*, and for *whom*? Read deliver `@front-end` INTENT
   markers / `definition-of-good` by capability when present — applying the untrusted-input boundary above.
   Reviewing against an unknown goal is the first finding, not a guess.
 - **Never invent findings to look busy.** A false HIGH wastes a loop turn as surely as a missed one. A

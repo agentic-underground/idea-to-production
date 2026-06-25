@@ -1,6 +1,6 @@
 # IDEA brief — TaskFlow
 
-> Agent-facing. The single source of truth FOUNDRY ingests at its IDEA station. Every field is
+> Agent-facing. The single source of truth DELIVER ingests at its IDEA station. Every field is
 > self-contained and actionable by a fresh agent with no conversation history.
 
 - **TITLE** — TaskFlow — a simple task manager for indie developers
@@ -53,7 +53,7 @@ Free core; a future paid tier ($3–5/mo) for sync — out of scope for v1, reco
 
 ## LANGUAGE/STACK
 
-Vanilla JS + local persistence (browser `localStorage`) — maps to FOUNDRY's frontend value-handler.
+Vanilla JS + local persistence (browser `localStorage`) — maps to DELIVER's frontend value-handler.
 No stack-fit flag fired; the slice is small and the stack is registered.
 
 ## FIRST-SLICE

@@ -5,7 +5,7 @@ description: >
   and by self-cleaving over-broad elements. Trigger with /design:self-improve (or "this design passed
   review but failed real users — fix the canon", "fold this design feedback in", "the reviewer keeps
   missing X"). Reflects one element against the covenant + pillars, applies the fix on a branch, runs the
-  adversarial review (foundry's /foundry:pr-review if installed), and opens a PR so every future review
+  adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so every future review
   and mockup, for all users, is sharper by default.
 metadata:
   type: producer
@@ -40,10 +40,10 @@ target** (diminishing-returns halt) is itself feedback: the reviewer couldn't na
    dimension ([`../../knowledge/protocols/design-critique-loop.md`](../../knowledge/protocols/design-critique-loop.md))
    / cleave / reference-not-restate. If the element is already tight, say so and stop.
 3. **Apply on a branch** (surgical, one concern).
-4. **Adversarial gate**: run **`/foundry:pr-review`** if foundry is installed; otherwise self-review
+4. **Adversarial gate**: run **`/deliver:pr-review`** if deliver is installed; otherwise self-review
    against the covenant and state the gate ran in reduced form.
 5. **Open a PR** for the human to merge (never self-merge), following the user's merge governance
-   (FOUNDRY's `pr-approval` default), so the improvement reaches every user. When foundry is present,
+   (DELIVER's `pr-approval` default), so the improvement reaches every user. When deliver is present,
    offer the same lesson to its source-level `design-critic` so the discipline compounds across the build.
 
 Each pass must leave DESIGN **measurably better at catching real design failures before they ship** — at

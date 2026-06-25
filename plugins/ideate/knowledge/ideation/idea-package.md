@@ -1,14 +1,14 @@
 # The IDEA package — the deliverable contract
 
 > The one-copy home for **what `/ideate` produces**. The `ideate` skill is a thin router that references
-> this; it never restates it. The IDEA package is the ultra-refined source of ideation that FOUNDRY
+> this; it never restates it. The IDEA package is the ultra-refined source of ideation that DELIVER
 > carries to PRODUCTION. It has **two faces** — *agent-facing* (precise, for the conveyor) and
 > *user-facing* (rich, for the human) — written from one shared, knowledge-parity understanding.
 
 ## Face 1 — Agent-facing (simplified · high-precision · high-clarity)
 
-The handoff to FOUNDRY. **Every field is unambiguous, self-contained, and actionable by a fresh agent
-with no conversation history.** These align with FOUNDRY's own schemas (by concept — IDEATE carries its
+The handoff to DELIVER. **Every field is unambiguous, self-contained, and actionable by a fresh agent
+with no conversation history.** These align with DELIVER's own schemas (by concept — IDEATE carries its
 own copy of the contract; it does not reach across the plugin boundary).
 
 1. **IDEA brief** — the single source of truth:
@@ -17,19 +17,19 @@ own copy of the contract; it does not reach across the plugin boundary).
    ACTORS (named roles, not "users") · IN-SCOPE (v1 bullets) · OUT-OF-SCOPE (v1 bullets) ·
    CONSTRAINTS (performance · platform · compliance · integration · budget) ·
    SUCCESS-METRIC (testable: "actor can do X in under Y", not "better") ·
-   PRICE-BAND (from the opportunity) · LANGUAGE/STACK (which **registered** FOUNDRY value-handler — if
+   PRICE-BAND (from the opportunity) · LANGUAGE/STACK (which **registered** DELIVER value-handler — if
    none maps, the stack-fit flag fired in the challenge protocol and its resolution is recorded here) ·
    WILD-CARD (the outside-the-box observation, if any)
    ```
 2. **SMU-seed** — a *subject-matter-understanding* seed: what the product is, who it's for, the problem,
    the **core domain concepts/terms**, the design values (tie-breakers), the hard constraints, and what
-   success/failure look like. This is the domain parity FOUNDRY's builder-lead expands into the full SMU.
+   success/failure look like. This is the domain parity DELIVER's builder-lead expands into the full SMU.
 3. **First vertical slice** — the **smallest shippable, end-to-end increment** that proves the core value
-   (so FOUNDRY can cut a thin slice immediately rather than boil the ocean).
+   (so DELIVER can cut a thin slice immediately rather than boil the ocean).
 4. **Handoff contract** — objective (one sentence), the artifacts + their paths, **open questions /
-   accepted risks**, and the next-agent instructions — the compact, history-free payload FOUNDRY ingests.
+   accepted risks**, and the next-agent instructions — the compact, history-free payload DELIVER ingests.
 
-> **Exit gate (THE ONLY WAY).** The agent-facing package must satisfy FOUNDRY's **discovery exit
+> **Exit gate (THE ONLY WAY).** The agent-facing package must satisfy DELIVER's **discovery exit
 > criteria** before hand-off — otherwise it produces rework at every downstream stage:
 > - **Problem** is *actionable* (a specific, observable problem — not "improve UX").
 > - **Actors** are *named* and their role is clear (not "users" — who, specifically?).
@@ -76,8 +76,8 @@ package is **iterated with the user** until both faces are right, *then* handed 
 
 ## On-disk layout
 
-When the package is written to disk (FOUNDRY absent, or for archival), it takes a **fixed shape** so a
-fresh FOUNDRY — or any agent — finds every face of the package by path, with no conversation history.
+When the package is written to disk (DELIVER absent, or for archival), it takes a **fixed shape** so a
+fresh DELIVER — or any agent — finds every face of the package by path, with no conversation history.
 `<slug>` is the kebab-case `SLUG` field from the IDEA brief (e.g. `task-manager-app`).
 
 ```
@@ -85,11 +85,11 @@ doc/idea/<slug>/
   brief.md        # agent-facing — the IDEA brief (Face 1 §1): TITLE · SLUG · DATE · PROBLEM · ACTORS ·
                   #   IN/OUT-OF-SCOPE · CONSTRAINTS · SUCCESS-METRIC · FIRST-SLICE pointer. Markdown, labelled fields.
   smu-seed.md     # agent-facing — the SMU seed (Face 1 §2): domain, core concepts/terms, user mental
-                  #   model, technical landscape, success/failure definition. Markdown prose, ~200 words. FOUNDRY expands this.
+                  #   model, technical landscape, success/failure definition. Markdown prose, ~200 words. DELIVER expands this.
   first-slice.md  # agent-facing — the first vertical slice (Face 1 §3): EARS statement, acceptance
                   #   criteria, stack hint. Markdown with an EARS block + a checklist.
   handoff.md      # agent-facing — the handoff contract (Face 1 §4): objective, entry criteria for
-                  #   FOUNDRY, what the challenger verified, knowledge-parity confirmation, open questions / accepted risks. Markdown.
+                  #   DELIVER, what the challenger verified, knowledge-parity confirmation, open questions / accepted risks. Markdown.
   dossier.md      # user-facing — the IDEA dossier (Face 2): narrative summary, PRICE-BAND, naming
                   #   candidates, the persuade-and-align read. Markdown prose (figures embedded when publish/design rendered them).
 ```
@@ -99,7 +99,7 @@ A worked reference of this layout ships under
 
 ## Where it goes
 
-- **FOUNDRY installed** → hand the agent-facing package to FOUNDRY (its IDEA station receives it by
-  capability) → roadmap → `/loop /foundry` builds it.
-- **FOUNDRY absent** → write the package under `doc/idea/<slug>/` (the **On-disk layout** above) and
-  point the user at FOUNDRY (or the inline dev system) to carry it forward.
+- **DELIVER installed** → hand the agent-facing package to DELIVER (its IDEA station receives it by
+  capability) → roadmap → `/loop /deliver` builds it.
+- **DELIVER absent** → write the package under `doc/idea/<slug>/` (the **On-disk layout** above) and
+  point the user at DELIVER (or the inline dev system) to carry it forward.

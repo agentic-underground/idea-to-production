@@ -5,7 +5,7 @@ description: >
   the /i2p:review fan-out — and by self-cleaving over-broad elements. Trigger with /i2p:self-improve (or
   "a user couldn't find a power they had — fix the front door", "/i2p:review missed a reviewer it should
   run", "fold this onboarding feedback in"). Reflects one element against the covenant + pillars, applies
-  the fix on a branch, runs the adversarial review (foundry's /foundry:pr-review if installed), and opens a
+  the fix on a branch, runs the adversarial review (deliver's /deliver:pr-review if installed), and opens a
   PR so every future session, for all users, surfaces the power by default.
 metadata:
   type: producer
@@ -39,10 +39,10 @@ didn't mention security's `/scan-all` at the SECURE stage; add it"*).
    `/i2p:flow` map / cleave / reference-not-restate. If the element is already tight, say so and stop.
 3. **Apply on a branch** (surgical, one concern). Keep i2p **thin** — improvement means composing the
    specialists better, never absorbing their logic.
-4. **Adversarial gate**: run **`/foundry:pr-review`** if foundry is installed; otherwise self-review
+4. **Adversarial gate**: run **`/deliver:pr-review`** if deliver is installed; otherwise self-review
    against the covenant and state the gate ran in reduced form.
 5. **Open a PR** for the human to merge (never self-merge), following the user's merge governance
-   (FOUNDRY's `pr-approval` default), so the improvement reaches every user.
+   (DELIVER's `pr-approval` default), so the improvement reaches every user.
 
 Each pass must leave i2p **measurably better at closing the gap between powers-held and powers-known** — at
 least halving the remaining distance. Record the recurring miss so the next like power is surfaced by

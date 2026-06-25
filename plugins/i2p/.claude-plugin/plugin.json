@@ -34,11 +34,11 @@
     "companions": {
       "discovery": "discover",
       "refinement": "ideate",
-      "build": "foundry",
+      "build": "deliver",
       "design": "design",
       "security": "secure",
       "publishing": "publish"
     },
-    "note": "commands/, skills/, agents/, and hooks/hooks.json are auto-discovered from the plugin root. This plugin is a THIN orchestrator — it composes the seven specialist plugins by capability and degrades cleanly when any are absent. It is also the ARRIVAL layer (folded into i2p): SessionStart hooks render/offer a repo's .claude/welcome.md (hooks/inject-welcome.sh, hooks/offer-welcome.sh) and the doc-alert (hooks/offer-doc-alert.sh); the status line ships in statusline/ — /i2p:statusline runs statusline/install.sh (copies the version-stamped i2p-statusline.sh → ~/.claude, points settings.json at it), a PostToolUse hook (statusline/count-adversarial-catches.sh) feeds the ⚔ caught tally, a Stop hook (statusline/capture-cost.sh) measures token cost, and SessionStart hooks offer it once (hooks/offer-statusline.sh) and detect installed-vs-shipped drift (hooks/check-statusline-drift.sh). Opt-out markers live under ~/.claude/hook-state (the hooks never write the repo). /i2p:check probes i2p's own tool deps (skills/check/requirements.tsv) then consolidates each plugin's check. Knowledge lives in knowledge/covenant.md; the canonical homes are in the foundry plugin's knowledge/."
+    "note": "commands/, skills/, agents/, and hooks/hooks.json are auto-discovered from the plugin root. This plugin is a THIN orchestrator — it composes the seven specialist plugins by capability and degrades cleanly when any are absent. It is also the ARRIVAL layer (folded into i2p): SessionStart hooks render/offer a repo's .claude/welcome.md (hooks/inject-welcome.sh, hooks/offer-welcome.sh) and the doc-alert (hooks/offer-doc-alert.sh); the status line ships in statusline/ — /i2p:statusline runs statusline/install.sh (copies the version-stamped i2p-statusline.sh → ~/.claude, points settings.json at it), a PostToolUse hook (statusline/count-adversarial-catches.sh) feeds the ⚔ caught tally, a Stop hook (statusline/capture-cost.sh) measures token cost, and SessionStart hooks offer it once (hooks/offer-statusline.sh) and detect installed-vs-shipped drift (hooks/check-statusline-drift.sh). Opt-out markers live under ~/.claude/hook-state (the hooks never write the repo). /i2p:check probes i2p's own tool deps (skills/check/requirements.tsv) then consolidates each plugin's check. Knowledge lives in knowledge/covenant.md; the canonical homes are in the deliver plugin's knowledge/."
   }
 }

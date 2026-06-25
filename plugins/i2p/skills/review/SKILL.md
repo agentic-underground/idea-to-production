@@ -3,7 +3,7 @@ name: review
 description: >
   The marketplace-wide adversarial review. Use for /i2p:review (or "review everything",
   "full review across all the plugins", "give me one verdict from every reviewer"). Determines
-  scope, fans out EVERY installed specialist reviewer — code (foundry /pr-review), design
+  scope, fans out EVERY installed specialist reviewer — code (deliver /pr-review), design
   (design /ui-review), rendered docs (publish /publish:design-reviewer), security (security
   /scan-all) — adversarially verifies the serious findings, and synthesises ONE verdict
   (PASS / NEEDS_REVISION / BLOCK) in I2P_REVIEW.md, naming what could not be reviewed. Thin: it
@@ -11,13 +11,13 @@ description: >
 metadata:
   type: orchestrator
   output: I2P_REVIEW.md (verdict PASS | NEEDS_REVISION | BLOCK across all lenses)
-  composes: [foundry /pr-review, design /ui-review, publish /publish:design-reviewer, security /scan-all — each if present]
+  composes: [deliver /pr-review, design /ui-review, publish /publish:design-reviewer, security /scan-all — each if present]
 model: inherit
 ---
 
 # i2p — Cross-plugin adversarial review
 
-One command, the whole marketplace's review power, one verdict. Where foundry's `/pr-review` reviews the
+One command, the whole marketplace's review power, one verdict. Where deliver's `/pr-review` reviews the
 **code**, `/i2p:review` adds the **design**, **rendered-doc**, and **security** lenses the specialist
 plugins own — behind a single marketplace-wide decision a human (or an auto-merge step) can act on.
 
@@ -38,7 +38,7 @@ vs merge-base with `main`), decide which lenses are in scope:
 
 | In scope when… | Lens | Delegate to (if installed) |
 |---|---|---|
-| a code diff exists | **CODE** | foundry **`/pr-review`** |
+| a code diff exists | **CODE** | deliver **`/pr-review`** |
 | a running SPA / screenshot is provided | **DESIGN** | design **`/ui-review`** |
 | rendered docs / figures (PDF, diagrams) changed | **DOCS** | publish **`/publish:design-reviewer`** (its layout/legibility gate — edge-clip, overlap, inline-legibility — rides inside this delegation, run before taste) |
 | always (any change can leak/secret/regress deps) | **SECURITY** | security **`/scan-all`** |
@@ -51,9 +51,9 @@ Run each in-scope lens whose plugin is **installed**. Each returns findings as
 `{severity, locus, claim, why_it_matters, suggested_fix, lens}`, severity ∈
 `CRITICAL | HIGH | MEDIUM | LOW | SUGGESTION`. Prefer running independent lenses **in parallel**.
 
-- foundry `/pr-review` already fans out its own adversarial roles (correctness, security, regression,
+- deliver `/pr-review` already fans out its own adversarial roles (correctness, security, regression,
   architecture, performance, docs) and, when security is present, folds in `/scan-all` — let it; do
-  not re-run those roles yourself. If foundry is **absent**, fall back to a direct `/scan-all` for
+  not re-run those roles yourself. If deliver is **absent**, fall back to a direct `/scan-all` for
   the SECURITY lens and note that the code lens was unavailable.
 
 ## 3. Adversarially verify
@@ -64,7 +64,7 @@ positive"). Keep it only if it survives. This kills plausible-but-wrong blocks.
 ## 4. Synthesise one verdict
 
 Deduplicate overlapping findings across lenses, then apply the **marketplace verdict rule** (the same
-one foundry's pr-review and security's gate use):
+one deliver's pr-review and security's gate use):
 
 | Verdict | Condition |
 |---|---|
@@ -88,7 +88,7 @@ offset an unresolved security CRITICAL.
 ```
 
 This command **reports**; it does not merge — what happens after a PASS is the project's
-merge-governance decision (foundry's `knowledge/protocols/merge-governance.md` when present).
+merge-governance decision (deliver's `knowledge/protocols/merge-governance.md` when present).
 
 ---
 

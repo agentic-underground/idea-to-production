@@ -26,7 +26,7 @@ other — never to outvote a single ❌. Present the scorecard as a table the us
 ## The kill ledger (cross-project memory)
 
 Every recurring kill *reason* is worth remembering so future scans reach it faster. Record kills in the
-same **symptom → cause → fix** shape FOUNDRY uses for guardrails:
+same **symptom → cause → fix** shape DELIVER uses for guardrails:
 
 ```
 ### <slug> — <one-line opportunity>

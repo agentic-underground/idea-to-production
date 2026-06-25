@@ -25,4 +25,4 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 [`requirements.tsv`](requirements.tsv) is the single source of truth. `gh` is recommended so
 `self-improve` can open the improvement PR. The rich user-facing dossier is rendered by **publish**'s
 tools via `/publish` when installed — verify those with `/publish:check`, not here. Companions
-(`discover`, `foundry`, `publish`) are **plugins**, referenced by capability, not probed.
+(`discover`, `deliver`, `publish`) are **plugins**, referenced by capability, not probed.

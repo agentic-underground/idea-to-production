@@ -276,6 +276,6 @@ the rules are being added but not consulted.
 ## Cross-skill responsibility
 
 If feedback received here exposes a rule that belongs in a sibling
-skill (e.g. `writer`, or a foundry skill), surface it to the user — or, in
+skill (e.g. `writer`, or a deliver skill), surface it to the user — or, in
 the marketplace's source repo, propose the change to that skill directly. Do
 not silently transplant rules across skill boundaries.

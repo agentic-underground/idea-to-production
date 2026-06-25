@@ -7,7 +7,7 @@ Run the marketplace-wide dependency check. Follow the [`check` skill](../skills/
 0. First probe **i2p's own** dependencies — the `jq`/`bash`/`awk`/`git` its welcome hooks and the status
    line use (`bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh $ARGUMENTS`) — and include those rows
    under an **i2p** group.
-1. For each **installed** plugin that ships a `/check` (discover, ideate, foundry, design,
+1. For each **installed** plugin that ships a `/check` (discover, ideate, deliver, design,
    security, publish, operate), run it — pass `$ARGUMENTS` through (e.g. `--strict`, `--tier=recommended`).
 2. Consolidate every ✓/✗ row into **one table grouped by plugin**, then summarise what is missing and
    how to install it (use the per-row install hints).

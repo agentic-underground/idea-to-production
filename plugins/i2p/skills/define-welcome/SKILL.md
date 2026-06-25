@@ -43,7 +43,7 @@ that exist yet. These reads are *targeted* (small, identity-bearing files), neve
 | Phase | Read (when present) | The welcome should convey |
 |---|---|---|
 | DISCOVER | `.discover/goal.md`, `doc/opportunities/<slug>.md` | "this repo is hunting [opportunity] — continue with `/market-scan`" |
-| IDEATE | `doc/idea/<slug>/` IDEA brief (problem / scope / success) + any coined name | "becoming **[Name]**: [one-liner] — next `/ideate` → FOUNDRY" |
+| IDEATE | `doc/idea/<slug>/` IDEA brief (problem / scope / success) + any coined name | "becoming **[Name]**: [one-liner] — next `/ideate` → DELIVER" |
 | DESIGN | `docs/guide/design/mockups/<slug>/rationale.md` | "[Name] — designed; review with `/ui-review`" |
 | BUILD | `doc/SUBJECT_MATTER_UNDERSTANDING.md`, `ROADMAP.md` | "[Name] — building; lanes from the roadmap" |
 | ASSURE / SECURE | `PR_REVIEW.md` / `SECURITY-REPORT.md` verdicts | "proven / secured — current gate status" |
@@ -72,8 +72,8 @@ opens this repo. A common and powerful split for a piece of software is:
 
 - **Operate / use it** — run it, deploy it, maintain it, do the day-job tasks.
 - **Evolve it** — change the software itself: ideas, features, fixes, refactors. When
-  the `ideate` and `foundry` plugins are installed, this lane should route vague ideas
-  to **`/ideate` → `/foundry`** and concrete next-steps to the repo's own roadmap/plan
+  the `ideate` and `deliver` plugins are installed, this lane should route vague ideas
+  to **`/ideate` → `/deliver`** and concrete next-steps to the repo's own roadmap/plan
   and add-a-thing runbooks.
 
 But fit the lanes to the actual repo — a library, a service, a docs site, and a fleet

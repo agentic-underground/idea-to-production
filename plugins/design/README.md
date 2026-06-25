@@ -41,10 +41,10 @@ another wasteful lap). Every turn must measurably improve or the loop halts.
 
 ## How it composes
 
-- **DESIGN ↔ foundry** — foundry's `frontend` design-system owns the *source-level* contract (`@front-end`
+- **DESIGN ↔ deliver** — deliver's `frontend` design-system owns the *source-level* contract (`@front-end`
   INTENT markers, `definition-of-good`, the build-time `design-critic`). DESIGN reviews the **rendered
   experience** of any app and carries the deeper canon; it reads those markers **by capability** when
-  foundry is present and *extends* them — never duplicates. Standalone, it works on any repo.
+  deliver is present and *extends* them — never duplicates. Standalone, it works on any repo.
 - **DESIGN → publish** — user-flows and chart-style figures are rendered via publish's `/publish`
   **by capability**; absent, DESIGN emits Mermaid/markdown source and says so.
 - **IDEATE → DESIGN** — when IDEATE builds an IDEA dossier's user-flows and mockup screens, it calls

@@ -7,7 +7,7 @@
 /i2p:review fans out every installed reviewer — code, design, docs, security — and returns one verdict in I2P_REVIEW.md.
 /i2p:check runs all your plugins' dependency checks at once and merges them into a single readiness table.
 /i2p:flow draws where each plugin sits from idea to production — and tells you the next command to run.
-foundry's /pr-review reviews a diff like a hostile-but-fair senior engineer, then gives one PASS/NEEDS_REVISION/BLOCK verdict.
+deliver's /pr-review reviews a diff like a hostile-but-fair senior engineer, then gives one PASS/NEEDS_REVISION/BLOCK verdict.
 discover's /goal then /market-scan hunt for a worth-building opportunity before you write any code.
 ideate's /ideate turns a raw idea into a build-ready IDEA package — agent-facing docs plus an illustrated dossier.
 design's /ui-review crawls any running SPA and scores each screen against named design canon and WCAG 2.2.

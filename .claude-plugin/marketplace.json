@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "idea-to-production",
-  "description": "A composable suite for carrying software from IDEA to PRODUCTION: a front-door / meta-layer (i2p) that introduces the whole suite, reviews across all of it, and greets whoever opens a repo (the welcome + status line), a discovery phase (discover) that finds a worth-building opportunity, a refinement phase (ideate) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, a design studio (design) that makes and adversarially reviews the visuals, an operate phase (operate) that runs the live product, and secure and publishing companions (secure, publish). Each plugin stands alone and lights up the others automatically when installed.",
+  "description": "A composable suite for carrying software from IDEA to PRODUCTION: a front-door / meta-layer (i2p) that introduces the whole suite, reviews across all of it, and greets whoever opens a repo (the welcome + status line), a discovery phase (discover) that finds a worth-building opportunity, a refinement phase (ideate) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (deliver) that builds it, a design studio (design) that makes and adversarially reviews the visuals, an operate phase (operate) that runs the live product, and secure and publishing companions (secure, publish). Each plugin stands alone and lights up the others automatically when installed.",
   "version": "1.12.0",
   "owner": {
     "name": "whatbirdisthat",
@@ -15,7 +15,7 @@
       "name": "i2p",
       "source": "./plugins/i2p",
       "displayName": "IDEA-TO-PRODUCTION — Marketplace front door, arrival layer & meta-commands",
-      "description": "The FRONT DOOR, ARRIVAL layer, and meta-layer of the marketplace — the marketplace-level surface the specialist plugins never had. /i2p:help browses the powers you have now, grouped by the DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸ PUBLISH value flow (listing only what is installed); /i2p:review fans out EVERY installed reviewer — code (foundry), design (design), rendered docs (publish), security (secure) — into ONE adversarial verdict in I2P_REVIEW.md; /i2p:check consolidates every plugin's readiness into one table; /i2p:flow maps where each plugin sits and the next command to run. It also GREETS whoever opens a repo: a SessionStart hook renders a maintainer-authored .claude/welcome.md (/i2p:define-welcome authors it), and /i2p:statusline turns on the rich two-line idea-to-production status line (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally), offered once on first activation. Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator that delegates to the specialists by capability and never re-implements them. Carries the KAIZEN self-improvement covenant.",
+      "description": "The FRONT DOOR, ARRIVAL layer, and meta-layer of the marketplace — the marketplace-level surface the specialist plugins never had. /i2p:help browses the powers you have now, grouped by the DISCOVER ▸ IDEATE ▸ BUILD ▸ DESIGN ▸ SECURE ▸ PUBLISH value flow (listing only what is installed); /i2p:review fans out EVERY installed reviewer — code (deliver), design (design), rendered docs (publish), security (secure) — into ONE adversarial verdict in I2P_REVIEW.md; /i2p:check consolidates every plugin's readiness into one table; /i2p:flow maps where each plugin sits and the next command to run. It also GREETS whoever opens a repo: a SessionStart hook renders a maintainer-authored .claude/welcome.md (/i2p:define-welcome authors it), and /i2p:statusline turns on the rich two-line idea-to-production status line (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally), offered once on first activation. Introduces itself on session start and surfaces occasional ≤25-word tips. A thin orchestrator that delegates to the specialists by capability and never re-implements them. Carries the KAIZEN self-improvement covenant.",
       "version": "1.3.0",
       "author": {
         "name": "whatbirdisthat",
@@ -71,7 +71,7 @@
       "name": "ideate",
       "source": "./plugins/ideate",
       "displayName": "IDEATE — Refine an idea into a build-ready IDEA package",
-      "description": "The REFINEMENT phase of the marketplace. Takes a validated opportunity (from discover) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise AGENT-FACING handoff documents (idea brief, subject-matter-understanding seed, first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (opportunity narrative, parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability — charts via publish, user-flows/mockups via design (design-reviewed) — when installed; degrades to markdown otherwise. Iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Supersedes FOUNDRY's inline ideate, which remains as a graceful-degradation fallback. Also runs /ideate:name — a marketing-grade naming studio: a deep discovery interview (audience, brand archetype, name-type appetite, power-adjacency, humour, risk), wide-net generation across the full name-type taxonomy + affix hooks + phonosemantic tuning, a deterministic token-free checker (registries + neighbour/typo-squat proximity + domain/RDAP + cross-language connotation), and a scored challenge (Neumeier 7 / SMILE-SCRATCH / archetype-fit). Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract.",
+      "description": "The REFINEMENT phase of the marketplace. Takes a validated opportunity (from discover) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise AGENT-FACING handoff documents (idea brief, subject-matter-understanding seed, first vertical slice, and a handoff contract that satisfies DELIVER's discovery exit criteria) plus rich, illustrated USER-FACING documents (opportunity narrative, parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability — charts via publish, user-flows/mockups via design (design-reviewed) — when installed; degrades to markdown otherwise. Iterated with the user before hand-off, then carried to PRODUCTION by DELIVER. Supersedes DELIVER's inline ideate, which remains as a graceful-degradation fallback. Also runs /ideate:name — a marketing-grade naming studio: a deep discovery interview (audience, brand archetype, name-type appetite, power-adjacency, humour, risk), wide-net generation across the full name-type taxonomy + affix hooks + phonosemantic tuning, a deterministic token-free checker (registries + neighbour/typo-squat proximity + domain/RDAP + cross-language connotation), and a scored challenge (Neumeier 7 / SMILE-SCRATCH / archetype-fit). Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract.",
       "version": "1.2.0",
       "author": {
         "name": "whatbirdisthat",
@@ -102,9 +102,9 @@
       ]
     },
     {
-      "name": "foundry",
-      "source": "./plugins/foundry",
-      "displayName": "FOUNDRY — Value-Flow Production System",
+      "name": "deliver",
+      "source": "./plugins/deliver",
+      "displayName": "DELIVER — Value-Flow Production System",
       "description": "An opinionated, disciplined, quality-first software production system. A conveyor that carries value from IDEA to PRODUCTION across role-tuned agents and value-stations (IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP), governed by three pillars — knowledge parity, quality-first with a performance-delta gate, and waste elimination (muda·mura·muri) — under an overarching token-efficiency constraint. Emits markdown; uses the secure and publish companions automatically when present.",
       "version": "1.3.10",
       "author": {
@@ -112,7 +112,7 @@
         "email": "95787+whatbirdisthat@users.noreply.github.com",
         "url": "https://github.com/whatbirdisthat"
       },
-      "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/foundry",
+      "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/deliver",
       "repository": "https://github.com/whatbirdisthat/idea-to-production",
       "license": "MIT OR Apache-2.0",
       "category": "workflow",
@@ -166,7 +166,7 @@
       "name": "secure",
       "source": "./plugins/secure",
       "displayName": "SECURE — Security & Privacy Gate",
-      "description": "The pre-release security gate for any repository. Catches PII, secrets/credentials, and supply-chain risk before they ship. Runs parallel, multi-agent audits across data files, git history, source, and frontend, and consolidates them into a single severity-ranked report with a PASS / REVIEW / BLOCK verdict. Stands alone, or serves as foundry's SECURE gate when both are installed.",
+      "description": "The pre-release security gate for any repository. Catches PII, secrets/credentials, and supply-chain risk before they ship. Runs parallel, multi-agent audits across data files, git history, source, and frontend, and consolidates them into a single severity-ranked report with a PASS / REVIEW / BLOCK verdict. Stands alone, or serves as deliver's SECURE gate when both are installed.",
       "version": "1.3.0",
       "author": {
         "name": "whatbirdisthat",
@@ -195,7 +195,7 @@
       "name": "publish",
       "source": "./plugins/publish",
       "displayName": "PUBLISH — Publishing & Documentation",
-      "description": "Turns project artefacts and markdown into publication-grade output: narrative articles mined from git history and docs, standalone diagrams (Graphviz + a Mermaid-native specialist covering the full diagram taxonomy, theming, and ELK), and print-quality PDFs with embedded, A4-legible figures — all held to standard by an adversarial design-reviewer (typography + data-viz canon) that critiques the rendered artefact in a convergent loop. The PUBLISHING companion foundry hands off to when richer-than-markdown output is wanted — or use it directly on any project.",
+      "description": "Turns project artefacts and markdown into publication-grade output: narrative articles mined from git history and docs, standalone diagrams (Graphviz + a Mermaid-native specialist covering the full diagram taxonomy, theming, and ELK), and print-quality PDFs with embedded, A4-legible figures — all held to standard by an adversarial design-reviewer (typography + data-viz canon) that critiques the rendered artefact in a convergent loop. The PUBLISHING companion deliver hands off to when richer-than-markdown output is wanted — or use it directly on any project.",
       "version": "1.4.0",
       "author": {
         "name": "whatbirdisthat",
@@ -223,7 +223,7 @@
       "name": "design",
       "source": "./plugins/design",
       "displayName": "DESIGN — Studio & adversarial UI review",
-      "description": "The DESIGN studio — a designer's workshop that both makes and critiques visual work to a commercial-grade standard. /ui-review crawls the navigable routes of any SPA (screenshot + accessibility snapshot per route) and writes a scored, prioritised critique where every finding cites a named principle; /mockup composes polished screens, wireframes, and user-flows and runs them through a convergent designer↔reviewer loop until they clear a design-fitness rubric. The reviewer is a heavyweight expert in the design canon — Gestalt, the UX laws (Fitts/Hick/Miller/Jakob), Nielsen's heuristics, Norman's emotional design, and WCAG 2.2 accessibility. Composes with foundry's frontend design-system and publish's graphics by capability; degrades to markdown when absent. Uses the host-provided chrome-devtools MCP (ONE BROWSER — bundles none) for live review.",
+      "description": "The DESIGN studio — a designer's workshop that both makes and critiques visual work to a commercial-grade standard. /ui-review crawls the navigable routes of any SPA (screenshot + accessibility snapshot per route) and writes a scored, prioritised critique where every finding cites a named principle; /mockup composes polished screens, wireframes, and user-flows and runs them through a convergent designer↔reviewer loop until they clear a design-fitness rubric. The reviewer is a heavyweight expert in the design canon — Gestalt, the UX laws (Fitts/Hick/Miller/Jakob), Nielsen's heuristics, Norman's emotional design, and WCAG 2.2 accessibility. Composes with deliver's frontend design-system and publish's graphics by capability; degrades to markdown when absent. Uses the host-provided chrome-devtools MCP (ONE BROWSER — bundles none) for live review.",
       "version": "1.1.1",
       "author": {
         "name": "whatbirdisthat",

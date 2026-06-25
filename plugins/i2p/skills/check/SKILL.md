@@ -53,7 +53,7 @@ For each plugin that is **installed** and ships a check, run it, passing `$ARGUM
 |---|---|
 | discover | `/discover:check` |
 | ideate | `/ideate:check` |
-| foundry | `/foundry:check` |
+| deliver | `/deliver:check` |
 | design | `/design:check` |
 | secure | `/secure:check` |
 | publish | `/publish:check` |

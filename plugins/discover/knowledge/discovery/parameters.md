@@ -9,7 +9,7 @@
 
 > **Stance — adversarial, not confirmatory.** A scan's job is to *kill weak ideas early and cheaply*.
 > Pressure-test every parameter; assume the opportunity is bad until each axis fails to sink it. A
-> finding-free keep must be *earned*. (Same covenant as FOUNDRY's reviewer, applied to ideas.)
+> finding-free keep must be *earned*. (Same covenant as DELIVER's reviewer, applied to ideas.)
 
 ---
 
@@ -53,7 +53,7 @@
 |---|---|---|---|
 | **Acquisition channel** | A *specific, affordable* way to reach the audience (a subreddit, a directory, SEO intent, a community, a partnership). "We'll do marketing" is not a channel. | One concrete channel named | No reachable channel → kill (great product, no door) |
 | **Time-to-MVP** | How fast can a thin, shippable first slice exist? Sooner = cheaper to validate. | A first slice in days/small weeks | Months before any user can try it → kill for a lean build |
-| **Stack-fit** | Does it fit the builder's stack — i.e. FOUNDRY's value-handlers (Rust, Python, FastAPI, JS/TS, React, vanilla-JS, CSS, the Rust-webapp one-shot)? A buildable opportunity is one the conveyor can carry. | Maps cleanly to ≥ 1 handler | Needs a capability FOUNDRY can't staff → kill or descope |
+| **Stack-fit** | Does it fit the builder's stack — i.e. DELIVER's value-handlers (Rust, Python, FastAPI, JS/TS, React, vanilla-JS, CSS, the Rust-webapp one-shot)? A buildable opportunity is one the conveyor can carry. | Maps cleanly to ≥ 1 handler | Needs a capability DELIVER can't staff → kill or descope |
 | **Founder / builder-market fit** | Does the *builder* have the interest, domain insight, or unfair advantage to stick with this? Discovery without commitment dies. | Genuine interest + some edge | Zero interest / no edge → kill (you won't finish it) |
 
 ---

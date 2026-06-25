@@ -123,7 +123,7 @@ stop. In **loop/`docs`** mode, embed and record — see below.
 ## Loop mode — trawl, embed, ledger
 
 The whole-tree trawl is `/loop`-driven and **idempotent/resumable** via
-`.publish/illustration-ledger.json` in the project being illustrated (cwd, beside `.foundry/`):
+`.publish/illustration-ledger.json` in the project being illustrated (cwd, beside `.deliver/`):
 
 ```json
 { "ledger_version": 1, "settings": {"site_floor": 7, "target": 85, "max_turns": 4},

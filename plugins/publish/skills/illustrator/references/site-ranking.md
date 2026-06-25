@@ -57,7 +57,7 @@ Trawl pass: 142 docs scanned · 38 sites above floor · 3 over per-doc cap (defe
 |---|---:|---:|---:|---|
 | README "How the 8 plugins compose" (9-phase flow in prose) | 5 | 5 | 10 | illustrate → `handler-graphviz` pipeline |
 | VALUE_FLOW "the conveyor" (9 stations, hand-drawn ASCII already) | 5 | 4 | 9 | illustrate → replace ASCII with a real figure |
-| glossary entry "foundry vs forge vs founder" | 1 | 2 | 3 | below-floor (definitional) |
+| glossary entry "deliver vs forge vs founder" | 1 | 2 | 3 | below-floor (definitional) |
 | first-principles "the three pillars and their bindings" | 4 | 4 | 8 | illustrate → `handler-composition` concept figure |
 | a skill's install snippet | 0 | 0 | 0 | skip (reference) |
 

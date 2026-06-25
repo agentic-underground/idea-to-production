@@ -2,7 +2,7 @@
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
 > plugin, the **i2p** front door is bound by the **three pillars** and the **KAIZEN self-improvement
-> covenant**. (The canonical, in-depth homes live in the `foundry` plugin's `knowledge/` —
+> covenant**. (The canonical, in-depth homes live in the `deliver` plugin's `knowledge/` —
 > `architecture/kaizen-covenant.md` and `pillars/`; this is the local copy a standalone install carries,
 > referenced by concept, not by a cross-plugin path.)
 

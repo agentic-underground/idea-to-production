@@ -5,7 +5,7 @@ description: >
   gates — and by self-cleaving over-broad elements. Trigger with /secure:self-improve (or "the scan
   missed a vuln — fix it", "this rule is too noisy", "fold this finding back in", "self-improve the
   scan-for-secrets skill"). Reflects one element against the covenant + pillars, applies the fix on a branch,
-  runs the adversarial review (foundry's /foundry:pr-review if installed), and opens a PR so every future
+  runs the adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so every future
   scan, for all users, gets safer and quieter.
 metadata:
   type: producer
@@ -41,9 +41,9 @@ SECURITY gets sharper from two sources:
    If the element is already tight, say so and stop.
 3. **Apply on a branch** (surgical, one concern). Add or adjust the matching test fixture so the
    miss/false-positive is pinned and cannot regress.
-4. **Adversarial gate**: run **`/foundry:pr-review`** if foundry is installed; otherwise self-review against
+4. **Adversarial gate**: run **`/deliver:pr-review`** if deliver is installed; otherwise self-review against
    the covenant and state the gate ran in reduced form.
-5. **Open a PR** for the human to merge (never self-merge), per the user's merge-governance (FOUNDRY's
+5. **Open a PR** for the human to merge (never self-merge), per the user's merge-governance (DELIVER's
    `pr-approval` default), so the improvement reaches every user.
 
 Each pass must leave SECURITY **measurably better at catching real risks and quieter on benign code** — at

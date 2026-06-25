@@ -5,8 +5,8 @@ description: >
   reviewer rubrics — and by self-cleaving over-broad elements. Trigger with /publish:self-improve (or
   "this chart passed review but read poorly — fix the matrix", "the PDF engine fell over — harden it",
   "fold this design feedback in", "self-improve the diagram-studio skill"). Reflects one element against
-  the covenant + pillars, applies the fix on a branch, runs the adversarial review (foundry's
-  /foundry:pr-review if installed), and opens a PR so every future publish, for all users, looks better.
+  the covenant + pillars, applies the fix on a branch, runs the adversarial review (deliver's
+  /deliver:pr-review if installed), and opens a PR so every future publish, for all users, looks better.
 metadata:
   type: producer
   output: a sharpened matrix entry / template / rubric on a branch → adversarial review → PR
@@ -39,9 +39,9 @@ PUBLISH gets sharper from two sources:
    stop.
 3. **Apply on a branch** (surgical, one concern); update the shared lessons log so the defect class is
    pinned.
-4. **Adversarial gate**: run **`/foundry:pr-review`** if foundry is installed; otherwise self-review against
+4. **Adversarial gate**: run **`/deliver:pr-review`** if deliver is installed; otherwise self-review against
    the covenant and state the gate ran in reduced form.
-5. **Open a PR** for the human to merge (never self-merge), per the user's merge-governance (FOUNDRY's
+5. **Open a PR** for the human to merge (never self-merge), per the user's merge-governance (DELIVER's
    `pr-approval` default), so the improvement reaches every user.
 
 Each pass must leave PUBLISH **measurably better at producing legible, print-quality artefacts** — at

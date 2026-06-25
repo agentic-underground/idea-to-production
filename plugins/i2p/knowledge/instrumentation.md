@@ -41,7 +41,7 @@ self-correct over time**.
 - **`close <PHASE>`** (run on `/i2p:lifecycle done <PHASE>`): computes `ratio = actual/estimate` for the
   phase and folds it into the **global** calibration ledger `~/.claude/state/i2p-cost/calibration.json`
   (`ratio_ewma`, EWMA α=0.4, cross-project). Every closed phase makes future estimates of that phase sharper.
-- **`record <PHASE> N`**: folds an authoritative external actual into a phase — FOUNDRY calls this with
+- **`record <PHASE> N`**: folds an authoritative external actual into a phase — DELIVER calls this with
   `IDEA_COST.jsonl` `token_accounting.tokens_total` at DELIVERY, so the BUILD phase's actual is the true
   all-agent number rather than just the main thread.
 
@@ -84,8 +84,8 @@ against that cycle's node; `report` labels the cycle so prior cycles are visibly
 - **Session $ is authoritative** (harness `cost.total_cost_usd`, includes everything). **Lifecycle/phase $
   is price-map-derived** (approximate, attributable) — update `model-prices.tsv` when pricing changes.
 - **Lifecycle tokens** are measured from the main session transcript; subagent-heavy work is best captured
-  via FOUNDRY's `IDEA_COST.jsonl` folded into BUILD (`cost.sh record`). Ad-hoc `Task` subagent tokens
-  outside FOUNDRY are a known minor undercount.
+  via DELIVER's `IDEA_COST.jsonl` folded into BUILD (`cost.sh record`). Ad-hoc `Task` subagent tokens
+  outside DELIVER are a known minor undercount.
 - Both instruments **degrade silently** — a missing file, missing jq, or absent lifecycle never breaks the
   HUD or blocks a turn.
 

@@ -45,7 +45,7 @@ or file path, so the agent can go straight from "I want X" to running it.
   finer choices into the per-lane decision tree, not the top level.
 - **Real commands, real paths.** Every leaf should name something that exists in the
   repo — a `make` target, a script, a playbook, a runbook under `docs/`/`procedures/`,
-  or a downstream slash-command (`/ideate`, `/foundry`). Vague leaves waste the lane.
+  or a downstream slash-command (`/ideate`, `/deliver`). Vague leaves waste the lane.
 - **One concrete action per leaf.** The agent walks the tree by asking one focused
   follow-up at a time; design leaves so each ends at a thing it can actually do.
 - **Lead with a greeting line** and, if the project has a voice (see its

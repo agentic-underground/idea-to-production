@@ -105,7 +105,7 @@ source is unreachable, a companion lens (`secure`'s scan-dependencies) isn't ins
 discipline is **detect → degrade → disclose**, made machine-checkable, never a silent pass.
 
 **The contract is defined once**, in
-[`../../foundry/knowledge/protocols/degraded-capabilities.md`](../../foundry/knowledge/protocols/degraded-capabilities.md)
+[`../../deliver/knowledge/protocols/degraded-capabilities.md`](../../deliver/knowledge/protocols/degraded-capabilities.md)
 (the `{capability, reason, since_phase}` record, its two carriers — an inline marker and the
 `<project>/.i2p/degraded-capabilities.json` state file — and the consumer rules). OPERATE's
 skills are **point-of-use producers AND consumers** of that signal; they reference the contract,

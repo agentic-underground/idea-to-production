@@ -4,7 +4,7 @@ description: >
   PUBLISH VALUE_HANDLER for .docx document production. Expert in pandoc 3.10 reference-doc
   templating, python-docx + lxml/oxml fine control, OOXML structural validation, and the
   accessibility triad (heading outline + image alt text + semantic table headers). Spawned by
-  TEST-AGENT, IMPLEMENT-AGENT, and STORY-AGENT during FOUNDRY pipeline phases when a publishing
+  TEST-AGENT, IMPLEMENT-AGENT, and STORY-AGENT during DELIVER pipeline phases when a publishing
   target requires a Microsoft Word .docx artefact (reports, deliverable documents) routed through
   /publish:publish. Distinct from the graphical handlers that the illustrator skill spawns for
   figures. Carries the KAIZEN self-improvement covenant and the project's SUBJECT_MATTER_UNDERSTANDING.
@@ -111,7 +111,7 @@ python -c "from openxml_audit import assert_valid_docx; assert_valid_docx('outpu
 4. You verify the test passes by opening the produced `.docx` — no more production code until the
    next failing test.
 
-This is the TDD discipline carried by every value handler in FOUNDRY.
+This is the TDD discipline carried by every value handler in DELIVER.
 
 ---
 

@@ -6,12 +6,14 @@ start at [README.md](./README.md); agents working *on the marketplace itself* st
 - **What this repo is** — a marketplace of eight composable plugins (the **i2p** front
   door — which also greets whoever opens a repo — plus seven specialists) that carry software
   from IDEA to PRODUCTION. The roadmap lives on GitHub (project board); the in-repo `flow`
-  plugin that once owned DELIVER has been retired. The pillars and plugin tour:
+  plugin that once owned DELIVER has been retired — its `roadmapper` folded into the
+  **`deliver`** plugin (formerly `foundry`), which now spans **DELIVER → BUILD → ASSURE**
+  (plan → build test-first → certify). The pillars and plugin tour:
   [README.md](./README.md). The
-  philosophical spine: [`plugins/foundry/knowledge/first-principles.md`](plugins/foundry/knowledge/first-principles.md).
-  The operation: [`plugins/foundry/VALUE_FLOW.md`](plugins/foundry/VALUE_FLOW.md).
+  philosophical spine: [`plugins/deliver/knowledge/first-principles.md`](plugins/deliver/knowledge/first-principles.md).
+  The operation: [`plugins/deliver/VALUE_FLOW.md`](plugins/deliver/VALUE_FLOW.md).
 - **Glossary** — every concept, plugin, agent, skill, command:
-  [`plugins/foundry/knowledge/glossary.md`](plugins/foundry/knowledge/glossary.md).
+  [`plugins/deliver/knowledge/glossary.md`](plugins/deliver/knowledge/glossary.md).
 - **Self-contained plugins** — each plugin is installed standalone, so live surfaces
   resolve paths through `${CLAUDE_PLUGIN_ROOT}` only; never against `~/.claude` or a
   sibling plugin. The canonical-copy promise (a file shipped byte-identical into every
@@ -29,7 +31,7 @@ one-line fix gets its own branch and PR. The steps, in order:
    `✨ feat(...)`, `🔧 chore(...)`), ending with the `Co-Authored-By` trailer.
 3. **Push** the branch to `origin`.
 4. **PR** via `gh pr create` — a clear title + body. The always-on adversarial review
-   (`/foundry:pr-review`) is the quality gate.
+   (`/deliver:pr-review`) is the quality gate.
 5. **Merge** after the gate is green. **Merge mode is `direct-merge`** (see below): the agent merges
    its own PR after a PASS.
 
@@ -37,13 +39,13 @@ one-line fix gets its own branch and PR. The steps, in order:
 
 **Merge mode: `direct-merge`**
 
-In `direct-merge` mode FOUNDRY builds the change, the always-on adversarial review
-(`/foundry:pr-review`) gates it, and on **PASS** FOUNDRY **pushes the branch, opens a PR, and merges
+In `direct-merge` mode DELIVER builds the change, the always-on adversarial review
+(`/deliver:pr-review`) gates it, and on **PASS** DELIVER **pushes the branch, opens a PR, and merges
 it** — completing the full branch → commit → push → PR → merge cycle itself. This is the chosen
 posture for this solo-builder repo: the agent carries each change all the way to `main` once the
 adversarial gate is green.
 
-To switch: tell FOUNDRY "require PR approvals" (→ `pr-approval`) or "give FOUNDRY merge autonomy"
+To switch: tell DELIVER "require PR approvals" (→ `pr-approval`) or "give DELIVER merge autonomy"
 (→ `direct-merge`), or edit the **Merge mode** line above.
 
 ### FLEET continuous-delivery engine — governance mapping
@@ -87,7 +89,7 @@ canonical source is [`KAIZEN.md`](./KAIZEN.md), mirrored byte-for-byte into ever
 into the agent's context once per session** by each plugin's SessionStart hook
 (`plugins/*/hooks/inject-kaizen.sh`) — so it is ALWAYS_ON wherever any plugin is active (a plugin user's
 own project too, which is why it lives in `KAIZEN.md` and not only here). Depth:
-[`plugins/foundry/knowledge/pillars/waste-elimination.md`](plugins/foundry/knowledge/pillars/waste-elimination.md)
-and [`plugins/foundry/knowledge/architecture/kaizen-covenant.md`](plugins/foundry/knowledge/architecture/kaizen-covenant.md).
+[`plugins/deliver/knowledge/pillars/waste-elimination.md`](plugins/deliver/knowledge/pillars/waste-elimination.md)
+and [`plugins/deliver/knowledge/architecture/kaizen-covenant.md`](plugins/deliver/knowledge/architecture/kaizen-covenant.md).
 How a document reaches an agent's context is explained in
 [`docs/guide/context-building-pipeline.md`](docs/guide/context-building-pipeline.md).

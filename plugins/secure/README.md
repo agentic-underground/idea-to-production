@@ -11,8 +11,8 @@ BLOCK**.
 ![Animated security gate: a teal-titled "SECURITY · certify before exposure" panel shows an artifact at left, three stacked lens chips in the centre (PII, SECRETS, SUPPLY-CHAIN), and a closed gate at right reading "0/3 lenses". An amber scan sweep marches across the chips; as it reaches each lens the chip flips from dim "pending" to amber "scanning…" to a green-checked teal "sealed". When all three are sealed the gate's "0/3 lenses" label resolves to a large teal "PASS · cleared to expose →" stamp, then holds — teaching certify-before-exposure: nothing is cleared until every lens seals green.](../../docs/images/sentinel-gate.gif)
 
 It works on **any** project, standalone. It also serves as the **SECURE value-station** for the
-[`foundry`](../foundry/) plugin: when both are installed, foundry runs `/secure:scan-all` before
-delivery and halts on a BLOCK. When SECURITY is absent, foundry simply ships markdown and notes
+[`deliver`](../deliver/) plugin: when both are installed, deliver runs `/secure:scan-all` before
+delivery and halts on a BLOCK. When SECURITY is absent, deliver simply ships markdown and notes
 that the gate was skipped (*graceful enhancement* — no hard dependency either way).
 
 ## What's inside
@@ -52,7 +52,7 @@ loop, not a dead end. When `/secure:scan-all` returns non-PASS:
    incrementing the loop counter (status line `⇄ ×N`).
 3. **Re-run the gate** — `/secure:scan-all` again over the fixed tree.
 4. **The loop exits only when all three gates are green** — BUILD shipped, ASSURE
-   (`/foundry:pr-review`) PASS, and SECURE PASS — at which point `done SECURE` advances to PUBLISH.
+   (`/deliver:pr-review`) PASS, and SECURE PASS — at which point `done SECURE` advances to PUBLISH.
 
 ## Install
 

@@ -21,7 +21,7 @@ command -v jq >/dev/null 2>&1 || { echo "jq is required (the registry is JSON)";
 # The project entry — v2 fields in BOARD mode (018). This repo's roadmap state + schedule live on a
 # GitHub Project (v2) Kanban (board: github_project, owned by the agentic-underground org), NOT in a
 # local .pipeline.md manifest — that manifest has been retired (the board is the single source of truth).
-# The FOUNDRY bridge still rides in each PLAN's '## Construction process', which the engine's plan-build
+# The DELIVER bridge still rides in each PLAN's '## Construction process', which the engine's plan-build
 # prompt reads. direct-merge governance → delivery:pr + admin_merge:true (the engine admin-merges its own
 # PR). branch_prefix/merge_target/remote match this repo.
 # NOTES:

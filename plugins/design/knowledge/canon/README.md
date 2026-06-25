@@ -9,7 +9,7 @@
 ## How to wield the canon
 
 1. **Recover intent first** (the knowledge-parity pillar). What is this screen *for*, and for *whom*?
-   Read `@front-end` INTENT markers if foundry is present; otherwise infer and confirm. You cannot review
+   Read `@front-end` INTENT markers if deliver is present; otherwise infer and confirm. You cannot review
    against an unknown goal — that is the first finding.
 2. **Critique through the lenses, in order of human impact.** Walk visual-foundations → interaction-laws
    → accessibility. For each finding, name **(a)** the principle, **(b)** the observed violation, **(c)**

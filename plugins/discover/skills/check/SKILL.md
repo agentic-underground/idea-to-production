@@ -25,4 +25,4 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh --strict   # exit 1 if 
 
 [`requirements.tsv`](requirements.tsv) is the single source of truth (`name · probe · tier · hint`).
 `gh` is recommended so `self-improve` can open the improvement PR; companions (`ideate`, `publish`,
-`foundry`) are **plugins**, referenced by capability, not probed here.
+`deliver`) are **plugins**, referenced by capability, not probed here.

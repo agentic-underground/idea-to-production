@@ -2,7 +2,7 @@
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
 > plugin, DESIGN is bound by the **three pillars** and the **KAIZEN self-improvement covenant**. (The
-> canonical, in-depth homes live in the `foundry` plugin's `knowledge/`; this is the local copy a
+> canonical, in-depth homes live in the `deliver` plugin's `knowledge/`; this is the local copy a
 > standalone install carries — referenced by concept, not by a cross-plugin path.)
 
 ## The three pillars
@@ -40,5 +40,5 @@ catches it by default**. The `self-improve` skill drives this loop.
 
 > A design that passed the rubric yet still failed a real user has not honoured the covenant — and the
 > fix is upstream: a better-articulated canon rule or rubric weight, fixed once. DESIGN composes with —
-> never duplicates — foundry's source-level `frontend` design-critic; where both are present, a lesson
+> never duplicates — deliver's source-level `frontend` design-critic; where both are present, a lesson
 > learned here is offered to that critic too, so the discipline compounds across the build.

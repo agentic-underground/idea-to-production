@@ -14,10 +14,10 @@ sitting in its own row.
 
 **Why:** Verified on 01-domain-tree-A. An invisible anchor spine + `{rank=same; ...}` per
 tier produced a left-shifted tangle where the 4 companion plugins collided with the
-7-leaf foundry cluster rank. Removing the anchors and using plain `root -> child` edges
+7-leaf deliver cluster rank. Removing the anchors and using plain `root -> child` edges
 plus per-tier `rank=same` (no spine) gave a clean layout; the cluster leaves were then
 stacked into a tidy single column via an invisible `a -> b -> ... [style=invis, weight=10]`
-ordering chain, parented by ONE visible edge `foundry -> f_head`.
+ordering chain, parented by ONE visible edge `deliver -> f_head`.
 
 **How to apply:** For a big TB tree with a cluster sub-structure: (1) let `root -> plugin`
 edges + `rank=same` set the upper tiers, no invisible spine; (2) inside the cluster, stack

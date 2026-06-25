@@ -6,21 +6,21 @@ description: >
   Accepts EITHER a validated opportunity from the discover plugin OR a raw idea you already have,
   and refines it to knowledge-parity through an adversarially-challenged dialogue (infer-first, one
   question at a time with a recommended answer + multiple-choice). Produces the IDEA package — precise
-  agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract, satisfying FOUNDRY's
+  agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract, satisfying DELIVER's
   discovery exit criteria) plus a rich illustrated user-facing dossier (via publish when installed) —
-  iterated with the user, then handed to FOUNDRY. Use proactively whenever a user wants to make an idea
+  iterated with the user, then handed to DELIVER. Use proactively whenever a user wants to make an idea
   real.
 metadata:
   type: producer
-  output: the IDEA package (agent-facing handoff docs + user-facing dossier) → FOUNDRY, or doc/idea/<slug>/
+  output: the IDEA package (agent-facing handoff docs + user-facing dossier) → DELIVER, or doc/idea/<slug>/
 model: inherit
 ---
 
 # IDEATE — Refinement dialogue
 
 The bridge from *a candidate worth pursuing* to *a thing the conveyor can build*. IDEATE refines an idea
-to **knowledge-parity** and emits the **IDEA package**. It **supersedes FOUNDRY's inline ideate**: when
-this plugin is installed it owns ideation; FOUNDRY's inline skill is the graceful fallback when it isn't.
+to **knowledge-parity** and emits the **IDEA package**. It **supersedes DELIVER's inline ideate**: when
+this plugin is installed it owns ideation; DELIVER's inline skill is the graceful fallback when it isn't.
 
 ## How to run
 
@@ -61,10 +61,10 @@ this plugin is installed it owns ideation; FOUNDRY's inline skill is the gracefu
    handoff: **READY** → the package has earned the handoff, proceed; **NEEDS_REVISION** → close the named
    gaps in the dialogue and re-challenge (never hand off over open gaps); **NOT_READY** → the idea is
    still soft, return to discovery (or discover) rather than paper over it. Only a package that
-   survives the challenger is handed to FOUNDRY.
+   survives the challenger is handed to DELIVER.
 6. **Hand off.** When the user is satisfied and the exit gate passes: hand the agent-facing package to
-   **FOUNDRY** if installed (its IDEA station receives it → roadmap → `/loop /foundry` builds it), else
-   write the package to `doc/idea/<slug>/` and point the user at FOUNDRY/the inline dev system.
+   **DELIVER** if installed (its IDEA station receives it → roadmap → `/loop /deliver` builds it), else
+   write the package to `doc/idea/<slug>/` and point the user at DELIVER/the inline dev system.
 
 ## Validate against live evidence — use web research
 
@@ -100,7 +100,7 @@ skill so a PR lands the fix for every future ideation.
 
 ## Product lifecycle (by capability)
 
-When the IDEA package is complete and handed off (FOUNDRY's discovery exit criteria met), and the **i2p** plugin is installed, mark the **IDEATE** phase done so the marketplace
+When the IDEA package is complete and handed off (DELIVER's discovery exit criteria met), and the **i2p** plugin is installed, mark the **IDEATE** phase done so the marketplace
 product lifecycle and the status line advance to DESIGN:
 
 ```bash

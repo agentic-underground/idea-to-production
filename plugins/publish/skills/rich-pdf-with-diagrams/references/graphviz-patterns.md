@@ -160,7 +160,7 @@ digraph Staggered {
 ## Pattern 3 — Wide fan-out wrap (1 → N handlers)
 
 **Use for:** orchestrator-to-workers, central node fanning out to
-multiple specialists. Examples: FOUNDRY → 7 handlers; service → multiple
+multiple specialists. Examples: DELIVER → 7 handlers; service → multiple
 adapters.
 
 ```dot

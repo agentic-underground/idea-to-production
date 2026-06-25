@@ -474,14 +474,14 @@ previous paragraph raised, or asks a question the next paragraph will answer.
 
 ---
 
-## FOUNDRY Family Integration
+## DELIVER Family Integration
 
 | When to use WRITER | When to use instead |
 |--------------------|-------------------|
 | Telling the story of what was built | ROADMAPPER — for planning what to build next |
-| Release communication | FOUNDRY — for orchestrating the build itself |
+| Release communication | DELIVER — for orchestrating the build itself |
 | Project retrospectives | IDEATE — for turning a retrospective finding into a new feature |
 | Documentation for external readers | CLAUDE.md / README.md — for internal operational docs |
 
-WRITER is a consumer of FOUNDRY artefacts (git history, roadmap, memory), not a producer.
+WRITER is a consumer of DELIVER artefacts (git history, roadmap, memory), not a producer.
 It reads and synthesises; it does not plan, specify, or implement.

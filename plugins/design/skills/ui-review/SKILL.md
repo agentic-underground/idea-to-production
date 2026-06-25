@@ -32,12 +32,12 @@ whole SPA or a single pasted screenshot. It is adversarial by stance and grounde
 |---|---|
 | A running app / dev-server URL | **Crawl** — enumerate navigable routes, screenshot + a11y-snapshot each, critique all. |
 | One or a few screenshots (pasted or on disk) | **Ad-hoc** — `Read` the image(s) and critique immediately. No crawl, no server. |
-| A foundry-built UI with `@front-end` INTENT markers | **Compose** — read the markers (by capability) to recover intent, then critique the *rendered* result and extend the build-time `design-critic`. |
+| A deliver-built UI with `@front-end` INTENT markers | **Compose** — read the markers (by capability) to recover intent, then critique the *rendered* result and extend the build-time `design-critic`. |
 
 ## How to run (crawl mode)
 
 1. **Recover intent + scope the target.** What is this app *for*, and for *whom*? Read `@front-end` INTENT
-   markers if foundry is present. **Find the dev-server URL** (ask, or detect a running server). **If it is
+   markers if deliver is present. **Find the dev-server URL** (ask, or detect a running server). **If it is
    ambiguous which graphical elements/routes to review** — many routes, auth-walled areas, embedded
    canvases/maps/charts — **ask the user** which surfaces matter (offer a sensible default: all top-level
    nav routes + their primary states). Never guess the scope of a review.

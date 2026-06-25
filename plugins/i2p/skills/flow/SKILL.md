@@ -26,7 +26,7 @@ carries VALUE from IDEA to PRODUCTION; this draws the map with only the parts yo
                                             ┌──────── fail ◀───────┐
                                             ▼                      │
 DISCOVER ──▶ IDEATE ─▶ DELIVER ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
-market-       ideate  roadmapper design   foundry  foundry   security  publish  operate
+market-       ideate  roadmapper design   deliver  deliver   security  publish  operate
 scanner                (+FLEET)                      (quality) (security)
                                             └──── BUILD ⇄ ASSURE ⇄ SECURE loop ────┘
  /discovery-  /ideate  /roadmapper /mockup  IDEA▶…▶ /pr-review /scan-all /publish  observe ·
@@ -37,29 +37,29 @@ scanner                (+FLEET)                      (quality) (security)
 Nine phases forming a **cycle** — OPERATE's learnings loop back to DISCOVER. **DELIVER** sits between
 IDEATE and DESIGN: it turns the IDEA package into the **FLEET v2 pipeline** — a dependency-ordered
 roadmap of EPIC/PLAN docs (intake → EARS/feature authoring → decomposition) — owned by
-**`foundry:roadmapper`** (headline **`/roadmapper`**, artefact the `docs/roadmap/` pipeline); the
-external **FLEET continuous-delivery engine** then drains it (building each slice via FOUNDRY's
+**`deliver:roadmapper`** (headline **`/roadmapper`**, artefact the `docs/roadmap/` pipeline); the
+external **FLEET continuous-delivery engine** then drains it (building each slice via DELIVER's
 PLAN-scope entry). The three
 realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop**, not a straight line — a failed quality or
 security gate sends the work *back* to BUILD (the `fail` back-edge), and the loop exits to PUBLISH only
-when all three are satisfied. **ASSURE** (foundry, quality V&V) and **SECURE** (secure, security) are
+when all three are satisfied. **ASSURE** (deliver, quality V&V) and **SECURE** (secure, security) are
 **separate first-class gates**. Three concerns **cross-cut** every phase: usability (design/DESIGN),
-quality (foundry/ASSURE — built-in not inspected-in), security (secure/SECURE — baked in from the
+quality (deliver/ASSURE — built-in not inspected-in), security (secure/SECURE — baked in from the
 start). For each stage, give: the plugin, its **headline command**, and the **artefact** it produces (an
 OPPORTUNITY → an IDEA package → a dependency-ordered roadmap → a design-reviewed screen → tested code → a
 quality PASS → a SECURITY-REPORT → an article/PDF → a live, observed product). Ground the wording in
-`plugins/i2p/knowledge/product-lifecycle.md` (canonical), `plugins/foundry/VALUE_FLOW.md`, and the
+`plugins/i2p/knowledge/product-lifecycle.md` (canonical), `plugins/deliver/VALUE_FLOW.md`, and the
 marketplace `README.md` composition diagram.
 
 ## 2. Light vs dark
 
 Place only **installed** plugins as live stages. Mark each missing plugin's stage as dark:
-"▫ DISCOVER — add `discover` to find what's worth building" / "▫ DELIVER — add `foundry` for
+"▫ DISCOVER — add `discover` to find what's worth building" / "▫ DELIVER — add `deliver` for
 `/roadmapper` to author the FLEET v2 `docs/roadmap/` pipeline (and the external FLEET engine to drain
 it)" / "▫ OPERATE — add `operate` to observe, respond to incidents, and iterate the live product." A user
 should see both the path they have and the path they could unlock. (DELIVER is owned by
-**`foundry:roadmapper`** — **headline `/roadmapper`**; the external FLEET `pipeline` plugin supplies the
-build engine — `/pipeline:status`, `/pipeline:run`. Treat DELIVER as a LIVE stage when `foundry` is
+**`deliver:roadmapper`** — **headline `/roadmapper`**; the external FLEET `pipeline` plugin supplies the
+build engine — `/pipeline:status`, `/pipeline:run`. Treat DELIVER as a LIVE stage when `deliver` is
 installed, dark when it is not — name the stage and its owner regardless; graceful degradation, the gap
 named not skipped.)
 

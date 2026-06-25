@@ -16,7 +16,7 @@
 #   3. On a dead / no-response server, WRITE a DEGRADED_CAPABILITIES record (capability
 #      mcp.<name>, a concrete reason, since_phase = current lifecycle phase) into
 #      <project>/.i2p/degraded-capabilities.json — additive + idempotent per the contract
-#      (plugins/foundry/knowledge/protocols/degraded-capabilities.md §1, "State file").
+#      (plugins/deliver/knowledge/protocols/degraded-capabilities.md §1, "State file").
 #
 # HONESTY (degrade to silence): true MCP liveness — a live server actually answering an
 # MCP request — is NOT reliably probeable from a SessionStart hook on this harness (the

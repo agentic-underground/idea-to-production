@@ -21,7 +21,7 @@
 # Generated adversarial-review verdict artifacts (pr-review / i2p-review write these to the project root)
 /PR_REVIEW.md
 /I2P_REVIEW.md
-# Lifecycle runtime state written by i2p/operate/foundry skills when dogfooded against this repo
+# Lifecycle runtime state written by i2p/operate/deliver skills when dogfooded against this repo
 /.i2p/
 
 # --- ComfyUI model-survey artifacts (large/regenerable rasters; catalog/journal/pdf stay tracked) ---
