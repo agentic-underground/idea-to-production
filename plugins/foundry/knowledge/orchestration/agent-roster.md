@@ -309,7 +309,9 @@ stack. The canonical, extensible list is the VALUE_HANDLER_POOL in
 (native handler of the `frontend` DESIGN system), `handler-react`, `handler-css`,
 `handler-playwright`, `handler-rust`, `handler-rust-webapp` (the RUST_WEBAPP_API one-shot,
 governed by the `rust-webapp-rollout` skill), `handler-rust-tauri` (the Tauri desktop shell over a
-pure Rust core), `handler-github-actions` (CI/CD-as-code on GitHub Actions), and
+pure Rust core), `handler-github-actions` (CI/CD-as-code on GitHub Actions), `handler-ansible`
+(Ansible / IaC — idempotent playbooks + roles, ansible-vault, Molecule + ansible-lint gating;
+spawned when the stack carries `.yml` playbooks, a `roles/` dir, or `ansible.cfg`), and
 `handler-roadmap-decomposition` (the atomic-job-breakdown specialist spawned by the LEAD ENGINEER
 during §5 decomposition — it plans, it does not orchestrate). Each carries `model: inherit` and is
 spawned at the phase tier per [`../policy/model-selection.md`](../policy/model-selection.md). The
