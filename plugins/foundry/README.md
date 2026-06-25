@@ -57,7 +57,8 @@ skills/agents keep working, they are simply not presented as user commands. Pref
 | [`/foundry:check`](commands/check.md) | verify foundry's external tool dependencies |
 | [`/foundry:rust-webapp-rollout`](commands/rust-webapp-rollout.md) | one-shot full-Rust web-app + Vercel rollout |
 | [`/foundry:inspect`](commands/inspect.md) | audit the foundry plugin itself |
-| `roadmapper` · `code-quality` · `frontend` · `vertical-slice` skills | user-triggerable station skills (manage the roadmap, run code-quality analysis, build a data-bound UI, carve a slice) — invoked by their trigger phrases, no `/command` of their own |
+| [`/foundry:roadmapper`](commands/roadmapper.md) | the **DELIVER** front door — capture an idea, write EARS specs, decompose into dependency-ordered EPIC/PLAN slices (FLEET v2 pipeline), drive features through the dev system |
+| `code-quality` · `frontend` · `vertical-slice` skills | user-triggerable station skills (run code-quality analysis, build a data-bound UI, carve a slice) — invoked by their trigger phrases, no `/command` of their own |
 
 **Agent-internal conveyor (not for direct use)** — invoked by the FOUNDRY orchestrator, never typed:
 
