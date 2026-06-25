@@ -74,9 +74,32 @@ projected for two readers. The user-facing dossier *persuades and aligns*; the a
 *instructs precisely*. They must never disagree: a fact corrected in one is corrected in both. The
 package is **iterated with the user** until both faces are right, *then* handed off.
 
+## On-disk layout
+
+When the package is written to disk (FOUNDRY absent, or for archival), it takes a **fixed shape** so a
+fresh FOUNDRY — or any agent — finds every face of the package by path, with no conversation history.
+`<slug>` is the kebab-case `SLUG` field from the IDEA brief (e.g. `task-manager-app`).
+
+```
+doc/idea/<slug>/
+  brief.md        # agent-facing — the IDEA brief (Face 1 §1): TITLE · SLUG · DATE · PROBLEM · ACTORS ·
+                  #   IN/OUT-OF-SCOPE · CONSTRAINTS · SUCCESS-METRIC · FIRST-SLICE pointer. Markdown, labelled fields.
+  smu-seed.md     # agent-facing — the SMU seed (Face 1 §2): domain, core concepts/terms, user mental
+                  #   model, technical landscape, success/failure definition. Markdown prose, ~200 words. FOUNDRY expands this.
+  first-slice.md  # agent-facing — the first vertical slice (Face 1 §3): EARS statement, acceptance
+                  #   criteria, stack hint. Markdown with an EARS block + a checklist.
+  handoff.md      # agent-facing — the handoff contract (Face 1 §4): objective, entry criteria for
+                  #   FOUNDRY, what the challenger verified, knowledge-parity confirmation, open questions / accepted risks. Markdown.
+  dossier.md      # user-facing — the IDEA dossier (Face 2): narrative summary, PRICE-BAND, naming
+                  #   candidates, the persuade-and-align read. Markdown prose (figures embedded when publish/atelier rendered them).
+```
+
+A worked reference of this layout ships under
+[`plugins/ideator/examples/doc/idea/task-manager-app/`](../../examples/doc/idea/task-manager-app/).
+
 ## Where it goes
 
 - **FOUNDRY installed** → hand the agent-facing package to FOUNDRY (its IDEA station receives it by
   capability) → roadmap → `/loop /foundry` builds it.
-- **FOUNDRY absent** → write the package under `doc/idea/<slug>/` and point the user at FOUNDRY (or the
-  inline dev system) to carry it forward.
+- **FOUNDRY absent** → write the package under `doc/idea/<slug>/` (the **On-disk layout** above) and
+  point the user at FOUNDRY (or the inline dev system) to carry it forward.
