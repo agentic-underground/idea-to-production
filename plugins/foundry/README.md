@@ -93,7 +93,7 @@ not a dead end. When the verdict is non-PASS:
    (status line `⇄ ×N`).
 3. **Re-run the gate** — `/foundry:pr-review` again over the revised diff.
 4. **The loop exits only when all three gates are green** — BUILD shipped, ASSURE PASS, and SECURE
-   (`/security:scan-all`) PASS — at which point the lifecycle advances to PUBLISH. A non-PASS verdict
+   (`/secure:scan-all`) PASS — at which point the lifecycle advances to PUBLISH. A non-PASS verdict
    always halts the merge; autonomy means "merge on PASS", never "merge regardless."
 
 ## Using it
@@ -114,8 +114,8 @@ Without `--fix`, behaviour is unchanged (pure generate-and-stamp).
 foundry's value artefact is **markdown**. Two cross-cutting concerns live in separate plugins in
 the same marketplace and are used *automatically if installed*, with clean degradation if not:
 
-- **SECURITY → [`security`](../security/)** — a pre-release gate (PII, secrets, dependency audit).
-  When installed, foundry's release path can run `/security:scan-all` before DELIVERY; when absent,
+- **SECURITY → [`secure`](../secure/)** — a pre-release gate (PII, secrets, dependency audit).
+  When installed, foundry's release path can run `/secure:scan-all` before DELIVERY; when absent,
   the gate is skipped with a noted recommendation.
 - **PUBLISHING → [`publish`](../publish/)** — articles, standalone diagrams, and
   print-quality PDFs. When installed, foundry can hand markdown to `/publish` for richer output;

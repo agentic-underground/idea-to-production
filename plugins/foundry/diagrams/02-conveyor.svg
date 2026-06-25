@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg viewBox="0 0 860 520" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans, sans-serif">
   <title>FOUNDRY — the three-layer conveyor (horizontal belt)</title>
-  <desc>FOUNDRY is a three-layer conveyor. THE IDEA, above the line, is the user in knowledge-parity with the IDEATE (PRODUCT_MANAGER), emitting a clear, agent-readable brief downward into THE CONVEYOR. The conveyor is a horizontal belt carrying nine value-stations left to right from a cool IDEA end to a warm SHIP end: IDEA (ideate), ROADMAP (roadmapper), PLAN, EARS (spec), FEATURE, TEST (tests), IMPLEMENT plus DESIGN (builder/handlers), STORY, SHIP (deliver). The two ends are accented — IDEA blue, SHIP amber — to mark the cool-to-warm direction. A cross-cutting band rides within the carriage, beneath the belt, carrying GOVERNANCE (reviewers, perf-delta gates, inspector) in foundry, and companions if installed: PUBLISHING to publish, SECURITY to security, DESIGN to design. Side rails mark the vertical duality: questions flow up, value flows down.</desc>
+  <desc>FOUNDRY is a three-layer conveyor. THE IDEA, above the line, is the user in knowledge-parity with the IDEATE (PRODUCT_MANAGER), emitting a clear, agent-readable brief downward into THE CONVEYOR. The conveyor is a horizontal belt carrying nine value-stations left to right from a cool IDEA end to a warm SHIP end: IDEA (ideate), ROADMAP (roadmapper), PLAN, EARS (spec), FEATURE, TEST (tests), IMPLEMENT plus DESIGN (builder/handlers), STORY, SHIP (deliver). The two ends are accented — IDEA blue, SHIP amber — to mark the cool-to-warm direction. A cross-cutting band rides within the carriage, beneath the belt, carrying GOVERNANCE (reviewers, perf-delta gates, inspector) in foundry, and companions if installed: PUBLISHING to publish, SECURITY to secure, DESIGN to design. Side rails mark the vertical duality: questions flow up, value flows down.</desc>
 
   <defs>
     <!-- value flows DOWN (left rail, into the belt) -->
@@ -130,7 +130,7 @@
       <rect x="58" y="324" width="744" height="74" rx="10" fill="#1e1e2e" stroke="#9ece6a" stroke-width="1.5" stroke-dasharray="6,3"/>
       <text x="430" y="346" text-anchor="middle" fill="#9ece6a" font-size="11" font-weight="bold" letter-spacing="1">CROSS-CUTTING · rides the whole carriage</text>
       <text x="430" y="366" text-anchor="middle" fill="#e6e9f0" font-size="12">GOVERNANCE: reviewers · perf-delta gates · inspector  —  in foundry</text>
-      <text x="430" y="386" text-anchor="middle" fill="#bb9af7" font-size="11">companions if installed: PUBLISHING&#8594;publish · SECURITY&#8594;security · DESIGN&#8594;design</text>
+      <text x="430" y="386" text-anchor="middle" fill="#bb9af7" font-size="11">companions if installed: PUBLISHING&#8594;publish · SECURITY&#8594;secure · DESIGN&#8594;design</text>
     </g>
   </g>
 

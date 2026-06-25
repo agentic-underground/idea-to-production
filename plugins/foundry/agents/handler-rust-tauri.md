@@ -207,7 +207,7 @@ reassigning, only by authoring a minimal explicit capability. Harden the CSP in 
 (`default-src 'self'`; nonce/hash for any inline script). No secret in a binary string literal —
 verify with `strings <binary> | grep -i key`. Audit the supply chain with `cargo audit` / `cargo
 deny` and justify every new dependency and plugin. This mirrors the `reviewer` SECURITY role and the
-`security` plugin's gate when installed.
+`secure` plugin's gate when installed.
 
 ---
 

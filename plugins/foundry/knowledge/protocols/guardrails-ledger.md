@@ -41,7 +41,7 @@ other docs and code comments can cite it (`see ledger B3`).
 
 A ledger should end with a consolidated **FORBIDDEN list**: a table of `Forbidden | Why forbidden |
 Do this instead`. It is the fast index — a reviewer (human or agent) scans it before approving, and
-each row points back to the ledger entry that earned it. *(Foundry's `reviewer` and the `security`
+each row points back to the ledger entry that earned it. *(Foundry's `reviewer` and the `secure`
 plugin's gates both consult the relevant FORBIDDEN list.)*
 
 > **GUARDRAIL:** A FORBIDDEN list with no reasons is a wish list. Every row names the failure it

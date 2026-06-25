@@ -55,7 +55,7 @@ For each plugin that is **installed** and ships a check, run it, passing `$ARGUM
 | ideate | `/ideate:check` |
 | foundry | `/foundry:check` |
 | design | `/design:check` |
-| security | `/security:check` |
+| secure | `/secure:check` |
 | publish | `/publish:check` |
 | operate | `/operate:check` |
 

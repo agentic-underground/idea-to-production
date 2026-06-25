@@ -28,7 +28,7 @@ siblings carry one AND the asset exists on disk:
 - ideate → ideate-converge.gif (:11)
 - discover → discover-radar.gif (:11)
 - publish → publish-press.gif (:11)
-- security → sentinel-gate.gif (:11)
+- secure → sentinel-gate.gif (:11)
 - i2p → i2p-frontdoor.gif (:8)
 - design → design-critique.gif
 

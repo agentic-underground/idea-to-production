@@ -688,7 +688,7 @@ inspector" to trigger. There is no scheduled or automatic invocation.
 See [`agents/inspector.md`](../../agents/inspector.md) for full behaviour. In summary:
 
 1. Reads the installed FOUNDRY plugin (`${CLAUDE_PLUGIN_ROOT}`) — skills, agents, knowledge,
-   commands, hooks, manifests — and the companion plugins (`security`/`publish`) if present.
+   commands, hooks, manifests — and the companion plugins (`secure`/`publish`) if present.
 2. Builds a fresh critical-analysis persona (domain expert + covenant auditor).
 3. Analyses each document against: clarity, accuracy, covenant compliance, coverage **density**,
    outdated patterns, and **portability** (zero machine-specific home/config-dir coupling).

@@ -225,7 +225,7 @@ converted by pandoc may carry remote-image references, raw OOXML passthrough, or
 media paths — resolve and bound every relative path before conversion; reject media that escapes the
 working tree. Never pass untrusted source straight to a shell-invoked `pandoc` without argument
 isolation. Treat caller-supplied reference `.docx` templates as untrusted ZIPs (zip-slip on
-extraction). This mirrors the `reviewer` SECURITY role and the `security` plugin's gate when installed.
+extraction). This mirrors the `reviewer` SECURITY role and the `secure` plugin's gate when installed.
 
 ---
 

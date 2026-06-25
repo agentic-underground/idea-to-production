@@ -31,11 +31,11 @@ jobs:
   # ITSELF. We invoke gitleaks — the CLI that SECURITY's /scan-for-secrets skill wraps —
   # directly over the working tree AND full git history, the deterministic credential
   # slice of the otherwise agent-driven audit. The deep PII audit (names, addresses,
-  # phone numbers — see plugins/security/skills/scan-for-pii) stays agent-driven; CI
+  # phone numbers — see plugins/secure/skills/scan-for-pii) stays agent-driven; CI
   # covers the part a CLI can prove. gitleaks' default ruleset already detects the
   # high-signal patterns security targets (AWS AKIA…, -----BEGIN…PRIVATE KEY-----,
   # provider tokens, high-entropy generic keys). The maintainer's known-good noreply
-  # email and SECURITY's own documentation placeholders are allowlisted in
+  # email and the `secure` plugin's documentation placeholders are allowlisted in
   # .gitleaks.toml so the dogfood flags only REAL findings.
   secret-scan-self:
     runs-on: ubuntu-latest

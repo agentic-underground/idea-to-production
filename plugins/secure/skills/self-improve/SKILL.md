@@ -2,7 +2,7 @@
 name: self-improve
 description: >
   Improve SECURITY itself by folding detection feedback back into its patterns, precision boundaries, and
-  gates — and by self-cleaving over-broad elements. Trigger with /security:self-improve (or "the scan
+  gates — and by self-cleaving over-broad elements. Trigger with /secure:self-improve (or "the scan
   missed a vuln — fix it", "this rule is too noisy", "fold this finding back in", "self-improve the
   scan-for-secrets skill"). Reflects one element against the covenant + pillars, applies the fix on a branch,
   runs the adversarial review (foundry's /foundry:pr-review if installed), and opens a PR so every future

@@ -5,7 +5,7 @@ description: >
   scan-for-pii (personal data), scan-for-secrets (credentials), scan-dependencies (supply chain) — then
   merges them into a single SECURITY-REPORT.md with one overall verdict: PASS, REVIEW, or BLOCK.
   Trigger with /scan-all [scope]. This is the entry point the foundry plugin calls as its
-  SECURITY station before DELIVERY when SECURITY is installed; it is equally useful standalone
+  SECURE station before DELIVERY when SECURE is installed; it is equally useful standalone
   before any release or open-sourcing. Degrades gracefully: if a sub-skill or its tooling is
   unavailable, it reports the gap rather than silently passing.
 metadata:
@@ -97,7 +97,7 @@ itself degrades cleanly:
 - A sub-skill whose external tool is missing (e.g. no `pip-audit`) runs its static checks and
   marks that lens **partial coverage** — never a false PASS.
 - Foundry's side of the contract: if SECURITY is absent entirely, foundry skips the gate, ships
-  markdown, and notes "SECURITY gate skipped — install the `security` plugin to enable." The
+  markdown, and notes "SECURITY gate skipped — install the `secure` plugin to enable." The
   decision to ship without a gate is always **disclosed**, never silent.
 
 ---

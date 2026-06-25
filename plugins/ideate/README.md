@@ -63,7 +63,7 @@ can't verify is recorded as an open question, not a guess. (Reuses discover's ev
   (by capability) → roadmap → `/loop /foundry` carries it to PRODUCTION. **IDEATE supersedes FOUNDRY's
   inline ideate**, which remains as the graceful-degradation fallback when this plugin is absent.
 - The arc: **DISCOVER (discover) → IDEATE (ideate) → BUILD (foundry) → SECURE/PUBLISH
-  (security/publish)**. *Graceful enhancement* — no hard dependency in any direction.
+  (secure/publish)**. *Graceful enhancement* — no hard dependency in any direction.
 
 ## The feedback loop
 

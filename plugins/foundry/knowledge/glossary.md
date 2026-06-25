@@ -12,7 +12,7 @@ understand the *system*; read here to disambiguate a *name*.
 
 ## 1. The conceptual-domain tree
 
-![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — discover (DISCOVERY front door) → ideate (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), publish (PUBLISH), design (DESIGN/usability), operate (OPERATE).](diagrams/01-domain-tree.png)
+![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — discover (DISCOVERY front door) → ideate (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — secure (SECURE), publish (PUBLISH), design (DESIGN/usability), operate (OPERATE).](diagrams/01-domain-tree.png)
 
 The companions are **cross-cutting**: foundry/ideate use them *by capability* when installed
 (graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
@@ -20,7 +20,7 @@ is the nine-phase product-lifecycle **cycle**: **DISCOVER (discover) → IDEATE 
 DELIVER (foundry:roadmapper + FLEET engine) → DESIGN (design) → BUILD ⇄ ASSURE ⇄ SECURE (foundry build,
 foundry quality, security — the realisation loop) → PUBLISH (publish) → OPERATE (operate) ↻**
 (a failed ASSURE/SECURE gate sends work back to BUILD; OPERATE loops back to DISCOVER). Three concerns
-cross-cut every phase — usability (design), quality (foundry), security (the security plugin).
+cross-cut every phase — usability (design), quality (foundry), security (the secure plugin).
 
 ---
 
@@ -57,9 +57,9 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   (the BUILD ⇄ ASSURE ⇄ SECURE realisation loop sends failed gates back to BUILD; OPERATE loops
   back to DISCOVER), each owned by one plugin. **DELIVER** (roadmap intake → EARS/feature authoring →
   decomposition, owner foundry:roadmapper + FLEET engine) sits between IDEATE and DESIGN. **ASSURE** (quality V&V,
-  foundry) and **SECURE** (security, the security plugin) are separate first-class gates; three concerns
+  foundry) and **SECURE** (security, the secure plugin) are separate first-class gates; three concerns
   cross-cut every phase — usability (design),
-  quality (foundry), security (the security plugin). The canonical model (owners, academic lineage, entry/exit
+  quality (foundry), security (the secure plugin). The canonical model (owners, academic lineage, entry/exit
   signals) is `i2p/knowledge/product-lifecycle.md`; tracked per-project in `.i2p/lifecycle.json` and shown
   on the i2p status line. Distinct from the *marketing* product life cycle
   (introduction→growth→maturity→decline), which runs alongside OPERATE.
@@ -70,7 +70,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   V&V (tests green, coverage density, perf-delta, regression, architecture). Distinct from SECURE — a
   product can be high-quality and insecure. *(Built-in not inspected-in: quality is engineered from the
   first line of BUILD; ASSURE certifies it.)*
-- **SECURE** (lifecycle phase ⑦; gate, owner security) — the **security** certification gate: PII,
+- **SECURE** (lifecycle phase ⑦; gate, owner secure) — the **security** certification gate: PII,
   secrets, supply-chain clear before exposure. Distinct from ASSURE (quality). *(Baked in from the
   beginning — secure-by-design from DISCOVER; SECURE is the pre-exposure certification.)*
 - **OPERATE** (lifecycle phase ⑨; owner `operate`) — the living phase: observe, respond to
@@ -86,11 +86,11 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **⚔ adversarial-catch counter** (times a reviewer caught something) and the **token-cost tracker**
   (per-phase actual vs a self-calibrating estimate, tokens + $). Canonical:
   `i2p/knowledge/instrumentation.md`; state under `~/.claude/state/` and `<project>/.i2p/cost.json`.
-- **i2p / discover / ideate / foundry / security / publish / design / operate** — the front door
+- **i2p / discover / ideate / foundry / secure / publish / design / operate** — the front door
   plus the seven specialist plugins: FRONT DOOR (the meta-layer + arrival layer; composes the specialists)
   / DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the core conveyor
   (BUILD + the ASSURE quality gate, **and** DELIVER via foundry:roadmapper authoring + the external FLEET
-  engine draining) / SECURITY companion (the SECURE gate) / PUBLISHING companion / DESIGN companion (make +
+  engine draining) / SECURE companion (the SECURE gate) / PUBLISHING companion / DESIGN companion (make +
   adversarially review the visuals) / OPERATE companion (run the live product — observe, respond, iterate,
   maintain — and loop learnings back to DISCOVER).
 
@@ -119,12 +119,12 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **pr-review** (adversarial PR/diff review → one verdict) · **self-improve** (targeted self-cleaving →
   PR) · **prerequisites** (emit PREREQUISITES.md) ·
   **check** (verify tool dependencies). The companions add **check** too (discover, ideate,
-  security, publish, design, operate).
+  secure, publish, design, operate).
 
 ### Skills (companion plugins)
 - discover: **goal-setter** · **market-scan** · **self-improve** · **check**.
 - ideate: **ideate** (the IDEA package) · **self-improve** · **check**.
-- security: **scan-for-pii** · **scan-for-secrets** · **scan-dependencies** · **scan-all** · **check**.
+- secure: **scan-for-pii** · **scan-for-secrets** · **scan-dependencies** · **scan-all** · **check**.
 - publish: **writer** · **diagram-studio** · **handler-mermaid** (full Mermaid taxonomy + theming + ELK) ·
   **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review; agents
   **typographic-reviewer**, **dataviz-reviewer**, **image-aesthetic-reviewer**, **layout-reviewer** — the
@@ -157,7 +157,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **/foundry:pr-review** · **/foundry:self-improve** · **/foundry:check** · **/foundry:prerequisites**
 - discover: **/market-scan** · **/discovery-goal** · **/discover:check**
 - ideate: **/ideate** · **/ideate:check**
-- security: **/scan-all** · **/scan-for-pii** · **/scan-for-secrets** · **/scan-dependencies** · **/security:check**
+- secure: **/scan-all** · **/scan-for-pii** · **/scan-for-secrets** · **/scan-dependencies** · **/secure:check**
 - publish: **/publish** · **/publish:check**
 - design: **/ui-review** · **/mockup** · **/design:check**
 
@@ -173,7 +173,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   ([`architecture/pure-core.md`](architecture/pure-core.md)).
 - **Certainty markers** — `THE ONLY WAY` / `GUARDRAIL` / `ANTI-PATTERN` / `WORKED EXAMPLE`
   ([`protocols/certainty-markers.md`](protocols/certainty-markers.md)).
-- **Graceful enhancement** — foundry uses security/publish *by capability if installed*, else
+- **Graceful enhancement** — foundry uses secure/publish *by capability if installed*, else
   degrades to markdown.
 - **Adversarial PR review** — `/foundry:pr-review` fans the `reviewer` agent across adversarial
   roles (each tries to *refute* the change) → one verdict `PASS | NEEDS_REVISION | BLOCK`

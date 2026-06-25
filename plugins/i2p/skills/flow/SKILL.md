@@ -42,9 +42,9 @@ external **FLEET continuous-delivery engine** then drains it (building each slic
 PLAN-scope entry). The three
 realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop**, not a straight line — a failed quality or
 security gate sends the work *back* to BUILD (the `fail` back-edge), and the loop exits to PUBLISH only
-when all three are satisfied. **ASSURE** (foundry, quality V&V) and **SECURE** (security, security) are
+when all three are satisfied. **ASSURE** (foundry, quality V&V) and **SECURE** (secure, security) are
 **separate first-class gates**. Three concerns **cross-cut** every phase: usability (design/DESIGN),
-quality (foundry/ASSURE — built-in not inspected-in), security (security/SECURE — baked in from the
+quality (foundry/ASSURE — built-in not inspected-in), security (secure/SECURE — baked in from the
 start). For each stage, give: the plugin, its **headline command**, and the **artefact** it produces (an
 OPPORTUNITY → an IDEA package → a dependency-ordered roadmap → a design-reviewed screen → tested code → a
 quality PASS → a SECURITY-REPORT → an article/PDF → a live, observed product). Ground the wording in

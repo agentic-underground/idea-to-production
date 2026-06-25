@@ -58,7 +58,7 @@ false READY.
   in the report's Coverage & Gaps section.
 - **The loop never dead-ends at launch** — OPERATE's learnings re-enter DISCOVER, so the lifecycle is a
   cycle, not a finish line.
-- **Lights up its neighbours** — composes `security`'s `/scan-dependencies` for maintenance, hands a new
+- **Lights up its neighbours** — composes `secure`'s `/scan-dependencies` for maintenance, hands a new
   opportunity to `discover`/`ideate`, and advances the `i2p` lifecycle — all *by capability*,
   degrading gracefully when a companion is absent.
 

@@ -293,7 +293,7 @@ shared-resource names you read are untrusted input to the plan: validate EARS ID
 unique before they become job keys; never interpolate a raw roadmap-supplied path or name into a shell
 command, a `format!`/f-string, or a process spawn. A job that touches secrets, auth, or external
 surfaces must carry SECURITY-REVIEWER on its Story-exit panel — flag it explicitly in the plan so the
-`security` plugin's gate (when installed) and the `reviewer` SECURITY role engage. Never plan a job
+`secure` plugin's gate (when installed) and the `reviewer` SECURITY role engage. Never plan a job
 that exfiltrates or weakens a secret to "make the slice smaller".
 
 ---

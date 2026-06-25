@@ -2,7 +2,7 @@
 name: prerequisites
 description: >
   Emit a project-local PREREQUISITES.md describing the external software the installed marketplace
-  plugins (foundry, and security/publish when present) need to do their best work — with install
+  plugins (foundry, and secure/publish when present) need to do their best work — with install
   guidance and the current ✓/✗ status of this machine. Trigger with /foundry:prerequisites (or
   "what software do I need?", "generate a prerequisites doc", "document the tool dependencies").
   Assembles from each installed plugin's check requirements and runs each plugin's -check to
@@ -23,7 +23,7 @@ missing on this machine.
 ## How to run
 
 1. **Detect which plugins are installed — by capability, not by filesystem location.** foundry is
-   always present; treat security / publish as available only if their `/security:check` /
+   always present; treat secure / publish as available only if their `/secure:check` /
    `/publish:check` commands resolve in this session. Never assume a sibling plugin's path on disk
    (plugins install independently; foundry references companions *by capability* — the same rule the
    inspector enforces).
@@ -32,7 +32,7 @@ missing on this machine.
    command surface** — never a cross-plugin filesystem path:
    ```
    /foundry:check
-   /security:check      # only if security is installed
+   /secure:check      # only if security is installed
    /publish:check     # only if publish is installed
    ```
    (foundry's own probe is equivalently `bash ${CLAUDE_PLUGIN_ROOT}/skills/check/scripts/check.sh`.)

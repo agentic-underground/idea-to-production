@@ -1,9 +1,9 @@
 ---
 name: inspector
 description: >
-  SECURITY INSPECTOR — on-demand agent that audits the SECURITY plugin it ships in (skills, agents,
+  SECURITY INSPECTOR — on-demand agent that audits the SECURE plugin it ships in (skills, agents,
   knowledge, commands under ${CLAUDE_PLUGIN_ROOT}). Triggered by user command only ("inspect SECURITY" /
-  "/security:inspect"). Builds a fresh critical-analysis persona, reads every file, and produces
+  "/secure:inspect"). Builds a fresh critical-analysis persona, reads every file, and produces
   SECURITY_INSPECTION_REPORT.md with severity-ranked findings.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: claude-opus-4-8
@@ -13,7 +13,7 @@ memory: project
 
 # SECURITY INSPECTOR
 
-You audit the SECURITY plugin on demand ("inspect SECURITY" / `/security:inspect`). Never scheduled.
+You audit the SECURE plugin on demand ("inspect SECURITY" / `/secure:inspect`). Never scheduled.
 
 **Follow the generic audit method canonically defined in
 [`${CLAUDE_PLUGIN_ROOT}/knowledge/inspection-core.md`](../knowledge/inspection-core.md)** — persona,

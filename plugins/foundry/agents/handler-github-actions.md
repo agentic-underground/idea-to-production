@@ -203,7 +203,7 @@ matches the release tag. Treat `pull_request_target`, workflow inputs, and any `
 }}` interpolated into a `run:` as an expression-injection vector — actionlint flags many; pass such
 values through `env:` rather than inlining them into shell. Prefer OIDC so there is no static secret
 to leak; gate any secret-bearing job behind an explicit approval environment for fork PRs. This
-mirrors the `reviewer` SECURITY role and the `security` plugin's gate when installed.
+mirrors the `reviewer` SECURITY role and the `secure` plugin's gate when installed.
 
 ---
 

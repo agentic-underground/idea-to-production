@@ -9,7 +9,7 @@ The marketplace repeatedly ships or recommends floating/unpinned third-party cod
 
 Instances seen (branch `empower-marketplace`, reviewed 2026-06-03):
 - `plugins/foundry/.mcp.json` → `npx -y @playwright/mcp@latest` (unpinned npm)
-- `plugins/sentinel/.mcp.json` → `uvx semgrep-mcp` (unpinned PyPI, on the security plugin)
+- `plugins/sentinel/.mcp.json` → `uvx semgrep-mcp` (unpinned PyPI, on the secure plugin)
 - `PREREQUISITES/ansible/core-bootstrap.yml` → `curl … | sh` for rustup/uv/Volta
 - `PREREQUISITES/ansible/binaries.yml` → `osv-scanner` from `releases/latest`, piped `install.sh` for gitleaks/trivy/grype/syft (no checksum)
 - `zig` IS correctly pinned (0.13.0) — the model for the others.
