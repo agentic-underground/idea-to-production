@@ -65,8 +65,9 @@ foundry's source-level `design-critic` too.
 
 ## Product lifecycle (by capability)
 
-When the product's primary **design phase** concludes and hands off to build (this is guarded, so in-build design reviews never jump the lifecycle), and the **i2p** plugin is installed, mark the **DESIGN** phase done so the marketplace
-product lifecycle and the status line advance to BUILD:
+After the product's surfaces are **design-fitness-rubric cleared and before the engine starts draining PLANs for
+this feature** (this is guarded, so in-build design reviews never jump the lifecycle), and the **i2p** plugin is
+installed, mark the **DESIGN** phase done so the marketplace product lifecycle and the status line advance to BUILD:
 
 ```bash
 /i2p:lifecycle done DESIGN   # order-safe & idempotent — a no-op unless a lifecycle is running at DESIGN

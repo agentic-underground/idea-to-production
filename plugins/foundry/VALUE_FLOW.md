@@ -96,7 +96,7 @@ A station with no handler is a defect FOUNDER reports. A gate without a check is
 | 4 | **FEATURE** | behaviour as Gherkin | `lifecycle-states` | ds-step-2-feature-docs | ≥3 scenarios/EARS (happy/unhappy/abuse); BDD-REVIEWER PASS |
 | 5 | **TEST** | failing tests = solution coordinates | `lifecycle-states` | ds-step-3-tests, ds-step-4-first-test-run | genuinely RED; gap map complete |
 | 6 | **IMPLEMENT** | minimal code to green | `lifecycle-states`, `code-quality` | ds-step-5/6, handler-* | all gap-map tests green; 100% coverage floor |
-| 6b| **DESIGN** *(cross-cuts IMPLEMENT)* | usable, accessible surfaces | `frontend` | handler-vanilla-js, handler-css | INTENT-marked; a11y + privacy held |
+| 6b| **DESIGN** *(cross-cuts IMPLEMENT)* | usable, accessible surfaces — the DESIGN station **cross-cuts IMPLEMENT**; the **primary atelier gate fires before the engine starts draining PLANs** (see [product-lifecycle](../i2p/knowledge/product-lifecycle.md)) | `frontend` | handler-vanilla-js, handler-css | INTENT-marked; a11y + privacy held |
 | 7 | **STORY** | proof through the real interface | `lifecycle-states` | ds-step-story-tests, handler-playwright | STORY_PROVEN; perf-delta gate passed |
 | 8 | **DELIVERY** | shipped + traceable | `lifecycle-states` | ds-step-7/8/9 | synced; commit narrative; roadmap COMPLETE |
 | 9 | **DEPLOY** *(where the product deploys)* | a live artefact | `lifecycle-states` (stack skill, e.g. `rust-webapp-rollout`) | stack handler | built + deployed; live URL/endpoint exists |
@@ -116,7 +116,7 @@ cleanly without (**graceful enhancement** — foundry's value artefact is markdo
   `flaky-test-fixer`. A reviewer gate and, where relevant, a **performance-delta gate** sit at
   every transition.
 - **PUBLISHING** *(companion: `publish` plugin)* — when installed, foundry hands off to its
-  `writer`, `diagram-studio` / `mermaid-specialist`, `rich-pdf-with-diagrams`, and `design-reviewer`
+  `writer`, `diagram-studio` / `handler-mermaid`, `rich-pdf-with-diagrams`, and `design-reviewer`
   skills (via the `/publish` command) for narrative + print-quality artefacts, themed diagrams, and an
   adversarial print/data-viz design review. When absent, foundry delivers markdown and notes that
   rich publishing was skipped. Reference by capability/skill-name, never by `${CLAUDE_PLUGIN_ROOT}`
@@ -264,6 +264,10 @@ ds-step-* + handler-*              — do the station work
 reviewer (panel)                   — gates every transition (PASS / NEEDS_REVISION / BLOCK)
 ```
 
+The cross-phase **BUILD ⇄ ASSURE ⇄ SECURE loop** is realised by composition — `/pr-review` folds in
+`/scan-all` and calls `/i2p:lifecycle fail` when a gate fails; this is distinct from the
+lifecycle-orchestrator's internal step-0..9 item loop.
+
 ---
 
 ## 10 · The map (master index)
@@ -281,7 +285,7 @@ reviewer (panel)                   — gates every transition (PASS / NEEDS_REVI
 | STORY | `lifecycle-states` | ds-step-story-tests, handler-playwright | testing/test-policy (perf-delta) |
 | DELIVERY | `lifecycle-states` | ds-step-7/8/9 | protocols/commit-message, protocols/definition-of-done |
 | GOVERNANCE | `code-quality`, `reviewer-gate` | reviewer, inspector, coverage-loop-agent, flaky-test-fixer | all pillars, testing/* |
-| PUBLISHING *(companion)* | `publish` plugin: `writer`, `diagram-studio`, `mermaid-specialist`, `rich-pdf-with-diagrams`, `design-reviewer` (via `/publish`) | writer's reviewer · typographic/dataviz reviewers | — |
+| PUBLISHING *(companion)* | `publish` plugin: `writer`, `diagram-studio`, `handler-mermaid`, `rich-pdf-with-diagrams`, `design-reviewer` (via `/publish`) | writer's reviewer · typographic/dataviz reviewers | — |
 | SECURITY *(companion)* | `security` plugin: `scan-for-pii`, `scan-for-secrets`, `scan-dependencies` (via `/security:scan-all`) | (parallel audit sub-agents) | — |
 | DESIGN *(companion)* | `atelier` plugin: `ui-review`, `mockup` (via `/ui-review`, `/mockup`) | ui-design-reviewer | — |
 | SENSOR (infra) | `phase-sensor` | (hook) | per-phase notes |
