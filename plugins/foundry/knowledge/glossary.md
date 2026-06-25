@@ -86,10 +86,11 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **⚔ adversarial-catch counter** (times a reviewer caught something) and the **token-cost tracker**
   (per-phase actual vs a self-calibrating estimate, tokens + $). Canonical:
   `i2p/knowledge/instrumentation.md`; state under `~/.claude/state/` and `<project>/.i2p/cost.json`.
-- **market-scanner / ideator / flow / foundry / security / publish / atelier / operate** — the eight
-  specialist plugins: DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) /
-  DELIVER (the roadmap board + intake, with foundry:roadmapper) / the core conveyor (BUILD + the ASSURE
-  quality gate) / SECURITY companion (the SECURE gate) / PUBLISHING companion / DESIGN companion (make +
+- **i2p / market-scanner / ideator / foundry / security / publish / atelier / operate** — the front door
+  plus the seven specialist plugins: FRONT DOOR (the meta-layer + arrival layer; composes the specialists)
+  / DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the core conveyor
+  (BUILD + the ASSURE quality gate, **and** DELIVER via foundry:roadmapper authoring + the external FLEET
+  engine draining) / SECURITY companion (the SECURE gate) / PUBLISHING companion / DESIGN companion (make +
   adversarially review the visuals) / OPERATE companion (run the live product — observe, respond, iterate,
   maintain — and loop learnings back to DISCOVER).
 
@@ -124,7 +125,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - market-scanner: **goal-setter** · **market-scan** · **self-improve** · **check**.
 - ideator: **ideate** (the IDEA package) · **self-improve** · **check**.
 - security: **scan-for-pii** · **scan-for-secrets** · **scan-dependencies** · **scan-all** · **check**.
-- publish: **writer** · **diagram-studio** · **mermaid-specialist** (full Mermaid taxonomy + theming + ELK) ·
+- publish: **writer** · **diagram-studio** · **handler-mermaid** (full Mermaid taxonomy + theming + ELK) ·
   **rich-pdf-with-diagrams** · **design-reviewer** (print/DTP + data-viz adversarial review; agents
   **typographic-reviewer**, **dataviz-reviewer**, **image-aesthetic-reviewer**, **layout-reviewer** — the
   at-a-glance legibility gate run before taste) · **check**. Agent **handler-composite** genuinely **owns
