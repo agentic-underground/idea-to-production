@@ -12,6 +12,11 @@ disciplined, **test-first** value flow: discover ▸ refine ▸ design ▸ build
 > **Start here →** **`/i2p:help`** browses every power you have · **`/i2p:flow`** shows the pipeline ·
 > **`/i2p:review`** gives one verdict from every reviewer. The **i2p** plugin is the front door — it
 > also greets whoever opens the repo (the welcome + the status line).
+>
+> **Already have a product proposition?** → **`/ideator:ideate "By doing X I propose Y, value Z"`**
+> starts directly from your thesis (raw-idea mode — it recognises the problem/solution/value triad and
+> pre-fills the brief). Not sure the thesis holds? **`/market-scanner:market-scan`** also *validates* a
+> held thesis (its thesis-validation mode), not only generates fresh opportunities.
 
 ---
 

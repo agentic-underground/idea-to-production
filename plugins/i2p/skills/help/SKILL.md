@@ -82,6 +82,21 @@ run `/i2p:lifecycle init` (sets phase DISCOVER) and route them to the first inst
 exists, report the current phase instead and offer `advance`. Mention that the **status line** shows the
 live phase — offer `/i2p:statusline` if it isn't enabled.
 
+### The thesis lane — a user who arrives holding a proposition
+
+When the user already states a **product proposition** ("By doing X I propose Y, and the value is Z" — a
+problem/solution/value triad), don't make them start at the meta-menu. Route them straight in:
+
+- **Confident in the thesis** → **`/ideator:ideate "By doing X I propose Y, value Z"`** (raw-idea mode):
+  `/ideate` recognises the triad and pre-fills the brief's PROBLEM / SUCCESS-METRIC / PRICE-BAND fields,
+  then challenges it to build-ready knowledge-parity.
+- **Unsure the thesis holds** → **`/market-scanner:market-scan`** in its **thesis-validation mode**: hand
+  it the thesis (or an `OPPORTUNITY-*.md` from `/operate:iterate`) and it *validates that specific thesis*
+  against the market taxonomy rather than proposing fresh candidates — emitting a validated
+  `doc/opportunities/<slug>.md` that `/ideate` then refines.
+
+Offer this lane whenever the user's first message reads as a proposition rather than a request to browse.
+
 ## 4. Focus mode
 
 If `$ARGUMENTS` names a stage or plugin (`design`, `atelier`, `security`…), zoom in: that plugin's

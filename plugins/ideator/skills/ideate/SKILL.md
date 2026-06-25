@@ -27,6 +27,11 @@ this plugin is installed it owns ideation; FOUNDRY's inline skill is the gracefu
 1. **Take the input.** EITHER a **validated opportunity** handed from `/market-scan` (a scorecard +
    evidence — much is already known; refine, don't restart), OR a **raw idea** the user supplies (start
    the dialogue from scratch). Infer what you can from the input; confirm rather than re-interrogate.
+   When the raw idea is a **product proposition** — "**By doing X I propose Y, and the value is Z**" (a
+   problem/solution/value triad, the marketplace's raw-thesis entry lane) — recognise the triad and
+   **pre-fill** the brief from it: X → the wedge/first slice, Y → the SOLUTION, Z → the SUCCESS-METRIC /
+   value, and infer a PROBLEM and PRICE-BAND to confirm. Present what you pre-filled for confirmation;
+   then challenge the gaps rather than asking the user to restate what they already said.
 2. **Challenge it to parity.** Run the **challenge protocol**
    ([`../../knowledge/ideation/challenge-protocol.md`](../../knowledge/ideation/challenge-protocol.md)):
    walk the axes — problem · actor · scope · success · value&price · wedge · slice · stack-fit · risks —

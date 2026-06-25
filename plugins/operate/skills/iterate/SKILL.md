@@ -10,7 +10,7 @@ description: >
 metadata:
   type: producer
   lens: build-measure-learn
-  output: OPPORTUNITY-<slug>.md → DISCOVER re-entry (↻)
+  output: doc/opportunities/opportunity-<slug>.md → DISCOVER re-entry (↻)
   model: inherit
 ---
 
@@ -53,13 +53,40 @@ the re-entry meaningful instead of a treadmill.
 
 ## Frame the opportunity
 
-Write `OPPORTUNITY-<slug>.md`: the production evidence (which signal, the numbers, the source), the problem
-it points at, who has it, and why it's worth a cycle. This is the seed `market-scanner`/`ideator` expect.
+Write the brief to **`doc/opportunities/opportunity-<slug>.md`** — the **same path and schema** DISCOVER
+already consumes (this is market-scanner's opportunity-brief location and shape, so the re-entry artefact
+is literally the contract `/market-scan` ingests, not a parallel format). Capture: the production evidence
+(which signal, the numbers, the source), the problem it points at, who has it, and why it's worth a cycle.
+This is the seed `market-scanner`/`ideator` expect.
 
-- If **market-scanner** is installed → hand the opportunity to it (`/market-scan`) for adversarial
-  validation before it becomes an IDEA.
+> **Schema note — one contract.** The file uses **market-scanner's opportunity-brief schema** (the
+> candidate in one sentence; the A–E scorecard / open questions where known; the price band; a
+> first-slice / stack-fit note — see `market-scan/SKILL.md` "Output"). What `/iterate` adds is the
+> **production-evidence** preamble (the signal that surfaced it). DISCOVER reads this file directly in its
+> **thesis-validation mode** — it does not re-derive the opportunity from scratch.
+
+- If **market-scanner** is installed → hand the file to it (`/market-scan`) for adversarial **validation**
+  of this specific thesis before it becomes an IDEA (its thesis-validation mode ingests
+  `doc/opportunities/opportunity-<slug>.md` directly).
 - If **ideator** is installed but market-scanner is not → hand a validated-enough opportunity to `/ideate`.
 - Standalone → the markdown brief IS the artefact; a human carries it forward.
+
+### Round-trip example (OPERATE ↻ DISCOVER)
+
+A worked close of the cycle, showing the shared contract end-to-end:
+
+1. **Signal (OPERATE).** Activation has stalled at 38% for three releases; the postmortem ledger shows a
+   recurring "users abandon at the import step" theme — a divergence between measured and intended outcome.
+2. **Pivot test → new opportunity.** This isn't backlog upkeep; it points at a *different problem* (the
+   import flow is the wrong wedge for a new segment). `/iterate` writes
+   **`doc/opportunities/opportunity-self-serve-import.md`** — the production evidence preamble plus the
+   market-scanner brief skeleton (one-sentence candidate, the segment, the price-band guess, open
+   questions).
+3. **Re-entry (DISCOVER).** The operator runs **`/market-scan doc/opportunities/opportunity-self-serve-import.md`**.
+   Market-scan recognises the handed file, enters **thesis-validation mode**, and scores *that* thesis
+   against the A–E taxonomy (it does not propose fresh candidates) — upholding, parking, or killing it.
+4. **Onward.** An upheld thesis flows to `/ideate` as a validated opportunity; the loop has closed on a
+   shared artefact, not a re-narration. `/i2p:lifecycle done OPERATE` (below) cycles the phase to DISCOVER.
 
 ## Product lifecycle (by capability)
 
