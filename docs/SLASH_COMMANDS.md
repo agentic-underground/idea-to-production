@@ -99,6 +99,12 @@ entry).
 | `/pipeline:status` *(external FLEET plugin)* | Read "what's on the roadmap" from the deterministic pipeline surface |
 | `/pipeline:run` *(external FLEET plugin)* | Start/resume the engine draining the pipeline continuously |
 
+The EPIC/PLAN/`.pipeline.md` grammar the engine parses (the DELIVER → FLEET handoff contract) is
+vendored at
+[`../plugins/foundry/skills/roadmapper/references/fleet-pipeline-standard.md`](../plugins/foundry/skills/roadmapper/references/fleet-pipeline-standard.md),
+with a worked golden sample in
+[`../plugins/foundry/skills/roadmapper/references/examples/`](../plugins/foundry/skills/roadmapper/references/examples/).
+
 *(The legacy in-repo `flow` plugin — `/flow:pull`, `/flow:flow`, the `flow-mcp` server — has been
 retired; the FLEET engine supersedes it.)*
 
