@@ -71,7 +71,7 @@ raster-lint / vision). Items 1–3 are the original step-3 checklist; 4–8 exte
    §8 + `dark-mode-canon.md` (the Medium-richness "downscale survival" gate).
 5. **Vertical clipping** — text whose `y` falls outside `[0, H]` (cut at top or bottom). *Why:* a label
    pushed off the bottom of the canvas simply isn't there for the reader. *Detect:* **machine** (vertical
-   bounds). Exemplar it must catch: the market-scanner DISCOVER label pushed off the canvas bottom.
+   bounds). Exemplar it must catch: the discover DISCOVER label pushed off the canvas bottom.
 6. **Z-index / occlusion** — a foreground element hidden behind/under another (a label under a node fill):
    present in the source, invisible or half-eaten in the render. *Why:* the data is in the file but not on the
    reader's screen — the worst kind, because source review passes it. *Detect:* **raster-lint → vision**;

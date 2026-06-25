@@ -9,7 +9,7 @@ Bring the marketplace to the point where a product can travel from the initial v
 Once every step below is complete, the intended journey reads end-to-end as follows:
 
 1. **The user holds a raw thesis.** They open the repo (or run `/i2p:help`) and the Start-here block now shows an explicit lane: *"Already have an idea or proposition? → `/ideator:ideate \"By doing X I propose Y, value Z\"`."* They type it. (Step 7)
-2. **DISCOVER (optional validation).** If they're unsure the thesis holds, `/market-scanner:market-scan` now recognises a user-supplied thesis and *validates* it (rather than only proposing fresh candidates), writing a validated `doc/opportunities/<slug>.md`. (Step 7)
+2. **DISCOVER (optional validation).** If they're unsure the thesis holds, `/discover:market-scan` now recognises a user-supplied thesis and *validates* it (rather than only proposing fresh candidates), writing a validated `doc/opportunities/<slug>.md`. (Step 7)
 3. **IDEATE → handoff.** `/ideator:ideate` runs the challenged dialogue and writes a fully-specified IDEA package to a **documented file layout** — `doc/idea/<slug>/{brief.md, smu-seed.md, first-slice.md, handoff.md, dossier.md}` — matching a committed worked example the user can compare against. (Step 6)
 4. **DELIVER.** The user types `/foundry:roadmapper` — which now **resolves to a real command** — and gets a `docs/roadmap/` FLEET v2 pipeline (EPIC/PLAN docs) shaped exactly like the committed **golden sample** under `references/`. (Steps 2, 8)
 5. **DESIGN.** The reconciled docs state one truth: whether atelier gates BUILD or cross-cuts it, and the pipeline pauses for atelier at a **defined invocation point** so `done DESIGN` fires on a real boundary. (Step 5)
@@ -72,7 +72,7 @@ At the end, a product that began as one sentence has a roadmap, tested-and-revie
 
 ### Step 7: Add the raw value-prop entry lane
 - **Phase:** DISCOVER / IDEATE (entry)
-- **Plugin:** `README.md` (Start-here block); `plugins/i2p/skills/help/SKILL.md`; `plugins/i2p/skills/flow/SKILL.md`; `plugins/market-scanner/skills/market-scan/SKILL.md`
+- **Plugin:** `README.md` (Start-here block); `plugins/i2p/skills/help/SKILL.md`; `plugins/i2p/skills/flow/SKILL.md`; `plugins/discover/skills/market-scan/SKILL.md`
 - **What to build:** Add an explicit "I already have an idea/proposition" lane to the README Start-here block and to `/i2p:help` and `/i2p:flow`, routing it to `/ideator:ideate \"...\"` (raw-idea mode). Add a short note to `/market-scan` that it also VALIDATES a user-supplied thesis, not only generates fresh candidates. Optionally have `/ideate` recognise the problem/solution/value triad ("By doing X I propose Y, value Z") and pre-fill the brief's PROBLEM / SUCCESS-METRIC / PRICE-BAND fields.
 - **Effort:** M
 - **Unblocks:** Journey moments 1–2 — the user holding a raw thesis finds a documented door instead of an unguided fork between meta/browse commands.
@@ -96,8 +96,8 @@ At the end, a product that began as one sentence has a roadmap, tested-and-revie
 
 ### Step 10: Align the OPERATE ↻ DISCOVER re-entry contract
 - **Phase:** OPERATE ↻ DISCOVER (cycle close)
-- **Plugin:** `plugins/operate/skills/iterate/SKILL.md` + operate-canon (or a shared knowledge doc); `plugins/market-scanner/skills/market-scan/SKILL.md`
-- **What to build:** Define the `OPPORTUNITY-<slug>.md` schema in ONE place and align its path + fields with market-scanner's `doc/opportunities/<slug>.md` opportunity-brief shape, so the re-entry artifact is literally the same contract DISCOVER already consumes. Add an explicit ingest step to `/market-scan` ("if handed an `OPPORTUNITY-*.md` from `/iterate`, validate that thesis rather than proposing fresh") and ship one worked production-learning → new-opportunity round-trip example.
+- **Plugin:** `plugins/operate/skills/iterate/SKILL.md` + operate-canon (or a shared knowledge doc); `plugins/discover/skills/market-scan/SKILL.md`
+- **What to build:** Define the `OPPORTUNITY-<slug>.md` schema in ONE place and align its path + fields with discover's `doc/opportunities/<slug>.md` opportunity-brief shape, so the re-entry artifact is literally the same contract DISCOVER already consumes. Add an explicit ingest step to `/market-scan` ("if handed an `OPPORTUNITY-*.md` from `/iterate`, validate that thesis rather than proposing fresh") and ship one worked production-learning → new-opportunity round-trip example.
 - **Effort:** M
 - **Unblocks:** Journey moment 9 — the "↻ re-enters DISCOVER" promise gets a shared data handoff, closing the cycle.
 - **Done when:** `/iterate`'s output path and schema match what `/market-scan` documents ingesting; `/market-scan` has an explicit OPPORTUNITY-file ingest step; one round-trip example is committed.

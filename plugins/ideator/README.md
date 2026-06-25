@@ -5,7 +5,7 @@
 > The bridge from *a candidate worth pursuing* to *a thing the conveyor can build*.
 
 IDEATOR is the **REFINEMENT** phase of the `idea-to-production` marketplace. It takes a validated
-opportunity (from [`market-scanner`](../market-scanner/)) or a raw idea you already have, refines it to
+opportunity (from [`discover`](../discover/)) or a raw idea you already have, refines it to
 **knowledge-parity** through an adversarially-challenged dialogue, and emits the **IDEA package**.
 
 ![IDEATE animated: four scattered fragments — PROBLEM (the pain, sharp), USERS (named actors), CRITERIA (testable success), and SCOPE (explicit edges) — drift in from the corners and dock one-by-one into a central IDEA-package frame, each turning from dim to amber in-flight to teal as it locks and the knowledge-parity meter fills; once all four axes are locked the challenger's READY stamp lands amber and settles teal, captioned "challenger signs off · knowledge-parity reached → hand off to FOUNDRY". The motion teaches IDEATE: a scattered idea is refined axis-by-axis to knowledge-parity until the package is unambiguous and signed off.](../../docs/images/ideator-converge.gif)
@@ -53,16 +53,16 @@ Need a name? **`/ideator:name`** (the `name-search` skill) runs a marketing-grad
 Where the challenge turns on a fact about the world — comparable **pricing**, whether an incumbent owns
 the **wedge**, the current **stack** reality — IDEATOR validates against **web research** (built-in
 WebSearch/WebFetch + a shipped, keyless Fetch MCP) before writing the answer into the package; what it
-can't verify is recorded as an open question, not a guess. (Reuses market-scanner's evidence when handed one.)
+can't verify is recorded as an open question, not a guess. (Reuses discover's evidence when handed one.)
 
 ## How it composes
 
-- **market-scanner → IDEATOR**: a kept opportunity is refined here. Or bring your own raw idea — IDEATOR
+- **discover → IDEATOR**: a kept opportunity is refined here. Or bring your own raw idea — IDEATOR
   starts the dialogue from scratch.
 - **IDEATOR → foundry**: the agent-facing package is handed to [`foundry`](../foundry/)'s IDEA station
   (by capability) → roadmap → `/loop /foundry` carries it to PRODUCTION. **IDEATOR supersedes FOUNDRY's
   inline ideator**, which remains as the graceful-degradation fallback when this plugin is absent.
-- The arc: **DISCOVER (market-scanner) → IDEATE (ideator) → BUILD (foundry) → SECURE/PUBLISH
+- The arc: **DISCOVER (discover) → IDEATE (ideator) → BUILD (foundry) → SECURE/PUBLISH
   (security/publish)**. *Graceful enhancement* — no hard dependency in any direction.
 
 ## The feedback loop

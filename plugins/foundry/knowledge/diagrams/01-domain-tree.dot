@@ -27,12 +27,12 @@ digraph DomainArchB {
     up_title [label="UPSTREAM  (discovery → refinement)", shape=box,
               style="filled,rounded", fillcolor="#2f3a5c:#1f2840", color="#7aa2f7",
               fontcolor="#cdd9f6", fontsize=12, penwidth=1.8]
-    scanner [label=<<b>market-scanner</b><br/><font point-size="9" color="#9fb6ee">DISCOVERY front door</font>>,
+    scanner [label=<<b>discover</b><br/><font point-size="9" color="#9fb6ee">DISCOVERY front door</font>>,
              fillcolor="#2a3450:#19202f", color="#7aa2f7"]
     ideator [label=<<b>ideator</b><br/><font point-size="9" color="#9fb6ee">REFINEMENT &middot; the IDEA package</font>>,
              fillcolor="#2a3450:#19202f", color="#7aa2f7"]
 
-    // scan → ideate: market-scanner LEFT, ideator RIGHT, arrow points right (reading order)
+    // scan → ideate: discover LEFT, ideator RIGHT, arrow points right (reading order)
     { rank=same; scanner; ideator }
     up_title -> scanner [style=invis]
     scanner -> ideator [label="  scan → ideate  ", fontcolor="#8fa6e0", color="#7aa2f7",

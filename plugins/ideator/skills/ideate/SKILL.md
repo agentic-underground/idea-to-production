@@ -3,7 +3,7 @@ name: ideate
 description: >
   Refine an idea into a build-ready IDEA package. Trigger with /ideate (or "let's flesh out this idea",
   "turn this into a project", "I have an idea: …", "refine this opportunity", "make this build-ready").
-  Accepts EITHER a validated opportunity from the market-scanner plugin OR a raw idea you already have,
+  Accepts EITHER a validated opportunity from the discover plugin OR a raw idea you already have,
   and refines it to knowledge-parity through an adversarially-challenged dialogue (infer-first, one
   question at a time with a recommended answer + multiple-choice). Produces the IDEA package — precise
   agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract, satisfying FOUNDRY's
@@ -60,7 +60,7 @@ this plugin is installed it owns ideation; FOUNDRY's inline skill is the gracefu
    and instruct it to *refute that it is build-ready and at knowledge-parity*. Resolve its verdict before
    handoff: **READY** → the package has earned the handoff, proceed; **NEEDS_REVISION** → close the named
    gaps in the dialogue and re-challenge (never hand off over open gaps); **NOT_READY** → the idea is
-   still soft, return to discovery (or market-scanner) rather than paper over it. Only a package that
+   still soft, return to discovery (or discover) rather than paper over it. Only a package that
    survives the challenger is handed to FOUNDRY.
 6. **Hand off.** When the user is satisfied and the exit gate passes: hand the agent-facing package to
    **FOUNDRY** if installed (its IDEA station receives it → roadmap → `/loop /foundry` builds it), else
@@ -74,7 +74,7 @@ the **wedge** (does an incumbent already do this?), **stack-fit** (current libra
 check real pricing pages, competitor features, and current docs before you write the answer into the
 package. An assumption confirmed against a live page is parity; an assumption you *couldn't* verify is an
 **open question** recorded in the package, not a silent guess. Degrade to reasoning-from-the-user when web
-tools are unavailable, and say so. (If `market-scanner` already gathered this evidence, reuse it — don't
+tools are unavailable, and say so. (If `discover` already gathered this evidence, reuse it — don't
 re-fetch.)
 
 ## The dialogue discipline

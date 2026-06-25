@@ -1,8 +1,8 @@
 ---
 name: self-improve
 description: >
-  Improve MARKET-SCANNER itself by folding downstream feedback back into its parameters, scoring, and
-  kill ledger — and by self-cleaving over-broad elements. Trigger with /market-scanner:self-improve (or
+  Improve DISCOVER itself by folding downstream feedback back into its parameters, scoring, and
+  kill ledger — and by self-cleaving over-broad elements. Trigger with /discover:self-improve (or
   "the scanner approved a dud — fix it", "fold this ideation feedback in", "self-improve the market-scan
   skill"). Reflects one element against the covenant + pillars, applies the fix on a branch, runs the
   adversarial review (foundry's /foundry:pr-review if installed), and opens a PR so every future scan,
@@ -13,7 +13,7 @@ metadata:
 model: inherit
 ---
 
-# MARKET-SCANNER — Self-improve
+# DISCOVER — Self-improve
 
 The discovery half of the marketplace's self-improving loop. A scan that **approved a candidate it
 should have killed** is the signal: the fix is a *better-articulated parameter or kill-threshold*, fixed

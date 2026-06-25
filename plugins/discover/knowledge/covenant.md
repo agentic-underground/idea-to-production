@@ -1,7 +1,7 @@
-# MARKET-SCANNER — pillars & the KAIZEN self-improvement covenant
+# DISCOVER — pillars & the KAIZEN self-improvement covenant
 
 > This plugin's own anchor for the marketplace's governing philosophy. Like every `idea-to-production`
-> plugin, MARKET-SCANNER is bound by the **three pillars** and the **KAIZEN self-improvement covenant**.
+> plugin, DISCOVER is bound by the **three pillars** and the **KAIZEN self-improvement covenant**.
 > (The canonical, in-depth homes live in the `foundry` plugin's `knowledge/`; this is the local copy a
 > standalone install carries — referenced by concept, not by a cross-plugin path.)
 
@@ -26,7 +26,7 @@ Every element of this plugin — each skill, command, and knowledge doc — cont
 improve, and each iteration must at least **halve the remaining distance to perfection**. When an
 element grows to do more than one thing, it **self-cleaves** into smaller, single-purpose elements.
 
-Concretely, MARKET-SCANNER improves by folding **downstream feedback** back into its parameters and
+Concretely, DISCOVER improves by folding **downstream feedback** back into its parameters and
 scoring: when the conveyor (or a user) learns that an opportunity the scanner approved was actually
 weak — it shipped but no one paid, the channel never materialised — that becomes a new kill-ledger entry
 and a sharper parameter, landed via branch → adversarial review → **PR**, so **every future scan, for

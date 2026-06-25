@@ -40,7 +40,7 @@ upstream `ideator` plugin) was ambiguous where it should have been precise. When
 1. **Per-project write-back** (above) — resolve it into this project's brief/SMU so it is never asked
    again *here*.
 2. **Cross-project ideation-feedback** — record a structured entry (*symptom → which IDEA-doc field was
-   unclear → what would have prevented it*) routed to the `ideator` / `market-scanner` **self-improve**
+   unclear → what would have prevented it*) routed to the `ideator` / `discover` **self-improve**
    intake. Their KAIZEN self-improvement loop turns recurring entries into a sharpened challenge-protocol
    axis or package field **via a PR**, so every future ideation for *all* users asks the missing question
    by default. The IDEA station's receiver wires this (`skills/ideator/SKILL.md §0.5.1`); the LEARN

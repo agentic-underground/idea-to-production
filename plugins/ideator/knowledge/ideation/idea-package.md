@@ -44,7 +44,7 @@ own copy of the contract; it does not reach across the plugin boundary).
 
 The **IDEA dossier** the human reviews and iterates on before committing — graphics, charts, tables:
 - the **opportunity narrative** (the problem, the wedge, the why-now);
-- the **parameter scorecard** (a table — reuse the market-scanner A–E axes when the opportunity came from
+- the **parameter scorecard** (a table — reuse the discover A–E axes when the opportunity came from
   a scan);
 - **market-sizing / pricing / competition charts**;
 - the **user-flow** (how the actor moves through the first slice) and, where the idea is a UI, a

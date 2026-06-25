@@ -1,4 +1,4 @@
-# MARKET-SCANNER Knowledge — the discovery canon (define-once)
+# DISCOVER Knowledge — the discovery canon (define-once)
 
 This directory is the **define-once** home for the facts the scanner obeys. Skills reference these via
 `${CLAUDE_PLUGIN_ROOT}/knowledge/...`; they never restate them. One fact, one copy.

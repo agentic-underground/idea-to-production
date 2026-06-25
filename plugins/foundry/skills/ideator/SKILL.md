@@ -46,7 +46,7 @@ them into the structured development system (EARS → Gherkin → TDD → commit
 ## 0.5 UPSTREAM SOURCE — receive the IDEA package by capability (graceful enhancement)
 
 > **The rich front end lives upstream.** When the **`ideator` plugin** is installed, discovery
-> (`market-scanner`) and refinement (`ideator`) happen there, and an **IDEA package** arrives already
+> (`discover`) and refinement (`ideator`) happen there, and an **IDEA package** arrives already
 > challenged to knowledge-parity. This skill is then the **thin fallback receiver** — it does *not*
 > re-interrogate. When the `ideator` plugin is **absent**, this skill runs the full inline dialogue (§3)
 > as the graceful-degradation fallback. Detect the plugin by **capability** (does an IDEA package / a
@@ -64,7 +64,7 @@ When FOUNDER or any downstream station hits an ambiguity the IDEA package *shoul
 **both**: (1) write the resolved answer back into the package/SMU for this project (the existing
 knowledge-parity mechanism — `${CLAUDE_PLUGIN_ROOT}/knowledge/pillars/knowledge-parity.md`), and
 (2) record a structured **ideation-feedback** entry (symptom → which IDEA-doc field was unclear → what
-would have prevented it) routed to the `ideator` / `market-scanner` **self-improve** intake, so every
+would have prevented it) routed to the `ideator` / `discover` **self-improve** intake, so every
 future ideation for all users asks the missing question by default. This is the LEARN station doing its
 job (`${CLAUDE_PLUGIN_ROOT}/skills/value-station-handoff/SKILL.md`, LEARN).
 

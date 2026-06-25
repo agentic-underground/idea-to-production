@@ -17,7 +17,7 @@ metadata:
 model: inherit
 ---
 
-# MARKET-SCANNER — Discovery dialogue
+# DISCOVER — Discovery dialogue
 
 The front door of the conveyor. The user wants to *build something* but does not yet know *what*. This
 skill finds a candidate worth refining — by **proposing, challenging, and killing** ideas until one
@@ -30,7 +30,7 @@ earns a keep verdict. It is the spark, made disciplined.
 
 ## How to run
 
-1. **Read the standing goal.** Load `.market-scanner/goal.md` if present (the `goal-setter` skill writes
+1. **Read the standing goal.** Load `.discover/goal.md` if present (the `goal-setter` skill writes
    it). Absent ⇒ ask only the *minimum* needed to bound the search (niche interest, price appetite,
    stack-fit) before proposing — one focused question at a time, **with a recommended answer +
    multiple-choice**, never a wall.

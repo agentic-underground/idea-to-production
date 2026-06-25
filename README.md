@@ -15,7 +15,7 @@ disciplined, **test-first** value flow: discover ▸ refine ▸ design ▸ build
 >
 > **Already have a product proposition?** → **`/ideator:ideate "By doing X I propose Y, value Z"`**
 > starts directly from your thesis (raw-idea mode — it recognises the problem/solution/value triad and
-> pre-fills the brief). Not sure the thesis holds? **`/market-scanner:market-scan`** also *validates* a
+> pre-fills the brief). Not sure the thesis holds? **`/discover:market-scan`** also *validates* a
 > held thesis (its thesis-validation mode), not only generates fresh opportunities.
 
 ---
@@ -72,7 +72,7 @@ Not decoration — these are the ideas the whole system obeys. The philosophical
 
 ### ⑤ Every piece, one map
 
-<img width="820" alt="Conceptual-domain map: upstream discovery (market-scanner → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (security, publish, atelier, operate) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.svg">
+<img width="820" alt="Conceptual-domain map: upstream discovery (discover → ideator) feeds the foundry core conveyor (the conveyor, orchestration, value-handlers, the pillars, the knowledge corpus, design, governance), with the cross-cutting companions (security, publish, atelier, operate) composing into the whole by capability." src="plugins/foundry/knowledge/diagrams/01-domain-tree.svg">
 
 *Upstream discovery → the foundry conveyor → cross-cutting companions. Eight plugins, one value flow.*
 
@@ -88,7 +88,7 @@ repo) and seven specialists. Each stands alone; install only what you need.
 | Plugin | What it does | Install when you want… |
 |--------|--------------|------------------------|
 | **[i2p](plugins/i2p/)** | The marketplace FRONT DOOR / meta-layer + ARRIVAL layer: `/i2p:help` browses every power you have (grouped by the value flow), `/i2p:review` fans out **every installed reviewer** — code, design, docs, security — into one verdict, `/i2p:check` consolidates readiness, `/i2p:flow` maps the pipeline and your next command. It also GREETS whoever opens the repo — a `SessionStart` hook renders a maintainer-authored `.claude/welcome.md` (**smart-gated**: greets only on a cold/vague open, steps aside for a concrete task), `/i2p:define-welcome` reads a repo and writes that welcome for you, and `/i2p:statusline` turns on a rich two-line **status line** (context & rate-limit gauges, the product-lifecycle phase, a ⚔ reviewer-catch tally). Introduces itself on session start. | A single front door to the whole suite — one review that pulls in *all* the reviewers at once, plus a greeting and a status bar that surface the whole suite at a glance. |
-| **[market-scanner](plugins/market-scanner/)** | The DISCOVERY front door: set a standing `/discovery-goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
+| **[discover](plugins/discover/)** | The DISCOVERY front door: set a standing `/discovery-goal`, then `/market-scan` — an adversarially-challenged dialogue over a market parameter taxonomy (demand, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and **kills weak ideas early**, until one candidate earns a keep verdict. | To find *what's worth building* before writing any code. |
 | **[ideator](plugins/ideator/)** | The REFINEMENT phase: turns a validated opportunity (or a raw idea) into the **IDEA package** — precise agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract) plus a rich, illustrated user-facing dossier — refined to knowledge-parity, then handed to foundry. | To turn a spark into a build-ready, unambiguous package. |
 | **[foundry](plugins/foundry/)** | The DELIVER + BUILD value conveyor: `/roadmapper` authors the **FLEET v2 pipeline** (`docs/roadmap/` EPIC/PLAN docs — the canonical roadmap, answering "what's on the roadmap" via the external FLEET pipeline plugin) and drives IDEA ▶ ROADMAP ▶ PLAN ▶ EARS ▶ FEATURE ▶ TEST ▶ IMPLEMENT ▶ STORY ▶ SHIP, staffed by role-tuned agents and governed by three pillars (knowledge parity, quality-first + perf-delta gate, waste elimination). The external **FLEET continuous-delivery engine** drains that pipeline, invoking FOUNDRY's PLAN-scope build per slice. | A disciplined, test-first, vertical-slice production system whose roadmap is a continuously-delivered pipeline. |
 | **[security](plugins/security/)** | A pre-release security gate: PII, secrets/credentials, and dependency/supply-chain audits → one severity-ranked report with a PASS / REVIEW / BLOCK verdict. | To never ship a leaked key, a real person's data, or a vulnerable dependency. |
@@ -109,7 +109,7 @@ deliberately **separate first-class gates**.
 
 | Phase | Plugin | Next command |
 |---|---|---|
-| **DISCOVER** | market-scanner | `/discovery-goal` · `/market-scan` → a kept OPPORTUNITY |
+| **DISCOVER** | discover | `/discovery-goal` · `/market-scan` → a kept OPPORTUNITY |
 | **IDEATE** | ideator | refine → the **IDEA package** (agent + user-facing faces) |
 | **DELIVER** | `foundry:roadmapper` (+ external FLEET engine) | `/roadmapper` authors the v2 `docs/roadmap/` pipeline; the FLEET engine drains it |
 | **DESIGN** | atelier | `/mockup` · `/ui-review` |
@@ -137,7 +137,7 @@ deliberately **separate first-class gates**.
 | **atelier** | user-flows & mockups are design-reviewed before anyone sees them | stage skipped, and says so |
 
 And the loop closes: an ambiguity a builder hits downstream flows back as **ideation-feedback** that
-sharpens market-scanner / ideator for every future idea.
+sharpens discover / ideator for every future idea.
 
 ## Install
 
@@ -146,7 +146,7 @@ Add the marketplace, then install whichever plugins you want:
 ```
 /plugin marketplace add whatbirdisthat/idea-to-production
 /plugin install i2p@idea-to-production
-/plugin install market-scanner@idea-to-production
+/plugin install discover@idea-to-production
 /plugin install ideator@idea-to-production
 /plugin install foundry@idea-to-production
 /plugin install security@idea-to-production
@@ -155,7 +155,7 @@ Add the marketplace, then install whichever plugins you want:
 /plugin install operate@idea-to-production
 ```
 
-Each plugin works on its own — `market-scanner` and `ideator` need no build system to help you find and
+Each plugin works on its own — `discover` and `ideator` need no build system to help you find and
 shape an idea, and `security` and `publish` are useful on any repository, not just foundry projects.
 
 ### "What's on the roadmap" — the FLEET v2 pipeline

@@ -56,7 +56,7 @@ DESIGN, and the **BUILD/ASSURE/SECURE loop** (the ⇄).
 
 | # | Phase `[token]` | Owner | Value added | Canon lineage |
 |---|---|---|---|---|
-| ① | **DISCOVER** `[DISCOVER]` | market-scanner | find a problem worth solving; kill weak ideas early | Fuzzy Front End (opportunity identification) · Double Diamond **Discover** (diverge: problem) |
+| ① | **DISCOVER** `[DISCOVER]` | discover | find a problem worth solving; kill weak ideas early | Fuzzy Front End (opportunity identification) · Double Diamond **Discover** (diverge: problem) |
 | ② | **IDEATE** `[IDEATE]` | ideator | turn the opportunity into a build-ready IDEA package at knowledge-parity | Double Diamond **Define** (converge: concept) · NPD concept development · design-thinking *empathize/define* |
 | ③ | **DELIVER** `[DELIVER]` | `foundry:roadmapper` (+ external FLEET engine) | turn the IDEA package into the FLEET v2 pipeline: intake → EARS/feature authoring → decomposition into atomic, dependency-ordered build-ready EPIC/PLAN slices; the FLEET engine drains it | NPD planning · PLM **plan** · Kahn topological work-ordering · agile backlog decomposition (INVEST, vertical slices) |
 | ④ | **DESIGN** `[DESIGN]` | atelier | make the experience usable, elegant, accessible — **DESIGN gates BUILD**: atelier reviews surfaces as part of DELIVER intake; it also **cross-cuts during BUILD** via the frontend design system | Double Diamond **Develop** (diverge: solution) · design thinking *ideate/prototype* |
@@ -65,7 +65,7 @@ DESIGN, and the **BUILD/ASSURE/SECURE loop** (the ⇄).
 | ⑦ | **SECURE** `[SECURE]` | security | **certify security** — PII, secrets, supply-chain clear before exposure; *fail → re-enter BUILD*, *pass (all three) → exit loop to PUBLISH* | secure-by-design · supply-chain integrity · the security gate |
 | ⑧ | **PUBLISH** `[PUBLISH]` | publish | announce & document it for its audience | commercialization / launch communication |
 | ⑨ | **OPERATE** `[OPERATE]` | operate | keep it alive & improving: observe, respond to incidents, iterate, maintain | PLM **service/operate** · SRE · the market life cycle (introduction→growth) · DMAIC *control* in production |
-| ↻ | *(re-entry)* | market-scanner | OPERATE's learnings open the **next** value cycle | continuous discovery · build-measure-learn |
+| ↻ | *(re-entry)* | discover | OPERATE's learnings open the **next** value cycle | continuous discovery · build-measure-learn |
 
 **ASSURE and SECURE are separate — deliberately.** Quality and security are *different* concerns and must not
 be conflated under one gate. **Quality** (ASSURE) asks *"is it correct, tested, performant, regression-free?"*;

@@ -4,7 +4,7 @@ description: Discover a worth-building opportunity — an adversarially-challeng
 
 Run a market scan. Follow the [`market-scan` skill](../skills/market-scan/SKILL.md):
 
-1. Read the standing `/discovery-goal` (`.market-scanner/goal.md`) if present; otherwise ask only the minimum to
+1. Read the standing `/discovery-goal` (`.discover/goal.md`) if present; otherwise ask only the minimum to
    bound the search (infer-first, one question at a time, **with a recommended answer + multiple-choice**).
 2. Propose 3–5 candidate opportunities for `$ARGUMENTS` (or the goal), score each against the parameter
    taxonomy, and **kill the weak ones early** (on the conjunction, not the average).

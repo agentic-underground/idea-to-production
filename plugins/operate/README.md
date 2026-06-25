@@ -59,7 +59,7 @@ false READY.
 - **The loop never dead-ends at launch** — OPERATE's learnings re-enter DISCOVER, so the lifecycle is a
   cycle, not a finish line.
 - **Lights up its neighbours** — composes `security`'s `/scan-dependencies` for maintenance, hands a new
-  opportunity to `market-scanner`/`ideator`, and advances the `i2p` lifecycle — all *by capability*,
+  opportunity to `discover`/`ideator`, and advances the `i2p` lifecycle — all *by capability*,
   degrading gracefully when a companion is absent.
 
 ## ♻️ Self-improvement covenant — halve the distance to perfection

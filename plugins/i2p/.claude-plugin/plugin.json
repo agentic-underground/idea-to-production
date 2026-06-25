@@ -32,7 +32,7 @@
   ],
   "metadata": {
     "companions": {
-      "discovery": "market-scanner",
+      "discovery": "discover",
       "refinement": "ideator",
       "build": "foundry",
       "design": "atelier",

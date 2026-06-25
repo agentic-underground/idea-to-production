@@ -21,7 +21,7 @@ together once all are satisfied and the roadmap item is complete.
 | | Phase | Plugin | Jump |
 |---|---|---|---|
 | **▸** | *front door* (+ session greeter) | `i2p` | [↓](#i2p--front-door) |
-| **1** | DISCOVER | `market-scanner` | [↓](#market-scanner--discover) |
+| **1** | DISCOVER | `discover` | [↓](#discover--discover) |
 | **2** | IDEATE | `ideator` | [↓](#ideator--ideate) |
 | **3** | DELIVER | `foundry:roadmapper` (+ external FLEET engine) | [↓](#foundryroadmapper--deliver) |
 | **4** | DESIGN | `atelier` | [↓](#atelier--design) |
@@ -70,14 +70,14 @@ line), folded in so the whole front door lives under one mnemonic.
 | `/i2p:statusline` `[off]` | Turn the idea-to-production status line on (or off) |
 | `/i2p:statusline-widgets` | Lay out the status line's line-2 widgets to fit your terminal |
 
-## market-scanner — DISCOVER
+## discover — DISCOVER
 
 Find something worth building.
 
 | Command | What it does |
 |---|---|
-| `/market-scanner:market-scan` | Adversarial dialogue that proposes, scores, and kills ideas until one survives |
-| `/market-scanner:discovery-goal` | Set or refine the standing goal scans run over (niche, edge, price band) |
+| `/discover:market-scan` | Adversarial dialogue that proposes, scores, and kills ideas until one survives |
+| `/discover:discovery-goal` | Set or refine the standing goal scans run over (niche, edge, price band) |
 
 ## ideator — IDEATE
 
@@ -200,7 +200,7 @@ no `/mcp__…` commands to type.
 | Server | Shipped by | What it provides |
 |---|---|---|
 | `context7` | foundry | Fetch current documentation for a library, framework, SDK, or CLI |
-| `fetch` | ideator, market-scanner | Retrieve and read web page content |
+| `fetch` | ideator, discover | Retrieve and read web page content |
 
 Browser driving (navigate, screenshot, accessibility snapshot — used by atelier and the foundry web
 handlers) is **not** shipped: per the ONE BROWSER cutover the marketplace uses the **host-provided

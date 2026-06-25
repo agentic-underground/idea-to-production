@@ -42,7 +42,7 @@ that exist yet. These reads are *targeted* (small, identity-bearing files), neve
 
 | Phase | Read (when present) | The welcome should convey |
 |---|---|---|
-| DISCOVER | `.market-scanner/goal.md`, `doc/opportunities/<slug>.md` | "this repo is hunting [opportunity] — continue with `/market-scan`" |
+| DISCOVER | `.discover/goal.md`, `doc/opportunities/<slug>.md` | "this repo is hunting [opportunity] — continue with `/market-scan`" |
 | IDEATE | `doc/idea/<slug>/` IDEA brief (problem / scope / success) + any coined name | "becoming **[Name]**: [one-liner] — next `/ideate` → FOUNDRY" |
 | DESIGN | `docs/guide/design/mockups/<slug>/rationale.md` | "[Name] — designed; review with `/ui-review`" |
 | BUILD | `doc/SUBJECT_MATTER_UNDERSTANDING.md`, `ROADMAP.md` | "[Name] — building; lanes from the roadmap" |

@@ -54,7 +54,7 @@ marketplace `README.md` composition diagram.
 ## 2. Light vs dark
 
 Place only **installed** plugins as live stages. Mark each missing plugin's stage as dark:
-"▫ DISCOVER — add `market-scanner` to find what's worth building" / "▫ DELIVER — add `foundry` for
+"▫ DISCOVER — add `discover` to find what's worth building" / "▫ DELIVER — add `foundry` for
 `/roadmapper` to author the FLEET v2 `docs/roadmap/` pipeline (and the external FLEET engine to drain
 it)" / "▫ OPERATE — add `operate` to observe, respond to incidents, and iterate the live product." A user
 should see both the path they have and the path they could unlock. (DELIVER is owned by
@@ -75,7 +75,7 @@ front:
 
 - **Confident in the thesis** → enter at **IDEATE** with **`/ideator:ideate "By doing X I propose Y,
   value Z"`** (raw-idea mode — it recognises the triad and pre-fills the brief).
-- **Unsure the thesis holds** → enter at **DISCOVER** with **`/market-scanner:market-scan`** in its
+- **Unsure the thesis holds** → enter at **DISCOVER** with **`/discover:market-scan`** in its
   **thesis-validation mode**: hand it the thesis (or an `OPPORTUNITY-*.md` from `/operate:iterate`, closing
   the ↻ loop) and it *validates that specific thesis* into a `doc/opportunities/<slug>.md` rather than
   proposing fresh candidates — then `/ideate` refines it.
