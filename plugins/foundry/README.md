@@ -78,6 +78,23 @@ consequence of pinning every behaviour); the real variable is **coverage density
 / abuse per behaviour are table-stakes ([`knowledge/testing/test-policy.md`](knowledge/testing/test-policy.md)).
 If the contract cannot be satisfied, FOUNDER halts with `CONTRACT UNMET` — the system owner's hard line.
 
+## ASSURE gate failure — what to do
+
+`/foundry:pr-review` is FOUNDRY's **ASSURE** gate: it returns one of **PASS / NEEDS_REVISION / BLOCK**.
+A `NEEDS_REVISION` or `BLOCK` is the **ASSURE → BUILD** back-edge of the BUILD ⇄ ASSURE ⇄ SECURE loop,
+not a dead end. When the verdict is non-PASS:
+
+1. **Open the report** — `PR_REVIEW.md`. The Findings table names each finding's
+   `severity · file:line · claim · suggested fix`.
+2. **Fix in BUILD** — address the named findings at their loci (fix the code/tests, re-commit). This
+   re-enters the **BUILD** phase; when i2p is installed, `/foundry:pr-review` fires
+   `/i2p:lifecycle fail ASSURE`, sending the lifecycle back to BUILD and incrementing the loop counter
+   (status line `⇄ ×N`).
+3. **Re-run the gate** — `/foundry:pr-review` again over the revised diff.
+4. **The loop exits only when all three gates are green** — BUILD shipped, ASSURE PASS, and SECURE
+   (`/security:scan-all`) PASS — at which point the lifecycle advances to PUBLISH. A non-PASS verdict
+   always halts the merge; autonomy means "merge on PASS", never "merge regardless."
+
 ## Using it
 Invoke the agent: *"founder, plan this"* / *"explain what we're doing"* / *"expand the top-3"*, or run
 `/foundry`. FOUNDER runs discovery (`foundry -help`, `frontend -help`), emits a topology READOUT, then

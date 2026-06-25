@@ -166,6 +166,43 @@ In **both** modes a non-PASS verdict (`NEEDS_REVISION`/`BLOCK`) halts the merge 
 revision — autonomy means "merge on PASS", never "merge regardless." Keeping the verdict separate
 from the merge keeps the reviewer honest and the merge decision accountable.
 
+### Gate failure — what the operator does next
+
+A `NEEDS_REVISION` or `BLOCK` verdict is **not a dead end** — it is the BUILD ⇄ ASSURE back-edge
+turning. On a non-PASS verdict, print this recovery procedure so the operator knows the concrete next
+step instead of facing a merge halt with no instruction:
+
+1. **Open the report** — `PR_REVIEW.md` (in the project root). Read the **Findings** table:
+   each row names a `severity · file:line · claim · suggested fix`.
+2. **Fix in BUILD** — address the named findings at their loci (fix the code/tests, re-commit). This
+   is a return to the **BUILD** phase; the lifecycle's `fail ASSURE` (below) has already set
+   `loop_state` back to BUILD and incremented `loop_pass`.
+3. **Re-run the gate** — `/foundry:pr-review` again over the revised diff.
+4. **The loop exits only when all three gates are green** — a PASS here advances to **SECURE**
+   (`/security:scan-all`); the loop reaches PUBLISH only once BUILD, ASSURE, **and** SECURE are
+   simultaneously satisfied.
+
+---
+
+## Product lifecycle (by capability)
+
+FOUNDRY owns the **ASSURE** phase — the adversarial quality gate, distinct from the **SECURE** phase
+(security) that follows it (quality ≠ security) and from the **BUILD** phase that precedes it. When the
+**i2p** plugin is installed, drive the lifecycle from the verdict so the marketplace product lifecycle
+and the status line track the BUILD ⇄ ASSURE ⇄ SECURE loop:
+
+```bash
+# on a PASS verdict — quality certified, advance to SECURE (loop)
+/i2p:lifecycle done ASSURE   # order-safe & idempotent — a no-op unless a lifecycle is running at ASSURE
+
+# on a NEEDS_REVISION or BLOCK verdict — re-enter BUILD (loop back-edge: loop_state→BUILD, loop_pass++)
+/i2p:lifecycle fail ASSURE   # order-safe & idempotent — a no-op unless a lifecycle is running at ASSURE
+```
+
+`fail ASSURE` is the back-edge that makes the loop turn: the status line renders `⇄ ×N` for the
+iteration count, and the **Gate failure** procedure above tells the operator what to fix before the
+re-run. Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.
+
 ---
 
 ## Self-improvement covenant
