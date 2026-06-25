@@ -505,6 +505,7 @@ in `${CLAUDE_PLUGIN_ROOT}/agents/handler-{stack}.md`.
 | RUST-WEBAPP-AGENT | Rust/WASM (Dioxus) + Vercel official Rust runtime | Full Rust web app + serverless API one-shot rollout (via the `rust-webapp-rollout` skill) |
 | handler-rust-tauri | Tauri v2 desktop shell over a pure Rust core (IPC, capability ACL, webview) | A `src-tauri/` crate / `tauri.conf.json` desktop app |
 | handler-github-actions | GitHub Actions CI/CD-as-code (workflow YAML, matrix, OIDC, SHA-pinned actions) | `.github/workflows/*.yml`, composite/reusable actions |
+| handler-ansible | Ansible / IaC (idempotent playbooks + roles, FQCN modules, ansible-vault, Molecule + ansible-lint gating) | `.yml` playbooks / a `roles/` dir / `ansible.cfg` present |
 | handler-roadmap-decomposition | Atomic-job breakdown of a ROADMAP item (INVEST slices, dependency graph, phase mapping) | LEAD ENGINEER §5 when a heavy roadmap item must be split into parallelisable jobs — it plans, it does not orchestrate |
 
 When the LEAD ENGINEER identifies a stack not in the pool above, the missing handler is a **PAUSE, not a
@@ -519,6 +520,39 @@ pinned version matrix + FORBIDDEN list); the MVP path discloses `DEGRADED_CAPABI
 `FOUNDRY_PLAN.md`; the BOTH path raises the gap via `/operate:gemba`, files a DEFERRED
 "Create handler-<stack>" item, and marks the original **awaiting-handler** (§14 formalises the agent file
 once the BUILD/handler-creation work runs).
+
+### Stack detection signals → handler
+
+The roadmap-decomposition detector (a coarse 4-bucket classifier in `handler-roadmap-decomposition`)
+is a **pre-filter**, not the authority. **This table is the definitive filesystem-signal → handler
+mapping** the LEAD ENGINEER applies in §2 PRE-FLIGHT (and IMPLEMENT/STORY apply on demand). Read it
+top-down; the first matching, most-specific signal wins.
+
+| Filesystem signal (the evidence) | Handler |
+|---|---|
+| `Cargo.toml` **+** `tauri.conf.json` (a `src-tauri/` crate) | handler-rust-tauri |
+| `Cargo.toml` **+** `vercel.json` | handler-rust-webapp |
+| `Cargo.toml` (no `tauri.conf.json`, no `vercel.json`) | handler-rust |
+| `pyproject.toml` or `setup.py` **+** a FastAPI import (`from fastapi`) | handler-fastapi |
+| `pyproject.toml` or `setup.py` (no FastAPI import) | handler-python |
+| `package.json` **+** a `react` dependency | handler-react |
+| `package.json` (no `react` dependency) | handler-js |
+| `*.css` / `*.scss` present | handler-css (may co-occur with handler-js / handler-react) |
+| `.github/workflows/` dir | handler-github-actions |
+| `.yml` playbooks / a `roles/` dir / `ansible.cfg` present | handler-ansible |
+| **Multiple stacks detected** | handler-architect **first** (pattern/boundary decision), then the per-stack handlers above |
+
+> **GUARDRAIL — the signal is the evidence, not the inference.** Detect the handler from a file on
+> disk, never from a roadmap noun. An item that *mentions* React but ships no `package.json` does not
+> spawn handler-react; an item with `ansible.cfg` does spawn handler-ansible even if the prose never
+> says "Ansible". A stack with a real signal and **no** matching row is the missing-handler PAUSE above.
+
+**Native stack coverage today** (what FOUNDRY can build without authoring a new handler): Rust
+(library/CLI/service, Tauri desktop, Vercel Rust webapp) · Python (library, FastAPI API) ·
+JavaScript/TypeScript (Node/`js`, vanilla-JS `frontend`, React) · CSS/SCSS · Playwright E2E ·
+GitHub Actions CI/CD · **Ansible / IaC**. Anything outside this set hits the missing-handler gate by
+design — that is the gate working, not a defect. (The roster mirrors this list:
+[`../../knowledge/orchestration/agent-roster.md`](../../knowledge/orchestration/agent-roster.md).)
 
 ---
 
