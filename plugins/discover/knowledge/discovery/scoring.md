@@ -51,5 +51,5 @@ A scan emits a **validated opportunity** (for a KEEP) or a recorded **kill/park*
 - the **open questions** (the ⚠️ parameters that need evidence) carried forward;
 - the **price band** and **first-slice / stack-fit** note (so refinement and the conveyor can act).
 
-A KEEP is what the `ideator` plugin (REFINEMENT) consumes to build the IDEA package **when installed**;
+A KEEP is what the `ideate` plugin (REFINEMENT) consumes to build the IDEA package **when installed**;
 standalone, it is a markdown **opportunity brief**.

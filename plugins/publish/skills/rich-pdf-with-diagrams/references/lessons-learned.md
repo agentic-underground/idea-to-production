@@ -595,7 +595,7 @@ effective magnification.
 ### Lesson 0027 — 2026-06-11
 
 **Feedback received:** the inline-legibility gate caught several animated README figures shipping captions
-too small to read at embed width — atelier "review" at 5.9px inline, ideator "the pain, shared" at 5.2px,
+too small to read at embed width — atelier "review" at 5.9px inline, ideate "the pain, shared" at 5.2px,
 publish "published" at 5.5px — all below the 6px machine floor (and the corpus broadly sitting below the
 9px comfort target).
 
@@ -607,7 +607,7 @@ smallest text element above the floor with `layout-check.sh` before assembly.
 **Canon rule affected:** `layout-canon.md` §5 — new "How to apply — author above the floor, don't fix below
 it" authoring guidance appended to the inline-legibility rule (extends, does not duplicate, the §5 detector).
 
-**Figure(s)/animation(s) fixed in this round:** `atelier-critique`, `ideator-converge`, `publish-press`.
+**Figure(s)/animation(s) fixed in this round:** `atelier-critique`, `ideate-converge`, `publish-press`.
 
 **Article:** `research/image-craft-taste` README animated-figure corpus.
 

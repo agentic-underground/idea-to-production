@@ -6,7 +6,7 @@ description: >
   flow", "sketch the onboarding screens"). Generates the artefact (renderable HTML/CSS screenshotted via
   the chrome-devtools MCP, or an SVG wireframe; user-flows as Mermaid via publish by capability), then runs
   the convergent designer↔reviewer loop until it clears the design-fitness rubric. This is the capability
-  IDEATOR calls so the user sees commercial-grade material, not whipped-up sketches.
+  IDEATE calls so the user sees commercial-grade material, not whipped-up sketches.
 metadata:
   type: producer
   output: a design-reviewed mockup / wireframe / user-flow (PNG/SVG/Mermaid) that clears the fitness rubric

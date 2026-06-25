@@ -12,7 +12,7 @@ It is read by:
 
 - `agents/ds-step-8-commit-message.md` — the agent that produces the commit message
 - `skills/roadmapper/SKILL.md` — step 8 of the development system
-- `skills/ideator/references/dev-system.md` — step 8 reference for ideator-driven projects
+- `skills/ideate/references/dev-system.md` — step 8 reference for ideate-driven projects
 - `CLAUDE.md` — config-repo commit hygiene (author only)
 
 Any file that previously contained an inline commit message template instead carries a

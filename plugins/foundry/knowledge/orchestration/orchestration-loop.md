@@ -8,7 +8,7 @@
 
 ## Purpose
 
-The orchestration loop drives a single IDEATOR item from brief to COMPLETE through
+The orchestration loop drives a single IDEATE item from brief to COMPLETE through
 iterative stage execution. The loop never terminates early — it continues until all
 Definition Of Done gates pass or the user explicitly stops it.
 
@@ -16,7 +16,7 @@ Definition Of Done gates pass or the user explicitly stops it.
 
 ## Kickoff Inputs
 
-1. IDEATOR brief (title, actors, problem, in-scope, out-of-scope, constraints, success metric)
+1. IDEATE brief (title, actors, problem, in-scope, out-of-scope, constraints, success metric)
 2. Development System reference (`${CLAUDE_PLUGIN_ROOT}/skills/development-system-core/SKILL.md`)
 3. Roadmap entry number and current status
 4. Current repository state (stack, existing EARS, feature files, test structure)

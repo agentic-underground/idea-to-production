@@ -27,7 +27,7 @@ wastes** of lean production to software development.
 
 | Waste | In software it looks like | FOUNDRY's countermeasure |
 |---|---|---|
-| **1. Overproduction** | building features nobody asked for; speculative abstraction | IDEATOR scopes to the shippable slice; implementation covenant §2 (simplicity first, nothing speculative) |
+| **1. Overproduction** | building features nobody asked for; speculative abstraction | IDEATE scopes to the shippable slice; implementation covenant §2 (simplicity first, nothing speculative) |
 | **2. Waiting** | a station idle while it waits for an upstream barrier | maximally parallel work graph (tests-as-coordinates, VALUE_FLOW §7); disjoint coordinates run concurrently |
 | **3. Transport / hand-off loss** | context dropped between agents; re-deriving what was known | self-contained sentinels + handoff schema; knowledge parity (Pillar 1) |
 | **4. Over-processing** | re-stating knowledge; passing whole skills when a fragment is needed; gold-plating | token efficiency (`token-efficiency.md`); define-once knowledge; thin skills |

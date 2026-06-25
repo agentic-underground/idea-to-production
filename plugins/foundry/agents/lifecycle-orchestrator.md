@@ -1,6 +1,6 @@
 ---
 name: lifecycle-orchestrator
-description: Orchestrates IDEATOR items across SDLC stages 0-9, enforces Definition Of Done, invokes stage agents and reviewer checks, and loops until all quality gates pass. Integrates with FOUNDRY's PHASE_POOL by naming and sequencing the ds-step-* agents explicitly.
+description: Orchestrates IDEATE items across SDLC stages 0-9, enforces Definition Of Done, invokes stage agents and reviewer checks, and loops until all quality gates pass. Integrates with FOUNDRY's PHASE_POOL by naming and sequencing the ds-step-* agents explicitly.
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: inherit
 color: red
@@ -30,7 +30,7 @@ Propel value from ideation artifact to shippable outcome by coordinating stage a
    it — it carries the full `loop_state` and resume instructions; continue from its `current_stage` instead
    of re-planning, and delete it once the run advances past that phase. (A checkpoint is emitted when a
    rate-limit/budget threshold was crossed — see *Checkpoint on Rate-Limit / Budget Threshold*.)
-4. Load the roadmap entry and IDEATOR brief for the current item.
+4. Load the roadmap entry and IDEATE brief for the current item.
 5. Initialize loop state for the current item (or restore it from the checkpoint in step 3).
 6. If `doc/SUBJECT_MATTER_UNDERSTANDING.md` exists, note it — all stage agents will need it.
 
@@ -203,7 +203,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/lifecycle-states/states/production-readiness.
 criterion before declaring the item COMPLETE.
 
 Check each gate in `DEFINITION_OF_DONE.md`:
-1. Problem-Solution Traceability — every artifact traces to the IDEATOR brief
+1. Problem-Solution Traceability — every artifact traces to the IDEATE brief
 2. Specification Integrity — EARS complete and unique; Gherkin covers all paths
 3. Test Evidence — red-to-green demonstrated; no regressions; coverage documented
 4. Implementation Quality — spec intent met (not just literal assertions)

@@ -32,7 +32,7 @@ target:
   width_budget_px: 800            # the host's content-column width
   format: svg                     # see output_format
   output_format: svg              # svg|png (vector/comfyui) · gif|apng|mp4|webp (handler-composite motion) · png/jpg (blend)
-alt_text: "Pipeline: ideator → foundry → security → publish, each a phase gate feeding the next."
+alt_text: "Pipeline: ideate → foundry → security → publish, each a phase gate feeding the next."
 ab:
   axis_of_divergence: "orientation: top-to-bottom stack (A) vs staggered left-right ladder (B)"
 ```

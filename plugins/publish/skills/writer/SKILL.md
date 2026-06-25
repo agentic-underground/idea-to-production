@@ -480,7 +480,7 @@ previous paragraph raised, or asks a question the next paragraph will answer.
 |--------------------|-------------------|
 | Telling the story of what was built | ROADMAPPER — for planning what to build next |
 | Release communication | FOUNDRY — for orchestrating the build itself |
-| Project retrospectives | IDEATOR — for turning a retrospective finding into a new feature |
+| Project retrospectives | IDEATE — for turning a retrospective finding into a new feature |
 | Documentation for external readers | CLAUDE.md / README.md — for internal operational docs |
 
 WRITER is a consumer of FOUNDRY artefacts (git history, roadmap, memory), not a producer.

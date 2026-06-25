@@ -9,11 +9,11 @@ description: >
   survivor, and emits a validated OPPORTUNITY (scorecard + evidence + keep/park/kill verdict). Also runs a
   THESIS-VALIDATION mode: when handed a user-supplied proposition ("By doing X I propose Y, value Z") or an
   OPPORTUNITY-*.md from /operate:iterate, it validates THAT specific thesis rather than proposing fresh
-  candidates. Hands the opportunity to the ideator plugin (REFINEMENT) when installed, else writes a
+  candidates. Hands the opportunity to the ideate plugin (REFINEMENT) when installed, else writes a
   markdown opportunity brief. Use it proactively whenever a user is casting about for something to build.
 metadata:
   type: producer
-  output: a validated opportunity (scorecard + verdict) → ideator plugin, or a markdown opportunity brief
+  output: a validated opportunity (scorecard + verdict) → ideate plugin, or a markdown opportunity brief
 model: inherit
 ---
 
@@ -54,7 +54,7 @@ earns a keep verdict. It is the spark, made disciplined.
    **UPHOLD_KEEP** → the keep is earned, continue; **DOWNGRADE_TO_KILL** → it is not an opportunity,
    record the kill-ledger entry and return to propose again (never hand off a downgraded candidate);
    **NEEDS_EVIDENCE** → gather the missing proof and re-challenge. Only a KEEP that survives the
-   challenger is handed to the ideator.
+   challenger is handed to the ideate.
 7. **Emit the result** (see Output). For a KILL or PARK, record the reason in the kill ledger (scoring.md)
    so a like candidate is recognised faster next time.
 
@@ -120,9 +120,9 @@ sharpens it.
 - **KEEP** → a **validated opportunity**: the candidate in one sentence; the A–E **scorecard** (✅/⚠️/❌
   + the probe/evidence behind each); the verdict + *why*; the **open questions** (⚠️ to resolve with
   evidence); the **price band**; a **first-slice / stack-fit** note.
-- **Handoff:** if the `ideator` plugin is installed, hand the opportunity to it (`/ideate`) for
+- **Handoff:** if the `ideate` plugin is installed, hand the opportunity to it (`/ideate`) for
   refinement into the IDEA package. If absent, write a markdown **opportunity brief** to
-  `doc/opportunities/<slug>.md` and tell the user to install `ideator` (or run FOUNDRY's inline ideator)
+  `doc/opportunities/<slug>.md` and tell the user to install `ideate` (or run FOUNDRY's inline ideate)
   to refine it. *(Rich, illustrated opportunity briefs — scorecards as tables, market-sizing charts —
   are produced by invoking publish's `/publish` **by capability** when publish is installed; degrade
   to clean markdown when it is absent, and say so.)*

@@ -72,7 +72,7 @@ opens this repo. A common and powerful split for a piece of software is:
 
 - **Operate / use it** — run it, deploy it, maintain it, do the day-job tasks.
 - **Evolve it** — change the software itself: ideas, features, fixes, refactors. When
-  the `ideator` and `foundry` plugins are installed, this lane should route vague ideas
+  the `ideate` and `foundry` plugins are installed, this lane should route vague ideas
   to **`/ideate` → `/foundry`** and concrete next-steps to the repo's own roadmap/plan
   and add-a-thing runbooks.
 

@@ -775,7 +775,7 @@ section "R. lifecycle-driver completeness (every advance-table 'done <PHASE>' ha
 # BOTH the done and the fail verb. DELIVER is omitted on purpose (external FLEET engine — see header).
 lifecycle_rows=(
   "DISCOVER discover done DISCOVER"
-  "IDEATE   ideator        done IDEATE"
+  "IDEATE   ideate        done IDEATE"
   "DESIGN   atelier        done DESIGN"
   "BUILD    foundry        done BUILD"
   "ASSURE   foundry        done ASSURE;fail ASSURE"

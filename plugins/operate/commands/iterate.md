@@ -10,7 +10,7 @@ Apply the **build-measure-learn** pivot-or-persevere test to a production signal
 - **Persevere** → ordinary roadmap/maintenance work; stay in the operate loop.
 - **Pivot / new opportunity** → frame an `OPPORTUNITY-<slug>.md` (the evidence, the problem, who has it,
   why it's worth a cycle) and **re-enter DISCOVER**. Hand off to `/market-scan` (discover) for
-  adversarial validation, or `/ideate` (ideator), when installed; otherwise the brief is the artefact.
+  adversarial validation, or `/ideate` (ideate), when installed; otherwise the brief is the artefact.
 
 When a genuine re-entry signal is confirmed and **i2p** is installed, advance the lifecycle so the status
 line cycles OPERATE → DISCOVER (↻):

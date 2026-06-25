@@ -8,9 +8,9 @@ Bring the marketplace to the point where a product can travel from the initial v
 
 Once every step below is complete, the intended journey reads end-to-end as follows:
 
-1. **The user holds a raw thesis.** They open the repo (or run `/i2p:help`) and the Start-here block now shows an explicit lane: *"Already have an idea or proposition? → `/ideator:ideate \"By doing X I propose Y, value Z\"`."* They type it. (Step 7)
+1. **The user holds a raw thesis.** They open the repo (or run `/i2p:help`) and the Start-here block now shows an explicit lane: *"Already have an idea or proposition? → `/ideate:ideate \"By doing X I propose Y, value Z\"`."* They type it. (Step 7)
 2. **DISCOVER (optional validation).** If they're unsure the thesis holds, `/discover:market-scan` now recognises a user-supplied thesis and *validates* it (rather than only proposing fresh candidates), writing a validated `doc/opportunities/<slug>.md`. (Step 7)
-3. **IDEATE → handoff.** `/ideator:ideate` runs the challenged dialogue and writes a fully-specified IDEA package to a **documented file layout** — `doc/idea/<slug>/{brief.md, smu-seed.md, first-slice.md, handoff.md, dossier.md}` — matching a committed worked example the user can compare against. (Step 6)
+3. **IDEATE → handoff.** `/ideate:ideate` runs the challenged dialogue and writes a fully-specified IDEA package to a **documented file layout** — `doc/idea/<slug>/{brief.md, smu-seed.md, first-slice.md, handoff.md, dossier.md}` — matching a committed worked example the user can compare against. (Step 6)
 4. **DELIVER.** The user types `/foundry:roadmapper` — which now **resolves to a real command** — and gets a `docs/roadmap/` FLEET v2 pipeline (EPIC/PLAN docs) shaped exactly like the committed **golden sample** under `references/`. (Steps 2, 8)
 5. **DESIGN.** The reconciled docs state one truth: whether atelier gates BUILD or cross-cuts it, and the pipeline pauses for atelier at a **defined invocation point** so `done DESIGN` fires on a real boundary. (Step 5)
 6. **BUILD.** FOUNDRY drains each PLAN through the 0–9 conveyor. The LEAD selects handlers via a **documented stack-detection table** (signal → handler), so an Ansible item routes to the now-registered `handler-ansible` instead of surprising the user at the missing-handler gate. (Steps 3, 4)
@@ -64,19 +64,19 @@ At the end, a product that began as one sentence has a roadmap, tested-and-revie
 
 ### Step 6: Define the IDEA-package filesystem schema + ship a worked example
 - **Phase:** IDEATE
-- **Plugin:** `plugins/ideator/knowledge/ideation/idea-package.md`; `plugins/ideator/examples/` (new directory)
-- **What to build:** Add a one-line file manifest to idea-package.md naming each file in the standalone-written package — e.g. `doc/idea/<slug>/{brief.md, smu-seed.md, first-slice.md, handoff.md, dossier.md}` — with each field's home and format. Ship one committed worked example under `plugins/ideator/examples/` so a fresh agent reading a standalone package knows exactly where each field lives. Give the SMU-seed its own schema note (contrast FOUNDRY's full subject-matter-understanding.md template for the expanded SMU).
+- **Plugin:** `plugins/ideate/knowledge/ideation/idea-package.md`; `plugins/ideate/examples/` (new directory)
+- **What to build:** Add a one-line file manifest to idea-package.md naming each file in the standalone-written package — e.g. `doc/idea/<slug>/{brief.md, smu-seed.md, first-slice.md, handoff.md, dossier.md}` — with each field's home and format. Ship one committed worked example under `plugins/ideate/examples/` so a fresh agent reading a standalone package knows exactly where each field lives. Give the SMU-seed its own schema note (contrast FOUNDRY's full subject-matter-understanding.md template for the expanded SMU).
 - **Effort:** M
 - **Unblocks:** Journey moment 3 — the standalone IDEATE→DELIVER handoff (the least-specified path) becomes demonstrable, not only contractual.
-- **Done when:** idea-package.md names every file in the package; a committed example exists at `plugins/ideator/examples/.../doc/idea/<slug>/` with all named files populated.
+- **Done when:** idea-package.md names every file in the package; a committed example exists at `plugins/ideate/examples/.../doc/idea/<slug>/` with all named files populated.
 
 ### Step 7: Add the raw value-prop entry lane
 - **Phase:** DISCOVER / IDEATE (entry)
 - **Plugin:** `README.md` (Start-here block); `plugins/i2p/skills/help/SKILL.md`; `plugins/i2p/skills/flow/SKILL.md`; `plugins/discover/skills/market-scan/SKILL.md`
-- **What to build:** Add an explicit "I already have an idea/proposition" lane to the README Start-here block and to `/i2p:help` and `/i2p:flow`, routing it to `/ideator:ideate \"...\"` (raw-idea mode). Add a short note to `/market-scan` that it also VALIDATES a user-supplied thesis, not only generates fresh candidates. Optionally have `/ideate` recognise the problem/solution/value triad ("By doing X I propose Y, value Z") and pre-fill the brief's PROBLEM / SUCCESS-METRIC / PRICE-BAND fields.
+- **What to build:** Add an explicit "I already have an idea/proposition" lane to the README Start-here block and to `/i2p:help` and `/i2p:flow`, routing it to `/ideate:ideate \"...\"` (raw-idea mode). Add a short note to `/market-scan` that it also VALIDATES a user-supplied thesis, not only generates fresh candidates. Optionally have `/ideate` recognise the problem/solution/value triad ("By doing X I propose Y, value Z") and pre-fill the brief's PROBLEM / SUCCESS-METRIC / PRICE-BAND fields.
 - **Effort:** M
 - **Unblocks:** Journey moments 1–2 — the user holding a raw thesis finds a documented door instead of an unguided fork between meta/browse commands.
-- **Done when:** The README Start-here block and `/i2p:help` both show a thesis lane routing to `/ideator:ideate`; `/market-scan` documents thesis-validation mode.
+- **Done when:** The README Start-here block and `/i2p:help` both show a thesis lane routing to `/ideate:ideate`; `/market-scan` documents thesis-validation mode.
 
 ### Step 8: Ship a worked DELIVER golden sample (EPIC/PLAN/.pipeline)
 - **Phase:** DELIVER
@@ -104,7 +104,7 @@ At the end, a product that began as one sentence has a roadmap, tested-and-revie
 
 ### Step 11: Fix the i2p:review broken delegation + mermaid-specialist naming drift
 - **Phase:** ASSURE (cross-plugin review) / documentation
-- **Plugin:** `plugins/i2p/skills/review/SKILL.md` (lines 7, 14, 43); `plugins/foundry/VALUE_FLOW.md`; `plugins/foundry/knowledge/glossary.md`; `plugins/ideator/knowledge/ideation/idea-package.md`
+- **Plugin:** `plugins/i2p/skills/review/SKILL.md` (lines 7, 14, 43); `plugins/foundry/VALUE_FLOW.md`; `plugins/foundry/knowledge/glossary.md`; `plugins/ideate/knowledge/ideation/idea-package.md`
 - **What to build:** Correct the i2p:review DOCS-lens delegation to `/publish:design-reviewer` (visual/layout gate) or `/publish:document-review` (prose) — whichever lens is intended — to match the actual publish surface (nothing named `design-review` exists). Global-replace `mermaid-specialist` → `handler-mermaid` in VALUE_FLOW.md, glossary.md, and idea-package.md (the publish inspector already identifies the correct name).
 - **Effort:** S
 - **Unblocks:** A working cross-plugin review (the DOCS lens stops invoking a non-existent command) and accurate capability naming across four live docs.

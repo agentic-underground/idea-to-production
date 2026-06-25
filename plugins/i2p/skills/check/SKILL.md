@@ -52,7 +52,7 @@ For each plugin that is **installed** and ships a check, run it, passing `$ARGUM
 | Plugin | Check |
 |---|---|
 | discover | `/discover:check` |
-| ideator | `/ideator:check` |
+| ideate | `/ideate:check` |
 | foundry | `/foundry:check` |
 | atelier | `/atelier:check` |
 | security | `/security:check` |

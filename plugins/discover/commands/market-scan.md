@@ -1,5 +1,5 @@
 ---
-description: Discover a worth-building opportunity — an adversarially-challenged ideation dialogue that proposes, scores, and KILLS candidates against a market parameter taxonomy until one earns a keep verdict, then hands a validated opportunity to the ideator plugin (or writes a markdown opportunity brief).
+description: Discover a worth-building opportunity — an adversarially-challenged ideation dialogue that proposes, scores, and KILLS candidates against a market parameter taxonomy until one earns a keep verdict, then hands a validated opportunity to the ideate plugin (or writes a markdown opportunity brief).
 ---
 
 Run a market scan. Follow the [`market-scan` skill](../skills/market-scan/SKILL.md):
@@ -10,7 +10,7 @@ Run a market scan. Follow the [`market-scan` skill](../skills/market-scan/SKILL.
    taxonomy, and **kill the weak ones early** (on the conjunction, not the average).
 3. Challenge the survivors adversarially (who pays? what channel? why hasn't an incumbent done it?),
    narrow to 1–2, and reach a **KEEP / PARK / KILL** verdict per candidate.
-4. On a **KEEP**, hand the validated opportunity to the **ideator** plugin (`/ideate`) if installed, else
+4. On a **KEEP**, hand the validated opportunity to the **ideate** plugin (`/ideate`) if installed, else
    write a markdown opportunity brief to `doc/opportunities/<slug>.md`. Record any KILL/PARK in the kill
    ledger so a like candidate is recognised faster next time.
 

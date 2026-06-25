@@ -1,6 +1,6 @@
 ---
 name: development-system-core
-description: Use when orchestrating lifecycle execution of an IDEATOR item across SDLC steps 0-9, including stage maturity checks, quality gates, and iterative progress to Definition Of Done.
+description: Use when orchestrating lifecycle execution of an IDEATE item across SDLC steps 0-9, including stage maturity checks, quality gates, and iterative progress to Definition Of Done.
 ---
 
 # Development System Core
@@ -58,7 +58,7 @@ When operating inside a FOUNDRY cycle, this maturity ladder maps to FOUNDRY's PH
 
 | FOUNDRY Phase | DS Maturity | DS Steps |
 |---|---|---|
-| Pre-cycle | M0 | IDEATOR brief |
+| Pre-cycle | M0 | IDEATE brief |
 | EARS-AGENT | M1 | step-0, step-1 |
 | FEATURE-AGENT | M2 | step-2 |
 | TEST-AGENT | M3 | step-3, step-4 |

@@ -89,7 +89,7 @@ This PRE-FLIGHT governs the **standalone cycle** (§3–§6). The engine **PLAN-
 its own, lighter pre-flight and needs no ROADMAP.md. Before any standalone processing, silently check:
 
 1. Locate `ROADMAP.md` or `doc/ROADMAP.md`. If absent, stop and tell the user:
-   > "No ROADMAP.md found. FOUNDRY (standalone cycle) requires a populated roadmap. Run IDEATOR
+   > "No ROADMAP.md found. FOUNDRY (standalone cycle) requires a populated roadmap. Run IDEATE
    > then ROADMAPPER to create one, then return here."
    > *(To build a single v2 pipeline slice instead, use the PLAN-scope entry — §2.5 — which reads
    > `docs/roadmap/PLAN_NNNN.md` directly and needs no `ROADMAP.md`.)*
@@ -727,7 +727,7 @@ roadmap cycle, or when the daily inspector surfaces proposals:
    git commit -m "skill: <description of improvement>"
    ```
    (Never modify or push any repo that is not the marketplace source; improvements land in the plugin's source repo.)
-6. The covenant compliance check from IDEATOR §8.3 applies to all improvements.
+6. The covenant compliance check from IDEATE §8.3 applies to all improvements.
 
 ---
 

@@ -32,5 +32,5 @@ guardrail, and the KAIZEN covenant. Write `DISCOVER_INSPECTION_REPORT.md` to the
    re-litigated.
 3. **Goal contract:** `goal-setter` writes `.discover/goal.md` and `market-scan` reads it — the
    constraint fields match between writer and reader.
-4. **Handoff integrity:** a KEEP verdict hands a validated opportunity to the ideator plugin **by
-   capability**, degrading to a markdown opportunity brief when ideator is absent.
+4. **Handoff integrity:** a KEEP verdict hands a validated opportunity to the ideate plugin **by
+   capability**, degrading to a markdown opportunity brief when ideate is absent.

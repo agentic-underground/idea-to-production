@@ -34,7 +34,7 @@ probe the filesystem. The plugins to look for:
 | Plugin | Stage | Headline commands |
 |---|---|---|
 | **discover** | DISCOVER | `/discovery-goal`, `/market-scan` |
-| **ideator** | IDEATE | `/ideate` |
+| **ideate** | IDEATE | `/ideate` |
 | **foundry:roadmapper** (+ external FLEET engine) | DELIVER (roadmap intake → EARS/feature → decomposition; engine drains it) | `/roadmapper` (headline); external FLEET plugin: `/pipeline:status`, `/pipeline:run` |
 | **atelier** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
 | **foundry** | BUILD ⇄ ASSURE (quality gate; loop with SECURE) | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
@@ -65,7 +65,7 @@ around. Summarise the model from [`../../knowledge/product-lifecycle.md`](../../
 > **idea-to-production is the *creation arc*** of a product — it begins with **the search for an idea**
 > and carries it into **OPERATE** (realised, live, and kept alive). **Nine phases forming a cycle**, each
 > owned by one plugin:
-> **DISCOVER ①** (discover) → **IDEATE ②** (ideator) → **DELIVER ③** (`foundry:roadmapper` —
+> **DISCOVER ①** (discover) → **IDEATE ②** (ideate) → **DELIVER ③** (`foundry:roadmapper` —
 > headline **`/roadmapper`** — authors the FLEET v2 `docs/roadmap/` pipeline: intake → EARS/feature →
 > dependency-ordered EPIC/PLAN decomposition; the external FLEET engine drains it) → **DESIGN ④** (atelier)
 > → **BUILD ⑤** (foundry) ⇄ **ASSURE ⑥** (foundry — quality V&V) ⇄ **SECURE ⑦** (security — security) →
@@ -87,7 +87,7 @@ live phase — offer `/i2p:statusline` if it isn't enabled.
 When the user already states a **product proposition** ("By doing X I propose Y, and the value is Z" — a
 problem/solution/value triad), don't make them start at the meta-menu. Route them straight in:
 
-- **Confident in the thesis** → **`/ideator:ideate "By doing X I propose Y, value Z"`** (raw-idea mode):
+- **Confident in the thesis** → **`/ideate:ideate "By doing X I propose Y, value Z"`** (raw-idea mode):
   `/ideate` recognises the triad and pre-fills the brief's PROBLEM / SUCCESS-METRIC / PRICE-BAND fields,
   then challenges it to build-ready knowledge-parity.
 - **Unsure the thesis holds** → **`/discover:market-scan`** in its **thesis-validation mode**: hand
