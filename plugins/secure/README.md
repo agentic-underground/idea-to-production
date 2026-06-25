@@ -1,4 +1,4 @@
-# SECURITY — Security & Privacy Gate
+# SECURE — Security & Privacy Gate
 
 ![Wide dark branding banner: the "security" wordmark and the tagline "certify before exposure" beside a faint line-art gate-and-shield motif on a deep graphic band.](diagrams/banner.png)
 
@@ -10,8 +10,8 @@ BLOCK**.
 
 ![Animated security gate: a teal-titled "SECURITY · certify before exposure" panel shows an artifact at left, three stacked lens chips in the centre (PII, SECRETS, SUPPLY-CHAIN), and a closed gate at right reading "0/3 lenses". An amber scan sweep marches across the chips; as it reaches each lens the chip flips from dim "pending" to amber "scanning…" to a green-checked teal "sealed". When all three are sealed the gate's "0/3 lenses" label resolves to a large teal "PASS · cleared to expose →" stamp, then holds — teaching certify-before-exposure: nothing is cleared until every lens seals green.](../../docs/images/sentinel-gate.gif)
 
-It works on **any** project, standalone. It also serves as the **SECURITY value-station** for the
-[`foundry`](../foundry/) plugin: when both are installed, foundry runs `/security:scan-all` before
+It works on **any** project, standalone. It also serves as the **SECURE value-station** for the
+[`foundry`](../foundry/) plugin: when both are installed, foundry runs `/secure:scan-all` before
 delivery and halts on a BLOCK. When SECURITY is absent, foundry simply ships markdown and notes
 that the gate was skipped (*graceful enhancement* — no hard dependency either way).
 
@@ -19,13 +19,13 @@ that the gate was skipped (*graceful enhancement* — no hard dependency either 
 
 | Component | Lens | Command |
 |---|---|---|
-| **scan-all** | orchestrator → one report, one verdict | `/security:scan-all [full\|quick\|path]` |
-| **scan-for-pii** | personal data (names, emails, IDs, financial, health) | `/security:scan-for-pii [full\|data\|git\|code\|spa\|path]` |
-| **scan-for-secrets** | credentials (API keys, tokens, private keys, connection strings) | `/security:scan-for-secrets [full\|tree\|history\|path]` |
-| **scan-dependencies** | supply chain (vulns, unpinned, abandoned, typosquats) | `/security:scan-dependencies [path]` |
+| **scan-all** | orchestrator → one report, one verdict | `/secure:scan-all [full\|quick\|path]` |
+| **scan-for-pii** | personal data (names, emails, IDs, financial, health) | `/secure:scan-for-pii [full\|data\|git\|code\|spa\|path]` |
+| **scan-for-secrets** | credentials (API keys, tokens, private keys, connection strings) | `/secure:scan-for-secrets [full\|tree\|history\|path]` |
+| **scan-dependencies** | supply chain (vulns, unpinned, abandoned, typosquats) | `/secure:scan-dependencies [path]` |
 
-`/security:scan-all` is the front door — it fans out the other three in parallel and merges them.
-Run the individual commands when you want one lens fast (e.g. `/security:scan-for-secrets tree` pre-commit).
+`/secure:scan-all` is the front door — it fans out the other three in parallel and merges them.
+Run the individual commands when you want one lens fast (e.g. `/secure:scan-for-secrets tree` pre-commit).
 
 ## The verdict
 
@@ -42,15 +42,15 @@ returns a false PASS.
 ### Gate failure — what to do
 
 A **REVIEW** or **BLOCK** verdict is the **SECURE → BUILD** back-edge of the BUILD ⇄ ASSURE ⇄ SECURE
-loop, not a dead end. When `/security:scan-all` returns non-PASS:
+loop, not a dead end. When `/secure:scan-all` returns non-PASS:
 
 1. **Open the report** — `SECURITY-REPORT.md`. The Findings sections name each leaked secret, exposed
    PII, or vulnerable dependency with its locus and severity.
 2. **Fix in BUILD** — remediate the named findings (rotate/remove the secret, redact the PII, bump or
    pin the dependency, re-commit). This re-enters the **BUILD** phase; when i2p is installed,
-   `/security:scan-all` fires `/i2p:lifecycle fail SECURE`, sending the lifecycle back to BUILD and
+   `/secure:scan-all` fires `/i2p:lifecycle fail SECURE`, sending the lifecycle back to BUILD and
    incrementing the loop counter (status line `⇄ ×N`).
-3. **Re-run the gate** — `/security:scan-all` again over the fixed tree.
+3. **Re-run the gate** — `/secure:scan-all` again over the fixed tree.
 4. **The loop exits only when all three gates are green** — BUILD shipped, ASSURE
    (`/foundry:pr-review`) PASS, and SECURE PASS — at which point `done SECURE` advances to PUBLISH.
 
@@ -58,7 +58,7 @@ loop, not a dead end. When `/security:scan-all` returns non-PASS:
 
 ```
 /plugin marketplace add whatbirdisthat/idea-to-production
-/plugin install security@idea-to-production
+/plugin install secure@idea-to-production
 ```
 
 ## Design principles

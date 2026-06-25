@@ -33,7 +33,7 @@ product's maintenance on a **cadence** — the rhythm, not the bureaucracy. Grou
 
 ## Dependency upkeep — compose security (by capability)
 
-For the dependency/CVE rows, **compose `security`'s `/scan-dependencies`** when SECURITY is installed — it
+For the dependency/CVE rows, **compose `secure`'s `/scan-dependencies`** when SECURE is installed — it
 already parses manifests/lockfiles across ecosystems and flags vulnerable/unpinned/abandoned/typosquat
 packages. Fold its findings into the maintenance report. When SECURITY is **absent**, fall back to a static
 read of the manifests and **note the reduced coverage** — never declare deps clean on no audit.

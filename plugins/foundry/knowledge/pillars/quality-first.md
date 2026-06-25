@@ -67,8 +67,8 @@ Quality is also *defended*, not just measured. Beyond the `reviewer` panel, two 
 carry every risky slice: a **reviewer** whose job is to *find reasons not to merge* (and who
 **actually runs the gate**, never trusting a claim), and a **security-auditor** who assumes
 **inputs are hostile and dependencies guilty until proven innocent** — a reachable panic in a
-request path is an availability **BLOCKER**. When the `security` plugin is installed, its
-`/security:scan-all` is that auditor made mechanical.
+request path is an availability **BLOCKER**. When the `secure` plugin is installed, its
+`/secure:scan-all` is that auditor made mechanical.
 
 ## Why first-class
 Tying back to Pillar 3 (`pillars/waste-elimination.md`): **a bug found in development is far

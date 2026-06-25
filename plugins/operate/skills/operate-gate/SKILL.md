@@ -118,7 +118,7 @@ WATCH with the gap noted (no false "healthy").
 
 - A lens whose tool is missing (no `curl` for probes, no metrics CLI) runs what it can from reachable
   telemetry and marks the lens **partial coverage** — never a false READY.
-- Composes `security`'s `/scan-dependencies` for the maintenance lens **by capability** (only if installed);
+- Composes `secure`'s `/scan-dependencies` for the maintenance lens **by capability** (only if installed);
   notes the gap otherwise.
 - Stands alone on any live repo; lights up the companions automatically when present.
 

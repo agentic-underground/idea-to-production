@@ -20,7 +20,7 @@ thing are the same thing.
 - A version matrix is canonical: one table, every component, the role each plays. Templates and
   manifests are written against it.
 - Lockfiles are committed. A floating range (`^`, `~`, `*`, `latest`) in a manifest is a
-  reproducibility hole — flag it (this is also a `security` scan-dependencies finding).
+  reproducibility hole — flag it (this is also a `secure` scan-dependencies finding).
 
 > **GUARDRAIL:** A version bump is its **own vertical slice** with its own full GATE + (where
 > relevant) DEPLOY + VERIFY pass. Changing a pinned version silently, inside an unrelated change, is

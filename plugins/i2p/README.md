@@ -16,7 +16,7 @@ review that pulls in *every* reviewer at once. That is i2p.
 | Command | What it does |
 |---|---|
 | **`/i2p:help`** | Browse the whole marketplace's powers, grouped by the value flow (DISCOVER ▸ IDEATE ▸ DELIVER ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄ SECURE ▸ PUBLISH ▸ OPERATE ↻). Lists only the plugins currently installed, with their key commands and the next thing to run. |
-| **`/i2p:review`** | A cross-plugin **adversarial review**. Determines scope, fans out *every installed* specialist reviewer — code (foundry `/pr-review`), design (design `/ui-review`), rendered docs (publish design-review), security (security `/scan-all`) — adversarially verifies the serious findings, and returns **one** verdict (BLOCK > NEEDS_REVISION > PASS) in `I2P_REVIEW.md`, naming what it could **not** review. |
+| **`/i2p:review`** | A cross-plugin **adversarial review**. Determines scope, fans out *every installed* specialist reviewer — code (foundry `/pr-review`), design (design `/ui-review`), rendered docs (publish design-review), security (secure `/scan-all`) — adversarially verifies the serious findings, and returns **one** verdict (BLOCK > NEEDS_REVISION > PASS) in `I2P_REVIEW.md`, naming what it could **not** review. |
 | **`/i2p:check`** | Run every installed plugin's `/check` and consolidate the ✓/✗ readiness into one table. |
 | **`/i2p:flow`** | Show where each installed plugin sits in the value flow and the next command at each stage (Mermaid when publish/design are present, else markdown). |
 | **`/i2p:define-welcome`** | Author this repo's welcome experience — i2p greets and routes whoever opens it next (the arrival layer, folded into i2p). |

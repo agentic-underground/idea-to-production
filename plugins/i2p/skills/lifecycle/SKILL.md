@@ -86,7 +86,7 @@ the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
 | operate (operate learning → next cycle) | `done OPERATE` | DISCOVER ↻ |
 
 **The loop back-edge — `fail <ASSURE|SECURE>`.** Distinct from `done`: a failed quality (ASSURE) or
-security (SECURE) gate does **not** advance — it re-enters **BUILD**, sets `loop_state` back to BUILD, and
+secure (SECURE) gate does **not** advance — it re-enters **BUILD**, sets `loop_state` back to BUILD, and
 increments `loop_pass` (the iteration is recorded in history). The owner of the failing gate calls
 `fail <its-gate>` instead of `done`. Like `done` it is order-safe (a no-op unless the lifecycle is at that
 gate) and rejects a non-gate argument. So BUILD ⇄ ASSURE ⇄ SECURE iterate until the work is simultaneously

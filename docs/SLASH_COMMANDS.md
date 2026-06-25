@@ -26,7 +26,7 @@ together once all are satisfied and the roadmap item is complete.
 | **3** | DELIVER | `foundry:roadmapper` (+ external FLEET engine) | [↓](#foundryroadmapper--deliver) |
 | **4** | DESIGN | `design` | [↓](#design--design) |
 | **5** | BUILD ⇄ ASSURE | `foundry` | [↓](#foundry--build--assure) |
-| **6** | SECURE | `security` | [↓](#security--secure) |
+| **6** | SECURE | `secure` | [↓](#secure--secure) |
 | **7** | PUBLISH | `publish` | [↓](#publish--publish) |
 | **8** | OPERATE ↻ | `operate` | [↓](#operate--operate-) |
 
@@ -143,16 +143,16 @@ loop — a failed gate re-enters BUILD.)
 `reviewer-gate`, `value-station-handoff`, `development-system-core`, `founder-method` — that run
 automatically inside `/foundry:foundry`. They are building blocks, not meant for direct use.*
 
-## security — SECURE
+## secure — SECURE
 
 The pre-release security audits.
 
 | Command | What it does |
 |---|---|
-| `/security:scan-all` `[full·quick·path]` | Run all the audits → SECURITY-REPORT.md with a PASS / REVIEW / BLOCK verdict |
-| `/security:scan-dependencies` | Audit dependencies — CVEs, unpinned versions, abandoned packages, typosquats |
-| `/security:scan-for-secrets` `[tree·git·history]` | Scan tree, git history, and artefacts for committed secrets |
-| `/security:scan-for-pii` | Audit for PII across data, source, git history, and frontend |
+| `/secure:scan-all` `[full·quick·path]` | Run all the audits → SECURITY-REPORT.md with a PASS / REVIEW / BLOCK verdict |
+| `/secure:scan-dependencies` | Audit dependencies — CVEs, unpinned versions, abandoned packages, typosquats |
+| `/secure:scan-for-secrets` `[tree·git·history]` | Scan tree, git history, and artefacts for committed secrets |
+| `/secure:scan-for-pii` | Audit for PII across data, source, git history, and frontend |
 
 ## publish — PUBLISH
 

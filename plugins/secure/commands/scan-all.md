@@ -19,5 +19,5 @@ then write `SECURITY-REPORT.md` with an overall verdict:
 The verdict is the maximum severity across all three lenses. If a lens cannot fully run (e.g. an
 advisory tool is missing), report partial coverage — never return PASS for an un-run lens.
 
-This is the SECURITY value-station the `foundry` plugin invokes before DELIVERY when SECURITY is
+This is the SECURE value-station the `foundry` plugin invokes before DELIVERY when SECURE is
 installed; it is equally useful standalone before any release or open-sourcing.

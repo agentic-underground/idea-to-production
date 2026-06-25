@@ -40,7 +40,7 @@ open questions, never silent guesses. Offline, it reasons from you and says so. 
   charts) are produced by invoking [`publish`](../publish/)'s `/publish` **by capability** when
   installed; absent, DISCOVER emits clean markdown and says the richer step was skipped.
 - It is the upstream entry to the whole conveyor: **DISCOVER (discover) → IDEATE (ideate) → BUILD
-  ([foundry](../foundry/)) → SECURE/PUBLISH (security/publish)**. *Graceful enhancement* — no hard
+  ([foundry](../foundry/)) → SECURE/PUBLISH (secure/publish)**. *Graceful enhancement* — no hard
   dependency in either direction.
 
 ## Governed by the marketplace covenant

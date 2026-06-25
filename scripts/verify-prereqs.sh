@@ -779,7 +779,7 @@ lifecycle_rows=(
   "DESIGN   design        done DESIGN"
   "BUILD    foundry        done BUILD"
   "ASSURE   foundry        done ASSURE;fail ASSURE"
-  "SECURE   security       done SECURE;fail SECURE"
+  "SECURE   secure         done SECURE;fail SECURE"
   "PUBLISH  publish        done PUBLISH"
   "OPERATE  operate        done OPERATE"
 )

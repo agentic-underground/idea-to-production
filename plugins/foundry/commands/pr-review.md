@@ -1,5 +1,5 @@
 ---
-description: Adversarial review of a PR or local diff → a single verdict (PASS / NEEDS_REVISION / BLOCK). Fans out FOUNDRY reviewer roles prompted to refute the change; composes the SECURITY plugin's scan-all when present; writes PR_REVIEW.md.
+description: Adversarial review of a PR or local diff → a single verdict (PASS / NEEDS_REVISION / BLOCK). Fans out FOUNDRY reviewer roles prompted to refute the change; composes the SECURE plugin's scan-all when present; writes PR_REVIEW.md.
 ---
 
 Run an adversarial pull-request review. Follow the [`pr-review` skill](../skills/pr-review/SKILL.md):
@@ -11,7 +11,7 @@ Run an adversarial pull-request review. Follow the [`pr-review` skill](../skills
    ```
 2. Fan out the FOUNDRY `reviewer` agent in parallel across the adversarial roles relevant to the
    diff (CORRECTNESS, SECURITY, REGRESSION, ARCHITECTURE, PERFORMANCE, DOCUMENT) — each told to try
-   to break the change. If the SECURITY plugin is installed, also run `/security:scan-all` and fold in its verdict.
+   to break the change. If the SECURE plugin is installed, also run `/secure:scan-all` and fold in its verdict.
 3. Adversarially verify each HIGH/CRITICAL finding (a second reviewer tries to refute it).
 4. Synthesise one verdict (BLOCK > NEEDS_REVISION > PASS, max-severity rule) and write `PR_REVIEW.md`.
 5. Present the verdict, the findings table, and explicitly what was **not** reviewed.

@@ -14,7 +14,7 @@ Once every step below is complete, the intended journey reads end-to-end as foll
 4. **DELIVER.** The user types `/foundry:roadmapper` — which now **resolves to a real command** — and gets a `docs/roadmap/` FLEET v2 pipeline (EPIC/PLAN docs) shaped exactly like the committed **golden sample** under `references/`. (Steps 2, 8)
 5. **DESIGN.** The reconciled docs state one truth: whether design gates BUILD or cross-cuts it, and the pipeline pauses for design at a **defined invocation point** so `done DESIGN` fires on a real boundary. (Step 5)
 6. **BUILD.** FOUNDRY drains each PLAN through the 0–9 conveyor. The LEAD selects handlers via a **documented stack-detection table** (signal → handler), so an Ansible item routes to the now-registered `handler-ansible` instead of surprising the user at the missing-handler gate. (Steps 3, 4)
-7. **BUILD ⇄ ASSURE ⇄ SECURE — the loop now turns.** On a built item, `/foundry:pr-review` calls `/i2p:lifecycle done ASSURE` on PASS (advancing to SECURE) or `/i2p:lifecycle fail ASSURE` on NEEDS_REVISION/BLOCK. `/security:scan-all` calls `/i2p:lifecycle done SECURE` on PASS or `/i2p:lifecycle fail SECURE` on BLOCK. The statusline `⇄ ×N` increments on every loop-back, and a **failure-recovery callout** tells the operator exactly which report to open, what to fix, and what to re-run. The loop is traversable for the first time. (Steps 1, 9)
+7. **BUILD ⇄ ASSURE ⇄ SECURE — the loop now turns.** On a built item, `/foundry:pr-review` calls `/i2p:lifecycle done ASSURE` on PASS (advancing to SECURE) or `/i2p:lifecycle fail ASSURE` on NEEDS_REVISION/BLOCK. `/secure:scan-all` calls `/i2p:lifecycle done SECURE` on PASS or `/i2p:lifecycle fail SECURE` on BLOCK. The statusline `⇄ ×N` increments on every loop-back, and a **failure-recovery callout** tells the operator exactly which report to open, what to fix, and what to re-run. The loop is traversable for the first time. (Steps 1, 9)
 8. **PUBLISH → OPERATE.** On all-green, `done SECURE` advances to PUBLISH and onward; OPERATE runs the gate.
 9. **OPERATE ↻ DISCOVER — the cycle closes.** `/operate:iterate` writes an `OPPORTUNITY-<slug>.md` whose **path and schema match what DISCOVER consumes**, and `/market-scan` has an explicit ingest step that validates that returned thesis — closing the loop with a shared contract. (Step 10)
 
@@ -24,7 +24,7 @@ At the end, a product that began as one sentence has a roadmap, tested-and-revie
 
 ### Step 1: Wire the BUILD ⇄ ASSURE ⇄ SECURE loop (the dead transitions)
 - **Phase:** ASSURE, SECURE, BUILD (the flagship loop)
-- **Plugin:** `plugins/foundry/skills/pr-review/SKILL.md`; `plugins/security/skills/scan-all/SKILL.md`
+- **Plugin:** `plugins/foundry/skills/pr-review/SKILL.md`; `plugins/secure/skills/scan-all/SKILL.md`
 - **What to build:** Add a `## Product lifecycle (by capability)` section to `pr-review/SKILL.md` (mirroring the section every other phase-owning skill has) that calls `/i2p:lifecycle done ASSURE` on a PASS verdict and `/i2p:lifecycle fail ASSURE` on a NEEDS_REVISION/BLOCK verdict. Add the matching `/i2p:lifecycle fail SECURE` call to `scan-all/SKILL.md` on a REVIEW/BLOCK verdict (the `done SECURE` call on PASS already exists). Guard each call "by capability" per the existing degradation pattern.
 - **Effort:** S
 - **Unblocks:** The entire flagship loop the README/VALUE_FLOW/product-lifecycle advertise — moment 7 of the journey. Without this, the lifecycle stalls at ASSURE forever.
@@ -88,11 +88,11 @@ At the end, a product that began as one sentence has a roadmap, tested-and-revie
 
 ### Step 9: Add the operator failure-recovery UX
 - **Phase:** ASSURE / SECURE (failure path)
-- **Plugin:** `plugins/foundry/README.md`; `plugins/security/README.md`; `plugins/foundry/skills/pr-review/SKILL.md` (non-PASS output); `plugins/security/skills/scan-all/SKILL.md` (non-PASS output)
-- **What to build:** Add an operator-facing failure-recovery callout (mirroring the well-specified AWAITING_MERGE prompt block) to the foundry and security READMEs and the pr-review/scan-all non-PASS output: open the report (`PR_REVIEW.md` / `SECURITY-REPORT.md`) → address the named findings in BUILD → re-run `/pr-review` or `/scan-all` → the loop exits only when all three gates are green. Tie the message to the `lifecycle.sh fail` transition wired in Step 1 so UX and state machine agree.
+- **Plugin:** `plugins/foundry/README.md`; `plugins/secure/README.md`; `plugins/foundry/skills/pr-review/SKILL.md` (non-PASS output); `plugins/secure/skills/scan-all/SKILL.md` (non-PASS output)
+- **What to build:** Add an operator-facing failure-recovery callout (mirroring the well-specified AWAITING_MERGE prompt block) to the foundry and secure READMEs and the pr-review/scan-all non-PASS output: open the report (`PR_REVIEW.md` / `SECURITY-REPORT.md`) → address the named findings in BUILD → re-run `/pr-review` or `/scan-all` → the loop exits only when all three gates are green. Tie the message to the `lifecycle.sh fail` transition wired in Step 1 so UX and state machine agree.
 - **Effort:** S
 - **Unblocks:** Journey moment 7 — a human operator hitting NEEDS_REVISION/BLOCK knows the concrete next step instead of facing a merge halt with no instruction.
-- **Done when:** A non-PASS verdict from `/pr-review` or `/scan-all` prints a recovery procedure naming the report, the fix-in-BUILD step, and the re-run command; the foundry/security READMEs carry the same callout.
+- **Done when:** A non-PASS verdict from `/pr-review` or `/scan-all` prints a recovery procedure naming the report, the fix-in-BUILD step, and the re-run command; the foundry/secure READMEs carry the same callout.
 
 ### Step 10: Align the OPERATE ↻ DISCOVER re-entry contract
 - **Phase:** OPERATE ↻ DISCOVER (cycle close)

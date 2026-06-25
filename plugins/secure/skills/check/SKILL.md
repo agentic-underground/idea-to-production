@@ -3,7 +3,7 @@ name: check
 description: >
   Verify that SECURITY's security scanners are installed and reachable — SCA (npm audit, pip-audit,
   cargo-audit, osv-scanner), secrets (gitleaks). Trigger with
-  /security:check (or "check security prerequisites", "which scanners are installed?"). Runs a fast
+  /secure:check (or "check security prerequisites", "which scanners are installed?"). Runs a fast
   ✓/✗ probe grouped by tier. Advisory by default (SECURITY degrades gracefully — a missing scanner
   narrows a lens to partial coverage, never a false PASS); pass --strict to fail on a missing
   required tool. Reads the canonical manifest skills/check/requirements.tsv.

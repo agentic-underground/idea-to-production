@@ -9,7 +9,7 @@ Explain the value flow. Follow the [`flow` skill](../skills/flow/SKILL.md):
    and the artefact it produces. **DELIVER** sits between IDEATE and DESIGN, owned by
    **`foundry:roadmapper`** (`/roadmapper` authors the FLEET v2 `docs/roadmap/` pipeline: intake →
    EARS/feature → dependency-ordered EPIC/PLAN decomposition) plus the external **FLEET
-   continuous-delivery engine** that drains it. ASSURE (foundry, quality) and SECURE (security,
+   continuous-delivery engine** that drains it. ASSURE (foundry, quality) and SECURE (secure,
    security) are separate gates, and BUILD ⇄ ASSURE ⇄ SECURE is a **loop** (a failed gate re-enters
    BUILD); usability/quality/security cross-cut every phase.
 2. Mark which stages are **dark** (plugin not installed) and what installing it would unlock — including

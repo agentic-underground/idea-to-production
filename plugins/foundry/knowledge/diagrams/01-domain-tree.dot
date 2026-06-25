@@ -91,7 +91,7 @@ digraph DomainArchB {
     co_title [label="COMPANIONS  (cross-cutting, by capability)", shape=box,
               style="filled,rounded", fillcolor="#473a22:#2a2114", color="#e0af68",
               fontcolor="#f0d6a4", fontsize=12, penwidth=1.8]
-    security [label=<<b>security</b><br/><font point-size="9" color="#e8c98f">SECURE</font>>,
+    secure [label=<<b>secure</b><br/><font point-size="9" color="#e8c98f">SECURE</font>>,
               fillcolor="#3f3320:#241c10", color="#e0af68"]
     publish [label=<<b>publish</b><br/><font point-size="9" color="#e8c98f">PUBLISH</font>>,
                fillcolor="#3f3320:#241c10", color="#e0af68"]
@@ -101,11 +101,11 @@ digraph DomainArchB {
              fillcolor="#352f50:#1f1b2e", color="#bb9af7"]
 
     // clean 2×2 grid DIRECTLY beneath the title bar (no L-shaped spill)
-    { rank=same; security;  publish }
+    { rank=same; secure;  publish }
     { rank=same; design;   mission }
-    co_title  -> security  [style=invis]
+    co_title  -> secure  [style=invis]
     co_title  -> publish [style=invis]
-    security  -> design   [style=invis, weight=10]
+    secure  -> design   [style=invis, weight=10]
     publish -> mission   [style=invis, weight=10]
   }
 
@@ -117,7 +117,7 @@ digraph DomainArchB {
   // ONE group→group edge: companions cluster cross-cuts the WHOLE foundry.
   // ltail/lhead clip the edge to BOTH cluster boundaries — it terminates on the
   // core BOUNDARY, not a single inner cell, so it reads as whole-foundry enhancement.
-  cell_pillars -> security [ltail=cluster_core, lhead=cluster_companions,
+  cell_pillars -> secure [ltail=cluster_core, lhead=cluster_companions,
                             label="compose by capability\n— graceful enhancement",
                             color="#e0af68", fontcolor="#d6a463", style=dashed,
                             penwidth=2.0, dir=both, arrowtail=none, weight=1,

@@ -88,7 +88,7 @@ bureaucracy.
   rollback plan, and (for risky change) gated by remaining error budget. Standard/low-risk changes are
   pre-approved; significant changes are reviewed.
 - **Maintenance cadence** — a recurring rhythm so upkeep never becomes an emergency: dependency upgrades
-  and CVE patching (compose `security`'s `/scan-dependencies` by capability when installed), certificate and
+  and CVE patching (compose `secure`'s `/scan-dependencies` by capability when installed), certificate and
   secret rotation, backup/restore drills, capacity review against saturation trends, and **tech-debt**
   paydown budgeted alongside features.
 - **Continual service improvement (CSI)** — every cycle, ask what one operational thing to make measurably
@@ -101,7 +101,7 @@ bureaucracy.
 ## 5. Degraded capabilities — route around a dead tool/MCP/lens, and DISCLOSE
 
 OPERATE runs against live, fallible infrastructure: an MCP server dies mid-session, a telemetry
-source is unreachable, a companion lens (`security`'s scan-dependencies) isn't installed. The
+source is unreachable, a companion lens (`secure`'s scan-dependencies) isn't installed. The
 discipline is **detect → degrade → disclose**, made machine-checkable, never a silent pass.
 
 **The contract is defined once**, in
