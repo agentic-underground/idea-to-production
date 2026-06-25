@@ -25,7 +25,7 @@ Residual parity gap (KAIZEN follow-up, NOT a gate on a ref-removal PR): **operat
 only specialist plugin README without a second concept/loop GIF after its banner.** All
 siblings carry one AND the asset exists on disk:
 - foundry → foundry-conveyor.gif (README:12)
-- ideator → ideator-converge.gif (:11)
+- ideate → ideate-converge.gif (:11)
 - discover → discover-radar.gif (:11)
 - publish → publish-press.gif (:11)
 - security → sentinel-gate.gif (:11)

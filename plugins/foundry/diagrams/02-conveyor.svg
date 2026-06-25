@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg viewBox="0 0 860 520" xmlns="http://www.w3.org/2000/svg" font-family="DejaVu Sans, sans-serif">
   <title>FOUNDRY — the three-layer conveyor (horizontal belt)</title>
-  <desc>FOUNDRY is a three-layer conveyor. THE IDEA, above the line, is the user in knowledge-parity with the IDEATOR (PRODUCT_MANAGER), emitting a clear, agent-readable brief downward into THE CONVEYOR. The conveyor is a horizontal belt carrying nine value-stations left to right from a cool IDEA end to a warm SHIP end: IDEA (ideator), ROADMAP (roadmapper), PLAN, EARS (spec), FEATURE, TEST (tests), IMPLEMENT plus DESIGN (builder/handlers), STORY, SHIP (deliver). The two ends are accented — IDEA blue, SHIP amber — to mark the cool-to-warm direction. A cross-cutting band rides within the carriage, beneath the belt, carrying GOVERNANCE (reviewers, perf-delta gates, inspector) in foundry, and companions if installed: PUBLISHING to publish, SECURITY to security, DESIGN to atelier. Side rails mark the vertical duality: questions flow up, value flows down.</desc>
+  <desc>FOUNDRY is a three-layer conveyor. THE IDEA, above the line, is the user in knowledge-parity with the IDEATE (PRODUCT_MANAGER), emitting a clear, agent-readable brief downward into THE CONVEYOR. The conveyor is a horizontal belt carrying nine value-stations left to right from a cool IDEA end to a warm SHIP end: IDEA (ideate), ROADMAP (roadmapper), PLAN, EARS (spec), FEATURE, TEST (tests), IMPLEMENT plus DESIGN (builder/handlers), STORY, SHIP (deliver). The two ends are accented — IDEA blue, SHIP amber — to mark the cool-to-warm direction. A cross-cutting band rides within the carriage, beneath the belt, carrying GOVERNANCE (reviewers, perf-delta gates, inspector) in foundry, and companions if installed: PUBLISHING to publish, SECURITY to security, DESIGN to atelier. Side rails mark the vertical duality: questions flow up, value flows down.</desc>
 
   <defs>
     <!-- value flows DOWN (left rail, into the belt) -->
@@ -26,7 +26,7 @@
   <g>
     <rect x="150" y="22" width="560" height="74" rx="12" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="2"/>
     <text x="430" y="46" text-anchor="middle" fill="#7aa2f7" font-size="13" font-weight="bold" letter-spacing="1.5">THE IDEA · above the line</text>
-    <text x="430" y="68" text-anchor="middle" fill="#e6e9f0" font-size="14">the user  &#8646;  IDEATOR (PRODUCT_MANAGER)</text>
+    <text x="430" y="68" text-anchor="middle" fill="#e6e9f0" font-size="14">the user  &#8646;  IDEATE (PRODUCT_MANAGER)</text>
     <text x="430" y="86" text-anchor="middle" fill="#b8bed0" font-size="12" font-style="italic">knowledge-parity before build</text>
   </g>
 
@@ -55,7 +55,7 @@
     <g>
       <rect x="66" y="194" width="78" height="76" rx="7" fill="#1e1e2e" stroke="#7aa2f7" stroke-width="2.5"/>
       <text x="105" y="222" text-anchor="middle" fill="#e6e9f0" font-size="12" font-weight="bold">IDEA</text>
-      <text x="105" y="252" text-anchor="middle" fill="#7aa2f7" font-size="10">ideator</text>
+      <text x="105" y="252" text-anchor="middle" fill="#7aa2f7" font-size="10">ideate</text>
     </g>
     <!-- 2 ROADMAP -->
     <g>

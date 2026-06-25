@@ -21,7 +21,7 @@ Before beginning:
 1. **Check for `DEFINITION_OF_DONE.md`** at the project root. If absent, create it now
    from the template at `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/definition-of-done.md`.
    This file is mandatory — no phase may proceed without it.
-2. Load the IDEATOR brief or roadmap entry for the item.
+2. Load the IDEATE brief or roadmap entry for the item.
 3. Check for an existing plan file — if resuming, update rather than overwrite.
 4. If SMU exists (`doc/SUBJECT_MATTER_UNDERSTANDING.md`), load it.
 5. Scan the codebase: identify stack (Python/JS/TS/etc.), test runner, BDD harness,
@@ -59,7 +59,7 @@ sentinel. Record it prominently in the plan under "Coverage Commands".
 
 ## Inputs
 
-- IDEATOR brief or roadmap entry (title, actors, problem, in-scope, out-of-scope,
+- IDEATE brief or roadmap entry (title, actors, problem, in-scope, out-of-scope,
   constraints, success metric)
 - Existing codebase scan (stack, test structure, patterns, existing EARS/feature files)
 - DEFINITION_OF_DONE.md (create from template if absent)

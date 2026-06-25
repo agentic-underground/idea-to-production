@@ -80,7 +80,7 @@ to the [`canon/`](../canon/README.md). Each dimension scores **0–5**; the weig
 This protocol defines the **shape** the marketplace's design loops share (by concept, not by path):
 **publish**'s print/DTP & data-viz reviewer adopts the same fitness-function shape and stop conditions
 with different rubric dimensions (typography/grid for print; Tufte/Cleveland/Bertin for charts). When
-**IDEATOR** asks ATELIER to produce a user-flow or mockup
+**IDEATE** asks ATELIER to produce a user-flow or mockup
 for the IDEA dossier, this loop runs first — so the user sees **carefully-composed, design-reviewed**
 material, not a first draft. A recurring stall-class feeds `self-improve` (a sharper canon rule or a
 re-weighted dimension), so the loop converges faster next time.

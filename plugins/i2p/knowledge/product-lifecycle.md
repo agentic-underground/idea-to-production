@@ -57,7 +57,7 @@ DESIGN, and the **BUILD/ASSURE/SECURE loop** (the ⇄).
 | # | Phase `[token]` | Owner | Value added | Canon lineage |
 |---|---|---|---|---|
 | ① | **DISCOVER** `[DISCOVER]` | discover | find a problem worth solving; kill weak ideas early | Fuzzy Front End (opportunity identification) · Double Diamond **Discover** (diverge: problem) |
-| ② | **IDEATE** `[IDEATE]` | ideator | turn the opportunity into a build-ready IDEA package at knowledge-parity | Double Diamond **Define** (converge: concept) · NPD concept development · design-thinking *empathize/define* |
+| ② | **IDEATE** `[IDEATE]` | ideate | turn the opportunity into a build-ready IDEA package at knowledge-parity | Double Diamond **Define** (converge: concept) · NPD concept development · design-thinking *empathize/define* |
 | ③ | **DELIVER** `[DELIVER]` | `foundry:roadmapper` (+ external FLEET engine) | turn the IDEA package into the FLEET v2 pipeline: intake → EARS/feature authoring → decomposition into atomic, dependency-ordered build-ready EPIC/PLAN slices; the FLEET engine drains it | NPD planning · PLM **plan** · Kahn topological work-ordering · agile backlog decomposition (INVEST, vertical slices) |
 | ④ | **DESIGN** `[DESIGN]` | atelier | make the experience usable, elegant, accessible — **DESIGN gates BUILD**: atelier reviews surfaces as part of DELIVER intake; it also **cross-cuts during BUILD** via the frontend design system | Double Diamond **Develop** (diverge: solution) · design thinking *ideate/prototype* |
 | ⑤ | **BUILD** `[BUILD]` | foundry | realise it test-first through the value conveyor (IDEA▶…▶SHIP) — *loop entry* | Double Diamond **Deliver** · NPD development · PLM **Realize** |
@@ -88,7 +88,7 @@ cross-cutting concern.
   generates `.feature` files, and drives decomposition) together with the **external FLEET continuous-delivery
   engine** (draining — it pulls the dependency-ordered EPIC/PLAN slices and builds them).
 - **Entry signal** — IDEATE completes: a **handoff-contract-complete IDEA package** at knowledge-parity (the
-  same artifact that READY from the ideator's independent challenger certifies).
+  same artifact that READY from the ideate's independent challenger certifies).
 - **Exit signal** — a **decomposed, dependency-ordered set of build-ready items** exists (an EARS-specified,
   topologically ordered roadmap). On that signal the lifecycle enters **DESIGN**, which makes those items'
   surfaces usable before BUILD realises them.

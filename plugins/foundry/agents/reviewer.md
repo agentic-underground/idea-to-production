@@ -615,7 +615,7 @@ reports (step-9), and any ad-hoc document.
 1. Read the document's stated purpose, intended audience, and stage context.
 2. Check completeness against stage requirements and `${CLAUDE_PLUGIN_ROOT}/knowledge/protocols/definition-of-done.md`.
 3. Identify logical gaps, ambiguity, unverifiable claims, and outdated practices.
-4. Apply the relevant standards: the IDEATOR brief, ROADMAPPER, `code-quality`, EARS, Gherkin.
+4. Apply the relevant standards: the IDEATE brief, ROADMAPPER, `code-quality`, EARS, Gherkin.
 5. Propose concrete, implementable updates with rationale, and provide the revised content.
 
 **Evaluate against:**

@@ -59,7 +59,7 @@ Gate-keepers read this and nothing else is assumed.
 - IN: a shipped slice + any usage/market signal + any **ideation-feedback** raised while building
   (an IDEA-package field that proved ambiguous downstream).
 - EXIT: signal captured; positioning in `docs/marketing/` still cohesive with reality.
-- OUT: the next IDEA candidate (closes the loop). **When the `ideator` / `discover` plugins are
+- OUT: the next IDEA candidate (closes the loop). **When the `ideate` / `discover` plugins are
   installed**, also route the ideation-feedback to their self-improve intake (symptom → unclear field →
   preventing question), so the upstream front end sharpens for every future ideation — not just this
   project's brief. See `knowledge/pillars/knowledge-parity.md` ("feedback flows upstream").

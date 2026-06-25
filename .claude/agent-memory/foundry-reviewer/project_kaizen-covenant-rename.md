@@ -24,7 +24,7 @@ SOLID-applied-to-documents.
 - **Over-rename risk to flag:** inserting a "kaizen:" label in front of a list of SOLID-of-documents
   principles (single-responsibility, extend-don't-mutate=Open/Closed, substitutable=Liskov) is a
   semantic mismatch — the kaizen reframe RETIRED that S/O/L/I/D framing. Seen at
-  `skills/ideator/references/self-improvement-review-prompt.md:20`.
+  `skills/ideate/references/self-improvement-review-prompt.md:20`.
 - Many docs legitimately use SOLID-derived vocabulary ("single-responsibility per section",
   "substitutable") to describe document structure WITHOUT the covenant label (self-improve/SKILL.md,
   every inspection-core.md, roadmapper/SKILL.md) — those are fine, do not flag.

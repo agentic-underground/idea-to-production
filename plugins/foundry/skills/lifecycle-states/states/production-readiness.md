@@ -18,7 +18,7 @@ Production Readiness is the last gate before an item is declared COMPLETE. It is
 ## Exit Criteria — All must be true
 
 ### Problem-Solution Traceability
-- [ ] Every artifact (plan, EARS, feature, tests, implementation, commit) traces to the IDEATOR brief
+- [ ] Every artifact (plan, EARS, feature, tests, implementation, commit) traces to the IDEATE brief
 - [ ] Each EARS requirement has a stable ID and is mapped to passing tests
 
 ### Specification Integrity

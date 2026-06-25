@@ -3,7 +3,7 @@ name: lifecycle-states
 description: >
   The lifecycle-state router for the FOUNDRY conveyor. Use at every maturity boundary of a
   roadmap item to validate that the current state's exit criteria are met before advancing.
-  Covers all five boundaries: converting an IDEATOR brief into stable implementation intent
+  Covers all five boundaries: converting an IDEATE brief into stable implementation intent
   before specification (discovery); formal EARS + Gherkin requirement/behaviour contracts
   before implementation (specification); test-first proof, failure-gap mapping, implementation
   validation, and regression prevention (verification); upstream synchronization, commit

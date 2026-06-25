@@ -96,7 +96,7 @@ each inspector ADDS its own plugin-specific Phase-3 items on top.
 
 ## Phase 4 — Produce the Report
 
-Write `<PLUGIN>_INSPECTION_REPORT.md` (uppercase plugin name, e.g. `IDEATOR_INSPECTION_REPORT.md`) to the
+Write `<PLUGIN>_INSPECTION_REPORT.md` (uppercase plugin name, e.g. `IDEATE_INSPECTION_REPORT.md`) to the
 **current project root** — never outside the project you were invoked in. Overwrite the previous report.
 
 ```markdown

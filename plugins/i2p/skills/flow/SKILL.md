@@ -26,7 +26,7 @@ carries VALUE from IDEA to PRODUCTION; this draws the map with only the parts yo
                                             ┌──────── fail ◀───────┐
                                             ▼                      │
 DISCOVER ──▶ IDEATE ─▶ DELIVER ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
-market-       ideator  roadmapper atelier   foundry  foundry   security  publish  operate
+market-       ideate  roadmapper atelier   foundry  foundry   security  publish  operate
 scanner                (+FLEET)                      (quality) (security)
                                             └──── BUILD ⇄ ASSURE ⇄ SECURE loop ────┘
  /discovery-  /ideate  /roadmapper /mockup  IDEA▶…▶ /pr-review /scan-all /publish  observe ·
@@ -73,7 +73,7 @@ plugin is absent (and noting the skip).
 doing X I propose Y, and the value is Z" (a problem/solution/value triad). Two doors enter the flow at the
 front:
 
-- **Confident in the thesis** → enter at **IDEATE** with **`/ideator:ideate "By doing X I propose Y,
+- **Confident in the thesis** → enter at **IDEATE** with **`/ideate:ideate "By doing X I propose Y,
   value Z"`** (raw-idea mode — it recognises the triad and pre-fills the brief).
 - **Unsure the thesis holds** → enter at **DISCOVER** with **`/discover:market-scan`** in its
   **thesis-validation mode**: hand it the thesis (or an `OPPORTUNITY-*.md` from `/operate:iterate`, closing

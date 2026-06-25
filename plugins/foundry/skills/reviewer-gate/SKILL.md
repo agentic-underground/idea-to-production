@@ -36,7 +36,7 @@ Prefer `reviewer` for its specialized checklists (EARS-REVIEWER, BDD-REVIEWER, e
 The producing agent must provide:
 - Document path (exact file location)
 - Stage context and intended audience
-- Applicable standards (IDEATOR, ROADMAPPER, code-quality, EARS forms, Gherkin)
+- Applicable standards (IDEATE, ROADMAPPER, code-quality, EARS forms, Gherkin)
 - Explicit request for critical findings and improved revision
 
 **Do not say** "please review this document" — say "I need a critical review of this [document type] for [stage]. The applicable standards are [list]. Identify severity-ranked findings and provide a revised version."

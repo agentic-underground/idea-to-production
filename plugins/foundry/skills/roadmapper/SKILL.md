@@ -969,7 +969,7 @@ DISCUSS mode is the deliberative phase. The spec is mutable. The agent asks ques
 **What the agent MAY do:**
 - Edit any part of the roadmap entry (user stories, EARS spec, acceptance criteria, implementation notes, priority, description)
 - Add new EARS statements or modify existing ones
-- Ask clarifying questions (one at a time, per IDEATOR convention)
+- Ask clarifying questions (one at a time, per IDEATE convention)
 - Propose structural changes to the entry
 - Re-number EARS IDs if the set changes significantly
 

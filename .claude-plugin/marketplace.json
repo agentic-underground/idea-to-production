@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "idea-to-production",
-  "description": "A composable suite for carrying software from IDEA to PRODUCTION: a front-door / meta-layer (i2p) that introduces the whole suite, reviews across all of it, and greets whoever opens a repo (the welcome + status line), a discovery phase (discover) that finds a worth-building opportunity, a refinement phase (ideator) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, a design studio (atelier) that makes and adversarially reviews the visuals, an operate phase (operate) that runs the live product, and security and publishing companions (security, publish). Each plugin stands alone and lights up the others automatically when installed.",
+  "description": "A composable suite for carrying software from IDEA to PRODUCTION: a front-door / meta-layer (i2p) that introduces the whole suite, reviews across all of it, and greets whoever opens a repo (the welcome + status line), a discovery phase (discover) that finds a worth-building opportunity, a refinement phase (ideate) that turns it into a build-ready IDEA package, a disciplined quality-first value conveyor (foundry) that builds it, a design studio (atelier) that makes and adversarially reviews the visuals, an operate phase (operate) that runs the live product, and security and publishing companions (security, publish). Each plugin stands alone and lights up the others automatically when installed.",
   "version": "1.12.0",
   "owner": {
     "name": "whatbirdisthat",
@@ -43,7 +43,7 @@
       "name": "discover",
       "source": "./plugins/discover",
       "displayName": "DISCOVER — Find what's worth building",
-      "description": "The DISCOVERY front door of the marketplace — upstream of any code. Set a standing discovery /discovery-goal, then run /market-scan: an adversarially-challenged dialogue over a market parameter taxonomy (problem severity, demand evidence, market size, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and NARROWS candidate opportunities, killing weak ideas early. Loop it over your goal until one candidate earns a keep verdict — the spark. Hands a validated OPPORTUNITY to the ideator plugin when installed, or emits a structured markdown opportunity brief standalone. Self-improving: downstream feedback sharpens the parameters and scoring over time.",
+      "description": "The DISCOVERY front door of the marketplace — upstream of any code. Set a standing discovery /discovery-goal, then run /market-scan: an adversarially-challenged dialogue over a market parameter taxonomy (problem severity, demand evidence, market size, willingness-to-pay, pricing power, competition, reachability, stack-fit) that proposes, scores, validates, and NARROWS candidate opportunities, killing weak ideas early. Loop it over your goal until one candidate earns a keep verdict — the spark. Hands a validated OPPORTUNITY to the ideate plugin when installed, or emits a structured markdown opportunity brief standalone. Self-improving: downstream feedback sharpens the parameters and scoring over time.",
       "version": "1.1.1",
       "author": {
         "name": "whatbirdisthat",
@@ -68,17 +68,17 @@
       ]
     },
     {
-      "name": "ideator",
-      "source": "./plugins/ideator",
-      "displayName": "IDEATOR — Refine an idea into a build-ready IDEA package",
-      "description": "The REFINEMENT phase of the marketplace. Takes a validated opportunity (from discover) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise AGENT-FACING handoff documents (idea brief, subject-matter-understanding seed, first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (opportunity narrative, parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability — charts via publish, user-flows/mockups via atelier (design-reviewed) — when installed; degrades to markdown otherwise. Iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Supersedes FOUNDRY's inline ideator, which remains as a graceful-degradation fallback. Also runs /ideator:name — a marketing-grade naming studio: a deep discovery interview (audience, brand archetype, name-type appetite, power-adjacency, humour, risk), wide-net generation across the full name-type taxonomy + affix hooks + phonosemantic tuning, a deterministic token-free checker (registries + neighbour/typo-squat proximity + domain/RDAP + cross-language connotation), and a scored challenge (Neumeier 7 / SMILE-SCRATCH / archetype-fit). Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract.",
+      "name": "ideate",
+      "source": "./plugins/ideate",
+      "displayName": "IDEATE — Refine an idea into a build-ready IDEA package",
+      "description": "The REFINEMENT phase of the marketplace. Takes a validated opportunity (from discover) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise AGENT-FACING handoff documents (idea brief, subject-matter-understanding seed, first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (opportunity narrative, parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability — charts via publish, user-flows/mockups via atelier (design-reviewed) — when installed; degrades to markdown otherwise. Iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Supersedes FOUNDRY's inline ideate, which remains as a graceful-degradation fallback. Also runs /ideate:name — a marketing-grade naming studio: a deep discovery interview (audience, brand archetype, name-type appetite, power-adjacency, humour, risk), wide-net generation across the full name-type taxonomy + affix hooks + phonosemantic tuning, a deterministic token-free checker (registries + neighbour/typo-squat proximity + domain/RDAP + cross-language connotation), and a scored challenge (Neumeier 7 / SMILE-SCRATCH / archetype-fit). Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract.",
       "version": "1.2.0",
       "author": {
         "name": "whatbirdisthat",
         "email": "95787+whatbirdisthat@users.noreply.github.com",
         "url": "https://github.com/whatbirdisthat"
       },
-      "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/ideator",
+      "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/ideate",
       "repository": "https://github.com/whatbirdisthat/idea-to-production",
       "license": "MIT OR Apache-2.0",
       "category": "workflow",
@@ -251,7 +251,7 @@
       "name": "operate",
       "source": "./plugins/operate",
       "displayName": "OPERATE — Operate the live product",
-      "description": "The OPERATE phase owner — what runs a mission AFTER launch. OPERATE keeps the live product alive and improving: it verifies operational readiness at go-live, instruments and watches the four golden signals (observability), runs incident response (severity, incident-command roles, mitigate-first, runbooks, blameless postmortems), keeps a maintenance cadence (dependency upkeep + CVE patching + tech-debt), and closes the build-measure-learn loop by turning production signals into a new opportunity that re-enters DISCOVER (the cyclic re-entry). /operate-gate is the front door — an operational-readiness check at go-live and the steady-state health view with a READY / WATCH / NOT-READY verdict. Grounded in named canon (SRE SLIs/SLOs/error budgets + golden signals, the Incident Command System, build-measure-learn, ITIL-lite). Stands alone on any live project, or advances the idea-to-production lifecycle OPERATE → DISCOVER (↻) when i2p is installed. Composes the security plugin's scan-dependencies and hands new opportunities to discover/ideator by capability. Carries the KAIZEN self-improvement covenant: every incident becomes a runbook, every alert gap becomes an SLO.",
+      "description": "The OPERATE phase owner — what runs a mission AFTER launch. OPERATE keeps the live product alive and improving: it verifies operational readiness at go-live, instruments and watches the four golden signals (observability), runs incident response (severity, incident-command roles, mitigate-first, runbooks, blameless postmortems), keeps a maintenance cadence (dependency upkeep + CVE patching + tech-debt), and closes the build-measure-learn loop by turning production signals into a new opportunity that re-enters DISCOVER (the cyclic re-entry). /operate-gate is the front door — an operational-readiness check at go-live and the steady-state health view with a READY / WATCH / NOT-READY verdict. Grounded in named canon (SRE SLIs/SLOs/error budgets + golden signals, the Incident Command System, build-measure-learn, ITIL-lite). Stands alone on any live project, or advances the idea-to-production lifecycle OPERATE → DISCOVER (↻) when i2p is installed. Composes the security plugin's scan-dependencies and hands new opportunities to discover/ideate by capability. Carries the KAIZEN self-improvement covenant: every incident becomes a runbook, every alert gap becomes an SLO.",
       "version": "0.2.3",
       "author": {
         "name": "whatbirdisthat",

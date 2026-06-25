@@ -17,7 +17,7 @@ performance-instrumented **test contract**. Read [`VALUE_FLOW.md`](VALUE_FLOW.md
 |---|---|
 | [`VALUE_FLOW.md`](VALUE_FLOW.md) | The spine: the stations, the pillars, tests-as-coordinates. Start here. |
 | [`agents/`](agents/) | The orchestration hierarchy + the value-handlers + governance (see below). |
-| [`skills/`](skills/) | The station skills (`ideator`, `roadmapper`, `development-system-core`, `lifecycle-states`, `code-quality`, `reviewer-gate`, `frontend`, `vertical-slice`, `founder-method`, `value-station-handoff`, `handoff-protocol`, `builder`, `phase-sensor`, and the Rust one-shot [`rust-webapp-rollout`](skills/rust-webapp-rollout/)). |
+| [`skills/`](skills/) | The station skills (`ideate`, `roadmapper`, `development-system-core`, `lifecycle-states`, `code-quality`, `reviewer-gate`, `frontend`, `vertical-slice`, `founder-method`, `value-station-handoff`, `handoff-protocol`, `builder`, `phase-sensor`, and the Rust one-shot [`rust-webapp-rollout`](skills/rust-webapp-rollout/)). |
 | [`knowledge/`](knowledge/) | The define-once canon (pillars, architecture, specs, testing, protocols, orchestration, policy). Index: [`knowledge/README.md`](knowledge/README.md). |
 | [`commands/`](commands/) | `/foundry`, `/inspect`, `/coverage-loop`, `/phase-sensor`, `/prerequisites`, `/pr-review`, `/scorecard`, `/self-improve`, `/check`, `/rust-webapp-rollout`. The **user-facing vs agent-internal** split is below. |
 | [`hooks/hooks.json`](hooks/hooks.json) | A PostToolUse hook that runs the `phase-sensor` so the dev-system self-applies. |
@@ -68,7 +68,7 @@ skills/agents keep working, they are simply not presented as user commands. Pref
 - the **`ds-step-*`** agents (`ds-step-0-plan` … `ds-step-9-commit-push`, `ds-step-story-tests`) — the
   conveyor's per-step executors, spawned by the lifecycle-orchestrator.
 
-These are machinery: the conveyor calls them as it drives an item idea→product. The `ideator` station
+These are machinery: the conveyor calls them as it drives an item idea→product. The `ideate` station
 skill is likewise composed by the cycle rather than typed. None of them are deleted or renamed — they
 are simply no longer surfaced as user commands.
 

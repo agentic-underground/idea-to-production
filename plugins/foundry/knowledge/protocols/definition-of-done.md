@@ -21,12 +21,12 @@ startup to understand the shared quality bar for the current project.
 # Definition Of Done
 
 Date: {YYYY-MM-DD}
-Scope: IDEATOR-originated items processed through the Development System (Steps 0-9)
+Scope: IDEATE-originated items processed through the Development System (Steps 0-9)
 Owner: Development System Orchestrator
 
 ## Purpose
 
-This document defines the shared, non-negotiable quality bar for every IDEATOR item
+This document defines the shared, non-negotiable quality bar for every IDEATE item
 in this project. All agents must consult this file before they begin work and before
 they hand off to the next stage.
 
@@ -42,7 +42,7 @@ The target value is not "code exists". The target value is:
 ## Universal Done Gates
 
 ### 1. Problem-Solution Traceability
-- Every artifact traces back to the IDEATOR brief: problem, actors, scope, constraints.
+- Every artifact traces back to the IDEATE brief: problem, actors, scope, constraints.
 - Each requirement has a stable ID and mapping to tests.
 
 ### 2. Specification Integrity
@@ -196,7 +196,7 @@ The target value is not "code exists". The target value is:
 
 ## Orchestrator Exit Condition
 
-An IDEATOR item is done ONLY when:
+An IDEATE item is done ONLY when:
 - All stage-specific done criteria are satisfied.
 - All universal gates are satisfied.
 - Line coverage = 100% AND branch coverage = 100% (confirmed with `--cov-branch`).

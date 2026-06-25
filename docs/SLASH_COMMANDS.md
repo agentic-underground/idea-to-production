@@ -22,7 +22,7 @@ together once all are satisfied and the roadmap item is complete.
 |---|---|---|---|
 | **▸** | *front door* (+ session greeter) | `i2p` | [↓](#i2p--front-door) |
 | **1** | DISCOVER | `discover` | [↓](#discover--discover) |
-| **2** | IDEATE | `ideator` | [↓](#ideator--ideate) |
+| **2** | IDEATE | `ideate` | [↓](#ideate--ideate) |
 | **3** | DELIVER | `foundry:roadmapper` (+ external FLEET engine) | [↓](#foundryroadmapper--deliver) |
 | **4** | DESIGN | `atelier` | [↓](#atelier--design) |
 | **5** | BUILD ⇄ ASSURE | `foundry` | [↓](#foundry--build--assure) |
@@ -79,14 +79,14 @@ Find something worth building.
 | `/discover:market-scan` | Adversarial dialogue that proposes, scores, and kills ideas until one survives |
 | `/discover:discovery-goal` | Set or refine the standing goal scans run over (niche, edge, price band) |
 
-## ideator — IDEATE
+## ideate — IDEATE
 
 Turn a validated opportunity into a build-ready idea.
 
 | Command | What it does |
 |---|---|
-| `/ideator:ideate` | Refine an idea into a build-ready IDEA package, then hand off to foundry |
-| `/ideator:name` | Coin a distinctive, availability-checked product name (skill: `name-search`) |
+| `/ideate:ideate` | Refine an idea into a build-ready IDEA package, then hand off to foundry |
+| `/ideate:name` | Coin a distinctive, availability-checked product name (skill: `name-search`) |
 
 ## foundry:roadmapper — DELIVER
 
@@ -200,7 +200,7 @@ no `/mcp__…` commands to type.
 | Server | Shipped by | What it provides |
 |---|---|---|
 | `context7` | foundry | Fetch current documentation for a library, framework, SDK, or CLI |
-| `fetch` | ideator, discover | Retrieve and read web page content |
+| `fetch` | ideate, discover | Retrieve and read web page content |
 
 Browser driving (navigate, screenshot, accessibility snapshot — used by atelier and the foundry web
 handlers) is **not** shipped: per the ONE BROWSER cutover the marketplace uses the **host-provided

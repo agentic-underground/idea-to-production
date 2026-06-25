@@ -8,7 +8,7 @@ DISCOVER is the **DISCOVERY** front door of the `idea-to-production` marketplace
 exists, it helps you find an opportunity *worth* building — and, just as importantly, **kills weak ideas
 early and cheaply** so you don't spend months on one.
 
-![DISCOVER radar sweep: an amber discovery beam rotates over a scattered market field, surfacing each candidate (thin demand, crowded space, underserved niche, no pricing power, hard to reach, weak severity) as it passes; then the five weak ideas are dimmed and struck through — killed early and cheaply — while the one strong opportunity, underserved niche, is ringed in teal and upheld with the verdict KEEP — the spark → ideator. The motion teaches DISCOVER plus kill-weak-early.](../../docs/images/discover-radar.gif)
+![DISCOVER radar sweep: an amber discovery beam rotates over a scattered market field, surfacing each candidate (thin demand, crowded space, underserved niche, no pricing power, hard to reach, weak severity) as it passes; then the five weak ideas are dimmed and struck through — killed early and cheaply — while the one strong opportunity, underserved niche, is ringed in teal and upheld with the verdict KEEP — the spark → ideate. The motion teaches DISCOVER plus kill-weak-early.](../../docs/images/discover-radar.gif)
 
 ## The loop
 
@@ -22,7 +22,7 @@ early and cheaply** so you don't spend months on one.
 
 Output is a **validated opportunity** (a scorecard + the evidence + the verdict).
 
-![DISCOVER discovery loop: /discovery-goal sets a standing objective; /market-scan proposes 3–5 candidates, scores each on the market taxonomy (severity · demand · size · willingness-to-pay · pricing power · competition · reachability · stack-fit), KILLs the weak ones, challenges the survivors, and reaches a verdict; KILL / PARK re-propose via /loop, while KEEP — the spark — flows on to a validated opportunity (scorecard + evidence + verdict) handed to the ideator.](diagrams/01-discovery-loop.png)
+![DISCOVER discovery loop: /discovery-goal sets a standing objective; /market-scan proposes 3–5 candidates, scores each on the market taxonomy (severity · demand · size · willingness-to-pay · pricing power · competition · reachability · stack-fit), KILLs the weak ones, challenges the survivors, and reaches a verdict; KILL / PARK re-propose via /loop, while KEEP — the spark — flows on to a validated opportunity (scorecard + evidence + verdict) handed to the ideate.](diagrams/01-discovery-loop.png)
 
 ## Grounded in real evidence
 
@@ -33,13 +33,13 @@ open questions, never silent guesses. Offline, it reasons from you and says so. 
 
 ## How it composes
 
-- **→ ideator** (REFINEMENT): when the **`ideator`** plugin is installed, a kept opportunity is handed to
+- **→ ideate** (REFINEMENT): when the **`ideate`** plugin is installed, a kept opportunity is handed to
   `/ideate`, which refines it into the full **IDEA package** for FOUNDRY. Absent, DISCOVER writes a
   markdown **opportunity brief** you can refine by hand.
 - **→ publish** (PUBLISHING): rich, illustrated opportunity briefs (scorecards as tables, market-sizing
   charts) are produced by invoking [`publish`](../publish/)'s `/publish` **by capability** when
   installed; absent, DISCOVER emits clean markdown and says the richer step was skipped.
-- It is the upstream entry to the whole conveyor: **DISCOVER (discover) → IDEATE (ideator) → BUILD
+- It is the upstream entry to the whole conveyor: **DISCOVER (discover) → IDEATE (ideate) → BUILD
   ([foundry](../foundry/)) → SECURE/PUBLISH (security/publish)**. *Graceful enhancement* — no hard
   dependency in either direction.
 

@@ -6,7 +6,7 @@ description: >
   next?", "turn this incident into a backlog item", "the metric stalled — now what?", "close the
   build-measure-learn loop"). Applies the build-measure-learn pivot-or-persevere test, frames the
   opportunity, and — when i2p is installed — advances the lifecycle OPERATE → DISCOVER (↻). Produces an
-  OPPORTUNITY brief and hands off to discover/ideator when present.
+  OPPORTUNITY brief and hands off to discover/ideate when present.
 metadata:
   type: producer
   lens: build-measure-learn
@@ -57,7 +57,7 @@ Write the brief to **`doc/opportunities/opportunity-<slug>.md`** — the **same 
 already consumes (this is discover's opportunity-brief location and shape, so the re-entry artefact
 is literally the contract `/market-scan` ingests, not a parallel format). Capture: the production evidence
 (which signal, the numbers, the source), the problem it points at, who has it, and why it's worth a cycle.
-This is the seed `discover`/`ideator` expect.
+This is the seed `discover`/`ideate` expect.
 
 > **Schema note — one contract.** The file uses **discover's opportunity-brief schema** (the
 > candidate in one sentence; the A–E scorecard / open questions where known; the price band; a
@@ -68,7 +68,7 @@ This is the seed `discover`/`ideator` expect.
 - If **discover** is installed → hand the file to it (`/market-scan`) for adversarial **validation**
   of this specific thesis before it becomes an IDEA (its thesis-validation mode ingests
   `doc/opportunities/opportunity-<slug>.md` directly).
-- If **ideator** is installed but discover is not → hand a validated-enough opportunity to `/ideate`.
+- If **ideate** is installed but discover is not → hand a validated-enough opportunity to `/ideate`.
 - Standalone → the markdown brief IS the artefact; a human carries it forward.
 
 ### Round-trip example (OPERATE ↻ DISCOVER)

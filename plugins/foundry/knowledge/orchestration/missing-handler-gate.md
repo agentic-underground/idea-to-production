@@ -83,8 +83,8 @@ the `tf` registry / `.i2p/scheduled-jobs.json` so the RESTORE prompt fires when 
 
 ## Ideation catches it earlier — stack-fit (card #23)
 
-The cheapest place to catch a handler gap is *ideation*, before any build cost. The IDEATOR **Stack-fit**
-challenge axis ([`../../../ideator/knowledge/ideation/challenge-protocol.md`](../../../ideator/knowledge/ideation/challenge-protocol.md))
+The cheapest place to catch a handler gap is *ideation*, before any build cost. The IDEATE **Stack-fit**
+challenge axis ([`../../../ideate/knowledge/ideation/challenge-protocol.md`](../../../ideate/knowledge/ideation/challenge-protocol.md))
 flags an IDEA brief whose `LANGUAGE/STACK` field names a stack with no FOUNDRY value-handler — so the gap
 surfaces as a conversation, not a paused build. A gap *accepted* at ideation becomes the same 3-way gate
 when the item reaches FOUNDRY; a gap *missed* at ideation is the rework this axis exists to prevent.

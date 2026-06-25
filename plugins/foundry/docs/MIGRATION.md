@@ -64,7 +64,7 @@ In moved files, every `~/.claude/...` reference is rewritten to `${CLAUDE_PLUGIN
 | 1 | `foundry` | rename → **builder**; promote refs to `knowledge/` | `skills/builder/` | ☑ |
 | 2 | `roadmapper` | move; promote `ears-quick-reference` | `skills/roadmapper/` | ☑ |
 | 3 | `code_quality` | rename → **code-quality**; promote refs to `knowledge/architecture` & `testing` | `skills/code-quality/` | ☑ |
-| 4 | `ideator` | move; delete duplicate `solid-fragment` | `skills/ideator/` | ☑ |
+| 4 | `ideate` | move; delete duplicate `solid-fragment` | `skills/ideate/` | ☑ |
 | 5 | `frontend` | move whole `resources/` tree intact | `skills/frontend/` | ☑ |
 | 6 | `development-system-core` | move; promote COMMIT_MESSAGE + PRINCIPLE_PHILOSOPHY | `skills/development-system-core/` | ☑ |
 | 7 | `handoff-protocol` | split: schema → `knowledge/protocols`, keep thin trigger skill | `skills/handoff-protocol/` | ☑ |
@@ -137,7 +137,7 @@ cross-links `value-station-handoff` rather than swallowing it.
 
 | Concept | Sources (all preserved knowledge merges into the survivor) | Survivor |
 |---|---|---|
-| SOLID **self-improvement covenant** (the replication fragment) | `skills/foundry/references/solid-fragment.md` (survivor), `skills/ideator/references/solid-fragment.md` (near-identical dup, `git rm`) | `knowledge/architecture/solid-covenant.md` |
+| SOLID **self-improvement covenant** (the replication fragment) | `skills/foundry/references/solid-fragment.md` (survivor), `skills/ideate/references/solid-fragment.md` (near-identical dup, `git rm`) | `knowledge/architecture/solid-covenant.md` |
 | SOLID **principles reference** (engineering, w/ examples + smell checklist) — *kept separate; it is different knowledge, not a duplicate* | `skills/code_quality/references/solid.md` | `knowledge/architecture/solid.md` |
 | Commit-message format | `skills/development-system-core/references/COMMIT_MESSAGE.md` (canonical, 354 lines), foundry SKILL §394 pointer | `knowledge/protocols/commit-message.md` |
 | EARS forms | `skills/roadmapper/references/ears-quick-reference.md`, embedded foundry pipeline notes | `knowledge/specs/ears.md` |
@@ -178,7 +178,7 @@ merged-away copy here, then delete it. Never recreate-and-delete.
 When 5 state-* skills become one `lifecycle-states` router and 2 reviewers become one panel,
 **the union of original descriptions/triggers is a requirement.** Captured originals:
 
-- **state-discovery:** "converting IDEATOR brief intent into stable implementation intent before formal specification begins."
+- **state-discovery:** "converting IDEATE brief intent into stable implementation intent before formal specification begins."
 - **state-specification:** "formal requirement and behavior contract creation (EARS and Gherkin) before implementation."
 - **state-verification:** "test-first proof, failure-gap mapping, implementation validation, and regression prevention."
 - **state-delivery:** "upstream synchronization, commit narrative quality, and delivery transaction completion."

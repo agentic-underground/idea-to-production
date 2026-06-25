@@ -10,7 +10,7 @@ PR #264 (`chore/rename-market-scanner-to-discover`, commit 0d653ae) renamed plug
 PRESERVED correctly; `discoverability`/`discoverRoutes` not corrupted.
 
 **Functionally clean:** zero tracked `market-scanner` tokens, old dir gone, all 8 source
-paths resolve, companions `"discovery":"discover"` correct in i2p+ideator, hooks use
+paths resolve, companions `"discovery":"discover"` correct in i2p+ideate, hooks use
 `${CLAUDE_PLUGIN_ROOT}` (path-agnostic), verify-prereqs ALL PASS (H/I/R green).
 
 **Residual (NON-blocking):**

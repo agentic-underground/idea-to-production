@@ -29,4 +29,4 @@ launches via `npx`/`node`. A Chromium browser is needed for live crawls (the hos
 the system Chromium; the crawler uses the target project's Playwright).
 `gh` is recommended so `self-improve` can open the improvement PR. User-flow rendering is **publish**'s
 job via `/publish` — verify those with `/publish:check`, not here. Companions (`publish`, `foundry`,
-`ideator`) are **plugins**, referenced by capability, not probed.
+`ideate`) are **plugins**, referenced by capability, not probed.

@@ -29,13 +29,13 @@ digraph DomainArchB {
               fontcolor="#cdd9f6", fontsize=12, penwidth=1.8]
     scanner [label=<<b>discover</b><br/><font point-size="9" color="#9fb6ee">DISCOVERY front door</font>>,
              fillcolor="#2a3450:#19202f", color="#7aa2f7"]
-    ideator [label=<<b>ideator</b><br/><font point-size="9" color="#9fb6ee">REFINEMENT &middot; the IDEA package</font>>,
+    ideate [label=<<b>ideate</b><br/><font point-size="9" color="#9fb6ee">REFINEMENT &middot; the IDEA package</font>>,
              fillcolor="#2a3450:#19202f", color="#7aa2f7"]
 
-    // scan → ideate: discover LEFT, ideator RIGHT, arrow points right (reading order)
-    { rank=same; scanner; ideator }
+    // scan → ideate: discover LEFT, ideate RIGHT, arrow points right (reading order)
+    { rank=same; scanner; ideate }
     up_title -> scanner [style=invis]
-    scanner -> ideator [label="  scan → ideate  ", fontcolor="#8fa6e0", color="#7aa2f7",
+    scanner -> ideate [label="  scan → ideate  ", fontcolor="#8fa6e0", color="#7aa2f7",
                         weight=20]
   }
 
@@ -110,7 +110,7 @@ digraph DomainArchB {
   }
 
   // ================= cross-lane flow =================
-  ideator -> core_title [ltail=cluster_upstream, lhead=cluster_core,
+  ideate -> core_title [ltail=cluster_upstream, lhead=cluster_core,
                          label="feeds the conveyor", color="#7aa2f7",
                          fontcolor="#8fa6e0", penwidth=1.8, weight=20]
 

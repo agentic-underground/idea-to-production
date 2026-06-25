@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin.json",
+  "name": "ideate",
+  "displayName": "IDEATE — Refine an idea into a build-ready IDEA package",
+  "version": "1.2.0",
+  "description": "The REFINEMENT phase of the idea-to-production marketplace. IDEATE takes a validated opportunity (from the discover plugin) or a raw idea you already have and refines it to knowledge-parity through an adversarially-challenged dialogue, producing the IDEA PACKAGE: precise, high-clarity AGENT-FACING handoff documents (an idea brief, a subject-matter-understanding seed, the first vertical slice, and a handoff contract that satisfies FOUNDRY's discovery exit criteria) plus rich, illustrated USER-FACING documents (the opportunity narrative, a parameter scorecard, market/pricing/competition charts, a user-flow, and a mockup screen) rendered by capability: charts via publish, and user-flows/mockups via atelier /mockup (designed to the canon and design-reviewed before you see them) when installed; degrades to markdown otherwise. The package is iterated with the user before hand-off, then carried to PRODUCTION by FOUNDRY. Self-improving: ambiguities a downstream builder hits flow back to sharpen the question-bank and the package contract. Supersedes FOUNDRY's inline ideate (which remains as a graceful-degradation fallback).",
+  "author": {
+    "name": "whatbirdisthat",
+    "email": "95787+whatbirdisthat@users.noreply.github.com",
+    "url": "https://github.com/whatbirdisthat"
+  },
+  "homepage": "https://github.com/whatbirdisthat/idea-to-production/tree/main/plugins/ideate",
+  "repository": "https://github.com/whatbirdisthat/idea-to-production",
+  "license": "MIT OR Apache-2.0",
+  "category": "workflow",
+  "defaultEnabled": true,
+  "keywords": [
+    "ideation",
+    "refinement",
+    "product-brief",
+    "knowledge-parity",
+    "idea-package",
+    "smu",
+    "handoff",
+    "vertical-slice",
+    "spec",
+    "discovery",
+    "naming",
+    "branding",
+    "name-search",
+    "phonosemantics",
+    "brand-archetype",
+    "domain-check"
+  ],
+  "metadata": {
+    "companions": {
+      "discovery": "discover",
+      "carriage": "foundry",
+      "publishing": "publish",
+      "design": "atelier"
+    },
+    "note": "skills/ and commands/ are auto-discovered from the plugin root. /ideate is the front door. Accepts a validated opportunity from the discover plugin OR a raw idea; emits the IDEA package and hands it to FOUNDRY when installed. /ideate:name runs the dedicated name-search studio — a marketing-grade naming search: a deep discovery interview (audience, brand archetype, name-type appetite, power-adjacency, humour, risk — infer-first), wide-net generation across the full name-type taxonomy + affix hooks + phonosemantic tuning (canon in knowledge/naming/), a deterministic token-free checker (skills/name-search/scripts/namecheck.sh — registries + neighbour/typo-squat proximity + domain/RDAP + cross-language connotation), and a scored challenge (Neumeier 7 / SMILE-SCRATCH / archetype-fit). Set GITHUB_TOKEN for a reliable neighbour pass. The user-facing dossier's charts render via publish /publish and its user-flows/mockups via atelier /mockup (design-reviewed) when installed; degrades to markdown otherwise."
+  }
+}

@@ -47,7 +47,7 @@ another wasteful lap). Every turn must measurably improve or the loop halts.
   foundry is present and *extends* them — never duplicates. Standalone, it works on any repo.
 - **ATELIER → publish** — user-flows and chart-style figures are rendered via publish's `/publish`
   **by capability**; absent, ATELIER emits Mermaid/markdown source and says so.
-- **IDEATOR → ATELIER** — when IDEATOR builds an IDEA dossier's user-flows and mockup screens, it calls
+- **IDEATE → ATELIER** — when IDEATE builds an IDEA dossier's user-flows and mockup screens, it calls
   ATELIER **by capability** so the user sees design-reviewed material, not first drafts.
 - The arc: **DISCOVER → IDEATE → BUILD → SECURE / PUBLISH**, with **DESIGN (atelier)** a cross-cutting
   visual capability. *Graceful enhancement* — no hard dependency in any direction.

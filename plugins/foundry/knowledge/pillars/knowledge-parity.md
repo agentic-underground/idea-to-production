@@ -7,7 +7,7 @@ precondition for everything downstream: a misunderstanding at the IDEA layer is 
 expensive defect there is, because every station amplifies it.
 
 ## What parity requires
-- **The IDEATOR (PRODUCT_MANAGER) reaches parity with the user first.** It asks clarifying
+- **The IDEATE (PRODUCT_MANAGER) reaches parity with the user first.** It asks clarifying
   questions — one at a time, conversationally — until the brief is actionable (specific,
   observable), the actors are named, scope is bounded (in *and* out), constraints are
   concrete, and the success metric is testable. A vague brief is reflected back and clarified
@@ -34,17 +34,17 @@ question is never asked twice. This is parity compounding over time.
 ### When the gap is in the IDEA itself — feedback flows upstream
 
 A subset of these questions reveal that the **IDEA package** (the brief/SMU that arrived from the
-upstream `ideator` plugin) was ambiguous where it should have been precise. When that happens, do
+upstream `ideate` plugin) was ambiguous where it should have been precise. When that happens, do
 **both**:
 
 1. **Per-project write-back** (above) — resolve it into this project's brief/SMU so it is never asked
    again *here*.
 2. **Cross-project ideation-feedback** — record a structured entry (*symptom → which IDEA-doc field was
-   unclear → what would have prevented it*) routed to the `ideator` / `discover` **self-improve**
+   unclear → what would have prevented it*) routed to the `ideate` / `discover` **self-improve**
    intake. Their KAIZEN self-improvement loop turns recurring entries into a sharpened challenge-protocol
    axis or package field **via a PR**, so every future ideation for *all* users asks the missing question
-   by default. The IDEA station's receiver wires this (`skills/ideator/SKILL.md §0.5.1`); the LEARN
-   station carries it (`skills/value-station-handoff/SKILL.md`, LEARN). When the `ideator` plugin is
+   by default. The IDEA station's receiver wires this (`skills/ideate/SKILL.md §0.5.1`); the LEARN
+   station carries it (`skills/value-station-handoff/SKILL.md`, LEARN). When the `ideate` plugin is
    absent, only step 1 applies — the inline fallback owns the gap.
 
 ## Specification freeze

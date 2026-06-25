@@ -30,7 +30,7 @@ if it must, ask a question back up the line until the answer is found.
 
 ## 1 · The conveyor (the picture)
 
-![The FOUNDRY conveyor, three layers: THE IDEA above the line (the user ⇄ IDEATOR / PRODUCT_MANAGER, knowledge-parity before build) feeds a clear agent-readable brief DOWN into THE CONVEYOR, whose nine value-stations carry value left→right — IDEA (ideator) ▶ ROADMAP (roadmapper) ▶ PLAN ▶ EARS (spec) ▶ FEATURE ▶ TEST (tests) ▶ IMPLEMENT +DESIGN (builder/handlers) ▶ STORY ▶ SHIP (deliver) — with cross-cutting GOVERNANCE (reviewers · perf-delta gates · inspector, in foundry) and companions when installed (PUBLISHING → publish · SECURITY → security · DESIGN → atelier) riding the whole carriage; questions flow UP, value flows DOWN.](diagrams/02-conveyor.png)
+![The FOUNDRY conveyor, three layers: THE IDEA above the line (the user ⇄ IDEATE / PRODUCT_MANAGER, knowledge-parity before build) feeds a clear agent-readable brief DOWN into THE CONVEYOR, whose nine value-stations carry value left→right — IDEA (ideate) ▶ ROADMAP (roadmapper) ▶ PLAN ▶ EARS (spec) ▶ FEATURE ▶ TEST (tests) ▶ IMPLEMENT +DESIGN (builder/handlers) ▶ STORY ▶ SHIP (deliver) — with cross-cutting GOVERNANCE (reviewers · perf-delta gates · inspector, in foundry) and companions when installed (PUBLISHING → publish · SECURITY → security · DESIGN → atelier) riding the whole carriage; questions flow UP, value flows DOWN.](diagrams/02-conveyor.png)
 
 Three layers:
 - **THE IDEA (above):** what we are building, and why. Owned by the PRODUCT_MANAGER.
@@ -42,17 +42,17 @@ Three layers:
 
 ## 2 · THE IDEA — knowledge parity before production
 
-The **IDEATOR** is the **PRODUCT_MANAGER**. Before production begins, the IDEATOR must reach
-**full parity of understanding with the user** about the shippable value piece. The IDEATOR
+The **IDEATE** is the **PRODUCT_MANAGER**. Before production begins, the IDEATE must reach
+**full parity of understanding with the user** about the shippable value piece. The IDEATE
 asks clarifying questions — one at a time, conversationally — until the brief is
 unambiguous, actionable, and self-contained (a fresh agent with no history can act on it).
 
-**Upstream front end (graceful enhancement).** When the **`ideator` plugin** is installed, parity is
-reached *upstream*: `discover` discovers a worth-building opportunity and the `ideator` plugin
+**Upstream front end (graceful enhancement).** When the **`ideate` plugin** is installed, parity is
+reached *upstream*: `discover` discovers a worth-building opportunity and the `ideate` plugin
 refines it into an **IDEA package** (agent-facing brief + SMU-seed + first slice + handoff contract)
 already challenged to knowledge-parity. FOUNDRY's IDEA station then **receives that package by
 capability** and verifies the discovery exit criteria — it does *not* re-interrogate. When the plugin is
-absent, the inline `ideator` skill runs the dialogue itself (the fallback). Either way the station's exit
+absent, the inline `ideate` skill runs the dialogue itself (the fallback). Either way the station's exit
 gate is identical: a stable, parity-reached brief. Detection is by capability, never by cross-plugin path.
 
 **Questions flow up.** Any value-station that hits an ambiguity it cannot resolve from its
@@ -89,7 +89,7 @@ A station with no handler is a defect FOUNDER reports. A gate without a check is
 
 | # | Station | Value it adds | Owning skill | Staffed by | Exit gate |
 |---|---------|---------------|--------------|------------|-----------|
-| 0 | **IDEA** | a candidate worth pursuing, understood | `ideator` (receives the `ideator` plugin's IDEA package by capability when installed; inline dialogue is the fallback) | founder | brief stable; parity reached |
+| 0 | **IDEA** | a candidate worth pursuing, understood | `ideate` (receives the `ideate` plugin's IDEA package by capability when installed; inline dialogue is the fallback) | founder | brief stable; parity reached |
 | 1 | **ROADMAP** | agent-readable backlog, tiered | `roadmapper`, `builder` | builder-lead | item self-contained; tiered to budget |
 | 2 | **PLAN** | per-item plan + resumption | `development-system-core` | ds-step-0-plan | PLAN_COMPLETE; DoD drafted |
 | 3 | **EARS** | unambiguous requirements | `lifecycle-states` | ds-step-1-ears | EARS-IDs; EARS/SMU reviewers PASS |
@@ -274,7 +274,7 @@ lifecycle-orchestrator's internal step-0..9 item loop.
 
 | Station | Skill | Agents | Knowledge |
 |---------|-------|--------|-----------|
-| IDEA | `ideator` | founder | pillars/knowledge-parity |
+| IDEA | `ideate` | founder | pillars/knowledge-parity |
 | ROADMAP | `roadmapper`, `builder` | builder-lead | orchestration/tier-assignment |
 | PLAN | `development-system-core` | ds-step-0-plan | orchestration/orchestration-loop, protocols/definition-of-done |
 | EARS | `lifecycle-states` | ds-step-1-ears | specs/ears |
