@@ -9,7 +9,7 @@ description: >
 metadata:
   type: orchestrator
   output: .i2p/lifecycle.json (current_phase + history) + a phase report
-  composes: [discover, ideate, foundry:roadmapper + FLEET engine (DELIVER), atelier, foundry, security, publish, operate — by capability]
+  composes: [discover, ideate, foundry:roadmapper + FLEET engine (DELIVER), design, foundry, security, publish, operate — by capability]
 model: inherit
 ---
 
@@ -78,7 +78,7 @@ the lifecycle out of order or auto-start it. The exit signal → `done` mapping:
 | discover (kept OPPORTUNITY, challenger upholds) | `done DISCOVER` | IDEATE |
 | ideate (IDEA package handed off, challenger READY) | `done IDEATE` | DELIVER |
 | `foundry:roadmapper` + FLEET engine (dependency-ordered v2 pipeline of build-ready items) | `done DELIVER` | DESIGN |
-| atelier (design phase concluded) | `done DESIGN` | BUILD *(loop entry)* |
+| design (design phase concluded) | `done DESIGN` | BUILD *(loop entry)* |
 | foundry (item SHIPs — tests green, story proven) | `done BUILD` | ASSURE *(loop)* |
 | foundry (adversarial quality review PASS — `/pr-review`) | `done ASSURE` | SECURE *(loop)* |
 | security (scan-all PASS — all three satisfied) | `done SECURE` | PUBLISH *(loop exit)* |

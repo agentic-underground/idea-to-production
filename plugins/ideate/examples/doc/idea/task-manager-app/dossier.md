@@ -1,7 +1,7 @@
 # TaskFlow — the IDEA dossier
 
 > User-facing. The rich, persuade-and-align read you review and iterate on before committing. (When
-> **publish** / **atelier** are installed, this dossier carries rendered charts, a user-flow, and a
+> **publish** / **design** are installed, this dossier carries rendered charts, a user-flow, and a
 > mockup of the capture view; here it degrades to structured markdown.)
 
 ## Here's TaskFlow

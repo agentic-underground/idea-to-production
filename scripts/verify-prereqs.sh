@@ -776,7 +776,7 @@ section "R. lifecycle-driver completeness (every advance-table 'done <PHASE>' ha
 lifecycle_rows=(
   "DISCOVER discover done DISCOVER"
   "IDEATE   ideate        done IDEATE"
-  "DESIGN   atelier        done DESIGN"
+  "DESIGN   design        done DESIGN"
   "BUILD    foundry        done BUILD"
   "ASSURE   foundry        done ASSURE;fail ASSURE"
   "SECURE   security       done SECURE;fail SECURE"

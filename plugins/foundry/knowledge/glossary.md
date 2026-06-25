@@ -12,15 +12,15 @@ understand the *system*; read here to disambiguate a *name*.
 
 ## 1. The conceptual-domain tree
 
-![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — discover (DISCOVERY front door) → ideate (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), publish (PUBLISH), atelier (DESIGN/usability), operate (OPERATE).](diagrams/01-domain-tree.png)
+![Conceptual-domain map of the idea-to-production marketplace, grouped by role: UPSTREAM — discover (DISCOVERY front door) → ideate (REFINEMENT, the IDEA package); CORE — foundry (the value-flow conveyor) holding its substructure: THE CONVEYOR (IDEA▶ROADMAP▶…▶DEPLOY▶VERIFY), THE ORCHESTRATION HIERARCHY (founder▶builder-lead▶lifecycle-orchestrator▶ds-step-*/handler-*▶reviewer), THE VALUE-HANDLERS (handler-architect/python/…/rust-webapp), THE PILLARS (knowledge-parity · quality-first+perf-delta · waste-elimination — muda·mura·muri), THE KNOWLEDGE CORPUS (pillars/architecture/specs/testing/protocols/orchestration/policy), DESIGN station 6b (the frontend design system), and GOVERNANCE (code-quality, reviewer-gate, reviewer, inspector); COMPANIONS (cross-cutting, composing into the whole of foundry by capability) — security (SECURE), publish (PUBLISH), design (DESIGN/usability), operate (OPERATE).](diagrams/01-domain-tree.png)
 
 The companions are **cross-cutting**: foundry/ideate use them *by capability* when installed
 (graceful enhancement) and degrade to markdown when they are not. See `../VALUE_FLOW.md §4`. The full arc
 is the nine-phase product-lifecycle **cycle**: **DISCOVER (discover) → IDEATE (ideate) →
-DELIVER (foundry:roadmapper + FLEET engine) → DESIGN (atelier) → BUILD ⇄ ASSURE ⇄ SECURE (foundry build,
+DELIVER (foundry:roadmapper + FLEET engine) → DESIGN (design) → BUILD ⇄ ASSURE ⇄ SECURE (foundry build,
 foundry quality, security — the realisation loop) → PUBLISH (publish) → OPERATE (operate) ↻**
 (a failed ASSURE/SECURE gate sends work back to BUILD; OPERATE loops back to DISCOVER). Three concerns
-cross-cut every phase — usability (atelier), quality (foundry), security (the security plugin).
+cross-cut every phase — usability (design), quality (foundry), security (the security plugin).
 
 ---
 
@@ -37,12 +37,12 @@ These look alike and are constantly confused. They are different things:
 | **`builder` / `builder-lead`** | The orchestration **skill** (`builder`) and the **cycle-planner agent** (`builder-lead`) one altitude below `founder`. | Skill + agent inside foundry. |
 | **FORGE** | The historical origin environment where these plugins were first built — **not part of this marketplace** and not referenced by any runtime surface. Its story is archived in [`../docs/HISTORY.md`](../docs/HISTORY.md). | External / historical. |
 | **`forge`** (lowercase, in the rust references) | The shipped **worked-example project** (a Rust/WASM + Vercel app) used to illustrate `rust-webapp-rollout`. | A sample project name, not a system. |
-| **`atelier`** | The **DESIGN plugin** — makes (`/mockup`) and adversarially reviews (`/ui-review`) the *rendered* visuals of any app, to a SOTA-grounded canon. | A plugin in this marketplace. |
-| **`frontend`** (vs `atelier`) | A **skill inside foundry** — the *source-level* design system (the `@front-end` INTENT markers, `definition-of-good`, the build-time `design-critic`). `atelier` reviews the *rendered experience* and carries the deeper canon; it **composes with** `frontend` by capability, never duplicates it. | A skill inside foundry. |
+| **`design`** | The **DESIGN plugin** — makes (`/mockup`) and adversarially reviews (`/ui-review`) the *rendered* visuals of any app, to a SOTA-grounded canon. | A plugin in this marketplace. |
+| **`frontend`** (vs `design`) | A **skill inside foundry** — the *source-level* design system (the `@front-end` INTENT markers, `definition-of-good`, the build-time `design-critic`). `design` reviews the *rendered experience* and carries the deeper canon; it **composes with** `frontend` by capability, never duplicates it. | A skill inside foundry. |
 
 **Rule of thumb:** if a document inside a plugin says "the FORGE" as if it were *this* system, that
 is a bug — it should say **FOUNDRY** (the plugin) or name the specific companion. The `inspector`
-audits for exactly this (`../agents/inspector.md`). And don't confuse **`atelier`** (the design *plugin*,
+audits for exactly this (`../agents/inspector.md`). And don't confuse **`design`** (the design *plugin*,
 rendered-experience review) with foundry's **`frontend`** *skill* (source-level design system).
 
 ---
@@ -58,7 +58,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   back to DISCOVER), each owned by one plugin. **DELIVER** (roadmap intake → EARS/feature authoring →
   decomposition, owner foundry:roadmapper + FLEET engine) sits between IDEATE and DESIGN. **ASSURE** (quality V&V,
   foundry) and **SECURE** (security, the security plugin) are separate first-class gates; three concerns
-  cross-cut every phase — usability (atelier),
+  cross-cut every phase — usability (design),
   quality (foundry), security (the security plugin). The canonical model (owners, academic lineage, entry/exit
   signals) is `i2p/knowledge/product-lifecycle.md`; tracked per-project in `.i2p/lifecycle.json` and shown
   on the i2p status line. Distinct from the *marketing* product life cycle
@@ -86,7 +86,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **⚔ adversarial-catch counter** (times a reviewer caught something) and the **token-cost tracker**
   (per-phase actual vs a self-calibrating estimate, tokens + $). Canonical:
   `i2p/knowledge/instrumentation.md`; state under `~/.claude/state/` and `<project>/.i2p/cost.json`.
-- **i2p / discover / ideate / foundry / security / publish / atelier / operate** — the front door
+- **i2p / discover / ideate / foundry / security / publish / design / operate** — the front door
   plus the seven specialist plugins: FRONT DOOR (the meta-layer + arrival layer; composes the specialists)
   / DISCOVERY (find a worth-building opportunity) / REFINEMENT (the IDEA package) / the core conveyor
   (BUILD + the ASSURE quality gate, **and** DELIVER via foundry:roadmapper authoring + the external FLEET
@@ -119,7 +119,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   **pr-review** (adversarial PR/diff review → one verdict) · **self-improve** (targeted self-cleaving →
   PR) · **prerequisites** (emit PREREQUISITES.md) ·
   **check** (verify tool dependencies). The companions add **check** too (discover, ideate,
-  security, publish, atelier, operate).
+  security, publish, design, operate).
 
 ### Skills (companion plugins)
 - discover: **goal-setter** · **market-scan** · **self-improve** · **check**.
@@ -148,7 +148,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
   Read is spent **only when something cheap has flagged a suspect**, never by default. Specified for layout in
   [`layout-canon.md`](../../publish/skills/design-reviewer/references/layout-canon.md) §3; governs all lenses
   via the critique-loop canon.
-- atelier: **ui-review** (crawl + critique any SPA) · **mockup** (design + converge) · **self-improve** ·
+- design: **ui-review** (crawl + critique any SPA) · **mockup** (design + converge) · **self-improve** ·
   **check**; agent **ui-design-reviewer** (adds a **LAYOUT-REVIEWER** lens — the legibility gate run before
   taste, composing PUBLISH's layout canon by capability).
 
@@ -159,7 +159,7 @@ rendered-experience review) with foundry's **`frontend`** *skill* (source-level 
 - ideate: **/ideate** · **/ideate:check**
 - security: **/scan-all** · **/scan-for-pii** · **/scan-for-secrets** · **/scan-dependencies** · **/security:check**
 - publish: **/publish** · **/publish:check**
-- atelier: **/ui-review** · **/mockup** · **/atelier:check**
+- design: **/ui-review** · **/mockup** · **/design:check**
 
 ### Core concepts
 - **Value-station** — a stage on the conveyor with an entry, a transformation, and a mandatory

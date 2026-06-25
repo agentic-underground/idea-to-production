@@ -46,7 +46,7 @@ this plugin is installed it owns ideation; FOUNDRY's inline skill is the gracefu
      it passes.
    - **User-facing** (rich): the IDEA dossier — narrative, scorecard table, market/pricing/competition
      charts, **a user-flow, and (for a UI idea) a mockup screen**. Render *by capability*: charts/diagrams
-     via **publish `/publish`**; **user-flows and mockups via atelier `/mockup`** (designed to the canon
+     via **publish `/publish`**; **user-flows and mockups via design `/mockup`** (designed to the canon
      and design-reviewed before the user sees them — carefully composed, not first-draft). Degrade to
      structured markdown / Mermaid-source otherwise, and say so. The flow/mockup must visualise the **first
      slice** (don't let them drift from it).

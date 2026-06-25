@@ -7,7 +7,7 @@
 > bottom, a diagram so wide it renders as a smear inline). A finding is *"the value-flow caption renders at
 > ~2.85px inline — below the 9px floor"*, not *"the text feels small"*. This canon is the **single source of
 > truth** for the checklist; the `layout-reviewer` agent and both aesthetic reviewers (PUBLISH's
-> `image-aesthetic-reviewer`, ATELIER's `ui-design-reviewer`) cite it rather than restate it.
+> `image-aesthetic-reviewer`, DESIGN's `ui-design-reviewer`) cite it rather than restate it.
 
 ## 1. The mandate — a floor, gated before taste
 

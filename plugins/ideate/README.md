@@ -19,7 +19,7 @@ opportunity (from [`discover`](../discover/)) or a raw idea you already have, re
 - **User-facing** (rich, illustrated): the **IDEA dossier** — opportunity narrative, parameter scorecard,
   market/pricing/competition charts, a **user-flow**, and (for a UI idea) a **mockup screen** — rendered
   **by capability**: charts via [`publish`](../publish/)'s `/publish`, and flows/mockups via
-  [`atelier`](../atelier/)'s `/mockup` (designed to the canon and **design-reviewed** before you see them —
+  [`design`](../design/)'s `/mockup` (designed to the canon and **design-reviewed** before you see them —
   carefully composed, not first-draft). Degrades to structured markdown / Mermaid-source otherwise.
 
 The two faces never disagree: a fact corrected in one is corrected in both. The package is **iterated with

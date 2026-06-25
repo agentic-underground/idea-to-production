@@ -36,7 +36,7 @@ probe the filesystem. The plugins to look for:
 | **discover** | DISCOVER | `/discovery-goal`, `/market-scan` |
 | **ideate** | IDEATE | `/ideate` |
 | **foundry:roadmapper** (+ external FLEET engine) | DELIVER (roadmap intake → EARS/feature → decomposition; engine drains it) | `/roadmapper` (headline); external FLEET plugin: `/pipeline:status`, `/pipeline:run` |
-| **atelier** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
+| **design** | DESIGN (+ usability cross-cuts) | `/ui-review`, `/mockup` |
 | **foundry** | BUILD ⇄ ASSURE (quality gate; loop with SECURE) | `/foundry`, `/pr-review`, `/coverage-loop`, `/roadmapper`… |
 | **security** | SECURE (security gate; loop with BUILD/ASSURE) | `/scan-all`, `/scan-for-secrets`, `/scan-for-pii`, `/scan-dependencies` |
 | **publish** | PUBLISH | `/publish`, `/publish:design-review` |
@@ -67,13 +67,13 @@ around. Summarise the model from [`../../knowledge/product-lifecycle.md`](../../
 > owned by one plugin:
 > **DISCOVER ①** (discover) → **IDEATE ②** (ideate) → **DELIVER ③** (`foundry:roadmapper` —
 > headline **`/roadmapper`** — authors the FLEET v2 `docs/roadmap/` pipeline: intake → EARS/feature →
-> dependency-ordered EPIC/PLAN decomposition; the external FLEET engine drains it) → **DESIGN ④** (atelier)
+> dependency-ordered EPIC/PLAN decomposition; the external FLEET engine drains it) → **DESIGN ④** (design)
 > → **BUILD ⑤** (foundry) ⇄ **ASSURE ⑥** (foundry — quality V&V) ⇄ **SECURE ⑦** (security — security) →
 > **PUBLISH ⑧** (publish) → **OPERATE ⑨** (operate — observe, respond, iterate) ↻ loops back to DISCOVER.
 > The three realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop** — a failed quality or security
 > gate re-enters BUILD; the loop exits to PUBLISH only when all three are satisfied. **ASSURE and SECURE are
 > separate first-class gates** (quality ≠ security). Three concerns **cross-cut** every phase: usability
-> (atelier), quality (foundry — built-in not inspected-in), security (security — baked in from the start).
+> (design), quality (foundry — built-in not inspected-in), security (security — baked in from the start).
 > (The marketing *market life cycle* — introduction→growth→maturity→decline — runs alongside OPERATE.)
 
 Then **offer to kick one off**: ask if they'd like to start a product lifecycle for this project. If yes,
@@ -99,7 +99,7 @@ Offer this lane whenever the user's first message reads as a proposition rather 
 
 ## 4. Focus mode
 
-If `$ARGUMENTS` names a stage or plugin (`design`, `atelier`, `security`…), zoom in: that plugin's
+If `$ARGUMENTS` names a stage or plugin (`design`, `publish`, `security`…), zoom in: that plugin's
 commands, what each produces, and a "next command" suggestion. Otherwise show the whole menu.
 
 ---

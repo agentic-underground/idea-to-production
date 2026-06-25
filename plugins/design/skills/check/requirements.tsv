@@ -1,0 +1,13 @@
+# name	probe-command	tier	install-hint
+# Canonical dependency manifest for DESIGN. TAB-separated. Probe passes when it exits 0.
+# DESIGN reviews with built-in vision (Read sees PNGs — no API key) and drives live browsers via the
+# host-provided chrome-devtools MCP (ONE BROWSER — not shipped; FLEET/host registers it). Companions
+# (publish, foundry, ideate) are PLUGINS, referenced by capability, not probed here. User-flow
+# rendering is publish's job (verify via /publish:check).
+git	command -v git	required	apt install git
+bash	command -v bash	required	preinstalled
+node	command -v node	recommended	install via Volta (PREREQUISITES/00-core.md) — runs the crawler + npx
+chrome-devtools-mcp	command -v chromium || command -v chromium-browser	recommended	HOST-PROVIDED MCP (driven, not shipped): the host registers chrome-devtools pointed at the system Chromium. Needs a system browser — apt-get install -y chromium
+chromium	chromium --headless=new --no-sandbox --dump-dom about:blank >/dev/null 2>&1 || chromium-browser --headless=new --no-sandbox --dump-dom about:blank >/dev/null 2>&1	recommended	apt-get install -y chromium — ONE BROWSER: chrome-devtools + mmdc both drive the system Chromium (real-launch probe, not a presence check)
+gh	command -v gh	recommended	GitHub CLI (cli.github.com) — used by self-improve to open the improvement PR
+ripgrep	command -v rg	optional	apt install ripgrep (faster local search over design notes/markers)

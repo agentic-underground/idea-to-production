@@ -8,8 +8,8 @@ description: >
   traces the ordered path to PRODUCTION. Renders Mermaid when a renderer is present, else markdown.
 metadata:
   type: front-door
-  output: a value-flow map + "your next command" (Mermaid when publish/atelier present, else markdown)
-  composes: [publish/atelier renderers by capability — read-only]
+  output: a value-flow map + "your next command" (Mermaid when publish/design present, else markdown)
+  composes: [publish/design renderers by capability — read-only]
 model: inherit
 ---
 
@@ -26,7 +26,7 @@ carries VALUE from IDEA to PRODUCTION; this draws the map with only the parts yo
                                             ┌──────── fail ◀───────┐
                                             ▼                      │
 DISCOVER ──▶ IDEATE ─▶ DELIVER ─▶ DESIGN ─▶ BUILD ─▶ ASSURE ─▶ SECURE ─▶ PUBLISH ─▶ OPERATE ↻
-market-       ideate  roadmapper atelier   foundry  foundry   security  publish  operate
+market-       ideate  roadmapper design   foundry  foundry   security  publish  operate
 scanner                (+FLEET)                      (quality) (security)
                                             └──── BUILD ⇄ ASSURE ⇄ SECURE loop ────┘
  /discovery-  /ideate  /roadmapper /mockup  IDEA▶…▶ /pr-review /scan-all /publish  observe ·
@@ -43,7 +43,7 @@ PLAN-scope entry). The three
 realisation phases **BUILD ⇄ ASSURE ⇄ SECURE** form a **loop**, not a straight line — a failed quality or
 security gate sends the work *back* to BUILD (the `fail` back-edge), and the loop exits to PUBLISH only
 when all three are satisfied. **ASSURE** (foundry, quality V&V) and **SECURE** (security, security) are
-**separate first-class gates**. Three concerns **cross-cut** every phase: usability (atelier/DESIGN),
+**separate first-class gates**. Three concerns **cross-cut** every phase: usability (design/DESIGN),
 quality (foundry/ASSURE — built-in not inspected-in), security (security/SECURE — baked in from the
 start). For each stage, give: the plugin, its **headline command**, and the **artefact** it produces (an
 OPPORTUNITY → an IDEA package → a dependency-ordered roadmap → a design-reviewed screen → tested code → a
@@ -84,7 +84,7 @@ Trace the rest of the path (DELIVER → … → OPERATE) from whichever door the
 
 ## 4. Render
 
-- If **publish** or **atelier** is installed, emit a **Mermaid** `flowchart LR` and defer rendering to
+- If **publish** or **design** is installed, emit a **Mermaid** `flowchart LR` and defer rendering to
   their engine (so it's legible wherever it lands). The Mermaid SHALL route through **DELIVER** between
   IDEATE and DESIGN and draw the **BUILD ⇄ ASSURE ⇄ SECURE loop** with its back-edge (an
   `ASSURE -->|fail| BUILD` / `SECURE -->|fail| BUILD` edge), not a straight line.

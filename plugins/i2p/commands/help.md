@@ -5,7 +5,7 @@ description: Browse the idea-to-production marketplace — the powers you have n
 Be the marketplace front door. Follow the [`help` skill](../skills/help/SKILL.md):
 
 1. Enumerate which `idea-to-production` plugins are **currently active** (discover, ideate,
-   foundry, atelier, security, publish, operate, and i2p itself) — judge from the skills/commands available to
+   foundry, design, security, publish, operate, and i2p itself) — judge from the skills/commands available to
    you this session; do not probe the filesystem.
 2. Render the **three pillars** in one line each, then a compact map of the value flow
    (DISCOVER ▸ IDEATE ▸ DELIVER ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄ SECURE ▸ PUBLISH ▸ OPERATE ↻) showing only the
@@ -16,6 +16,6 @@ Be the marketplace front door. Follow the [`help` skill](../skills/help/SKILL.md
 4. Point to deeper docs: the marketplace `README.md`, `plugins/foundry/knowledge/glossary.md`, and
    `plugins/foundry/VALUE_FLOW.md`.
 
-If `$ARGUMENTS` names a stage or plugin (e.g. `design`, `atelier`), zoom in on just that one. Keep it
+If `$ARGUMENTS` names a stage or plugin (e.g. `design`, `publish`), zoom in on just that one. Keep it
 scannable — this is a menu, not an essay. Name any plugin that is **not** installed only to say "add it
 to unlock …", never to imply you can run it.

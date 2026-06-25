@@ -71,7 +71,7 @@ it against **PDF/UA** (ISO 14289) and **WCAG 2.2 AA** for documents:
   long documents carry bookmarks/outline for navigation.
 
 > A WCAG-AA / PDF/UA failure on a *rendered* document is **≥ HIGH and blocks PASS** — the same gate stance
-> PUBLISH holds for the Tufte lie factor on a chart. This is the print-side analogue of ATELIER's screen
+> PUBLISH holds for the Tufte lie factor on a chart. This is the print-side analogue of DESIGN's screen
 > a11y gate.
 
 ---

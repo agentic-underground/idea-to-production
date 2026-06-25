@@ -92,7 +92,7 @@ for the exact `signal: BEST | LEAST-WORSE | CAP` schema.
 - **The diagram producers** (`diagram-studio` + its `handler-graphviz`/`handler-mermaid` value-handlers,
   `rich-pdf-with-diagrams`) *make* the figures; this skill *judges* them and hands back the fix. The loop
   closes between maker and judge.
-- This is PUBLISH's print/data-viz analogue of ATELIER's screen reviewer — **same loop shape**, different
+- This is PUBLISH's print/data-viz analogue of DESIGN's screen reviewer — **same loop shape**, different
   canon. When both plugins are present, a lesson learned in one is offered to the other.
 
 ## Self-improvement covenant

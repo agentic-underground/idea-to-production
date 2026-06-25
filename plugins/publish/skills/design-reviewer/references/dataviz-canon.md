@@ -91,8 +91,8 @@ substitute one for the other.
 ## 7. Animated diagram craft — when motion teaches, and when it flickers
 
 > *Motion is a medium, not a decoration. An **animated** diagram earns its keep only when the motion **carries
-> meaning a still cannot** — and is held to the same motivated-motion bar as any figure (atelier art-direction
-> [§9](../../../../atelier/knowledge/canon/art-direction.md#9-motion--temporal-craft--when-a-figure-earns-animation)).*
+> meaning a still cannot** — and is held to the same motivated-motion bar as any figure (design art-direction
+> [§9](../../../../design/knowledge/canon/art-direction.md#9-motion--temporal-craft--when-a-figure-earns-animation)).*
 
 **Motion helps when it reveals temporal/sequential structure a static frame flattens:**
 - **Build-order** — a pipeline lighting up stage-by-stage, so the *order* becomes the message.
@@ -118,5 +118,5 @@ topology) and animation adds drift/spin/fade with no sequence to teach — a sti
 > **Sources to cite:** Cleveland & McGill (graphical-perception ranking); Bertin (visual variables);
 > Tufte (data-ink, chartjunk, lie factor, small multiples); Few (*Information Dashboard Design* — dashboard
 > restraint); Wilkinson (*The Grammar of Graphics*); ColorBrewer (Brewer/Harrower) for palettes; for
-> **animated** diagrams, the motivated-motion bar in atelier art-direction §9. Name the principle in every
+> **animated** diagrams, the motivated-motion bar in design art-direction §9. Name the principle in every
 > finding so the producer can verify the fix removed it.
