@@ -160,12 +160,19 @@ The gate carries no detection logic of its own — it composes the three sub-ski
 ## Product lifecycle (by capability)
 
 SECURITY owns the **SECURE** phase — the security gate, distinct from foundry's **ASSURE** quality gate
-that precedes it (quality ≠ security). When the gate returns a **PASS** verdict (no unresolved
-BLOCK/REVIEW), and the **i2p** plugin is installed, mark the **SECURE** phase done so the marketplace
-product lifecycle and the status line advance to PUBLISH:
+that precedes it (quality ≠ security). When the **i2p** plugin is installed, drive the lifecycle from
+the verdict so the marketplace product lifecycle and the status line track the BUILD ⇄ ASSURE ⇄ SECURE
+loop:
 
 ```bash
+# on a PASS verdict — security certified, exit the loop and advance to PUBLISH
 /i2p:lifecycle done SECURE   # order-safe & idempotent — a no-op unless a lifecycle is running at SECURE
+
+# on a REVIEW or BLOCK verdict — re-enter BUILD (loop back-edge: loop_state→BUILD, loop_pass++)
+/i2p:lifecycle fail SECURE   # order-safe & idempotent — a no-op unless a lifecycle is running at SECURE
 ```
 
-Degrades silently when i2p is absent. The canonical model is `i2p/knowledge/product-lifecycle.md`.
+`fail SECURE` is the back-edge that turns the loop on a security-gate failure: the status line renders
+`⇄ ×N` for the iteration count, and the **Gate failure** callout in the README tells the operator which
+findings to fix in BUILD before the re-run. Degrades silently when i2p is absent. The canonical model is
+`i2p/knowledge/product-lifecycle.md`.

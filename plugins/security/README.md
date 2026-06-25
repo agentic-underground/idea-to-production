@@ -39,6 +39,21 @@ The verdict is the **max severity across all lenses** — a clean PII scan never
 key. A lens that can't fully run (missing advisory tool) reports *partial coverage* and never
 returns a false PASS.
 
+### Gate failure — what to do
+
+A **REVIEW** or **BLOCK** verdict is the **SECURE → BUILD** back-edge of the BUILD ⇄ ASSURE ⇄ SECURE
+loop, not a dead end. When `/security:scan-all` returns non-PASS:
+
+1. **Open the report** — `SECURITY-REPORT.md`. The Findings sections name each leaked secret, exposed
+   PII, or vulnerable dependency with its locus and severity.
+2. **Fix in BUILD** — remediate the named findings (rotate/remove the secret, redact the PII, bump or
+   pin the dependency, re-commit). This re-enters the **BUILD** phase; when i2p is installed,
+   `/security:scan-all` fires `/i2p:lifecycle fail SECURE`, sending the lifecycle back to BUILD and
+   incrementing the loop counter (status line `⇄ ×N`).
+3. **Re-run the gate** — `/security:scan-all` again over the fixed tree.
+4. **The loop exits only when all three gates are green** — BUILD shipped, ASSURE
+   (`/foundry:pr-review`) PASS, and SECURE PASS — at which point `done SECURE` advances to PUBLISH.
+
 ## Install
 
 ```
