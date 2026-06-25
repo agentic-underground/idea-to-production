@@ -74,6 +74,13 @@
 #      manifest+python checks), so check P guards the GRAMMAR + vendored-standard pin, not gate content.
 #      (Check I also skips ``` fenced code blocks, so illustrative links in a vendored grammar's sample
 #      tables are not mistaken for real doc links.)
+#   R. lifecycle-driver completeness — every `done <PHASE>` row in the PRODUCT LIFECYCLE advance table
+#      (plugins/i2p/skills/lifecycle/SKILL.md) has at least one caller in its NAMED owner plugin (and a
+#      `fail <PHASE>` caller too for the ASSURE/SECURE loop gates). Closes the rank-1 dead-wiring class:
+#      `done ASSURE` and both `fail` edges once shipped GREEN with ZERO callers because nothing asserted
+#      the table against reality. PASSES once the loop-wiring PR (fix/loop-wiring, Step 1) is merged;
+#      would FAIL on 'done ASSURE' + both 'fail' verbs against the pre-Step-1 state. The DELIVER row is an
+#      explicit exemption — its advance is driven by the EXTERNAL FLEET engine, not an in-repo plugin call.
 #
 # Flag:
 #   --fix  guarded canonical re-sync — when the canonical-copy parity checks (A check.sh,
@@ -742,6 +749,58 @@ PYEOF
     printf '%s\n' "$q_out" | sed 's/^/      /'
   fi
 fi
+
+# ── R. lifecycle-driver completeness ─────────────────────────────────────────
+# The PRODUCT LIFECYCLE advance table (plugins/i2p/skills/lifecycle/SKILL.md, the
+# "| Owner | Marks done | → advances to |" table) is the contract for how each phase hands off to the
+# next: when a station completes it calls `/i2p:lifecycle done <PHASE>` (and, for the loop gates ASSURE
+# and SECURE, `/i2p:lifecycle fail <PHASE>` on a failed gate). That table was NEVER asserted against the
+# real wiring, so two transitions (done ASSURE + both fail-edges) shipped GREEN through CI with ZERO
+# callers — the flagship BUILD ⇄ ASSURE ⇄ SECURE loop was dead-wired and nothing caught it (rank-1 audit
+# finding). This check closes that class: for every advance-table row it greps the NAMED owner plugin
+# directory for that row's `done <PHASE>` call (plus `fail <PHASE>` for the two loop gates) and FAILS if
+# the verb has NO caller in the owner — turning dead-wiring into a deterministic build-time gate.
+#
+# NOTE: this check passes once the loop-wiring PR (fix/loop-wiring, Step 1) is merged; running it
+# against the state BEFORE that PR would FAIL on 'done ASSURE' and both 'fail' verbs (the original defect).
+#
+# Two table rows are intentional EXEMPTIONS, justified by the table itself (not silent skips):
+#   • DELIVER → DESIGN is driven by the EXTERNAL FLEET continuous-delivery engine (the table's owner cell
+#     is "foundry:roadmapper + FLEET engine"), so its `done DELIVER` advance lives in the engine, not in
+#     any in-repo plugin file. Asserting an in-repo caller would FAIL on an architecturally-external edge.
+#   • The lifecycle SKILL.md itself documents every verb (it IS the table) — so the owner-dir grep is
+#     scoped to the named owner plugin, never plugins/i2p, so a doc mention can't satisfy a real wiring row.
+section "R. lifecycle-driver completeness (every advance-table 'done <PHASE>' has a caller in its owner)"
+# Each entry: "PHASE  owner-dir  verb1[;verb2]" — the advance-table rows, with the loop gates carrying
+# BOTH the done and the fail verb. DELIVER is omitted on purpose (external FLEET engine — see header).
+lifecycle_rows=(
+  "DISCOVER market-scanner done DISCOVER"
+  "IDEATE   ideator        done IDEATE"
+  "DESIGN   atelier        done DESIGN"
+  "BUILD    foundry        done BUILD"
+  "ASSURE   foundry        done ASSURE;fail ASSURE"
+  "SECURE   security       done SECURE;fail SECURE"
+  "PUBLISH  publish        done PUBLISH"
+  "OPERATE  operate        done OPERATE"
+)
+r_ok=1
+for row in "${lifecycle_rows[@]}"; do
+  # split: field 1 = phase (unused beyond labelling), field 2 = owner dir, rest = the verb(s)
+  read -r _phase owner verbs <<<"$row"
+  ownerdir="plugins/$owner"
+  if [ ! -d "$ownerdir" ]; then
+    r_ok=0; fail "Lifecycle owner directory missing: $ownerdir"; continue
+  fi
+  # verbs is a `;`-separated list of "done <PHASE>" / "fail <PHASE>" strings (each is two words).
+  IFS=';' read -ra verb_list <<<"$verbs"
+  for verb in "${verb_list[@]}"; do
+    # Grep the owner plugin dir for the literal verb. ≥1 caller = wired; zero = dead-wiring.
+    if ! grep -rqF "$verb" "$ownerdir" 2>/dev/null; then
+      r_ok=0; fail "Lifecycle dead-wiring: '$verb' has no caller in $owner"
+    fi
+  done
+done
+[ "$r_ok" -eq 1 ] && pass "every lifecycle advance-table 'done <PHASE>' (and 'fail' for the ASSURE/SECURE loop gates) has a driver in its owner plugin"
 
 # ── --fix: guarded canonical re-sync ─────────────────────────────────────────
 # Only acts when --fix was passed. Re-syncs the drifted canonical copies registered by checks A/E/F/N/O
