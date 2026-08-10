@@ -1,12 +1,10 @@
 ---
 name: maintain
 description: >
-  Keep the lights on — the maintenance cadence for a live product: dependency upkeep and CVE patching,
-  certificate/secret rotation, backup-restore drills, capacity review against saturation trends, and
-  budgeted tech-debt paydown. Trigger with /maintain [path] (or "what maintenance is overdue?", "check
-  the dependencies", "is anything stale?", "tech-debt cadence"). Composes security's /scan-dependencies
-  by capability. Produces MAINTENANCE-FINDINGS.md; consumable standalone or by /operate-gate.
-  Self-improving: every upkeep emergency becomes a scheduled cadence item.
+  Keep the lights on — the maintenance cadence for a live product: dependency upkeep + CVE patching,
+  cert/secret rotation, backup-restore drills, capacity review, budgeted tech-debt paydown. Trigger with
+  /maintain [path] (or "what maintenance is overdue?", "check the dependencies", "tech-debt cadence").
+  Guard: OPERATE only. Composes secure's /scan-dependencies. → MAINTENANCE-FINDINGS.md.
 metadata:
   phase: [OPERATE]
   type: scanner

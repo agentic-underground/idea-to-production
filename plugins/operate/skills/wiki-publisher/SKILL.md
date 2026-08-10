@@ -1,15 +1,10 @@
 ---
 name: wiki-publisher
 description: >
-  Construct a professional GitHub wiki (opt-in) — for any GitHub origin, ask the operator ONCE whether
-  to stand up a wiki, then publish the per-item documentation and illustrations PUBLISH already produced
-  (doc/articles/) to the repo's companion `.wiki.git`. Trigger with /wiki-publisher (or "publish the wiki",
-  "build the GitHub wiki", "put the docs on the wiki"). Detects a github.com origin, makes a one-shot
-  opt-in offer (decline recorded under ~/.claude/hook-state, never the repo), and on opt-in clones the
-  origin's `.wiki.git`, maps each completed-item doc to a wiki page (rewriting embedded illustration paths),
-  and pushes. Consumes PUBLISH's artifacts — it never re-runs the doc/illustration pipeline. Degrades
-  gracefully: a clean no-op when the origin is not GitHub, when `gh`/`git` is unavailable, or when there
-  is no PUBLISH output to publish — never failing the session, never inventing content.
+  Construct a GitHub wiki (opt-in) — publish the per-item docs + illustrations PUBLISH produced
+  (doc/articles/) to the repo's companion `.wiki.git`. Trigger with /wiki-publisher (or "publish the
+  wiki", "build the GitHub wiki"). Guard: OPERATE only. Makes a one-shot opt-in offer, clones
+  `.wiki.git`, maps each doc to a page, and pushes. A clean no-op off GitHub or with no PUBLISH output.
 metadata:
   phase: [OPERATE]
   type: publisher

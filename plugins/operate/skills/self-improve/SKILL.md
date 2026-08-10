@@ -1,12 +1,10 @@
 ---
 name: self-improve
 description: >
-  Improve OPERATE itself by folding operational feedback back into its signals, SLOs, runbooks, and
-  cadence — and by self-cleaving over-broad elements. Trigger with /operate:self-improve (or "an
-  incident surprised us — fix it", "this alert is noisy", "we missed a signal", "fold this postmortem
-  action in", "self-improve the observability skill"). Reflects one element against the covenant + pillars,
-  applies the fix on a branch, runs the adversarial review (deliver's /deliver:pr-review if installed), and
-  opens a PR so every future operate cycle, for all users, is calmer and catches more, sooner.
+  Improve OPERATE itself — fold operational feedback into its signals, SLOs, runbooks, and cadence, or
+  self-cleave an over-broad element. Trigger with /operate:self-improve (or "an incident surprised us —
+  fix it", "this alert is noisy", "we missed a signal", "fold this postmortem action in"). Applies on a
+  branch → adversarial review → PR (per merge governance).
 metadata:
   phase: [cross-cut]
   type: producer

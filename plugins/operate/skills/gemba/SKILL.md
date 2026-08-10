@@ -1,15 +1,10 @@
 ---
 name: gemba
 description: >
-  The GEMBA reflex — the one-step capture → route → raise loop that turns a learning seen at the
-  workface (a test gap, a missing guard, a cross-repo defect) into a tracked, filed feedback issue.
-  Trigger with /operate:gemba (or "capture this learning", "raise feedback on this gap",
-  "this belongs in another repo — file it", "gemba this"). Captures the event into
-  doc/learnings/<slug>/{incident-report,proposed-solutions}.md + a ledger record, routes it by identity
-  (SELF → improve here / auto-file; GEMBA → ask before filing on the sibling), and raises it via
-  raise-feedback.sh — recording open→filed back to the learning ledger. Thin skill, fat scripts:
-  it orchestrates identity.sh, learnings.sh, and raise-feedback.sh. Self-improving: every learning the
-  workface surfaces becomes a tracked, de-duplicated issue instead of evaporating.
+  The GEMBA reflex — capture, route, and raise a learning seen at the workface (a test gap, a missing
+  guard, a cross-repo defect) into a tracked feedback issue. Trigger with /operate:gemba (or "capture
+  this learning", "raise feedback on this gap", "gemba this"). Guard: OPERATE only. Routes by identity
+  (SELF vs sibling repo) and files via raise-feedback.sh. → a de-duplicated issue.
 metadata:
   phase: [OPERATE]
   type: reflex

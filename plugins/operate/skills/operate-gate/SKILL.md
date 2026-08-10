@@ -1,12 +1,10 @@
 ---
 name: operate-gate
 description: >
-  The OPERATE front door. Two jobs, one report: an operational-READINESS check at/before go-live (are the
-  four golden signals instrumented, SLOs defined, alerts wired, runbooks written, rollback proven?), and
-  the steady-state HEALTH view of a live product (SLO attainment, error-budget burn, open incidents,
-  maintenance debt). Trigger with /operate-gate [readiness|health|path]. Produces OPERATE-REPORT.md with a
-  READY / WATCH / NOT-READY verdict. Composes the observability, incident, iterate, and maintain skills.
-  Standalone on any live project, or the steady state the i2p OPERATE phase reports against.
+  The OPERATE front door — two jobs, one report: a go-live READINESS check (signals, SLOs, alerts,
+  rollback in place?) and the steady-state HEALTH view (SLO attainment, error-budget burn, open
+  incidents). Trigger with /operate-gate [readiness|health|path]. Guard: OPERATE only. Composes
+  observability/incident/iterate/maintain. → OPERATE-REPORT.md (READY / WATCH / NOT-READY).
 metadata:
   phase: [OPERATE]
   type: orchestrator
