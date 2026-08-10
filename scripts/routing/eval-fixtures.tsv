@@ -1,0 +1,22 @@
+# eval-fixtures.tsv — Layer-2 behavioural routing fixtures (OPT-IN, token-costly, NEVER in the pre-push gate).
+#
+# Each row is a routing assertion: given PHRASE, a well-behaved agent should route to EXPECT and should
+# NOT warm any section in MUST_NOT_LOAD. Run by scripts/routing/route-eval.sh through a judge subagent.
+# Seeded from the highest-mis-route-risk collision families (C0 idea-intake, C4 review, C5 chart) plus a
+# couple of phase-boundary cases. Grow this file — see docs/guide/routing-tests.md §5.
+#
+# Format: 4 TAB-separated columns. Blank lines and #-comments ignored.
+#   phrase                                            expect                  must_not_load                              note
+phrase	expect	must_not_load	note
+"I've got an idea for an app, help me flesh it out"	ideate:ideate	deliver:builder,deliver:roadmapper	C0 — a raw idea belongs to IDEATE, not the BUILD conveyor
+"what should I build? find me a niche"	discover:market-scan	ideate:ideate,deliver:roadmapper	C0 — cold-start discovery, upstream of ideation
+"add a dark-mode toggle to the roadmap"	deliver:roadmapper	discover:market-scan,ideate:ideate	C0/DELIVER — an authorised change enters the roadmap, not discovery
+"review this pull request"	deliver:pr-review	design:ui-review,publish:document-review	C4 — artefact is a PR/diff
+"critique the layout of this running dashboard"	design:ui-review	deliver:pr-review,publish:design-reviewer	C4 — artefact is a running UI
+"is the prose in this README any good?"	publish:document-review	design:ui-review,deliver:pr-review	C4 — artefact is prose
+"draw an architecture diagram of the service"	publish:diagram-studio	publish:design-reviewer,deliver:frontend	C5 — produce a structural diagram
+"add a figure to this doc where it needs one"	publish:illustrator	publish:diagram-studio	C5 — place-in-doc, not bare production
+"run the full security gate before release"	secure:scan-all	deliver:builder,operate:operate-gate	SECURE — the pre-release audit
+"keep the lights on — what maintenance is overdue?"	operate:maintain	deliver:builder,discover:market-scan	OPERATE — steady-state upkeep, not a build
+"cut the next vertical slice"	deliver:vertical-slice	deliver:builder	C10 — one increment, not the whole backlog
+"name my product"	ideate:name-search	discover:market-scan	C7 — naming studio

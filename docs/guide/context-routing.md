@@ -384,6 +384,9 @@ calls a phase into the room. Not "zero attention"; **right attention.**
 ---
 
 **See also:** [`context-building-pipeline.md`](./context-building-pipeline.md) (the doors),
+[`lexicon.md`](./lexicon.md) (the standard lexicon this design routes),
+[`routing-tests.md`](./routing-tests.md) (the pre-push gate that PROVES this design — the R2/R3/R7
+checks referenced above),
 [`glossary.md`](../../plugins/deliver/knowledge/glossary.md) (vocabulary),
 [`VALUE_FLOW.md`](../../plugins/deliver/VALUE_FLOW.md) §8 (thin-skills doctrine),
 [`roadmap-routing.sh`](../../plugins/i2p/hooks/scripts/roadmap-routing.sh) (the injection precedent),

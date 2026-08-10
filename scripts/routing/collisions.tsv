@@ -1,0 +1,70 @@
+# collisions.tsv — the routing ledger (the ONE central file of the context-routing test suite).
+#
+# Source of truth for routing is HYBRID: each skill/command/agent declares its own triggers + phase
+# in its frontmatter; this file declares only the CROSS-skill facts that no single frontmatter can
+# own — collision resolutions, orphan-by-design reach, and known dead-route defects. Consumed by
+# scripts/verify-routing.sh. See docs/guide/routing-tests.md for the full pattern and how to extend.
+#
+# Format: 5 TAB-separated columns. Blank lines and #-comments are ignored.
+#
+#   kind        key                     members                                     signal                       note
+#   ----        ---                     -------                                     ------                       ----
+#   collision   <family-id C0..C12>     comma-sep plugin:section that share intent  the disambiguating AXIS      human note
+#   orphan      <plugin:section>        reach-kind: spawned-only|loop-only          who spawns it / how reached  why it has no user trigger (by design)
+#   defect      <plugin:MISSING-cmd>    the /command it claims but that is missing  DEAD-ROUTE                   tracked fix (backlog); WARN not FAIL until fixed
+#
+# kind=collision  → R4 asserts every member still exists and the signal is non-empty (a declared,
+#                   resolvable collision is fine; an UNDECLARED exact-phrase collision FAILs).
+# kind=orphan     → R1 treats the section as reachable-by-design (no user trigger required).
+# kind=defect     → R3 downgrades this known missing command from FAIL to WARN, and it is listed as
+#                   backlog. A NEW (unledgered) missing command FAILs hard.
+#                   KEY = the MISSING /command TOKEN (plugin:command), NOT the claiming skill: R3 parses
+#                   the slash from a description and looks up that exact token. e.g. the design-reviewER
+#                   skill claims /publish:design-review → key is `publish:design-review` (no "-er").
+#                   Key it on the claiming skill instead and R3 will hard-FAIL the route.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# COLLISIONS — an intent/phrase claimed by more than one section. Resolved by an axis.
+# ─────────────────────────────────────────────────────────────────────────────
+collision	C0-idea-intake	discover:market-scan,ideate:ideate,deliver:ideate,deliver:roadmapper,deliver:founder	lifecycle phase (DISCOVER→IDEATE→DELIVER) + whether the ideate plugin is installed	"an idea / new project" intake; deliver:ideate is the graceful-degradation fallback for ideate:ideate
+collision	C1-self-improve	deliver:self-improve,design:self-improve,discover:self-improve,i2p:self-improve,ideate:self-improve,operate:self-improve,publish:self-improve,secure:self-improve	the named target element/plugin (/<plugin>:self-improve)	"fold this feedback in / self-improve X" — namespaced by plugin; only the element named disambiguates
+collision	C2-check	i2p:check,deliver:check,design:check,discover:check,ideate:check,operate:check,publish:check,secure:check	the plugin namespace (i2p:check aggregates the rest)	"check readiness / are my tools installed"
+collision	C3-inspect	deliver:inspector,design:inspector,discover:inspector,i2p:inspector,ideate:inspector,operate:inspector,publish:inspector,secure:inspector	the plugin namespace (/<plugin>:inspect)	"inspect this plugin / run the inspector"
+collision	C4-review-critique	deliver:pr-review,deliver:code-quality,design:ui-review,publish:design-reviewer,publish:document-review,i2p:review	the ARTEFACT under review (PR/diff · architecture · running SPA · chart/PDF · prose · everything)	"review this / critique this" — 6-way; artefact type resolves
+collision	C5-chart-diagram	publish:diagram-studio,publish:illustrator,publish:design-reviewer	the VERB (produce · place-in-doc · review) — plus global dataviz for chart styling	"a chart / a diagram / a figure"
+collision	C6-coverage-loop	deliver:code-quality,deliver:coverage-loop	intra-plugin: /coverage-loop is the command, code-quality the owning skill	"chase coverage / coverage gaps"
+collision	C7-name	ideate:name-search,ideate:name	intra-plugin: /ideate:name command delegates to the name-search skill	"name my product"
+collision	C8-publish-wiki	publish:publish,publish:writer,operate:wiki-publisher	the TARGET (article/PDF · narrative · GitHub .wiki.git)	"publish this"
+collision	C9-lifecycle-phase	i2p:lifecycle,deliver:lifecycle-states,deliver:development-system-core,deliver:phase-sensor	the LEVEL (product lifecycle 9-phase · SDLC step gates · within-BUILD sub-phase)	"where are we in the lifecycle / what phase"
+collision	C10-ship-build	deliver:builder,deliver:vertical-slice	the SCOPE (whole backlog · one increment)	"ship it / build this"
+collision	C11-opportunity	discover:market-scan,operate:iterate	the ENTRY (cold-start discovery · build-measure-learn loop-back)	"find an opportunity" — OPERATE↻ re-enters DISCOVER
+collision	C12-security-review	secure:scan-all,deliver:pr-review	composed, not duplicated: pr-review composes secure:scan-all when installed	"security check / scan" — trigger words overlap; SECURITY-REVIEWER role lives inside deliver:reviewer
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ORPHANS BY DESIGN — sections with no user trigger phrase, reached only by being spawned or by /loop.
+# (Spawned deliver/publish agents — ds-step-*, handler-*, reviewer, challenger, etc. — are recognised
+#  by the "Spawned by / spawned / invoked by" marker in their own description and need no row here;
+#  list only sections the marker heuristic would miss.)
+# ─────────────────────────────────────────────────────────────────────────────
+orphan	deliver:development-system-core	spawned-only	lifecycle-orchestrator during DELIVER	condition-triggered station skill; no user utterance
+orphan	deliver:lifecycle-states	spawned-only	at each SDLC maturity boundary	state-transition trigger, not a user phrase
+orphan	deliver:handoff-protocol	spawned-only	an upstream lifecycle agent handing off	inter-agent contract; no user utterance
+orphan	deliver:reviewer-gate	spawned-only	a stage agent after it writes a document	gate wiring; no user utterance
+orphan	publish:rich-pdf-with-diagrams	spawned-only	the writer skill / /publish pipeline	downstream of WRITER; weak product-noun triggers only
+orphan	publish:craft-study	loop-only	run under /loop, self-paced	explicitly documented "NO command"
+orphan	publish:model-survey	loop-only	run under /loop, self-paced	explicitly documented "NO command"
+orphan	deliver:coverage-loop-agent	spawned-only	the /coverage-loop command / code-quality skill	automation agent; functional description carries no spawn-marker word
+orphan	deliver:flaky-test-fixer	spawned-only	TEST/STORY stations when a test is flaky	automation agent; functional description carries no spawn-marker word
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DEFECTS — dead routes: a section claims a /command that has no file. Tracked backlog (WARN not FAIL).
+# Fix = add the command file OR reclassify the skill's reach. First items for the C1-implementation slices.
+# ─────────────────────────────────────────────────────────────────────────────
+defect	publish:design-review	/publish:design-review	DEAD-ROUTE	the design-reviewer skill claims /publish:design-review; no plugins/publish/commands/design-review.md (O1)
+defect	design:self-improve	/design:self-improve	DEAD-ROUTE	self-improve skill claims a /command with no file; only deliver ships one (O2)
+defect	discover:self-improve	/discover:self-improve	DEAD-ROUTE	self-improve skill claims a /command with no file (O2)
+defect	i2p:self-improve	/i2p:self-improve	DEAD-ROUTE	self-improve skill claims a /command with no file (O2)
+defect	ideate:self-improve	/ideate:self-improve	DEAD-ROUTE	self-improve skill claims a /command with no file (O2)
+defect	operate:self-improve	/operate:self-improve	DEAD-ROUTE	self-improve skill claims a /command with no file (O2)
+defect	publish:self-improve	/publish:self-improve	DEAD-ROUTE	self-improve skill claims a /command with no file (O2)
+defect	secure:self-improve	/secure:self-improve	DEAD-ROUTE	self-improve skill claims a /command with no file (O2)
