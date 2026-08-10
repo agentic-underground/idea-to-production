@@ -376,6 +376,7 @@ else
   done < "$PHRASES"
   r9_bad=0
   while IFS= read -r key; do
+    [ -z "$key" ] && continue   # empty/all-comment tsv → "${!R9_SEEN[@]}" yields a blank line; skip it
     [ -n "${R9_HIT[$key]:-}" ] && continue
     r9_bad=$((r9_bad+1))
     if [ -z "${R9_FILE[$key]:-}" ]; then
