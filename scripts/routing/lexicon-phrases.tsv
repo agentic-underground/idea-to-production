@@ -1,0 +1,45 @@
+# lexicon-phrases.tsv — the load-bearing disambiguating PHRASES that the routing gate's R9 check
+# asserts still appear in a member skill's `description:` after C5 compression (RFC context-routing).
+# These are the free-text disambiguators the other checks CANNOT see: R4 sees only >=8-char IDENTICAL
+# shared phrases; R8 syncs only family-ids. So compressing a description could silently drop the very
+# phrase a collision family relies on — this file + R9 make that drift VISIBLE (a warn), not silent.
+#
+# Families map to scripts/routing/collisions.tsv. Listed here are the free-text PHRASE-routed families
+# C0/C4/C9/C10/C11 — the curated PRIMARY disambiguators (the lexicon.md §4 "say also…" phrases), not
+# necessarily every ledger member. The other families need no rows: C1/C2/C3/C6/C7 disambiguate by
+# /command namespace; C5 (verb) and C8 (target) route by a phrase already guarded here under another
+# family (e.g. publish:design-reviewer is covered by its C4 row); C12 is composed-overlap, not a choice.
+# R9 resolves a member to its skill/agent/command home, so agent-hosted members are guardable too.
+# R9 requires, for each (family, member) group: AT LEAST ONE listed phrase survives in the member's
+# description (case-insensitive substring, whitespace-normalised). Remove a row ONLY as a deliberate
+# decision when a phrase is intentionally reworded — that keeps the drift a conscious edit.
+#
+# Columns (TAB-separated): family<TAB>member<TAB>phrase
+C0-idea-intake	deliver:ideate	I have an idea
+C0-idea-intake	deliver:ideate	turn this into a project
+C0-idea-intake	deliver:ideate	now what?
+C0-idea-intake	deliver:ideate	new feature:
+C0-idea-intake	ideate:ideate	turn this into a project
+C0-idea-intake	ideate:ideate	refine this opportunity
+C0-idea-intake	discover:market-scan	what should I build?
+C0-idea-intake	discover:market-scan	scan for a niche
+C0-idea-intake	deliver:roadmapper	add to the roadmap
+C0-idea-intake	deliver:roadmapper	what's on the roadmap
+C4-review-critique	deliver:pr-review	adversarial review of the diff
+C4-review-critique	deliver:code-quality	review my architecture
+C4-review-critique	design:ui-review	review the UI
+C4-review-critique	design:ui-review	critique this design
+C4-review-critique	publish:design-reviewer	review this PDF's typography
+C4-review-critique	publish:design-reviewer	critique this chart
+C4-review-critique	publish:document-review	copy-review this README
+C4-review-critique	i2p:review	review everything
+C9-lifecycle-phase	i2p:lifecycle	what phase are we in?
+C9-lifecycle-phase	i2p:lifecycle	start a product lifecycle
+C10-ship-build	deliver:builder	ship the backlog
+C10-ship-build	deliver:builder	build everything
+C10-ship-build	deliver:builder	run DELIVER
+C10-ship-build	deliver:vertical-slice	next slice
+C10-ship-build	deliver:vertical-slice	cut a slice
+C10-ship-build	deliver:vertical-slice	ship one increment
+C11-opportunity	discover:market-scan	what should I build?
+C11-opportunity	operate:iterate	the metric stalled
