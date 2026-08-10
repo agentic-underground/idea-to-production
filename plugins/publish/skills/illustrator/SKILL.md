@@ -3,7 +3,7 @@ name: illustrator
 description: >
   Trawl documentation, find the highest-impact spots a figure would clarify, and drive each from SPEC to
   two options to an adversarial A/B design review to an embedded dark-mode asset. Orchestrator of PUBLISH's
-  graphical handlers (Graphviz, Mermaid, chart, ComfyUI). Trigger with /illustrate (or "illustrate this
+  graphical handlers (Graphviz, Mermaid, chart, composition, ComfyUI). Trigger with /illustrate (or "illustrate this
   doc", "what figures does this README need"). Guard: PUBLISH only.
 metadata:
   phase: [PUBLISH]

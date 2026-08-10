@@ -29,10 +29,9 @@ draft being authored in-session.
 
 ## Why the words deserve a surfaced gate
 
-PUBLISH already ships a surfaced **visual** gate — `design-reviewer` (`/publish:design-review`), whose own
-description says it *"Complements WRITER's prose reviewer (which owns the words); this owns the page and the
-figure."* But until now only one half of that pair was invocable: **the page had a slash command; the words
-did not.** A capable prose reviewer existed — buried inside the WRITER skill at
+PUBLISH already ships a surfaced **visual** gate — `design-reviewer` (`/publish:design-review`), which owns
+the page and the figure. But until now only one half of that pair was invocable: **the page had a slash
+command; the words did not.** A capable prose reviewer existed — buried inside the WRITER skill at
 [`../writer/agents/reviewer.md`](../writer/agents/reviewer.md) — but it fired *only* while authoring an
 article. A spec, a gap map, a README, or a completion report — the documents a build produces all day — had
 **no `/publish:*` prose gate at all.** This skill closes that asymmetric gap: it surfaces the same critique
