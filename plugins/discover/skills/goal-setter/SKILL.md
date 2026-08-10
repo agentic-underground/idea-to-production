@@ -1,11 +1,10 @@
 ---
 name: goal-setter
 description: >
-  Set or refine the standing DISCOVERY GOAL that scans run over. Trigger with /discovery-goal (or "set a discovery
-  goal", "I want to find a SaaS in <niche>", "refine the goal", "loosen the constraints"). Captures the
-  constraints on WHAT to discover (niche, builder edge, target price band, stack-fit, effort appetite,
-  hard constraints) — infer-first, one question at a time with a recommended answer + multiple-choice —
-  and writes them to .discover/goal.md so /market-scan and /loop scan a bounded space.
+  Set or refine the standing DISCOVERY GOAL that scans run over — the constraints on WHAT to discover
+  (niche, builder edge, price band, stack-fit, effort). Trigger with /discovery-goal (or "set a discovery
+  goal", "find me a SaaS in <niche>", "refine the goal", "loosen the constraints"). Guard: DISCOVER only.
+  → .discover/goal.md.
 metadata:
   phase: [DISCOVER]
   type: producer

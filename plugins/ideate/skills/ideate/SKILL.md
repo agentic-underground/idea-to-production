@@ -1,15 +1,10 @@
 ---
 name: ideate
 description: >
-  Refine an idea into a build-ready IDEA package. Trigger with /ideate (or "let's flesh out this idea",
-  "turn this into a project", "I have an idea: …", "refine this opportunity", "make this build-ready").
-  Accepts EITHER a validated opportunity from the discover plugin OR a raw idea you already have,
-  and refines it to knowledge-parity through an adversarially-challenged dialogue (infer-first, one
-  question at a time with a recommended answer + multiple-choice). Produces the IDEA package — precise
-  agent-facing handoff docs (brief + SMU-seed + first slice + handoff contract, satisfying DELIVER's
-  discovery exit criteria) plus a rich illustrated user-facing dossier (via publish when installed) —
-  iterated with the user, then handed to DELIVER. Use proactively whenever a user wants to make an idea
-  real.
+  Refine a validated opportunity (from discover) or a raw idea into a build-ready IDEA package at
+  knowledge-parity, through an adversarially-challenged dialogue. Trigger with /ideate (or "let's flesh
+  out this idea", "turn this into a project", "refine this opportunity", "make this build-ready"). Guard:
+  IDEATE only; do NOT self-activate during DISCOVER/DELIVER. → the IDEA package → DELIVER.
 metadata:
   phase: [IDEATE]
   type: producer
