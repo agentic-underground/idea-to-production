@@ -301,9 +301,10 @@ Before/after, `frontend` (currently a 118-word run-on whose only triggers are da
 > markers). Trigger with `/frontend` (or "build this UI", "critique this screen"). Guard: DESIGN /
 > BUILD only; dormant during DISCOVER/IDEATE. → components + a11y-checked markup."*
 >
-> *(The "After" trigger `/frontend` does **not** exist today — `frontend` ships no command file.
-> Adopting this example means the DESIGN-station slice in §8 **creates** `/frontend`; copy it as-is
-> and you ship a dead trigger. This is exactly the class of dead route the R3 check catches.)*
+> *(The "After" trigger `/frontend` did **not** exist when this RFC was written — `frontend` shipped no
+> command file, so copying the example as-is would have shipped a dead trigger, exactly the class of dead
+> route the R3 check catches. Slice 5 (the deliver C5 slice) **created** `plugins/deliver/commands/frontend.md`
+> alongside this description, so `/frontend` now resolves.)*
 
 Apply the same compression to `ideate`, `market-scan`, `builder`, and every skill flagged in §7.
 *(C4 — splitting the monolith bodies these lean descriptions front — is deferred; see §9.)*

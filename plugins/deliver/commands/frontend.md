@@ -11,6 +11,7 @@ markers so future agents stay coherent. Work through the skill's maturity order 
 → enhance → innovate) and its element catalogue.
 
 `$ARGUMENTS` is passed to the skill — including the legacy dash pseudo-commands `-help`, `-element`,
-`-design`, `-critique`, and `-innovate` (e.g. `/frontend -critique` reviews the current screen,
-`/frontend -element` browses the element catalogue). With no arguments, infer the intent from the
-conversation (build a UI, critique a screen, or extend an element).
+`-design`, `-critique`, and `-innovate` (e.g. `/frontend -help` lists the element catalogue,
+`/frontend -element <name>` generates one bound to your data, `/frontend -critique` reviews the current
+screen). With no arguments, infer the intent from the conversation (build a UI, critique a screen, or
+extend an element).
