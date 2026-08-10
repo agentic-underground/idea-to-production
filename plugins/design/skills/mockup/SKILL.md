@@ -1,12 +1,10 @@
 ---
 name: mockup
 description: >
-  Design a polished UI mockup, wireframe, or user-flow — carefully composed and design-reviewed, not a
-  first draft. Trigger with /mockup (or "mock up a screen for…", "design a wireframe", "draw the user
-  flow", "sketch the onboarding screens"). Generates the artefact (renderable HTML/CSS screenshotted via
-  the chrome-devtools MCP, or an SVG wireframe; user-flows as Mermaid via publish by capability), then runs
-  the convergent designer↔reviewer loop until it clears the design-fitness rubric. This is the capability
-  IDEATE calls so the user sees commercial-grade material, not whipped-up sketches.
+  Design a UI mockup, wireframe, or user-flow — composed and design-reviewed, not a first draft.
+  Trigger with /mockup (or "mock up a screen for…", "draw the user flow"). Guard: DESIGN only.
+  Generates the artefact (HTML/CSS via chrome-devtools, or an SVG wireframe) then runs the
+  designer↔reviewer loop to the design-fitness rubric. → a commercial-grade mockup.
 metadata:
   phase: [DESIGN]
   type: producer

@@ -1,12 +1,10 @@
 ---
 name: self-improve
 description: >
-  Improve DESIGN itself by folding design feedback back into its canon and its design-fitness rubric —
-  and by self-cleaving over-broad elements. Trigger with /design:self-improve (or "this design passed
-  review but failed real users — fix the canon", "fold this design feedback in", "the reviewer keeps
-  missing X"). Reflects one element against the covenant + pillars, applies the fix on a branch, runs the
-  adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so every future review
-  and mockup, for all users, is sharper by default.
+  Improve DESIGN itself — fold design feedback back into its canon and design-fitness rubric, or
+  self-cleave an over-broad element. Trigger with /design:self-improve (or "this design passed review but
+  failed real users — fix the canon", "fold this design feedback in", "the reviewer keeps missing X").
+  Applies on a branch → adversarial review → PR (per merge governance).
 metadata:
   phase: [cross-cut]
   type: producer
