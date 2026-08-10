@@ -1,13 +1,10 @@
 ---
 name: ui-review
 description: >
-  Adversarially review the design of any running app or screenshot — and write a scored, prioritised
-  critique. Trigger with /ui-review (or "review the UI", "critique this design/screen", "design review",
-  "what does the UI look like", "audit the accessibility of this page"). Crawls the navigable routes of an
-  SPA via the chrome-devtools MCP (screenshot + accessibility snapshot per route), or critiques a screenshot you
-  paste. Grounds every finding in named design canon (Gestalt, the UX laws, Nielsen's heuristics, WCAG
-  2.2) and scores it on the design-fitness rubric. Use proactively whenever someone wants to know whether a
-  UI is good — and why.
+  Adversarially review the design of a running app or screenshot — a scored, prioritised critique.
+  Trigger with /ui-review (or "review the UI", "critique this design/screen"). Guard: DESIGN only.
+  Crawls an SPA's routes via chrome-devtools (screenshot + a11y snapshot each) or a pasted screenshot,
+  grounding findings in design canon (Gestalt, UX laws, Nielsen, WCAG 2.2). → a scored report.
 metadata:
   phase: [DESIGN]
   type: producer
