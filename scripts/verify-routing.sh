@@ -12,10 +12,10 @@
 # The single central ledger is scripts/routing/collisions.tsv; per-skill facts live in frontmatter.
 # The pattern (and how to extend this suite) is documented in docs/guide/routing-tests.md.
 #
-# WARN-THEN-FLIP: checks that pass today gate hard (R1-R4, R8); checks that depend on unlanded
-# context-routing RFC slices (R5 phase tags, R6 description budget, R7 roadmap seed-wording) WARN
-# until those slices land, then flip to hard-FAIL (remove them from the WARN_CHECKS list below, or
-# run --strict). The suite is a RED routing-contract the RFC implementation turns GREEN.
+# WARN-THEN-FLIP: checks that pass today gate hard (R1-R5, R8 — R5 phase tags flipped once RFC slice 1
+# tagged every skill); checks that still depend on unlanded context-routing RFC slices (R6 description
+# budget, R7 roadmap seed-wording) WARN until those slices land, then flip to hard-FAIL (remove them
+# from the WARN_CHECKS list below, or run --strict). The suite is a RED routing-contract the RFC turns GREEN.
 
 set -uo pipefail
 
