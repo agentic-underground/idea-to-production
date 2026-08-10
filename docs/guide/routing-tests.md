@@ -51,17 +51,19 @@ gate is the local pre-push run, not the cloud job. It follows the house style of
 - **R5 · Phase tag** — every skill carries a `metadata.phase` list (RFC C1). **Hard gate** since RFC
   slice 1 tagged all skills; a new untagged skill now FAILs. *(This was the first warn-then-flip check
   to flip — by deleting `R5` from `WARN_CHECKS`.)*
+- **R7 · Roadmap seed-wording** — every EPIC/PLAN carries **both** a `Phase` row **and** a `Loads` row,
+  and every `Loads` token resolves to a real installed `plugin:skill` (RFC C3). **Hard gate** since RFC
+  slice 4 taught `roadmapper` to emit both rows and grafted them onto the golden `EPIC_0001`/`PLAN_0001`
+  examples. *(Flipped by deleting `R7` from `WARN_CHECKS`.)*
+- **R8 · Lexicon ↔ ledger sync** — a **bidirectional presence check**: every collision family-id and
+  defect in the ledger is documented in [`lexicon.md`](./lexicon.md), *and* every `C<n>-` family-id the
+  lexicon cites still exists in the ledger (so a stale family can't linger in the user-facing page).
 
 **Warn-then-flip (depend on unlanded [`context-routing.md`](./context-routing.md) slices — WARN now,
 flip to hard-FAIL as each slice lands, or run `--strict`):**
 
 - **R6 · Description budget** — every `description` ≤ 60 words **and** ≤ 400 chars (RFC C5) — the
   always-on catalog leanness sensor. (Both bounds are enforced.)
-- **R7 · Roadmap seed-wording** — every EPIC/PLAN carries **both** a `Phase` row **and** a `Loads` row,
-  and every `Loads` token resolves to a real installed `plugin:skill` (RFC C3).
-- **R8 · Lexicon ↔ ledger sync** — a **bidirectional presence check**: every collision family-id and
-  defect in the ledger is documented in [`lexicon.md`](./lexicon.md), *and* every `C<n>-` family-id the
-  lexicon cites still exists in the ledger (so a stale family can't linger in the user-facing page).
 
 ### The ledger format
 

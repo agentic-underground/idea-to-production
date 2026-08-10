@@ -12,10 +12,11 @@
 # The single central ledger is scripts/routing/collisions.tsv; per-skill facts live in frontmatter.
 # The pattern (and how to extend this suite) is documented in docs/guide/routing-tests.md.
 #
-# WARN-THEN-FLIP: checks that pass today gate hard (R1-R5, R8 — R5 phase tags flipped once RFC slice 1
-# tagged every skill); checks that still depend on unlanded context-routing RFC slices (R6 description
-# budget, R7 roadmap seed-wording) WARN until those slices land, then flip to hard-FAIL (remove them
-# from the WARN_CHECKS list below, or run --strict). The suite is a RED routing-contract the RFC turns GREEN.
+# WARN-THEN-FLIP: checks that pass today gate hard (R1-R5, R7, R8 — R5 phase tags flipped in RFC slice 1
+# once every skill was tagged; R7 roadmap Phase+Loads tags flipped in slice 4); checks that still depend
+# on unlanded context-routing RFC slices (R6 description budget) WARN until those slices land, then flip
+# to hard-FAIL (remove them from the WARN_CHECKS list below, or run --strict). The suite is a RED
+# routing-contract the RFC turns GREEN.
 
 set -uo pipefail
 
@@ -47,7 +48,7 @@ note() { printf "    %b%s%b\n" "$dim" "$1" "$reset"; }
 # gate by DELETING its id from this list (a one-line edit — exactly as docs/guide/routing-tests.md §5
 # describes). `--strict` flips ALL of them at once (see the verdict block). `soft <id> <msg>` routes a
 # finding to warn() or fail() by membership.
-WARN_CHECKS="R6 R7"   # R5 flipped to a hard gate once every skill was phase-tagged (RFC slice 1)
+WARN_CHECKS="R6"   # R5 flipped in slice 1 (phase tags); R7 flipped in slice 4 (roadmap Phase+Loads tags)
 soft() {
   local id="$1"; shift
   case " $WARN_CHECKS " in *" $id "*) warn "$*" ;; *) fail "$*" ;; esac
@@ -265,13 +266,14 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
-# R7. Roadmap seed-wording (RFC C3) — WARN-THEN-FLIP. Every EPIC/PLAN carries Phase + Loads tags.
+# R7. Roadmap seed-wording (RFC C3) — HARD GATE (flipped in slice 4). Every EPIC/PLAN carries Phase +
+# Loads tags, and every Loads token resolves to an installed plugin:skill.
 # ─────────────────────────────────────────────────────────────────────────────
-section "R7. Roadmap seed-wording (Phase + Loads tags) — RFC C3 [warn-then-flip]"
+section "R7. Roadmap seed-wording (Phase + Loads tags) — RFC C3 [hard gate]"
 mapfile -t roadmap_items < <(find docs/roadmap plugins/deliver/skills/roadmapper/references/examples \
   -type f \( -name 'EPIC_*.md' -o -name 'PLAN_*.md' \) 2>/dev/null | sort)
 if [ "${#roadmap_items[@]}" -eq 0 ]; then
-  soft R7 "no EPIC/PLAN items found (docs/roadmap/ empty — board-mode) — nothing to check yet"
+  pass "no EPIC/PLAN items found (docs/roadmap/ empty — board-mode); nothing to seed-tag"
 else
   r7_bad=0
   for it in "${roadmap_items[@]}"; do

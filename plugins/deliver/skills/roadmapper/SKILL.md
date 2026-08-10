@@ -213,6 +213,8 @@ cross-slice shared-infra map and the EPIC-level `depends_on`):
 | **Constructs** | what this capability produces |
 | **Branch** | `pipeline/NNNN-slug` |
 | **Depends on** | — _(or `EPIC_MMMM`, space/comma-separated, for EPICs that must land first)_ |
+| **Phase** | `` `<PHASE>` `` — the lifecycle phase this capability lives in (`DISCOVER`…`OPERATE`; usually `BUILD`) |
+| **Loads** | `` `plugin:skill`, `plugin:skill` `` — the skills a freshly-`/clear`ed agent should warm for this capability |
 
 ## Plans
 | order | plan | state |
@@ -228,6 +230,16 @@ cross-slice shared-infra map and the EPIC-level `depends_on`):
 > engine scrapes it with `grep -oE 'pipeline/[0-9]{4}-[A-Za-z0-9-]+'`. Keep the manifest `branch` cell
 > and the EPIC `**Branch**` value identical. `order` is always exactly 4 digits.
 
+> **`**Phase**` + `**Loads**` are the C3 routing tags** (the marketplace's context-routing RFC, §5).
+> They are **advisory context routing, not a permission system**: after a `/clear`, reading a
+> PLAN's `Phase` + `Loads` tells a fresh agent which lifecycle phase this work lives in and exactly
+> which `plugin:skill` skills to warm — and, if `.i2p/focus` is unset, whether to offer `/i2p:focus
+> <Phase>`. **Infer `Loads` from the slice's stack + surfaces:** a UI slice → `deliver:frontend`,
+> `design:ui-review`; any slice → `deliver:vertical-slice`; a release slice → `secure:scan-all`,
+> `publish:writer`. Every `Loads` token MUST be a real installed `plugin:skill` (a typo warms nothing
+> silently — the routing gate's R7 resolves each one). Like `**Authoring**`, these are additive
+> bolded-key rows; every consumer greps the Metadata block by key, so unrecognised rows are ignored.
+
 **The PLAN — `docs/roadmap/PLAN_NNNN.md`** (one reviewable **vertical slice** = one DEV_SYSTEM pass;
 **self-contained** so a fresh agent — or the engine — can build it without other context; **no state**,
 state is the EPIC's `## Plans` row). The rich spec the legacy entry used to carry lives **inside the
@@ -242,6 +254,8 @@ PLAN doc** as the sections below:
 | **Plan** | `NNNN` |
 | **Epic** | `MMMM` |
 | **Depends on** | — _(or `PLAN_KKKK`, space/comma-separated, for PLANs whose work must land first)_ |
+| **Phase** | `` `<PHASE>` `` — the lifecycle phase this slice lives in (a UI slice → `DESIGN`/`BUILD`; a release slice → `SECURE`/`PUBLISH`) |
+| **Loads** | `` `plugin:skill`, `plugin:skill` `` — the skills a freshly-`/clear`ed agent should warm to build this slice |
 
 **Brief**: one to three sentences — what this slice does and why it matters.
 
