@@ -92,4 +92,6 @@ own project too, which is why it lives in `KAIZEN.md` and not only here). Depth:
 [`plugins/deliver/knowledge/pillars/waste-elimination.md`](plugins/deliver/knowledge/pillars/waste-elimination.md)
 and [`plugins/deliver/knowledge/architecture/kaizen-covenant.md`](plugins/deliver/knowledge/architecture/kaizen-covenant.md).
 How a document reaches an agent's context is explained in
-[`docs/guide/context-building-pipeline.md`](docs/guide/context-building-pipeline.md).
+[`docs/guide/context-building-pipeline.md`](docs/guide/context-building-pipeline.md); how to keep
+that context **phase-clean** (the tripwire / FOCUS routing layer) is the companion RFC
+[`docs/guide/context-routing.md`](docs/guide/context-routing.md).
