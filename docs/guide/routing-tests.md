@@ -35,9 +35,11 @@ gate is the local pre-push run, not the cloud job. It follows the house style of
 
 **Hard gates (green today, block a push on regression):**
 
-- **R1 · Reachability** — every skill & command is routable (a `/command`, a quoted trigger phrase),
-  and every agent is spawned-by-design (a spawn/VALUE_HANDLER marker), user-triggerable, or declared
-  `orphan` in the ledger. An unroutable, undeclared section FAILs. *(Requirement b.)*
+- **R1 · Reachability** — every skill & command is routable (a `/command`, or a quoted trigger phrase
+  in its `description`), and every agent is spawned-by-design, user-triggerable, or declared `orphan`
+  in the ledger. An unroutable, undeclared section FAILs. *(Requirement b.)* The agent spawn-marker
+  test is a **heuristic floor** (a keyword match on the description); for certainty, declare a
+  spawned-only agent with an `orphan` row rather than relying on the keyword.
 - **R2 · Ledger integrity** — every `collision` member and `orphan` key names a section that exists on
   disk; every collision has a non-empty disambiguation signal.
 - **R3 · Dead slash routes** — every `/plugin:cmd` named in a description resolves. A slash that names
@@ -52,12 +54,13 @@ flip to hard-FAIL as each slice lands, or run `--strict`):**
 
 - **R5 · Phase tag** — every skill carries a `metadata.phase` list (RFC C1). Untagged skills *fail
   open* (treated available), so the gate is safe while tags roll out.
-- **R6 · Description budget** — every `description` ≤ 60 words / 400 chars (RFC C5) — the always-on
-  catalog leanness sensor.
-- **R7 · Roadmap seed-wording** — every EPIC/PLAN carries `Phase` + `Loads` routing-tags whose `Loads`
-  name real skills (RFC C3).
-- **R8 · Lexicon ↔ ledger sync** — every collision family and defect in the ledger is documented in
-  [`lexicon.md`](./lexicon.md), mirroring the KAIZEN byte-identity covenant.
+- **R6 · Description budget** — every `description` ≤ 60 words **and** ≤ 400 chars (RFC C5) — the
+  always-on catalog leanness sensor. (Both bounds are enforced.)
+- **R7 · Roadmap seed-wording** — every EPIC/PLAN carries **both** a `Phase` row **and** a `Loads` row,
+  and every `Loads` token resolves to a real installed `plugin:skill` (RFC C3).
+- **R8 · Lexicon ↔ ledger sync** — a **bidirectional presence check**: every collision family-id and
+  defect in the ledger is documented in [`lexicon.md`](./lexicon.md), *and* every `C<n>-` family-id the
+  lexicon cites still exists in the ledger (so a stale family can't linger in the user-facing page).
 
 ### The ledger format
 
@@ -85,9 +88,13 @@ chart) — the phrasings most likely to mis-route.
   spawned-only) add an `orphan` row. R1 tells you if it's unroutable.
 - **A new intended overlap** (two sections that *should* share an intent) → add a `collision` row with
   the disambiguating axis, and a row in [`lexicon.md`](./lexicon.md) §4 (R8 enforces both).
+- **A new dead-route defect** → add a `defect` row keyed on the **missing `/command` token** (e.g.
+  `publish:design-review`), **not** the claiming skill — R3 looks up the exact slash from the
+  description, so a mis-key would hard-FAIL the route instead of WARNing.
 - **You fixed a defect** (added the missing command) → delete its `defect` row; R3 will confirm.
-- **Flip a warn-then-flip check** once its RFC slice lands → remove the check from the WARN set in
-  `verify-routing.sh` (or gate CI with `--strict`).
+- **Flip a warn-then-flip check** once its RFC slice lands → delete its id from the `WARN_CHECKS`
+  variable near the top of `verify-routing.sh` (a one-line edit — that check then hard-FAILs), or run
+  `--strict` to flip **all** warn-then-flip checks at once.
 - **A new behavioural fixture** → append a `phrase ⇥ expected ⇥ must-not-load` row to
   `eval-fixtures.tsv`.
 

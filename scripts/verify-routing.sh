@@ -43,11 +43,30 @@ warn() { printf "  %b⚠ %s%b\n" "$yellow" "$1" "$reset"; warns=$((warns+1)); }
 section() { printf "\n%b%s%b\n" "$bold" "$1" "$reset"; }
 note() { printf "    %b%s%b\n" "$dim" "$1" "$reset"; }
 
+# WARN-THEN-FLIP registry: a check id listed here reports non-fatally (WARN); FLIP a check to a hard
+# gate by DELETING its id from this list (a one-line edit — exactly as docs/guide/routing-tests.md §5
+# describes). `--strict` flips ALL of them at once (see the verdict block). `soft <id> <msg>` routes a
+# finding to warn() or fail() by membership.
+WARN_CHECKS="R5 R6 R7"
+soft() {
+  local id="$1"; shift
+  case " $WARN_CHECKS " in *" $id "*) warn "$*" ;; *) fail "$*" ;; esac
+}
+
 # ── helpers ──────────────────────────────────────────────────────────────────
 
 # frontmatter <file> : emit the leading ---…--- YAML block (exclusive of the fences).
 frontmatter() {
   awk 'NR==1 && $0=="---"{inb=1;next} inb && $0=="---"{exit} inb' "$1"
+}
+
+# description_block <file> : emit ONLY the `description:` field value (folded/inline), stopping at the
+# next top-level key. Trigger phrases live here — scope phrase detection to it, not the whole YAML blob.
+description_block() {
+  frontmatter "$1" | awk '
+    /^description:/{cap=1; sub(/^description:[ \t>|]*/,""); if($0!="")print; next}
+    cap && /^[a-zA-Z_][a-zA-Z0-9_]*:/{exit}
+    cap{print}'
 }
 
 # ledger_rows <kind> : emit the tab-rows of collisions.tsv whose first column == kind.
@@ -62,8 +81,10 @@ section_exists() {
   [ -d "plugins/$p/skills/$n" ] || [ -f "plugins/$p/commands/$n.md" ] || [ -f "plugins/$p/agents/$n.md" ]
 }
 
-# All plugin dirs, sorted.
+# All plugin dirs (and their names), sorted — the LIVE plugin set, so nothing is hardcoded.
 mapfile -t PLUGINS < <(find plugins -mindepth 1 -maxdepth 1 -type d | sort)
+PLUGIN_NAMES=(); for _p in "${PLUGINS[@]}"; do PLUGIN_NAMES+=("$(basename "$_p")"); done
+NS="$(IFS='|'; printf '%s' "${PLUGIN_NAMES[*]}")"   # e.g. deliver|design|discover|i2p|…
 
 printf "%b%s%b\n" "$bold" "Context-routing pre-push gate — $(printf '%s' "$repo" | sed "s#$HOME#~#")" "$reset"
 
@@ -79,10 +100,10 @@ r1_ok=1
 # Skills: reachable iff frontmatter names a /command, carries a quoted trigger phrase, OR is orphan-declared.
 while IFS= read -r sdir; do
   name="$(basename "$sdir")"; plugin="$(basename "$(dirname "$(dirname "$sdir")")")"
-  fm="$(frontmatter "$sdir/SKILL.md")"
+  fm="$(frontmatter "$sdir/SKILL.md")"; desc="$(description_block "$sdir/SKILL.md")"
   has_slash=0; has_phrase=0
   printf '%s' "$fm" | grep -qE '(^|[^[:alnum:]])/[a-z][a-z0-9:_-]+' && has_slash=1
-  printf '%s' "$fm" | grep -qE '"[^"]+"' && has_phrase=1
+  printf '%s' "$desc" | grep -qE '"[^"]+"' && has_phrase=1   # trigger phrases live in description, not the whole blob
   [ -f "plugins/$plugin/commands/$name.md" ] && has_slash=1
   if [ "$has_slash" -eq 0 ] && [ "$has_phrase" -eq 0 ] && [ -z "${ORPHAN[$plugin:$name]:-}" ]; then
     r1_ok=0; fail "unroutable skill $plugin:$name — no /command, no trigger phrase, not declared orphan in $LEDGER"
@@ -93,11 +114,12 @@ done < <(find plugins -mindepth 3 -maxdepth 3 -type d -path '*/skills/*' | sort)
 agent_orphans=0
 while IFS= read -r af; do
   name="$(basename "$af" .md)"; plugin="$(basename "$(dirname "$(dirname "$af")")")"
-  fm="$(frontmatter "$af")"
+  fm="$(frontmatter "$af")"; desc="$(description_block "$af")"
+  # spawn-by-design marker (a HEURISTIC FLOOR — a machine metadata.reach or an orphan row is stronger).
   if printf '%s' "$fm" | grep -qiE 'spawned|invoke|triggered by|role parameter|on-demand|run the inspector|inspect |value.?handler'; then
     continue
   fi
-  printf '%s' "$fm" | grep -qE '"[^"]+"' && continue
+  printf '%s' "$desc" | grep -qE '"[^"]+"' && continue
   [ -n "${ORPHAN[$plugin:$name]:-}" ] && continue
   r1_ok=0; fail "unroutable agent $plugin:$name — no spawn marker, no trigger phrase, not declared orphan"
   agent_orphans=$((agent_orphans+1))
@@ -128,7 +150,7 @@ else
     section_exists "$key" || { fail "orphan row: key '$key' does not exist on disk"; r2_ok=0; }
   done < <(ledger_rows orphan)
 fi
-[ "$r2_ok" -eq 1 ] && pass "every collision member, orphan, and defect key resolves to a real section"
+[ "$r2_ok" -eq 1 ] && pass "every collision member and orphan key resolves to a real section (defect keys name missing routes — validated by R3)"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # R3. Dead slash routes — a description names /plugin:cmd that resolves to nothing.
@@ -139,10 +161,12 @@ section "R3. Dead slash routes — every /plugin:cmd resolves"
 declare -A DEFECT=()
 while IFS=$'\t' read -r kind key rest; do DEFECT["$key"]=1; done < <(ledger_rows defect)
 r3_ok=1
-# collect every distinct /plugin:cmd referenced in any SKILL.md or command frontmatter
+# collect every distinct /plugin:cmd referenced in any SKILL.md or command frontmatter.
+# The namespace alternation is built from the LIVE plugin set (NS), so adding/renaming a plugin needs
+# no edit here — a dead route under a new namespace is still caught.
 mapfile -t refs < <(
   for f in plugins/*/skills/*/SKILL.md plugins/*/commands/*.md; do frontmatter "$f"; done \
-    | grep -oE '/(deliver|design|discover|i2p|ideate|operate|publish|secure):[a-z0-9-]+' | sort -u
+    | grep -oE "/($NS):[a-z0-9-]+" | sort -u
 )
 for ref in "${refs[@]}"; do
   p="${ref%%:*}"; p="${p#/}"; cmd="${ref#*:}"
@@ -215,32 +239,29 @@ done < <(find plugins -mindepth 3 -maxdepth 3 -type d -path '*/skills/*' | sort)
 if [ "$tagged" -eq "$total" ]; then
   pass "all $total skills carry a metadata.phase list"
 else
-  warn "$tagged/$total skills carry metadata.phase — lands in RFC slice 1 (untagged fail OPEN until then)"
-  note "flip to hard-FAIL once slice 1 tags every skill (remove R5 from warn-then-flip / run --strict)"
+  soft R5 "$tagged/$total skills carry metadata.phase — lands in RFC slice 1 (untagged fail OPEN until then)"
+  note "flip to hard-FAIL by deleting R5 from WARN_CHECKS once slice 1 tags every skill (or run --strict)"
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
 # R6. Description budget (RFC C5) — WARN-THEN-FLIP. ≤ 60 words / 400 chars.
 # ─────────────────────────────────────────────────────────────────────────────
-section "R6. Description budget ≤ 60 words / 400 chars — RFC C5 [warn-then-flip]"
+section "R6. Description budget ≤ 60 words AND ≤ 400 chars — RFC C5 [warn-then-flip]"
 over=0; worst=""; worstn=0
 while IFS= read -r sdir; do
   name="$(basename "$(dirname "$(dirname "$sdir")")"):$(basename "$sdir")"
-  # description: block scalar — take from `description:` to the next top-level key.
-  desc="$(frontmatter "$sdir/SKILL.md" | awk '
-    /^description:/{cap=1; sub(/^description:[ \t>|]*/,""); if($0!="")print; next}
-    cap && /^[a-zA-Z_]+:/{exit}
-    cap{print}')"
+  desc="$(description_block "$sdir/SKILL.md")"
   words="$(printf '%s' "$desc" | wc -w | tr -d ' ')"
-  if [ "$words" -gt 60 ]; then
+  chars="$(printf '%s' "$desc" | tr -d '\n' | wc -c | tr -d ' ')"
+  if [ "$words" -gt 60 ] || [ "$chars" -gt 400 ]; then
     over=$((over+1)); [ "$words" -gt "$worstn" ] && { worstn=$words; worst=$name; }
   fi
 done < <(find plugins -mindepth 3 -maxdepth 3 -type d -path '*/skills/*' | sort)
 if [ "$over" -eq 0 ]; then
-  pass "every skill description is within the 60-word budget"
+  pass "every skill description is within budget (≤60 words and ≤400 chars)"
 else
-  warn "$over skill description(s) over the 60-word budget (worst: $worst @ ${worstn}w) — RFC C5 compression"
-  note "flip to hard-FAIL as the per-plugin C5 slices land"
+  soft R6 "$over skill description(s) over the 60-word / 400-char budget (worst: $worst @ ${worstn}w) — RFC C5"
+  note "flip to hard-FAIL by deleting R6 from WARN_CHECKS as the per-plugin C5 slices land"
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -250,16 +271,28 @@ section "R7. Roadmap seed-wording (Phase + Loads tags) — RFC C3 [warn-then-fli
 mapfile -t roadmap_items < <(find docs/roadmap plugins/deliver/skills/roadmapper/references/examples \
   -type f \( -name 'EPIC_*.md' -o -name 'PLAN_*.md' \) 2>/dev/null | sort)
 if [ "${#roadmap_items[@]}" -eq 0 ]; then
-  warn "no EPIC/PLAN items found (docs/roadmap/ empty — board-mode) — nothing to check yet"
+  soft R7 "no EPIC/PLAN items found (docs/roadmap/ empty — board-mode) — nothing to check yet"
 else
-  r7_missing=0
+  r7_bad=0
   for it in "${roadmap_items[@]}"; do
-    grep -qE '^\|[[:space:]]*\*\*(Phase|Loads)\*\*' "$it" || { r7_missing=$((r7_missing+1)); note "missing Phase/Loads tag: $it"; }
+    # require BOTH a **Phase** row AND a **Loads** row (not either).
+    hasP=0; hasL=0
+    grep -qE '^\|[[:space:]]*\*\*Phase\*\*' "$it" && hasP=1
+    grep -qE '^\|[[:space:]]*\*\*Loads\*\*' "$it" && hasL=1
+    if [ "$hasP" -eq 0 ] || [ "$hasL" -eq 0 ]; then
+      r7_bad=$((r7_bad+1)); note "missing Phase and/or Loads tag: $it"; continue
+    fi
+    # resolve each Loads token (plugin:skill) to a real installed skill.
+    loads="$(grep -E '^\|[[:space:]]*\*\*Loads\*\*' "$it" | head -1 | sed -E 's/^\|[^|]*\|//; s/\|.*$//; s/`//g')"
+    for tok in $(printf '%s' "$loads" | tr ',' ' '); do
+      tok="$(printf '%s' "$tok" | tr -d ' ')"; [ -z "$tok" ] && continue
+      section_exists "$tok" || { r7_bad=$((r7_bad+1)); note "$it: Loads names '$tok' which is not an installed section"; }
+    done
   done
-  if [ "$r7_missing" -eq 0 ]; then
-    pass "all ${#roadmap_items[@]} roadmap item(s) carry Phase + Loads seed-wording"
+  if [ "$r7_bad" -eq 0 ]; then
+    pass "all ${#roadmap_items[@]} roadmap item(s) carry Phase + Loads seed-wording, and every Loads target resolves"
   else
-    warn "$r7_missing/${#roadmap_items[@]} roadmap item(s) lack Phase/Loads tags — RFC C3 (roadmapper emission)"
+    soft R7 "$r7_bad roadmap tag issue(s) across ${#roadmap_items[@]} item(s) — RFC C3 (roadmapper emission)"
   fi
 fi
 
@@ -272,11 +305,17 @@ if [ ! -f "$LEXICON" ]; then
   warn "$LEXICON not present yet — lexicon sync deferred"
 else
   r8_ok=1
-  # every collision family-id and every defect key must be named in the lexicon.
+  # Forward: every ledger collision-family id and defect key must be named in the lexicon.
   while IFS=$'\t' read -r kind key rest; do
-    grep -qF "$key" "$LEXICON" || { fail "lexicon missing ledger entry '$key' (collisions.tsv ↔ lexicon.md drift)"; r8_ok=0; }
+    grep -qF "$key" "$LEXICON" || { fail "lexicon missing ledger entry '$key' (ledger → lexicon drift)"; r8_ok=0; }
   done < <(ledger_rows collision; ledger_rows defect)
-  [ "$r8_ok" -eq 1 ] && pass "every ledger collision-family & defect is documented in $LEXICON"
+  # Reverse: every collision family-id the lexicon cites (C<n>-<slug>) must still exist in the ledger,
+  # so a stale family removed from the ledger cannot linger undetected in the user-facing page.
+  ledger_fams="$(ledger_rows collision | awk -F'\t' '{print $2}')"
+  for lf in $(grep -oE 'C[0-9]+-[a-z-]+' "$LEXICON" | sort -u); do
+    printf '%s\n' "$ledger_fams" | grep -qxF "$lf" || { fail "lexicon cites family '$lf' absent from the ledger (lexicon → ledger drift)"; r8_ok=0; }
+  done
+  [ "$r8_ok" -eq 1 ] && pass "lexicon ↔ ledger in sync — every family-id & defect matches, both directions"
 fi
 
 # ── verdict ──────────────────────────────────────────────────────────────────

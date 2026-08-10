@@ -11,13 +11,17 @@
 #   ----        ---                     -------                                     ------                       ----
 #   collision   <family-id C0..C12>     comma-sep plugin:section that share intent  the disambiguating AXIS      human note
 #   orphan      <plugin:section>        reach-kind: spawned-only|loop-only          who spawns it / how reached  why it has no user trigger (by design)
-#   defect      <plugin:section>        the /command it claims but that is missing  DEAD-ROUTE                   tracked fix (backlog); WARN not FAIL until fixed
+#   defect      <plugin:MISSING-cmd>    the /command it claims but that is missing  DEAD-ROUTE                   tracked fix (backlog); WARN not FAIL until fixed
 #
 # kind=collision  → R4 asserts every member still exists and the signal is non-empty (a declared,
 #                   resolvable collision is fine; an UNDECLARED exact-phrase collision FAILs).
 # kind=orphan     → R1 treats the section as reachable-by-design (no user trigger required).
 # kind=defect     → R3 downgrades this known missing command from FAIL to WARN, and it is listed as
 #                   backlog. A NEW (unledgered) missing command FAILs hard.
+#                   KEY = the MISSING /command TOKEN (plugin:command), NOT the claiming skill: R3 parses
+#                   the slash from a description and looks up that exact token. e.g. the design-reviewER
+#                   skill claims /publish:design-review → key is `publish:design-review` (no "-er").
+#                   Key it on the claiming skill instead and R3 will hard-FAIL the route.
 
 # ─────────────────────────────────────────────────────────────────────────────
 # COLLISIONS — an intent/phrase claimed by more than one section. Resolved by an axis.

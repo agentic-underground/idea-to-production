@@ -3,10 +3,14 @@
 *A user-facing reference.* The idea-to-production marketplace has a **context-fulfilment router**:
 when you phrase an instruction in the marketplace's standard jargon, the agent loads exactly the
 plugin-sections that instruction needs — and leaves the rest dormant. This page is the dictionary of
-that jargon. It is not aspirational: every routing claim here is **proven by a test**
-([`verify-routing.sh`](../../scripts/verify-routing.sh), see [`routing-tests.md`](./routing-tests.md)),
-and the machine ledger it is checked against is [`scripts/routing/collisions.tsv`](../../scripts/routing/collisions.tsv).
-Check **R8** fails the pre-push gate if this page and the ledger ever drift apart.
+that jargon. What is **proven deterministically** by the pre-push gate
+([`verify-routing.sh`](../../scripts/verify-routing.sh), see [`routing-tests.md`](./routing-tests.md))
+is the **wiring**: every section named here exists and is reachable, no `/command` here is a dead
+route (R1/R2/R3), the exact-phrase collisions are declared (R4), and this page stays in step with the
+machine ledger [`scripts/routing/collisions.tsv`](../../scripts/routing/collisions.tsv) (R8). The
+**intent-level** disambiguation in §4 (which wording should route where) is asserted by maintainers and
+checked *behaviourally* only by the opt-in Layer-2 eval — not the pre-push gate. So: the routes are
+proven to exist; the routing *judgment* is proven by the eval when you run it.
 
 > **How to use this page.** Say what you want in the phrasing of the table you need. Reach for a
 > `/command` when you want to be unambiguous; reach for a natural phrase when you want the agent to
@@ -69,7 +73,7 @@ section. Family ids are the ledger keys R8 keeps in sync.
 | `C1-self-improve` | "fold this feedback in / self-improve" | name the **element**: `/deliver:self-improve <path>` (only `deliver` has the command today — see §5) |
 | `C2-check` | "check readiness / are my tools installed" | a plugin (`/secure:check`) or **all** (`/i2p:check`) |
 | `C3-inspect` | "inspect this / run the inspector" | the plugin: `/deliver:inspect`, `/design:inspect`, … |
-| `C4-review-critique` | "review this / critique this" | the **artefact**: PR → `deliver:pr-review`; running UI → `design:ui-review`; chart/PDF → `publish:design-reviewer`; prose → `publish:document-review`; everything → `i2p:review` |
+| `C4-review-critique` | "review this / critique this" | the **artefact**: PR → `deliver:pr-review`; architecture/code → `deliver:code-quality`; running UI → `design:ui-review`; chart/PDF → `publish:design-reviewer`; prose → `publish:document-review`; everything → `i2p:review` |
 | `C5-chart-diagram` | "make a chart / a diagram" | the **verb**: produce → `publish:diagram-studio`; place in a doc → `publish:illustrator`; review → `publish:design-reviewer` |
 | `C6-coverage-loop` | "chase coverage" | `/deliver:coverage-loop` (command) drives the `deliver:code-quality` skill |
 | `C7-name` | "name my product" | `/ideate:name` delegates to `ideate:name-search` |
@@ -93,11 +97,12 @@ items for the trigger-discipline slices; the skill itself still auto-activates o
 ## 6. How this is proven
 
 `bash scripts/verify-routing.sh` (the pre-push gate) checks — deterministically, token-free — that
-every phrase here reaches a real section (R1/R2/R3), that every shared phrase in §4 is disambiguated
-(R4), and that this page and the ledger never drift (R8). The behavioural half — that natural wording
-actually *routes* to the intended section and leaves others dormant — is the opt-in eval in
-[`routing-tests.md`](./routing-tests.md). Phrase per this lexicon, and the router works **because a
-test says so.**
+every phrase here reaches a real section (R1/R2/R3), that every **exact shared phrase** is declared
+(R4 — note this covers identical quoted phrases, a subset of §4's intent-level families), and that this
+page and the ledger never drift (R8). The behavioural half — that natural wording actually *routes* to
+the intended section and leaves others dormant, which is what §4 is really about — is the opt-in eval
+in [`routing-tests.md`](./routing-tests.md). So the routes here are **proven to exist** by the gate;
+run the eval to prove the **routing judgment**.
 
 ---
 
