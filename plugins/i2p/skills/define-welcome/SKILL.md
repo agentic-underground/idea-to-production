@@ -1,10 +1,10 @@
 ---
 name: define-welcome
 description: >
-  Define this repository's welcome experience — the front door someone meets when they open it in an agent
-  harness. Reads the repo, proposes 2-4 top-level "lanes" with decision trees, and writes a phase-stamped
-  .claude/welcome.md the SessionStart hook uses to greet and route arrivals. Trigger with
-  /i2p:define-welcome (or "set up a greeting for this repo", "add a welcome/front door").
+  Define this repository's welcome experience — the front door someone meets when they open it. Reads the
+  repo, proposes 2-4 "lanes" with decision trees, and writes .claude/welcome.md in the i2p welcome format
+  (phase-stamped in a lifecycle) so the SessionStart hook greets and routes arrivals. Trigger with
+  /i2p:define-welcome (or "set up a greeting for this repo", "add a front door").
 metadata:
   phase: [cross-cut]
   type: producer

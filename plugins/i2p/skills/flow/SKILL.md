@@ -2,9 +2,9 @@
 name: flow
 description: >
   The value-flow map. Trigger with /i2p:flow (or "show me the value flow", "where does each plugin fit?",
-  "draw the idea-to-production pipeline"). Places each installed plugin on the nine-phase DISCOVER-to-OPERATE
-  flow, names the headline command + artefact at each stage, marks dark stages, and traces the ordered path
-  to PRODUCTION. Renders Mermaid when available, else markdown.
+  "what's my next step?", "draw the pipeline"). Places each installed plugin on the nine-phase
+  DISCOVER-to-OPERATE flow, names the headline command + artefact at each stage, marks dark stages, and
+  traces the ordered path to PRODUCTION. Renders Mermaid when available, else markdown.
 metadata:
   phase: [cross-cut]
   type: front-door
