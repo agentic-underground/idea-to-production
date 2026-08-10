@@ -10,7 +10,7 @@ routing-test system; §5 is how you extend it. It is the empirical backbone unde
 
 | File | Role |
 |---|---|
-| [`scripts/verify-routing.sh`](../../scripts/verify-routing.sh) | **Layer 1** — the deterministic, token-free **pre-push gate** (checks R1–R8). |
+| [`scripts/verify-routing.sh`](../../scripts/verify-routing.sh) | **Layer 1** — the deterministic, token-free **pre-push gate** (checks R1–R9). |
 | [`scripts/routing/collisions.tsv`](../../scripts/routing/collisions.tsv) | The **one central ledger** — collisions, orphans-by-design, and known defects. |
 | per-skill **frontmatter** | The rest of the source of truth (each skill's own triggers + `metadata.phase`). Hybrid model: frontmatter owns per-skill facts, the ledger owns only cross-skill facts. |
 | [`docs/guide/lexicon.md`](./lexicon.md) | The human **STANDARD LEXICON**, kept in sync with the ledger by check R8. |
@@ -31,7 +31,7 @@ gate is the local pre-push run, not the cloud job. It follows the house style of
 [`verify-prereqs.sh`](../../scripts/verify-prereqs.sh) exactly: a `section/pass/fail/warn` harness, a
 `fails` counter, and `exit 0|1`.
 
-## 3. The checks (R1–R8)
+## 3. The checks (R1–R9)
 
 **Hard gates (green today, block a push on regression):**
 

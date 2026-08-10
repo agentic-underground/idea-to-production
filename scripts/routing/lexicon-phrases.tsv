@@ -4,8 +4,12 @@
 # shared phrases; R8 syncs only family-ids. So compressing a description could silently drop the very
 # phrase a collision family relies on — this file + R9 make that drift VISIBLE (a warn), not silent.
 #
-# Families map to scripts/routing/collisions.tsv — only the PHRASE-routed families are listed
-# (C0/C4/C9/C10/C11); C1/C2/C3/C5/C6/C7/C8/C12 disambiguate by /command namespace and need no phrase.
+# Families map to scripts/routing/collisions.tsv. Listed here are the free-text PHRASE-routed families
+# C0/C4/C9/C10/C11 — the curated PRIMARY disambiguators (the lexicon.md §4 "say also…" phrases), not
+# necessarily every ledger member. The other families need no rows: C1/C2/C3/C6/C7 disambiguate by
+# /command namespace; C5 (verb) and C8 (target) route by a phrase already guarded here under another
+# family (e.g. publish:design-reviewer is covered by its C4 row); C12 is composed-overlap, not a choice.
+# R9 resolves a member to its skill/agent/command home, so agent-hosted members are guardable too.
 # R9 requires, for each (family, member) group: AT LEAST ONE listed phrase survives in the member's
 # description (case-insensitive substring, whitespace-normalised). Remove a row ONLY as a deliberate
 # decision when a phrase is intentionally reworded — that keeps the drift a conscious edit.

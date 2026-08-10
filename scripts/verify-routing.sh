@@ -351,29 +351,39 @@ PHRASES="scripts/routing/lexicon-phrases.tsv"
 if [ ! -f "$PHRASES" ]; then
   soft R9 "$PHRASES not present — C5 drift-guard deferred"
 else
-  declare -A R9_SEEN=() R9_HIT=() R9_WANT=()
+  declare -A R9_SEEN=() R9_HIT=() R9_WANT=() R9_FILE=()
   r9_rows=0
   while IFS=$'\t' read -r fam mem phr; do
+    fam="${fam#"${fam%%[![:space:]]*}"}"          # strip leading whitespace (skip indented comments)
     case "$fam" in ''|\#*) continue ;; esac
     if [ -z "$mem" ] || [ -z "$phr" ]; then continue; fi
     r9_rows=$((r9_rows+1))
     key="$fam|$mem"
     R9_SEEN["$key"]=1
     R9_WANT["$key"]="${R9_WANT[$key]:+${R9_WANT[$key]}, }\"$phr\""
-    f="plugins/${mem%%:*}/skills/${mem#*:}/SKILL.md"
-    if [ -f "$f" ]; then
+    # resolve the member's home the same way section_exists does — skill, else agent, else command —
+    # so an agent/command-hosted collision member is guardable too, not silently skipped.
+    p="${mem%%:*}"; n="${mem#*:}"; f=""
+    for cand in "plugins/$p/skills/$n/SKILL.md" "plugins/$p/agents/$n.md" "plugins/$p/commands/$n.md"; do
+      [ -f "$cand" ] && { f="$cand"; break; }
+    done
+    R9_FILE["$key"]="$f"
+    if [ -n "$f" ]; then
       # normalise all whitespace (incl. fold newlines) to single spaces before the fixed-string match.
       desc="$(description_block "$f" | tr -s '[:space:]' ' ')"
       printf '%s' "$desc" | grep -qiF -- "$phr" && R9_HIT["$key"]=1
     fi
   done < "$PHRASES"
   r9_bad=0
-  for key in $(printf '%s\n' "${!R9_SEEN[@]}" | sort); do
-    if [ -z "${R9_HIT[$key]:-}" ]; then
-      r9_bad=$((r9_bad+1))
-      note "${key#*|}: no ${key%%|*} disambiguating phrase survives in its description (want one of: ${R9_WANT[$key]}) — C5 drift"
+  while IFS= read -r key; do
+    [ -n "${R9_HIT[$key]:-}" ] && continue
+    r9_bad=$((r9_bad+1))
+    if [ -z "${R9_FILE[$key]:-}" ]; then
+      note "${key#*|}: member has no SKILL.md/agent/command on disk — check $PHRASES (${key%%|*})"
+    else
+      note "${key#*|}: no ${key%%|*} disambiguating phrase survives in its description (want one of: ${R9_WANT[$key]:-}) — C5 drift"
     fi
-  done
+  done < <(printf '%s\n' "${!R9_SEEN[@]}" | sort)
   if [ "$r9_bad" -eq 0 ]; then
     pass "every collision family's disambiguating phrase survives in a member description (${#R9_SEEN[@]} family/member group(s), $r9_rows phrase(s))"
   else

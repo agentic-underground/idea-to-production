@@ -88,9 +88,11 @@ section. Family ids are the ledger keys R8 keeps in sync.
 
 > The free-text disambiguating phrases for the phrase-routed families (**C0, C4, C9, C10, C11**) are
 > inventoried in [`scripts/routing/lexicon-phrases.tsv`](../../scripts/routing/lexicon-phrases.tsv) and
-> gate-checked by **R9**: at least one must survive in each member skill's `description`, so a C5
-> compression cannot silently drop the phrase a family routes on. (The namespace-routed families —
-> C1/C2/C3/C5/C6/C7/C8/C12 — disambiguate by `/command`, so they need no phrase guard.)
+> gate-checked by **R9** (advisory / warn-mode until the C5 compression slices land): at least one must
+> survive in each member's `description`, so a C5 compression cannot silently drop the phrase a family
+> routes on. The other families need no rows — C1/C2/C3/C6/C7 disambiguate by `/command` namespace;
+> C5 (verb) and C8 (target) route by a phrase already guarded above under another family (e.g.
+> `publish:design-reviewer` under C4); C12 is a composed overlap, not a choice.
 
 ## 5. Known dead routes (honest caveats — tracked defects)
 
