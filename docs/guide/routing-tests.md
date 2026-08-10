@@ -64,10 +64,22 @@ flip to hard-FAIL as each slice lands, or run `--strict`):**
 
 - **R6 · Description budget** — every `description` ≤ 60 words **and** ≤ 400 chars (RFC C5) — the
   always-on catalog leanness sensor. (Both bounds are enforced.)
+- **R9 · Lexicon phrase presence** — the C5 *drift-guard*. For every `(family, member)` group in
+  [`scripts/routing/lexicon-phrases.tsv`](../../scripts/routing/lexicon-phrases.tsv), **at least one**
+  listed disambiguating phrase must still appear (case-insensitive, whitespace-normalised substring) in
+  that member skill's `description`. It exists because compressing a description (C5) can silently drop
+  a free-text disambiguator that **R4 cannot see** (R4 only fires on ≥8-char *identical* shared phrases)
+  and **R8 cannot see** (R8 syncs only family-ids) — so without R9, a C5 edit could delete the very
+  phrase family C0/C4/C9/C10/C11 rely on and every other check stays green. Removing a row is a
+  deliberate re-wording decision, which keeps the drift a conscious edit rather than a silent loss.
 
 ### The ledger format
 
-`collisions.tsv` is TAB-separated, `#`-commented, with three record kinds keyed by the first column:
+`collisions.tsv` is the collision/orphan/defect ledger; its companion
+`scripts/routing/lexicon-phrases.tsv` (columns `family ⇥ member ⇥ phrase`) is the load-bearing-phrase
+inventory that R9 reads. Both are TAB-separated and `#`-commented.
+
+`collisions.tsv` has three record kinds keyed by the first column:
 
 ```
 collision   C4-review-critique   deliver:pr-review,design:ui-review,…   the ARTEFACT under review   note

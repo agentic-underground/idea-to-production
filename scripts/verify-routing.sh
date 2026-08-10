@@ -14,9 +14,11 @@
 #
 # WARN-THEN-FLIP: checks that pass today gate hard (R1-R5, R7, R8 — R5 phase tags flipped in RFC slice 1
 # once every skill was tagged; R7 roadmap Phase+Loads tags flipped in slice 4); checks that still depend
-# on unlanded context-routing RFC slices (R6 description budget) WARN until those slices land, then flip
-# to hard-FAIL (remove them from the WARN_CHECKS list below, or run --strict). The suite is a RED
-# routing-contract the RFC turns GREEN.
+# on unlanded context-routing RFC slices WARN until those slices land, then flip to hard-FAIL (remove
+# them from the WARN_CHECKS list below, or run --strict): R6 description budget (flips when slice 5's
+# per-plugin C5 compressions reach zero over budget) and R9 lexicon-phrase drift-guard (advisory —
+# warns when a C5 edit drops a load-bearing disambiguator). The suite is a RED routing-contract the RFC
+# turns GREEN.
 
 set -uo pipefail
 
@@ -48,7 +50,7 @@ note() { printf "    %b%s%b\n" "$dim" "$1" "$reset"; }
 # gate by DELETING its id from this list (a one-line edit — exactly as docs/guide/routing-tests.md §5
 # describes). `--strict` flips ALL of them at once (see the verdict block). `soft <id> <msg>` routes a
 # finding to warn() or fail() by membership.
-WARN_CHECKS="R6"   # R5 flipped in slice 1 (phase tags); R7 flipped in slice 4 (roadmap Phase+Loads tags)
+WARN_CHECKS="R6 R9"   # R5 flipped slice 1 (phase tags); R7 flipped slice 4 (roadmap tags); R9 added slice 5 (C5 drift-guard)
 soft() {
   local id="$1"; shift
   case " $WARN_CHECKS " in *" $id "*) warn "$*" ;; *) fail "$*" ;; esac
@@ -334,6 +336,49 @@ else
     printf '%s\n' "$ledger_fams" | grep -qxF "$lf" || { fail "lexicon cites family '$lf' absent from the ledger (lexicon → ledger drift)"; r8_ok=0; }
   done
   [ "$r8_ok" -eq 1 ] && pass "lexicon ↔ ledger in sync — every family-id & defect matches, both directions"
+fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# R9. Lexicon phrase presence (RFC C5 drift-guard) — WARN-THEN-FLIP. A C5 description compression can
+# silently drop a free-text disambiguating phrase that R4 (identical-shared phrases only) and R8
+# (family-ids only) cannot see. R9 asserts that for every (family, member) group in
+# scripts/routing/lexicon-phrases.tsv, AT LEAST ONE listed phrase still appears in that member's
+# description (case-insensitive, whitespace-normalised substring — so a phrase spanning a YAML fold
+# still matches). Removing a row is a deliberate re-wording decision, which keeps the drift visible.
+# ─────────────────────────────────────────────────────────────────────────────
+section "R9. Lexicon phrase presence (C5 drift-guard) — RFC C5 [warn-then-flip]"
+PHRASES="scripts/routing/lexicon-phrases.tsv"
+if [ ! -f "$PHRASES" ]; then
+  soft R9 "$PHRASES not present — C5 drift-guard deferred"
+else
+  declare -A R9_SEEN=() R9_HIT=() R9_WANT=()
+  r9_rows=0
+  while IFS=$'\t' read -r fam mem phr; do
+    case "$fam" in ''|\#*) continue ;; esac
+    if [ -z "$mem" ] || [ -z "$phr" ]; then continue; fi
+    r9_rows=$((r9_rows+1))
+    key="$fam|$mem"
+    R9_SEEN["$key"]=1
+    R9_WANT["$key"]="${R9_WANT[$key]:+${R9_WANT[$key]}, }\"$phr\""
+    f="plugins/${mem%%:*}/skills/${mem#*:}/SKILL.md"
+    if [ -f "$f" ]; then
+      # normalise all whitespace (incl. fold newlines) to single spaces before the fixed-string match.
+      desc="$(description_block "$f" | tr -s '[:space:]' ' ')"
+      printf '%s' "$desc" | grep -qiF -- "$phr" && R9_HIT["$key"]=1
+    fi
+  done < "$PHRASES"
+  r9_bad=0
+  for key in $(printf '%s\n' "${!R9_SEEN[@]}" | sort); do
+    if [ -z "${R9_HIT[$key]:-}" ]; then
+      r9_bad=$((r9_bad+1))
+      note "${key#*|}: no ${key%%|*} disambiguating phrase survives in its description (want one of: ${R9_WANT[$key]}) — C5 drift"
+    fi
+  done
+  if [ "$r9_bad" -eq 0 ]; then
+    pass "every collision family's disambiguating phrase survives in a member description (${#R9_SEEN[@]} family/member group(s), $r9_rows phrase(s))"
+  else
+    soft R9 "$r9_bad family/member group(s) lost their disambiguating phrase — C5 drift (see $PHRASES)"
+  fi
 fi
 
 # ── verdict ──────────────────────────────────────────────────────────────────
