@@ -34,10 +34,10 @@ proven to exist; the routing *judgment* is proven by the eval when you run it.
 DISCOVER → IDEATE → DELIVER → DESIGN → BUILD ⇄ ASSURE ⇄ SECURE → PUBLISH → OPERATE ↻
 ```
 
-Declaring a phase with **`/i2p:focus <PHASE>`** (once the FOCUS layer lands — see
-[`context-routing.md`](./context-routing.md)) steers the agent to treat out-of-phase skills as
-dormant. Each phase is owned by one plugin; three concerns (usability `design`, quality `deliver`,
-security `secure`) cross-cut the workflow.
+Declaring a phase with **`/i2p:focus <PHASE>`** (the C2 phase-gate — see
+[`context-routing.md`](./context-routing.md) §4) steers the agent to treat out-of-phase skills as
+dormant, and it survives `/clear`. Each phase is owned by one plugin; three concerns (usability
+`design`, quality `deliver`, security `secure`) cross-cut the workflow.
 
 | Phase | Say this | Loads (owning plugin) |
 |---|---|---|
