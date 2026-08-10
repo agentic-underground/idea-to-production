@@ -186,6 +186,13 @@ The dormancy rule is evaluated **per skill** against its `metadata.phase` (§3.1
 plugin entry expands to *only that plugin's in-phase-or-cross-cut skills* — it does not re-admit a
 plugin's out-of-phase skills. Absent file = no gate (today's behaviour).
 
+> **Implementation status (slice 3 landed).** The C2 slice reads `phase:` and an optional `note:`;
+> the `allow:` refinement above is **deferred to a later slice** — a hand-written `allow:` is currently
+> ignored (not an error). The gate rule is fully delivered by per-skill `metadata.phase` matching;
+> `allow:` is only a within-phase narrowing. The reader (`focus-routing.sh`) re-validates `phase:`
+> against the nine-phase allowlist before injecting, so a hand-edited/cloned-repo `.i2p/focus` cannot
+> inject arbitrary text into a session's context.
+
 This composes with — does not replace —
 [`phase-sensor`](../../plugins/deliver/skills/phase-sensor/): phase-sensor detects the *within-BUILD
 sub-phase* (EARS / FEATURE / TEST / IMPLEMENT …) from artefacts during DELIVER, whereas FOCUS declares
