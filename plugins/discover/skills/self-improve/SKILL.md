@@ -1,12 +1,10 @@
 ---
 name: self-improve
 description: >
-  Improve DISCOVER itself by folding downstream feedback back into its parameters, scoring, and
-  kill ledger — and by self-cleaving over-broad elements. Trigger with /discover:self-improve (or
-  "the scanner approved a dud — fix it", "fold this ideation feedback in", "self-improve the market-scan
-  skill"). Reflects one element against the covenant + pillars, applies the fix on a branch, runs the
-  adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so every future scan,
-  for all users, gets sharper.
+  Improve DISCOVER itself — fold downstream feedback into its parameters, scoring, and kill ledger, or
+  self-cleave an over-broad element. Trigger with /discover:self-improve (or "the scanner approved a dud
+  — fix it", "fold this feedback in", "self-improve the market-scan skill"). Applies on a branch →
+  adversarial review → PR (per merge governance).
 metadata:
   phase: [cross-cut]
   type: producer

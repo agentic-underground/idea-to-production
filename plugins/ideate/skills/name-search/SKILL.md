@@ -1,17 +1,10 @@
 ---
 name: name-search
 description: >
-  Find the perfect, available product or org name — a marketing-grade naming studio. Trigger with
-  /ideate:name (or "name my product", "find a name for this", "the name X is taken, find alternatives",
-  "rename this product", "name my org/company"). Runs a deep discovery interview (audience, brand
-  archetype, name-type appetite, power-adjacency, intellectual humour, risk appetite — infer-first, asking
-  only the load-bearing gaps), then generates a WIDE net across the full name-type taxonomy (suggestive,
-  metaphor, mythological, compound, portmanteau, coined, acronym/backronym, scientific-taxonomic, animal,
-  more) plus affix HOOKS and phonosemantic tuning, verifies availability DETERMINISTICALLY
-  (npm/pypi/crates/GitHub + adoption + NEIGHBOUR/typo-squat proximity + DOMAIN/RDAP + cross-language
-  connotation) with zero per-name LLM tokens, scores survivors against named frameworks
-  (Neumeier 7 / SMILE-SCRATCH / archetype-fit), and emits a comprehensive ranked report with a top pick,
-  confidence, and residual risks. Use proactively whenever a user needs a name that has no neighbours.
+  Marketing-grade naming studio — coin a distinctive, available product/org name with no neighbours,
+  verified deterministically and scored against named frameworks. Trigger with /ideate:name (or "name my
+  product", "find a name for this", "rename this product", "the name X is taken, find alternatives").
+  Guard: IDEATE only. → a ranked naming report + a recommended name.
 metadata:
   phase: [IDEATE]
   type: producer

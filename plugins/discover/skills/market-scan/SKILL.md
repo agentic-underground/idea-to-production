@@ -1,16 +1,10 @@
 ---
 name: market-scan
 description: >
-  Discover a worth-building opportunity through an adversarially-challenged ideation dialogue. Trigger
-  with /market-scan (or "let's come up with a new idea", "what should I build?", "find me a market
-  opportunity", "scan for a niche"). Proposes candidate opportunities that fit the standing /discovery-goal,
-  scores each against the market parameter taxonomy (problem severity, demand, market size, willingness-
-  to-pay, pricing power, competition, reachability, stack-fit), KILLS weak ones early, narrows to a
-  survivor, and emits a validated OPPORTUNITY (scorecard + evidence + keep/park/kill verdict). Also runs a
-  THESIS-VALIDATION mode: when handed a user-supplied proposition ("By doing X I propose Y, value Z") or an
-  OPPORTUNITY-*.md from /operate:iterate, it validates THAT specific thesis rather than proposing fresh
-  candidates. Hands the opportunity to the ideate plugin (REFINEMENT) when installed, else writes a
-  markdown opportunity brief. Use it proactively whenever a user is casting about for something to build.
+  Discover a worth-building opportunity — an adversarially-challenged dialogue that scores and KILLS weak
+  candidates early. Trigger with /market-scan (or "what should I build?", "scan for a niche", "find a
+  market opportunity"). Guard: DISCOVER only; do NOT self-activate during IDEATE/DELIVER — a chosen idea
+  belongs downstream. → a validated OPPORTUNITY → ideate, else a markdown brief.
 metadata:
   phase: [DISCOVER]
   type: producer

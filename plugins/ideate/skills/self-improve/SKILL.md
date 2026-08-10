@@ -1,12 +1,10 @@
 ---
 name: self-improve
 description: >
-  Improve IDEATE itself by folding downstream feedback back into its challenge protocol and the IDEA-
-  package contract — and by self-cleaving over-broad elements. Trigger with /ideate:self-improve (or
-  "the builder hit an ambiguity the brief missed — fix it", "fold this ideation feedback in",
-  "self-improve the ideate skill"). Reflects one element against the covenant + pillars, applies the fix
-  on a branch, runs the adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so
-  every future ideation, for all users, asks the missing question by default.
+  Improve IDEATE itself — fold downstream feedback into its challenge protocol and the IDEA-package
+  contract, or self-cleave an over-broad element. Trigger with /ideate:self-improve (or "the builder hit
+  an ambiguity the brief missed — fix it", "fold this feedback in", "self-improve the ideate skill").
+  Applies on a branch → adversarial review → PR (per merge governance).
 metadata:
   phase: [cross-cut]
   type: producer
