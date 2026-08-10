@@ -11,6 +11,8 @@ description: >
   explain a project to an audience.
   This skill manages the full lifecycle: discovery → type inference → story selection → audience brief →
   drafting → review/critique loop → final output to doc/articles/.
+metadata:
+  phase: [PUBLISH]
 ---
 
 # WRITER

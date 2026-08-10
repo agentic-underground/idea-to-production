@@ -8,6 +8,7 @@ description: >
   gaps, and proposes concrete SLOs + alert rules. Produces findings consumable standalone or by
   /operate-gate. Self-improving: every unwatched failure becomes a new signal or SLO.
 metadata:
+  phase: [OPERATE]
   type: scanner
   lens: observability
   output: findings (markdown) → OBSERVABILITY-FINDINGS.md or the operate-gate report

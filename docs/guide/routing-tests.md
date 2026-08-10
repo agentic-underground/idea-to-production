@@ -48,12 +48,13 @@ gate is the local pre-push run, not the cloud job. It follows the house style of
 - **R4 · Declared collisions** — an identical quoted trigger phrase claimed by **more than one**
   section must be covered by a declared collision family. An *undeclared* collision FAILs — this is
   the deterministic form of "only the required context loads". *(Requirement a.)*
+- **R5 · Phase tag** — every skill carries a `metadata.phase` list (RFC C1). **Hard gate** since RFC
+  slice 1 tagged all skills; a new untagged skill now FAILs. *(This was the first warn-then-flip check
+  to flip — by deleting `R5` from `WARN_CHECKS`.)*
 
 **Warn-then-flip (depend on unlanded [`context-routing.md`](./context-routing.md) slices — WARN now,
 flip to hard-FAIL as each slice lands, or run `--strict`):**
 
-- **R5 · Phase tag** — every skill carries a `metadata.phase` list (RFC C1). Untagged skills *fail
-  open* (treated available), so the gate is safe while tags roll out.
 - **R6 · Description budget** — every `description` ≤ 60 words **and** ≤ 400 chars (RFC C5) — the
   always-on catalog leanness sensor. (Both bounds are enforced.)
 - **R7 · Roadmap seed-wording** — every EPIC/PLAN carries **both** a `Phase` row **and** a `Loads` row,

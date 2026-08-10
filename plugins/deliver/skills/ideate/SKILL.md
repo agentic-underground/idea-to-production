@@ -10,6 +10,8 @@ description: >
   skill covers the full arc from fuzzy idea → focused brief → scoped README / project-bootstrap
   document → handoff to the development system (SDLC). Use it proactively — if the user is
   describing something new they want to exist in software form, this skill almost certainly applies.
+metadata:
+  phase: [IDEATE]
 ---
 
 # IDEATE

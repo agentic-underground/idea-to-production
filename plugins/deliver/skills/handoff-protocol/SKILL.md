@@ -1,6 +1,8 @@
 ---
 name: handoff-protocol
 description: Use when one lifecycle agent transfers value to its downstream partner and must package artifacts, risks, review status, and next instructions in a strict schema. Complements the DELIVER context sentinel protocol — sentinels carry machine-readable state, handoffs carry human-readable intent.
+metadata:
+  phase: [cross-cut]
 ---
 
 # Handoff Protocol

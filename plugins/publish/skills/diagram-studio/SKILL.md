@@ -10,6 +10,7 @@ description: >
   ARTICLES with embedded figures, defer to rich-pdf-with-diagrams instead. Self-improving: shares
   and feeds the charting-matrix lessons log.
 metadata:
+  phase: [PUBLISH]
   type: producer
   output: svg | png | pdf (single diagram, embeddable)
   engines: [graphviz (dot), mermaid (mmdc)]

@@ -10,6 +10,7 @@ description: >
   rubber-stamp it — then synthesises their findings into one verdict. Composes the SECURE plugin's
   /scan-all when installed. Writes PR_REVIEW.md.
 metadata:
+  phase: [ASSURE]
   type: orchestrator
   output: PR_REVIEW.md (verdict PASS | NEEDS_REVISION | BLOCK) + optional PR comment
   composes: [reviewer (agent, multi-role), scan-all (security, if present)]

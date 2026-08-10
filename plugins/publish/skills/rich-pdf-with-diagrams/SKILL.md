@@ -14,6 +14,7 @@ description: >
   charting-matrix reference, so the same composition error never occurs
   twice.
 metadata:
+  phase: [PUBLISH]
   type: producer
   output: pdf
   inputs: rich-text article (markdown), diagram specifications, repository context

@@ -9,6 +9,7 @@ description: >
   lens to partial coverage, never a false "healthy"); pass --strict to fail on a missing required tool.
   Reads the canonical manifest skills/check/requirements.tsv.
 metadata:
+  phase: [cross-cut]
   type: diagnostic
   output: a ✓/✗ tool table (stdout); exit 0 advisory, non-zero only with --strict
 model: claude-haiku-4-5

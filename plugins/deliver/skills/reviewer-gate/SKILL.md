@@ -1,6 +1,8 @@
 ---
 name: reviewer-gate
 description: Use when a stage agent generates or updates a document and must pass it through a critical reviewer agent for professional standards and state-of-the-art quality checks.
+metadata:
+  phase: [ASSURE]
 ---
 
 # Reviewer Gate

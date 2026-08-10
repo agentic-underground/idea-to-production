@@ -11,6 +11,7 @@ description: >
   gracefully: a clean no-op when the origin is not GitHub, when `gh`/`git` is unavailable, or when there
   is no PUBLISH output to publish — never failing the session, never inventing content.
 metadata:
+  phase: [OPERATE]
   type: publisher
   lens: documentation-distribution
   output: pushed wiki pages on the origin's .wiki.git (+ a short publish report)

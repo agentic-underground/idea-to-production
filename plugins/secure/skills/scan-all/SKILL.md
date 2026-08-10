@@ -9,6 +9,7 @@ description: >
   before any release or open-sourcing. Degrades gracefully: if a sub-skill or its tooling is
   unavailable, it reports the gap rather than silently passing.
 metadata:
+  phase: [SECURE]
   type: orchestrator
   output: SECURITY-REPORT.md (verdict PASS | REVIEW | BLOCK)
   composes: [scan-for-pii, scan-for-secrets, scan-dependencies]

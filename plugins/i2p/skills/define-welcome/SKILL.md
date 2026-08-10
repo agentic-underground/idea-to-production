@@ -15,6 +15,7 @@ description: >
   repo", "add a front door / welcome", "what should this repo say when opened", or
   invokes `/i2p:define-welcome`.
 metadata:
+  phase: [cross-cut]
   type: producer
   output: .claude/welcome.md
 ---

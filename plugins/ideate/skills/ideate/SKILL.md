@@ -11,6 +11,7 @@ description: >
   iterated with the user, then handed to DELIVER. Use proactively whenever a user wants to make an idea
   real.
 metadata:
+  phase: [IDEATE]
   type: producer
   output: the IDEA package (agent-facing handoff docs + user-facing dossier) → DELIVER, or doc/idea/<slug>/
 model: inherit

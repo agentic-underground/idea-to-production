@@ -9,6 +9,7 @@ description: >
   under pr-approval governance — opens a PR for the human to merge, so every marketplace user inherits
   the improvement. Targeted at one element; for a whole-plugin audit use /deliver:inspect.
 metadata:
+  phase: [cross-cut]
   type: producer
   output: a cleaved/improved element on a branch → adversarial review → PR (per merge governance)
   composes: [inspector (criteria), pr-review (gate), merge-governance (delivery)]

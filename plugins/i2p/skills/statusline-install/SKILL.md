@@ -7,6 +7,7 @@ description: >
   settings.json at it (portable across machines), or removes it with `off`. Prints a merry
   toast on success. Edits only the statusLine key + the one renderer file.
 metadata:
+  phase: [cross-cut]
   type: installer
   output: ~/.claude/statusline-command.sh + settings.json statusLine (or its removal) + a toast
 model: inherit

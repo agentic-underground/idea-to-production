@@ -11,6 +11,7 @@ description: >
   it orchestrates identity.sh, learnings.sh, and raise-feedback.sh. Self-improving: every learning the
   workface surfaces becomes a tracked, de-duplicated issue instead of evaporating.
 metadata:
+  phase: [OPERATE]
   type: reflex
   lens: gemba
   output: doc/learnings/<slug>/{incident-report,proposed-solutions}.md + a filed issue + a ledger record

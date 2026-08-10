@@ -8,6 +8,7 @@ description: >
   adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so every future scan,
   for all users, gets sharper.
 metadata:
+  phase: [cross-cut]
   type: producer
   output: a sharpened parameter/scoring/element on a branch → adversarial review → PR
 model: inherit

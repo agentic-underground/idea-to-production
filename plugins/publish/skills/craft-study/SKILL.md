@@ -12,6 +12,7 @@ description: >
   is generated, scored, cataloged, and the recipes are synthesized. Token-efficient: generation, sheets, and
   catalog are deterministic bash (0 model tokens); only scoring spends tokens, batched one agent per A/B sheet.
 metadata:
+  phase: [PUBLISH]
   type: experiment
   output: image-craft-study/craft/{journal.jsonl, catalog.md, contact-sheets/} + folded recipes in knowledge/comfyui-model-guide.md
   composes: [design-reviewer/image-aesthetic-reviewer]

@@ -9,6 +9,7 @@ description: >
   canonical-copy integrity, portability violations, self-coverage). Every number is measured from a file
   on disk — never a model-assigned score — so it cannot be gamed.
 metadata:
+  phase: [DELIVER]
   type: diagnostic
   output: SCORECARD.json (product) + an appended line in .deliver/MARKETPLACE_SCORECARD.jsonl (marketplace)
 model: claude-haiku-4-5

@@ -10,6 +10,8 @@ description: >
   lifecycle: capturing the idea, writing formal EARS specs, generating .feature files, driving
   test-first development, implementing, and committing. Use it proactively — if the user is
   discussing changes to a project in any form, this skill is almost certainly applicable.
+metadata:
+  phase: [DELIVER]
 ---
 
 # ROADMAPPER

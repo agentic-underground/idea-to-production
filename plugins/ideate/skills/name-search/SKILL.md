@@ -13,6 +13,7 @@ description: >
   (Neumeier 7 / SMILE-SCRATCH / archetype-fit), and emits a comprehensive ranked report with a top pick,
   confidence, and residual risks. Use proactively whenever a user needs a name that has no neighbours.
 metadata:
+  phase: [IDEATE]
   type: producer
   output: a ranked naming report (to docs/marketing/naming-report.md or stdout) + a recommended name
 model: inherit

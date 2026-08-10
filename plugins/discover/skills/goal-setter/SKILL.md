@@ -7,6 +7,7 @@ description: >
   hard constraints) — infer-first, one question at a time with a recommended answer + multiple-choice —
   and writes them to .discover/goal.md so /market-scan and /loop scan a bounded space.
 metadata:
+  phase: [DISCOVER]
   type: producer
   output: .discover/goal.md (the standing discovery objective)
 model: inherit

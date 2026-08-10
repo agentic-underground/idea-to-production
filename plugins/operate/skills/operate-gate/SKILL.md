@@ -8,6 +8,7 @@ description: >
   READY / WATCH / NOT-READY verdict. Composes the observability, incident, iterate, and maintain skills.
   Standalone on any live project, or the steady state the i2p OPERATE phase reports against.
 metadata:
+  phase: [OPERATE]
   type: orchestrator
   output: OPERATE-REPORT.md (verdict READY | WATCH | NOT-READY)
   composes: [observability, incident, iterate, maintain]

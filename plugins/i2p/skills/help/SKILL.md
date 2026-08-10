@@ -8,6 +8,7 @@ description: >
   headline commands and the next thing to run, then points at the deeper docs. Thin: it describes the
   specialists, it does not run them.
 metadata:
+  phase: [cross-cut]
   type: front-door
   output: a scannable capability menu (no files written)
   composes: [all seven specialist plugins, by capability — read-only]

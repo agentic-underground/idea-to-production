@@ -1,6 +1,8 @@
 ---
 name: frontend
 description: A living, self-improving design system for building information-rich, data-bound web apps in vanilla JS. Use this skill whenever the user wants to design, build, critique, or extend a data-bound UI — forms, tables, dashboards, pickers, cards, instruments, or whole apps — especially when they mention data-binding, tags, lookups, "rich data", dashboards, accessibility, dark mode, keyboard navigation, density, cognitive load, layout balance, or self-documenting/agent-coherent code. Also use it when the user types a command like `-help`, `-element`, `-design`, `-critique`, or `-innovate`, or asks "what UI elements are available?", or wants UIs whose code embeds machine-readable INTENT markers so future agents stay coherent. Trigger even if the user doesn't say "design system" — any data-rich front-end work belongs here.
+metadata:
+  phase: [DESIGN, BUILD]
 ---
 
 # FRONT-END — A Living Design System for Information-Rich, Data-Bound Apps

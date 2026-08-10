@@ -8,6 +8,7 @@ description: >
   opportunity, and — when i2p is installed — advances the lifecycle OPERATE → DISCOVER (↻). Produces an
   OPPORTUNITY brief and hands off to discover/ideate when present.
 metadata:
+  phase: [OPERATE]
   type: producer
   lens: build-measure-learn
   output: doc/opportunities/opportunity-<slug>.md → DISCOVER re-entry (↻)

@@ -10,6 +10,8 @@ description: >
   "improve my tests", or "chase coverage". Also triggers the /coverage-loop
   slash command, which finds behaviour not yet pinned by a test and adds the
   missing coordinates (100% coverage is the floor that results, not the target).
+metadata:
+  phase: [ASSURE]
 ---
 
 # Code Quality Skill

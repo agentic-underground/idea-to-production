@@ -12,10 +12,10 @@
 # The single central ledger is scripts/routing/collisions.tsv; per-skill facts live in frontmatter.
 # The pattern (and how to extend this suite) is documented in docs/guide/routing-tests.md.
 #
-# WARN-THEN-FLIP: checks that pass today gate hard (R1-R4, R8); checks that depend on unlanded
-# context-routing RFC slices (R5 phase tags, R6 description budget, R7 roadmap seed-wording) WARN
-# until those slices land, then flip to hard-FAIL (remove them from the WARN_CHECKS list below, or
-# run --strict). The suite is a RED routing-contract the RFC implementation turns GREEN.
+# WARN-THEN-FLIP: checks that pass today gate hard (R1-R5, R8 — R5 phase tags flipped once RFC slice 1
+# tagged every skill); checks that still depend on unlanded context-routing RFC slices (R6 description
+# budget, R7 roadmap seed-wording) WARN until those slices land, then flip to hard-FAIL (remove them
+# from the WARN_CHECKS list below, or run --strict). The suite is a RED routing-contract the RFC turns GREEN.
 
 set -uo pipefail
 
@@ -47,7 +47,7 @@ note() { printf "    %b%s%b\n" "$dim" "$1" "$reset"; }
 # gate by DELETING its id from this list (a one-line edit — exactly as docs/guide/routing-tests.md §5
 # describes). `--strict` flips ALL of them at once (see the verdict block). `soft <id> <msg>` routes a
 # finding to warn() or fail() by membership.
-WARN_CHECKS="R5 R6 R7"
+WARN_CHECKS="R6 R7"   # R5 flipped to a hard gate once every skill was phase-tagged (RFC slice 1)
 soft() {
   local id="$1"; shift
   case " $WARN_CHECKS " in *" $id "*) warn "$*" ;; *) fail "$*" ;; esac
@@ -224,9 +224,10 @@ done
 [ "$r4_ok" -eq 1 ] && pass "every shared exact trigger phrase is covered by a declared collision family ($collisions_found shared phrase(s), $(ledger_rows collision | wc -l | tr -d ' ') families)"
 
 # ─────────────────────────────────────────────────────────────────────────────
-# R5. Phase tag (RFC C1) — WARN-THEN-FLIP. Every skill should carry metadata.phase.
+# R5. Phase tag (RFC C1) — HARD GATE (flipped: every skill is phase-tagged). Every skill must carry
+# metadata.phase; a new untagged skill FAILs (soft() routes to fail() — R5 is no longer in WARN_CHECKS).
 # ─────────────────────────────────────────────────────────────────────────────
-section "R5. Phase tag present (metadata.phase) — RFC C1 [warn-then-flip]"
+section "R5. Phase tag present (metadata.phase) — RFC C1 [hard gate]"
 tagged=0; total=0; untagged_list=""
 while IFS= read -r sdir; do
   total=$((total+1))
@@ -239,8 +240,7 @@ done < <(find plugins -mindepth 3 -maxdepth 3 -type d -path '*/skills/*' | sort)
 if [ "$tagged" -eq "$total" ]; then
   pass "all $total skills carry a metadata.phase list"
 else
-  soft R5 "$tagged/$total skills carry metadata.phase — lands in RFC slice 1 (untagged fail OPEN until then)"
-  note "flip to hard-FAIL by deleting R5 from WARN_CHECKS once slice 1 tags every skill (or run --strict)"
+  soft R5 "$tagged/$total skills carry metadata.phase — add metadata.phase: [<PHASE>] to:${untagged_list}"
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────

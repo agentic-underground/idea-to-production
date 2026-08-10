@@ -10,6 +10,7 @@ description: >
   templates, the bootstrap runbook, the guardrail ledger, and the verification matrix. Pairs with
   the handler-rust-webapp value-handler. Self-improving: every new failure mode becomes a guardrail.
 metadata:
+  phase: [BUILD]
   type: rollout
   stack: rust + dioxus/wasm + vercel-official-rust-runtime
   output: a verified production deployment (web app + /api function)

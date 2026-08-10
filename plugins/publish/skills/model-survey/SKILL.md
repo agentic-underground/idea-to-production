@@ -11,6 +11,7 @@ description: >
   is synthesized. Token-efficient by design: generation, catalog, and PDF are deterministic bash; only scoring spends
   model tokens (one agent per model contact-sheet via a Workflow fan-out).
 metadata:
+  phase: [PUBLISH]
   type: experiment
   output: comfyui-experiment/{journal.jsonl, catalog.md, comfyui-model-survey.pdf} + knowledge/comfyui-model-guide.md
   composes: [design-reviewer/image-aesthetic-reviewer]

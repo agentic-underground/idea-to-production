@@ -9,6 +9,8 @@ description: >
   Trigger with /scan-for-pii [scope] where scope is: full (all systems), data (data files only),
   git (history only), code (source code only), spa (SPA/frontend only), or project-root
   for a specific directory. Default: full scan of current repository.
+metadata:
+  phase: [SECURE]
 ---
 
 # PII Audit Skill

@@ -8,6 +8,7 @@ description: >
   applies the fix on a branch, runs the adversarial review (deliver's /deliver:pr-review if installed), and
   opens a PR so every future operate cycle, for all users, is calmer and catches more, sooner.
 metadata:
+  phase: [cross-cut]
   type: producer
   output: a sharpened signal/SLO/runbook/element on a branch → adversarial review → PR
   model: inherit
