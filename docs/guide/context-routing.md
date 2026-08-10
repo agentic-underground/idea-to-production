@@ -22,9 +22,10 @@ difference decides the fix. A three-part audit of the marketplace found:
 
 **What is already defended (do not touch):**
 
-- **Skill bodies are lazy.** A `SKILL.md` body loads only when the skill is invoked. The three
-  heaviest — [`roadmapper`](../../plugins/deliver/skills/roadmapper/SKILL.md) (1069 lines),
-  [`builder`](../../plugins/deliver/skills/builder/SKILL.md) (819),
+- **Skill and agent bodies are lazy.** A `SKILL.md` body (and an agent's body) loads only when it
+  is invoked. The three heaviest text bodies — the skills
+  [`roadmapper`](../../plugins/deliver/skills/roadmapper/SKILL.md) (1069 lines) and
+  [`builder`](../../plugins/deliver/skills/builder/SKILL.md) (819), and the agent
   [`reviewer`](../../plugins/deliver/agents/reviewer.md) (702) — are **not** in context until they
   fire. The fear "big single-skill files are always loaded" is unfounded; see door 4 in the
   companion doc.
@@ -60,6 +61,17 @@ lean and to make every trigger phase-aware, so a skill outside the active phase 
 explicitly summoned.** That is what "tripwire" means here — a *sensitive but specialised* sensor
 that fires precisely, not broadly.
 
+> **What is a gate and what is steering — read this before §3–§4.** Only one lever in this document
+> actually *shrinks* the always-on catalog: **C5** (leaner descriptions). C1 and C2 do **not** remove
+> anything from the prefix — every `description` the model can see stays visible — so they cannot
+> reduce *attention* cost; what they reduce is **mis-activation** (a skill firing in the wrong
+> phase). C1 (a guard clause) and C2 (an injected FOCUS) are therefore **best-effort behavioural
+> steering**, not deterministic gates: they *lower the probability* of a wrong activation, they do
+> not *prevent* it. The only deterministic enforcement Claude Code offers would be a `PreToolUse`
+> deny-hook keyed to `metadata.phase` (a real gate); that is noted as a future option in §4.4, not
+> claimed here. Read "gate" in this doc as *steering*, and measure it by mis-activation rate, not by
+> bytes-in-attention.
+
 ---
 
 ## 2. Vocabulary
@@ -73,14 +85,17 @@ DISCOVER → IDEATE → DELIVER → DESIGN → BUILD ⇄ ASSURE ⇄ SECURE → P
 ```
 
 Three concerns **cross-cut** every phase: usability (`design`), quality (`deliver`), security
-(`secure`). This document adds four terms:
+(`secure`). This document adds four terms. *(Casing convention, extended: a newly-coined **concept**
+that names a marketplace-wide invariant is UPPERCASE like a STATION — `TRIPWIRE`, `FOCUS`; a
+concrete **mechanism or artefact** stays lowercase like a skill — `phase-gate`, `routing-tag`.)*
 
 - **TRIPWIRE** — a skill's activation contract: a precise trigger line plus a **phase guard**, so it
-  self-activates only inside its owning phase (or on an explicit `/command`).
+  is *biased* to self-activate inside its owning phase and to stay quiet outside it (or fire on an
+  explicit `/command`). Best-effort, not enforced (see the gate-vs-steering note in §1).
 - **FOCUS** — a per-repo declaration of the active phase (`.i2p/focus`), read into context so the
-  agent treats out-of-phase surfaces as dormant. Survives `/clear`.
-- **phase-gate** — the mechanism (a fail-silent SessionStart injection) that turns the enabled-plugin
-  set into a phase-scoped one by broadcasting the active FOCUS.
+  agent is *steered* to treat out-of-phase surfaces as dormant. Survives `/clear`.
+- **phase-gate** — the mechanism (a fail-silent SessionStart injection) that broadcasts the active
+  FOCUS so the enabled-plugin set is *treated* as phase-scoped. Advisory steering, not a hard gate.
 - **routing-tag** — a controlled-vocabulary line on an EPIC/PLAN that names the phase and the exact
   skills a slice needs, so the task *lights up its own skill tree*.
 
@@ -92,19 +107,28 @@ Every skill declares the phase it belongs to, and its trigger stays inside that 
 
 ### 3.1 The `phase` field
 
-Add `phase:` to the skill frontmatter. Where a skill already carries a `metadata:` block (the newer
-producer/scanner skills do — see `maintain`, `self-improve`, `market-scan`), `phase` joins it; where
-a skill has only `name` + `description` (the leaner deliver-core skills), a minimal `metadata: {
-phase: … }` is added. Allowed values are the nine phases plus `cross-cut`:
+Add `phase:` to the skill frontmatter. It is a **list**, not a scalar — several skills are validly
+active in more than one phase (`frontend` in DESIGN *and* BUILD), so a single value would misclassify
+them. Where a skill already carries a `metadata:` block (the newer producer/scanner skills do — see
+`maintain`, `self-improve`, `market-scan`), `phase` joins it; where a skill has only `name` +
+`description` (the leaner deliver-core skills), a minimal `metadata: { phase: [ … ] }` is added.
+Allowed members are the nine phases plus `cross-cut`:
 
 ```yaml
 metadata:
-  phase: DELIVER        # one of: DISCOVER IDEATE DELIVER DESIGN BUILD ASSURE SECURE PUBLISH OPERATE | cross-cut
+  phase: [DESIGN, BUILD]   # members: DISCOVER IDEATE DELIVER DESIGN BUILD ASSURE SECURE PUBLISH OPERATE | cross-cut
 ```
 
-`cross-cut` marks a skill available in every phase (the `check` / `self-improve` boilerplate every
-plugin ships; the `secure` scanners; the `publish` producers; i2p's meta-surface). A `cross-cut`
-skill is exempt from the phase guard but **not** from C5's description budget.
+The gate rule is: a skill is dormant under `FOCUS=X` **iff** `X ∉ phase ∪ {cross-cut}`.
+
+`cross-cut` marks a skill available in **every** phase and so exempt from the phase guard — the
+`check` / `self-improve` boilerplate every plugin ships, and i2p's meta-surface. **Note the deliberate
+distinction:** a companion whose *concern* cross-cuts (design, secure, publish) is not therefore
+`cross-cut`-*tagged* — its skills carry their owning phase (`secure:scan-all → [SECURE]`) and are
+reached across phases by **explicit `/command` or C3 routing-tag**, not by sitting always-active. Only
+truly phase-agnostic boilerplate is tagged `cross-cut`. (§7 is the authoritative per-skill assignment;
+§2's "concerns cross-cut" describes the *workflow*, not the tag.) `cross-cut` skills are still bound by
+C5's description budget.
 
 ### 3.2 The negative-guard clause
 
@@ -131,8 +155,9 @@ description: >
   Trigger with /roadmapper (or "feature request: …", "add to the roadmap", "what's on the roadmap",
   "pull the next feature"). Guard: dormant outside DELIVER; do NOT self-activate during
   DISCOVER/IDEATE — a raw idea belongs to discover/ideate until it is authorised for build.
+  → EPIC/PLAN specs on the roadmap.
 metadata:
-  phase: DELIVER
+  phase: [DELIVER]
 ```
 
 The lifecycle detail ("captures the idea, writes EARS, generates .feature files, …") moves into the
@@ -148,17 +173,24 @@ uninstall; you focus.
 
 ### 4.1 `.i2p/focus`
 
-A tiny per-repo file (git-ignored, like other `.i2p/` state):
+A tiny per-repo file (git-ignored — so a FOCUS is **per-clone, per-machine**, not a committed
+team-wide setting; right for a solo-builder repo):
 
 ```
 phase: DISCOVER
-allow: [discover, ideate]     # optional explicit allow-list; default = the phase's owning plugin(s) + cross-cut
+allow: [discover, ideate]     # optional; entries may be a plugin (expands to only its in-phase skills) or a plugin:skill
 note:  building the product brief
 ```
 
-Absent file = no gate (today's behaviour). This composes with — does not replace —
-[`phase-sensor`](../../plugins/deliver/skills/phase-sensor/): phase-sensor *detects* the build phase
-from artefacts during DELIVER; FOCUS is a *user-declared* intent that outranks detection when set.
+The dormancy rule is evaluated **per skill** against its `metadata.phase` (§3.1), so an `allow:`
+plugin entry expands to *only that plugin's in-phase-or-cross-cut skills* — it does not re-admit a
+plugin's out-of-phase skills. Absent file = no gate (today's behaviour).
+
+This composes with — does not replace —
+[`phase-sensor`](../../plugins/deliver/skills/phase-sensor/): phase-sensor detects the *within-BUILD
+sub-phase* (EARS / FEATURE / TEST / IMPLEMENT …) from artefacts during DELIVER, whereas FOCUS declares
+a *lifecycle* phase (DISCOVER … OPERATE). They are deliberately **different levels**; the gate reads
+only the lifecycle level, and FOCUS is a user-declared intent that outranks detection when set.
 
 ### 4.2 `/i2p:focus`
 
@@ -170,18 +202,32 @@ The front door owns the cross-plugin meta-surface, so the command lives in i2p:
 
 ### 4.3 The injection
 
-A new fail-silent SessionStart hook in i2p, modelled byte-for-byte on the contract of
+A new fail-silent SessionStart hook in i2p, reusing the **same contract** as
 [`roadmap-routing.sh`](../../plugins/i2p/hooks/scripts/roadmap-routing.sh) (drains stdin, `set -uo
-pipefail`, always `exit 0`, touches nothing in the repo, degrades without `jq`). When `.i2p/focus`
-exists it injects one paragraph as `additionalContext`:
+pipefail`, always `exit 0`, touches nothing in the repo, degrades without `jq`) — the same shape, not
+identical bytes. When `.i2p/focus` exists it injects one paragraph as `additionalContext`:
 
-> *Active FOCUS: DISCOVER (plugins: discover, ideate; cross-cut always available). Treat skills whose
-> `metadata.phase` is not DISCOVER/cross-cut as DORMANT — do not self-activate them; invoke an
-> out-of-phase skill only if the user runs its explicit `/command`. To change focus: `/i2p:focus
-> <phase>`.*
+> *Active FOCUS: DISCOVER (plugins: discover, ideate; cross-cut always available). Apply the gate
+> rule: a skill is DORMANT iff `DISCOVER ∉ (its `metadata.phase` ∪ {cross-cut})` — do not
+> self-activate a dormant skill; invoke it only if the user runs its explicit `/command`. A skill
+> with **no** `metadata.phase` yet is AVAILABLE (fail open). To change focus: `/i2p:focus <phase>`.*
+
+**Untagged skills fail open** — until every skill carries `metadata.phase` (§8), an untagged skill is
+treated as available, never silently dormant. This keeps the gate inert-but-safe while the tags roll
+out, consistent with "absent focus file = no gate."
 
 Cost: one small cached-prefix injection, re-fired on `resume`/`clear`/`compact` exactly as the
 existing routing rule is — so it **survives `/clear`**, which is the whole point.
+
+### 4.4 The deterministic option, considered
+
+The injection above is *steering* (§1): the model still sees every description and can still
+mis-fire. Claude Code does offer one genuinely deterministic door — a **`PreToolUse` deny-hook** on
+the Skill tool that reads the invoked skill's `metadata.phase` and the active `.i2p/focus`, and
+**denies** an out-of-phase invocation outright. That would make "gate" literal. It is deliberately
+**out of scope here** (it changes tool-permission behaviour globally and needs its own design +
+tests), but it is the upgrade path if steering proves too soft in practice — recorded so the choice
+is explicit, not overlooked.
 
 ---
 
@@ -203,6 +249,14 @@ One line in `## Metadata`, controlled-vocabulary, parseable by a leading key lik
 `Loads` names `plugin:skill` artefacts (lowercase, matching the glossary). It is advisory context
 routing, not a permission system — it tells a freshly-`/clear`ed agent which skills to warm for this
 slice, and nothing more.
+
+> **Consumer-safety (verify before shipping C3).** The `## Metadata` block is machine-read on the
+> merge-gating path — by `scripts/verify-prereqs.sh` (the EPIC `**Branch**` / `## Plans` floor) and
+> by the FLEET engine. Both parse it by **bolded key** (`grep '| **Key** |'`), which ignores
+> unrecognised rows, so two additive rows are safe — but the C3 slice must **confirm** this against
+> the then-current parsers rather than assume it, and add a check that each `Loads` value is a real
+> installed `plugin:skill` (a typo'd tag warms nothing silently). Both are checks the routing test
+> suite enforces (R2 no-dead-routes, R7 seed-wording).
 
 ### 5.2 Emission & consumption
 
@@ -228,8 +282,8 @@ rule:
 > feature list, the self-improvement note, the "what it produces in detail" prose — moves into the
 > body, which loads only on invocation.
 
-Before/after, `frontend` (currently one 90-word run-on with no trigger command and an over-eager
-tail):
+Before/after, `frontend` (currently a 118-word run-on whose only triggers are dash pseudo-commands
+`-help`/`-design`/`-critique` — no slash command — with an over-eager tail):
 
 > **Before:** *"A living, self-improving design system for building information-rich, data-bound web
 > apps in vanilla JS. Use this skill whenever the user wants to design, build, critique, or extend a
@@ -239,8 +293,13 @@ tail):
 > **After:** *"Design-system skill for data-bound vanilla-JS UIs (forms, tables, dashboards, INTENT
 > markers). Trigger with `/frontend` (or "build this UI", "critique this screen"). Guard: DESIGN /
 > BUILD only; dormant during DISCOVER/IDEATE. → components + a11y-checked markup."*
+>
+> *(The "After" trigger `/frontend` does **not** exist today — `frontend` ships no command file.
+> Adopting this example means the DESIGN-station slice in §8 **creates** `/frontend`; copy it as-is
+> and you ship a dead trigger. This is exactly the class of dead route the R3 check catches.)*
 
 Apply the same compression to `ideate`, `market-scan`, `builder`, and every skill flagged in §7.
+*(C4 — splitting the monolith bodies these lean descriptions front — is deferred; see §9.)*
 
 ---
 
@@ -251,17 +310,20 @@ negative clause + C5 compression. Cross-cut skills need `phase: cross-cut` + C5 
 
 | Plugin | Owning phase | Phase-tag these skills | Guard + rewrite (over-eager today) |
 |---|---|---|---|
-| **discover** | DISCOVER | `goal-setter`, `market-scan` → DISCOVER | `market-scan` ("proactively whenever … casting about") |
-| **ideate** | IDEATE | `ideate`, `name-search` → IDEATE | `ideate` ("Use proactively whenever …") |
-| **design** | DESIGN | `mockup`, `ui-review` → DESIGN | — |
-| **deliver** | DELIVER/BUILD/ASSURE | `roadmapper`→DELIVER; `builder`,`development-system-core`,`lifecycle-states`,`vertical-slice`,`rust-webapp-rollout`→BUILD; `code-quality`,`pr-review`,`reviewer-gate`→ASSURE; `frontend`→DESIGN; `founder-method`,`scorecard`→DELIVER; `ideate`→IDEATE (fallback); `handoff-protocol`,`phase-sensor`,`prerequisites`,`value-station-handoff`→cross-cut | **`roadmapper`** ("in any form … proactively"), **`frontend`** ("even if the user doesn't say"), `builder` (broad) |
-| **secure** | SECURE (cross-cut) | `scan-all`,`scan-dependencies`,`scan-for-pii`,`scan-for-secrets` → SECURE | — (already `/scan-*`-triggered) |
-| **operate** | OPERATE | `gemba`,`incident`,`iterate`,`maintain`,`observability`,`operate-gate`,`wiki-publisher` → OPERATE | — |
-| **publish** | PUBLISH (cross-cut) | `writer`,`craft-study`,`design-reviewer`,`diagram-studio`,`document-review`,`illustrator`,`model-survey`,`rich-pdf-with-diagrams` → PUBLISH | — |
-| **i2p** | cross-cut (front door) | all nine (`check`,`define-welcome`,`flow`,`help`,`lifecycle`,`review`,`self-improve`,`statusline-*`) → cross-cut | — |
+| **discover** | DISCOVER | `goal-setter`, `market-scan` → `[DISCOVER]` | `market-scan` ("proactively whenever … casting about") |
+| **ideate** | IDEATE | `ideate`, `name-search` → `[IDEATE]` | `ideate` ("Use proactively whenever …") |
+| **design** | DESIGN | `mockup`, `ui-review` → `[DESIGN]` | — |
+| **deliver** | DELIVER/BUILD/ASSURE | `roadmapper`→`[DELIVER]`; `builder`,`development-system-core`,`lifecycle-states`,`vertical-slice`,`rust-webapp-rollout`→`[BUILD]`; `code-quality`,`pr-review`,`reviewer-gate`→`[ASSURE]`; `frontend`→`[DESIGN, BUILD]`; `founder-method`,`scorecard`→`[DELIVER]`; `ideate`→`[IDEATE]` (fallback); `handoff-protocol`,`phase-sensor`,`prerequisites`,`value-station-handoff`→`[cross-cut]` | **`roadmapper`** ("in any form … proactively"), **`frontend`** ("even if the user doesn't say"), `builder` (broad) |
+| **secure** | SECURE (concern cross-cuts) | `scan-all`,`scan-dependencies`,`scan-for-pii`,`scan-for-secrets` → `[SECURE]` | — (already `/scan-*`-triggered) |
+| **operate** | OPERATE | `gemba`,`incident`,`iterate`,`maintain`,`observability`,`operate-gate`,`wiki-publisher` → `[OPERATE]` | — |
+| **publish** | PUBLISH (concern cross-cuts) | `writer`,`craft-study`,`design-reviewer`,`diagram-studio`,`document-review`,`illustrator`,`model-survey`,`rich-pdf-with-diagrams` → `[PUBLISH]` | — |
+| **i2p** | front door (agnostic) | all nine (`check`,`define-welcome`,`flow`,`help`,`lifecycle`,`review`,`self-improve`,`statusline-install`,`statusline-widgets`) → `[cross-cut]` | — |
 
-Every plugin's `check` + `self-improve` → `cross-cut`. The `phase` values are the single source of
-truth the C2 gate reads; keeping them accurate is the covenant that makes the tripwire trustworthy.
+Note the "concern cross-cuts" rows (`secure`, `publish`): the *concern* is available in every phase,
+but its skills carry their **owning** phase (not `cross-cut`) and are reached across phases by explicit
+`/command` or a C3 `Loads:` tag — they are not always-active. Only `i2p`'s meta-surface and every
+plugin's `check` + `self-improve` boilerplate are tagged `[cross-cut]`. These `phase` values are what
+the C2 steering reads; keeping them accurate is the covenant that makes the tripwire trustworthy.
 
 ---
 
@@ -270,19 +332,26 @@ truth the C2 gate reads; keeping them accurate is the covenant that makes the tr
 Each is a focused branch → PR → `/deliver:pr-review` → direct-merge, per the repo's git workflow —
 small batches, one concern each (KAIZEN).
 
-1. **`phase` field + C5 on the two named phases** — add `metadata.phase` and compress descriptions
-   for `discover` + `ideate` (the user's working pair). Smallest, proves the frontmatter change.
-2. **The phase-gate** — `.i2p/focus` format, the `/i2p:focus` command, and the SessionStart
-   injection hook (C2). Independent of the per-plugin tags; delivers the "focus, don't uninstall"
-   win immediately.
-3. **Roadmap routing-tags** — extend the EPIC/PLAN template + `roadmapper` §3 CAPTURE + the golden
-   `PLAN_0001.md` (C3).
-4. **Trigger discipline per remaining plugin** — one PR each for `design`, `deliver`, `secure`,
-   `operate`, `publish`, `i2p`: apply `phase` + negative guards + C5 per §7. `deliver` is the
-   largest and carries the two worst offenders (`roadmapper`, `frontend`).
+1. **`metadata.phase` on ALL skills (tags only)** — one small PR that adds the `phase` list to every
+   skill across all eight plugins per §7. Pure frontmatter, no description rewrites. This lands the
+   data the gate reads **before** the gate ships, avoiding a consumer-before-producer inversion
+   (until then the gate fails open per §4.3, so ordering is safe either way — but tagging first makes
+   the gate meaningful on arrival).
+2. **`phase` + C5 + guard clause on the two named phases** — compress descriptions and add the §3.2
+   **negative-guard clause** (not just the phase tag) for `discover` + `ideate` (the user's working
+   pair, incl. `ideate`'s over-eager rewrite). Proves the full C1+C5 change on a small surface.
+3. **The phase-gate** — `.i2p/focus` format, the `/i2p:focus` command, and the SessionStart injection
+   hook (C2). Now reads real tags from slice 1; delivers the "focus, don't uninstall" win.
+4. **Roadmap routing-tags** — extend the EPIC/PLAN template + `roadmapper` §3 CAPTURE + the golden
+   `PLAN_0001.md` (C3), incl. the consumer-safety confirmation from §5.1.
+5. **Trigger discipline + C5 per remaining plugin** — one PR each for `design`, `deliver`, `secure`,
+   `operate`, `publish`, `i2p`: guard clauses + description compression per §7. `deliver` is the
+   largest and carries the two worst offenders (`roadmapper`, `frontend`, the latter creating the
+   `/frontend` command per §6).
 
-Ship 1 and 2 first: together they let the user set a FOCUS and feel out-of-phase skills go quiet,
-before the long tail of per-plugin rewrites lands.
+Ship 1–3 first: tags everywhere, the full C1+C5 pattern proven on discover/ideate, then the gate that
+reads them — so the user can set a FOCUS and feel out-of-phase skills go quiet before the long tail of
+per-plugin rewrites lands.
 
 ---
 
@@ -290,22 +359,27 @@ before the long tail of per-plugin rewrites lands.
 
 Out of scope for this round, recorded as the recommended follow-on because it aligns with the
 marketplace's own doctrine (VALUE_FLOW §8: *"Thin skills, fat references. Each `SKILL.md` is a
-router."*). `roadmapper` (1069), `builder` (819), and `reviewer.md` (702) violate it: on trigger
-they load everything, not the branch needed. The follow-on splits each into a thin router
+router."*). The two heaviest **skills** — `roadmapper` (1069) and `builder` (819) — violate it: on
+trigger they load everything, not the branch needed. The heaviest **agent**, `reviewer.md` (702), has
+the same shape but is an agent, not a `SKILL.md`. The follow-on splits each into a thin router
 (trigger + gate + a *when-to-read* reference table) with sub-topics in `references/` loading
-per-branch, enforced by a CI covenant capping `SKILL.md` body size — mirroring the existing KAIZEN
-byte-identity checks (CI Checks N/O) in [`scripts/verify-prereqs.sh`](../../scripts/verify-prereqs.sh).
-Sequence it after §8 so the routing layer is proven before the structural surgery begins.
+per-branch, enforced by a CI covenant capping body size — **two caps, one for `SKILL.md` and one for
+`agents/*.md`**, since a SKILL.md-scoped cap alone would not cover `reviewer.md`. Model both on the
+existing KAIZEN byte-identity checks (CI Checks N/O) in
+[`scripts/verify-prereqs.sh`](../../scripts/verify-prereqs.sh). Sequence it after §8 so the routing
+layer is proven before the structural surgery begins.
 
 ---
 
 ## 10. The takeaway
 
 The companion doc's rule is *match the door to the document*. This one adds: **match the trigger to
-the phase.** Keep the always-on catalog lean (C5), make every tripwire phase-aware (C1), let the
-user declare a FOCUS the whole set respects (C2), and let each task light up its own skill tree
-(C3). Then enabling all eight plugins costs nothing in attention until a task — or a focus — calls a
-phase into the room.
+the phase.** Two distinct wins, kept honest about which lever delivers which: **C5** actually shrinks
+the always-on catalog (fewer bytes in attention — the only lever that does); **C1 + C2** steer the
+model away from firing an out-of-phase skill (lower mis-activation — best-effort, not a hard gate,
+§4.4); and **C3** lets each task light up its own skill tree. Together they mean enabling all eight
+plugins keeps the *lean* descriptions in view but the *wrong* skills quiet — until a task, or a FOCUS,
+calls a phase into the room. Not "zero attention"; **right attention.**
 
 ---
 
