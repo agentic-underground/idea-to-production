@@ -1,12 +1,10 @@
 ---
 name: statusline-widgets
 description: >
-  Edit the line-break layout of the idea-to-production status line's line-2 widgets so the bar fits
-  your terminal. Use for /i2p:statusline-widgets (or "show me the statusline widgets", "I want
-  to edit the statusline widgets", "edit the statusline widgets", "make the statusline wrap"). Presents
-  the widgets as a choice and assigns each a break attribute — break-before (start on a new line),
-  break-after (break after it), or none (flow inline; the terminal soft-wraps). Persists to
-  ~/.claude/i2p-statusline.conf and refreshes the installed renderer.
+  Edit the line-break layout of the status line's line-2 widgets so the bar fits your terminal. Trigger
+  with /i2p:statusline-widgets (or "edit the statusline widgets", "make the statusline wrap"). Assigns
+  each widget a break attribute — break-before, break-after, or none (flow inline; the terminal
+  soft-wraps). Persists to ~/.claude/i2p-statusline.conf and refreshes the renderer.
 metadata:
   phase: [cross-cut]
   type: configurator

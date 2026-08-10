@@ -1,12 +1,10 @@
 ---
 name: help
 description: >
-  The marketplace's front door. Use for /i2p:help (or "what can i2p do?",
-  "what powers do I have now?", "browse the idea-to-production marketplace", "where do I
-  start?"). Renders the three pillars and the DISCOVER ▸ IDEATE ▸ DELIVER ▸ DESIGN ▸ BUILD ⇄ ASSURE ⇄
-  SECURE ▸ PUBLISH ▸ OPERATE value flow, listing only the plugins currently installed with their
-  headline commands and the next thing to run, then points at the deeper docs. Thin: it describes the
-  specialists, it does not run them.
+  The marketplace's front door. Trigger with /i2p:help (or "what can i2p do?", "what powers do I have
+  now?", "browse the idea-to-production marketplace", "where do I start?"). Renders the three pillars and
+  the nine-phase DISCOVER-to-OPERATE value flow, listing only installed plugins with their headline
+  commands and the next thing to run. Thin: it describes the specialists, it does not run them.
 metadata:
   phase: [cross-cut]
   type: front-door

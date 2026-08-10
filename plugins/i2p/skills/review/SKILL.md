@@ -1,13 +1,10 @@
 ---
 name: review
 description: >
-  The marketplace-wide adversarial review. Use for /i2p:review (or "review everything",
-  "full review across all the plugins", "give me one verdict from every reviewer"). Determines
-  scope, fans out EVERY installed specialist reviewer — code (deliver /pr-review), design
-  (design /ui-review), rendered docs (publish /publish:design-reviewer), security (security
-  /scan-all) — adversarially verifies the serious findings, and synthesises ONE verdict
-  (PASS / NEEDS_REVISION / BLOCK) in I2P_REVIEW.md, naming what could not be reviewed. Thin: it
-  composes the specialists, it does not re-implement review logic.
+  The marketplace-wide adversarial review. Trigger with /i2p:review (or "review everything", "one verdict
+  from every reviewer"). Fans out every installed specialist reviewer (code, design, rendered docs,
+  security), adversarially verifies the serious findings, and synthesises ONE verdict
+  (PASS/NEEDS_REVISION/BLOCK) in I2P_REVIEW.md. Thin: it composes the specialists.
 metadata:
   phase: [cross-cut]
   type: orchestrator
