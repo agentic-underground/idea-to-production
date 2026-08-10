@@ -1,15 +1,10 @@
 ---
 name: roadmapper
 description: >
-  Use this skill to manage a project ROADMAP.md — reading it, adding features to it, and driving
-  features through a formal spec-to-production development system. Trigger this skill whenever
-  the user says "feature request:", "I want the app to ...", "add to the roadmap", "what's on
-  the roadmap", "pull the next feature", or expresses a desire for a project improvement in any
-  form. Also trigger when the user asks to begin implementing a roadmap item, or when they describe
-  a bug, enhancement, or new capability they want in their project. This skill covers the FULL
-  lifecycle: capturing the idea, writing formal EARS specs, generating .feature files, driving
-  test-first development, implementing, and committing. Use it proactively — if the user is
-  discussing changes to a project in any form, this skill is almost certainly applicable.
+  Manage a project ROADMAP / FLEET v2 pipeline — capture an idea, write EARS specs, decompose into
+  dependency-ordered EPIC/PLAN slices, and drive features test-first. Trigger with /deliver:roadmapper (or
+  "add to the roadmap", "what's on the roadmap", "feature request:", "pull the next feature"). Guard:
+  DELIVER only. The DELIVER station's front door.
 metadata:
   phase: [DELIVER]
 ---

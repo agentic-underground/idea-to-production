@@ -19,7 +19,7 @@ performance-instrumented **test contract**. Read [`VALUE_FLOW.md`](VALUE_FLOW.md
 | [`agents/`](agents/) | The orchestration hierarchy + the value-handlers + governance (see below). |
 | [`skills/`](skills/) | The station skills (`ideate`, `roadmapper`, `development-system-core`, `lifecycle-states`, `code-quality`, `reviewer-gate`, `frontend`, `vertical-slice`, `founder-method`, `value-station-handoff`, `handoff-protocol`, `builder`, `phase-sensor`, and the Rust one-shot [`rust-webapp-rollout`](skills/rust-webapp-rollout/)). |
 | [`knowledge/`](knowledge/) | The define-once canon (pillars, architecture, specs, testing, protocols, orchestration, policy). Index: [`knowledge/README.md`](knowledge/README.md). |
-| [`commands/`](commands/) | `/deliver`, `/inspect`, `/coverage-loop`, `/phase-sensor`, `/prerequisites`, `/pr-review`, `/scorecard`, `/self-improve`, `/check`, `/rust-webapp-rollout`. The **user-facing vs agent-internal** split is below. |
+| [`commands/`](commands/) | `/deliver`, `/inspect`, `/coverage-loop`, `/phase-sensor`, `/prerequisites`, `/pr-review`, `/scorecard`, `/self-improve`, `/check`, `/rust-webapp-rollout`, `/frontend`. The **user-facing vs agent-internal** split is below. |
 | [`hooks/hooks.json`](hooks/hooks.json) | A PostToolUse hook that runs the `phase-sensor` so the dev-system self-applies. |
 | [`examples/`](examples/) | Worked dev-system artefacts (real EARS → Gherkin → plan). Index: [`examples/README.md`](examples/README.md). |
 | [`docs/`](docs/) | [`MIGRATION.md`](docs/MIGRATION.md) (provenance) + [`DEPRECATED.md`](docs/DEPRECATED.md) + [`HISTORY.md`](docs/HISTORY.md) (origin story). |
@@ -58,7 +58,8 @@ skills/agents keep working, they are simply not presented as user commands. Pref
 | [`/deliver:rust-webapp-rollout`](commands/rust-webapp-rollout.md) | one-shot full-Rust web-app + Vercel rollout |
 | [`/deliver:inspect`](commands/inspect.md) | audit the deliver plugin itself |
 | [`/deliver:roadmapper`](commands/roadmapper.md) | the **DELIVER** front door — capture an idea, write EARS specs, decompose into dependency-ordered EPIC/PLAN slices (FLEET v2 pipeline), drive features through the dev system |
-| `code-quality` · `frontend` · `vertical-slice` skills | user-triggerable station skills (run code-quality analysis, build a data-bound UI, carve a slice) — invoked by their trigger phrases, no `/command` of their own |
+| [`/deliver:frontend`](commands/frontend.md) | build, critique, or extend a data-bound vanilla-JS UI with the `frontend` design system — a11y-checked, INTENT-marked markup |
+| `code-quality` · `vertical-slice` skills | user-triggerable station skills (run code-quality analysis, carve a slice) — invoked by their trigger phrases, no `/command` of their own |
 
 **Agent-internal conveyor (not for direct use)** — invoked by the DELIVER orchestrator, never typed:
 

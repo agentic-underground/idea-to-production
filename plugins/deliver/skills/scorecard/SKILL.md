@@ -1,13 +1,10 @@
 ---
 name: scorecard
 description: >
-  Keep score — prove that what you build AND the marketplace that builds it are getting better over time.
-  Trigger with /deliver:scorecard (or "score this project", "how are we tracking", "marketplace health",
-  "are we improving"). Emits TWO deterministic, artifact-measured scorecards: a PRODUCT scorecard
-  (coverage, corpus FP-rate, test/rule count, security verdict, and real tokens/wall-clock from the last
-  DELIVER cycle's IDEA_COST.jsonl) and a MARKETPLACE scorecard (inspection findings, self-improve PRs,
-  canonical-copy integrity, portability violations, self-coverage). Every number is measured from a file
-  on disk — never a model-assigned score — so it cannot be gamed.
+  Keep score — deterministic, artifact-measured scorecards proving the PRODUCT you build and the
+  MARKETPLACE that builds it improve over time (coverage, FP-rate, security verdict, tokens/wall-clock;
+  inspection findings, self-improve PRs, portability). Trigger with /deliver:scorecard. Guard: DELIVER
+  only. Emits a measured scorecard.
 metadata:
   phase: [DELIVER]
   type: diagnostic

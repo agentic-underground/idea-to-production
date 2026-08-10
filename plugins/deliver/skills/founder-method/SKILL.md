@@ -1,12 +1,10 @@
 ---
 name: founder-method
 description: >
-  The FOUNDER method — how a software production house turns an idea into a product one
-  vertical slice at a time through value-stations and value-handlers, governed by a
-  five-level performance-instrumented test contract. Use when planning the production line,
-  defining stages and their owners, onboarding a new value-handler agent, or explaining
-  WHAT is being built and HOW. Trigger phrases: "founder method", "value stations",
-  "who owns this stage", "production line", "how does our process work".
+  The FOUNDER method — how a production house turns an idea into a product one vertical slice at a time
+  through value-stations and value-handlers, under a five-level test contract. Trigger by "founder method",
+  "value stations", "who owns this stage", "how does our process work". Guard: DELIVER only. Use to plan
+  the production line or explain WHAT is built and HOW.
 metadata:
   phase: [DELIVER]
 ---

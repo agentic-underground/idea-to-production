@@ -1,16 +1,10 @@
 ---
 name: lifecycle-states
 description: >
-  The lifecycle-state router for the DELIVER conveyor. Use at every maturity boundary of a
-  roadmap item to validate that the current state's exit criteria are met before advancing.
-  Covers all five boundaries: converting an IDEATE brief into stable implementation intent
-  before specification (discovery); formal EARS + Gherkin requirement/behaviour contracts
-  before implementation (specification); test-first proof, failure-gap mapping, implementation
-  validation, and regression prevention (verification); upstream synchronization, commit
-  narrative quality, and delivery transaction completion (delivery); and final release
-  confidence assessment, unresolved-risk disposition, and Definition Of Done certification
-  (production-readiness). Trigger whenever an item transitions between SDLC steps and you must
-  prove the gate before proceeding.
+  The lifecycle-state router for the DELIVER conveyor — at each maturity boundary, validate the current
+  state's exit criteria before advancing. Covers all five boundaries: discovery, specification (EARS +
+  Gherkin), verification (test-first + gap map), delivery (sync + commit), and production-readiness (DoD).
+  Guard: BUILD only. Spawned at each SDLC transition.
 metadata:
   phase: [BUILD]
 ---

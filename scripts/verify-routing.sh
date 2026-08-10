@@ -12,13 +12,12 @@
 # The single central ledger is scripts/routing/collisions.tsv; per-skill facts live in frontmatter.
 # The pattern (and how to extend this suite) is documented in docs/guide/routing-tests.md.
 #
-# WARN-THEN-FLIP: checks that pass today gate hard (R1-R5, R7, R8 — R5 phase tags flipped in RFC slice 1
-# once every skill was tagged; R7 roadmap Phase+Loads tags flipped in slice 4); checks that still depend
-# on unlanded context-routing RFC slices WARN until those slices land, then flip to hard-FAIL (remove
-# them from the WARN_CHECKS list below, or run --strict): R6 description budget (flips when slice 5's
-# per-plugin C5 compressions reach zero over budget) and R9 lexicon-phrase drift-guard (advisory —
-# warns when a C5 edit drops a load-bearing disambiguator). The suite is a RED routing-contract the RFC
-# turns GREEN.
+# WARN-THEN-FLIP: checks that pass today gate hard (R1-R8 — R5 phase tags flipped in RFC slice 1 once
+# every skill was tagged; R7 roadmap Phase+Loads tags flipped in slice 4; R6 description budget flipped
+# in slice 5 once every plugin's descriptions were compressed to zero over budget). The one remaining
+# advisory is R9, the lexicon-phrase drift-guard — it WARNs (never fails) when a C5 edit drops a
+# load-bearing disambiguator; remove it from the WARN_CHECKS list below (or run --strict) to flip it.
+# The suite is a RED routing-contract the RFC turns GREEN.
 
 set -uo pipefail
 
@@ -50,7 +49,7 @@ note() { printf "    %b%s%b\n" "$dim" "$1" "$reset"; }
 # gate by DELETING its id from this list (a one-line edit — exactly as docs/guide/routing-tests.md §5
 # describes). `--strict` flips ALL of them at once (see the verdict block). `soft <id> <msg>` routes a
 # finding to warn() or fail() by membership.
-WARN_CHECKS="R6 R9"   # R5 flipped slice 1 (phase tags); R7 flipped slice 4 (roadmap tags); R9 added slice 5 (C5 drift-guard)
+WARN_CHECKS="R9"   # R5 flipped slice 1 (phase tags); R7 slice 4 (roadmap tags); R6 flipped slice 5 (all descriptions within budget); R9 the C5 drift-guard stays advisory
 soft() {
   local id="$1"; shift
   case " $WARN_CHECKS " in *" $id "*) warn "$*" ;; *) fail "$*" ;; esac
@@ -247,9 +246,10 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
-# R6. Description budget (RFC C5) — WARN-THEN-FLIP. ≤ 60 words / 400 chars.
+# R6. Description budget (RFC C5) — HARD GATE (flipped in slice 5, once every plugin's descriptions
+# were compressed to zero over budget). ≤ 60 words AND ≤ 400 chars; a new over-budget description FAILs.
 # ─────────────────────────────────────────────────────────────────────────────
-section "R6. Description budget ≤ 60 words AND ≤ 400 chars — RFC C5 [warn-then-flip]"
+section "R6. Description budget ≤ 60 words AND ≤ 400 chars — RFC C5 [hard gate]"
 over=0; worst=""; worstn=0
 while IFS= read -r sdir; do
   name="$(basename "$(dirname "$(dirname "$sdir")")"):$(basename "$sdir")"
@@ -264,7 +264,7 @@ if [ "$over" -eq 0 ]; then
   pass "every skill description is within budget (≤60 words and ≤400 chars)"
 else
   soft R6 "$over skill description(s) over the 60-word / 400-char budget (worst: $worst @ ${worstn}w) — RFC C5"
-  note "flip to hard-FAIL by deleting R6 from WARN_CHECKS as the per-plugin C5 slices land"
+  note "keep it lean: one capability sentence + Trigger + Guard + → output; move detail into the body"
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────

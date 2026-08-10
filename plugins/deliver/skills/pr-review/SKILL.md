@@ -1,14 +1,10 @@
 ---
 name: pr-review
 description: >
-  Run an ADVERSARIAL review of a pull request or a local diff and return a single gating verdict
-  (PASS / NEEDS_REVISION / BLOCK). Trigger with /deliver:pr-review [PR#|base..head] (or "review this
-  PR", "adversarial review of the diff", "is this branch mergeable?"). Fans out DELIVER's reviewer
-  agent in multiple adversarial roles (correctness, security, regression, architecture, performance,
-  docs — plus conditional API-contract, observability, licensing, prompt-injection, i18n, and
-  doc-accessibility lenses when the diff touches them) — each prompted to REFUTE the change, not
-  rubber-stamp it — then synthesises their findings into one verdict. Composes the SECURE plugin's
-  /scan-all when installed. Writes PR_REVIEW.md.
+  Run an ADVERSARIAL review of a PR or local diff and return one gating verdict (PASS / NEEDS_REVISION /
+  BLOCK). Trigger with /deliver:pr-review (or "review this PR", "adversarial review of the diff", "is this
+  branch mergeable?"). Guard: ASSURE only. Fans out reviewer roles prompted to REFUTE the change, composes
+  secure's /scan-all when installed. Writes PR_REVIEW.md.
 metadata:
   phase: [ASSURE]
   type: orchestrator

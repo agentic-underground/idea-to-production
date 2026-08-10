@@ -1,11 +1,9 @@
 ---
 name: value-station-handoff
 description: >
-  The precise input/exit contract for each value-station, written so a fresh gate-keeping
-  agent (reviewer, security-auditor) can pick up an artifact with zero conversation history
-  and know exactly what to verify. Use when handing work between stations, when a reviewer
-  needs to know what "done" means for a stage, or when defining a new station. Trigger:
-  "handoff contract", "what does done mean here", "station contract", "ready for review".
+  The precise input/exit contract for each value-station — written so a fresh gate-keeping agent (reviewer,
+  security-auditor) can pick up an artifact with zero history and know what to verify. Trigger by "handoff
+  contract", "what does done mean here", "station contract", "ready for review".
 metadata:
   phase: [cross-cut]
 ---

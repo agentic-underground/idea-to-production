@@ -1,17 +1,10 @@
 ---
 name: builder
 description: >
-  DELIVER — Technical Tooling for Software Evolution. The production orchestrator
-  for this production system. Ingests a complete ROADMAP.md, tiers all items by
-  PRIORITY_STATUS against a token budget, decomposes the full backlog into
-  parallelised expert subagents (PHASE_POOL + VALUE_HANDLER_POOL), drives every
-  item through the full DEV_SYSTEM pipeline (EARS → FEATURE → TEST → IMPLEMENT →
-  STORY), and records every completion in IDEA_COST.jsonl. DELIVER is the engine
-  of the idea-to-production conveyor.
-  Trigger when the user says: "run DELIVER", "process the roadmap",
-  "orchestrate the roadmap", "ship the backlog", "build everything", "start
-  DELIVER", "run a DELIVER cycle", "what would this cost?", "estimate the
-  backlog", or "inspect DELIVER".
+  DELIVER's production orchestrator — ingests a ROADMAP, tiers items by a token budget, decomposes the
+  backlog into parallel subagents, and drives each through the DEV_SYSTEM pipeline (EARS, FEATURE, TEST,
+  IMPLEMENT, STORY). Trigger with /deliver:build (or "run DELIVER", "ship the backlog", "build
+  everything"). Guard: BUILD only. Records completions in IDEA_COST.jsonl.
 metadata:
   phase: [BUILD]
 ---

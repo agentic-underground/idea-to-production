@@ -58,12 +58,14 @@ gate is the local pre-push run, not the cloud job. It follows the house style of
 - **R8 · Lexicon ↔ ledger sync** — a **bidirectional presence check**: every collision family-id and
   defect in the ledger is documented in [`lexicon.md`](./lexicon.md), *and* every `C<n>-` family-id the
   lexicon cites still exists in the ledger (so a stale family can't linger in the user-facing page).
+- **R6 · Description budget** — every `description` ≤ 60 words **and** ≤ 400 chars/bytes (RFC C5) — the
+  always-on catalog leanness sensor (both bounds enforced). **Hard gate** since RFC slice 5 compressed
+  every plugin's descriptions to zero over budget; a new over-budget description now FAILs. *(Flipped by
+  deleting `R6` from `WARN_CHECKS`.)*
 
-**Warn-then-flip (depend on unlanded [`context-routing.md`](./context-routing.md) slices — WARN now,
-flip to hard-FAIL as each slice lands, or run `--strict`):**
+**Warn-then-flip (advisory until flipped — WARN now, run `--strict` or remove from `WARN_CHECKS` to
+gate hard):**
 
-- **R6 · Description budget** — every `description` ≤ 60 words **and** ≤ 400 chars (RFC C5) — the
-  always-on catalog leanness sensor. (Both bounds are enforced.)
 - **R9 · Lexicon phrase presence** — the C5 *drift-guard*. For every `(family, member)` group in
   [`scripts/routing/lexicon-phrases.tsv`](../../scripts/routing/lexicon-phrases.tsv), **at least one**
   listed disambiguating phrase must still appear (case-insensitive, whitespace-normalised substring) in
