@@ -1,15 +1,10 @@
 ---
 name: document-review
 description: >
-  Adversarially review the PROSE of ANY document — the copy/editorial quality gate of PUBLISH, the prose
-  peer to design-reviewer. Trigger with /publish:document-review (or "copy-review this README", "critique
-  the prose of this spec", "review the writing in this gap map", "is this completion report clearly
-  written"). It reads the document's words and judges them across five dimensions — clarity, accuracy/
-  precision, tone/vocabulary, punchiness/structure, tangents/cohesion — in the adversarial, evidence-citing
-  style WRITER's authoring reviewer already uses, then returns prioritised, quote-and-locate findings and a
-  single explicit verdict. Invocable on a spec, gap map, README, or completion report — not only on an
-  article authored in-session via WRITER. It owns the WORDS; design-reviewer owns the PAGE and the FIGURE —
-  it never re-reviews typography, layout, or data-viz.
+  Adversarially review the PROSE of any document — PUBLISH's copy/editorial gate, prose peer to
+  design-reviewer. Trigger with /publish:document-review (or "copy-review this README", "critique the
+  prose of this spec"). Guard: PUBLISH only. Judges clarity, accuracy, tone, punchiness, cohesion; returns
+  quote-and-locate findings + one verdict. It owns the WORDS; design-reviewer the PAGE.
 metadata:
   phase: [PUBLISH]
   type: reviewer
@@ -34,10 +29,9 @@ draft being authored in-session.
 
 ## Why the words deserve a surfaced gate
 
-PUBLISH already ships a surfaced **visual** gate — `design-reviewer` (`/publish:design-review`), whose own
-description says it *"Complements WRITER's prose reviewer (which owns the words); this owns the page and the
-figure."* But until now only one half of that pair was invocable: **the page had a slash command; the words
-did not.** A capable prose reviewer existed — buried inside the WRITER skill at
+PUBLISH already ships a surfaced **visual** gate — `design-reviewer` (`/publish:design-review`), which owns
+the page and the figure. But until now only one half of that pair was invocable: **the page had a slash
+command; the words did not.** A capable prose reviewer existed — buried inside the WRITER skill at
 [`../writer/agents/reviewer.md`](../writer/agents/reviewer.md) — but it fired *only* while authoring an
 article. A spec, a gap map, a README, or a completion report — the documents a build produces all day — had
 **no `/publish:*` prose gate at all.** This skill closes that asymmetric gap: it surfaces the same critique

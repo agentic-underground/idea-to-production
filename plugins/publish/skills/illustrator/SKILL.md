@@ -1,14 +1,10 @@
 ---
 name: illustrator
 description: >
-  Trawl documentation, find the highest-impact spots a figure would clarify, and drive each one from
-  candidate-site → SPEC → two rendered options → an adversarial A/B-until-best design review → an embedded,
-  dark-mode, transparent-background asset. The orchestrator of PUBLISH's graphical value handlers
-  (Graphviz / Mermaid / chart / hand-composition / ComfyUI). Trigger with /illustrate (or "illustrate this
-  doc", "what figures does this README need", "add a diagram here", "illustrate the docs"). Single-shot on one
-  site, or /loop-driven across the whole doc tree with an idempotent, resumable ledger that embeds as it goes.
-  Shares the 4×9 charting-matrix and the dark-mode canon with the producers; reuses the design-reviewer's
-  typographic + data-viz sub-agents in a comparative (A/B) mode.
+  Trawl documentation, find the highest-impact spots a figure would clarify, and drive each from SPEC to
+  two options to an adversarial A/B design review to an embedded dark-mode asset. Orchestrator of PUBLISH's
+  graphical handlers (Graphviz, Mermaid, chart, composition, ComfyUI). Trigger with /illustrate (or "illustrate this
+  doc", "what figures does this README need"). Guard: PUBLISH only.
 metadata:
   phase: [PUBLISH]
   type: orchestrator

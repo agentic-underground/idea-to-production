@@ -1,12 +1,10 @@
 ---
 name: check
 description: >
-  Verify that PUBLISH's typesetting and rendering tools are installed and reachable — the
-  dual-engine typesetters (typst / pdflatex), diagram renderers (dot, mmdc), and DTP/conversion
-  tools (pdfinfo, gs, pandoc, libreoffice). Trigger with /publish:check (or "check publish
-  prerequisites", "can I render a PDF?"). Runs a fast ✓/✗ probe grouped by tier and tells you which
-  PDF engine(s) are available so /publish can pick a working one. Advisory by default; --strict to
-  fail on a missing required tool. Reads the canonical manifest skills/check/requirements.tsv.
+  Verify PUBLISH's typesetting/rendering tools are installed and reachable — typesetters (typst,
+  pdflatex), diagram renderers (dot, mmdc), and DTP/conversion tools (pdfinfo, gs, pandoc, libreoffice).
+  Trigger with /publish:check (or "check publish prerequisites", "can I render a PDF?"). Reports which
+  PDF engine(s) are available. Advisory; --strict fails on a missing required tool.
 metadata:
   phase: [cross-cut]
   type: diagnostic

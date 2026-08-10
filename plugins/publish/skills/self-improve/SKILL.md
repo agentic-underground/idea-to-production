@@ -1,12 +1,10 @@
 ---
 name: self-improve
 description: >
-  Improve PUBLISH itself by folding design feedback back into its charting-matrix, templates, and
-  reviewer rubrics — and by self-cleaving over-broad elements. Trigger with /publish:self-improve (or
-  "this chart passed review but read poorly — fix the matrix", "the PDF engine fell over — harden it",
-  "fold this design feedback in", "self-improve the diagram-studio skill"). Reflects one element against
-  the covenant + pillars, applies the fix on a branch, runs the adversarial review (deliver's
-  /deliver:pr-review if installed), and opens a PR so every future publish, for all users, looks better.
+  Improve PUBLISH itself — fold design feedback into its charting-matrix, templates, and reviewer rubrics,
+  or self-cleave an over-broad element. Trigger with /publish:self-improve (or "this chart passed review
+  but read poorly — fix the matrix", "the PDF engine fell over — harden it"). Applies on a branch,
+  adversarial review, then a PR.
 metadata:
   phase: [cross-cut]
   type: producer

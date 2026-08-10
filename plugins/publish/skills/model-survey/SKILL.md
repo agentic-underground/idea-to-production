@@ -1,15 +1,10 @@
 ---
 name: model-survey
 description: >
-  Explore, test, score, and journal the image models available on the ComfyUI backend so PUBLISH can choose
-  models on evidence. A loop-driven experiment (NO command — run it under /loop, self-paced): it generates a
-  curated subset of checkpoints (SDXL + SD1.5) across five test objectives — scenes, landscapes, candid-office
-  (marketing stock), line-goes-up, cute-mascot — has the design team score each, retains the images on disk
-  (not in git), assembles an efficient PDF + a markdown catalog in comfyui-experiment/, and folds the
-  findings into knowledge/comfyui-model-guide.md so handler-comfyui and the illustrator pick models well.
-  Resumable/idempotent via a journal; finishes when every cell is generated, scored, cataloged, and the guide
-  is synthesized. Token-efficient by design: generation, catalog, and PDF are deterministic bash; only scoring spends
-  model tokens (one agent per model contact-sheet via a Workflow fan-out).
+  Explore, test, score, and journal the image models on the ComfyUI backend so PUBLISH picks models on
+  evidence. Loop-driven experiment (no command, run under /loop): generates a curated checkpoint subset
+  (SDXL + SD1.5) across test objectives, the design team scores each, and folds findings into the model
+  guide. Guard: PUBLISH only. Deterministic bash; scoring-only tokens.
 metadata:
   phase: [PUBLISH]
   type: experiment

@@ -1,14 +1,10 @@
 ---
 name: diagram-studio
 description: >
-  Author standalone, legible diagrams (Graphviz DOT and Mermaid) and render them to SVG, PNG, or
-  PDF for embedding in ANY target — markdown docs, READMEs, web pages, slides, or print. Use this
-  skill whenever the user wants "a diagram", "a chart", "an architecture diagram", "a flowchart",
-  "render this as a graph", or wants a figure for documentation that is NOT necessarily a full
-  print PDF. Carries the same A4/page-legibility discipline as rich-pdf-with-diagrams (the 4×9
-  charting matrix) so figures stay readable at their target size. For full print-quality PDF
-  ARTICLES with embedded figures, defer to rich-pdf-with-diagrams instead. Self-improving: shares
-  and feeds the charting-matrix lessons log.
+  Author standalone, legible diagrams (Graphviz DOT, Mermaid) rendered to SVG/PNG/PDF for embedding in any
+  target — docs, READMEs, web, slides, or print. Trigger by "a diagram", "an architecture diagram", "a
+  flowchart", "render this as a graph". Guard: PUBLISH only. Carries the charting-matrix legibility
+  discipline; for full print PDFs with figures, defer to rich-pdf-with-diagrams.
 metadata:
   phase: [PUBLISH]
   type: producer

@@ -1,14 +1,10 @@
 ---
 name: design-reviewer
 description: >
-  Adversarially review the VISUAL design of a rendered document or chart — the print/DTP and data-viz
-  quality gate of PUBLISH. Trigger with /publish:design-review (or "review this PDF's typography",
-  "critique this chart", "is this figure well-designed", "check the layout of the print edition"). It
-  rasterises a built PDF's pages (or reads a diagram/chart image) so Claude vision can SEE them, then scores
-  them on a design-fitness rubric against the named canon — typography (Bringhurst, grids, measure/leading,
-  widows/orphans) and data-viz (Tufte, Cleveland–McGill, Bertin, ColorBrewer) — returning prioritised,
-  principle-citing findings that drive a convergent designer↔reviewer loop until the artefact clears the
-  rubric. Complements PUBLISH's prose reviewer /publish:document-review (which owns the words); this owns the page and the figure.
+  Adversarially review the VISUAL design of a rendered document or chart — PUBLISH's print/DTP and
+  data-viz quality gate. Trigger with /publish:design-review (or "review this PDF's typography", "critique
+  this chart"). Guard: PUBLISH only. Rasterises PDF pages (or a chart image) for Claude vision, scoring
+  against typography and data-viz canon. Prioritised findings drive the review loop.
 metadata:
   phase: [PUBLISH]
   type: reviewer
