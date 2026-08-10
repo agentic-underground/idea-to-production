@@ -1,18 +1,10 @@
 ---
 name: rich-pdf-with-diagrams
 description: >
-  Produce a print-quality rich-text PDF article with embedded Graphviz/TikZ
-  diagrams that respect A4-portrait composition rules. Use this skill when
-  the user requests a "rich PDF", "print edition", "publication-ready PDF",
-  "PDF with diagrams", or whenever WRITER is asked to emit a long-form
-  artefact destined for printed/published consumption. Trigger when the
-  parent skill (typically WRITER) has the rich-text source in hand and now
-  needs to produce a typographically sound, visually balanced PDF artefact
-  whose figures are readable on a printed A4 page.
-  Carries a self-improvement covenant: every piece of diagram feedback
-  received from a user gets generalised and woven back into the
-  charting-matrix reference, so the same composition error never occurs
-  twice.
+  Produce a print-quality PDF article with embedded Graphviz/TikZ diagrams that respect A4-portrait
+  composition. Downstream of WRITER — product-noun triggers "rich PDF", "print edition",
+  "publication-ready PDF", "PDF with diagrams". Guard: PUBLISH only. Typesets a typographically sound,
+  visually balanced artefact whose figures stay readable on a printed A4 page.
 metadata:
   phase: [PUBLISH]
   type: producer

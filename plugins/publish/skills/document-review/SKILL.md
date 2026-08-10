@@ -1,15 +1,10 @@
 ---
 name: document-review
 description: >
-  Adversarially review the PROSE of ANY document — the copy/editorial quality gate of PUBLISH, the prose
-  peer to design-reviewer. Trigger with /publish:document-review (or "copy-review this README", "critique
-  the prose of this spec", "review the writing in this gap map", "is this completion report clearly
-  written"). It reads the document's words and judges them across five dimensions — clarity, accuracy/
-  precision, tone/vocabulary, punchiness/structure, tangents/cohesion — in the adversarial, evidence-citing
-  style WRITER's authoring reviewer already uses, then returns prioritised, quote-and-locate findings and a
-  single explicit verdict. Invocable on a spec, gap map, README, or completion report — not only on an
-  article authored in-session via WRITER. It owns the WORDS; design-reviewer owns the PAGE and the FIGURE —
-  it never re-reviews typography, layout, or data-viz.
+  Adversarially review the PROSE of any document — PUBLISH's copy/editorial gate, prose peer to
+  design-reviewer. Trigger with /publish:document-review (or "copy-review this README", "critique the
+  prose of this spec"). Guard: PUBLISH only. Judges clarity, accuracy, tone, punchiness, cohesion; returns
+  quote-and-locate findings + one verdict. It owns the WORDS; design-reviewer the PAGE.
 metadata:
   phase: [PUBLISH]
   type: reviewer

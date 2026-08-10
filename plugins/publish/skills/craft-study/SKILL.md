@@ -1,16 +1,10 @@
 ---
 name: craft-study
 description: >
-  Empirically discover which MULTI-STAGE techniques actually raise image craft on the ComfyUI backend, so
-  PUBLISH stops shipping single-pass MVP output. A loop-driven experiment (NO command — run under /loop,
-  self-paced): for a curated short-list of objectives (portrait, landscape, marketing-hero, dark-key,
-  world-axis) it runs a CONTROLLED single-variable A/B — baseline vs one named stage (latent hires-fix, a
-  dark-key LoRA stack, regional tricomposite) sharing ckpt/prompt/seed/base-res — by filling the Phase-5
-  allowlisted templates, scores each A/B from a contact sheet, and folds the proven gains into
-  knowledge/comfyui-model-guide.md + skills/illustrator/references/workflow-strategy.md so handler-comfyui and
-  the illustrator reach for the stage that pays. Resumable/idempotent via a journal; finishes when every cell
-  is generated, scored, cataloged, and the recipes are synthesized. Token-efficient: generation, sheets, and
-  catalog are deterministic bash (0 model tokens); only scoring spends tokens, batched one agent per A/B sheet.
+  Empirically discover which MULTI-STAGE ComfyUI techniques raise image craft. Loop-driven experiment (no
+  command, run under /loop): a controlled single-variable A/B — baseline vs one named stage (e.g. latent
+  hires-fix, a dark-key LoRA) — scored from a contact sheet, folding the proven gains into the model guide.
+  Guard: PUBLISH only. Deterministic bash; scoring-only tokens.
 metadata:
   phase: [PUBLISH]
   type: experiment

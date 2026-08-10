@@ -1,16 +1,10 @@
 ---
 name: writer
 description: >
-  Use this skill whenever the user wants to write an article, narrative, technical post, blog post,
-  origin story, retrospective, release notes, or any long-form piece derived from a software project's
-  source material — including its git history, doc/ folder, README, code, changelogs, or architecture.
-  Trigger when the user says "write an article", "write an origin story", "write a retrospective",
-  "write release notes", "write a post about this project", "tell the story of this codebase",
-  "document what we built", "write a narrative about this", or any similar request to produce editorial
-  content grounded in a project. Also trigger proactively when the user mentions wanting to share or
-  explain a project to an audience.
-  This skill manages the full lifecycle: discovery → type inference → story selection → audience brief →
-  drafting → review/critique loop → final output to doc/articles/.
+  Write an article, narrative, technical post, origin story, retrospective, or release notes derived from
+  a project's source (git history, doc/, README, code). Trigger by "write an article", "write an origin
+  story", "write a retrospective", "tell the story of this codebase". Guard: PUBLISH only. Runs discovery,
+  type inference, story selection, drafting, and a review loop to doc/articles/.
 metadata:
   phase: [PUBLISH]
 ---
