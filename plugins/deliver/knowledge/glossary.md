@@ -258,4 +258,7 @@ however it surfaces — *formal* definition · *aliases* · *metaphor*. The dept
 - Who staffs what → [`orchestration/agent-roster.md`](orchestration/agent-roster.md) +
   the `builder` VALUE_HANDLER_POOL.
 - Worked examples of the dev system → [`../examples/README.md`](../examples/README.md)
+- How a document reaches context, and keeping it phase-clean (TRIPWIRE · FOCUS · routing-tag) →
+  [`context-building-pipeline.md`](../../../docs/guide/context-building-pipeline.md) +
+  [`context-routing.md`](../../../docs/guide/context-routing.md)
 - How the system came to be → [`../docs/HISTORY.md`](../docs/HISTORY.md)
