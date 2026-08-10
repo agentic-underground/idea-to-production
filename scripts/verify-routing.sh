@@ -12,10 +12,11 @@
 # The single central ledger is scripts/routing/collisions.tsv; per-skill facts live in frontmatter.
 # The pattern (and how to extend this suite) is documented in docs/guide/routing-tests.md.
 #
-# WARN-THEN-FLIP: checks that pass today gate hard (R1-R5, R8 — R5 phase tags flipped once RFC slice 1
-# tagged every skill); checks that still depend on unlanded context-routing RFC slices (R6 description
-# budget, R7 roadmap seed-wording) WARN until those slices land, then flip to hard-FAIL (remove them
-# from the WARN_CHECKS list below, or run --strict). The suite is a RED routing-contract the RFC turns GREEN.
+# WARN-THEN-FLIP: checks that pass today gate hard (R1-R5, R7, R8 — R5 phase tags flipped in RFC slice 1
+# once every skill was tagged; R7 roadmap Phase+Loads tags flipped in slice 4); checks that still depend
+# on unlanded context-routing RFC slices (R6 description budget) WARN until those slices land, then flip
+# to hard-FAIL (remove them from the WARN_CHECKS list below, or run --strict). The suite is a RED
+# routing-contract the RFC turns GREEN.
 
 set -uo pipefail
 
@@ -47,7 +48,7 @@ note() { printf "    %b%s%b\n" "$dim" "$1" "$reset"; }
 # gate by DELETING its id from this list (a one-line edit — exactly as docs/guide/routing-tests.md §5
 # describes). `--strict` flips ALL of them at once (see the verdict block). `soft <id> <msg>` routes a
 # finding to warn() or fail() by membership.
-WARN_CHECKS="R6 R7"   # R5 flipped to a hard gate once every skill was phase-tagged (RFC slice 1)
+WARN_CHECKS="R6"   # R5 flipped in slice 1 (phase tags); R7 flipped in slice 4 (roadmap Phase+Loads tags)
 soft() {
   local id="$1"; shift
   case " $WARN_CHECKS " in *" $id "*) warn "$*" ;; *) fail "$*" ;; esac
@@ -265,14 +266,19 @@ else
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
-# R7. Roadmap seed-wording (RFC C3) — WARN-THEN-FLIP. Every EPIC/PLAN carries Phase + Loads tags.
+# R7. Roadmap seed-wording (RFC C3) — HARD GATE (flipped in slice 4). Every EPIC/PLAN carries Phase +
+# Loads tags; the Phase value is a canonical lifecycle phase, and every (non-empty) Loads token
+# resolves to an installed plugin:skill.
 # ─────────────────────────────────────────────────────────────────────────────
-section "R7. Roadmap seed-wording (Phase + Loads tags) — RFC C3 [warn-then-flip]"
+section "R7. Roadmap seed-wording (Phase + Loads tags) — RFC C3 [hard gate]"
 mapfile -t roadmap_items < <(find docs/roadmap plugins/deliver/skills/roadmapper/references/examples \
   -type f \( -name 'EPIC_*.md' -o -name 'PLAN_*.md' \) 2>/dev/null | sort)
 if [ "${#roadmap_items[@]}" -eq 0 ]; then
-  soft R7 "no EPIC/PLAN items found (docs/roadmap/ empty — board-mode) — nothing to check yet"
+  pass "no EPIC/PLAN items found (docs/roadmap/ empty — board-mode); nothing to seed-tag"
 else
+  # the closed lifecycle-phase vocabulary (identical set to /i2p:focus's allowlist) — a **Phase**
+  # value outside it is a typo the C2 phase-gate would silently ignore, so R7 rejects it.
+  R7_PHASES="DISCOVER IDEATE DELIVER DESIGN BUILD ASSURE SECURE PUBLISH OPERATE"
   r7_bad=0
   for it in "${roadmap_items[@]}"; do
     # require BOTH a **Phase** row AND a **Loads** row (not either).
@@ -282,15 +288,27 @@ else
     if [ "$hasP" -eq 0 ] || [ "$hasL" -eq 0 ]; then
       r7_bad=$((r7_bad+1)); note "missing Phase and/or Loads tag: $it"; continue
     fi
-    # resolve each Loads token (plugin:skill) to a real installed skill.
+    # the **Phase** value must be one of the canonical lifecycle phases.
+    phase="$(grep -E '^\|[[:space:]]*\*\*Phase\*\*' "$it" | head -1 | sed -E 's/^\|[^|]*\|//; s/\|.*$//; s/`//g; s/[[:space:]]//g')"
+    case " $R7_PHASES " in
+      *" $phase "*) : ;;
+      *) r7_bad=$((r7_bad+1)); note "$it: Phase '$phase' is not a lifecycle phase ($R7_PHASES)" ;;
+    esac
+    # resolve each Loads token (plugin:skill) to a real installed skill. Split on commas with the
+    # safe read -ra idiom (no word-split/glob on the file-derived value — cf. R2 above).
     loads="$(grep -E '^\|[[:space:]]*\*\*Loads\*\*' "$it" | head -1 | sed -E 's/^\|[^|]*\|//; s/\|.*$//; s/`//g')"
-    for tok in $(printf '%s' "$loads" | tr ',' ' '); do
-      tok="$(printf '%s' "$tok" | tr -d ' ')"; [ -z "$tok" ] && continue
+    IFS=',' read -ra r7_toks <<< "$loads"
+    r7_seen=0
+    for tok in "${r7_toks[@]}"; do
+      tok="$(printf '%s' "$tok" | tr -d '[:space:]')"; [ -z "$tok" ] && continue
+      r7_seen=$((r7_seen+1))
       section_exists "$tok" || { r7_bad=$((r7_bad+1)); note "$it: Loads names '$tok' which is not an installed section"; }
     done
+    # an empty Loads cell warms nothing — the failure R7 exists to catch, so it is not a vacuous pass.
+    [ "$r7_seen" -eq 0 ] && { r7_bad=$((r7_bad+1)); note "$it: Loads is empty — name at least one plugin:skill to warm"; }
   done
   if [ "$r7_bad" -eq 0 ]; then
-    pass "all ${#roadmap_items[@]} roadmap item(s) carry Phase + Loads seed-wording, and every Loads target resolves"
+    pass "all ${#roadmap_items[@]} roadmap item(s) carry Phase + Loads seed-wording (valid phase, every Loads target resolves)"
   else
     soft R7 "$r7_bad roadmap tag issue(s) across ${#roadmap_items[@]} item(s) — RFC C3 (roadmapper emission)"
   fi
