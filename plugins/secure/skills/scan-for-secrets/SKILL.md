@@ -1,14 +1,10 @@
 ---
 name: scan-for-secrets
 description: >
-  Focused detection of committed credentials and secrets — API keys, tokens, private keys,
-  database connection strings, and high-entropy strings — across the working tree, git history,
-  and build artefacts. Complements scan-for-pii (which targets PERSONAL data) with a CREDENTIAL
-  lens. Trigger with /scan-for-secrets [scope] where scope is: full (working tree + history +
-  artefacts), tree (working tree only), history (git history only), or a path. Default: full.
-  Shares the SECURITY finding/report format. Produces findings consumable standalone or by the
-  /scan-all consolidator. Self-improving: every missed token family becomes a new pattern;
-  every false positive becomes an allowlist entry.
+  Detect committed credentials and secrets — API keys, tokens, private keys, connection strings,
+  high-entropy blobs — across the working tree, git history, and build artefacts (the CREDENTIAL lens,
+  complementing scan-for-pii's PERSONAL-data lens). Trigger with /scan-for-secrets [scope:
+  full|tree|history|path]. Guard: SECURE only. → findings, standalone or for /scan-all.
 metadata:
   phase: [SECURE]
   type: scanner

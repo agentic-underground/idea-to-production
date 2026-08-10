@@ -1,12 +1,10 @@
 ---
 name: check
 description: >
-  Verify that SECURITY's security scanners are installed and reachable — SCA (npm audit, pip-audit,
-  cargo-audit, osv-scanner), secrets (gitleaks). Trigger with
-  /secure:check (or "check security prerequisites", "which scanners are installed?"). Runs a fast
-  ✓/✗ probe grouped by tier. Advisory by default (SECURITY degrades gracefully — a missing scanner
-  narrows a lens to partial coverage, never a false PASS); pass --strict to fail on a missing
-  required tool. Reads the canonical manifest skills/check/requirements.tsv.
+  Verify SECURITY's scanners (SCA — npm/pip/cargo-audit + osv-scanner; secrets — gitleaks) are installed and
+  reachable — a ✓/✗ table by tier. Trigger with /secure:check (or "check security prerequisites",
+  "which scanners are installed?"). Advisory: a missing scanner narrows a lens, never a false PASS;
+  --strict fails on a missing required tool.
 metadata:
   phase: [cross-cut]
   type: diagnostic
