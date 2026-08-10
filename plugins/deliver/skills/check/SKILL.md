@@ -8,6 +8,7 @@ description: >
   by default (never blocks); pass --strict to fail when a required tool is missing. Reads the
   canonical manifest skills/check/requirements.tsv.
 metadata:
+  phase: [cross-cut]
   type: diagnostic
   output: a ✓/✗ dependency table (stdout); exit 0 advisory, non-zero only with --strict
 model: claude-haiku-4-5

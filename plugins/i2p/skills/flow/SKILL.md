@@ -7,6 +7,7 @@ description: >
   headline command and artefact at each stage, marks dark stages, and — given a starting point —
   traces the ordered path to PRODUCTION. Renders Mermaid when a renderer is present, else markdown.
 metadata:
+  phase: [cross-cut]
   type: front-door
   output: a value-flow map + "your next command" (Mermaid when publish/design present, else markdown)
   composes: [publish/design renderers by capability — read-only]

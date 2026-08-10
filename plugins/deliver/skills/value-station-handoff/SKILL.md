@@ -6,6 +6,8 @@ description: >
   and know exactly what to verify. Use when handing work between stations, when a reviewer
   needs to know what "done" means for a stage, or when defining a new station. Trigger:
   "handoff contract", "what does done mean here", "station contract", "ready for review".
+metadata:
+  phase: [cross-cut]
 ---
 
 # VALUE-STATION-HANDOFF

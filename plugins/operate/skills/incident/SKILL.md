@@ -8,6 +8,7 @@ description: >
   Produces INCIDENT-<id>.md / POSTMORTEM-<id>.md; consumable standalone or by /operate-gate.
   Self-improving: every incident that surprised us becomes a runbook and an alert.
 metadata:
+  phase: [OPERATE]
   type: responder
   lens: incident
   output: INCIDENT-<id>.md, a runbook, and/or POSTMORTEM-<id>.md

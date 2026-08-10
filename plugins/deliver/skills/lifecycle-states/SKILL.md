@@ -11,6 +11,8 @@ description: >
   confidence assessment, unresolved-risk disposition, and Definition Of Done certification
   (production-readiness). Trigger whenever an item transitions between SDLC steps and you must
   prove the gate before proceeding.
+metadata:
+  phase: [BUILD]
 ---
 
 # Lifecycle States

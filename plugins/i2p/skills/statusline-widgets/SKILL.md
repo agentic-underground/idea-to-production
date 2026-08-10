@@ -8,6 +8,7 @@ description: >
   break-after (break after it), or none (flow inline; the terminal soft-wraps). Persists to
   ~/.claude/i2p-statusline.conf and refreshes the installed renderer.
 metadata:
+  phase: [cross-cut]
   type: configurator
   output: break_<widget>=… lines in ~/.claude/i2p-statusline.conf + a refreshed renderer
 model: inherit

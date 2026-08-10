@@ -11,6 +11,7 @@ description: >
   article authored in-session via WRITER. It owns the WORDS; design-reviewer owns the PAGE and the FIGURE —
   it never re-reviews typography, layout, or data-viz.
 metadata:
+  phase: [PUBLISH]
   type: reviewer
   output: a prioritised, evidence-citing prose critique + one verdict (MAJOR / MINOR / APPROVED ≡ BLOCK / NEEDS_REVISION / PASS)
   reviews: any document supplied as words — spec, gap map, README, completion report, article draft

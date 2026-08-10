@@ -8,6 +8,7 @@ description: >
   PDF engine(s) are available so /publish can pick a working one. Advisory by default; --strict to
   fail on a missing required tool. Reads the canonical manifest skills/check/requirements.tsv.
 metadata:
+  phase: [cross-cut]
   type: diagnostic
   output: a ✓/✗ tooling table (stdout); exit 0 advisory, non-zero only with --strict
 model: claude-haiku-4-5

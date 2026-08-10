@@ -9,6 +9,7 @@ description: >
   /scan-all. Self-improving: every new ecosystem or advisory source is folded into the
   reference.
 metadata:
+  phase: [SECURE]
   type: scanner
   lens: supply-chain
   output: findings (markdown) → DEPENDENCY-FINDINGS.md or scan-all report

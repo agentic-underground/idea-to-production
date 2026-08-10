@@ -7,6 +7,8 @@ description: >
   defining stages and their owners, onboarding a new value-handler agent, or explaining
   WHAT is being built and HOW. Trigger phrases: "founder method", "value stations",
   "who owns this stage", "production line", "how does our process work".
+metadata:
+  phase: [DELIVER]
 ---
 
 # THE FOUNDER METHOD

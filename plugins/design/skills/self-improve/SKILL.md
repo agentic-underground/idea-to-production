@@ -8,6 +8,7 @@ description: >
   adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so every future review
   and mockup, for all users, is sharper by default.
 metadata:
+  phase: [cross-cut]
   type: producer
   output: a sharpened canon rule / re-weighted rubric dimension / cleaved element on a branch → review → PR
 model: inherit

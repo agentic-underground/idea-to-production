@@ -5,6 +5,8 @@ description: >
   value-station and gate. Use whenever starting a new piece of work, when a change is
   getting too big to review, or when asked "what's the next slice?". Trigger phrases:
   "next slice", "cut a slice", "this is too big", "ship one increment", "vertical slice".
+metadata:
+  phase: [BUILD]
 ---
 
 # VERTICAL-SLICE

@@ -8,6 +8,7 @@ description: >
   runs the adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so every future
   scan, for all users, gets safer and quieter.
 metadata:
+  phase: [cross-cut]
   type: producer
   output: a sharpened pattern/precision-boundary/element on a branch → adversarial review → PR
 model: inherit

@@ -8,6 +8,7 @@ description: >
   by capability. Produces MAINTENANCE-FINDINGS.md; consumable standalone or by /operate-gate.
   Self-improving: every upkeep emergency becomes a scheduled cadence item.
 metadata:
+  phase: [OPERATE]
   type: scanner
   lens: maintenance
   output: findings (markdown) → MAINTENANCE-FINDINGS.md or the operate-gate report

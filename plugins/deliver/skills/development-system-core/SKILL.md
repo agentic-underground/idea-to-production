@@ -1,6 +1,8 @@
 ---
 name: development-system-core
 description: Use when orchestrating lifecycle execution of an IDEATE item across SDLC steps 0-9, including stage maturity checks, quality gates, and iterative progress to Definition Of Done.
+metadata:
+  phase: [BUILD]
 ---
 
 # Development System Core

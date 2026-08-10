@@ -12,6 +12,7 @@ description: >
   candidates. Hands the opportunity to the ideate plugin (REFINEMENT) when installed, else writes a
   markdown opportunity brief. Use it proactively whenever a user is casting about for something to build.
 metadata:
+  phase: [DISCOVER]
   type: producer
   output: a validated opportunity (scorecard + verdict) → ideate plugin, or a markdown opportunity brief
 model: inherit

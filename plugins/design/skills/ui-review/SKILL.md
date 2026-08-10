@@ -9,6 +9,7 @@ description: >
   2.2) and scores it on the design-fitness rubric. Use proactively whenever someone wants to know whether a
   UI is good — and why.
 metadata:
+  phase: [DESIGN]
   type: producer
   output: a scored, prioritised design-review report (docs/guide/design/review/<date>/design-review.md)
 model: inherit

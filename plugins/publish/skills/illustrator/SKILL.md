@@ -10,6 +10,7 @@ description: >
   Shares the 4×9 charting-matrix and the dark-mode canon with the producers; reuses the design-reviewer's
   typographic + data-viz sub-agents in a comparative (A/B) mode.
 metadata:
+  phase: [PUBLISH]
   type: orchestrator
   output: an embedded figure (svg|png|gif|apng|mp4) + a markdown edit + a ledger entry (.publish/illustration-ledger.json) in loop mode
   composes: [handler-graphviz, handler-mermaid, handler-chart, handler-composition, handler-comfyui, handler-composite, design-reviewer]

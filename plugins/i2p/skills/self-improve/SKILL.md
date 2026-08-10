@@ -8,6 +8,7 @@ description: >
   the fix on a branch, runs the adversarial review (deliver's /deliver:pr-review if installed), and opens a
   PR so every future session, for all users, surfaces the power by default.
 metadata:
+  phase: [cross-cut]
   type: producer
   output: a sharpened /i2p:help entry / new tip / added reviewer in the fan-out / cleaved element on a branch → review → PR
 model: inherit

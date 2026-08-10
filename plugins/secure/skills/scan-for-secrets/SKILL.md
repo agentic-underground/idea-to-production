@@ -10,6 +10,7 @@ description: >
   /scan-all consolidator. Self-improving: every missed token family becomes a new pattern;
   every false positive becomes an allowlist entry.
 metadata:
+  phase: [SECURE]
   type: scanner
   lens: credentials
   output: findings (markdown) → SECRET-FINDINGS.md or scan-all report

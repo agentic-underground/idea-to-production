@@ -10,6 +10,7 @@ description: >
   principle-citing findings that drive a convergent designer↔reviewer loop until the artefact clears the
   rubric. Complements PUBLISH's prose reviewer /publish:document-review (which owns the words); this owns the page and the figure.
 metadata:
+  phase: [PUBLISH]
   type: reviewer
   output: a scored, prioritised design critique + a loop verdict (CONVERGED / CONTINUE / HALT)
   reviews: rendered PDF pages, diagrams, charts (rasterised to PNG so vision can see them)

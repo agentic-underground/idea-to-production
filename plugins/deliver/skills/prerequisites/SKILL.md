@@ -9,6 +9,7 @@ description: >
   stamp live status. Writes PREREQUISITES.md into the current project. Pass --fix to additionally
   dispatch the safe, idempotent, self-verifying sub-heals (browser/env wiring) before re-stamping.
 metadata:
+  phase: [cross-cut]
   type: producer
   output: PREREQUISITES.md (in the current project root)
 model: inherit

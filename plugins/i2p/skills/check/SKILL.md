@@ -7,6 +7,7 @@ description: >
   what's missing and how to install it. Thin: it delegates to each plugin's check, it owns no
   probes of its own.
 metadata:
+  phase: [cross-cut]
   type: orchestrator
   output: one consolidated ✓/✗ readiness table (advisory; --strict to flag missing required tools)
   composes: [each installed plugin's /check]

@@ -8,6 +8,7 @@ description: >
   the convergent designer↔reviewer loop until it clears the design-fitness rubric. This is the capability
   IDEATE calls so the user sees commercial-grade material, not whipped-up sketches.
 metadata:
+  phase: [DESIGN]
   type: producer
   output: a design-reviewed mockup / wireframe / user-flow (PNG/SVG/Mermaid) that clears the fitness rubric
 model: inherit

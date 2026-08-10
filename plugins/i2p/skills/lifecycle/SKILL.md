@@ -7,6 +7,7 @@ description: >
   explains the model from knowledge/product-lifecycle.md. The statusline phase widget reads the
   same state file.
 metadata:
+  phase: [cross-cut]
   type: orchestrator
   output: .i2p/lifecycle.json (current_phase + history) + a phase report
   composes: [discover, ideate, deliver:roadmapper + FLEET engine (DELIVER), design, deliver, security, publish, operate — by capability]

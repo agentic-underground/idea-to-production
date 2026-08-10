@@ -8,6 +8,7 @@ description: >
   the covenant + pillars, applies the fix on a branch, runs the adversarial review (deliver's
   /deliver:pr-review if installed), and opens a PR so every future publish, for all users, looks better.
 metadata:
+  phase: [cross-cut]
   type: producer
   output: a sharpened matrix entry / template / rubric on a branch → adversarial review → PR
 model: inherit

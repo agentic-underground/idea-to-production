@@ -5,6 +5,8 @@ description: >
   of each IN PROGRESS ROADMAP feature by inspecting existing artifacts, then
   installs the skill for that phase automatically. Triggered via PostToolUse hook
   on ROADMAP.md edits. Also invocable directly as /phase-sensor.
+metadata:
+  phase: [cross-cut]
 ---
 
 # PHASE-SENSOR

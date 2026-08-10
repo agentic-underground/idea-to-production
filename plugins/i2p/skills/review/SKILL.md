@@ -9,6 +9,7 @@ description: >
   (PASS / NEEDS_REVISION / BLOCK) in I2P_REVIEW.md, naming what could not be reviewed. Thin: it
   composes the specialists, it does not re-implement review logic.
 metadata:
+  phase: [cross-cut]
   type: orchestrator
   output: I2P_REVIEW.md (verdict PASS | NEEDS_REVISION | BLOCK across all lenses)
   composes: [deliver /pr-review, design /ui-review, publish /publish:design-reviewer, security /scan-all — each if present]

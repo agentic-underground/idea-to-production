@@ -12,6 +12,8 @@ description: >
   "orchestrate the roadmap", "ship the backlog", "build everything", "start
   DELIVER", "run a DELIVER cycle", "what would this cost?", "estimate the
   backlog", or "inspect DELIVER".
+metadata:
+  phase: [BUILD]
 ---
 
 # DELIVER
