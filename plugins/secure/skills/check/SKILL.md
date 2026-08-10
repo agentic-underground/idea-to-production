@@ -1,7 +1,7 @@
 ---
 name: check
 description: >
-  Verify SECURITY's scanners (SCA — npm/pip/cargo/osv-audit; secrets — gitleaks) are installed and
+  Verify SECURITY's scanners (SCA — npm/pip/cargo-audit + osv-scanner; secrets — gitleaks) are installed and
   reachable — a ✓/✗ table by tier. Trigger with /secure:check (or "check security prerequisites",
   "which scanners are installed?"). Advisory: a missing scanner narrows a lens, never a false PASS;
   --strict fails on a missing required tool.
