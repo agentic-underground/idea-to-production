@@ -2,8 +2,8 @@
 name: ideate
 description: >
   Refine a validated opportunity (from discover) or a raw idea into a build-ready IDEA package at
-  knowledge-parity, through an adversarially-challenged dialogue. Trigger with /ideate (or "let's flesh
-  out this idea", "turn this into a project", "refine this opportunity", "make this build-ready"). Guard:
+  knowledge-parity, through an adversarially-challenged dialogue. Trigger with /ideate (or "I have an
+  idea: …", "let's flesh out this idea", "turn this into a project", "refine this opportunity"). Guard:
   IDEATE only; do NOT self-activate during DISCOVER/DELIVER. → the IDEA package → DELIVER.
 metadata:
   phase: [IDEATE]

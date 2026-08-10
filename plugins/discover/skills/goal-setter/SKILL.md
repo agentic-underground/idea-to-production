@@ -3,8 +3,8 @@ name: goal-setter
 description: >
   Set or refine the standing DISCOVERY GOAL that scans run over — the constraints on WHAT to discover
   (niche, builder edge, price band, stack-fit, effort). Trigger with /discovery-goal (or "set a discovery
-  goal", "find me a SaaS in <niche>", "refine the goal", "loosen the constraints"). Guard: DISCOVER only.
-  → .discover/goal.md.
+  goal", "set a goal to find a SaaS in <niche>", "refine the goal", "loosen the constraints"). Guard:
+  DISCOVER only. → .discover/goal.md.
 metadata:
   phase: [DISCOVER]
   type: producer
