@@ -19,6 +19,7 @@ review that pulls in *every* reviewer at once. That is i2p.
 | **`/i2p:review`** | A cross-plugin **adversarial review**. Determines scope, fans out *every installed* specialist reviewer — code (deliver `/pr-review`), design (design `/ui-review`), rendered docs (publish design-review), security (secure `/scan-all`) — adversarially verifies the serious findings, and returns **one** verdict (BLOCK > NEEDS_REVISION > PASS) in `I2P_REVIEW.md`, naming what it could **not** review. |
 | **`/i2p:check`** | Run every installed plugin's `/check` and consolidate the ✓/✗ readiness into one table. |
 | **`/i2p:flow`** | Show where each installed plugin sits in the value flow and the next command at each stage (Mermaid when publish/design are present, else markdown). |
+| **`/i2p:focus`** `[<PHASE>\|off]` | Declare the active lifecycle **phase** for context routing — out-of-phase skills stay dormant ("focus, don't uninstall"). Writes `.i2p/focus`; a SessionStart hook broadcasts it so it survives `/clear`. Best-effort steering, not a hard gate. See [`docs/guide/context-routing.md`](../../docs/guide/context-routing.md) §4. |
 | **`/i2p:define-welcome`** | Author this repo's welcome experience — i2p greets and routes whoever opens it next (the arrival layer, folded into i2p). |
 | **`/i2p:statusline`** `[off]` | Turn on (or off) the rich two-line idea-to-production status line — context/rate gauges, the lifecycle phase, the ⚔ reviewer-catch tally. |
 | **`/i2p:statusline-widgets`** | Lay out the status line's line-2 widgets to fit your terminal. |
