@@ -260,5 +260,7 @@ however it surfaces — *formal* definition · *aliases* · *metaphor*. The dept
 - Worked examples of the dev system → [`../examples/README.md`](../examples/README.md)
 - How a document reaches context, and keeping it phase-clean (TRIPWIRE · FOCUS · routing-tag) →
   [`context-building-pipeline.md`](../../../docs/guide/context-building-pipeline.md) +
-  [`context-routing.md`](../../../docs/guide/context-routing.md)
+  [`context-routing.md`](../../../docs/guide/context-routing.md); the phrase→section jargon →
+  [`lexicon.md`](../../../docs/guide/lexicon.md); the pre-push gate that proves routing →
+  [`routing-tests.md`](../../../docs/guide/routing-tests.md)
 - How the system came to be → [`../docs/HISTORY.md`](../docs/HISTORY.md)

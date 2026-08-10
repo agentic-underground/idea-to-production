@@ -26,6 +26,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify the PREREQUISITES contract
         run: bash scripts/verify-prereqs.sh
+      - name: Verify the context-routing gate (backstop — the real gate is pre-push)
+        run: |
+          bash scripts/verify-routing.sh
+          bash scripts/routing/route-eval.sh --check
 
   # Cobbler's children (P1-11): the marketplace runs SECURITY's own secret lens on
   # ITSELF. We invoke gitleaks — the CLI that SECURITY's /scan-for-secrets skill wraps —

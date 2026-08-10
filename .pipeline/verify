@@ -6,3 +6,8 @@ for f in $(git ls-files '*.claude-plugin/*.json'); do python3 -c "import json,sy
 python3 scripts/ci/check_manifests.py $(git ls-files '*.claude-plugin/*.json') || exit 1
 python3 -m py_compile $(git ls-files '*.py')
 echo "manifests + python OK"
+# Context-routing pre-push gate (deterministic, token-free): reachability + no-dead-routes +
+# declared-collisions + lexicon sync. Warn-then-flip checks (phase tags, budget, roadmap tags) only
+# WARN until their RFC slices land, so this does not block on unlanded work. See docs/guide/routing-tests.md.
+bash scripts/verify-routing.sh || exit 1
+bash scripts/routing/route-eval.sh --check || exit 1   # Layer-2 fixture integrity only (no tokens)
