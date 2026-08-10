@@ -1,12 +1,10 @@
 ---
 name: self-improve
 description: >
-  Improve SECURITY itself by folding detection feedback back into its patterns, precision boundaries, and
-  gates — and by self-cleaving over-broad elements. Trigger with /secure:self-improve (or "the scan
-  missed a vuln — fix it", "this rule is too noisy", "fold this finding back in", "self-improve the
-  scan-for-secrets skill"). Reflects one element against the covenant + pillars, applies the fix on a branch,
-  runs the adversarial review (deliver's /deliver:pr-review if installed), and opens a PR so every future
-  scan, for all users, gets safer and quieter.
+  Improve SECURITY itself — fold detection feedback into its patterns, precision boundaries, and gates,
+  or self-cleave an over-broad element. Trigger with /secure:self-improve (or "the scan missed a vuln —
+  fix it", "this rule is too noisy", "fold this finding in"). Applies on a branch → adversarial review →
+  PR (per merge governance).
 metadata:
   phase: [cross-cut]
   type: producer

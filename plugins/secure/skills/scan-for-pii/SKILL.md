@@ -1,14 +1,9 @@
 ---
 name: scan-for-pii
 description: >
-  Automated PII (Personally Identifiable Information) and security audit across
-  codebases. Scans data files, git history, code, and configuration for sensitive
-  information (names, emails, phone numbers, API keys, passwords, credentials).
-  Runs parallel audits across data, git, code, and SPA layers. Produces
-  comprehensive PII-REPORT.md with findings, risk assessments, and recommendations.
-  Trigger with /scan-for-pii [scope] where scope is: full (all systems), data (data files only),
-  git (history only), code (source code only), spa (SPA/frontend only), or project-root
-  for a specific directory. Default: full scan of current repository.
+  Audit a codebase for PII (personal data — names, emails, phones) and secrets across data files, git
+  history, source, and frontend. Trigger with /scan-for-pii [scope: full|data|git|code|spa|path].
+  Guard: SECURE only. → PII-REPORT.md with findings, risk assessments, and recommendations.
 metadata:
   phase: [SECURE]
 ---

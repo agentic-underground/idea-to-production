@@ -1,13 +1,10 @@
 ---
 name: scan-all
 description: >
-  The consolidated pre-release security gate. Runs SECURITY's three audits in parallel —
-  scan-for-pii (personal data), scan-for-secrets (credentials), scan-dependencies (supply chain) — then
-  merges them into a single SECURITY-REPORT.md with one overall verdict: PASS, REVIEW, or BLOCK.
-  Trigger with /scan-all [scope]. This is the entry point the deliver plugin calls as its
-  SECURE station before DELIVERY when SECURE is installed; it is equally useful standalone
-  before any release or open-sourcing. Degrades gracefully: if a sub-skill or its tooling is
-  unavailable, it reports the gap rather than silently passing.
+  The consolidated pre-release security gate — runs SECURITY's three audits in parallel (PII, secrets,
+  dependencies) into one SECURITY-REPORT.md with a PASS / REVIEW / BLOCK verdict. Trigger with
+  /scan-all [scope]. Guard: SECURE only; deliver composes it as its SECURE station before DELIVERY.
+  Degrades gracefully — reports gaps, never silently passes. → SECURITY-REPORT.md.
 metadata:
   phase: [SECURE]
   type: orchestrator

@@ -1,13 +1,10 @@
 ---
 name: scan-dependencies
 description: >
-  Supply-chain audit of a project's third-party dependencies. Parses package manifests and
-  lockfiles across ecosystems (npm/pnpm/yarn, pip/Poetry/uv, Go modules, Cargo, RubyGems,
-  Maven/Gradle), then flags: known-vulnerable versions (via the ecosystem's native advisory
-  tooling), unpinned/floating ranges, abandoned or unmaintained packages, and typosquat-shaped
-  names. Trigger with /scan-dependencies [path]. Produces findings consumable standalone or by
-  /scan-all. Self-improving: every new ecosystem or advisory source is folded into the
-  reference.
+  Supply-chain audit of third-party dependencies — parses manifests/lockfiles across ecosystems
+  (npm, pip/uv, Go, Cargo, RubyGems, Maven/Gradle) and flags known-vulnerable versions, unpinned
+  ranges, abandoned packages, and typosquat names. Trigger with /scan-dependencies [path]. Guard:
+  SECURE only. → findings, standalone or for /scan-all.
 metadata:
   phase: [SECURE]
   type: scanner
