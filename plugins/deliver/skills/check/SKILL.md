@@ -1,12 +1,9 @@
 ---
 name: check
 description: >
-  Verify that DELIVER's external tool dependencies are installed and reachable on this machine —
-  language toolchains, test runners, the chrome-devtools MCP + a browser, debuggers, and language
-  servers. Trigger with /deliver:check (or "check deliver prerequisites", "are my deliver tools
-  installed?"). Runs a fast ✓/✗ probe grouped by tier (required / recommended / optional). Advisory
-  by default (never blocks); pass --strict to fail when a required tool is missing. Reads the
-  canonical manifest skills/check/requirements.tsv.
+  Verify DELIVER's external tool dependencies are installed and reachable — a ✓/✗ table by tier. Trigger
+  with /deliver:check (or "check DELIVER prerequisites", "what build tools are installed?"). Advisory: a
+  missing tool narrows a capability, never breaks DELIVER; --strict fails on a missing required tool.
 metadata:
   phase: [cross-cut]
   type: diagnostic

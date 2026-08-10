@@ -1,15 +1,10 @@
 ---
 name: code-quality
 description: >
-  Deep code quality analysis across Clean Code, SOLID, DRY, Clean/Hexagonal
-  Architecture, TDD, BDD, DDD, 12-Factor App, and Pragmatic Programming
-  principles. Use proactively whenever the user asks about code quality,
-  technical debt, refactoring, architecture review, code review, maintainability,
-  test coverage, coverage gaps, coverage loops, or says things like "is this
-  clean?", "how good is this code?", "review my architecture", "find smells",
-  "improve my tests", or "chase coverage". Also triggers the /coverage-loop
-  slash command, which finds behaviour not yet pinned by a test and adds the
-  missing coordinates (100% coverage is the floor that results, not the target).
+  Deep code-quality analysis across Clean Code, SOLID, DRY, Clean/Hexagonal Architecture, TDD/BDD/DDD,
+  12-Factor, and Pragmatic Programming. Trigger by "review my architecture", "is this clean?", "find
+  smells", "chase coverage". Guard: ASSURE only. Also drives the /coverage-loop command (pins behaviour
+  not yet covered by a test; 100% coverage is the floor, not the target).
 metadata:
   phase: [ASSURE]
 ---

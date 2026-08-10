@@ -1,14 +1,10 @@
 ---
 name: rust-webapp-rollout
 description: >
-  One-shot rollout of a full-Rust web app + serverless API — shared pure domain core, a
-  Dioxus/WASM web frontend, and a Rust serverless function on Vercel's official Rust runtime —
-  from empty directory to a VERIFIED production deployment, first time, every time. Use this skill
-  when the user wants to build or deploy a Rust web app or API, a Dioxus/WASM frontend, a Vercel
-  Rust function, a "RUST_WEBAPP_API", or says "scaffold a Rust web project" / "deploy Rust to
-  Vercel" / invokes `/rust-webapp-rollout`. Carries the proven version matrix, 16 zero-drift
-  templates, the bootstrap runbook, the guardrail ledger, and the verification matrix. Pairs with
-  the handler-rust-webapp value-handler. Self-improving: every new failure mode becomes a guardrail.
+  One-shot rollout of a full-Rust web app + Vercel serverless API (shared pure core + Dioxus/WASM + the
+  official Rust runtime) — empty dir to verified production. Trigger with /deliver:rust-webapp-rollout (or
+  "roll out a Rust web app", "scaffold a Rust+Vercel app"). Guard: BUILD only. Ends at a deployed,
+  verified app.
 metadata:
   phase: [BUILD]
   type: rollout

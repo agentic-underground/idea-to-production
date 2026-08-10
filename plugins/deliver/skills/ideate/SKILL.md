@@ -1,15 +1,10 @@
 ---
 name: ideate
 description: >
-  Use this skill when a user describes a new feature, project, or idea they want built — especially
-  when it is broad, vague, or exploratory — and they need help clarifying, scoping, and translating
-  it into a production-ready project artefact. Trigger on phrases like "I have an idea", "I want to
-  build", "what if we…", "create a project for", "new feature:", "let's start a project", or any
-  open-ended creative/product statement directed at a code project. Also trigger when the user has
-  just finished an ideation conversation and asks "now what?" or "turn this into a project". This
-  skill covers the full arc from fuzzy idea → focused brief → scoped README / project-bootstrap
-  document → handoff to the development system (SDLC). Use it proactively — if the user is
-  describing something new they want to exist in software form, this skill almost certainly applies.
+  Refine a broad or vague idea into a production-ready project artefact — clarify, scope, and translate it
+  into a brief + scoped README, then hand off to the development system. Trigger by "I have an idea", "new
+  feature:", "turn this into a project", "now what?". Guard: IDEATE only (deliver's fallback when the
+  ideate plugin is absent).
 metadata:
   phase: [IDEATE]
 ---

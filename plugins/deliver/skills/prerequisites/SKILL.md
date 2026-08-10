@@ -1,13 +1,9 @@
 ---
 name: prerequisites
 description: >
-  Emit a project-local PREREQUISITES.md describing the external software the installed marketplace
-  plugins (deliver, and secure/publish when present) need to do their best work — with install
-  guidance and the current ✓/✗ status of this machine. Trigger with /deliver:prerequisites (or
-  "what software do I need?", "generate a prerequisites doc", "document the tool dependencies").
-  Assembles from each installed plugin's check requirements and runs each plugin's -check to
-  stamp live status. Writes PREREQUISITES.md into the current project. Pass --fix to additionally
-  dispatch the safe, idempotent, self-verifying sub-heals (browser/env wiring) before re-stamping.
+  Generate a project-local PREREQUISITES.md — the software the installed marketplace plugins need, why, how
+  to install it, and what's currently missing on this machine. Trigger with /deliver:prerequisites (or
+  "what does this project need?", "generate prerequisites"). Reads each plugin's requirements manifest.
 metadata:
   phase: [cross-cut]
   type: producer

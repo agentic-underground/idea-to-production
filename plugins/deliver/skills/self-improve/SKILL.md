@@ -1,13 +1,10 @@
 ---
 name: self-improve
 description: >
-  Reflect on ONE marketplace element (an agent, skill, command, or knowledge doc) against the KAIZEN
-  covenant and the three pillars, and improve it — most often by SELF-CLEAVING an over-broad element
-  into smaller, more single-purpose ones, or by replacing restated knowledge with a reference. Trigger
-  with /deliver:self-improve <path|name> (or "self-improve the X agent", "this skill does too much —
-  cleave it", "make this single-purpose"). Applies the change on a branch, runs /deliver:pr-review, and —
-  under pr-approval governance — opens a PR for the human to merge, so every marketplace user inherits
-  the improvement. Targeted at one element; for a whole-plugin audit use /deliver:inspect.
+  Reflect on ONE marketplace element (agent/skill/command/knowledge doc) against the KAIZEN covenant and
+  improve it — usually by self-cleaving an over-broad element or replacing restated knowledge with a
+  reference. Trigger with /deliver:self-improve. Applies on a branch, then /deliver:pr-review, then a PR
+  per merge governance (never self-merges).
 metadata:
   phase: [cross-cut]
   type: producer
