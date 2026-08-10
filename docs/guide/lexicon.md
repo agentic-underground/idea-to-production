@@ -5,9 +5,12 @@ when you phrase an instruction in the marketplace's standard jargon, the agent l
 plugin-sections that instruction needs — and leaves the rest dormant. This page is the dictionary of
 that jargon. What is **proven deterministically** by the pre-push gate
 ([`verify-routing.sh`](../../scripts/verify-routing.sh), see [`routing-tests.md`](./routing-tests.md))
-is the **wiring**: every section named here exists and is reachable, no `/command` here is a dead
-route (R1/R2/R3), the exact-phrase collisions are declared (R4), and this page stays in step with the
-machine ledger [`scripts/routing/collisions.tsv`](../../scripts/routing/collisions.tsv) (R8). The
+is the **wiring**: across the plugin tree, every skill/command/agent is reachable and no ledgered
+`/command` is a dead route (R1/R2/R3), and the exact-phrase collisions are declared (R4); this page
+itself is kept in step with the machine ledger
+[`scripts/routing/collisions.tsv`](../../scripts/routing/collisions.tsv) by R8 (family-ids + defects
+only — the individual `/command` examples in §2 are maintainer-asserted, though every one resolves
+today). The
 **intent-level** disambiguation in §4 (which wording should route where) is asserted by maintainers and
 checked *behaviourally* only by the opt-in Layer-2 eval — not the pre-push gate. So: the routes are
 proven to exist; the routing *judgment* is proven by the eval when you run it.

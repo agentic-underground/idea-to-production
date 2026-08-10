@@ -22,7 +22,7 @@ The mental model is: **run it before you `git push`.**
 
 ```bash
 bash scripts/verify-routing.sh            # ✓/✗/⚠ table; exit 0 iff no hard FAIL
-bash scripts/verify-routing.sh --strict   # also fail on WARN (flips the warn-then-flip checks)
+bash scripts/verify-routing.sh --strict   # fail on ANY warning — the warn-then-flip checks AND tracked-defect (R3) warns
 ```
 
 It is wired into the repo's pre-push gate ([`.pipeline/verify`](../../.pipeline/verify)) and mirrored

@@ -6,7 +6,7 @@
 # route is dead. Deterministic, token-free, offline. Run it before you `git push`:
 #
 #     bash scripts/verify-routing.sh              # ✓/✗/⚠ table, exit 0 iff no hard FAIL
-#     bash scripts/verify-routing.sh --strict     # also fail on WARN (flip the warn-then-flip checks)
+#     bash scripts/verify-routing.sh --strict     # fail on ANY warning (the warn-then-flip checks AND tracked-defect warns)
 #
 # House style mirrors scripts/verify-prereqs.sh (section/pass/fail + a `fails` counter + exit 0|1).
 # The single central ledger is scripts/routing/collisions.tsv; per-skill facts live in frontmatter.
