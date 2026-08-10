@@ -1,12 +1,10 @@
 ---
 name: incident
 description: >
-  Incident response for a live product — declare severity, assign incident-command roles, mitigate before
-  diagnosing, then generate a runbook and a blameless postmortem. Trigger with /incident [declare|runbook|
-  postmortem] (or "we have an outage", "triage this incident", "write the postmortem", "what's the
-  runbook for X?"). Structures the response under pressure and turns each incident into durable knowledge.
-  Produces INCIDENT-<id>.md / POSTMORTEM-<id>.md; consumable standalone or by /operate-gate.
-  Self-improving: every incident that surprised us becomes a runbook and an alert.
+  Incident response for a live product — declare severity, assign command roles, mitigate before
+  diagnosing, then generate a runbook and a blameless postmortem. Trigger with /incident
+  [declare|runbook|postmortem] (or "we have an outage", "triage this incident", "write the postmortem").
+  Guard: OPERATE only. → INCIDENT-<id>.md / POSTMORTEM-<id>.md, standalone or for /operate-gate.
 metadata:
   phase: [OPERATE]
   type: responder

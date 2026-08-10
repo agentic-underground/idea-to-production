@@ -1,12 +1,10 @@
 ---
 name: iterate
 description: >
-  Close the loop — turn production signals (a stalled metric, an incident's lesson, user feedback) into a
-  new, build-ready OPPORTUNITY that re-enters DISCOVER. Trigger with /iterate (or "what should we build
-  next?", "turn this incident into a backlog item", "the metric stalled — now what?", "close the
-  build-measure-learn loop"). Applies the build-measure-learn pivot-or-persevere test, frames the
-  opportunity, and — when i2p is installed — advances the lifecycle OPERATE → DISCOVER (↻). Produces an
-  OPPORTUNITY brief and hands off to discover/ideate when present.
+  Close the build-measure-learn loop — turn a production signal (a stalled metric, an incident's lesson,
+  user feedback) into a build-ready OPPORTUNITY that re-enters DISCOVER. Trigger with /iterate (or "the
+  metric stalled — now what?", "what should we build next?", "close the loop"). Guard: OPERATE only.
+  Applies pivot-or-persevere; advances OPERATE to DISCOVER. → an OPPORTUNITY brief.
 metadata:
   phase: [OPERATE]
   type: producer

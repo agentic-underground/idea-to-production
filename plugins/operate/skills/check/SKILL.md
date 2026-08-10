@@ -1,13 +1,10 @@
 ---
 name: check
 description: >
-  Verify that OPERATE's operate tooling is installed and reachable — an HTTP prober (curl) for
-  health checks, jq for parsing metric/log JSON, plus optional log/metric/observability CLIs (a
-  Prometheus/Loki client, kubectl, the cloud provider CLI). Trigger with /operate:check (or
-  "check operate prerequisites", "what operate tools are installed?"). Runs a fast ✓/✗ probe
-  grouped by tier. Advisory by default (OPERATE degrades gracefully — a missing CLI narrows a
-  lens to partial coverage, never a false "healthy"); pass --strict to fail on a missing required tool.
-  Reads the canonical manifest skills/check/requirements.tsv.
+  Verify OPERATE's tooling is installed and reachable — curl for health checks, jq for metric/log JSON,
+  plus optional log/metric CLIs (Prometheus, kubectl, cloud CLI). Trigger with /operate:check (or "check
+  operate prerequisites", "what operate tools are installed?"). Advisory: a missing CLI narrows a lens,
+  never a false "healthy"; --strict fails on a missing required tool.
 metadata:
   phase: [cross-cut]
   type: diagnostic

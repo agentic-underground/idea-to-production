@@ -1,12 +1,10 @@
 ---
 name: observability
 description: >
-  Instrument & verify a live system's observability — the four golden signals (latency, traffic, errors,
-  saturation), the three pillars (logs, metrics, traces) present and correlated, and SLI→SLO→alert
-  definitions that hold the reliability bar. Trigger with /observability [path] (or "check the golden
-  signals", "define SLOs", "is this observable?", "wire up alerts"). Audits what's emitted, names the
-  gaps, and proposes concrete SLOs + alert rules. Produces findings consumable standalone or by
-  /operate-gate. Self-improving: every unwatched failure becomes a new signal or SLO.
+  Instrument & verify a live system's observability — the four golden signals, the three pillars (logs,
+  metrics, traces) correlated, and SLI-SLO-alert definitions. Trigger with /observability [path] (or
+  "check the golden signals", "define SLOs", "wire up alerts"). Guard: OPERATE only. Audits what's
+  emitted, names gaps, proposes SLOs + alerts. → findings, or for /operate-gate.
 metadata:
   phase: [OPERATE]
   type: scanner
