@@ -1,19 +1,10 @@
 ---
 name: define-welcome
 description: >
-  Define a custom welcome experience for THIS repository — the conversational front
-  door a developer or operator meets when they open it in an agent harness. Reads the
-  repo to infer what it is and the handful of things people come here to do, proposes
-  2–4 top-level "lanes" with concrete decision trees, and writes `.claude/welcome.md`
-  in the i2p welcome format so the SessionStart hook can greet arrivals and route them.
-  If the repo is in an idea-to-production lifecycle, it also reads the lifecycle phase
-  and the product's emergent artifacts so the welcome reflects what the product is
-  *becoming*, and stamps the file with its phase. Runs in two modes: interactive
-  **author** (default) and silent **refresh** (`/i2p:define-welcome refresh`),
-  the latter used to keep a managed welcome up to date as phases advance.
-  Trigger when the user says "define a welcome experience", "set up a greeting for this
-  repo", "add a front door / welcome", "what should this repo say when opened", or
-  invokes `/i2p:define-welcome`.
+  Define this repository's welcome experience — the front door someone meets when they open it. Reads the
+  repo, proposes 2-4 "lanes" with decision trees, and writes .claude/welcome.md in the i2p welcome format
+  (phase-stamped in a lifecycle) so the SessionStart hook greets and routes arrivals. Trigger with
+  /i2p:define-welcome (or "set up a greeting for this repo", "add a front door").
 metadata:
   phase: [cross-cut]
   type: producer

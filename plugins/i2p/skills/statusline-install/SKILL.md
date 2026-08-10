@@ -1,11 +1,10 @@
 ---
 name: statusline-install
 description: >
-  Install (or remove) the idea-to-production status line. Use for /i2p:statusline (or
-  "give me the status bar", "turn on the i2p status line", "enable the fancy statusline",
-  "turn off the status line"). Copies the plugin's renderer to ~/.claude and points
-  settings.json at it (portable across machines), or removes it with `off`. Prints a merry
-  toast on success. Edits only the statusLine key + the one renderer file.
+  Install (or remove) the idea-to-production status line. Trigger with /i2p:statusline (or "give me the
+  status bar", "turn on the i2p status line", "turn off the status line"). Copies the plugin's renderer to
+  ~/.claude and points settings.json at it (portable across machines), or removes it with `off`. Edits
+  only the statusLine key + the one renderer file.
 metadata:
   phase: [cross-cut]
   type: installer

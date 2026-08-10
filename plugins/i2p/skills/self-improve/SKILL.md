@@ -1,12 +1,10 @@
 ---
 name: self-improve
 description: >
-  Improve the i2p front door itself by folding discoverability feedback back into /i2p:help, the tips, and
-  the /i2p:review fan-out — and by self-cleaving over-broad elements. Trigger with /i2p:self-improve (or
-  "a user couldn't find a power they had — fix the front door", "/i2p:review missed a reviewer it should
-  run", "fold this onboarding feedback in"). Reflects one element against the covenant + pillars, applies
-  the fix on a branch, runs the adversarial review (deliver's /deliver:pr-review if installed), and opens a
-  PR so every future session, for all users, surfaces the power by default.
+  Improve the i2p front door itself — fold discoverability feedback into /i2p:help, the tips, and the
+  /i2p:review fan-out, or self-cleave an over-broad element. Trigger with /i2p:self-improve (or "a user
+  couldn't find a power they had — fix the front door", "/i2p:review missed a reviewer it should run").
+  Applies on a branch, adversarial review, then a PR (per merge governance).
 metadata:
   phase: [cross-cut]
   type: producer
