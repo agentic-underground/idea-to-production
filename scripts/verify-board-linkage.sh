@@ -129,6 +129,10 @@ pr_body_gate() {
 # ── self-test: exercise the four acceptance rows via fixtures (PLAN 0066.002) ────────────────────────
 self_test() {
   local failures=0
+  # HERMETIC: clear any ambient BL_* so a caller's env (e.g. CI sets BL_BRANCH/BL_OFFLINE for the live
+  # run) cannot leak into a fixture and flip its verdict. Each row sets exactly what it needs. The CI
+  # dogfood caught this: BL_BRANCH leaked into the body-only rows and turned a FAIL into a PASS.
+  unset BL_BRANCH BL_MSGS BL_DEFAULT BL_OFFLINE BL_EXISTS BL_REPO
   check() { # <expected-exit> <label> ; env already set
     local want="$1" label="$2" got
     ( run_gate ) >/dev/null 2>&1; got=$?
