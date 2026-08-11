@@ -20,20 +20,46 @@ start at [README.md](./README.md); agents working *on the marketplace itself* st
   plugin and CI-verified) is how shared assets stay in sync — see
   `scripts/verify-prereqs.sh`.
 
-## GIT WORKFLOW — branch → commit → push → PR → merge
+## GIT WORKFLOW — board → branch → commit → push → PR → merge
 
 **Every change to this repo follows the full cycle — never commit straight to `main`.** Even a
 one-line fix gets its own branch and PR. The steps, in order:
 
-1. **Branch** off up-to-date `main` (`feat/…`, `fix/…`, `chore/…`, `docs/…`).
+0. **Board first (capture before you build).** Substantive work — anything more than a trivial fix —
+   is captured on the **GitHub Project board** (`idea-to-production — pipeline`, project #4) **before a
+   branch is cut**: an **EPIC** plus a **PLAN per slice**, authored via `/deliver:roadmapper`. This is
+   the marketplace's own thesis (IDEA → ROADMAP → PLAN → build → ship) applied to itself — so no
+   initiative ships off-board (see EPIC 0066). The board is authoritative for *state*; the
+   `docs/roadmap/EPIC_*.md` / `PLAN_*.md` docs are the on-disk build-instruction mirror.
+1. **Branch** off up-to-date `main`. Name it for the work: `pipeline/NNNN-<slug>` for a board item
+   (recommended — it self-declares linkage), else `feat/…`, `fix/…`, `chore/…`, `docs/…`.
 2. **Commit** in focused, single-purpose batches — one concern per PR (small batches are KAIZEN; a
    mixed PR is `muda`). Emoji-prefixed messages matching the existing history (`📝 docs(...)`,
-   `✨ feat(...)`, `🔧 chore(...)`), ending with the `Co-Authored-By` trailer.
+   `✨ feat(...)`, `🔧 chore(...)`), ending with the `Co-Authored-By` trailer. **Declare the board
+   linkage** (see below): a `Board: #<issue>` trailer, a `pipeline/NNNN-*` branch, or a logged
+   `[no-board]: <reason>` for trivial work.
 3. **Push** the branch to `origin`.
-4. **PR** via `gh pr create` — a clear title + body. The always-on adversarial review
+4. **PR** via `gh pr create` — a clear title + body that names the board item (`Board: #<issue>` /
+   `Refs #<issue>`, or the `[no-board]` exemption). The always-on adversarial review
    (`/deliver:pr-review`) is the quality gate.
 5. **Merge** after the gate is green. **Merge mode is `direct-merge`** (see below): the agent merges
    its own PR after a PASS.
+
+### BOARD LINKAGE — the convention every guardrail reads
+
+Every branch/PR either **declares a board item** or **logs an exemption**. This is what
+`scripts/verify-board-linkage.sh` (the pre-push gate, EPIC 0066 / PLAN 0066.002), the planning-time
+tripwire, and the PR template all check:
+
+- **Linked** — one of: a `Board: #<issue>` (or `Refs #<issue>`) trailer in a commit or the PR body, **or**
+  a `pipeline/NNNN-*` branch name (where `NNNN` is the EPIC/PLAN order). The referenced issue must be an
+  EPIC/PLAN on project #4.
+- **Exempt (trivial work only)** — a `[no-board]: <reason>` marker in a commit or the PR body. The
+  reason is *logged*, not silent — exemptions stay visible and rare (a typo, a formatting-only pass, a
+  one-line chore). Reaching for it on initiative-scale work is `muri` in reverse: skipping the capture
+  that keeps work traceable.
+
+*Rule of thumb:* if the work would warrant a plan, it warrants a board item. When in doubt, capture it.
 
 ## MERGE GOVERNANCE
 
