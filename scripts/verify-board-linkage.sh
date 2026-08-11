@@ -65,8 +65,35 @@ verify_issue_exists() {
   echo unknown
 }
 
+# report_verdict <verdict> <what-was-checked> : print the outcome, return 0 pass / 1 fail.
+# Shared by the pre-push gate (run_gate) and the CI backstop (pr_body_gate) — one decision, two callers.
+report_verdict() {
+  local verdict="$1" what="$2" kind arg
+  kind="${verdict%%$'\t'*}"; arg="${verdict#*$'\t'}"
+  case "$kind" in
+    exempt)
+      [ -z "$arg" ] && { fail "[no-board] with no reason — exemptions must state why"; return 1; }
+      pass "exempt via [no-board] — logged, not silent"; note "reason: $arg"; return 0 ;;
+    branch)
+      pass "linked by $what (board order $arg)"; return 0 ;;
+    trailer)
+      case "$(verify_issue_exists "$arg")" in
+        confirmed) pass "linked to issue #$arg (verified on GitHub)";;
+        absent)    fail "declares 'Board/Refs #$arg' but no such issue exists — fix the reference"; return 1;;
+        unknown)   pass "linked to issue #$arg"; note "existence unverified (gh offline/unavailable) — advisory";;
+      esac
+      return 0 ;;
+    *)
+      fail "no board linkage found in $what"
+      note "declare it: a 'Board: #<issue>' or 'Refs #<issue>' trailer, a 'pipeline/NNNN-*' branch,"
+      note "or — trivial work only — a '[no-board]: <reason>' marker. See CLAUDE.md → BOARD LINKAGE."
+      return 1 ;;
+  esac
+}
+
+# run_gate — the PRE-PUSH gate: inspects the current feature branch's name + commit messages.
 run_gate() {
-  local branch default range msgs verdict kind arg
+  local branch default range msgs
   printf "%b%s%b\n" "$bold" "Board-linkage pre-push gate — EPIC 0066" "$reset"
   branch="${BL_BRANCH:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo '')}"
   default="${BL_DEFAULT:-$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')}"
@@ -84,37 +111,28 @@ run_gate() {
     git rev-parse --verify -q "origin/$default" >/dev/null 2>&1 && range="origin/$default..HEAD"
     msgs="$(git log --format='%B' "$range" 2>/dev/null)"
   fi
+  report_verdict "$(classify_linkage "$branch" "$msgs")" "branch name '$branch'"
+}
 
-  verdict="$(classify_linkage "$branch" "$msgs")"
-  kind="${verdict%%$'\t'*}"; arg="${verdict#*$'\t'}"
-
-  case "$kind" in
-    exempt)
-      pass "exempt via [no-board] — logged, not silent"
-      note "reason: ${arg:-<none given>}"
-      [ -z "$arg" ] && { warn "[no-board] with no reason — exemptions must state why"; return 1; }
-      return 0 ;;
-    branch)
-      pass "linked by branch name '$branch' (board order $arg)"
-      return 0 ;;
-    trailer)
-      case "$(verify_issue_exists "$arg")" in
-        confirmed) pass "linked to issue #$arg (verified on GitHub)";;
-        absent)    fail "declares 'Board/Refs #$arg' but no such issue exists — fix the reference"; return 1;;
-        unknown)   pass "linked to issue #$arg"; note "existence unverified (gh offline/unavailable) — advisory";;
-      esac
-      return 0 ;;
-    *)
-      fail "no board linkage on branch '$branch'"
-      note "declare it: a 'Board: #<issue>' or 'Refs #<issue>' trailer, a 'pipeline/NNNN-*' branch,"
-      note "or — trivial work only — a '[no-board]: <reason>' marker. See CLAUDE.md → BOARD LINKAGE."
-      return 1 ;;
-  esac
+# pr_body_gate <file> — the CI BACKSTOP: inspects a PR body (and the head ref via BL_BRANCH if set).
+# Reuses the same classification, so pre-push and CI can never disagree on what "linked" means.
+pr_body_gate() {
+  local file="${1:-}" body what="the PR body"
+  { [ -n "$file" ] && [ -f "$file" ]; } || { fail "PR body file not found: ${file:-<none>}"; return 2; }
+  body="$(cat "$file")"
+  printf "%b%s%b\n" "$bold" "Board-linkage CI backstop — PR body" "$reset"
+  # if linkage comes from the head ref (BL_BRANCH), name that in the message, not "the PR body".
+  printf '%s' "${BL_BRANCH:-}" | grep -qE '^pipeline/[0-9]{4}' && what="head branch '${BL_BRANCH}'"
+  report_verdict "$(classify_linkage "${BL_BRANCH:-}" "$body")" "$what"
 }
 
 # ── self-test: exercise the four acceptance rows via fixtures (PLAN 0066.002) ────────────────────────
 self_test() {
   local failures=0
+  # HERMETIC: clear any ambient BL_* so a caller's env (e.g. CI sets BL_BRANCH/BL_OFFLINE for the live
+  # run) cannot leak into a fixture and flip its verdict. Each row sets exactly what it needs. The CI
+  # dogfood caught this: BL_BRANCH leaked into the body-only rows and turned a FAIL into a PASS.
+  unset BL_BRANCH BL_MSGS BL_DEFAULT BL_OFFLINE BL_EXISTS BL_REPO
   check() { # <expected-exit> <label> ; env already set
     local want="$1" label="$2" got
     ( run_gate ) >/dev/null 2>&1; got=$?
@@ -151,13 +169,25 @@ self_test() {
     check 0 "trailer + issue confirmed on GitHub → PASS"
   BL_EXISTS=absent BL_DEFAULT=main BL_BRANCH=feat/x BL_MSGS="feat: x"$'\n\n'"Board: #999999" \
     check 1 "trailer + issue absent on GitHub → FAIL"
-  if [ "$failures" -eq 0 ]; then printf "%b✓ self-test passed (13 rows)%b\n" "$green" "$reset"; return 0
+  # --pr-body CI-backstop mode (PLAN 0066.004): classify a PR body file.
+  check_body() { # <expected-exit> <label> <body-text>
+    local want="$1" label="$2" bodyfile got
+    bodyfile="$(mktemp 2>/dev/null || echo "${TMPDIR:-/tmp}/bl-body.$$")"; printf '%s' "$3" > "$bodyfile"
+    ( BL_OFFLINE=1 pr_body_gate "$bodyfile" ) >/dev/null 2>&1; got=$?; rm -f "$bodyfile"
+    if [ "$got" -eq "$want" ]; then printf "  %b✓%b %s\n" "$green" "$reset" "$label"
+    else printf "  %b✗ %s (want exit %s, got %s)%b\n" "$red" "$label" "$want" "$got" "$reset"; failures=$((failures+1)); fi
+  }
+  check_body 0 "PR body 'Board: #284' → PASS" "## Summary"$'\n'"Board: #284"
+  check_body 0 "PR body '[no-board]: docs typo' → PASS" "fix a typo"$'\n\n'"[no-board]: one-word docs typo"
+  check_body 1 "PR body with no linkage → FAIL" "## Summary"$'\n'"just some prose about the dashboard #5"
+  if [ "$failures" -eq 0 ]; then printf "%b✓ self-test passed (16 rows)%b\n" "$green" "$reset"; return 0
   else printf "%b✗ self-test: %d row(s) failed%b\n" "$red" "$failures" "$reset"; return 1; fi
 }
 
 case "${1:-}" in
   --self-test) self_test ;;
+  --pr-body) pr_body_gate "${2:-}" ;;
   -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
   "") run_gate ;;
-  *) printf "unknown argument: %s (supported: --self-test)\n" "$1" >&2; exit 2 ;;
+  *) printf "unknown argument: %s (supported: --self-test, --pr-body <file>)\n" "$1" >&2; exit 2 ;;
 esac

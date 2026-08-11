@@ -90,3 +90,27 @@ jobs:
           name: marketplace-health
           path: marketplace-health.json
           if-no-files-found: warn
+
+  # Board-linkage backstop (EPIC 0066 / PLAN 0066.004): a PR must declare its board item — a
+  # `Board: #<n>` / `Refs #<n>` reference in the body, or a `pipeline/NNNN-*` head branch — or log a
+  # `[no-board]: <reason>` exemption. The AUTHORITATIVE gate is pre-push (.pipeline/verify runs
+  # scripts/verify-board-linkage.sh); this is the net for a PR whose author skipped it. It reuses the
+  # SAME script (--pr-body), so CI and pre-push can never disagree. Declaration-only (BL_OFFLINE=1) —
+  # fast + hermetic; the online issue-existence check stays on the pre-push side.
+  board-linkage:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read   # least-privilege: this job reads the checkout + the PR body env, nothing more
+    steps:
+      - uses: actions/checkout@v4
+      - name: PR declares a board item (or a logged exemption)
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BL_BRANCH: ${{ github.event.pull_request.head.ref }}
+          BL_OFFLINE: "1"
+        run: |
+          set -euo pipefail
+          bash scripts/verify-board-linkage.sh --self-test
+          printf '%s' "$PR_BODY" > "$RUNNER_TEMP/pr-body.md"
+          bash scripts/verify-board-linkage.sh --pr-body "$RUNNER_TEMP/pr-body.md"
