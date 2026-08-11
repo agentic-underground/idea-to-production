@@ -100,6 +100,8 @@ jobs:
   board-linkage:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read   # least-privilege: this job reads the checkout + the PR body env, nothing more
     steps:
       - uses: actions/checkout@v4
       - name: PR declares a board item (or a logged exemption)

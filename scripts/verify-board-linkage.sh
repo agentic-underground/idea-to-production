@@ -117,11 +117,13 @@ run_gate() {
 # pr_body_gate <file> — the CI BACKSTOP: inspects a PR body (and the head ref via BL_BRANCH if set).
 # Reuses the same classification, so pre-push and CI can never disagree on what "linked" means.
 pr_body_gate() {
-  local file="${1:-}" body
+  local file="${1:-}" body what="the PR body"
   { [ -n "$file" ] && [ -f "$file" ]; } || { fail "PR body file not found: ${file:-<none>}"; return 2; }
   body="$(cat "$file")"
   printf "%b%s%b\n" "$bold" "Board-linkage CI backstop — PR body" "$reset"
-  report_verdict "$(classify_linkage "${BL_BRANCH:-}" "$body")" "the PR body"
+  # if linkage comes from the head ref (BL_BRANCH), name that in the message, not "the PR body".
+  printf '%s' "${BL_BRANCH:-}" | grep -qE '^pipeline/[0-9]{4}' && what="head branch '${BL_BRANCH}'"
+  report_verdict "$(classify_linkage "${BL_BRANCH:-}" "$body")" "$what"
 }
 
 # ── self-test: exercise the four acceptance rows via fixtures (PLAN 0066.002) ────────────────────────
