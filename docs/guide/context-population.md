@@ -100,9 +100,12 @@ the skills door). This RFC gives them a *phase* so the pointer can name the righ
 > and commands carry no `metadata.phase`** (only skills do — the R5 routing gate), so inheritance is
 > **skill-driven** and a doc reached only via agents is flagged `ambiguous` for a deliberate own-tag;
 > (2) a knowledge-dir **`README.md` is a directory index, not a loadable module**, so it is excluded.
-> The initial pass tagged the 26 genuinely-flagged modules (meta-tooling + KAIZEN-canon depth →
-> `cross-cut`; architecture/handler protocols → `BUILD`; design canon → `DESIGN`; naming → `IDEATE`),
-> leaving **every** knowledge module resolvable. The live resolution-coverage gate is wired by 0067.004.
+> Over the live tree the resolver processes **84 loadable modules** (89 `knowledge/**/*.md` files minus
+> the 5 `README.md` directory indexes): **58 resolve by inheritance**, and the initial pass tagged the
+> **26** genuinely-flagged modules with an own `metadata.phase` (meta-tooling + KAIZEN-canon depth →
+> `cross-cut`; architecture/handler protocols → `BUILD`; design canon → `DESIGN`; naming → `IDEATE`) —
+> so **every** module now resolves (`--check` exit 0), **0 orphan**. The live resolution-coverage gate
+> (fail the build on a new orphan) is wired by 0067.004.
 
 ### 3.5 The active-phase signal (and the safe default)
 

@@ -208,6 +208,8 @@ def self_test():
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Resolve knowledge-module lifecycle phases (EPIC 0067).")
     ap.add_argument("--root", default=repo_root(), help="marketplace tree root (default: repo root)")
+    ap.add_argument("--list", action="store_true",
+                    help="list every module's resolved phase + source (the default when no mode is given)")
     ap.add_argument("--phase", help="list only modules loadable in this phase (+ cross-cut)")
     ap.add_argument("--orphans", action="store_true", help="list only flagged (orphan/ambiguous) modules")
     ap.add_argument("--check", action="store_true", help="exit 1 if any module is flagged (orphan/ambiguous)")
