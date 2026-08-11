@@ -26,33 +26,42 @@ warn() { printf "  %b⚠ %s%b\n" "$yellow" "$1" "$reset"; }
 note() { printf "    %b%s%b\n" "$dim" "$1" "$reset"; }
 
 # classify_linkage <branch> <commit-messages-blob> : echo one of
-#   exempt<TAB><reason> | branch<TAB><order> | trailer<TAB><issue#> | unlinked
+#   branch<TAB><order> | trailer<TAB><issue#> | exempt<TAB><reason> | unlinked
+# GENUINE linkage (branch, then trailer) wins over an exemption, so a stray [no-board] mention cannot
+# mask real linkage. Patterns are ANCHORED — the [no-board] marker must be a trailer (line start), and
+# Board/Refs must be a word (leading boundary) — so prose like "rework the dashboard #7" or a commit that
+# merely *describes* [no-board] does NOT count as linkage (the false-PASS holes CORRECTNESS caught).
 # Pure function (no git/gh) so --self-test can drive it with fixtures.
 classify_linkage() {
   local branch="$1" msgs="$2" m
-  # 1) exemption wins if present (trivial work, logged).
-  m="$(printf '%s\n' "$msgs" | grep -oiE '\[no-board\]:[[:space:]]*[^|]*' | head -1)"
-  if [ -n "$m" ]; then printf 'exempt\t%s\n' "$(printf '%s' "${m#*:}" | sed 's/^[[:space:]]*//')"; return; fi
-  # 2) pipeline/NNNN[-...] or pipeline/NNNN.SSS-... branch name self-declares linkage.
+  # 1) pipeline/NNNN[.SSS]{-,/}... branch name self-declares linkage.
   if printf '%s' "$branch" | grep -qE '^pipeline/[0-9]{4}(\.[0-9]{3})?[-/]'; then
     printf 'branch\t%s\n' "$(printf '%s' "$branch" | grep -oE '[0-9]{4}(\.[0-9]{3})?' | head -1)"; return
   fi
-  # 3) Board: #<n> or Refs #<n> trailer in any commit.
-  m="$(printf '%s\n' "$msgs" | grep -oiE '(Board|Refs):?[[:space:]]*#[0-9]+' | grep -oE '#[0-9]+' | tr -d '#' | head -1)"
+  # 2) a Board:/Refs #<n> trailer — leading word boundary so "dashboard #7"/"clipboard #12" do NOT match.
+  m="$(printf '%s\n' "$msgs" | grep -oiE '(^|[^[:alnum:]])(Board|Refs):?[[:space:]]*#[0-9]+' | grep -oE '#[0-9]+' | tr -d '#' | head -1)"
   if [ -n "$m" ]; then printf 'trailer\t%s\n' "$m"; return; fi
+  # 3) a [no-board] exemption — anchored to a line start (a trailer), not a prose mention of the marker.
+  m="$(printf '%s\n' "$msgs" | grep -iE '^[[:space:]]*\[no-board\]:' | head -1)"
+  if [ -n "$m" ]; then
+    printf 'exempt\t%s\n' "$(printf '%s' "$m" | sed -E 's/^[[:space:]]*\[no-board\]:[[:space:]]*//I; s/[[:space:]]*$//')"; return
+  fi
   printf 'unlinked\n'
 }
 
-# best-effort: is issue <n> a real EPIC/PLAN on this repo? echo one of confirmed|absent|unknown
+# best-effort: is issue <n> a real issue on this repo? echo one of confirmed|absent|unknown.
+# BL_EXISTS overrides for --self-test; otherwise a read-only `gh issue view` pinned to the origin repo.
 verify_issue_exists() {
-  local n="$1"
+  local n="$1" out rc repo
+  [ -n "${BL_EXISTS:-}" ] && { echo "$BL_EXISTS"; return; }
   [ -n "${BL_OFFLINE:-}" ] && { echo unknown; return; }
   command -v gh >/dev/null 2>&1 || { echo unknown; return; }
-  local out rc
-  out="$(gh issue view "$n" --json state,title 2>&1)"; rc=$?
+  repo="${BL_REPO:-$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null)}"
+  [ -n "$repo" ] && out="$(gh issue view "$n" --repo "$repo" --json state,title 2>&1)" || out="$(gh issue view "$n" --json state,title 2>&1)"
+  rc=$?
   if [ "$rc" -eq 0 ]; then echo confirmed; return; fi
-  # a definitive "no such issue" is a real defect; anything else (auth/network) is unknown.
-  printf '%s' "$out" | grep -qiE 'could not resolve|not found|no issue' && { echo absent; return; }
+  # a definitive "no such issue" is a real defect; anything else (auth/network) is unknown → advisory.
+  printf '%s' "$out" | grep -qiE 'could not resolve|no issues? found|does not exist' && { echo absent; return; }
   echo unknown
 }
 
@@ -129,7 +138,20 @@ self_test() {
     check 1 "'[no-board]:' with no reason → FAIL"
   BL_OFFLINE=1 BL_DEFAULT=main BL_BRANCH=main BL_MSGS="anything" \
     check 0 "on default branch → no-op PASS"
-  if [ "$failures" -eq 0 ]; then printf "%b✓ self-test passed (8 rows)%b\n" "$green" "$reset"; return 0
+  # over-match holes CORRECTNESS caught — these must NOT count as linkage:
+  BL_OFFLINE=1 BL_DEFAULT=main BL_BRANCH=feat/x BL_MSGS="fix: rework the dashboard #7 layout" \
+    check 1 "prose 'dashboard #7' is NOT a Board/Refs trailer → FAIL"
+  BL_OFFLINE=1 BL_DEFAULT=main BL_BRANCH=feat/x BL_MSGS="docs: describe the [no-board]: <reason> convention" \
+    check 1 "a mid-line mention of [no-board] is NOT an exemption → FAIL"
+  # genuine linkage wins over a stray marker mention (precedence branch/trailer > exempt):
+  BL_OFFLINE=1 BL_DEFAULT=main BL_BRANCH=feat/x BL_MSGS="feat: x"$'\n\n'"Board: #9"$'\n'"aside: the [no-board]: hatch exists" \
+    check 0 "a real Board: trailer wins over a stray [no-board] mention → PASS"
+  # online existence check (BL_EXISTS override stands in for gh):
+  BL_EXISTS=confirmed BL_DEFAULT=main BL_BRANCH=feat/x BL_MSGS="feat: x"$'\n\n'"Board: #284" \
+    check 0 "trailer + issue confirmed on GitHub → PASS"
+  BL_EXISTS=absent BL_DEFAULT=main BL_BRANCH=feat/x BL_MSGS="feat: x"$'\n\n'"Board: #999999" \
+    check 1 "trailer + issue absent on GitHub → FAIL"
+  if [ "$failures" -eq 0 ]; then printf "%b✓ self-test passed (13 rows)%b\n" "$green" "$reset"; return 0
   else printf "%b✗ self-test: %d row(s) failed%b\n" "$red" "$failures" "$reset"; return 1; fi
 }
 
