@@ -33,7 +33,9 @@ guardrail, and the KAIZEN covenant. Write `I2P_INSPECTION_REPORT.md` to the proj
    available skills/commands), never by a brittle filesystem probe, and never claims a power from an
    absent plugin — every command degrades gracefully and names what is missing.
 4. **Onboarding-hook integrity:** `hooks/hooks.json` wires SessionStart (`inject-kaizen.sh`,
-   `session-intro.sh`, `offer-cache-update.sh`, and the folded-in welcome/statusline/doc-alert hooks —
+   `phase-pointer.sh` — the EPIC 0067 context pointer, which sources the shared `active-phase.sh`
+   resolver and subsumes the old `session-intro.sh` — the phase-gated `roadmap-routing.sh`,
+   `focus-routing.sh`, `mcp-liveness.sh`, `offer-cache-update.sh`, and the folded-in welcome/statusline/doc-alert hooks —
    `inject-welcome.sh`, `offer-welcome.sh`, `offer-doc-alert.sh`, `offer-statusline.sh`,
    `check-statusline-drift.sh`), UserPromptSubmit (`tips.sh`), PostToolUse (Write|Edit →
    `statusline/count-adversarial-catches.sh`), and Stop (`statusline/capture-cost.sh`); every referenced
