@@ -32,12 +32,14 @@ difference decides the fix. A three-part audit of the marketplace found:
   [`reviewer`](../../plugins/deliver/agents/reviewer.md) (702) — are **not** in context until they
   fire. The fear "big single-skill files are always loaded" is unfounded; see door 4 in the
   companion doc.
-- **Truly always-on content is tiny and cached.** Across all eight plugins the only guaranteed
-  per-session injection is `KAIZEN.md` (~2.4 KB), deduped to a single copy by the atomic `mkdir`
-  lock in [`inject-kaizen.sh`](../../plugins/deliver/hooks/inject-kaizen.sh), plus i2p's
-  `session-intro` (~0.26 KB) and
-  [`roadmap-routing.sh`](../../plugins/i2p/hooks/scripts/roadmap-routing.sh) (~1.3 KB). ~4 KB,
-  one-time, in the cached prefix. Prompt caching makes this effectively free.
+- **Truly always-on content is tiny and cached.** After EPIC 0067 (the context-population sequel,
+  [`context-population.md`](./context-population.md)) the guaranteed phase-INDEPENDENT per-session
+  injection across all eight plugins is just two things: `KAIZEN.md` (~2.4 KB), deduped to a single
+  copy by the atomic `mkdir` lock in [`inject-kaizen.sh`](../../plugins/deliver/hooks/inject-kaizen.sh),
+  plus i2p's thin phase **pointer** ([`phase-pointer.sh`](../../plugins/i2p/hooks/scripts/phase-pointer.sh),
+  ≤60 words). `roadmap-routing.sh` (~1.3 KB) is now **phase-gated** to DELIVER — no longer part of the
+  always-on core — and `session-intro` has been absorbed into the pointer. One-time, in the cached
+  prefix; prompt caching makes it effectively free.
 
 **What actually pollutes (the real target):**
 
