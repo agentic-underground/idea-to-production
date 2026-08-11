@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [cross-cut]
+---
 # Token Efficiency — the progressive-disclosure contract
 
 Passing context to a model as tokens is a potentially wasteful operation. DELIVER treats

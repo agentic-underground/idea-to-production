@@ -21,3 +21,7 @@ bash .claude/hooks/board-first-reminder.sh --self-test || exit 1
 # ≤60-word pointer; roadmap-routing is phase-gated; safe default when phase is unknown. The always-on
 # leanness BUDGET gate (verify-context.sh) lands with PLAN 0067.004.
 bash scripts/context/test-phase-pointer.sh || exit 1
+# Knowledge-phase resolver (EPIC 0067 / PLAN 0067.003): every knowledge module resolves to a phase
+# (own metadata.phase or inherited from referring skills; orphans flagged). --self-test proves the
+# resolver logic; the live resolution-coverage gate is wired by PLAN 0067.004 (verify-context.sh).
+python3 scripts/context/resolve_knowledge_phase.py --self-test || exit 1

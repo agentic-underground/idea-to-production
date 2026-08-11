@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [BUILD]
+---
 # Handler Annotation — turning the issue into a value-add log
 
 > The cheap, always-on layer. As a work item passes through each value-handler/value-station,

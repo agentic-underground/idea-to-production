@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [BUILD]
+---
 # Protocol — Resilient external-API calls
 
 > Load when code or automation calls a **third-party HTTP API** (GitHub, package

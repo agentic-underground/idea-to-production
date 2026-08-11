@@ -30,7 +30,7 @@ if command -v i2p_active_phase >/dev/null 2>&1; then
 fi
 
 if [ -n "$phase" ]; then
-  CTX="i2p active · phase = ${phase}. Loadable now: the ${phase}-phase skills and knowledge (those whose metadata.phase includes ${phase}, plus cross-cut); other phases stay dormant. /i2p:focus <phase> to switch · /i2p:help to browse · /i2p:flow for the pipeline."
+  CTX="i2p active · phase = ${phase}. Loadable now: the ${phase}-phase skills (metadata.phase) and knowledge (phase-resolved — own tag or inherited from referrers), plus cross-cut; other phases stay dormant. /i2p:focus <phase> to switch · /i2p:help to browse · /i2p:flow for the pipeline."
 else
   CTX="i2p active · no phase set. Nothing phase-specific auto-loads (safe default). /i2p:focus <phase> to set the active lifecycle phase · /i2p:help to browse every capability · /i2p:flow to see the pipeline."
 fi

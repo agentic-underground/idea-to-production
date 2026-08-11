@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [cross-cut]
+---
 # The Guardrails Ledger — turning trial-and-error into first-time-every-time
 
 > For the whole conveyor. The pattern for capturing every known failure mode so it is never

@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [cross-cut]
+---
 # Pillar 3 — Waste Elimination
 
 > **Bindings:** *waste-elimination* ≡ *muda · mura · muri* (incl. *rediscovery* waste). (See the core language in [`../glossary.md`](../glossary.md) and [`../first-principles.md`](../first-principles.md) §1.)

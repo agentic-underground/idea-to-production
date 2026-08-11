@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [IDEATE]
+---
 # Developer-tool naming — power-adjacency & intellectual humour
 
 Naming for a technical/developer audience has its own register. Two veins live here: **borrowed
