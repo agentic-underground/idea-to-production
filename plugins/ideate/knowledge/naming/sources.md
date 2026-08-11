@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [IDEATE]
+---
 # Sources — the naming canon's provenance
 
 The art-of-naming canon in this directory is distilled from the following. Re-consult when extending a

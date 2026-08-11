@@ -92,6 +92,18 @@ the skills door). This RFC gives them a *phase* so the pointer can name the righ
 - **Orphan** — a module that is untagged **and** referenced by no skill/agent resolves to no phase; the
   gate (0067.004) **flags** it, so it is tagged deliberately rather than treated as silently global.
 
+> **Implemented (PLAN 0067.003).** The resolver is [`scripts/context/resolve_knowledge_phase.py`](../../scripts/context/resolve_knowledge_phase.py)
+> — deterministic, offline, no third-party deps. `--list` prints every module's resolved phase +
+> source (`own` / `inherited` / `orphan` / `ambiguous`); `--phase X` lists the loadable set for a phase
+> (X or `cross-cut`); `--orphans` / `--check` surface unresolved modules; `--self-test` proves the logic
+> against `scripts/context/fixtures/`. Two realities of *this* marketplace shaped the build: (1) **agents
+> and commands carry no `metadata.phase`** (only skills do — the R5 routing gate), so inheritance is
+> **skill-driven** and a doc reached only via agents is flagged `ambiguous` for a deliberate own-tag;
+> (2) a knowledge-dir **`README.md` is a directory index, not a loadable module**, so it is excluded.
+> The initial pass tagged the 26 genuinely-flagged modules (meta-tooling + KAIZEN-canon depth →
+> `cross-cut`; architecture/handler protocols → `BUILD`; design canon → `DESIGN`; naming → `IDEATE`),
+> leaving **every** knowledge module resolvable. The live resolution-coverage gate is wired by 0067.004.
+
 ### 3.5 The active-phase signal (and the safe default)
 
 The active phase is read from state the marketplace already maintains — no new files:

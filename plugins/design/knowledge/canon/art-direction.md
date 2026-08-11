@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [DESIGN]
+---
 # Art direction — composition · light · colour · narrative · medium · the award bar
 
 > The aesthetic-taste layer: how a *generative image* (or any pictorial figure) earns the word

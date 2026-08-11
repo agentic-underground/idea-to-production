@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [BUILD]
+---
 # MCP language choice — don't compile a plugin's MCP server
 
 > **Rule of thumb:** a Claude Code **plugin** MCP server should be written in an **interpreted**

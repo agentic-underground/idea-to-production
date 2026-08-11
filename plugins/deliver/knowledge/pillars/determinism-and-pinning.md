@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [cross-cut]
+---
 # Determinism & Pinning — "latest is a future incident"
 
 > A facet of **waste elimination** (`pillars/waste-elimination.md`) and **quality-first**

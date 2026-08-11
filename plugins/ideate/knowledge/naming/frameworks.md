@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [IDEATE]
+---
 # Frameworks — archetypes and the evaluation rubrics
 
 The named frameworks the studio uses: archetypes drive **generation** (sound + name-type choices);

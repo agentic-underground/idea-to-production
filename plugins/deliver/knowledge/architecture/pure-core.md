@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [BUILD]
+---
 # The Pure Core — the geometry that makes quality physical
 
 > A short, load-bearing articulation distilled from the RUST_WEBAPP_API package. It sharpens what

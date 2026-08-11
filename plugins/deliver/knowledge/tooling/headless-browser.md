@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [DESIGN, BUILD, ASSURE]
+---
 # Headless Browser — the domain ledger for browser tooling
 
 > Canonical reference for **how the marketplace resolves a browser**, and the one failure class

@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [cross-cut]
+---
 # Inspection core — the shared plugin-audit method
 
 The target-agnostic engine of every plugin inspector in this marketplace. A per-plugin inspector agent

@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [IDEATE]
+---
 # Ideation methods — how an agent primes a generation vein
 
 Techniques a vein-agent uses to go wide *within* its vein before handing candidates to the checker.

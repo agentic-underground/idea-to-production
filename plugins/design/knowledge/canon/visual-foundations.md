@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [DESIGN]
+---
 # Visual foundations — Gestalt · hierarchy · colour · type · grid
 
 > The perceptual layer: how the eye *groups, ranks, and reads* marks on a screen before any conscious

@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [DESIGN]
+---
 # Interaction laws — the UX laws · Nielsen's heuristics · Norman's delight
 
 > The behavioural layer: whether a screen is *usable, learnable, and delightful*. Visual foundations get

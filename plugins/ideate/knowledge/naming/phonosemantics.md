@@ -1,3 +1,7 @@
+---
+metadata:
+  phase: [IDEATE]
+---
 # Phonosemantics — making the sound carry the meaning
 
 Sound *means*, before semantics. A name's phonetic texture should reinforce the charter's archetype
