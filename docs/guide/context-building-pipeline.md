@@ -140,11 +140,12 @@ Putting a document in front of the model is a *routing* decision, not a copy-pas
 Match the door to the document, keep always-on content small and stable, and the cache
 turns "always present" into "paid once."
 
-> **Companion:** once several plugins are installed, the next question is keeping only the
-> *active phase* present in the agent's attention. That is the subject of
-> [`context-routing.md`](./context-routing.md) — the tripwire / FOCUS layer that makes every
-> trigger phase-aware so enabling all eight plugins costs nothing in attention until a task calls
-> a phase into the room.
+> **Companions:** once several plugins are installed, the next question is keeping only the
+> *active phase* present in the agent's attention. Two RFCs cover it:
+> [`context-routing.md`](./context-routing.md) — the tripwire / FOCUS layer that makes every trigger
+> phase-aware (the *skill catalog*); and [`context-population.md`](./context-population.md) — how the
+> always-on SessionStart door stays a thin phase **pointer** (KAIZEN + ≤60 words), with all other
+> knowledge loaded strictly per active phase (the *knowledge layer*, EPIC 0067).
 
 ---
 

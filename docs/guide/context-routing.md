@@ -2,7 +2,10 @@
 
 *A design RFC for the marketplace.* Its companion,
 [`context-building-pipeline.md`](./context-building-pipeline.md), explains the **doors** text uses
-to reach a Claude Code agent and what each costs. This document explains the next problem: once
+to reach a Claude Code agent and what each costs; its **sequel**,
+[`context-population.md`](./context-population.md), applies the same `metadata.phase` spine to the
+*knowledge* layer — keeping the always-on SessionStart door a thin phase pointer (EPIC 0067). This
+document covers the *skill catalog*. This document explains the next problem: once
 several plugins are installed, **how do you keep only the phase you are working in present in the
 agent's attention** — so that enabling all eight plugins does not pollute a DISCOVER session with
 DELIVER, DESIGN, and OPERATE surfaces.
