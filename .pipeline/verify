@@ -23,5 +23,10 @@ bash .claude/hooks/board-first-reminder.sh --self-test || exit 1
 bash scripts/context/test-phase-pointer.sh || exit 1
 # Knowledge-phase resolver (EPIC 0067 / PLAN 0067.003): every knowledge module resolves to a phase
 # (own metadata.phase or inherited from referring skills; orphans flagged). --self-test proves the
-# resolver logic; the live resolution-coverage gate is wired by PLAN 0067.004 (verify-context.sh).
+# resolver logic; the live resolution-coverage gate rides in verify-context.sh (C4) below.
 python3 scripts/context/resolve_knowledge_phase.py --self-test || exit 1
+# Always-on leanness gate (EPIC 0067 / PLAN 0067.004 — CLOSES EPIC 0067): budgets the phase-independent
+# SessionStart injection (KAIZEN + pointer ≤420w), holds the pointer ≤60w, verifies phase-gating stays
+# intact, and warns on any unresolved knowledge module. --self-test proves the logic; the live run gates.
+bash scripts/verify-context.sh --self-test || exit 1
+bash scripts/verify-context.sh --run || exit 1
