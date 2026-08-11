@@ -8,9 +8,11 @@ It builds directly on the doors-and-caching doctrine in
 ## 1. The problem
 
 Enabling all eight plugins weaves a growing **phase-independent core** into *every* SessionStart, in
-*every* repo the marketplace is installed in — measured today at **~580 words**: KAIZEN (350w, all eight
-plugins, deduped once/session) + the i2p `roadmap-routing` rule (192w) + `session-intro` (39w), plus
-conditionals that stay silent unless their trigger file exists. Two of those (`roadmap-routing`,
+*every* repo the marketplace is installed in — measured today at **~580 words** through the model-context
+(`additionalContext`) door: KAIZEN (350w, all eight plugins, deduped once/session) + the i2p
+`roadmap-routing` rule (192w) + `session-intro`'s context block (39w); a hook's user-visible
+`systemMessage` is not model context and is not counted. Plus conditionals that stay silent unless their
+trigger file exists. Two of those (`roadmap-routing`,
 `session-intro`) are **ungated and un-deduped** — they re-emit in full on every SessionStart event.
 
 Crucially, the **FOCUS layer routes *skills*, not *knowledge*.** `.i2p/focus` steers which skills are
@@ -83,9 +85,12 @@ the skills door). This RFC gives them a *phase* so the pointer can name the righ
 - **Own tag** — a knowledge module MAY carry `metadata.phase` (authoritative).
 - **Inherited (default)** — otherwise its phase is the **union of phases of the skills/agents that
   reference it**. (So we do *not* hand-tag 89 docs; a `deliver:code-quality`-referenced doc inherits
-  `[ASSURE]`.)
-- **Orphan** — a module that is untagged **and** referenced by nothing resolves to no phase; the gate
-  (0067.004) **flags** it, so it is tagged deliberately rather than treated as silently global.
+  `[ASSURE]`.) Two determinacy rules: a **`[cross-cut]` referrer makes the doc `[cross-cut]`** (always
+  eligible — correct, since such docs, e.g. the glossary or the covenant, are genuinely phase-agnostic);
+  and **doc→doc references do *not* propagate phase** — only skill/agent referrers count, so a doc
+  reached only from another doc falls to the orphan rule below and is flagged for a deliberate own-tag.
+- **Orphan** — a module that is untagged **and** referenced by no skill/agent resolves to no phase; the
+  gate (0067.004) **flags** it, so it is tagged deliberately rather than treated as silently global.
 
 ### 3.5 The active-phase signal (and the safe default)
 
@@ -100,7 +105,10 @@ The active phase is read from state the marketplace already maintains — no new
 
 - **0067.001 (this RFC)** — the model + budget. No behaviour change.
 - **0067.002** — the injector: shrink the i2p SessionStart always-on to **KAIZEN + the pointer**; demote
-  `roadmap-routing` (loads only in a roadmap-relevant phase / on trigger) and `session-intro` (deduped).
+  `roadmap-routing` (loads only in a roadmap-relevant phase / on trigger); and **absorb `session-intro`
+  into the pointer** — its "i2p is active · `/i2p:help` to browse" role is already the pointer's job
+  (§3.2), so the ≤60-word pointer *replaces* the ~40-word intro (a net reduction). After 0067.002 the
+  phase-independent injection is **exactly the two things** of §3.1 — nothing else survives always-on.
 - **0067.003** — knowledge-phase resolution (§3.4) feeding the pointer.
 - **0067.004** — the leanness gate `scripts/verify-context.sh`: enforce the §3.1 budget + phase-tag
   coverage, wired into `.pipeline/verify` (the context analog of the routing suite's R6).
