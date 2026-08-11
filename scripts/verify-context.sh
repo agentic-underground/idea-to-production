@@ -65,6 +65,21 @@ run_hook_nofocus() {
   ctx_of "$out"
 }
 
+# ── C0. preflight — the measured artifacts must EXIST (fail-closed, not fail-open) ───────────────
+# A leanness backstop must never greenlight a broken injection pipeline: a missing KAIZEN.md or a
+# renamed/removed hook would otherwise measure 0 words and PASS. Guard every artifact the hard checks
+# depend on. Skipped when C1 is fed fixture components (VC_COMPONENTS_DIR), which don't touch live hooks.
+check_artifacts() {
+  section "C0. Preflight — always-on artifacts present [hard gate]"
+  [ -n "${VC_COMPONENTS_DIR:-}" ] && { note "fixture components in use — live-artifact preflight skipped"; return; }
+  local ok=1
+  [ -s "$KAIZEN" ]     && pass "KAIZEN.md present + non-empty"            || { fail "KAIZEN.md missing or empty: $KAIZEN"; ok=0; }
+  [ -f "$POINTER" ]    && pass "phase-pointer.sh present"                 || { fail "phase-pointer.sh missing: $POINTER"; ok=0; }
+  [ -f "$ROADMAP" ]    && pass "roadmap-routing.sh present"               || { fail "roadmap-routing.sh missing: $ROADMAP"; ok=0; }
+  [ -f "$FOCUSHOOK" ]  && pass "focus-routing.sh present"                 || { fail "focus-routing.sh missing: $FOCUSHOOK"; ok=0; }
+  return $((1 - ok))
+}
+
 # ── C1. always-on budget ─────────────────────────────────────────────────────────────────────────
 check_budget() {
   section "C1. Always-on budget — phase-independent injection ≤ ${BUDGET} words [hard gate]"
@@ -80,6 +95,9 @@ check_budget() {
     # live: the two phase-independent injections of §3.1 (KAIZEN is emitted verbatim by inject-kaizen).
     comp[KAIZEN]="$(wordcount "$(cat "$KAIZEN" 2>/dev/null)")"
     comp[pointer]="$(wordcount "$(run_pointer)")"
+    # Fail-closed on a broken emitter: a 0-word KAIZEN/pointer is a defect, not a lean win.
+    [ "${comp[KAIZEN]}" -gt 0 ] || fail "KAIZEN emitted 0 words — inject-kaizen source broken/empty"
+    [ "${comp[pointer]}" -gt 0 ] || fail "phase-pointer emitted 0 words — pointer broken (would false-PASS the budget)"
   fi
   for name in "${!comp[@]}"; do
     w=${comp[$name]}; total=$((total + w))
@@ -131,6 +149,15 @@ check_coverage() {
 run_gate() {
   RC=0
   printf "%bAlways-on leanness gate — EPIC 0067 / PLAN 0067.004%b\n" "$bold" "$reset"
+  # VC_* are TEST-ONLY overrides. Outside the self-test (which stamps VC_SELFTEST=1 on its child runs),
+  # a stray exported VC_BUDGET/VC_COMPONENTS_DIR/VC_KNOWLEDGE_ROOT would silently mask the live measurement
+  # — refuse to honor them: warn loudly and reset to real defaults, so a leaked env can never false-PASS.
+  if [ -z "${VC_SELFTEST:-}" ] && [ -n "${VC_BUDGET:-}${VC_COMPONENTS_DIR:-}${VC_KNOWLEDGE_ROOT:-}" ]; then
+    warn "ignoring VC_* test override(s) present in a live run — measuring the real injection (use --self-test to drive fixtures)"
+    unset VC_BUDGET VC_COMPONENTS_DIR VC_KNOWLEDGE_ROOT
+    BUDGET=420
+  fi
+  check_artifacts
   check_budget
   check_pointer_size
   check_phase_gating
@@ -150,17 +177,17 @@ self_test() {
   printf "%bverify-context.sh --self-test%b\n" "$bold" "$reset"
 
   # Row 1 — budget within limit → C1 PASS (exit 0). Fixture components sum ≤ budget.
-  _out="$(VC_BUDGET=100 VC_COMPONENTS_DIR="$fxdir/context-budget/pass" VC_KNOWLEDGE_ROOT="$fxdir/knowledge-phase-clean" bash "$0" --run 2>&1)"; _rc=$?
+  _out="$(VC_SELFTEST=1 VC_BUDGET=100 VC_COMPONENTS_DIR="$fxdir/context-budget/pass" VC_KNOWLEDGE_ROOT="$fxdir/knowledge-phase-clean" bash "$0" --run 2>&1)"; _rc=$?
   check 0 "budget within limit → PASS"
   printf '%s' "$_out" | grep -q "≤ 100w" || { printf "  %b✗ expected a within-budget PASS line%b\n" "$red" "$reset"; failures=$((failures+1)); }
 
   # Row 2 — an ungated blob pushes it over budget → C1 FAIL (exit 1) naming the offender.
-  _out="$(VC_BUDGET=100 VC_COMPONENTS_DIR="$fxdir/context-budget/fail" VC_KNOWLEDGE_ROOT="$fxdir/knowledge-phase-clean" bash "$0" --run 2>&1)"; _rc=$?
+  _out="$(VC_SELFTEST=1 VC_BUDGET=100 VC_COMPONENTS_DIR="$fxdir/context-budget/fail" VC_KNOWLEDGE_ROOT="$fxdir/knowledge-phase-clean" bash "$0" --run 2>&1)"; _rc=$?
   check 1 "over-budget ungated blob → FAIL"
   printf '%s' "$_out" | grep -q "ungated-blob" || { printf "  %b✗ FAIL did not name the 'ungated-blob' offender%b\n" "$red" "$reset"; failures=$((failures+1)); }
 
   # Row 3 — an orphan knowledge module → C4 WARN (advisory), gate still exits 0 (budget ok).
-  _out="$(VC_BUDGET=100 VC_COMPONENTS_DIR="$fxdir/context-budget/pass" VC_KNOWLEDGE_ROOT="$fxdir/knowledge-phase" bash "$0" --run 2>&1)"; _rc=$?
+  _out="$(VC_SELFTEST=1 VC_BUDGET=100 VC_COMPONENTS_DIR="$fxdir/context-budget/pass" VC_KNOWLEDGE_ROOT="$fxdir/knowledge-phase" bash "$0" --run 2>&1)"; _rc=$?
   check 0 "orphan present → advisory WARN, gate still PASSes"
   printf '%s' "$_out" | grep -q "resolve to no phase" || { printf "  %b✗ expected an orphan WARN line%b\n" "$red" "$reset"; failures=$((failures+1)); }
   printf '%s' "$_out" | grep -qi "✗ context gate FAILED" && { printf "  %b✗ a C4 warn must NOT fail the gate%b\n" "$red" "$reset"; failures=$((failures+1)); } || true
