@@ -31,6 +31,7 @@ run_hook() {
   local payload="" sid tmp sentinel
   [ -t 0 ] || payload="$(cat 2>/dev/null || true)"
   sid="$(printf '%s' "$payload" | grep -o '"session_id"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | sed 's/.*"\([^"]*\)"$/\1/')"
+  sid="$(printf '%s' "$sid" | tr -cd 'A-Za-z0-9-')"   # bound the sentinel filename to safe chars
   if [ -n "$sid" ]; then
     tmp="${TMPDIR:-/tmp}"; sentinel="$tmp/.claude-board-first-${sid}"
     [ -e "$sentinel" ] && exit 0          # already reminded this session
@@ -46,7 +47,7 @@ self_test() {
   out="$(emit_reminder)"; rc=$?
   printf "%s\n" "verify board-first reminder"
   chk() { if printf '%s' "$out" | grep -qiF -- "$1"; then printf "  ✓ mentions: %s\n" "$1"; else printf "  ✗ MISSING: %s\n" "$1"; fail=1; fi; }
-  [ "$rc" -eq 0 ] && printf "  ✓ emits, exit 0\n" || { printf "  ✗ non-zero exit\n"; fail=1; }
+  if [ "$rc" -eq 0 ]; then printf "  ✓ emits, exit 0\n"; else printf "  ✗ non-zero exit\n"; fail=1; fi
   chk "BOARD-FIRST"
   chk "/deliver:roadmapper"
   chk "Board: #"
