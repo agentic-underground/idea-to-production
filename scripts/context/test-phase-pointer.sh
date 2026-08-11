@@ -42,13 +42,21 @@ mkproj() {
 }
 
 # run_hook <script> <project-dir> [extra VAR=val ...] : run a SessionStart hook with drained stdin.
-# Prints stdout (the JSON, or empty for a silent hook). Fails the suite on a non-zero exit.
+# Prints stdout (the JSON, or empty for a silent hook). The exit-0 contract is asserted SEPARATELY
+# by assert_exit0 below — a run_hook rc check here would be dead code (run_hook is always called in a
+# command substitution, so a `fail` would run in a subshell and its counter increment would be lost).
 run_hook() {
   local script="$1" proj="$2"; shift 2
-  local out rc
-  out="$(env "$@" CLAUDE_PROJECT_DIR="$proj" bash "$script" </dev/null 2>/dev/null)"; rc=$?
-  if [ "$rc" -ne 0 ]; then fail "hook $(basename "$script") exited $rc (must always exit 0)"; fi
-  printf '%s' "$out"
+  env "$@" CLAUDE_PROJECT_DIR="$proj" bash "$script" </dev/null 2>/dev/null
+}
+
+# assert_exit0 <label> <script> <project-dir> [extra VAR=val ...] : run the hook OUTSIDE command
+# substitution and assert rc==0 directly (hooks must never block a session). This is the real guard.
+assert_exit0() {
+  local label="$1" script="$2" proj="$3"; shift 3
+  env "$@" CLAUDE_PROJECT_DIR="$proj" bash "$script" </dev/null >/dev/null 2>&1
+  local rc=$?
+  [ "$rc" -eq 0 ] && pass "exit-0: ${label}" || fail "exit-0 VIOLATED: ${label} (rc=$rc)"
 }
 
 # valid_json <string> : 0 if empty (a silent hook) or parseable JSON; else 1.
@@ -73,6 +81,9 @@ p="$(mkproj 'phase: DELIVER' '')"
 out="$(run_hook "$POINTER" "$p")"; ctx="$(ctx_of "$out")"
 valid_json "$out" && pass "AC-1: pointer emits valid JSON" || fail "AC-1: pointer JSON invalid"
 case "$ctx" in *"phase = DELIVER"*) pass "AC-1: pointer names phase = DELIVER";; *) fail "AC-1: pointer did not name DELIVER (got: $ctx)";; esac
+# Budget on the IN-PHASE pointer (the longer variant, closest to the ≤60-word limit — §3.1).
+wc_in="$(word_count "$ctx")"
+[ "$wc_in" -le 60 ] && pass "AC-1: in-phase pointer within ≤60-word budget (${wc_in}w)" || fail "AC-1: in-phase pointer over budget (${wc_in}w > 60)"
 rmout="$(run_hook "$ROADMAP" "$p")"
 [ -n "$rmout" ] && pass "AC-1: roadmap-routing EMITS in DELIVER (in-phase)" || fail "AC-1: roadmap-routing was silent in DELIVER"
 valid_json "$rmout" && pass "AC-1: roadmap-routing emits valid JSON" || fail "AC-1: roadmap-routing JSON invalid"
@@ -143,6 +154,12 @@ p="$(mkproj 'phase: NOTAPHASE' '')"
 ctx="$(ctx_of "$(run_hook "$POINTER" "$p")")"
 case "$ctx" in *"no phase set"*) pass "untrusted: non-allowlisted phase → safe default (fail closed)";; *) fail "untrusted: bad phase not rejected (got: $ctx)";; esac
 rm -rf "$p"
+
+# ── exit-0 contract: both hooks must always exit 0 (never block a session), every state ───────────
+p="$(mkproj 'phase: DELIVER' '')";  assert_exit0 "phase-pointer  [focus=DELIVER]"  "$POINTER" "$p"; assert_exit0 "roadmap-routing [focus=DELIVER]"  "$ROADMAP" "$p"; rm -rf "$p"
+p="$(mkproj 'phase: DESIGN' '')";   assert_exit0 "phase-pointer  [focus=DESIGN]"   "$POINTER" "$p"; assert_exit0 "roadmap-routing [focus=DESIGN,silent]" "$ROADMAP" "$p"; rm -rf "$p"
+p="$(mkproj '' '')";                assert_exit0 "phase-pointer  [no focus]"       "$POINTER" "$p"; assert_exit0 "roadmap-routing [no focus,silent]"    "$ROADMAP" "$p"; rm -rf "$p"
+p="$(mkproj 'phase: NOTAPHASE' '')";assert_exit0 "phase-pointer  [bad focus]"      "$POINTER" "$p"; assert_exit0 "roadmap-routing [bad focus,silent]"   "$ROADMAP" "$p"; rm -rf "$p"
 
 if [ "$failures" -eq 0 ]; then
   printf "%b✓ all phase-pointer behaviour rows passed%b\n" "$green" "$reset"; exit 0

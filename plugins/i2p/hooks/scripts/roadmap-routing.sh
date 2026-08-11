@@ -22,7 +22,8 @@ set -uo pipefail
 
 # ── Phase gate: emit only in the roadmap-relevant phase (DELIVER). ───────────────────────────────
 # ROADMAP_ROUTING_PHASES lists the phase(s) in which the roadmap-read rule is in-phase; overridable
-# for --self-test. The shared resolver (active-phase.sh) reads .i2p/focus → .i2p/lifecycle.json.
+# via the env var (used by the behaviour test). The shared resolver (active-phase.sh) reads
+# .i2p/focus → .i2p/lifecycle.json.
 ROADMAP_ROUTING_PHASES="${ROADMAP_ROUTING_PHASES:-DELIVER}"
 HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
 # shellcheck source=/dev/null

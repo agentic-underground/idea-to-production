@@ -27,20 +27,22 @@ i2p_active_phase() {
   local phase="" focus="${proj%/}/.i2p/focus" lf="${proj%/}/.i2p/lifecycle.json"
 
   # 1) FOCUS (primary) — hardened untrusted parse: first token after `phase:`, uppercased.
+  #    Re-validate immediately and CLEAR a non-allowlisted value, so a typo'd/forged focus does
+  #    not shadow a valid lifecycle fallback (it would otherwise leave `phase` non-empty and skip
+  #    step 2). Still fail-closed: only an allowlisted [A-Z] phase survives.
   if [ -f "$focus" ]; then
     phase="$(awk '/^phase:/{sub(/^phase:[ \t]*/,""); print $1; exit}' "$focus" 2>/dev/null \
       | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')"
+    case "$allow" in *" $phase "*) ;; *) phase="" ;; esac
   fi
 
-  # 2) lifecycle.json (fallback) — only validated JSON, only .current_phase.
+  # 2) lifecycle.json (fallback) — only validated JSON, only .current_phase; re-validated the same way.
   if [ -z "$phase" ] && [ -f "$lf" ] && command -v jq >/dev/null 2>&1 && jq -e . "$lf" >/dev/null 2>&1; then
     phase="$(jq -r '.current_phase // empty' "$lf" 2>/dev/null | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')"
+    case "$allow" in *" $phase "*) ;; *) phase="" ;; esac
   fi
 
-  # 3) Re-validate against the closed allowlist; anything else → unknown ("").
-  case "$allow" in
-    *" $phase "*) printf '%s' "$phase" ;;
-    *) printf '' ;;
-  esac
+  # 3) `phase` is now guaranteed allowlisted-or-empty (fail closed). Emit it.
+  printf '%s' "$phase"
   return 0
 }
