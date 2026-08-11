@@ -47,10 +47,11 @@ one-line fix gets its own branch and PR. The steps, in order:
 
 ### BOARD LINKAGE — the convention every guardrail reads
 
-Every branch/PR either **declares a board item** or **logs an exemption**. This is the convention that
-EPIC 0066's guardrails will enforce — the pre-push gate `scripts/verify-board-linkage.sh` (PLAN 0066.002),
-the planning-time tripwire (PLAN 0066.003), and the PR template + CI backstop (PLAN 0066.004). Those land
-as EPIC 0066's later slices; until then the convention is followed by hand:
+Every branch/PR either **declares a board item** or **logs an exemption**. The **pre-push gate**
+`scripts/verify-board-linkage.sh` (PLAN 0066.002, wired into `.pipeline/verify`) **enforces this** — it
+fails a feature branch that neither declares a board item nor logs a `[no-board]` exemption. The
+planning-time tripwire (PLAN 0066.003) and the PR template + CI backstop (PLAN 0066.004) are EPIC 0066's
+remaining slices. The convention:
 
 - **Linked** — one of: a `Board: #<issue>` (or `Refs #<issue>`) trailer in a commit or the PR body, **or**
   a `pipeline/NNNN-*` branch name (where `NNNN` is the EPIC/PLAN order). The referenced issue must be an
