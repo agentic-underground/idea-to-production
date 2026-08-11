@@ -11,3 +11,7 @@ echo "manifests + python OK"
 # WARN until their RFC slices land, so this does not block on unlanded work. See docs/guide/routing-tests.md.
 bash scripts/verify-routing.sh || exit 1
 bash scripts/routing/route-eval.sh --check || exit 1   # Layer-2 fixture integrity only (no tokens)
+# Board-linkage gate (EPIC 0066 / PLAN 0066.002): substantive work must declare a board item (or log a
+# [no-board] exemption). --self-test keeps the gate's own logic proven; the live run enforces THIS branch.
+bash scripts/verify-board-linkage.sh --self-test || exit 1
+bash scripts/verify-board-linkage.sh || exit 1
