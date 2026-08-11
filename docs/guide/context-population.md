@@ -125,8 +125,15 @@ The active phase is read from state the marketplace already maintains — no new
   (§3.2), so the ≤60-word pointer *replaces* the ~40-word intro (a net reduction). After 0067.002 the
   phase-independent injection is **exactly the two things** of §3.1 — nothing else survives always-on.
 - **0067.003** — knowledge-phase resolution (§3.4) feeding the pointer.
-- **0067.004** — the leanness gate `scripts/verify-context.sh`: enforce the §3.1 budget + phase-tag
-  coverage, wired into `.pipeline/verify` (the context analog of the routing suite's R6).
+- **0067.004** — the leanness gate [`scripts/verify-context.sh`](../../scripts/verify-context.sh),
+  wired into `.pipeline/verify` (the context analog of the routing suite's R6). **Implemented** as four
+  checks: **C1** the §3.1 always-on budget (KAIZEN + pointer ≤420w, hard — FAIL names the largest
+  offender); **C2** the pointer ≤60w in the safe-default *and* in-phase forms (hard); **C3** phase-gating
+  intact (roadmap-routing/focus-routing stay silent with no FOCUS — hard, so an un-gated blob cannot
+  re-enter the always-on core); **C4** knowledge-phase coverage via `resolve_knowledge_phase.py --check`
+  (advisory WARN, warn-then-flip). `--self-test` proves the budget PASS/FAIL(+offender) and orphan-WARN
+  rows against fixtures. Live footprint at landing: **381w** (KAIZEN 350 + pointer 31) ≤ 420. This slice
+  **closes EPIC 0067**.
 
 ## 5. Integration safety & non-goals
 
