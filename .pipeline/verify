@@ -15,3 +15,5 @@ bash scripts/routing/route-eval.sh --check || exit 1   # Layer-2 fixture integri
 # [no-board] exemption). --self-test keeps the gate's own logic proven; the live run enforces THIS branch.
 bash scripts/verify-board-linkage.sh --self-test || exit 1
 bash scripts/verify-board-linkage.sh || exit 1
+# Board-first tripwire (EPIC 0066 / PLAN 0066.003): the SessionStart reminder emits the convention + stays inert.
+bash .claude/hooks/board-first-reminder.sh --self-test || exit 1
