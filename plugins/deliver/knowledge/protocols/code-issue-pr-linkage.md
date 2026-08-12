@@ -58,14 +58,15 @@ on a GitHub-connected, org-allowlisted origin.
 | 4 | **`GITHUB_ISSUE: #N` commit trailer** | GitHub-bound (allowlisted origins only) | a commit-message footer | [`commit-message.md` §2](commit-message.md); traces the commit to its tracking issue | claims harness (A8) — repo-scoped |
 | 5 | **`Closes #N` in the PR body** | GitHub-bound (allowlisted origins only) | the PR body | GitHub auto-closes the issue on merge; policy in [`merge-governance.md`](merge-governance.md) "Org allowlist" | claims harness (A8) — every merged PLAN has `Closes #N` + a merged PR |
 | 6 | **Native EPIC→PLAN sub-issue** | GitHub-bound | GraphQL `addSubIssue` at PLAN create (A1) | reader: `scripts/roadmap/delete-epic.sh` (`subIssues` GraphQL); writer: `scripts/roadmap/gh-pipeline.sh` (A1) | claims harness (A8) — every EPIC issue has ≥1 sub-issue |
-| 7 | **`<!-- pipeline-(epic\|plan)-NNNN[.SSS] -->` marker** | GitHub-bound (idempotency) | the issue body (byte-exact) | `roadmapper-gh-fields.sh:70` grep (search-before-create); the writer (A1) MUST emit it byte-identical | — (idempotency contract, not a gate) |
+| 7 | **`<!-- pipeline-(epic\|plan)-NNNN[.SSS] -->` marker** | GitHub-bound (idempotency) | the issue body (byte-exact) | `roadmapper-gh-fields.sh` `cmd_set_body` grep *preserves* the marker across body edits; the A1 writer's search-before-create dedup relies on it being byte-identical | — (idempotency contract, not a gate) |
 | 8 | **Board Status (single-select)** | GitHub-bound (state, authoritative) | project-board item field | roadmapper `set-status` (A1); `gh project item-edit` | claims harness (A8) — **project-scoped** (needs `PROJECT_TOKEN`; advisory-skip if absent) |
 
 > **Mechanisms 1 and 3 are the only offline-native forms of linkage.** Everything else
 > (`Board:`/`Refs`/`Closes`/`GITHUB_ISSUE:`/sub-issues/markers/Status) is **GitHub-bound** — it has
 > meaning only on a GitHub-connected, org-allowlisted, opted-in origin. In `local_file` mode the
-> `pipeline/NNNN-*` branch is the authoritative linkage; the trailers are inert. Do not treat the
-> trailers as co-equal to the branch offline (EPIC 0070 / C2 makes this explicit in `CLAUDE.md`).
+> `pipeline/NNNN-*` branch is the authoritative linkage; a `Board:`/`Refs` trailer still *satisfies
+> the gate as a declaration*, but its `#N` resolves to nothing offline — do not treat the trailers as
+> co-equal to the branch (EPIC 0070 / C2 makes this explicit in `CLAUDE.md`).
 
 ### How the board-linkage gate classifies (mechanisms 1–3)
 
@@ -91,7 +92,8 @@ silence.
 ## 2. Gate-surface matrix — `.pipeline/verify` vs `.github/workflows/verify.yml`
 
 Two enforcement surfaces, deliberately divided. The **pre-push gate is authoritative**; CI is the
-**backstop** for a push that skipped it (see [[pre-push-gates-not-ci]] — the marketplace's framing).
+**backstop** for a push that skipped it — the marketplace's standing framing (pre-push gates, not CI,
+are the real gate).
 
 | Property | `.pipeline/verify` (pre-push) | `.github/workflows/verify.yml` (CI) |
 |---|---|---|
@@ -100,7 +102,7 @@ Two enforcement surfaces, deliberately divided. The **pre-push gate is authorita
 | **Scope** | **this branch** (branch name, its commits, working tree) | the **PR** (`pull_request` event) + whole-repo signals |
 | **Board linkage** | `verify-board-linkage.sh --self-test` (logic) **+** live run (this branch, online existence probe) | `board-linkage` job: `--self-test` + `--pr-body` (declaration only, `BL_OFFLINE=1`) — *same script*, so the two can never disagree |
 | **Failure mode** | blocks the push | blocks the merge |
-| **GitHub-integration claims (A8)** | live run is **advisory-only** (`exit 0`); only `--self-test` blocks — never brick a push on hand-edited board drift or lapsed auth | `github-integration` job: repo-scoped always; project-scoped only when `PROJECT_TOKEN` present, else advisory-skip |
+| **GitHub-integration claims (A8)** | live run is **advisory-only** (`exit 0`); only `--self-test` blocks — never brick a push on hand-edited board drift or lapsed auth | `github-integration` job **(A8 — not yet wired)**: repo-scoped always; project-scoped only when `PROJECT_TOKEN` present, else advisory-skip |
 
 The load-bearing rule: **CI reuses the pre-push scripts** (`verify-board-linkage.sh` runs on both
 sides), so a check can never pass one surface and fail the other for the same input. New gates model
