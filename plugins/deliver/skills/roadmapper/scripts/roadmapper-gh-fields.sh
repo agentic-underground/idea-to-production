@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
-# roadmapper-gh-fields.sh — enrich the GitHub Project (v2) board items that the vendored FLEET tool
-# (pipeline-gh-project.sh) deliberately creates THIN. roadmapper calls this in github_board mode, AFTER
-# `ensure-epic-item` / `ensure-plan-subitem`, to make the backlog browsable:
+# roadmapper-gh-fields.sh — enrich the GitHub Project (v2) board items that the vendored create/link tool
+# (scripts/roadmap/gh-pipeline.sh — EPIC 0068 / A1) deliberately creates THIN. roadmapper calls this in
+# github_board mode, AFTER `ensure-epic` / `ensure-plan-subissue`, to make the backlog browsable:
 #   • replace the thin one-line issue body with the FULL EPIC/PLAN content (a clickable doc link + the
-#     same rich content the local docs/roadmap/*.md carries), re-appending FLEET's idempotency marker;
+#     same rich content the local docs/roadmap/*.md carries), re-appending the idempotency marker;
 #   • set the board's Estimate (story points) + Priority custom fields.
 #
-# It does NOT modify FLEET — it SOURCES pipeline-gh-project.sh (which guards its CLI dispatch behind a
+# It does NOT modify the tool — it SOURCES gh-pipeline.sh (which guards its CLI dispatch behind a
 # BASH_SOURCE/$0 check) to REUSE its GraphQL wrapper, per-project field cache, and item resolution, then
-# layers only the setters FLEET doesn't expose. (KAIZEN: reuse, don't rediscover.)
+# layers only the setters the create/link tool doesn't expose. (KAIZEN: reuse, don't rediscover.)
 #
-# Requires: PIPELINE_PROJECT=<project-id> in the env (resolves repo/remote/owner via the registry),
-# `gh` logged in with project scope, and `jq`. Override the engine path with PIPELINE_GH_PROJECT=/path.
+# Requires: PIPELINE_PROJECT=<registry-key> in the env (the repo's key in ~/.claude/pipeline-projects.json —
+# NOT a GraphQL node-id; gh-pipeline.sh keys its field cache by it), `gh` logged in with project scope, and
+# `jq`. Override the tool path with PIPELINE_GH_PROJECT=/path.
 #
 # Verbs:
 #   set-body     <issue#> <body-file>                 # replace issue body w/ file, preserving the marker
@@ -19,11 +20,19 @@
 #   set-priority <issue#> <Urgent|High|Medium|Low>    # board "Priority" (single-select) field
 set -uo pipefail
 
-# --- locate + source the vendored FLEET board tool (reuse, never modify) ---------------------------
+# --- locate + source the vendored create/link tool (reuse, never modify) ---------------------------
+# EPIC 0068 / A2 cutover: prefer the in-repo VENDORED gh-pipeline.sh — the pipeline is now self-sufficient
+# (no external FLEET engine). Resolution order: explicit PIPELINE_GH_PROJECT override → a plugin-local copy
+# under ${CLAUDE_PLUGIN_ROOT} (a standalone-installed plugin) → this marketplace repo's scripts/roadmap →
+# the legacy external FLEET tool (last-resort back-compat). NOTE: a standalone-installed deliver plugin does
+# not yet SHIP gh-pipeline.sh inside itself — until it does, github_board mode is self-sufficient only where
+# the repo tree (or an override) provides the tool. See scripts/roadmap/gh-pipeline.sh (the create/link layer).
 _find_ghp() {
   [[ -n "${PIPELINE_GH_PROJECT:-}" && -f "${PIPELINE_GH_PROJECT}" ]] && { echo "$PIPELINE_GH_PROJECT"; return 0; }
-  local c
+  local here c; here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   for c in \
+    "${CLAUDE_PLUGIN_ROOT:-/nonexistent}"/skills/roadmapper/scripts/gh-pipeline.sh \
+    "$here"/../../../../../scripts/roadmap/gh-pipeline.sh \
     "$HOME"/.local/share/fleet/*/pipeline/scripts/pipeline-gh-project.sh \
     "$HOME"/.claude/plugins/*/pipeline/scripts/pipeline-gh-project.sh \
     "$HOME"/.claude/plugins/*/*/pipeline/scripts/pipeline-gh-project.sh; do
@@ -31,7 +40,7 @@ _find_ghp() {
   done
   return 1
 }
-GHP="$(_find_ghp)" || { echo "roadmapper-gh-fields: cannot find pipeline-gh-project.sh (set PIPELINE_GH_PROJECT)" >&2; exit 1; }
+GHP="$(_find_ghp)" || { echo "roadmapper-gh-fields: cannot find gh-pipeline.sh (set PIPELINE_GH_PROJECT)" >&2; exit 1; }
 # shellcheck source=/dev/null
 . "$GHP"                       # → ghp_graphql, _ghp_cache(_get), _ghp_items, _ghp_repo_slug, pcfg_resolve
 pcfg_resolve >/dev/null 2>&1 || true   # populate CFG_REPO/CFG_REMOTE/CFG_PROJECT_OWNER from PIPELINE_PROJECT
@@ -47,12 +56,12 @@ _assert_fleet_api() {
 }
 _assert_fleet_api
 
-# Require the per-project field cache (built by `pipeline-gh-project.sh ensure-project`, §3.3-B step 1).
+# Require the per-project field cache (built by `gh-pipeline.sh ensure-project`, §3.3-B step 1).
 # Fails closed — a field SETTER must never create/mutate the project as a side effect (read-modify-write
 # on an already-ensured board only).
 _need_cache() {
   [[ -n "$(_ghp_cache_get '.project_id')" ]] && return 0
-  echo "roadmapper-gh-fields: board not ensured for this project — run 'pipeline-gh-project.sh ensure-project' first (§3.3-B step 1)." >&2
+  echo "roadmapper-gh-fields: board not ensured for this project — run 'gh-pipeline.sh ensure-project' first (§3.3-B step 1)." >&2
   return 1
 }
 
