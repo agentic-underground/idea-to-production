@@ -175,11 +175,21 @@ _ghp_need() { command -v gh >/dev/null 2>&1 || { _ghp_err "gh CLI required"; ret
 
 # _ghp_issue_by_marker <marker> : echo the issue number whose body carries an EXACT marker, else empty.
 # Search-before-create: the marker is unique, so a hit means "already created" (idempotency).
+# FAIL-CLOSED: returns non-zero if the READ itself failed (auth/rate-limit/network) so a caller NEVER
+# mistakes a failed read for "absent" and creates a duplicate (the fail-open-guard class). PAGINATES all
+# issues (gh api --paginate) so repo size never hides an older marker — an empty result with rc 0 means
+# genuinely absent, rc≠0 means "could not determine — do not create".
 _ghp_issue_by_marker() {
-  local marker="$1" slug; slug="$(_ghp_repo_slug)"
-  gh issue list --repo "$slug" --state all --limit 800 --json number,body 2>/dev/null \
-    | jq -r --arg m "$marker" '.[] | select((.body // "") | contains($m)) | .number' | head -1
+  local marker="$1" slug json; slug="$(_ghp_repo_slug)"
+  [ -n "$slug" ] || return 2
+  json="$(gh api --paginate "repos/$slug/issues?state=all&per_page=100" --jq '.[]|{number,body}' 2>/dev/null)" || return 2
+  printf '%s' "$json" | jq -rs --arg m "$marker" 'map(select((.body // "") | contains($m)))[0].number // empty'
 }
+
+# _ghp_scrub_markers <text> : strip any pipeline-marker-like HTML comment from caller-supplied text, so a
+# desc can NEVER carry (spoof) another item's idempotency marker into the body we create. Defence for when
+# desc later carries converted EXTERNAL issue text (the B4 intake slice) — body is DATA, never a marker source.
+_ghp_scrub_markers() { printf '%s' "$1" | sed -E 's/<!--[[:space:]]*pipeline-(epic|plan)-[^>]*-->//g'; }
 
 # _ghp_issue_node <issue#> : echo the GraphQL node id for an issue (needed for addSubIssue).
 _ghp_issue_node() {
@@ -347,10 +357,11 @@ cmd_ensure_epic() {
   pcfg_resolve
   local order desc marker title slug n
   order="$(_ghp_norm_order "${1:-}")" || { _ghp_err "epic order must be 1–4 digits (got '${1:-}')"; return 2; }
-  desc="${2:?desc required}"; slug="$(_ghp_repo_slug)"
+  desc="$(_ghp_scrub_markers "${2:?desc required}")"; slug="$(_ghp_repo_slug)"
   marker="$(_ghp_epic_marker "$order")"; title="$(_ghp_epic_title "$order" "$desc")"
 
-  n="$(_ghp_issue_by_marker "$marker")"
+  # FAIL-CLOSED: a failed read must abort, never fall through to create (would duplicate).
+  n="$(_ghp_issue_by_marker "$marker")" || { _ghp_err "could not read issues to check for EPIC $order — aborting (not creating, to avoid a duplicate)"; return 1; }
   if [ -n "$n" ]; then
     _ghp_ok "EPIC $order already exists (#$n) — converging"
   else
@@ -369,10 +380,11 @@ cmd_ensure_plan_subissue() {
   local epic order desc marker title slug n
   epic="${1:?epic# required}"; printf '%s' "$epic" | grep -qE '^[0-9]+$' || { _ghp_err "epic# must be a GitHub issue number (got '$epic')"; return 2; }
   order="$(_ghp_norm_plan_order "${2:-}")" || { _ghp_err "plan order must be NNNN.SSS (got '${2:-}')"; return 2; }
-  desc="${3:?desc required}"; slug="$(_ghp_repo_slug)"
+  desc="$(_ghp_scrub_markers "${3:?desc required}")"; slug="$(_ghp_repo_slug)"
   marker="$(_ghp_plan_marker "$order")"; title="$(_ghp_plan_title "$order" "$desc")"
 
-  n="$(_ghp_issue_by_marker "$marker")"
+  # FAIL-CLOSED: a failed read must abort, never fall through to create (would duplicate).
+  n="$(_ghp_issue_by_marker "$marker")" || { _ghp_err "could not read issues to check for PLAN $order — aborting (not creating, to avoid a duplicate)"; return 1; }
   if [ -n "$n" ]; then
     _ghp_ok "PLAN $order already exists (#$n) — converging"
   else
@@ -457,6 +469,11 @@ cmd_self_test() {
   _t "marker grep-compatible" \
      "$(printf '%s' "$(_ghp_plan_marker 0068.001)" | grep -oE '<!-- pipeline-(epic|plan)-[^>]*-->')" \
      "<!-- pipeline-plan-0068.001 -->"
+  # desc marker-scrub: a caller desc can never carry (spoof) another item's idempotency marker
+  _t "scrub strips a spoofed marker" \
+     "$(_ghp_scrub_markers 'legit text <!-- pipeline-epic-0001 --> more')" "legit text  more"
+  _t "scrub leaves clean text intact" \
+     "$(_ghp_scrub_markers 'a normal description with no markers')" "a normal description with no markers"
   # SAFE _ghp_cache_get: dotted-path lookup as DATA, no jq-program injection
   local d; d="$(mktemp -d)"; PIPELINE_CACHE_DIR="$d" CFG_REG_ID="t" PIPELINE_PROJECT="t"
   printf '%s' '{"project_id":"PVT_x","project_number":4,"fields":{"Status":{"id":"F1","options":{"Backlog":"o1","Done":"o2"}}}}' > "$d/t.json"
