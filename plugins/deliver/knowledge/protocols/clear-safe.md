@@ -34,7 +34,11 @@ command *errors* (not `0 0`), which is itself NOT clear-safe. **proof 3** is not
 most-missed subset, because uncommitted learnings are the exact hole this covenant exists to close.
 
 The deterministic gate that runs all four and emits the report is `scripts/verify-clear-safe.sh`
-(EPIC 0071 / CS2). Until it lands, run the four commands inline and show the output.
+(EPIC 0071 / CS2) — run `bash scripts/verify-clear-safe.sh` at each boundary and show its table. Proofs
+1–3 gate its exit code (the block); proof 4 (STATE currency) is best-effort and advisory — the
+resume-memory is machine-local and the board is online, and a *complete* initiative legitimately has no
+"next" — so confirm the 3-layer STATE by hand when proof 4 reads ⚠. It is a **boundary** command, not a
+pre-push gate (mid-build the tree is dirty by design); only its `--self-test` rides in `.pipeline/verify`.
 
 > **Learnings are load-bearing (proof 3).** Subagents (reviewers especially) write durable learnings to
 > the tracked `.claude/agent-memory/` ledger, and the KAIZEN reflex folds general lessons back into the
