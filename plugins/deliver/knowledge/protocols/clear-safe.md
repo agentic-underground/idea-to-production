@@ -28,6 +28,11 @@ At each PLAN/EPIC boundary, run the checks and show their output. A claim withou
 | 3 | **Learnings committed** | `git status --porcelain .claude/agent-memory/` (a *tracked* asset) | empty — reviewer/agent learnings are committed, not left dirty |
 | 4 | **3-layer STATE current** | resume-memory names the *next* item + its spec; board Status matches; docs mirror (or a logged skip) | the pointer a fresh session auto-loads is accurate |
 
+Notes: **proof 2** requires the branch to track an upstream — push with `-u`; if `@{u}` is unset the
+command *errors* (not `0 0`), which is itself NOT clear-safe. **proof 3** is not independent of proof 1
+(`.claude/agent-memory/` is tracked, so proof 1 already covers it) — it is a **spotlight** on proof 1's
+most-missed subset, because uncommitted learnings are the exact hole this covenant exists to close.
+
 The deterministic gate that runs all four and emits the report is `scripts/verify-clear-safe.sh`
 (EPIC 0071 / CS2). Until it lands, run the four commands inline and show the output.
 
@@ -58,19 +63,23 @@ the honest report is "NOT clear-safe" and the boundary is not done until it is f
 ## The fan-out advisement — *only if they actually can*
 
 At each boundary, tell the user whether the next *N* items can be **fanned out into a workflow** —
-built in parallel and merged, rather than one at a time. State it truthfully: an item pair fans out
-**iff all three hold**:
+built in parallel and merged, rather than one at a time. Two **per-pair predicates** decide whether a
+pair is parallelizable — an item pair fans out **iff both hold**:
 
 - **No dependency** — neither item needs the other's output (respect the EPIC/PLAN dependency DAG).
 - **Disjoint files** — they do not edit the same file (two slices adding verbs to the *same* script
   collide; two slices touching *different* files do not).
-- **Serialized GitHub writes** — board/issue/PR mutations and the merge-to-`main` are inherently serial;
-  concurrent writes race (duplicate order allocation, board-status clobber). See the ⚠ markers a plan's
-  own decomposition carries.
 
-Honest atomicity: a fan-out is **parallel build + adversarial review, then a serialized merge + STATE
-update** — not a literally-atomic merge. Say so. The mechanism that computes the advisement is EPIC 0071
-/ CS3; the mechanism that *executes* it is the `resume … in a workflow` verb (CS4).
+And one **execution constraint** that *always* applies (it is not a per-pair test — it never makes a
+pair "more parallel"): **GitHub writes and the merge-to-`main` are serialized.** Board/issue/PR
+mutations and merges are inherently serial; concurrent writes race (duplicate order allocation,
+board-status clobber). See the ⚠ markers a plan's own decomposition carries.
+
+Honest atomicity: a fan-out is therefore **parallel build + adversarial review, then a serialized merge
++ STATE update** — not a literally-atomic merge. Say so. The mechanism that computes the advisement is
+EPIC 0071 / CS3; the mechanism that *executes* it is the `resume … in a workflow` verb (CS4). **Until
+CS3/CS4 land, the agent computes the advisement and runs the workflow by hand** — the phrases below are
+the coded *intent*, not yet an automated verb.
 
 If the next items are **not** safely parallel (a real dependency, a shared file, a serialize-only
 convert), say that too — "the next three must go one at a time because …". Never oversell parallelism.
