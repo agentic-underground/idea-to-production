@@ -17,6 +17,10 @@ bash scripts/verify-board-linkage.sh --self-test || exit 1
 bash scripts/verify-board-linkage.sh || exit 1
 # Board-first tripwire (EPIC 0066 / PLAN 0066.003): the SessionStart reminder emits the convention + stays inert.
 bash .claude/hooks/board-first-reminder.sh --self-test || exit 1
+# Vendored GitHub create/link layer (EPIC 0068 / PLAN 0068.002): the pure helpers of gh-pipeline.sh —
+# order/marker/title composition + the injection-safe cache accessor. --self-test is hermetic (no gh);
+# the live create/link verbs prove themselves against project #4 (the claims harness lands with A8).
+bash scripts/roadmap/gh-pipeline.sh --self-test >/dev/null || exit 1
 # Context-population injector (EPIC 0067 / PLAN 0067.002): the phase-aware pointer emits KAIZEN + a thin
 # ≤60-word pointer; roadmap-routing is phase-gated; safe default when phase is unknown. The always-on
 # leanness BUDGET gate (verify-context.sh) lands with PLAN 0067.004.
