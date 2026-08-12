@@ -117,7 +117,40 @@ this — a pure classifier + `--self-test` fixtures + offline-degrades-to-adviso
 
 ---
 
-## 3. Where each surface points here
+## 3. Fan-out parallelizability annotations — `Depends-on:` / `Touches:`
+
+Two **optional** line-anchored trailers on a PLAN (or EPIC) issue body declare whether that item can be
+built *in parallel* with its siblings — the input to the CLEAR-SAFE fan-out advisement
+(`scripts/fan-out-advisement.sh`, EPIC 0071 / CS3), which the `resume … in a workflow` verb (CS4)
+consumes. They are **parallelizability** metadata, not linkage — distinct from mechanisms 1–8 — but they
+live here because they share the issue-body surface and the §0 number-space discipline.
+
+```
+Depends-on: none                         Depends-on: 0071.002, 0071.003
+Touches: scripts/fan-out-advisement.sh, plugins/deliver/knowledge/protocols/clear-safe.md, docs/roadmap/
+```
+
+- **`Depends-on:` values are ROADMAP-ORDER numbers (`NNNN.SSS`), never `#issue`** — §0's hazard, dodged
+  by construction: at decomposition time sibling *orders* exist but GitHub issue numbers do not, and each
+  body self-resolves its own order from its `<!-- pipeline-plan-NNNN.SSS -->` marker (mechanism 7). One
+  grammar form only.
+- **`Depends-on: none` is required to count as *annotated*** — explicit declared-independence is
+  distinguishable from silence. A *missing* `Depends-on:` **or** `Touches:` ⇒ the item is **unannotated**
+  ⇒ every pair containing it is treated as **serial**. This is monotone-safe: missing information can only
+  make the advisement *more* serial, never less — silence never oversells parallelism (the covenant's
+  ethos). Reason precedence when serial: `unreadable > unannotated > dependency > shared-file`.
+- **`Touches:` is a conservative *superset* of the files the slice will edit** (literal repo-relative
+  paths; a trailing `/` = directory prefix). It is knowingly authored *before* the build, so an
+  optimistically-wrong declaration cannot corrupt anything — the workflow's **serialized merge** catches
+  any real collision as an ordinary rebase conflict.
+- **Read source: the board issue body** (`gh issue view <n> --json body`) — authoritative; the
+  `docs/roadmap/` mirror is skipped for recent EPICs. Offline/unreadable ⇒ degrade to serial. When an
+  on-disk `PLAN_*.md` mirror exists it carries the same trailer lines.
+- **Producer:** authored at decomposition (a roadmapper-emit slice is a tagged follow-up); today they are
+  hand-authored on PLAN bodies. **Consumer:** `fan-out-advisement.sh` (CS3) → the `resume … in a workflow`
+  verb (CS4).
+
+## 4. Where each surface points here
 
 - [`CLAUDE.md` → BOARD LINKAGE](../../../../CLAUDE.md) — the convention every branch/PR follows
   (mechanisms 1–3); defers here for the full mechanism table + the two-number-space hazard.

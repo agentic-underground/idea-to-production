@@ -26,6 +26,11 @@ bash .claude/hooks/clear-safe-reminder.sh --self-test || exit 1
 # command (`bash scripts/verify-clear-safe.sh`), not a pre-push gate: during active work the tree is
 # dirty by design, so gating every push on a clean boundary would be wrong. The covenant invokes it live.
 bash scripts/verify-clear-safe.sh --self-test >/dev/null || exit 1
+# CLEAR-SAFE fan-out advisement (EPIC 0071 / PLAN 0071.003 — CS3): computes whether the next-N board
+# items parallelize (Depends-on:/Touches: trailers → wave/held), degrading to serial when unannotated so
+# silence never oversells parallelism. Only --self-test runs here (pure classifiers + a full --machine
+# fixture run); the live run is a boundary/CS4 call needing the board, not a pre-push gate.
+bash scripts/fan-out-advisement.sh --self-test >/dev/null || exit 1
 # Vendored GitHub create/link layer (EPIC 0068 / PLAN 0068.002): the pure helpers of gh-pipeline.sh —
 # order/marker/title composition + the injection-safe cache accessor. --self-test is hermetic (no gh);
 # the live create/link verbs prove themselves against project #4 (the claims harness lands with A8).
