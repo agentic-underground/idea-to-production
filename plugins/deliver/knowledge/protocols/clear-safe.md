@@ -80,10 +80,16 @@ mutations and merges are inherently serial; concurrent writes race (duplicate or
 board-status clobber). See the ⚠ markers a plan's own decomposition carries.
 
 Honest atomicity: a fan-out is therefore **parallel build + adversarial review, then a serialized merge
-+ STATE update** — not a literally-atomic merge. Say so. The mechanism that computes the advisement is
-EPIC 0071 / CS3; the mechanism that *executes* it is the `resume … in a workflow` verb (CS4). **Until
-CS3/CS4 land, the agent computes the advisement and runs the workflow by hand** — the phrases below are
-the coded *intent*, not yet an automated verb.
++ STATE update** — not a literally-atomic merge. Say so.
+
+The mechanism that **computes** this advisement is **`scripts/fan-out-advisement.sh`** (EPIC 0071 / CS3,
+landed): `fan-out-advisement.sh <issue#> …` reads the two per-pair predicates from each PLAN body's
+`Depends-on:` / `Touches:` trailers (the grammar: [`code-issue-pr-linkage.md` §3](code-issue-pr-linkage.md)),
+degrades **to serial** when an item is unannotated/unreadable (never oversells parallelism), and emits
+the honest advisement — human by default, or a machine `wave`/`held` TSV (`--machine`) for the verb
+below. The mechanism that *executes* it is the `resume … in a workflow` verb (**CS4, not yet landed**).
+**Until CS4 lands, the agent runs the advised workflow by hand** — the phrases below are the coded
+*intent*, not yet an automated verb.
 
 If the next items are **not** safely parallel (a real dependency, a shared file, a serialize-only
 convert), say that too — "the next three must go one at a time because …". Never oversell parallelism.
