@@ -222,20 +222,26 @@ land there with fields set; the operator promotes Backlog→To Do to hand an epi
 - The **registry entry** carries `board: github_project` (+ `project_owner` if not `@me`); `delivery` and
   `admin_merge` work exactly as the github manifest path. `manifest`/`forbidden_mutation` are unused in
   board mode (the engine never reads them) — set `epic_glob` so the builder can find `EPIC_NNNN.md`.
-- The board itself is created/updated by the **bundled board tool** (a sibling of the engine):
-  `../../scripts/pipeline-gh-project.sh`. Requires a `gh` logged in with a **`project`-scope** token.
+- The board itself is created/updated by the **in-repo vendored create/link tool** (EPIC 0068 / A1 —
+  self-sufficient, no external FLEET engine needed): `scripts/roadmap/gh-pipeline.sh`. Requires a `gh`
+  logged in with a **`project`-scope** token.
 
-**The board tool — verbs you call when producing (idempotent, search-before-create):**
+**The create/link tool — verbs you call when producing (idempotent, paginated + fail-closed
+search-before-create):**
 ```sh
-GHP=../../scripts/pipeline-gh-project.sh        # relative to this skill; PIPELINE_PROJECT=<id> selects the repo
-PIPELINE_PROJECT=<id> bash "$GHP" ensure-project                 # find-or-create + link the Project, columns + fields
-PIPELINE_PROJECT=<id> bash "$GHP" ensure-epic-item   NNNN "<title>"   # Issue + board item, seeded Backlog
-PIPELINE_PROJECT=<id> bash "$GHP" ensure-plan-subitem EPIC PLAN "<t>"  # sub-issue of the epic + board sub-item, Backlog
-PIPELINE_PROJECT=<id> bash "$GHP" board                          # render the board by column (verify)
-PIPELINE_PROJECT=<id> bash "$GHP" next                           # what the engine would pick (proves the gate)
+GHP=scripts/roadmap/gh-pipeline.sh              # in-repo; PIPELINE_PROJECT=<registry-key> selects the repo (NOT a node-id)
+PIPELINE_PROJECT=<key> bash "$GHP" ensure-project                       # find-by-TITLE + cache fields; bootstraps the registry
+EPIC_N=$(PIPELINE_PROJECT=<key> bash "$GHP" ensure-epic NNNN "<title>") # EPIC Issue on the board (Backlog); echoes issue#
+PIPELINE_PROJECT=<key> bash "$GHP" ensure-plan-subissue "$EPIC_N" NNNN.SSS "<t>"  # native sub-issue of the EPIC, Backlog
+PIPELINE_PROJECT=<key> bash "$GHP" set-status <issue#> "To Do"          # promote by GitHub issue number
+PIPELINE_PROJECT=<key> bash "$GHP" epic-issue NNNN                      # readers: resolve an order → issue#
+PIPELINE_PROJECT=<key> bash "$GHP" plan-issue NNNN.SSS                  #   (plan-issue takes the plan order alone)
+PIPELINE_PROJECT=<key> bash "$GHP" next-plan <epic-issue#>             # next free NNNN.SSS under an EPIC
 ```
 `ensure-*` set **Status + Pipeline Order** on each item and the **title/body** on the issue; richer fields
-(Priority/Size/Estimate/dates) are board metadata you can set later in the UI — they don't gate scheduling.
+(Priority/Size/Estimate/dates) are board metadata set later via `roadmapper-gh-fields.sh` or the UI — they
+don't gate scheduling. (Rendering the board / picking the next PLAN is the external FLEET engine's own job,
+when present — not this create/link tool.)
 
 **Floor unchanged:** the GREEN `.pipeline/verify` gate, the lease, and the no-blind-merge rule all still
 apply. The board changes *where next/state live*, not whether work is allowed to land.

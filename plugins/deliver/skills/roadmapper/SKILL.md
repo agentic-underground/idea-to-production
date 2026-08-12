@@ -139,8 +139,8 @@ second** — never silently flip a repo that already has an authored pipeline:
 2. **Otherwise choose by registry, then origin:**
    - **`github_board` mode** — the registry already declares `board: github_project`, **or** (for a repo
      with no existing `.pipeline.md`) *all* of: the origin URL contains `github.com`; `gh project list
-     --owner <owner>` succeeds (a project-scope token is present); and the `pipeline` plugin's
-     `pipeline-gh-project.sh` is resolvable. → author onto the board (§3.3-B). Reuse the established
+     --owner <owner>` succeeds (a project-scope token is present); and the in-repo create/link tool
+     `scripts/roadmap/gh-pipeline.sh` is resolvable. → author onto the board (§3.3-B). Reuse the established
      github detector (`plugins/operate/skills/gemba/scripts/identity.sh` —
      `git_remote_owner`/`git_remote_repo`); the load-bearing test is **`github.com` in the origin URL**
      (the same substring test the FLEET engine's `pcfg_delivery` uses).
@@ -302,28 +302,27 @@ After writing/updating the artifacts, immediately follow §3.4.
 #### 3.3-B github_board mode — place + enrich the board items
 
 After decomposition (§3.5) and writing the local EPIC/PLAN docs (above, minus `.pipeline.md` and minus
-the EPIC `## Plans` table), publish to the GitHub Project (v2) board. Engine board tool =
-`pipeline-gh-project.sh` (vendored — **call it, never edit it**); enrichment the tool doesn't expose =
-roadmapper's `scripts/roadmapper-gh-fields.sh`. Run every verb with `PIPELINE_PROJECT=<project-id>` in
-the environment.
+the EPIC `## Plans` table), publish to the GitHub Project (v2) board. Create/link tool =
+**`scripts/roadmap/gh-pipeline.sh`** (the in-repo vendored layer — EPIC 0068 / A1; **call it, never edit
+it**); enrichment the tool doesn't expose = roadmapper's `scripts/roadmapper-gh-fields.sh`. Run every verb
+with `PIPELINE_PROJECT=<registry-key>` in the environment (the repo's key in
+`~/.claude/pipeline-projects.json` — **not** a GraphQL node-id; `ensure-project` bootstraps it if absent).
 
-1. **Ensure the board (idempotent).** `pipeline-gh-project.sh ensure-project` — find-or-create the
-   Project, its columns (Backlog / To Do / In Progress / Done / Delivered) and custom fields
-   (Priority, Estimate, …). Re-runs are safe.
-2. **Create the EPIC item.** `pipeline-gh-project.sh ensure-epic-item NNNN "<short description>"` →
-   the EPIC Issue + board Item, seeded in **Backlog**. (FLEET titles it `EPIC NNNN: <description>`; keep
-   the description readable within ~70 visible chars before the board UI truncates.)
-3. **Create each PLAN sub-item.** **github_board mode replaces local_file's global `PLAN_MMMM.md`
+1. **Ensure the board (idempotent).** `gh-pipeline.sh ensure-project` — find the Project **by title**
+   (never a hardcoded number), create if absent, persist its number + node-id into the registry, and cache
+   the Status + custom-field ids. Re-runs are safe. (It **warns** on a missing Status option rather than
+   mutating options — a programmatic option-delete wipes item values.)
+2. **Create the EPIC item.** `gh-pipeline.sh ensure-epic NNNN "<short description>"` → the EPIC Issue on
+   the board, seeded in **Backlog**; it **echoes the issue number** — capture it (`EPIC_N=$(… ensure-epic …)`).
+   (Titled `EPIC NNNN: <description>`; keep the description readable within ~70 visible chars.)
+3. **Create each PLAN sub-issue.** **github_board mode replaces local_file's global `PLAN_MMMM.md`
    numbering with a per-epic composite `PLAN_NNNN.SSS.md`** — `NNNN` is the parent EPIC's 4-digit order
-   and `SSS` is a **3-digit sequence within that epic** (`001`, `002`, …), not a global counter. With
-   that `SSS`:
-   `pipeline-gh-project.sh ensure-plan-subitem NNNN "NNNN.SSS" "<short description>"` → a native
-   sub-issue of the EPIC + board Sub-item, seeded in **Backlog**. **Naming contract:** passing the plan
-   arg as the composite `NNNN.SSS` makes the engine derive the plan-doc path as
-   `docs/roadmap/PLAN_NNNN.SSS.md` — so name the local file **exactly** `PLAN_NNNN.SSS.md` (e.g.
-   `PLAN_0001.001.md`). *(Why: the engine's `next-plan` strips the first dotted segment of the Pipeline
-   Order and substitutes `EPIC`→`PLAN` in `epic_glob`; this yields the desired filename with no FLEET
-   fork. Side-effect: the Pipeline Order field reads `NNNN.NNNN.SSS` — a harmless internal cosmetic.)*
+   and `SSS` is a **3-digit sequence within that epic** (`001`, `002`, …), not a global counter. Pass the
+   EPIC's **issue number** (from step 2, or `gh-pipeline.sh epic-issue NNNN`) plus the composite order:
+   `gh-pipeline.sh ensure-plan-subissue <epic-issue#> NNNN.SSS "<short description>"` → a native sub-issue
+   of the EPIC on the board, seeded in **Backlog** (crash-consistent: it links the sub-issue on every run).
+   **Naming contract:** name the local file **exactly** `PLAN_NNNN.SSS.md` (e.g. `PLAN_0001.001.md`) to
+   match the issue title `PLAN NNNN.SSS: …`.
 4. **Enrich every Issue (the browsable backlog).** For each EPIC and PLAN Issue, replace the thin
    auto-body with the **full content of its local doc**, led by a **clickable link** to the doc on the
    default branch, e.g.
@@ -331,21 +330,21 @@ the environment.
    Resolve `<default-branch>` with `gh repo view <owner>/<repo> --json defaultBranchRef -q
    .defaultBranchRef.name` (do **not** assume `main` — the link must not 404).
    Compose the body to a temp file and apply `roadmapper-gh-fields.sh set-body <issue#> <file>` — it
-   re-appends FLEET's `<!-- pipeline-… -->` idempotency marker, so **never strip that marker** from your
+   re-appends the `<!-- pipeline-… -->` idempotency marker, so **never strip that marker** from your
    body. The Issue must *show* what will happen — a bare reference is not enough.
 5. **Set the board fields.** `roadmapper-gh-fields.sh set-estimate <issue#> <points>` (per-PLAN story
    points from §3.5; the EPIC gets the rolled-up sum) and `… set-priority <issue#> <Priority>` (§3.3-G;
-   default `Medium`). Get `<issue#>` from the echo of `ensure-epic-item`/`ensure-plan-subitem`, or via
-   `pipeline-gh-project.sh epic-issue NNNN` / `plan-issue NNNN NNNN.SSS`.
+   default `Medium`). Get `<issue#>` from the echo of `ensure-epic`/`ensure-plan-subissue`, or via
+   `gh-pipeline.sh epic-issue NNNN` / `plan-issue NNNN.SSS` (each echoes the GitHub issue number).
 6. **Groom the Issue metadata** per **§3.3-G** (Type · Priority · labels · assignee).
 7. **Leave everything in Backlog.** Authoring never auto-promotes — promotion to To Do ("ready") is the
    human-gated gesture in **§11.4a**.
 
-> **Idempotent re-author.** Every verb is find-or-create keyed on the FLEET body marker, so re-running
-> updates rather than duplicates. Sanity-check the naming contract after authoring:
-> `pipeline-cron.sh next-plan EPIC_NNNN` emits `NNNN.SSS` as its **first tab-field** (the derived
-> `PLAN_NNNN.SSS.md` is the second) — confirm that `docs/roadmap/PLAN_NNNN.SSS.md` exists. (For the bare
-> order alone, `pipeline-gh-project.sh next-plan NNNN` returns just `NNNN.SSS`.)
+> **Idempotent re-author.** Every verb is find-or-create keyed on the byte-exact body marker
+> (`<!-- pipeline-(epic|plan)-… -->`) with a **paginated, fail-closed** search — a failed read aborts
+> rather than risk a duplicate — so re-running updates rather than duplicates. To allocate the next PLAN
+> order under an EPIC, `gh-pipeline.sh next-plan <epic-issue#>` returns the next free `NNNN.SSS`; confirm
+> `docs/roadmap/PLAN_NNNN.SSS.md` exists for it.
 
 #### 3.3-G Conversational metadata grooming (github_board mode)
 
@@ -946,8 +945,9 @@ action, the board analogue of GO. After authoring (or on request), roadmapper **
 promote, defaulting to *none*, with the warning: *To Do = the engine will build this on its next tick if
 it's next in board order.*
 
-- Promote an EPIC: `pipeline-gh-project.sh set-status NNNN "To Do"`.
-- Promote a PLAN: `pipeline-gh-project.sh set-plan-status NNNN NNNN.SSS "To Do"`.
+- Promote an EPIC: `gh-pipeline.sh set-status "$(gh-pipeline.sh epic-issue NNNN)" "To Do"`.
+- Promote a PLAN: `gh-pipeline.sh set-status "$(gh-pipeline.sh plan-issue NNNN.SSS)" "To Do"`.
+  *(`set-status` takes the GitHub **issue number**; the `epic-issue`/`plan-issue` readers resolve it from the order.)*
 
 This is the **only** Status change roadmapper makes; every other column move is the engine's and must
 never be hand-edited (§11.4 MUST NOT).
