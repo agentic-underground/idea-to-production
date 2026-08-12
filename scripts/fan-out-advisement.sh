@@ -63,11 +63,19 @@ parse_touches() {
   printf '%s' "$line" | sed -E 's/^[[:space:]]*Touches:[[:space:]]*//I; s/[[:space:]]+$//'
 }
 
+# _blank <val> → 0 if val has NO character other than whitespace/commas (present-but-empty).
+_blank() { case "$(printf '%s' "$1" | tr -d '[:space:],')" in "") return 0 ;; *) return 1 ;; esac; }
+
 # item_state <body> → unreadable | unannotated | annotated.
+# A trailer whose LINE is missing OR whose VALUE trims to empty (the label typed, the value forgotten —
+# the most likely authoring slip) is UNANNOTATED. This fails to the conservative verdict: an empty
+# `Touches:` must NOT be read as "touches nothing" (→ falsely parallel) — silence never oversells
+# parallelism (`Depends-on: none` is the explicit-independence sentinel and survives, being non-empty).
 item_state() {
   printf '%s' "$1" | grep -q '@@UNREADABLE' && { echo unreadable; return; }
   local d t; d="$(parse_deps "$1")"; t="$(parse_touches "$1")"
-  { [ "$d" = MISSING ] || [ "$t" = MISSING ]; } && { echo unannotated; return; }
+  { [ "$d" = MISSING ] || _blank "$d"; } && { echo unannotated; return; }
+  { [ "$t" = MISSING ] || _blank "$t"; } && { echo unannotated; return; }
   echo annotated
 }
 
@@ -163,9 +171,9 @@ run_advise() {
   done
   local N=${#ISS[@]}
 
-  # order→present? (for depends-outside notes)
-  local present=" "; local k
-  for ((k=0; k<N; k++)); do present+="${ORD[$k]} "; done
+  # order→present? and issue→present? (for depends-outside vs misannotated-issue-number notes)
+  local present=" " issset=" "; local k
+  for ((k=0; k<N; k++)); do present+="${ORD[$k]} "; issset+="${ISS[$k]} "; done
 
   # machine header + item lines.
   local out=""
@@ -190,7 +198,15 @@ run_advise() {
     local IFS=','
     for d in ${DEP[$i]}; do
       d="${d//[[:space:]]/}"; [ -z "$d" ] && continue
-      case "$present" in *" $d "*) : ;; *) out+="note	${ISS[$i]}	depends-outside:${d}"$'\n' ;; esac
+      case "$present" in
+        *" $d "*) : ;;  # a real in-set order dependency — already handled by pair_verdict.
+        *) case "$issset" in
+             # a dep token that is an ISSUE number in the set is a two-number-space mis-authoring
+             # (deps must be orders) — say so distinctly rather than the misleading "depends-outside".
+             *" $d "*) out+="note	${ISS[$i]}	misannotated-issue-number:${d}"$'\n' ;;
+             *)        out+="note	${ISS[$i]}	depends-outside:${d}"$'\n' ;;
+           esac ;;
+      esac
     done
     unset IFS
   done
@@ -250,6 +266,9 @@ self_test() {
   unset FO_FIXTURE FO_OFFLINE   # HERMETIC — no ambient fixture may leak into a row.
   eq() { total=$((total+1)); if [ "$2" = "$1" ]; then printf "  %b✓%b %s\n" "$green" "$reset" "$3"
     else printf "  %b✗ %s (want '%s', got '%s')%b\n" "$red" "$3" "$1" "$2" "$reset"; failures=$((failures+1)); fi; }
+  # has <label> <blob> <ERE> — assert the pattern IS present (if/then avoids SC2015's A&&B||C form).
+  has() { total=$((total+1)); if printf '%s\n' "$2" | grep -qE "$3"; then printf "  %b✓%b %s\n" "$green" "$reset" "$1"
+    else printf "  %b✗ %s%b\n" "$red" "$1" "$reset"; failures=$((failures+1)); fi; }
   printf "%b%s%b\n" "$bold" "fan-out-advisement.sh --self-test" "$reset"
 
   # parse_order — from the marker.
@@ -268,13 +287,19 @@ self_test() {
   eq unreadable  "$(item_state '@@UNREADABLE')"                                          "item_state: unreadable"
   eq unannotated "$(item_state 'Depends-on: none')"                                      "item_state: deps but no Touches → unannotated"
   eq annotated   "$(item_state 'Depends-on: none'$'\n''Touches: scripts/x.sh')"          "item_state: both trailers → annotated"
+  # Finding 1 pins — a present-but-EMPTY value must fail to unannotated, never sail through as annotated.
+  eq unannotated "$(item_state 'Depends-on: none'$'\n''Touches:')"                       "item_state: blank Touches value → unannotated (Finding 1)"
+  eq unannotated "$(item_state 'Depends-on: none'$'\n''Touches:   ')"                     "item_state: whitespace-only Touches → unannotated"
+  eq unannotated "$(item_state 'Depends-on: none'$'\n''Touches: ,')"                      "item_state: comma-only Touches → unannotated"
+  eq unannotated "$(item_state 'Depends-on:'$'\n''Touches: a.sh')"                        "item_state: blank Depends-on value → unannotated"
+  eq annotated   "$(item_state 'Depends-on: none'$'\n''Touches: a.sh')"                   "item_state: 'none' deps survive (non-empty sentinel)"
 
-  # _csv_has / _path_match / paths_overlap.
-  _csv_has "0071.002, 0071.003" 0071.003 && eq yes yes "_csv_has: token present → yes" || eq yes no "_csv_has: token present → yes"
-  _csv_has "0071.002" 0071.009 && eq no yes "_csv_has: token absent → no" || eq no no "_csv_has: token absent → no"
+  # _csv_has / _path_match / paths_overlap (exit-code / value asserts — no A&&B||C, so shellcheck-clean).
+  _csv_has "0071.002, 0071.003" 0071.003; eq 0 "$?" "_csv_has: token present → rc0"
+  _csv_has "0071.002" 0071.009;           eq 1 "$?" "_csv_has: token absent → rc1"
   eq scripts/x.sh "$(paths_overlap 'scripts/x.sh, a.md' 'b.md, scripts/x.sh')" "paths_overlap: equal path → hit"
   eq scripts/     "$(paths_overlap 'scripts/' 'scripts/verify.sh')"            "paths_overlap: dir prefix → hit"
-  ( paths_overlap 'scripts/foo.sh' 'scripts/foo.sh.bak' ) >/dev/null && eq disjoint hit "paths_overlap: non-boundary prefix → miss" || eq disjoint disjoint "paths_overlap: non-boundary prefix → miss"
+  paths_overlap 'scripts/foo.sh' 'scripts/foo.sh.bak' >/dev/null; eq 1 "$?"    "paths_overlap: non-boundary prefix → miss (rc1)"
 
   # pair_verdict — precedence + each reason.
   eq parallel "$(pair_verdict annotated 0071.003 none 'a.sh' 330 annotated 0071.004 none 'b.sh' 331)" "pair_verdict: independent+disjoint → parallel"
@@ -287,28 +312,37 @@ self_test() {
   local m
   # two annotated, independent, disjoint → both in wave, parallel pair.
   m="$(FO_FIXTURE="$(printf '@@ITEM 330\n<!-- pipeline-plan-0071.003 -->\nDepends-on: none\nTouches: scripts/fan-out-advisement.sh\n@@ITEM 331\n<!-- pipeline-plan-0071.004 -->\nDepends-on: none\nTouches: scripts/resume-workflow.sh\n')" run_advise --machine 330 331)"
-  printf '%s\n' "$m" | grep -q "^pair	330	331	parallel" && eq y y "machine: independent disjoint → parallel pair" || eq y n "machine: independent disjoint → parallel pair"
+  has "machine: independent disjoint → parallel pair" "$m" '^pair	330	331	parallel'
   eq 2 "$(printf '%s\n' "$m" | grep -c '^wave	')"                 "machine: both items in wave"
-  printf '%s\n' "$m" | grep -q '^constraint	serialized-merge' && eq y y "machine: serialized-merge constraint emitted" || eq y n "machine: serialized-merge constraint emitted"
+  has "machine: serialized-merge constraint emitted" "$m" '^constraint	serialized-merge'
 
-  # dependency → held; shared file → held; unannotated → held.
+  # Finding 1 smoking-gun pin: both slices REALLY edit clear-safe.md, but #330 left Touches blank.
+  # Must NOT be falsely parallel — the blank value degrades #330 to unannotated ⇒ serial.
+  m="$(FO_FIXTURE="$(printf '@@ITEM 330\n<!-- pipeline-plan-0071.003 -->\nDepends-on: none\nTouches:\n@@ITEM 331\n<!-- pipeline-plan-0071.004 -->\nDepends-on: none\nTouches: clear-safe.md\n')" run_advise --machine 330 331)"
+  has "machine: blank Touches ⇒ serial, NOT falsely parallel (Finding 1)" "$m" '^pair	330	331	serial	unannotated'
+
+  # dependency → held.
   m="$(FO_FIXTURE="$(printf '@@ITEM 330\n<!-- pipeline-plan-0071.003 -->\nDepends-on: none\nTouches: a.sh\n@@ITEM 331\n<!-- pipeline-plan-0071.004 -->\nDepends-on: 0071.003\nTouches: b.sh\n')" run_advise --machine 330 331)"
-  printf '%s\n' "$m" | grep -q '^held	331	dependency:0071.003' && eq y y "machine: dependent item held with dependency reason" || eq y n "machine: dependent item held with dependency reason"
+  has "machine: dependent item held with dependency reason" "$m" '^held	331	dependency:0071.003'
 
   # unreadable (offline) → all serial.
   m="$(FO_FIXTURE="$(printf '@@ITEM 330\n@@UNREADABLE\n@@ITEM 331\n@@UNREADABLE\n')" run_advise --machine 330 331)"
-  printf '%s\n' "$m" | grep -q '^pair	330	331	serial	unreadable' && eq y y "machine: unreadable bodies → serial" || eq y n "machine: unreadable bodies → serial"
+  has "machine: unreadable bodies → serial" "$m" '^pair	330	331	serial	unreadable'
 
-  # depends-outside note (dep order not in the given set).
+  # depends-outside note (dep ORDER not in the given set).
   m="$(FO_FIXTURE="$(printf '@@ITEM 330\n<!-- pipeline-plan-0071.003 -->\nDepends-on: 0068.009\nTouches: a.sh\n')" run_advise --machine 330)"
-  printf '%s\n' "$m" | grep -q '^note	330	depends-outside:0068.009' && eq y y "machine: dep outside set → depends-outside note" || eq y n "machine: dep outside set → depends-outside note"
+  has "machine: dep outside set → depends-outside note" "$m" '^note	330	depends-outside:0068.009'
+
+  # Finding 2 pin: an ISSUE number in Depends-on (wrong number space) → distinct misannotated note.
+  m="$(FO_FIXTURE="$(printf '@@ITEM 330\n<!-- pipeline-plan-0071.003 -->\nDepends-on: 331\nTouches: a.sh\n@@ITEM 331\n<!-- pipeline-plan-0071.004 -->\nDepends-on: none\nTouches: b.sh\n')" run_advise --machine 330 331)"
+  has "machine: issue# in Depends-on → misannotated-issue-number note (Finding 2)" "$m" '^note	330	misannotated-issue-number:331'
 
   # constraint emitted even with an EMPTY-ish wave-of-one (single unannotated item).
   m="$(FO_FIXTURE="$(printf '@@ITEM 331\n<!-- pipeline-plan-0071.004 -->\n')" run_advise --machine 331)"
-  printf '%s\n' "$m" | grep -q '^constraint	serialized-merge' && eq y y "machine: constraint emitted for single unannotated item" || eq y n "machine: constraint emitted for single unannotated item"
+  has "machine: constraint emitted for single unannotated item" "$m" '^constraint	serialized-merge'
 
   # usage — no args → exit 2.
-  ( run_advise ) >/dev/null 2>&1; [ $? -eq 2 ] && eq y y "usage: no args → exit 2" || eq y n "usage: no args → exit 2"
+  ( run_advise ) >/dev/null 2>&1; eq 2 "$?" "usage: no args → exit 2"
 
   if [ "$failures" -eq 0 ]; then printf "%b✓ self-test passed (%d rows)%b\n" "$green" "$total" "$reset"; return 0
   else printf "%b✗ self-test: %d of %d row(s) failed%b\n" "$red" "$failures" "$total" "$reset"; return 1; fi
