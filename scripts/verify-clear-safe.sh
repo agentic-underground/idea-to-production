@@ -41,10 +41,12 @@ proof_tree() { [ -z "$1" ] && echo clean || echo dirty; }
 # proof_upstream <count-line> → synced | ahead | behind | diverged | no-upstream
 #   count-line is git's "<behind>\t<ahead>" for @{u}...HEAD, or the sentinel __NOUPSTREAM__ when @{u} is unset.
 #   NB: `--left-right --count @{u}...HEAD` prints LEFT(=behind @{u}) then RIGHT(=ahead of @{u}).
+#   Parsed with `read` (splits on IFS whitespace, trims leading/trailing) so a stray space/tab in the
+#   count line cannot misparse ahead→"" and false-PASS a dirty upstream as synced (CORRECTNESS LOW).
 proof_upstream() {
-  local line="$1" behind ahead
+  local line="$1" behind ahead _rest
   [ "$line" = "__NOUPSTREAM__" ] && { echo no-upstream; return; }
-  behind="${line%%[[:space:]]*}"; ahead="${line##*[[:space:]]}"
+  read -r behind ahead _rest <<< "$line"
   [ -z "$behind" ] && behind=0; [ -z "$ahead" ] && ahead=0
   if [ "$behind" = 0 ] && [ "$ahead" = 0 ]; then echo synced
   elif [ "$behind" != 0 ] && [ "$ahead" != 0 ]; then echo diverged
@@ -79,14 +81,19 @@ gather_agentmem() {
 # echo `named:<text>` when a resume-memory file carries a NEXT / RESUME-POINTER pointer, else `none`.
 # Best-effort: the memory dir is machine-local and outside the repo. Derived from the project path slug
 # ("/" → "-"), overridable by CS_MEMORY_DIR. We surface the pointer text (first match) for the report.
+# Files are scanned in a STABLE sorted order so the surfaced pointer is DETERMINISTIC across runs (a raw
+# `grep -r` traversal order is filesystem-dependent — CORRECTNESS LOW).
 gather_state() {
   [ -n "${CS_STATE+x}" ] && { printf '%s' "$CS_STATE"; return; }
-  local dir="${CS_MEMORY_DIR:-$HOME/.claude/projects/$(pwd | sed 's#/#-#g')/memory}" hit
+  local dir="${CS_MEMORY_DIR:-$HOME/.claude/projects/$(pwd | sed 's#/#-#g')/memory}" hit f
   [ -d "$dir" ] || { printf 'none'; return; }
   # A pointer is a line naming the NEXT item: a `NEXT` marker, a `🔜`, or a `RESUME POINTER` heading.
-  hit="$(grep -rhoiE '(RESUME POINTER|NEXT[[:space:]]*[:=]|🔜[[:space:]]*NEXT|^-?[[:space:]]*NEXT\b).*' "$dir" 2>/dev/null \
-         | grep -vi 'resume probe' | head -1 | sed -E 's/[[:space:]]+$//')"
-  [ -n "$hit" ] && printf 'named:%s' "$hit" || printf 'none'
+  while IFS= read -r f; do
+    hit="$(grep -hoiE '(RESUME POINTER|NEXT[[:space:]]*[:=]|🔜[[:space:]]*NEXT|^-?[[:space:]]*NEXT\b).*' "$f" 2>/dev/null \
+           | grep -vi 'resume probe' | head -1 | sed -E 's/[[:space:]]+$//')"
+    [ -n "$hit" ] && { printf 'named:%s' "$hit"; return; }
+  done < <(find "$dir" -type f -name '*.md' 2>/dev/null | sort)
+  printf 'none'
 }
 
 # board reachability — best-effort read-only `gh`; degrades to advisory. echo confirmed|offline|absent.
@@ -115,6 +122,7 @@ run_report() {
     behind)      fail "2. NOT synced — behind @{u} (pull/rebase)"; clean_exit=1 ;;
     diverged)    fail "2. NOT synced — DIVERGED from @{u} (both ahead and behind)"; clean_exit=1 ;;
     no-upstream) fail "2. NO upstream — @{u} unset; the branch is not pushed with -u"; clean_exit=1 ;;
+    *)           fail "2. upstream state unrecognized ('$up') — failing closed"; clean_exit=1 ;;
   esac
 
   # Proof 3 — learnings committed (spotlight on proof 1's most-missed subset).
@@ -123,11 +131,12 @@ run_report() {
   else fail "3. learnings UNCOMMITTED — '.claude/agent-memory/' dirty (a lost learning is an unclean tree)"; clean_exit=1; fi
 
   # Proof 4 — 3-layer STATE currency. BEST-EFFORT: advisory, never a false PASS by silence, never a
-  # hard FAIL it cannot justify (a complete initiative legitimately has no "next").
-  local state board; state="$(proof_state "$(gather_state)")"; board="$(gather_board)"
+  # hard FAIL it cannot justify (a complete initiative legitimately has no "next"). gather_state is
+  # captured ONCE so the surfaced pointer and the named/warn decision cannot disagree (REGRESSION note).
+  local state_sig board state; state_sig="$(gather_state)"; state="$(proof_state "$state_sig")"; board="$(gather_board)"
   if [ "$state" = named ]; then
     pass "4. STATE — resume-memory names the next item"
-    note "$(gather_state | sed 's/^named://' | cut -c1-100)"
+    note "$(printf '%s' "$state_sig" | sed 's/^named://' | cut -c1-100)"
   else
     warn "4. STATE — no resume pointer found (advisory: complete initiative, or a stale/absent memory)"
     note "resume-memory should name the next item + its spec; verify by hand at this boundary"
@@ -155,7 +164,11 @@ self_test() {
   # verify-board-linkage.sh's CI dogfood taught: leaked BL_BRANCH flipped a FAIL to a PASS).
   unset CS_PORCELAIN CS_UPSTREAM CS_AGENTMEM CS_STATE CS_BOARD CS_OFFLINE CS_MEMORY_DIR
 
+  # `total` counts every assertion so the reported row count is DERIVED, never a hand-written literal
+  # that can drift (the exact prove-don't-claim defect two reviewers caught: a stale "19 rows").
+  local total=0
   eq() { # <expected> <got> <label>
+    total=$((total+1))
     if [ "$2" = "$1" ]; then printf "  %b✓%b %s\n" "$green" "$reset" "$3"
     else printf "  %b✗ %s (want '%s', got '%s')%b\n" "$red" "$3" "$1" "$2" "$reset"; failures=$((failures+1)); fi
   }
@@ -171,6 +184,10 @@ self_test() {
   eq behind      "$(proof_upstream "$(printf '3\t0')")"  "proof_upstream: 3/0 → behind"
   eq diverged    "$(proof_upstream "$(printf '1\t1')")"  "proof_upstream: 1/1 → diverged"
   eq no-upstream "$(proof_upstream '__NOUPSTREAM__')"    "proof_upstream: unset @{u} → no-upstream"
+  # whitespace robustness — a stray leading/trailing space or double-digit must not misparse (LOW fix).
+  eq ahead       "$(proof_upstream "$(printf '0\t2 ')")"  "proof_upstream: trailing space '0<tab>2 ' → ahead"
+  eq behind      "$(proof_upstream "$(printf ' 13\t0')")" "proof_upstream: leading space + 2-digit ' 13<tab>0' → behind"
+  eq synced      "$(proof_upstream '0 0')"                "proof_upstream: space-separated '0 0' → synced"
 
   # Proof 3 — learnings.
   eq clean "$(proof_learnings '')"                                   "proof_learnings: empty → clean"
@@ -183,6 +200,7 @@ self_test() {
   # ── verdict wiring: proofs 1–3 gate the exit; proof 4 never does. Drive run_report via CS_* fixtures. ──
   vex() { # <expected-exit> <label> ; CS_* already exported by caller
     local want="$1" label="$2" got
+    total=$((total+1))
     ( run_report ) >/dev/null 2>&1; got=$?
     if [ "$got" -eq "$want" ]; then printf "  %b✓%b %s\n" "$green" "$reset" "$label"
     else printf "  %b✗ %s (want exit %s, got %s)%b\n" "$red" "$label" "$want" "$got" "$reset"; failures=$((failures+1)); fi
@@ -207,8 +225,8 @@ self_test() {
     vex 0 "proofs 1–3 pass, proof 4 advisory unknown → still CLEAR-SAFE (exit 0)"
   unset CS_PORCELAIN CS_UPSTREAM CS_AGENTMEM CS_STATE CS_BOARD
 
-  if [ "$failures" -eq 0 ]; then printf "%b✓ self-test passed (19 rows)%b\n" "$green" "$reset"; return 0
-  else printf "%b✗ self-test: %d row(s) failed%b\n" "$red" "$failures" "$reset"; return 1; fi
+  if [ "$failures" -eq 0 ]; then printf "%b✓ self-test passed (%d rows)%b\n" "$green" "$total" "$reset"; return 0
+  else printf "%b✗ self-test: %d of %d row(s) failed%b\n" "$red" "$failures" "$total" "$reset"; return 1; fi
 }
 
 case "${1:-}" in
