@@ -63,6 +63,13 @@ remaining slices. The convention:
 
 *Rule of thumb:* if the work would warrant a plan, it warrants a board item. When in doubt, capture it.
 
+Board linkage is one row of a larger map. The full **CODE ↔ ISSUE ↔ PR linkage contract** — every
+mechanism (`pipeline/NNNN-*` branch, `Board:`/`Refs #N`, `[no-board]`, `Closes #N`, `GITHUB_ISSUE: #N`,
+native EPIC→PLAN sub-issues, the idempotency markers), which are offline-native vs GitHub-bound, the
+**two-number-space hazard** (roadmap item # vs GitHub issue #), and the `.pipeline/verify` ↔
+`verify.yml` gate-surface split — lives in
+[`plugins/deliver/knowledge/protocols/code-issue-pr-linkage.md`](plugins/deliver/knowledge/protocols/code-issue-pr-linkage.md).
+
 ## MERGE GOVERNANCE
 
 **Merge mode: `direct-merge`**

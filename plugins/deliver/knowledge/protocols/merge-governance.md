@@ -134,6 +134,11 @@ continue (see [`../../agents/ds-step-9-commit-push.md`](../../agents/ds-step-9-c
 > mode gates *who merges* a PR once it exists. The "agent never self-merges / a human merges" rule
 > holds on every allowlisted origin regardless of mode.
 
+The `GITHUB_ISSUE: #N` commit trailer and the PR body's `Closes #N` are two mechanisms in the wider
+**CODE ↔ ISSUE ↔ PR linkage contract** — [`code-issue-pr-linkage.md`](code-issue-pr-linkage.md),
+which catalogues every linkage form (offline-native vs GitHub-bound), the two-number-space hazard,
+and the gate-surface matrix. This allowlist decides *whether* the GitHub-bound mechanisms apply at all.
+
 ---
 
 ## How the mode is set, stored, and changed
