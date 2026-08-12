@@ -21,6 +21,11 @@ bash .claude/hooks/board-first-reminder.sh --self-test || exit 1
 # (prove-don't-claim the 4 checkpoint proofs + honest fan-out advisement) and stays inert. --self-test
 # proves it emits the load-bearing terms + exits 0; the deterministic proof gate is verify-clear-safe.sh (CS2).
 bash .claude/hooks/clear-safe-reminder.sh --self-test || exit 1
+# CLEAR-SAFE proof gate (EPIC 0071 / PLAN 0071.002 — CS2): the four-proof boundary command. Only its
+# --self-test runs here (the pure classifiers + verdict wiring) — the LIVE run is a PLAN/EPIC-BOUNDARY
+# command (`bash scripts/verify-clear-safe.sh`), not a pre-push gate: during active work the tree is
+# dirty by design, so gating every push on a clean boundary would be wrong. The covenant invokes it live.
+bash scripts/verify-clear-safe.sh --self-test >/dev/null || exit 1
 # Vendored GitHub create/link layer (EPIC 0068 / PLAN 0068.002): the pure helpers of gh-pipeline.sh —
 # order/marker/title composition + the injection-safe cache accessor. --self-test is hermetic (no gh);
 # the live create/link verbs prove themselves against project #4 (the claims harness lands with A8).
