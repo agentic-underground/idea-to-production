@@ -225,14 +225,24 @@ _ghp_link_subissue() {
 # _ghp_board_item_for <issue#> : echo the board item node id for an issue, else empty.
 _ghp_board_item_for() { _ghp_items | awk -F'\t' -v n="$1" '$4==n{print $1; exit}'; }
 
-# _ghp_board_add <issue#> : ensure the issue is on the board (idempotent). Echoes the item id.
+# _ghp_board_add <issue#> : ensure the issue is on the board (idempotent) AND seed a valid initial Status
+# on a FRESH add. Echoes the item id. A bare `gh project item-add` leaves Status **UNSET** (not Backlog) —
+# so the create path must seed it, using the item id item-add returns (**no re-query** → dodges the stale
+# item-list propagation race). Non-clobbering: only a just-added item is seeded; an item already on the
+# board is returned untouched (never regress a progressed Status).
 _ghp_board_add() {
-  local n="$1" num owner slug url item
+  local n="$1" num owner slug url item seed
   item="$(_ghp_board_item_for "$n")"; [ -n "$item" ] && { printf '%s' "$item"; return 0; }
   num="$(_ghp_cache_get '.project_number')"; owner="$(_ghp_owner)"; slug="$(_ghp_repo_slug)"
   [ -n "$num" ] || { _ghp_err "project not ensured — run ensure-project first"; return 1; }
   url="https://github.com/$slug/issues/$n"
-  gh project item-add "$num" --owner "$owner" --url "$url" --format json 2>/dev/null | jq -r '.id // empty'
+  item="$(gh project item-add "$num" --owner "$owner" --url "$url" --format json 2>/dev/null | jq -r '.id // empty')"
+  if [ -n "$item" ]; then
+    seed="${PIPELINE_SEED_STATUS:-Backlog}"
+    _ghp_set_status_by_item "$item" "$seed" \
+      || _ghp_warn "#$n added to board but Status could not be seeded to '$seed' (is '$seed' an option on the board?)"
+  fi
+  printf '%s' "$item"
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -402,19 +412,32 @@ cmd_ensure_plan_subissue() {
 # ─────────────────────────────────────────────────────────────────────────────
 # set-status — board Status single-select for an issue. Values bound via jq --arg / -f (no interpolation).
 # ─────────────────────────────────────────────────────────────────────────────
+# _ghp_status_oid <cache-file> <status> : echo the single-select option id for a Status NAME, else empty.
+# Pure (cache in, id out) — the NAME is bound as DATA (--arg), so --self-test drives it with a fixture.
+_ghp_status_oid() { jq -r --arg s "$2" '.fields.Status.options[$s] // empty' "$1" 2>/dev/null; }
+
+# _ghp_set_status_by_item <item-id> <status> : set Status on a KNOWN board-item id (NO re-query, so it is
+# safe right after item-add — dodging the stale item-list race). Returns non-zero if the ids/option are
+# unresolvable or the mutation fails. Shared by cmd_set_status and the create-path seed in _ghp_board_add.
+_ghp_set_status_by_item() {
+  local item="$1" status="$2" cache pid fid oid
+  cache="$(_ghp_cache)"; [ -f "$cache" ] || return 1
+  pid="$(_ghp_cache_get '.project_id')"; fid="$(jq -r '.fields.Status.id // empty' "$cache")"
+  oid="$(_ghp_status_oid "$cache" "$status")"
+  [ -n "$pid" ] && [ -n "$fid" ] && [ -n "$oid" ] || return 1
+  # shellcheck disable=SC2016  # $p/$i/$f/$o are GraphQL variables (bound via -f), NOT shell expansions.
+  ghp_graphql -f query='mutation($p:ID!,$i:ID!,$f:ID!,$o:String!){updateProjectV2ItemFieldValue(input:{projectId:$p,itemId:$i,fieldId:$f,value:{singleSelectOptionId:$o}}){projectV2Item{id}}}' \
+    -f p="$pid" -f i="$item" -f f="$fid" -f o="$oid" >/dev/null 2>&1
+}
+
 cmd_set_status() {
   _ghp_need || return 2
   pcfg_resolve
-  local issue="${1:?issue# required}" status="${2:?Status required}" cache item pid fid oid
+  local issue="${1:?issue# required}" status="${2:?Status required}" cache item
   cache="$(_ghp_cache)"; [ -f "$cache" ] || { _ghp_err "project not ensured — run ensure-project first"; return 1; }
   item="$(_ghp_board_item_for "$issue")"; [ -n "$item" ] || { _ghp_err "no board item for issue #$issue"; return 1; }
-  pid="$(_ghp_cache_get '.project_id')"; fid="$(jq -r '.fields.Status.id // empty' "$cache")"
-  oid="$(jq -r --arg s "$status" '.fields.Status.options[$s] // empty' "$cache")"   # value bound as DATA
-  [ -n "$pid" ] && [ -n "$fid" ] && [ -n "$oid" ] || { _ghp_err "no Status option '$status' on board"; return 1; }
-  # shellcheck disable=SC2016  # $p/$i/$f/$o are GraphQL variables (bound via -f), NOT shell expansions.
-  ghp_graphql -f query='mutation($p:ID!,$i:ID!,$f:ID!,$o:String!){updateProjectV2ItemFieldValue(input:{projectId:$p,itemId:$i,fieldId:$f,value:{singleSelectOptionId:$o}}){projectV2Item{id}}}' \
-    -f p="$pid" -f i="$item" -f f="$fid" -f o="$oid" >/dev/null \
-    && { _ghp_ok "#$issue Status=$status"; return 0; }
+  [ -n "$(_ghp_status_oid "$cache" "$status")" ] || { _ghp_err "no Status option '$status' on board"; return 1; }
+  _ghp_set_status_by_item "$item" "$status" && { _ghp_ok "#$issue Status=$status"; return 0; }
   _ghp_err "failed to set Status for #$issue"; return 1
 }
 
@@ -483,6 +506,11 @@ cmd_self_test() {
   _t "cache_get missing → empty"      "$(_ghp_cache_get '.nope.nope')"                     ""
   # an injection-style path must NOT execute as a jq program — treated as literal (missing) segments
   _t "cache_get injection inert"      "$(_ghp_cache_get '.project_id"] | keys | .[0] // "PWN')" ""
+  # status-option resolution (create-path seed + set-status share this): a valid Status resolves to its
+  # option id; an option absent from the board fails closed (empty) — never a silent wrong/UNSET status.
+  _t "status_oid Backlog → o1"        "$(_ghp_status_oid "$d/t.json" Backlog)"  "o1"
+  _t "status_oid Done → o2"           "$(_ghp_status_oid "$d/t.json" Done)"     "o2"
+  _t "status_oid absent → empty"      "$(_ghp_status_oid "$d/t.json" Nope)"     ""
   rm -rf "$d"
 
   if [ "$fails" -eq 0 ]; then _ghp_info "${_ghp_grn}✓ self-test passed${_ghp_rst}"; return 0
