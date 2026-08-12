@@ -90,6 +90,11 @@ trailer entirely on non-allowlisted origins — there is no issue, so there is n
 > *only* thing that closes an issue is the PR body's `Closes #<issue>`. On non-github / non-allowlisted
 > origins the existing `ROADMAP: closes #N` form is unchanged.
 
+> The `GITHUB_ISSUE: #N` trailer, the two number spaces, and `Closes #N` are all rows in the
+> **CODE ↔ ISSUE ↔ PR linkage contract** — [`code-issue-pr-linkage.md`](code-issue-pr-linkage.md) —
+> which maps every linkage mechanism end to end. This file owns the *commit-message* forms; see there
+> for how they connect to branches, PRs, board items, and the sub-issue graph.
+
 ---
 
 ## 3. Summary Line — Conventional Commits Integration

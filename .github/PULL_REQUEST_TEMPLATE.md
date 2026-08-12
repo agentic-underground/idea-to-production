@@ -8,7 +8,14 @@ Every PR either declares its board item OR logs a trivial-work exemption.
     write instead:   [no-board]: <one-line reason>
 
 The pre-push gate (scripts/verify-board-linkage.sh) and the CI backstop check this.
-See CLAUDE.md → BOARD LINKAGE.
+See CLAUDE.md → BOARD LINKAGE, and the full linkage contract:
+plugins/deliver/knowledge/protocols/code-issue-pr-linkage.md
+-->
+
+<!--
+GitHub-bound linkage (allowlisted origins only): if this PR delivers a tracked issue, add
+`Closes #<github-issue>` in the Summary so the merge auto-closes it. NOTE the two number spaces —
+`Closes #N` uses the GitHub issue number, never the roadmap item number. See the linkage contract.
 -->
 
 Board: #<!-- issue number, digits only, e.g. the PLAN this delivers -->
