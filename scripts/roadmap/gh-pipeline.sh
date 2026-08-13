@@ -365,9 +365,9 @@ _ghp_ensure_number_field() {
 cmd_ensure_epic() {
   _ghp_need || return 2
   pcfg_resolve
-  local order desc marker title slug n
+  local order desc marker title slug n kind
   order="$(_ghp_norm_order "${1:-}")" || { _ghp_err "epic order must be 1–4 digits (got '${1:-}')"; return 2; }
-  desc="$(_ghp_scrub_markers "${2:?desc required}")"; slug="$(_ghp_repo_slug)"
+  desc="$(_ghp_scrub_markers "${2:?desc required}")"; slug="$(_ghp_repo_slug)"; kind="${3:-feature}"
   marker="$(_ghp_epic_marker "$order")"; title="$(_ghp_epic_title "$order" "$desc")"
 
   # FAIL-CLOSED: a failed read must abort, never fall through to create (would duplicate).
@@ -381,16 +381,17 @@ cmd_ensure_epic() {
   fi
   # converge board membership (crash between create and board-add heals here).
   [ -n "$(_ghp_board_add "$n")" ] && _ghp_ok "EPIC $order on board" || _ghp_warn "EPIC $order not added to board (project scope?)"
+  cmd_set_kind "$n" "$kind" || _ghp_warn "EPIC $order kind '$kind' not applied"
   printf '%s\n' "$n"
 }
 
 cmd_ensure_plan_subissue() {
   _ghp_need || return 2
   pcfg_resolve
-  local epic order desc marker title slug n
+  local epic order desc marker title slug n kind
   epic="${1:?epic# required}"; printf '%s' "$epic" | grep -qE '^[0-9]+$' || { _ghp_err "epic# must be a GitHub issue number (got '$epic')"; return 2; }
   order="$(_ghp_norm_plan_order "${2:-}")" || { _ghp_err "plan order must be NNNN.SSS (got '${2:-}')"; return 2; }
-  desc="$(_ghp_scrub_markers "${3:?desc required}")"; slug="$(_ghp_repo_slug)"
+  desc="$(_ghp_scrub_markers "${3:?desc required}")"; slug="$(_ghp_repo_slug)"; kind="${4:-feature}"
   marker="$(_ghp_plan_marker "$order")"; title="$(_ghp_plan_title "$order" "$desc")"
 
   # FAIL-CLOSED: a failed read must abort, never fall through to create (would duplicate).
@@ -406,6 +407,7 @@ cmd_ensure_plan_subissue() {
   # board membership (a crash after issue-create but before link leaves a marker-carrying orphan).
   _ghp_link_subissue "$epic" "$n" || _ghp_warn "sub-issue link not confirmed for #$n"
   [ -n "$(_ghp_board_add "$n")" ] && _ghp_ok "PLAN $order on board" || _ghp_warn "PLAN $order not added to board (project scope?)"
+  cmd_set_kind "$n" "$kind" || _ghp_warn "PLAN $order kind '$kind' not applied"
   printf '%s\n' "$n"
 }
 
@@ -415,6 +417,30 @@ cmd_ensure_plan_subissue() {
 # _ghp_status_oid <cache-file> <status> : echo the single-select option id for a Status NAME, else empty.
 # Pure (cache in, id out) — the NAME is bound as DATA (--arg), so --self-test drives it with a fixture.
 _ghp_status_oid() { jq -r --arg s "$2" '.fields.Status.options[$s] // empty' "$1" 2>/dev/null; }
+
+# ── issue KIND (native Type + label) + terminal-status → issue-STATE (Closed) ────────────────────────
+# The code owns the FULL issue lifecycle: create+type+label, move Status, and CLOSE on a terminal status
+# (a Done item is a Closed issue, consistent with the rest of the board). Mappings are PURE → --self-test.
+# _ghp_kind_type <kind> : native GitHub issue Type for a kind (bug|feature|enhancement|task), else empty.
+_ghp_kind_type() { case "$1" in bug) echo Bug;; feature) echo Feature;; enhancement) echo Feature;; task) echo Task;; *) echo "";; esac; }
+# _ghp_kind_label <kind> : repo label for a kind (empty when the kind needs no label, e.g. feature).
+_ghp_kind_label() { case "$1" in bug) echo bug;; enhancement) echo enhancement;; *) echo "";; esac; }
+# _ghp_status_closes <status> : true (0) for the TERMINAL statuses whose issue must be Closed.
+_ghp_status_closes() { case "$1" in Done|Delivered) return 0;; *) return 1;; esac; }
+
+# cmd_set_kind <issue#> <kind> : set the issue's native Type + add its label (additive; never removes).
+# Idempotent — kind is intrinsic (a bug is always a bug), so re-applying converges. Repo-scoped (not board).
+cmd_set_kind() {
+  local issue="${1:?issue# required}" kind="${2:?kind required}" slug type label
+  slug="$(_ghp_repo_slug)"; type="$(_ghp_kind_type "$kind")"
+  [ -n "$type" ] || { _ghp_err "unknown kind '$kind' (bug|feature|enhancement|task)"; return 1; }
+  gh issue edit "$issue" --repo "$slug" --type "$type" >/dev/null 2>&1 \
+    && _ghp_ok "#$issue Type=$type" || _ghp_warn "#$issue Type=$type not set (org issue-types enabled?)"
+  label="$(_ghp_kind_label "$kind")"
+  [ -n "$label" ] && { gh issue edit "$issue" --repo "$slug" --add-label "$label" >/dev/null 2>&1 \
+    && _ghp_ok "#$issue +label:$label" || _ghp_warn "#$issue label '$label' not added (label on repo?)"; }
+  return 0
+}
 
 # _ghp_set_status_by_item <item-id> <status> : set Status on a KNOWN board-item id (NO re-query, so it is
 # safe right after item-add — dodging the stale item-list race). Returns non-zero if the ids/option are
@@ -437,8 +463,18 @@ cmd_set_status() {
   cache="$(_ghp_cache)"; [ -f "$cache" ] || { _ghp_err "project not ensured — run ensure-project first"; return 1; }
   item="$(_ghp_board_item_for "$issue")"; [ -n "$item" ] || { _ghp_err "no board item for issue #$issue"; return 1; }
   [ -n "$(_ghp_status_oid "$cache" "$status")" ] || { _ghp_err "no Status option '$status' on board"; return 1; }
-  _ghp_set_status_by_item "$item" "$status" && { _ghp_ok "#$issue Status=$status"; return 0; }
-  _ghp_err "failed to set Status for #$issue"; return 1
+  _ghp_set_status_by_item "$item" "$status" || { _ghp_err "failed to set Status for #$issue"; return 1; }
+  _ghp_ok "#$issue Status=$status"
+  # Keep the GitHub issue STATE in lockstep with the board Status: a TERMINAL status closes the issue
+  # (Done items are Closed — the convention the rest of the board follows); moving back OUT of a terminal
+  # status reopens it. The state read only runs on the non-terminal branch (no cost on close).
+  local slug; slug="$(_ghp_repo_slug)"
+  if _ghp_status_closes "$status"; then
+    gh issue close "$issue" --repo "$slug" >/dev/null 2>&1 && _ghp_ok "#$issue closed (Status=$status)"
+  elif [ "$(gh issue view "$issue" --repo "$slug" --json state -q .state 2>/dev/null)" = CLOSED ]; then
+    gh issue reopen "$issue" --repo "$slug" >/dev/null 2>&1 && _ghp_ok "#$issue reopened (Status=$status)"
+  fi
+  return 0
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -512,6 +548,19 @@ cmd_self_test() {
   _t "status_oid Done → o2"           "$(_ghp_status_oid "$d/t.json" Done)"     "o2"
   _t "status_oid absent → empty"      "$(_ghp_status_oid "$d/t.json" Nope)"     ""
   rm -rf "$d"
+  # kind → native Type + label (bugs are Type=Bug + label=bug; features Type=Feature; enhancements labelled)
+  _t "kind bug → Type Bug"            "$(_ghp_kind_type bug)"          "Bug"
+  _t "kind feature → Type Feature"    "$(_ghp_kind_type feature)"      "Feature"
+  _t "kind enhancement → Type Feature" "$(_ghp_kind_type enhancement)" "Feature"
+  _t "kind unknown → empty (reject)"  "$(_ghp_kind_type nope)"         ""
+  _t "kind bug → label bug"           "$(_ghp_kind_label bug)"         "bug"
+  _t "kind enhancement → label"       "$(_ghp_kind_label enhancement)" "enhancement"
+  _t "kind feature → no label"        "$(_ghp_kind_label feature)"     ""
+  # terminal-status → issue must be Closed (Done/Delivered close; working statuses stay Open)
+  _tfail _ghp_status_closes "In Progress"
+  _tfail _ghp_status_closes Backlog
+  _t "status_closes Done"             "$(_ghp_status_closes Done && echo yes)"      "yes"
+  _t "status_closes Delivered"        "$(_ghp_status_closes Delivered && echo yes)" "yes"
 
   if [ "$fails" -eq 0 ]; then _ghp_info "${_ghp_grn}✓ self-test passed${_ghp_rst}"; return 0
   else _ghp_info "${_ghp_red}✗ self-test: $fails failure(s)${_ghp_rst}"; return 1; fi
@@ -526,6 +575,7 @@ _ghp_main() {
     ensure-epic)          shift; cmd_ensure_epic "$@" ;;
     ensure-plan-subissue) shift; cmd_ensure_plan_subissue "$@" ;;
     set-status)           shift; cmd_set_status "$@" ;;
+    set-kind)             shift; cmd_set_kind "$@" ;;
     epic-issue)           shift; cmd_epic_issue "$@" ;;
     plan-issue)           shift; cmd_plan_issue "$@" ;;
     next-plan)            shift; cmd_next_plan "$@" ;;
@@ -533,7 +583,7 @@ _ghp_main() {
     --self-test)          cmd_self_test ;;
     ""|-h|--help)
       grep -E '^#   ' "${BASH_SOURCE[0]}" | sed 's/^#   //' >&2
-      printf 'usage: gh-pipeline.sh {ensure-project [title]|ensure-epic <order> <desc>|ensure-plan-subissue <epic#> <order> <desc>|set-status <issue#> <Status>|epic-issue <order>|plan-issue <order>|next-plan <epic#>|preflight|--self-test}\n' >&2
+      printf 'usage: gh-pipeline.sh {ensure-project [title]|ensure-epic <order> <desc> [kind]|ensure-plan-subissue <epic#> <order> <desc> [kind]|set-status <issue#> <Status>|set-kind <issue#> <bug|feature|enhancement|task>|epic-issue <order>|plan-issue <order>|next-plan <epic#>|preflight|--self-test}\n' >&2
       return 2 ;;
     *) _ghp_err "unknown verb: $1"; return 2 ;;
   esac
