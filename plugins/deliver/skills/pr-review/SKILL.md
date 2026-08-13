@@ -20,7 +20,7 @@ PR-REVIEW is the merge gate DELIVER did not yet have: it reviews a diff the way 
 would — **assume the change is wrong until each lens fails to break it** — and returns a decision a
 human (or an auto-merge step) can act on. One composed reviewer, not a panel of one-lens agents.
 
-> **Stance — adversarial, not confirmatory.** Every reviewer role is told to *find what is wrong,
+> **Stance — adversarial, not confirmatory.** Every lens is told to *find what is wrong,
 > missing, or risky*. A finding-free pass must be *earned*, not granted. Reviewers never invent
 > issues to look busy, but they never rubber-stamp either (the DELIVER reviewer covenant —
 > [`../../agents/reviewer.md`](../../agents/reviewer.md)).
@@ -72,7 +72,7 @@ Fingerprint the diff, then compose the **three most load-bearing lenses** into t
 prompt (the reviewer answers each in turn and tags every finding with its `lens`). Start from the
 **base triad**, then swap/add a conditional lens when the diff touches the surface it owns —
 displacing the least-relevant base lens so the composed prompt stays at ~3 (a genuinely
-multi-surface diff may justify 4; never silently drop below the base coverage):
+multi-surface diff may justify 4; never silently drop below ~3 lenses):
 
 **Base triad** (the default three when nothing special is touched):
 
@@ -142,7 +142,7 @@ Deduplicate overlapping findings, then apply the **same verdict rule DELIVER use
 | **NEEDS_REVISION** | No CRITICAL, but ≥1 **HIGH**, or ≥1 **MEDIUM** left **unresolved**. |
 | **PASS** | Only **LOW / SUGGESTION** findings — plus any **MEDIUM** that was explicitly **resolved or accepted with a recorded rationale**. Each finding documented. |
 
-The verdict is the **highest *unresolved* severity across all roles** — a clean architecture lens
+The verdict is the **highest *unresolved* severity across all lenses** — a clean architecture lens
 does not offset an unresolved security CRITICAL, and a MEDIUM gates only until it is fixed or
 explicitly accepted-with-rationale (record the disposition in the report).
 
@@ -162,7 +162,7 @@ is fixed upstream once — never let a hard stop pass uncaptured.
 ## Verdict rationale         (one paragraph — why this verdict)
 ## Findings                  (table: severity · file:line · claim · evidence · suggested fix · lens · [verified])
 ## Security (SECURITY)        (gate verdict + link, or "not installed")
-## What was NOT reviewed      (roles skipped, files excluded, metadata/CI unavailable — and why)
+## What was NOT reviewed      (lenses not-run, files excluded, metadata/CI unavailable — and why)
 ```
 
 If `--post` is given and `gh` is available, **the orchestrator** (not the gather-diff script) posts

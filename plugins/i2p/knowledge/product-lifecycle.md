@@ -106,7 +106,7 @@ sends the work *back* to BUILD to be fixed, not forward to PUBLISH.
   failure and the loop state returns to BUILD.
 - **The exit signal — "all three satisfied."** The loop exits to PUBLISH **only when BUILD reaches SHIP**
   (implementation in, tests green, story proven), **ASSURE's quality review PASSES** (deliver's adversarial
-  reviewer panel / `/pr-review`), **and SECURE's security-gate PASSES** (PII, secrets, supply-chain clear). When
+  composed reviewer / `/pr-review`), **and SECURE's security-gate PASSES** (PII, secrets, supply-chain clear). When
   — and only when — all three are satisfied, the SECURE transition advances to PUBLISH.
 
 So BUILD/ASSURE/SECURE are a sub-cycle inside the larger value cycle: iterate BUILD → ASSURE → SECURE until the
@@ -154,7 +154,7 @@ loop phases (BUILD, ASSURE, SECURE) are a special case — their **transitions a
 - DESIGN → BUILD: design-reviewed surfaces clear the **design-fitness rubric** (when UI is in scope) — *enters the
   loop at BUILD*.
 - BUILD → ASSURE *(loop)*: the conveyor reaches **SHIP** (implementation in, tests green, story proven).
-- ASSURE → SECURE *(loop)*: deliver's adversarial **quality review PASSES** (`/pr-review` / reviewer panel).
+- ASSURE → SECURE *(loop)*: deliver's adversarial **quality review PASSES** (`/pr-review` / one composed reviewer).
 - ASSURE / SECURE **fail** → **BUILD** *(loop back-edge)*: a failed quality or security gate re-enters BUILD and
   records the iteration — it does **not** advance.
 - SECURE → PUBLISH *(loop exit)*: fires **only when all three are satisfied** — BUILD at SHIP, ASSURE PASS, and

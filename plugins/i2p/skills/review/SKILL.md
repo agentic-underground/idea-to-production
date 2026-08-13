@@ -49,9 +49,10 @@ Run each in-scope lens whose plugin is **installed**. Each returns findings as
 `{severity, locus, claim, why_it_matters, suggested_fix, lens}`, severity ∈
 `CRITICAL | HIGH | MEDIUM | LOW | SUGGESTION`. Prefer running independent lenses **in parallel**.
 
-- deliver `/pr-review` already fans out its own adversarial roles (correctness, security, regression,
-  architecture, performance, docs) and, when security is present, folds in `/scan-all` — let it; do
-  not re-run those roles yourself. If deliver is **absent**, fall back to a direct `/scan-all` for
+- deliver `/pr-review` already runs its own composed reviewer over the code lenses (correctness,
+  regression, docs, and — by diff — security/api-contract/prompt-injection) and, when security is
+  present, folds in `/scan-all` — let it; do not re-run those lenses yourself. If deliver is
+  **absent**, fall back to a direct `/scan-all` for
   the SECURITY lens and note that the code lens was unavailable.
 
 ## 3. Adversarially verify
