@@ -25,6 +25,7 @@
 #                                           marker-found ⇒ ALSO verify the sub-issue link, re-link if gone.
 #   set-status <issue#> <Status>            set the board Status single-select for an issue.
 #   epic-issue <order> | plan-issue <order> | next-plan <epic#>     read helpers.
+#   resolve-issue [PR#]                     REVERSE resolver: branch/PR → order/trailer → issue# (fail closed).
 #   preflight                               probe repo-scope vs project-scope SEPARATELY; on project-scope
 #                                           failure print `gh auth refresh -s project` and exit 3 (the
 #                                           caller degrades to local_file — never a hard error, never a
@@ -93,6 +94,31 @@ _ghp_epic_title()  { printf 'EPIC %s: %s' "$1" "$2"; }
 _ghp_plan_title()  { printf 'PLAN %s: %s' "$1" "$2"; }
 _ghp_epic_marker() { printf '<!-- pipeline-epic-%s -->' "$1"; }
 _ghp_plan_marker() { printf '<!-- pipeline-plan-%s -->' "$1"; }
+
+# _ghp_branch_order <branch> : echo the roadmap ORDER a `pipeline/NNNN[.SSS][-/]…` branch self-declares
+# (the linkage convention — CLAUDE.md), else empty + rc1. PURE (regex only). Requires EXACTLY 4 leading
+# digits + an optional `.SSS`, terminated by `-` or `/` — so `pipeline/0072-foo` and `pipeline/0072.004/x`
+# resolve, while `feat/…`, a fork's `patch-1`, a renamed branch, or a bare `pipeline/0072` (no terminator)
+# do NOT → the resolver fails closed rather than guess.
+_ghp_branch_order() {
+  local b="${1:-}"
+  printf '%s' "$b" | grep -qE '^pipeline/[0-9]{4}(\.[0-9]{3})?[-/]' || return 1
+  printf '%s' "$b" | sed -E 's#^pipeline/([0-9]{4}(\.[0-9]{3})?)[-/].*#\1#'
+}
+
+# _ghp_body_issue <text> : echo the SINGLE GitHub issue# a linkage trailer names — `Board:`/`Refs`/`Closes`/
+# `Fixes`/`Resolves` immediately followed by `#N` — else empty + rc1. PURE. FAILS CLOSED on ZERO or on
+# MULTIPLE DISTINCT matches (never guesses which issue an ambiguous body means); a bare `#N` with no linkage
+# keyword is deliberately ignored (an incidental issue mention must not resolve).
+_ghp_body_issue() {
+  local text="${1:-}" nums n
+  nums="$(printf '%s\n' "$text" \
+    | grep -ioE '(Board|Refs|Closes|Fixes|Resolves)[[:space:]]*:?[[:space:]]*#[0-9]+' \
+    | grep -oE '[0-9]+$' | sort -un)"
+  [ -n "$nums" ] || return 1
+  [ "$(printf '%s\n' "$nums" | grep -c .)" -eq 1 ] || return 1   # multiple distinct → fail closed
+  printf '%s' "$nums"
+}
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SOURCED PRIVATE SURFACE — the exact functions roadmapper-gh-fields.sh:36,43 sources.
@@ -499,6 +525,49 @@ cmd_set_status() {
 cmd_epic_issue() { local o; o="$(_ghp_norm_order "${1:-}")" || return 2; _ghp_issue_by_marker "$(_ghp_epic_marker "$o")"; }
 cmd_plan_issue() { local o; o="$(_ghp_norm_plan_order "${1:-}")" || return 2; _ghp_issue_by_marker "$(_ghp_plan_marker "$o")"; }
 
+# resolve-issue [PR#] : the REVERSE resolver (PLAN 0072.004) — map a branch or PR to its board ISSUE#, the
+# linkage the lifecycle automation (0072.006/008) keys on. No arg → the CURRENT branch; a PR# → that PR (via
+# gh). Order path: a `pipeline/NNNN[.SSS]` branch → order → marker → issue. A PR also reads its body's
+# linkage trailer (`Board:`/`Closes #N`). FAILS CLOSED (empty + rc1, never a guess) on: a fork PR, a
+# non-pipeline/renamed branch with no trailer, an unreadable/absent order, or a branch↔body CONFLICT.
+cmd_resolve_issue() {
+  _ghp_need || return 2
+  local pr="${1:-}" branch="" body="" order="" from_branch="" from_body="" issue=""
+  if [ -n "$pr" ]; then
+    local json cross
+    json="$(gh pr view "$pr" --json headRefName,body,isCrossRepository 2>/dev/null)" \
+      || { _ghp_err "could not read PR #$pr (fail closed)"; return 1; }
+    cross="$(printf '%s' "$json" | jq -r '.isCrossRepository')"
+    [ "$cross" = "false" ] \
+      || { _ghp_err "PR #$pr is from a fork (cross-repo) — its branch is untrusted, cannot resolve a board item (fail closed)"; return 1; }
+    branch="$(printf '%s' "$json" | jq -r '.headRefName // empty')"
+    body="$(printf '%s' "$json" | jq -r '.body // empty')"
+  else
+    branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" \
+      || { _ghp_err "not on a branch / not a git repo (fail closed)"; return 1; }
+  fi
+  # branch name → order → issue (marker). A read failure aborts (never mistaken for 'absent').
+  order="$(_ghp_branch_order "$branch")" && {
+    local marker
+    if [[ "$order" == *.* ]]; then marker="$(_ghp_plan_marker "$order")"; else marker="$(_ghp_epic_marker "$order")"; fi
+    from_branch="$(_ghp_issue_by_marker "$marker")" \
+      || { _ghp_err "could not read issues to resolve order $order (fail closed)"; return 1; }
+  }
+  # PR body linkage trailer → issue (secondary path).
+  [ -n "$body" ] && from_body="$(_ghp_body_issue "$body")"
+  # reconcile — fail closed on a conflict; accept a single agreeing source.
+  if [ -n "$from_branch" ] && [ -n "$from_body" ]; then
+    [ "$from_branch" = "$from_body" ] \
+      || { _ghp_err "conflict: branch resolves to #$from_branch but the body trailer names #$from_body (fail closed)"; return 1; }
+    issue="$from_branch"
+  elif [ -n "$from_branch" ]; then issue="$from_branch"
+  elif [ -n "$from_body" ]; then issue="$from_body"
+  fi
+  [ -n "$issue" ] \
+    || { _ghp_err "no board linkage for ${pr:+PR #$pr }${pr:-branch '$branch'} — no pipeline/NNNN order, no linkage trailer (fail closed)"; return 1; }
+  printf '%s\n' "$issue"
+}
+
 # next-plan <epic#> : echo the next free PLAN order under an EPIC (highest sub-issue PLAN order + 1).
 cmd_next_plan() {
   _ghp_need || return 2
@@ -587,6 +656,23 @@ cmd_self_test() {
   _t "canonical Status options" \
      "$(IFS='|'; echo "${_GHP_STATUS_OPTIONS[*]}")" \
      "Backlog|To Do|In Progress|Review|Revise|Done|Delivered"
+  # branch/PR → order/issue resolver (PLAN 0072.004) — PURE classifiers, fail closed on anything ambiguous.
+  _t "branch_order pipeline/0072-foo → 0072"        "$(_ghp_branch_order pipeline/0072-foo)"       "0072"
+  _t "branch_order pipeline/0072.004-bar → 0072.004" "$(_ghp_branch_order pipeline/0072.004-bar)"  "0072.004"
+  _t "branch_order slash terminator → 0072.004"     "$(_ghp_branch_order pipeline/0072.004/x)"     "0072.004"
+  _tfail _ghp_branch_order feat/x                         # not a pipeline branch
+  _tfail _ghp_branch_order pipeline/foo-bar               # no numeric order
+  _tfail _ghp_branch_order patch-1                        # a fork's default branch name
+  _tfail _ghp_branch_order pipeline/72-foo                # not exactly 4 digits
+  _tfail _ghp_branch_order pipeline/0072                  # no [-/] terminator (bare order, ambiguous)
+  _t "body_issue Board: #341 → 341"     "$(_ghp_body_issue 'Board: #341')"                 "341"
+  _t "body_issue Closes #341 → 341"     "$(_ghp_body_issue 'fixes it. Closes #341')"       "341"
+  _t "body_issue Refs #341 (trailing) → 341" "$(_ghp_body_issue 'Refs #341 and notes')"    "341"
+  _t "body_issue same # twice → 341"    "$(_ghp_body_issue "$(printf 'Board: #341\nRefs #341')")" "341"
+  _tfail _ghp_body_issue 'no linkage trailer here #notanum'
+  _tfail _ghp_body_issue "$(printf 'Board: #10\nCloses #20')"   # multiple DISTINCT → fail closed
+  # a bare '#341' with no linkage keyword must NOT resolve (avoids grabbing an incidental issue mention)
+  _tfail _ghp_body_issue 'see #341 for context'
 
   if [ "$fails" -eq 0 ]; then _ghp_info "${_ghp_grn}✓ self-test passed${_ghp_rst}"; return 0
   else _ghp_info "${_ghp_red}✗ self-test: $fails failure(s)${_ghp_rst}"; return 1; fi
@@ -604,12 +690,13 @@ _ghp_main() {
     set-kind)             shift; cmd_set_kind "$@" ;;
     epic-issue)           shift; cmd_epic_issue "$@" ;;
     plan-issue)           shift; cmd_plan_issue "$@" ;;
+    resolve-issue)        shift; cmd_resolve_issue "$@" ;;
     next-plan)            shift; cmd_next_plan "$@" ;;
     preflight)            shift; cmd_preflight "$@" ;;
     --self-test)          cmd_self_test ;;
     ""|-h|--help)
       grep -E '^#   ' "${BASH_SOURCE[0]}" | sed 's/^#   //' >&2
-      printf 'usage: gh-pipeline.sh {ensure-project [title]|ensure-epic <order> <desc> [kind]|ensure-plan-subissue <epic#> <order> <desc> [kind]|set-status <issue#> <Status>|set-kind <issue#> <bug|feature|enhancement|task>|epic-issue <order>|plan-issue <order>|next-plan <epic#>|preflight|--self-test}\n' >&2
+      printf 'usage: gh-pipeline.sh {ensure-project [title]|ensure-epic <order> <desc> [kind]|ensure-plan-subissue <epic#> <order> <desc> [kind]|set-status <issue#> <Status>|set-kind <issue#> <bug|feature|enhancement|task>|epic-issue <order>|plan-issue <order>|resolve-issue [PR#]|next-plan <epic#>|preflight|--self-test}\n' >&2
       return 2 ;;
     *) _ghp_err "unknown verb: $1"; return 2 ;;
   esac
