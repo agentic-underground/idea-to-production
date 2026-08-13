@@ -233,7 +233,8 @@ GHP=scripts/roadmap/gh-pipeline.sh              # in-repo; PIPELINE_PROJECT=<reg
 PIPELINE_PROJECT=<key> bash "$GHP" ensure-project                       # find-by-TITLE + cache fields; bootstraps the registry
 EPIC_N=$(PIPELINE_PROJECT=<key> bash "$GHP" ensure-epic NNNN "<title>") # EPIC Issue on the board (Backlog); echoes issue#
 PIPELINE_PROJECT=<key> bash "$GHP" ensure-plan-subissue "$EPIC_N" NNNN.SSS "<t>"  # native sub-issue of the EPIC, Backlog
-PIPELINE_PROJECT=<key> bash "$GHP" set-status <issue#> "To Do"          # promote by GitHub issue number
+BOARD=plugins/deliver/skills/roadmapper/scripts/board/board.sh          # native Status write (PLAN 0072.015)
+bash "$BOARD" set-status <issue#> "To Do"                              # promote by GitHub issue number (no bash set-status verb)
 PIPELINE_PROJECT=<key> bash "$GHP" epic-issue NNNN                      # readers: resolve an order → issue#
 PIPELINE_PROJECT=<key> bash "$GHP" plan-issue NNNN.SSS                  #   (plan-issue takes the plan order alone)
 PIPELINE_PROJECT=<key> bash "$GHP" next-plan <epic-issue#>             # next free NNNN.SSS under an EPIC

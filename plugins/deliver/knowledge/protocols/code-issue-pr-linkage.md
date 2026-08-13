@@ -59,7 +59,7 @@ on a GitHub-connected, org-allowlisted origin.
 | 5 | **`Closes #N` in the PR body** | GitHub-bound (allowlisted origins only) | the PR body | GitHub auto-closes the issue on merge; policy in [`merge-governance.md`](merge-governance.md) "Org allowlist" | claims harness (A8) — every merged PLAN has `Closes #N` + a merged PR |
 | 6 | **Native EPIC→PLAN sub-issue** | GitHub-bound | GraphQL `addSubIssue` at PLAN create (A1) | reader: `scripts/roadmap/delete-epic.sh` (`subIssues` GraphQL); writer: `scripts/roadmap/gh-pipeline.sh` (A1) | claims harness (A8) — every EPIC issue has ≥1 sub-issue |
 | 7 | **`<!-- pipeline-(epic\|plan)-NNNN[.SSS] -->` marker** | GitHub-bound (idempotency) | the issue body (byte-exact) | `roadmapper-gh-fields.sh` `cmd_set_body` grep *preserves* the marker across body edits; the A1 writer's search-before-create dedup relies on it being byte-identical | — (idempotency contract, not a gate) |
-| 8 | **Board Status (single-select)** | GitHub-bound (state, authoritative) | project-board item field | roadmapper `set-status` (A1); `gh project item-edit` | claims harness (A8) — **project-scoped** (needs `PROJECT_TOKEN`; advisory-skip if absent) |
+| 8 | **Board Status (single-select)** | GitHub-bound (state, authoritative) | project-board item field | native `board.sh set-status` / `board.sh lifecycle` (A1) → `gh project item-edit` (PLAN 0072.015, ported off bash) | claims harness (A8) — **project-scoped** (needs `PROJECT_TOKEN`; advisory-skip if absent) |
 
 > **Mechanisms 1 and 3 are the only offline-native forms of linkage.** Everything else
 > (`Board:`/`Refs`/`Closes`/`GITHUB_ISSUE:`/sub-issues/markers/Status) is **GitHub-bound** — it has

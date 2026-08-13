@@ -1,9 +1,11 @@
-# EARS — `board` Slice 1: lifecycle + EPIC rollup
+# EARS — `board`: lifecycle + EPIC rollup + native Status write
 
-Requirements for the `board` component's first slice (PLAN 0072.014). EARS = Easy Approach to
-Requirements Syntax. Each `EARS-NNN` is traced into a pytest coordinate (`# @EARS-NNN`).
+Requirements for the `board` component. Slice 1 (PLAN 0072.014) established the lifecycle + EPIC rollup;
+**Slice 2 (PLAN 0072.015)** ports the Status *write* into native Python (EARS-011/012/013 + the rewritten
+lockstep EARS-002/003). EARS = Easy Approach to Requirements Syntax. Each `EARS-NNN` is traced into a
+pytest coordinate (`# @EARS-NNN`).
 
-The decidable core is `board/core/lifecycle.py`; the I/O shell is `board/gh.py`.
+The decidable core is `board/core/lifecycle.py` + `board/core/write.py`; the I/O shell is `board/gh.py`.
 
 ## Ubiquitous
 
@@ -16,13 +18,19 @@ The decidable core is `board/core/lifecycle.py`; the I/O shell is `board/gh.py`.
 
 ## Event-driven
 
-- **EARS-002** — WHEN a PLAN transitions to a terminal status (`Done`/`Delivered`), the system SHALL close
-  the PLAN's issue. *(Delegated to the proven `gh-pipeline.sh set-status` lockstep; asserted in the story
-  proof, not re-implemented.)*
-- **EARS-003** — WHEN a PLAN transitions out of a terminal status while its issue is closed, the system
-  SHALL reopen the issue. *(Delegated as EARS-002.)*
+- **EARS-002** — WHEN an issue's Status is set to a terminal value (`Done`/`Delivered`), the system SHALL
+  close the issue. *(Native lockstep: `board.core.write.issue_state_action` returns `close` for a terminal
+  target; `board.gh` executes `gh issue close`. The pure decision is pinned; the I/O is proven in the
+  story proof.)*
+- **EARS-003** — WHEN an issue's Status is set OUT of a terminal value while the issue is `CLOSED`, the
+  system SHALL reopen it. *(Native lockstep: `issue_state_action` returns `reopen`; `board.gh` executes
+  `gh issue reopen`.)*
 - **EARS-004** — WHEN a PLAN's status changes via a lifecycle transition, the system SHALL recompute the
   parent EPIC's status from its children's statuses and apply the result iff it differs.
+- **EARS-011** — WHEN setting an issue's Status, the system SHALL resolve the Status field id and
+  single-select option id from a **fresh** `gh project field-list` read (no persisted cache) and write the
+  value via `gh project item-edit` (native porcelain, argument-list, no hand-built GraphQL). *(Slice 2 —
+  designs out the stale-cache class of 0072.013.)*
 
 ## State-driven
 
@@ -45,3 +53,13 @@ The decidable core is `board/core/lifecycle.py`; the I/O shell is `board/gh.py`.
 - **EARS-009** *(the CRITICAL guard)* — IF the EPIC's current status is off-lifecycle (`PARKED` or any
   non-canonical value) OR already terminal, THEN the rollup SHALL make **no change** — it SHALL never
   un-park a parked EPIC nor regress a completed one. Also: an EPIC with **no** children ⇒ no change.
+- **EARS-012** — IF the requested Status has no matching single-select option on the board (even after a
+  fresh field-list read), OR the target issue is not a board item, THEN the system SHALL fail closed (exit
+  non-zero, clear message) and make **no write**. *(An honest failure — never the silent stale-cache miss
+  of 0072.013. On board #4 today, `Delivered` is such an absent option; the write refuses rather than
+  guesses.)*
+- **EARS-013** — The issue-state lockstep is a total decision over `(target_status, issue_state)`:
+  terminal target ⇒ `close` (the current issue state is not consulted); non-terminal target ⇒ `reopen`
+  IFF the issue is `CLOSED`, else no action. AND: after the Status field write has **succeeded**, a
+  subsequent lockstep `gh issue close`/`reopen` I/O failure SHALL be **non-fatal** (a warning, exit 0) —
+  the primary Status value is already persisted, matching the bash `set-status` rc contract.
