@@ -27,14 +27,17 @@ _rrp_warn() { printf 'resolve-review-profile: %s\n' "$1" >&2; }
 _rrp_is_lens() { local t="$1" l; for l in $_RRP_LENSES; do [ "$t" = "$l" ] && return 0; done; return 1; }
 
 # _rrp_field <key> <body> : echo the value of a `Key: value` line (first match, case-insensitive key),
-# trimmed. A line inside a ``` fence or after a `#` comment marker is ignored via simple pre-strip.
+# trimmed. A line after a `#` comment marker is ignored via a simple pre-strip. A MISSING key is not an
+# error — the trailing `|| true` swallows grep's no-match so the pipeline stays rc=0 (else `set -e` +
+# `pipefail` would abort the whole resolver on a Mode-less/comment-only file instead of failing safe).
 _rrp_field() {
   local key="$1" body="$2"
   printf '%s\n' "$body" \
     | sed -e 's/[[:space:]]*#.*$//' \
     | grep -iE "^[[:space:]]*${key}[[:space:]]*:" \
     | head -1 \
-    | sed -E "s/^[[:space:]]*[^:]*:[[:space:]]*//; s/[[:space:]]*$//"
+    | sed -E "s/^[[:space:]]*[^:]*:[[:space:]]*//; s/[[:space:]]*$//" \
+    || true
 }
 
 # _rrp_norm_lenses <csv> : uppercase + split on comma/space, keep only canonical lenses, dedup, CSV out.
@@ -93,9 +96,14 @@ _rrp_self_test() {
   _t "case-insensitive key"             "$(_rrp_resolve $'mODe: fixed\nLENSES: correctness' 2>/dev/null)"                       "fixed: CORRECTNESS"
   # 'docs' is NOT a canonical lens token — only DOCUMENT is; prove the alias is rejected (not silently kept)
   _t "bare 'docs' is not a lens"        "$(_rrp_resolve $'Mode: fixed\nLenses: docs' 2>/dev/null)"                              "auto"
-  # file path: absent file ⇒ auto; present fixture ⇒ parsed
+  # file path — drive the LIVE top-level path (_rrp_resolve_file), not just the inner resolver, so a
+  # `set -e`/`pipefail` abort on the real entrypoint is caught here (the inner-only tests above mask it
+  # via nested $(…)). A PRESENT but Mode-less file MUST fail safe to `auto`, never crash/emit empty.
   local d; d="$(mktemp -d)"
   _t "absent file → auto"               "$(_rrp_resolve_file "$d/nope.md")"                               "auto"
+  : > "$d/empty.md";                    _t "present empty file → auto"    "$(_rrp_resolve_file "$d/empty.md")"    "auto"
+  printf '<!-- comment only -->\n' > "$d/c.md"; _t "comment-only file → auto" "$(_rrp_resolve_file "$d/c.md")" "auto"
+  printf 'prose, no Mode line\n' > "$d/pr.md";  _t "Mode-less prose → auto"  "$(_rrp_resolve_file "$d/pr.md")"  "auto"
   printf 'Mode: fixed\nLenses: correctness, regression, document\n' > "$d/p.md"
   _t "present file parsed"              "$(_rrp_resolve_file "$d/p.md" 2>/dev/null)"                       "fixed: CORRECTNESS,REGRESSION,DOCUMENT"
   rm -rf "$d"
