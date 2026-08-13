@@ -106,7 +106,7 @@ sends the work *back* to BUILD to be fixed, not forward to PUBLISH.
   failure and the loop state returns to BUILD.
 - **The exit signal — "all three satisfied."** The loop exits to PUBLISH **only when BUILD reaches SHIP**
   (implementation in, tests green, story proven), **ASSURE's quality review PASSES** (deliver's adversarial
-  reviewer panel / `/pr-review`), **and SECURE's security-gate PASSES** (PII, secrets, supply-chain clear). When
+  composed reviewer / `/pr-review`), **and SECURE's security-gate PASSES** (PII, secrets, supply-chain clear). When
   — and only when — all three are satisfied, the SECURE transition advances to PUBLISH.
 
 So BUILD/ASSURE/SECURE are a sub-cycle inside the larger value cycle: iterate BUILD → ASSURE → SECURE until the
@@ -122,7 +122,7 @@ Woven through *every* phase from the start, each certified at the gate named abo
   reviews surfaces produced by the frontend design system. Certified at the **DESIGN** gate (design-fitness rubric).
 - **Quality (ASSURE, deliver)** — *first-class, built-in not inspected-in.* The test-first conveyor means
   quality is engineered from the first line of BUILD (indeed from the EARS spec); the **ASSURE** gate is where
-  deliver's adversarial reviewer panel *certifies* it. Quality is a pillar of the whole suite, not a late check.
+  deliver's adversarial composed reviewer *certifies* it. Quality is a pillar of the whole suite, not a late check.
 - **Security (SECURE, security)** — *baked in from the beginning.* Secure-by-design starts at DISCOVER
   (don't pursue opportunities you can't operate safely) and IDEATE (threat-model the concept); the **SECURE**
   gate is security's pre-exposure certification. Security is never bolted on at the end.
@@ -154,7 +154,7 @@ loop phases (BUILD, ASSURE, SECURE) are a special case — their **transitions a
 - DESIGN → BUILD: design-reviewed surfaces clear the **design-fitness rubric** (when UI is in scope) — *enters the
   loop at BUILD*.
 - BUILD → ASSURE *(loop)*: the conveyor reaches **SHIP** (implementation in, tests green, story proven).
-- ASSURE → SECURE *(loop)*: deliver's adversarial **quality review PASSES** (`/pr-review` / reviewer panel).
+- ASSURE → SECURE *(loop)*: deliver's adversarial **quality review PASSES** (`/pr-review` / one composed reviewer).
 - ASSURE / SECURE **fail** → **BUILD** *(loop back-edge)*: a failed quality or security gate re-enters BUILD and
   records the iteration — it does **not** advance.
 - SECURE → PUBLISH *(loop exit)*: fires **only when all three are satisfied** — BUILD at SHIP, ASSURE PASS, and

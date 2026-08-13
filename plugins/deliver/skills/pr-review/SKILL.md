@@ -1,26 +1,26 @@
 ---
 name: pr-review
 description: >
-  Run an ADVERSARIAL review of a PR or local diff and return one gating verdict (PASS / NEEDS_REVISION /
-  BLOCK). Trigger with /deliver:pr-review (or "review this PR", "adversarial review of the diff", "is this
-  branch mergeable?"). Guard: ASSURE only. Fans out reviewer roles prompted to REFUTE the change, composes
-  secure's /scan-all when installed. Writes PR_REVIEW.md.
+  Run an ADVERSARIAL review of a PR or local diff → one gating verdict (PASS / NEEDS_REVISION / BLOCK).
+  Trigger with /deliver:pr-review (or "review this PR", "is this branch mergeable?"). Guard: ASSURE only.
+  Runs ONE composed reviewer whose lenses auto-select for the diff (or a project review-profile pins them);
+  composes secure's /scan-all when installed. Writes PR_REVIEW.md.
 metadata:
   phase: [ASSURE]
   type: orchestrator
   output: PR_REVIEW.md (verdict PASS | NEEDS_REVISION | BLOCK) + optional PR comment
-  composes: [reviewer (agent, multi-role), scan-all (security, if present)]
+  composes: [reviewer (ONE agent, composed multi-lens), scan-all (security, if present)]
 model: inherit
 ---
 
 # DELIVER — Adversarial PR Review
 
-One command, a panel of independent skeptics, one verdict. PR-REVIEW is the merge gate DELIVER did
-not yet have: it reviews a diff the way a hostile-but-fair senior reviewer would — **assume the
-change is wrong until each lens fails to break it** — and returns a decision a human (or an
-auto-merge step) can act on.
+One command, one hostile-but-fair reviewer carrying the lenses the diff warrants, one verdict.
+PR-REVIEW is the merge gate DELIVER did not yet have: it reviews a diff the way a senior reviewer
+would — **assume the change is wrong until each lens fails to break it** — and returns a decision a
+human (or an auto-merge step) can act on. One composed reviewer, not a panel of one-lens agents.
 
-> **Stance — adversarial, not confirmatory.** Every reviewer role is told to *find what is wrong,
+> **Stance — adversarial, not confirmatory.** Every lens is told to *find what is wrong,
 > missing, or risky*. A finding-free pass must be *earned*, not granted. Reviewers never invent
 > issues to look busy, but they never rubber-stamp either (the DELIVER reviewer covenant —
 > [`../../agents/reviewer.md`](../../agents/reviewer.md)).
@@ -51,64 +51,85 @@ and (when a PR number is given and `gh`/`$GH_TOKEN` is available) the PR **title
 If neither `gh` nor a token is present, pass an explicit range — the review still runs on the diff;
 only PR metadata and `--post` are unavailable (reported as a gap, never silently skipped).
 
-## 2. Fan out the adversarial panel
+## 2. Review with ONE composed reviewer — lenses chosen for the diff
 
-Spawn the DELIVER **reviewer** agent once per role **in parallel**, each with the review packet and
-an explicit instruction to *try to break the change*. The agent carries the adversarial stance,
-severity rubric, finding schema, and self-refutation pass intrinsically (see
-[`../../agents/reviewer.md`](../../agents/reviewer.md) §Adversarial stance / §Severity rubric /
-§Finding schema) — so every caller, not just this one, gets a hostile-but-fair reviewer. Each role
-returns findings as `{severity, locus (file:line), claim, why_it_matters, suggested_fix, evidence}`
-where severity ∈ `CRITICAL | HIGH | MEDIUM | LOW | SUGGESTION` and **evidence is mandatory for
-CRITICAL/HIGH** (the observed command output / line / ratio that proves it — an unproven CRITICAL/HIGH
-is downgraded by the agent).
+**Default posture: a single reviewer, looking for several things — not several reviewers each
+looking for one thing.** Spawn **one** DELIVER **reviewer** agent, given the review packet and a
+prompt that **composes the lenses this diff actually warrants** into a single hostile-but-fair pass.
+This is the rigour-to-cost point for the gate: one adversarial reviewer holding the whole diff in
+context catches cross-cutting issues a role-siloed panel misses, and N agents guarding each PR is
+`muri`/over-processing (the standing operator preference — folded here as the shipped default, not a
+per-PR re-application). The agent carries the adversarial stance, severity rubric, finding schema,
+and self-refutation pass intrinsically (see [`../../agents/reviewer.md`](../../agents/reviewer.md)
+§Adversarial stance / §Severity rubric / §Finding schema). It returns findings as
+`{severity, locus (file:line), claim, why_it_matters, suggested_fix, evidence, lens}` where severity
+∈ `CRITICAL | HIGH | MEDIUM | LOW | SUGGESTION` and **evidence is mandatory for CRITICAL/HIGH** (the
+observed command output / line / ratio that proves it — an unproven CRITICAL/HIGH is downgraded).
 
-**Always-on lenses** (run on any non-trivial diff):
+### 2a. Pick the lenses (auto-select ~3 by diff fingerprint)
 
-| Role (reviewer `role=`) | Adversarial question it must answer |
+Fingerprint the diff, then compose the **three most load-bearing lenses** into that one agent's
+prompt (the reviewer answers each in turn and tags every finding with its `lens`). Start from the
+**base triad**, then swap/add a conditional lens when the diff touches the surface it owns —
+displacing the least-relevant base lens so the composed prompt stays at ~3 (a genuinely
+multi-surface diff may justify 4; never silently drop below ~3 lenses):
+
+**Base triad** (the default three when nothing special is touched):
+
+| Lens | Adversarial question it must answer |
 |---|---|
-| **CORRECTNESS-REVIEWER** | Where is this logically wrong, inconsistent, or unhandled? What input breaks it? |
-| **SECURITY-REVIEWER** | Where is the authz/session/business-logic flaw a scanner can't see? (Superseded by SECURITY — below.) |
-| **REGRESSION-REVIEWER** | What existing behaviour or test could this silently break? |
-| **ARCHITECTURE-REVIEWER** | What boundary/SOLID/dependency rule does this violate? |
-| **PERFORMANCE-REVIEWER** | What gets slower, allocates more, or scales worse? |
-| **DOCUMENT-REVIEWER** | Where do docs/specs/links drift from what the code now does? |
+| **CORRECTNESS** | Where is this logically wrong, inconsistent, or unhandled? What input breaks it? |
+| **REGRESSION** | What existing behaviour or test could this silently break? |
+| **DOCUMENT** | Where do docs/specs/links drift from what the code now does? |
 
-**Conditional lenses** (run only when the diff touches the surface they own — otherwise list as
-"not applicable" in the report, never as a silent skip):
+**Conditional lenses** — a diff touching this surface **pulls the lens in** (displacing the weakest
+base lens); a lens not pulled is listed **"not applicable"** in the report, never silently dropped:
 
-| Role (reviewer `role=`) | Run WHEN the diff touches… |
+| Lens | Pulled in WHEN the diff touches… |
 |---|---|
-| **API-CONTRACT-REVIEWER** | a public API/schema/RPC/proto, library public symbols, CLI flags, event payloads, or config keys (breaking-change + semver discipline). |
-| **OBSERVABILITY-REVIEWER** | a production code path that can fail/branch/carry latency (logs/traces/metrics, SLO hooks — ties to the OPERATE phase). |
-| **LICENSING-REVIEWER** | an added or bumped dependency (licence compatibility — complements the SECURE plugin's scan-dependencies, which checks vulns not licences). |
-| **PROMPT-INJECTION-REVIEWER** | LLM prompts, tool/agent definitions, or external data fed into a model (injection, tool-permission scope, exfiltration). |
-| **I18N-REVIEWER** | user-facing strings or locale/number/date/RTL formatting (translation readiness). |
-| **DOC-ACCESSIBILITY-REVIEWER** | a rendered document artefact (PDF/report) — tagging, reading order, contrast, alt text (hard a11y gate). |
-| **DOC-LAYOUT** | a rendered figure / diagram / SVG / generator — the at-a-glance legibility gate (edge-clip, overlap, inline-legibility). **Only when PUBLISH is installed**, composing its `layout-reviewer` by capability; runs `layout-check.sh` + `raster-lint.sh` on the changed `.svg`/generators as the free mechanical pre-flight. |
+| **SECURITY** | auth/session/authz, secrets, or business-logic trust boundaries (the flaw a scanner can't see). Superseded by the SECURE gate below when installed. |
+| **ARCHITECTURE** | a new boundary/bounded-context, a dependency-direction or SOLID-load-bearing seam. |
+| **PERFORMANCE** | a hot path / allocation / scaling-sensitive change. |
+| **API-CONTRACT** | a public API/schema/RPC/proto, library public symbols, CLI flags, event payloads, or config keys (breaking-change + semver). |
+| **OBSERVABILITY** | a production code path that can fail/branch/carry latency (logs/traces/metrics, SLO hooks — OPERATE tie-in). |
+| **LICENSING** | an added or bumped dependency (licence compatibility — complements SECURE's scan-dependencies). |
+| **PROMPT-INJECTION** | LLM prompts, tool/agent definitions, or external data fed into a model (injection, tool-permission scope, exfiltration). |
+| **I18N** | user-facing strings or locale/number/date/RTL formatting. |
+| **DOC-ACCESSIBILITY** | a rendered document artefact (PDF/report) — tagging, reading order, contrast, alt text (hard a11y gate). |
+| **DOC-LAYOUT** | a rendered figure / diagram / SVG / generator — the at-a-glance legibility gate. **Only when PUBLISH is installed**, composing its `layout-reviewer` by capability; runs `layout-check.sh` + `raster-lint.sh` on the changed `.svg`/generators as the free mechanical pre-flight. |
 
-Scale the panel to the diff: a docs-only change may need only CORRECTNESS + DOCUMENT; a code change
-touching auth pulls in SECURITY + REGRESSION; an API change pulls in API-CONTRACT; an agent/prompt
-change pulls in PROMPT-INJECTION. **Name the roles you ran, the conditional ones that were
-not-applicable, and any you skipped** in the report (no silent narrowing).
+Worked examples (**one agent, three lenses** each): a bash-script + docs change → CORRECTNESS +
+REGRESSION + DOCUMENT; an auth change → CORRECTNESS + SECURITY + REGRESSION; a public-API change →
+CORRECTNESS + API-CONTRACT + REGRESSION; an agent/prompt change → CORRECTNESS + PROMPT-INJECTION +
+DOCUMENT. **Name the lenses you composed and the conditional ones that were not-applicable** in the
+report (no silent narrowing).
+
+> **Per-project override.** When the project declares a **review profile**
+> (`.deliver/review-profile.md` — PLAN 0073.002), it **pins** the lens set/count (or forces a single
+> holistic pass) and **overrides** this auto-select — because different projects need different
+> review profiles. Absent ⇒ the auto-select above. It never changes the "one composed reviewer"
+> shape, only *which* lenses that one reviewer carries.
 
 > **If the SECURE plugin is installed**, also run `/scan-all` over the changed tree and fold its verdict
-> in as the **authoritative security lens** — it supersedes the SECURITY-REVIEWER pass for the
-> mechanical lenses (secrets, supply-chain, PII). The SECURITY-REVIEWER then narrows to the
-> logic the SECURE plugin can't see (authz bypass, session/state design, business-logic abuse), cites CWE/OWASP
-> IDs, and does **not** re-report what the gate already owns (the dedup boundary in
+> in as the **authoritative security lens** — it supersedes the reviewer's SECURITY lens for the
+> mechanical lenses (secrets, supply-chain, PII). The composed reviewer's SECURITY lens then narrows to
+> the logic the SECURE plugin can't see (authz bypass, session/state design, business-logic abuse), cites
+> CWE/OWASP IDs, and does **not** re-report what the gate already owns (the dedup boundary in
 > [`../../agents/reviewer.md`](../../agents/reviewer.md) §SECURITY-REVIEWER). When the SECURE plugin is absent,
-> SECURITY-REVIEWER widens back to the OWASP floor and the report notes machine scanning did not run.
+> the SECURITY lens widens back to the OWASP floor and the report notes machine scanning did not run.
 
 ## 3. Adversarially refute every surviving HIGH/CRITICAL — MANDATORY
 
-For **every** HIGH/CRITICAL finding, run the second-pass refutation: argue it is a **false positive**
-("show this is wrong") — looking for the guard, test, config, or sanitiser that defeats it. **Keep the
-finding only if it survives.** This is not optional: the reviewer agent already does this internally
-per finding (§Self-refutation pass), and the orchestrator confirms it for every surviving
-HIGH/CRITICAL before it can gate — a block must survive a genuine attempt to break it. This kills
+For **every** HIGH/CRITICAL finding, the second-pass refutation must run: argue it is a **false
+positive** ("show this is wrong") — looking for the guard, test, config, or sanitiser that defeats
+it. **Keep the finding only if it survives.** This is **intrinsic to the composed reviewer** (it
+self-refutes each finding per §Self-refutation pass) — it does **not** add more agents. The
+orchestrator's job is only to confirm, before gating, that each surviving HIGH/CRITICAL carries the
+evidence that proves it — a block must survive a genuine attempt to break it. This kills
 plausible-but-wrong blocks before they cost a revision cycle. Record each refutation outcome
-(survived / dropped, and why) in the report's `[verified]` column.
+(survived / dropped, and why) in the report's `[verified]` column. *(Only if a HIGH/CRITICAL is
+genuinely contested and the diff is high-stakes may the orchestrator spawn one independent refuter
+for that single finding — the exception, never the default.)*
 
 ## 4. Synthesise the verdict
 
@@ -121,7 +142,7 @@ Deduplicate overlapping findings, then apply the **same verdict rule DELIVER use
 | **NEEDS_REVISION** | No CRITICAL, but ≥1 **HIGH**, or ≥1 **MEDIUM** left **unresolved**. |
 | **PASS** | Only **LOW / SUGGESTION** findings — plus any **MEDIUM** that was explicitly **resolved or accepted with a recorded rationale**. Each finding documented. |
 
-The verdict is the **highest *unresolved* severity across all roles** — a clean architecture lens
+The verdict is the **highest *unresolved* severity across all lenses** — a clean architecture lens
 does not offset an unresolved security CRITICAL, and a MEDIUM gates only until it is fixed or
 explicitly accepted-with-rationale (record the disposition in the report).
 
@@ -135,12 +156,13 @@ is fixed upstream once — never let a hard stop pass uncaptured.
 
 ```markdown
 # PR Review — <target>            **Verdict:** BLOCK | NEEDS_REVISION | PASS
-**Range:** <base>..<head>   **Files:** N   **Roles run:** … (skipped: …)
+**Range:** <base>..<head>   **Files:** N   **Reviewer:** 1 composed agent
+**Lenses composed:** … (not-applicable: …)   **Profile:** auto-select | .deliver/review-profile.md
 
 ## Verdict rationale         (one paragraph — why this verdict)
-## Findings                  (table: severity · file:line · claim · evidence · suggested fix · role · [verified])
+## Findings                  (table: severity · file:line · claim · evidence · suggested fix · lens · [verified])
 ## Security (SECURITY)        (gate verdict + link, or "not installed")
-## What was NOT reviewed      (roles skipped, files excluded, metadata/CI unavailable — and why)
+## What was NOT reviewed      (lenses not-run, files excluded, metadata/CI unavailable — and why)
 ```
 
 If `--post` is given and `gh` is available, **the orchestrator** (not the gather-diff script) posts
@@ -205,5 +227,17 @@ re-run. Degrades silently when i2p is absent. The canonical model is `i2p/knowle
 ## Self-improvement covenant
 
 Inherits the reviewer covenant. Additionally: whenever a real defect ships past a PASS, add the lens
-or refutation prompt that would have caught it, so the same class cannot pass again. Record the
-lesson where the reviewer agent can read it.
+or refutation prompt that would have caught it, so the same class cannot pass again — and if the
+missed defect belonged to a lens the auto-select *dropped*, tune the §2a selection rule (or the
+project's `.deliver/review-profile.md`) so that surface pulls its lens next time. Record the lesson
+where the reviewer agent can read it. **Default shape is one composed reviewer** (§2) — resist
+reintroducing a role-per-agent panel; scale rigour by composing *more lenses into the one agent* (or
+declaring a profile), not by spawning more agents.
+
+> **Grep-of-record when the review model is renamed/refit.** pr-review is described in several
+> surfaces (this skill, `commands/pr-review.md`, `knowledge/orchestration/agent-roster.md`,
+> `knowledge/glossary.md`, `i2p/skills/review`, `i2p/knowledge/product-lifecycle.md`). A model change
+> that lands here but not there is the recurring "leftover contradiction elsewhere" defect. Before
+> re-gating any such change, run one sweep of record and purge every stale hit in a single pass —
+> `grep -rniE 'pr-review|adversarial pr review' plugins/ --include=*.md | grep -iE 'fans?|panel|across.*role|per role|adversarial roles'` — excluding the *legitimate* panels: the builder phase-gate
+> reviewer panel (the role-parametrised `agents/reviewer.md`) and `/i2p:review`'s cross-plugin fan-out.

@@ -326,9 +326,10 @@ These are invoked by command, not spawned as pipeline agents — but they belong
 one of them drives the `reviewer` agent:
 
 - **`pr-review`** ([`../../skills/pr-review/SKILL.md`](../../skills/pr-review/SKILL.md)) — the
-  adversarial merge gate. **Fans out the `reviewer` agent in up to six adversarial roles**
-  (correctness, security, regression, architecture, performance, docs), each prompted to *refute*
-  the change, then synthesises one verdict (`PASS | NEEDS_REVISION | BLOCK`). Composes
+  adversarial merge gate. Runs **ONE composed `reviewer` agent** whose lenses are auto-selected for
+  the diff (base triad correctness + regression + docs; auth/API/prompts pull security/api-contract/
+  prompt-injection in) — or pinned by the project's `.deliver/review-profile.md` — prompted to
+  *refute* the change, then synthesises one verdict (`PASS | NEEDS_REVISION | BLOCK`). Composes
   `/secure:scan-all` when the SECURE plugin is present. Outcome routing is the project's **merge governance**
   ([`../protocols/merge-governance.md`](../protocols/merge-governance.md)).
 - **`check`** ([`../../skills/check/SKILL.md`](../../skills/check/SKILL.md)) — diagnostic; verifies
