@@ -117,6 +117,33 @@ this — a pure classifier + `--self-test` fixtures + offline-degrades-to-adviso
 
 ---
 
+## 2a. The canonical issue-body schema — `## Summary` + `## Plan`
+
+Every EPIC/PLAN issue body is composed as a **Summary TLDR** + a horizontal rule + the **full plan** the
+implementing agent executes, followed by the marker (mechanism 7) and the fan-out annotations (§3):
+
+```
+## Summary
+
+<terse TLDR — what this slice is, 2–4 lines>
+
+---
+
+## Plan
+
+<the full plan the implementing agent will execute / a reviewer may alter>
+
+<!-- pipeline-plan-NNNN.SSS -->
+Depends-on: <orders|none>
+Touches: <paths>
+```
+
+`roadmapper-gh-fields.sh set-plan <issue#> <plan-file> [summary-file]` (EPIC 0072 / PLAN 0072.001)
+**idempotently re-composes** this body — replacing the Summary/Plan prose while preserving the marker +
+`Depends-on:`/`Touches:` annotations **byte-exact** (dedup + the CS3 fan-out both depend on that). Omit
+the summary-file to keep the existing `## Summary` (a reviewer edits only the `## Plan`). The board issue
+is the authoritative surface (the `docs/roadmap/` mirror is skipped for recent EPICs).
+
 ## 3. Fan-out parallelizability annotations — `Depends-on:` / `Touches:`
 
 Two **optional** line-anchored trailers on a PLAN (or EPIC) issue body declare whether that item can be

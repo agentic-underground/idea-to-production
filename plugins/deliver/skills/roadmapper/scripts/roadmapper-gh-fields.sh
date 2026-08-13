@@ -68,15 +68,62 @@ _need_cache() {
 # board item node id for a given issue number (this repo's items, by board order)
 _item_for_issue() { _ghp_items | awk -F'\t' -v n="$1" '$4==n{print $1; exit}'; }
 
-# --- verbs ----------------------------------------------------------------------------------------
+# --- set-plan body composer (EPIC 0072 / PLAN 0072.001) -------------------------------------------
+# The canonical EPIC/PLAN issue body is `## Summary` + `---` + `## Plan`, followed by the idempotency
+# marker and the fan-out `Depends-on:`/`Touches:` annotations. `set-plan` re-composes it idempotently —
+# replacing the Summary/Plan prose while preserving the marker + annotations BYTE-EXACT (dedup + the CS3
+# fan-out both depend on that). The composer + extractors are PURE (string in, string out) → --self-test.
+
+# _rgf_trim_blanks : strip leading + trailing blank lines from stdin (keeps interior blanks).
+_rgf_trim_blanks() { sed -e '/./,$!d' | sed -e :a -e '/^\n*$/{$d;N;ba;}'; }
+# _rgf_extract_marker <body> : echo the REAL pipeline marker (a NUMERIC order, `NNNN` or `NNNN.SSS`),
+# taking the LAST (trailer) match. Requiring digits skips a PROSE example like `<!-- pipeline-plan-NNNN.SSS -->`
+# that a Summary/Plan may quote when describing the format; trailer-most wins over any in-prose numeric example.
+_rgf_extract_marker() { printf '%s' "$1" | grep -oE '<!-- pipeline-(epic|plan)-[0-9]{4}(\.[0-9]{3})? -->' | tail -1; }
+# _rgf_extract_annotations <body> : echo the line-anchored Depends-on:/Touches: trailer lines, in order.
+_rgf_extract_annotations() { printf '%s\n' "$1" | grep -iE '^[[:space:]]*(Depends-on|Touches):' || true; }
+# _rgf_extract_summary <body> : echo the prose under `## Summary`, up to the next `---` or `## ` heading.
+_rgf_extract_summary() {
+  printf '%s\n' "$1" | awk '
+    /^##[[:space:]]+Summary[[:space:]]*$/ {grab=1; next}
+    grab && (/^---[[:space:]]*$/ || /^##[[:space:]]/) {grab=0}
+    grab {print}' | _rgf_trim_blanks
+}
+# _rgf_compose <summary> <plan> <marker> <annotations> : the canonical body (marker/annotations optional).
+_rgf_compose() {
+  local out; out="## Summary"$'\n\n'"$1"$'\n\n'"---"$'\n\n'"## Plan"$'\n\n'"$2"
+  [ -n "$3" ] && out="$out"$'\n\n'"$3"
+  [ -n "$4" ] && out="$out"$'\n'"$4"
+  printf '%s\n' "$out"
+}
+
+cmd_set_plan() {   # issue# plan-file [summary-file]
+  local issue="${1:?issue#}" planfile="${2:?plan-file}" sumfile="${3:-}" slug cur summary plan marker anns body
+  [[ -f "$planfile" ]] || { echo "roadmapper-gh-fields: plan file not found: $planfile" >&2; return 1; }
+  slug="$(_ghp_repo_slug)"
+  cur="$(gh issue view "$issue" --repo "$slug" --json body -q .body 2>/dev/null)"
+  marker="$(_rgf_extract_marker "$cur")"; anns="$(_rgf_extract_annotations "$cur")"
+  if [[ -n "$sumfile" ]]; then
+    [[ -f "$sumfile" ]] || { echo "roadmapper-gh-fields: summary file not found: $sumfile" >&2; return 1; }
+    summary="$(_rgf_trim_blanks < "$sumfile")"
+  else
+    summary="$(_rgf_extract_summary "$cur")"   # keep the existing Summary (reviewer edits only the Plan)
+  fi
+  plan="$(_rgf_trim_blanks < "$planfile")"
+  body="$(_rgf_compose "$summary" "$plan" "$marker" "$anns")"
+  printf '%s' "$body" | gh issue edit "$issue" --repo "$slug" --body-file - >/dev/null \
+    && echo "issue #$issue plan synced${marker:+ (marker preserved)}${anns:+ (annotations preserved)}"
+}
+
+# --- other verbs ----------------------------------------------------------------------------------
 cmd_set_body() {   # issue# body-file
   local issue="${1:?issue#}" file="${2:?body-file}" slug marker body
   [[ -f "$file" ]] || { echo "roadmapper-gh-fields: body file not found: $file" >&2; return 1; }
   slug="$(_ghp_repo_slug)"
-  # preserve FLEET's EXACT cross-box idempotency marker from the current body (epic or plan), if present
-  # and not already carried by the new body — losing it would make the next box create a duplicate issue.
-  marker="$(gh issue view "$issue" --repo "$slug" --json body -q .body 2>/dev/null \
-    | grep -oE '<!-- pipeline-(epic|plan)-[^>]*-->' | head -1)"
+  # preserve the EXACT cross-box idempotency marker from the current body (epic or plan), if present and
+  # not already carried by the new body — losing it would make the next box create a duplicate issue. Uses
+  # the shared numeric-order extractor (skips prose marker examples; trailer-most wins).
+  marker="$(_rgf_extract_marker "$(gh issue view "$issue" --repo "$slug" --json body -q .body 2>/dev/null)")"
   body="$(cat "$file")"
   [[ -n "$marker" ]] && ! grep -qF "$marker" "$file" && body="$body"$'\n\n'"$marker"
   printf '%s' "$body" | gh issue edit "$issue" --repo "$slug" --body-file - >/dev/null \
@@ -112,9 +159,52 @@ cmd_set_priority() {   # issue# Urgent|High|Medium|Low
     && echo "issue #$issue Priority=$opt"
 }
 
+# --- self-test: PURE composer/extractor assertions incl. the idempotency round-trip (no gh/network) ---
+cmd_self_test() {
+  local fails=0
+  eq() { if [ "$2" = "$1" ]; then echo "  ✓ $3"; else echo "  ✗ $3 (want [$1] got [$2])"; fails=$((fails+1)); fi; }
+  has() { if printf '%s' "$2" | grep -qE "$3"; then echo "  ✓ $1"; else echo "  ✗ $1"; fails=$((fails+1)); fi; }
+  echo "roadmapper-gh-fields.sh --self-test (set-plan composer)"
+  local M='<!-- pipeline-plan-0072.001 -->' A body1
+  A="$(printf 'Depends-on: 0072.002, 0072.003\nTouches: scripts/x.sh, a.md')"
+  body1="$(_rgf_compose 'Summary A.' 'Plan A body.' "$M" "$A")"
+  has 'compose: ## Summary heading'    "$body1" '^## Summary$'
+  has 'compose: --- rule'              "$body1" '^---$'
+  has 'compose: ## Plan heading'       "$body1" '^## Plan$'
+  has 'compose: marker byte-exact'     "$body1" '<!-- pipeline-plan-0072\.001 -->'
+  has 'compose: Depends-on preserved'  "$body1" '^Depends-on: 0072\.002, 0072\.003$'
+  has 'compose: Touches preserved'     "$body1" '^Touches: scripts/x\.sh, a\.md$'
+  eq "$M"          "$(_rgf_extract_marker "$body1")"       'extract_marker round-trips'
+  # marker extraction must SKIP a prose example (the bug the #338 dogfood caught) and take the real trailer:
+  eq "$M" "$(_rgf_extract_marker "$(printf 'quotes <!-- pipeline-plan-NNNN.SSS --> in prose\n%s' "$body1")")" \
+     'extract_marker skips a NNNN.SSS prose example → real numeric trailer'
+  eq '<!-- pipeline-plan-0072.009 -->' \
+     "$(_rgf_extract_marker "$(printf 'see <!-- pipeline-plan-0072.001 --> earlier\n<!-- pipeline-plan-0072.009 -->')")" \
+     'extract_marker: trailer-most numeric marker wins over an in-prose numeric example'
+  eq "$A"          "$(_rgf_extract_annotations "$body1")"  'extract_annotations round-trips (order preserved)'
+  eq 'Summary A.'  "$(_rgf_extract_summary "$body1")"      'extract_summary round-trips'
+  # IDEMPOTENCY — re-compose with a NEW plan from the extracted parts; Summary+marker+annotations survive.
+  local m2 a2 s2 body2
+  m2="$(_rgf_extract_marker "$body1")"; a2="$(_rgf_extract_annotations "$body1")"; s2="$(_rgf_extract_summary "$body1")"
+  body2="$(_rgf_compose "$s2" 'Plan B (revised).' "$m2" "$a2")"
+  has 'idempotent: Summary survives'     "$body2" '^Summary A\.$'
+  has 'idempotent: new Plan applied'     "$body2" '^Plan B \(revised\)\.$'
+  has 'idempotent: marker survives'      "$body2" '<!-- pipeline-plan-0072\.001 -->'
+  has 'idempotent: annotations survive'  "$body2" '^Depends-on: 0072\.002, 0072\.003$'
+  eq "$(_rgf_extract_marker "$body1")"      "$(_rgf_extract_marker "$body2")"      'idempotent: marker identical'
+  eq "$(_rgf_extract_annotations "$body1")" "$(_rgf_extract_annotations "$body2")" 'idempotent: annotations identical'
+  eq 'x' "$(printf '\n\nx\n\n' | _rgf_trim_blanks)" 'trim_blanks strips leading+trailing blanks'
+  # compose WITHOUT marker/annotations (a fresh EPIC/PLAN) stays well-formed.
+  has 'compose: bare body still well-formed' "$(_rgf_compose 'S' 'P' '' '')" '^## Plan$'
+  if [ "$fails" -eq 0 ]; then echo "✓ set-plan self-test passed"; return 0
+  else echo "✗ set-plan self-test: $fails failure(s)"; return 1; fi
+}
+
 case "${1:-}" in
   set-body)     shift; cmd_set_body "$@" ;;
+  set-plan)     shift; cmd_set_plan "$@" ;;
   set-estimate) shift; cmd_set_estimate "$@" ;;
   set-priority) shift; cmd_set_priority "$@" ;;
-  *) echo "usage: roadmapper-gh-fields.sh {set-body <issue#> <file> | set-estimate <issue#> <n> | set-priority <issue#> <Urgent|High|Medium|Low>}" >&2; exit 2 ;;
+  --self-test)  cmd_self_test ;;
+  *) echo "usage: roadmapper-gh-fields.sh {set-body <issue#> <file> | set-plan <issue#> <plan-file> [summary-file] | set-estimate <issue#> <n> | set-priority <issue#> <Urgent|High|Medium|Low> | --self-test}" >&2; exit 2 ;;
 esac

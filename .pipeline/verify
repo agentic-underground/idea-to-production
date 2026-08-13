@@ -35,6 +35,10 @@ bash scripts/fan-out-advisement.sh --self-test >/dev/null || exit 1
 # order/marker/title composition + the injection-safe cache accessor. --self-test is hermetic (no gh);
 # the live create/link verbs prove themselves against project #4 (the claims harness lands with A8).
 bash scripts/roadmap/gh-pipeline.sh --self-test >/dev/null || exit 1
+# set-plan body composer (EPIC 0072 / PLAN 0072.001): the `## Summary`+`---`+`## Plan` re-compose that
+# preserves the pipeline marker + Depends-on:/Touches: annotations byte-exact. --self-test is hermetic
+# (pure composer/extractors + the idempotency round-trip; no gh); the live verb proves itself on the board.
+bash plugins/deliver/skills/roadmapper/scripts/roadmapper-gh-fields.sh --self-test >/dev/null || exit 1
 # Context-population injector (EPIC 0067 / PLAN 0067.002): the phase-aware pointer emits KAIZEN + a thin
 # ≤60-word pointer; roadmap-routing is phase-gated; safe default when phase is unknown. The always-on
 # leanness BUDGET gate (verify-context.sh) lands with PLAN 0067.004.
