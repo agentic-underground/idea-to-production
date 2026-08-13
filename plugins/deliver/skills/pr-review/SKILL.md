@@ -66,7 +66,26 @@ and self-refutation pass intrinsically (see [`../../agents/reviewer.md`](../../a
 ∈ `CRITICAL | HIGH | MEDIUM | LOW | SUGGESTION` and **evidence is mandatory for CRITICAL/HIGH** (the
 observed command output / line / ratio that proves it — an unproven CRITICAL/HIGH is downgraded).
 
-### 2a. Pick the lenses (auto-select ~3 by diff fingerprint)
+### 2a. Pick the lenses (project profile first, else auto-select ~3 by diff)
+
+**First, resolve the project's review profile** — different projects need different profiles, so a
+declared one wins over the auto-select. Run the resolver (deterministic, offline, token-free):
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/skills/pr-review/scripts/resolve-review-profile.sh > /tmp/review-profile.txt
+```
+
+It reads `.deliver/review-profile.md` from the project root and prints exactly one **directive**:
+
+| Directive | What the one composed reviewer carries |
+|---|---|
+| `auto` (absent/`Mode: auto`, or any malformed profile — fails safe) | the diff-fingerprint auto-select below. |
+| `fixed: LENS,LENS,…` (`Mode: fixed` + `Lenses:`) | **exactly** those lenses — skip the auto-select. |
+| `holistic` (`Mode: holistic`) | one undifferentiated holistic pass, no lens decomposition. |
+
+The directive only changes *which* lenses the one reviewer carries — **never the agent count**. On
+`fixed`/`holistic`, record the profile source in the report's `Profile:` field and skip to §3. On
+`auto`, continue:
 
 Fingerprint the diff, then compose the **three most load-bearing lenses** into that one agent's
 prompt (the reviewer answers each in turn and tags every finding with its `lens`). Start from the
@@ -104,11 +123,17 @@ CORRECTNESS + API-CONTRACT + REGRESSION; an agent/prompt change → CORRECTNESS 
 DOCUMENT. **Name the lenses you composed and the conditional ones that were not-applicable** in the
 report (no silent narrowing).
 
-> **Per-project override.** When the project declares a **review profile**
-> (`.deliver/review-profile.md` — PLAN 0073.002), it **pins** the lens set/count (or forces a single
-> holistic pass) and **overrides** this auto-select — because different projects need different
-> review profiles. Absent ⇒ the auto-select above. It never changes the "one composed reviewer"
-> shape, only *which* lenses that one reviewer carries.
+> **The profile file — `.deliver/review-profile.md`** (parallel to `.deliver/governance.md`). A tiny
+> declarative surface the resolver above reads:
+>
+> ```markdown
+> Mode: auto | fixed | holistic      # default auto; absent file ⇒ auto
+> Lenses: CORRECTNESS, REGRESSION, DOCUMENT   # used only when Mode: fixed; canonical §2a names
+> ```
+>
+> Unknown lens tokens are dropped; a `fixed` with no valid lens, or any unparseable content, **fails
+> safe to `auto`** (a broken profile can never silently narrow the gate). It never changes the "one
+> composed reviewer" shape — only *which* lenses that one reviewer carries.
 
 > **If the SECURE plugin is installed**, also run `/scan-all` over the changed tree and fold its verdict
 > in as the **authoritative security lens** — it supersedes the reviewer's SECURITY lens for the
