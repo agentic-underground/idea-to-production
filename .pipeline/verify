@@ -39,6 +39,10 @@ bash scripts/roadmap/gh-pipeline.sh --self-test >/dev/null || exit 1
 # preserves the pipeline marker + Depends-on:/Touches: annotations byte-exact. --self-test is hermetic
 # (pure composer/extractors + the idempotency round-trip; no gh); the live verb proves itself on the board.
 bash plugins/deliver/skills/roadmapper/scripts/roadmapper-gh-fields.sh --self-test >/dev/null || exit 1
+# Review-profile resolver (EPIC 0073 / PLAN 0073.002): resolves .deliver/review-profile.md to a lens
+# directive (auto|fixed:…|holistic) for pr-review §2a; malformed input fails safe to `auto` so a broken
+# profile never silently narrows the gate. --self-test is hermetic (pure resolver + a tmp fixture; no gh).
+bash plugins/deliver/skills/pr-review/scripts/resolve-review-profile.sh --self-test >/dev/null || exit 1
 # Context-population injector (EPIC 0067 / PLAN 0067.002): the phase-aware pointer emits KAIZEN + a thin
 # ≤60-word pointer; roadmap-routing is phase-gated; safe default when phase is unknown. The always-on
 # leanness BUDGET gate (verify-context.sh) lands with PLAN 0067.004.
