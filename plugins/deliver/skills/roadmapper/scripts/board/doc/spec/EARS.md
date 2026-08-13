@@ -1,11 +1,13 @@
-# EARS — `board`: lifecycle + EPIC rollup + native Status write
+# EARS — `board`: lifecycle + EPIC rollup + native Status write + native create
 
 Requirements for the `board` component. Slice 1 (PLAN 0072.014) established the lifecycle + EPIC rollup;
 **Slice 2 (PLAN 0072.015)** ports the Status *write* into native Python (EARS-011/012/013 + the rewritten
-lockstep EARS-002/003). EARS = Easy Approach to Requirements Syntax. Each `EARS-NNN` is traced into a
-pytest coordinate (`# @EARS-NNN`).
+lockstep EARS-002/003); **Slice 3a (PLAN 0072.017)** ports **`ensure-epic`** (the create/converge path)
+into native Python (EARS-015…018). EARS = Easy Approach to Requirements Syntax. Each `EARS-NNN` is traced
+into a pytest coordinate (`# @EARS-NNN`).
 
-The decidable core is `board/core/lifecycle.py` + `board/core/write.py`; the I/O shell is `board/gh.py`.
+The decidable core is `board/core/lifecycle.py` + `board/core/write.py` + `board/core/create.py`; the I/O
+shell is `board/gh.py`.
 
 ## Ubiquitous
 
@@ -36,6 +38,20 @@ The decidable core is `board/core/lifecycle.py` + `board/core/write.py`; the I/O
   flattened to `Done`), else `Done` (a closed issue is at least Done); a **non-CLOSED** (OPEN) child SHALL
   contribute its live board Status, or be omitted when unset. *(PLAN 0072.016 — the fix that lets an
   all-`Delivered` EPIC roll to `Delivered` per EARS-005 rather than always `Done`.)*
+- **EARS-015** — WHEN `ensure-epic <order>` runs, the system SHALL first search all repo issues for the
+  byte-exact idempotency marker `<!-- pipeline-epic-NNNN -->` and treat a hit as "already created"
+  (converge, never duplicate). *(Slice 3a. Known limitation, shared with the bash `_ghp_issue_by_marker`:
+  the `gh api issues` list is eventually consistent — a freshly-created issue takes ~3s to appear — so a
+  re-run WITHIN that window of a create could still duplicate. Real usage (crash → later re-run) is well
+  outside the window; the story proof polls for list-consistency before asserting the heal.)*
+- **EARS-016** — WHEN an EPIC is created, the system SHALL create it **bare** (`gh issue create` with a
+  body of `desc` + marker) and add it to the board, seeding `Backlog` on the item-add-returned item id
+  (no re-query — dodges the item-list propagation race of 0072.010's F0). *(Slice 3a.)*
+- **EARS-017** — WHEN `ensure-epic` converges an already-present EPIC, the system SHALL heal: add it to the
+  board if absent, seed `Backlog` if its Status is UNSET, and (idempotently) re-apply its kind — so a crash
+  between create and board-add (or a seed that never landed) is repaired on the next run, never left
+  permanently UNSET. The converge decision is a **total pure reducer** over
+  `(found_issue, on_board, status_is_set)`. *(Slice 3a — closes the F0 class for good.)*
 
 ## State-driven
 
@@ -68,3 +84,8 @@ The decidable core is `board/core/lifecycle.py` + `board/core/write.py`; the I/O
   IFF the issue is `CLOSED`, else no action. AND: after the Status field write has **succeeded**, a
   subsequent lockstep `gh issue close`/`reopen` I/O failure SHALL be **non-fatal** (a warning, exit 0) —
   the primary Status value is already persisted, matching the bash `set-status` rc contract.
+- **EARS-018** — IF the issue-list READ that backs the marker search fails (auth/rate-limit/network),
+  THEN `ensure-epic` SHALL fail closed (exit non-zero) and create **nothing** — a failed read is NEVER
+  mistaken for "marker absent" (which would duplicate the EPIC). AND IF the `<order>` is not 1–4 digits,
+  THEN it SHALL be rejected (fail closed, no write). AND the kind's Type/label application SHALL be
+  **best-effort** (a non-org repo or a missing label ⇒ warn, the verb still succeeds). *(Slice 3a.)*

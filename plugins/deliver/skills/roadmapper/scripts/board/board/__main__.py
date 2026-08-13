@@ -6,6 +6,8 @@ Verbs:
   set-status <issue#> <Status>          set an issue's Status natively (+ lockstep), NO rollup — the
                                         raw/manual escape hatch (e.g. EPIC promote); the order-addressed
                                         `lifecycle` verb is what always rolls the parent.
+  ensure-epic <order> <desc> [kind]     create-or-converge an EPIC issue (marker-idempotent, heals board
+                                        membership + Backlog seed on re-run); echoes the issue number.
 
 Fails closed (non-zero, no partial write) on an unreachable board, an unresolvable/malformed order, or
 an unknown transition verb.
@@ -50,6 +52,12 @@ def _set_status(issue: str, status: str) -> int:
     return 0
 
 
+def _ensure_epic(order: str, desc: str, kind: str) -> int:
+    issue = gh.ensure_epic(order, desc, kind)    # create-or-converge, marker-idempotent (EARS-015…018)
+    print(issue)                                  # echo the issue# (callers capture it, like the bash verb)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="board", description="GitHub Project board integration (lifecycle + rollup)")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -61,12 +69,18 @@ def main(argv: list[str] | None = None) -> int:
     sp = sub.add_parser("set-status", help="set an issue's Status natively (+ lockstep), no rollup")
     sp.add_argument("issue", help="GitHub issue number, e.g. 378")
     sp.add_argument("status", help="canonical Status, e.g. 'In Progress'")
+    ep = sub.add_parser("ensure-epic", help="create-or-converge an EPIC issue (marker-idempotent)")
+    ep.add_argument("order", help="EPIC order, e.g. 0072")
+    ep.add_argument("desc", help="short description")
+    ep.add_argument("kind", nargs="?", default="feature", help="bug | feature | enhancement | task")
     args = p.parse_args(argv)
     try:
         if args.cmd == "lifecycle":
             return _lifecycle(args.order, args.transition)
         if args.cmd == "set-status":
             return _set_status(args.issue, args.status)
+        if args.cmd == "ensure-epic":
+            return _ensure_epic(args.order, args.desc, args.kind)
         return _rollup(args.epic_order)
     except BoardError as e:
         print(f"board: {e}", file=sys.stderr)

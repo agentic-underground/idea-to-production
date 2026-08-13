@@ -27,3 +27,7 @@ class StatusOptionUnavailable(BoardError):
 
 class IssueNotOnBoard(BoardError):
     """The target issue is not an item on the board, so its Status cannot be written (EARS-012)."""
+
+
+class MalformedOrder(BoardError):
+    """A roadmap order was not the expected shape (e.g. an EPIC order must be 1–4 digits) — EARS-018."""
