@@ -122,7 +122,7 @@ Woven through *every* phase from the start, each certified at the gate named abo
   reviews surfaces produced by the frontend design system. Certified at the **DESIGN** gate (design-fitness rubric).
 - **Quality (ASSURE, deliver)** — *first-class, built-in not inspected-in.* The test-first conveyor means
   quality is engineered from the first line of BUILD (indeed from the EARS spec); the **ASSURE** gate is where
-  deliver's adversarial reviewer panel *certifies* it. Quality is a pillar of the whole suite, not a late check.
+  deliver's adversarial composed reviewer *certifies* it. Quality is a pillar of the whole suite, not a late check.
 - **Security (SECURE, security)** — *baked in from the beginning.* Secure-by-design starts at DISCOVER
   (don't pursue opportunities you can't operate safely) and IDEATE (threat-model the concept); the **SECURE**
   gate is security's pre-exposure certification. Security is never bolted on at the end.

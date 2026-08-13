@@ -233,3 +233,11 @@ project's `.deliver/review-profile.md`) so that surface pulls its lens next time
 where the reviewer agent can read it. **Default shape is one composed reviewer** (§2) — resist
 reintroducing a role-per-agent panel; scale rigour by composing *more lenses into the one agent* (or
 declaring a profile), not by spawning more agents.
+
+> **Grep-of-record when the review model is renamed/refit.** pr-review is described in several
+> surfaces (this skill, `commands/pr-review.md`, `knowledge/orchestration/agent-roster.md`,
+> `knowledge/glossary.md`, `i2p/skills/review`, `i2p/knowledge/product-lifecycle.md`). A model change
+> that lands here but not there is the recurring "leftover contradiction elsewhere" defect. Before
+> re-gating any such change, run one sweep of record and purge every stale hit in a single pass —
+> `grep -rniE 'pr-review|adversarial pr review' plugins/ --include=*.md | grep -iE 'fans?|panel|across.*role|per role|adversarial roles'` — excluding the *legitimate* panels: the builder phase-gate
+> reviewer panel (the role-parametrised `agents/reviewer.md`) and `/i2p:review`'s cross-plugin fan-out.

@@ -175,9 +175,9 @@ rendered-experience review) with deliver's **`frontend`** *skill* (source-level 
   ([`protocols/certainty-markers.md`](protocols/certainty-markers.md)).
 - **Graceful enhancement** — deliver uses secure/publish *by capability if installed*, else
   degrades to markdown.
-- **Adversarial PR review** — `/deliver:pr-review` fans the `reviewer` agent across adversarial
-  roles (each tries to *refute* the change) → one verdict `PASS | NEEDS_REVISION | BLOCK`
-  ([`../skills/pr-review/SKILL.md`](../skills/pr-review/SKILL.md)).
+- **Adversarial PR review** — `/deliver:pr-review` runs ONE composed `reviewer` agent carrying the
+  lenses the diff warrants (each lens tries to *refute* the change) → one verdict
+  `PASS | NEEDS_REVISION | BLOCK` ([`../skills/pr-review/SKILL.md`](../skills/pr-review/SKILL.md)).
 - **Merge governance** — who merges a *passing* change: **`pr-approval`** (push branch, open PR,
   human merges) or **`direct-merge`** (agent merges on PASS). The adversarial review is always-on in
   both; only the merge hand differs. Stored in `.deliver/governance.md`; default `pr-approval`
