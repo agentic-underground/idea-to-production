@@ -312,15 +312,18 @@ with `PIPELINE_PROJECT=<registry-key>` in the environment (the repo's key in
    (never a hardcoded number), create if absent, persist its number + node-id into the registry, and cache
    the Status + custom-field ids. Re-runs are safe. (It **warns** on a missing Status option rather than
    mutating options — a programmatic option-delete wipes item values.)
-2. **Create the EPIC item.** `gh-pipeline.sh ensure-epic NNNN "<short description>"` → the EPIC Issue on
-   the board, seeded in **Backlog**; it **echoes the issue number** — capture it (`EPIC_N=$(… ensure-epic …)`).
-   (Titled `EPIC NNNN: <description>`; keep the description readable within ~70 visible chars.)
+2. **Create the EPIC item.** `gh-pipeline.sh ensure-epic NNNN "<short description>" [kind]` → the EPIC
+   Issue on the board, **seeded in `Backlog`** (the create path writes the Status — a bare board-add leaves
+   it UNSET) and given a native **Type + label by `kind`** (`feature` default → Type=Feature; `bug` →
+   Type=Bug + label=bug; `enhancement` → Type=Feature + label=enhancement). It **echoes the issue number**
+   — capture it (`EPIC_N=$(… ensure-epic …)`). (Titled `EPIC NNNN: <description>`; ≤~70 visible chars.)
 3. **Create each PLAN sub-issue.** **github_board mode replaces local_file's global `PLAN_MMMM.md`
    numbering with a per-epic composite `PLAN_NNNN.SSS.md`** — `NNNN` is the parent EPIC's 4-digit order
    and `SSS` is a **3-digit sequence within that epic** (`001`, `002`, …), not a global counter. Pass the
    EPIC's **issue number** (from step 2, or `gh-pipeline.sh epic-issue NNNN`) plus the composite order:
-   `gh-pipeline.sh ensure-plan-subissue <epic-issue#> NNNN.SSS "<short description>"` → a native sub-issue
-   of the EPIC on the board, seeded in **Backlog** (crash-consistent: it links the sub-issue on every run).
+   `gh-pipeline.sh ensure-plan-subissue <epic-issue#> NNNN.SSS "<short description>" [kind]` → a native
+   sub-issue of the EPIC on the board, **seeded in `Backlog`** and typed/labelled by `kind` (default
+   `feature`; pass `bug` for a bug-fix slice) — crash-consistent: it links the sub-issue on every run.
    **Naming contract:** name the local file **exactly** `PLAN_NNNN.SSS.md` (e.g. `PLAN_0001.001.md`) to
    match the issue title `PLAN NNNN.SSS: …`.
 4. **Enrich every Issue (the browsable backlog).** For each EPIC and PLAN Issue, replace the thin
@@ -336,9 +339,11 @@ with `PIPELINE_PROJECT=<registry-key>` in the environment (the repo's key in
    points from §3.5; the EPIC gets the rolled-up sum) and `… set-priority <issue#> <Priority>` (§3.3-G;
    default `Medium`). Get `<issue#>` from the echo of `ensure-epic`/`ensure-plan-subissue`, or via
    `gh-pipeline.sh epic-issue NNNN` / `plan-issue NNNN.SSS` (each echoes the GitHub issue number).
-6. **Groom the Issue metadata** per **§3.3-G** (Type · Priority · labels · assignee).
+6. **Groom the Issue metadata** per **§3.3-G** (Priority · assignee; Type + label are already set by
+   `kind` in steps 2–3 — refine only if a slice's kind was wrong, e.g. `gh-pipeline.sh set-kind <issue#> bug`).
 7. **Leave everything in Backlog.** Authoring never auto-promotes — promotion to To Do ("ready") is the
-   human-gated gesture in **§11.4a**.
+   human-gated gesture in **§11.4a**. (The lifecycle then keeps the issue STATE in lockstep with Status:
+   `set-status <issue#> Done` **closes** the issue; moving back out of Done reopens it.)
 
 > **Idempotent re-author.** Every verb is find-or-create keyed on the byte-exact body marker
 > (`<!-- pipeline-(epic|plan)-… -->`) with a **paginated, fail-closed** search — a failed read aborts
