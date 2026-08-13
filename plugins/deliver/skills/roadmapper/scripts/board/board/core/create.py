@@ -185,8 +185,9 @@ def parent_number(parent_json: str) -> str | None:
         data = json.loads(parent_json)
     except (json.JSONDecodeError, TypeError) as e:
         raise MalformedBoardData(f"could not parse parent JSON: {e}") from None
-    parent = data.get("parent")
-    return norm_issue_number(str(parent["number"])) if parent else None
+    parent = data.get("parent") or {}
+    num = parent.get("number")
+    return norm_issue_number(str(num)) if num is not None else None
 
 
 def link_decision(parent_no: str | None, epic_no: str) -> str:

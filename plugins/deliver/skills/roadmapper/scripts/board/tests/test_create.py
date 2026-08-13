@@ -186,6 +186,7 @@ def test_next_plan_order_substring_token_mid_title():  # @EARS-021 (the fullmatc
 def test_parent_number_linked_null_malformed():  # @EARS-020
     assert cr.parent_number('{"parent": {"number": 337}}') == "337"
     assert cr.parent_number('{"parent": null}') is None
+    assert cr.parent_number('{"parent": {}}') is None   # parent object without a number ⇒ unlinked (guarded)
     with pytest.raises(MalformedBoardData):
         cr.parent_number("}nope")
 

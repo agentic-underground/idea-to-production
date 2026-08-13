@@ -245,8 +245,11 @@ def ensure_plan(epic_no: str, order: str, desc: str, kind: str = "feature") -> s
     parent = create.parent_number(_run(["gh", "issue", "view", found, "--repo", slug, "--json", "parent"])) if found else None
     dec = create.link_decision(parent, epic_no)
     if dec == "skip":
-        print(f"board: warning: #{found} is a sub-issue of a DIFFERENT EPIC (#{parent}) — not repointing to #{epic_no}",
-              file=sys.stderr)
+        # the PLAN is a sub-issue of a DIFFERENT EPIC — it is not ours to manage; warn and touch NOTHING
+        # (no repoint, and no seed/kind either — never mutate a deliberately-moved child).
+        print(f"board: warning: #{found} is a sub-issue of a DIFFERENT EPIC (#{parent}) — leaving it untouched "
+              f"(not repointing to #{epic_no})", file=sys.stderr)
+        return found
     actions = create.ensure_plan_actions(found, item_id is not None, status is not None, dec == "link")
     ctx = {
         "owner": owner, "number": number, "pid": pid, "slug": slug, "kind": kind,
