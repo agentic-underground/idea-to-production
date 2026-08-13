@@ -96,16 +96,18 @@ _rrp_self_test() {
   _t "case-insensitive key"             "$(_rrp_resolve $'mODe: fixed\nLENSES: correctness' 2>/dev/null)"                       "fixed: CORRECTNESS"
   # 'docs' is NOT a canonical lens token — only DOCUMENT is; prove the alias is rejected (not silently kept)
   _t "bare 'docs' is not a lens"        "$(_rrp_resolve $'Mode: fixed\nLenses: docs' 2>/dev/null)"                              "auto"
-  # file path — drive the LIVE top-level path (_rrp_resolve_file), not just the inner resolver, so a
-  # `set -e`/`pipefail` abort on the real entrypoint is caught here (the inner-only tests above mask it
-  # via nested $(…)). A PRESENT but Mode-less file MUST fail safe to `auto`, never crash/emit empty.
-  local d; d="$(mktemp -d)"
-  _t "absent file → auto"               "$(_rrp_resolve_file "$d/nope.md")"                               "auto"
-  : > "$d/empty.md";                    _t "present empty file → auto"    "$(_rrp_resolve_file "$d/empty.md")"    "auto"
-  printf '<!-- comment only -->\n' > "$d/c.md"; _t "comment-only file → auto" "$(_rrp_resolve_file "$d/c.md")" "auto"
-  printf 'prose, no Mode line\n' > "$d/pr.md";  _t "Mode-less prose → auto"  "$(_rrp_resolve_file "$d/pr.md")"  "auto"
+  # file path — drive the REAL CLI ENTRYPOINT as a SUBPROCESS (`bash "$self" <file>`), not the inner
+  # function through $(…). A top-level call runs under live `set -e`, so a `pipefail` abort on a
+  # Mode-less/empty/comment-only file is actually caught here — a $(_rrp_resolve_file …) wrapper masks
+  # `set -e` and would pass even with the fail-safe reverted (a toothless guard). A PRESENT but Mode-less
+  # file MUST fail safe to `auto`, never crash/emit empty. `_self` is this script's path.
+  local d self; d="$(mktemp -d)"; self="${BASH_SOURCE[0]}"
+  _t "absent file → auto"               "$(bash "$self" "$d/nope.md" 2>/dev/null)"                        "auto"
+  : > "$d/empty.md";                    _t "present empty file → auto"    "$(bash "$self" "$d/empty.md" 2>/dev/null)"  "auto"
+  printf '<!-- comment only -->\n' > "$d/c.md"; _t "comment-only file → auto" "$(bash "$self" "$d/c.md" 2>/dev/null)" "auto"
+  printf 'prose, no Mode line\n' > "$d/pr.md";  _t "Mode-less prose → auto"  "$(bash "$self" "$d/pr.md" 2>/dev/null)"  "auto"
   printf 'Mode: fixed\nLenses: correctness, regression, document\n' > "$d/p.md"
-  _t "present file parsed"              "$(_rrp_resolve_file "$d/p.md" 2>/dev/null)"                       "fixed: CORRECTNESS,REGRESSION,DOCUMENT"
+  _t "present file parsed"              "$(bash "$self" "$d/p.md" 2>/dev/null)"                           "fixed: CORRECTNESS,REGRESSION,DOCUMENT"
   rm -rf "$d"
 
   if [ "$fails" -eq 0 ]; then echo "✓ self-test passed"; return 0; else echo "✗ self-test: $fails failure(s)"; return 1; fi
