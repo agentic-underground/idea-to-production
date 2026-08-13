@@ -25,8 +25,8 @@ Backlog · To Do · In Progress · Review · Revise · Done · Delivered
 > **Lifecycle transitions + EPIC rollup — the `board` component (PLAN 0072.014).** A PLAN's transition
 > should move the PLAN **and** roll its parent EPIC (an EPIC must never sit in Backlog while its PLANs
 > advance). Use `board.sh lifecycle <order> <transition>` / `board.sh rollup <epic-order>`
-> (`plugins/deliver/skills/roadmapper/scripts/board/`, roadmapper SKILL §11.4c) rather than a raw
-> `set-status` for lifecycle moves — a raw `set-status` skips the rollup. Rollup rule: all children
+> (`plugins/deliver/skills/roadmapper/scripts/board/`, roadmapper SKILL §11.4c) rather than the raw
+> `board.sh set-status` for lifecycle moves — the raw verb skips the rollup. Rollup rule: all children
 > resolved ⇒ Done/Delivered; any child active ⇒ In Progress; a PARKED or already-terminal EPIC is never
 > disturbed. This list is kept byte-identical to bash `_GHP_STATUS_OPTIONS` **and** the component's
 > `board.core.lifecycle.CANONICAL` (a cross-language test pins them).
@@ -43,10 +43,11 @@ Backlog · To Do · In Progress · Review · Revise · Done · Delivered
 
 `Review` (under-review) is **distinct** from `Revise` (changes-requested) — do not collapse them.
 
-**Terminal ⇒ closed.** `set-status` keeps the issue's open/closed state in lockstep with Status:
-moving to `Done`/`Delivered` closes the issue; moving back out reopens it (see `_ghp_status_closes`,
-PLAN 0072.012). **A hidden status is still a valid status** — set the true lifecycle state regardless
-of which board *view* happens to hide that column.
+**Terminal ⇒ closed.** The native Status write keeps the issue's open/closed state in lockstep with
+Status: moving to `Done`/`Delivered` closes the issue; moving back out reopens it (the pure decision is
+`board.core.write.issue_state_action`, PLAN 0072.015 — which ported the write off bash). **A hidden
+status is still a valid status** — set the true lifecycle state regardless of which board *view* happens
+to hide that column.
 
 ---
 

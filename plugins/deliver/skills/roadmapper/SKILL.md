@@ -353,7 +353,7 @@ with `PIPELINE_PROJECT=<registry-key>` in the environment (the repo's key in
    `kind` in steps 2–3 — refine only if a slice's kind was wrong, e.g. `gh-pipeline.sh set-kind <issue#> bug`).
 7. **Leave everything in Backlog.** Authoring never auto-promotes — promotion to To Do ("ready") is the
    human-gated gesture in **§11.4a**. (The lifecycle then keeps the issue STATE in lockstep with Status:
-   `set-status <issue#> Done` **closes** the issue; moving back out of Done reopens it.)
+   `board.sh set-status <issue#> Done` **closes** the issue; moving back out of Done reopens it.)
 
 > **Idempotent re-author.** Every verb is find-or-create keyed on the byte-exact body marker
 > (`<!-- pipeline-(epic|plan)-… -->`) with a **paginated, fail-closed** search — a failed read aborts
@@ -960,9 +960,11 @@ action, the board analogue of GO. After authoring (or on request), roadmapper **
 promote, defaulting to *none*, with the warning: *To Do = the engine will build this on its next tick if
 it's next in board order.*
 
-- Promote an EPIC: `gh-pipeline.sh set-status "$(gh-pipeline.sh epic-issue NNNN)" "To Do"`.
-- Promote a PLAN: `gh-pipeline.sh set-status "$(gh-pipeline.sh plan-issue NNNN.SSS)" "To Do"`.
-  *(`set-status` takes the GitHub **issue number**; the `epic-issue`/`plan-issue` readers resolve it from the order.)*
+- Promote an EPIC: `board.sh set-status "$(gh-pipeline.sh epic-issue NNNN)" "To Do"`.
+- Promote a PLAN: `board.sh lifecycle NNNN.SSS ready` *(order-addressed; also rolls the parent — a no-op
+  when nothing else has started)*, or the raw `board.sh set-status "$(gh-pipeline.sh plan-issue NNNN.SSS)" "To Do"`.
+  *(the native `board.sh set-status` takes the GitHub **issue number**; the `gh-pipeline.sh`
+  `epic-issue`/`plan-issue` readers still resolve it from the order.)*
 
 This is the **only** Status change roadmapper makes; every other column move is the engine's and must
 never be hand-edited (§11.4 MUST NOT).
@@ -989,7 +991,7 @@ plan is not lost, re-run when reachable); a **malformed order** (e.g. a bare iss
 A PLAN's lifecycle transition (build-start, review, revise, done) should move the PLAN **and** recompute
 its parent EPIC — so an EPIC moves as its PLANs do (it must never sit in Backlog while its PLANs advance).
 Use the `board` component (Python; runtime is stdlib + `gh`), which keys on the roadmap **order** (never a
-GitHub issue#) and writes through the proven `set-status` lockstep:
+GitHub issue#) and writes Status **natively** (`gh project item-edit`) with the issue open/closed lockstep:
 
 ```bash
 bash ${CLAUDE_PLUGIN_ROOT}/skills/roadmapper/scripts/board/board.sh lifecycle NNNN.SSS <transition>
@@ -1000,10 +1002,11 @@ bash ${CLAUDE_PLUGIN_ROOT}/skills/roadmapper/scripts/board/board.sh rollup NNNN 
 `lifecycle` sets the PLAN's Status (+ the issue-state lockstep) then recomputes the parent EPIC from its
 children — **all children resolved ⇒ Done/Delivered; any child active ⇒ In Progress; a PARKED or already-
 terminal EPIC is never disturbed**. It **fails closed** (non-zero, no partial write) on an unreachable
-board or an issue#-where-an-order-is-expected. Prefer this over a raw `gh-pipeline.sh set-status` for any
-PLAN/EPIC lifecycle move — a raw `set-status` skips the rollup. *(Slice 2 ports `set-status` into `board`
-so the rollup becomes intrinsic to every write; until then, use `board lifecycle` for transitions and
-`board rollup` to reconcile an EPIC after a manual move.)*
+board or an issue#-where-an-order-is-expected. Prefer this over the raw `board.sh set-status` for any
+PLAN/EPIC lifecycle move — the raw verb skips the rollup. *(PLAN 0072.015 ported the Status write into
+`board` and deleted the bash `set-status` verb: `board.sh set-status <issue#> <Status>` is now the native
+raw/manual escape hatch — no rollup — while the order-addressed `board.sh lifecycle` always rolls the
+parent; `board.sh rollup NNNN` reconciles an EPIC after a manual move.)*
 
 #### Legacy project (`ROADMAP.md`, no pipeline) — GO = DEV_SYSTEM
 

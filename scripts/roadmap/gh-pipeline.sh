@@ -23,10 +23,8 @@
 #                                           create-or-find the PLAN issue, board it, AND link it as a
 #                                           native sub-issue of <epic#>; echo its number. Crash-consistent:
 #                                           marker-found ⇒ ALSO verify the sub-issue link, re-link if gone.
-#   set-status <issue#> <Status>            set the board Status single-select for an issue.
-#                                           NOTE: for a PLAN/EPIC lifecycle transition prefer
-#                                           `board.sh lifecycle <order> <t>` (PLAN 0072.014) — it also
-#                                           rolls the parent EPIC up; a raw set-status skips that.
+#   (the board Status WRITE moved to the native Python `board` — `board.sh set-status <issue#> <Status>`
+#    and `board.sh lifecycle <order> <t>` which also rolls the parent EPIC; PLAN 0072.015.)
 #   epic-issue <order> | plan-issue <order> | next-plan <epic#>     read helpers.
 #   resolve-issue [PR#]                     REVERSE resolver: branch/PR → order/trailer → issue# (fail closed).
 #   preflight                               probe repo-scope vs project-scope SEPARATELY; on project-scope
@@ -159,7 +157,7 @@ _ghp_cache() { printf '%s/%s.json' "$PIPELINE_CACHE_DIR" "${CFG_REG_ID:-${PIPELI
 # split into literal segments and looked up with getpath($ARGS.positional); the argument is NEVER spliced
 # into a jq program (this is the fix for the vendored `jq -r "$1"` injection primitive). Supports the
 # simple dotted paths callers use (.project_id, .fields.Estimate.id); bracket/data lookups use jq --arg
-# against "$(_ghp_cache)" directly (see cmd_set_status / the enricher's Priority lookup).
+# against "$(_ghp_cache)" directly (see the create-path seed `_ghp_set_status_by_item` / the enricher's Priority lookup).
 _ghp_cache_get() {
   local path="${1#.}" f seg_json; f="$(_ghp_cache)"
   [ -f "$f" ] || return 0
@@ -474,8 +472,6 @@ _ghp_status_oid_fresh() {
 _ghp_kind_type() { case "$1" in bug) echo Bug;; feature) echo Feature;; enhancement) echo Feature;; task) echo Task;; *) echo "";; esac; }
 # _ghp_kind_label <kind> : repo label for a kind (empty when the kind needs no label, e.g. feature).
 _ghp_kind_label() { case "$1" in bug) echo bug;; enhancement) echo enhancement;; *) echo "";; esac; }
-# _ghp_status_closes <status> : true (0) for the TERMINAL statuses whose issue must be Closed.
-_ghp_status_closes() { case "$1" in Done|Delivered) return 0;; *) return 1;; esac; }
 
 # cmd_set_kind <issue#> <kind> : set the issue's native Type + add its label (additive; never removes).
 # Idempotent — kind is intrinsic (a bug is always a bug), so re-applying converges. Repo-scoped (not board).
@@ -493,7 +489,8 @@ cmd_set_kind() {
 
 # _ghp_set_status_by_item <item-id> <status> : set Status on a KNOWN board-item id (NO re-query, so it is
 # safe right after item-add — dodging the stale item-list race). Returns non-zero if the ids/option are
-# unresolvable or the mutation fails. Shared by cmd_set_status and the create-path seed in _ghp_board_add.
+# unresolvable or the mutation fails. Used by the create-path seed in _ghp_board_add (the `set-status`
+# verb that also shared it was ported to the native `board` component — PLAN 0072.015).
 _ghp_set_status_by_item() {
   local item="$1" status="$2" cache pid fid oid
   cache="$(_ghp_cache)"; [ -f "$cache" ] || return 1
@@ -505,28 +502,11 @@ _ghp_set_status_by_item() {
     -f p="$pid" -f i="$item" -f f="$fid" -f o="$oid" >/dev/null 2>&1
 }
 
-cmd_set_status() {
-  _ghp_need || return 2
-  pcfg_resolve
-  local issue="${1:?issue# required}" status="${2:?Status required}" cache item
-  cache="$(_ghp_cache)"; [ -f "$cache" ] || { _ghp_err "project not ensured — run ensure-project first"; return 1; }
-  item="$(_ghp_board_item_for "$issue")"; [ -n "$item" ] || { _ghp_err "no board item for issue #$issue"; return 1; }
-  [ -n "$(_ghp_status_oid_fresh "$status")" ] || { _ghp_err "no Status option '$status' on board (even after a cache refresh)"; return 1; }
-  _ghp_set_status_by_item "$item" "$status" || { _ghp_err "failed to set Status for #$issue"; return 1; }
-  _ghp_ok "#$issue Status=$status"
-  # Keep the GitHub issue STATE in lockstep with the board Status: a TERMINAL status closes the issue
-  # (Done items are Closed — the convention the rest of the board follows); moving back OUT of a terminal
-  # status reopens it. The state read only runs on the non-terminal branch (no cost on close).
-  local slug; slug="$(_ghp_repo_slug)"
-  if _ghp_status_closes "$status"; then
-    gh issue close "$issue" --repo "$slug" >/dev/null 2>&1 && _ghp_ok "#$issue closed (Status=$status)" \
-      || _ghp_warn "#$issue Status=$status but issue NOT closed — a Done item must be Closed; retry set-status"
-  elif [ "$(gh issue view "$issue" --repo "$slug" --json state -q .state 2>/dev/null)" = CLOSED ]; then
-    gh issue reopen "$issue" --repo "$slug" >/dev/null 2>&1 && _ghp_ok "#$issue reopened (Status=$status)" \
-      || _ghp_warn "#$issue moved out of Done but NOT reopened"
-  fi
-  return 0
-}
+# NOTE: the `set-status` VERB was ported to the native Python `board` component (PLAN 0072.015) —
+# `board.sh set-status <issue#> <Status>` (native `gh project item-edit` + issue open/closed lockstep) and
+# `board.sh lifecycle <order> <t>` (which also rolls the parent EPIC). The shared helper
+# `_ghp_set_status_by_item` above is RETAINED for the create-path seed (`_ghp_board_add`), which only seeds
+# Backlog on a fresh add; it does no open/closed lockstep (a seeded item is never terminal).
 
 # ─────────────────────────────────────────────────────────────────────────────
 # read helpers
@@ -636,8 +616,8 @@ cmd_self_test() {
   _t "cache_get missing → empty"      "$(_ghp_cache_get '.nope.nope')"                     ""
   # an injection-style path must NOT execute as a jq program — treated as literal (missing) segments
   _t "cache_get injection inert"      "$(_ghp_cache_get '.project_id"] | keys | .[0] // "PWN')" ""
-  # status-option resolution (create-path seed + set-status share this): a valid Status resolves to its
-  # option id; an option absent from the board fails closed (empty) — never a silent wrong/UNSET status.
+  # status-option resolution (the create-path seed uses this): a valid Status resolves to its option id;
+  # an option absent from the board fails closed (empty) — never a silent wrong/UNSET status.
   _t "status_oid Backlog → o1"        "$(_ghp_status_oid "$d/t.json" Backlog)"  "o1"
   _t "status_oid Done → o2"           "$(_ghp_status_oid "$d/t.json" Done)"     "o2"
   _t "status_oid absent → empty"      "$(_ghp_status_oid "$d/t.json" Nope)"     ""
@@ -653,11 +633,6 @@ cmd_self_test() {
   _t "kind bug → label bug"           "$(_ghp_kind_label bug)"         "bug"
   _t "kind enhancement → label"       "$(_ghp_kind_label enhancement)" "enhancement"
   _t "kind feature → no label"        "$(_ghp_kind_label feature)"     ""
-  # terminal-status → issue must be Closed (Done/Delivered close; working statuses stay Open)
-  _tfail _ghp_status_closes "In Progress"
-  _tfail _ghp_status_closes Backlog
-  _t "status_closes Done"             "$(_ghp_status_closes Done && echo yes)"      "yes"
-  _t "status_closes Delivered"        "$(_ghp_status_closes Delivered && echo yes)" "yes"
   # canonical Status option list (PLAN 0072.007): reconciled to the board's true lifecycle —
   # Review (under-review) + Revise (changes-requested) present; Delivered kept as the terminal
   # delivered state. This list drives first-time field creation AND the non-destructive drift warn;
@@ -699,7 +674,6 @@ _ghp_main() {
     ensure-project)       shift; cmd_ensure_project "$@" ;;
     ensure-epic)          shift; cmd_ensure_epic "$@" ;;
     ensure-plan-subissue) shift; cmd_ensure_plan_subissue "$@" ;;
-    set-status)           shift; cmd_set_status "$@" ;;
     set-kind)             shift; cmd_set_kind "$@" ;;
     epic-issue)           shift; cmd_epic_issue "$@" ;;
     plan-issue)           shift; cmd_plan_issue "$@" ;;
@@ -709,7 +683,7 @@ _ghp_main() {
     --self-test)          cmd_self_test ;;
     ""|-h|--help)
       grep -E '^#   ' "${BASH_SOURCE[0]}" | sed 's/^#   //' >&2
-      printf 'usage: gh-pipeline.sh {ensure-project [title]|ensure-epic <order> <desc> [kind]|ensure-plan-subissue <epic#> <order> <desc> [kind]|set-status <issue#> <Status>|set-kind <issue#> <bug|feature|enhancement|task>|epic-issue <order>|plan-issue <order>|resolve-issue [PR#]|next-plan <epic#>|preflight|--self-test}\n' >&2
+      printf 'usage: gh-pipeline.sh {ensure-project [title]|ensure-epic <order> <desc> [kind]|ensure-plan-subissue <epic#> <order> <desc> [kind]|set-kind <issue#> <bug|feature|enhancement|task>|epic-issue <order>|plan-issue <order>|resolve-issue [PR#]|next-plan <epic#>|preflight|--self-test}\n(the board Status write moved to the native `board.sh set-status`/`board.sh lifecycle` — PLAN 0072.015)\n' >&2
       return 2 ;;
     *) _ghp_err "unknown verb: $1"; return 2 ;;
   esac
