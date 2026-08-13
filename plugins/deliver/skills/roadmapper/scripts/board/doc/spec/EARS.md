@@ -52,6 +52,18 @@ shell is `board/gh.py`.
   between create and board-add (or a seed that never landed) is repaired on the next run, never left
   permanently UNSET. The converge decision is a **total pure reducer** over
   `(found_issue, on_board, status_is_set)`. *(Slice 3a — closes the F0 class for good.)*
+- **EARS-019** — WHEN `ensure-plan <epic#> <order>` creates a PLAN, the system SHALL create it under the
+  EPIC via `gh issue create --parent <epic#>`, then board+seed+kind as EARS-016. The `--parent` link is
+  NOT atomic (gh does create-then-`AddSubIssue` internally), so a half-failed link is recovered by the
+  next converge (EARS-020), never a lost sub-issue. *(Slice 4.)*
+- **EARS-020** — WHEN `ensure-plan` converges an already-present PLAN, the system SHALL heal a **missing**
+  parent link (`gh issue edit --parent`, non-fatal) in addition to board membership + Backlog seed + kind;
+  the converge decision is a **total pure reducer** over `(found, on_board, status_is_set, needs_link)`.
+  IF the PLAN is already a sub-issue of a **DIFFERENT** EPIC, the system SHALL **warn and NOT repoint** it
+  (never silently steal a deliberately-moved child). *(Slice 4.)*
+- **EARS-021** — WHEN `next-plan <epic#>` runs, the system SHALL derive the EPIC order from the EPIC's
+  title and return the next free `NNNN.SSS` = (max `SSS` among the EPIC's child `PLAN NNNN.SSS` titles,
+  matched as a **substring**) + 1; an EPIC with no PLAN children ⇒ `.001`. *(Slice 4.)*
 
 ## State-driven
 
@@ -89,3 +101,7 @@ shell is `board/gh.py`.
   mistaken for "marker absent" (which would duplicate the EPIC). AND IF the `<order>` is not 1–4 digits,
   THEN it SHALL be rejected (fail closed, no write). AND the kind's Type/label application SHALL be
   **best-effort** (a non-org repo or a missing label ⇒ warn, the verb still succeeds). *(Slice 3a.)*
+- **EARS-022** — IF a PLAN `<order>` is not `NNNN.SSS`, OR the `<epic#>` is not a bare issue number, OR the
+  EPIC's title carries no derivable 4-digit order, THEN the system SHALL fail closed (exit non-zero, no
+  write). Issue-number comparisons (the parent-link check) SHALL be canonicalized (`"0337"`≡`"337"`) so a
+  correctly-linked PLAN never triggers a needless re-link loop. *(Slice 4.)*

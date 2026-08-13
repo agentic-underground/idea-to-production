@@ -190,26 +190,89 @@ def ensure_epic(order: str, desc: str, kind: str = "feature") -> str:
     found = create.issue_number_with_marker(_issues_with_body_json(), marker)
     item_id, status = create.find_item(_item_list_json(owner, number), found) if found else (None, None)
     actions = create.ensure_epic_actions(found, item_id is not None, status is not None)
-
-    issue = found
+    ctx = {
+        "owner": owner, "number": number, "pid": pid, "slug": slug, "kind": kind,
+        "issue": found, "item_id": item_id, "epic_no": None,
+        "create_argv": ["gh", "issue", "create", "--repo", slug,
+                        "--title", create.epic_title(order, desc), "--body-file", "-"],
+        "body": create.compose_body(desc, marker),
+    }
     for action in actions:
-        if action == create.CREATE:
-            body = create.compose_body(desc, marker)
-            out = _run(["gh", "issue", "create", "--repo", slug,
-                        "--title", create.epic_title(order, desc), "--body-file", "-"], stdin=body)
-            issue = _parse_issue_number(out)
-        elif action == create.BOARD_ADD_SEED:
-            url = f"https://github.com/{slug}/issues/{issue}"
-            added = _run(["gh", "project", "item-add", number, "--owner", owner, "--url", url, "--format", "json"])
-            new_item = json.loads(added).get("id")
-            if new_item:
-                _write_status_option(owner, number, pid, new_item, "Backlog")
-        elif action == create.SEED:
-            if item_id:
-                _write_status_option(owner, number, pid, item_id, "Backlog")
-        elif action == create.SET_KIND:
-            _apply_kind(slug, issue, kind)
-    return issue or ""
+        _execute_action(action, ctx)
+    return ctx["issue"] or ""
+
+
+def _execute_action(action: str, ctx: dict) -> None:
+    """Execute one converge action against a mutable context — shared by `ensure_epic`/`ensure_plan` so the
+    item-add+seed / kind / link steps live in ONE place (no drift). `CREATE` sets `ctx["issue"]`."""
+    if action == create.CREATE:
+        ctx["issue"] = _parse_issue_number(_run(ctx["create_argv"], stdin=ctx["body"]))
+    elif action == create.LINK_PARENT:
+        # heal a MISSING sub-issue link — NON-fatal (warn), so a permission failure never aborts the
+        # board/seed heal that follows (EARS-020, matching bash `_ghp_link_subissue` warn contract).
+        _run_soft(["gh", "issue", "edit", ctx["issue"], "--repo", ctx["slug"], "--parent", ctx["epic_no"]],
+                  f"link #{ctx['issue']} → parent #{ctx['epic_no']}")
+    elif action == create.BOARD_ADD_SEED:
+        url = f"https://github.com/{ctx['slug']}/issues/{ctx['issue']}"
+        added = _run(["gh", "project", "item-add", ctx["number"], "--owner", ctx["owner"],
+                      "--url", url, "--format", "json"])
+        new_item = json.loads(added).get("id")
+        if new_item:
+            _write_status_option(ctx["owner"], ctx["number"], ctx["pid"], new_item, "Backlog")
+    elif action == create.SEED:
+        if ctx["item_id"]:
+            _write_status_option(ctx["owner"], ctx["number"], ctx["pid"], ctx["item_id"], "Backlog")
+    elif action == create.SET_KIND:
+        _apply_kind(ctx["slug"], ctx["issue"], ctx["kind"])
+
+
+def ensure_plan(epic_no: str, order: str, desc: str, kind: str = "feature") -> str:
+    """Create-or-converge a PLAN sub-issue under an EPIC, marker-idempotent + converge-correct (EARS-019…022).
+
+    Same shape as `ensure_epic` plus the parent-link dimension: `gh issue create --parent` at create (NOT
+    atomic — a half-failed link is recovered by the next converge), and a MISSING link is healed via
+    `gh issue edit --parent`. A PLAN already owned by a DIFFERENT EPIC is left alone (warn, never stolen).
+    """
+    if shutil.which("gh") is None:
+        raise BoardUnreachable("gh CLI required")
+    epic_no = create.norm_issue_number(epic_no)                # EARS-022 (canonical, so the ==check is stable)
+    order = create.norm_plan_order(order)
+    owner, number, pid = _project_ref()
+    slug = _repo_slug()
+    marker = create.plan_marker(order)
+    found = create.issue_number_with_marker(_issues_with_body_json(), marker)
+    item_id, status = create.find_item(_item_list_json(owner, number), found) if found else (None, None)
+    parent = create.parent_number(_run(["gh", "issue", "view", found, "--repo", slug, "--json", "parent"])) if found else None
+    dec = create.link_decision(parent, epic_no)
+    if dec == "skip":
+        # the PLAN is a sub-issue of a DIFFERENT EPIC — it is not ours to manage; warn and touch NOTHING
+        # (no repoint, and no seed/kind either — never mutate a deliberately-moved child).
+        print(f"board: warning: #{found} is a sub-issue of a DIFFERENT EPIC (#{parent}) — leaving it untouched "
+              f"(not repointing to #{epic_no})", file=sys.stderr)
+        return found
+    actions = create.ensure_plan_actions(found, item_id is not None, status is not None, dec == "link")
+    ctx = {
+        "owner": owner, "number": number, "pid": pid, "slug": slug, "kind": kind,
+        "issue": found, "item_id": item_id, "epic_no": epic_no,
+        "create_argv": ["gh", "issue", "create", "--repo", slug, "--title", create.plan_title(order, desc),
+                        "--body-file", "-", "--parent", epic_no],
+        "body": create.compose_body(desc, marker),
+    }
+    for action in actions:
+        _execute_action(action, ctx)
+    return ctx["issue"] or ""
+
+
+def next_plan(epic_no: str) -> str:
+    """The next free PLAN order (``NNNN.SSS``) under an EPIC — from its title + child titles (EARS-021)."""
+    epic_no = create.norm_issue_number(epic_no)
+    slug = _repo_slug()
+    data = json.loads(_run(["gh", "issue", "view", epic_no, "--repo", slug, "--json", "title,subIssues"]))
+    epic_order = create.epic_order_from_title(data.get("title") or "")
+    if not epic_order:
+        raise BoardUnreachable(f"could not derive an EPIC order from #{epic_no}'s title (EARS-022)")
+    titles = [n.get("title") or "" for n in (data.get("subIssues") or {}).get("nodes", [])]
+    return create.next_plan_order(epic_order, titles)
 
 
 def _apply_kind(slug: str, issue: str, kind: str) -> None:
