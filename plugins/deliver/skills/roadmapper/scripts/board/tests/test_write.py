@@ -75,6 +75,13 @@ def test_select_item_id_malformed_json_fails_closed():  # @EARS-012
         w.select_item_id("]not json", "378")
 
 
+def test_select_item_id_non_numeric_issue_fails_closed():  # @EARS-012
+    # a non-numeric issue# (e.g. fat-fingered raw `set-status`) fails closed as a typed BoardError —
+    # so the CLI prints a clean `board: …` message, never a bare ValueError traceback
+    with pytest.raises(IssueNotOnBoard):
+        w.select_item_id(ITEMS, "not-a-number")
+
+
 # ── EARS-013: issue_state_action — total decision over (target_status, issue_state) ───────────────
 def test_issue_state_action_terminal_closes_without_reading_state():  # @EARS-002 / @EARS-013
     # a terminal target closes regardless of (and without needing) the current issue state

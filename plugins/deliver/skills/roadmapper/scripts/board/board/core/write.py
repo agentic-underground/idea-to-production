@@ -55,7 +55,10 @@ def select_item_id(items_json: str, issue_no: str) -> str:
     """
     data = _loads(items_json)
     items = data.get("items", []) if isinstance(data, dict) else data
-    target = int(issue_no)
+    try:
+        target = int(issue_no)
+    except (ValueError, TypeError):
+        raise IssueNotOnBoard(f"{issue_no!r} is not a numeric issue id") from None
     for item in items:
         content = item.get("content") or {}
         if content.get("number") == target:

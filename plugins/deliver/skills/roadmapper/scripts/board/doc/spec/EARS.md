@@ -1,4 +1,4 @@
-# EARS — `board` Slice 1: lifecycle + EPIC rollup
+# EARS — `board`: lifecycle + EPIC rollup + native Status write
 
 Requirements for the `board` component. Slice 1 (PLAN 0072.014) established the lifecycle + EPIC rollup;
 **Slice 2 (PLAN 0072.015)** ports the Status *write* into native Python (EARS-011/012/013 + the rewritten
