@@ -418,6 +418,20 @@ cmd_ensure_plan_subissue() {
 # Pure (cache in, id out) — the NAME is bound as DATA (--arg), so --self-test drives it with a fixture.
 _ghp_status_oid() { jq -r --arg s "$2" '.fields.Status.options[$s] // empty' "$1" 2>/dev/null; }
 
+# _ghp_status_oid_fresh <status> : resolve a Status option id, REFRESHING the field cache once on a miss.
+# The cache is built by ensure-project and not otherwise refreshed, so a board option ADDED later (e.g. a
+# new `Review`) is invisible to a stale cache → a false "no Status option". On a cache HIT this returns
+# immediately (no gh); only a miss rebuilds from the live board and retries. Empty iff genuinely absent.
+_ghp_status_oid_fresh() {
+  local status="$1" cache oid num pid owner
+  cache="$(_ghp_cache)"
+  oid="$(_ghp_status_oid "$cache" "$status")"; [ -n "$oid" ] && { printf '%s' "$oid"; return 0; }
+  num="$(_ghp_cache_get '.project_number')"; pid="$(_ghp_cache_get '.project_id')"; owner="$(_ghp_owner)"
+  [ -n "$num" ] && [ -n "$pid" ] && [ -n "$owner" ] || return 0
+  _ghp_build_cache "$owner" "$num" "$pid" >/dev/null 2>&1 || return 0
+  _ghp_status_oid "$cache" "$status"
+}
+
 # ── issue KIND (native Type + label) + terminal-status → issue-STATE (Closed) ────────────────────────
 # The code owns the FULL issue lifecycle: create+type+label, move Status, and CLOSE on a terminal status
 # (a Done item is a Closed issue, consistent with the rest of the board). Mappings are PURE → --self-test.
@@ -449,7 +463,7 @@ _ghp_set_status_by_item() {
   local item="$1" status="$2" cache pid fid oid
   cache="$(_ghp_cache)"; [ -f "$cache" ] || return 1
   pid="$(_ghp_cache_get '.project_id')"; fid="$(jq -r '.fields.Status.id // empty' "$cache")"
-  oid="$(_ghp_status_oid "$cache" "$status")"
+  oid="$(_ghp_status_oid_fresh "$status")"
   [ -n "$pid" ] && [ -n "$fid" ] && [ -n "$oid" ] || return 1
   # shellcheck disable=SC2016  # $p/$i/$f/$o are GraphQL variables (bound via -f), NOT shell expansions.
   ghp_graphql -f query='mutation($p:ID!,$i:ID!,$f:ID!,$o:String!){updateProjectV2ItemFieldValue(input:{projectId:$p,itemId:$i,fieldId:$f,value:{singleSelectOptionId:$o}}){projectV2Item{id}}}' \
@@ -462,7 +476,7 @@ cmd_set_status() {
   local issue="${1:?issue# required}" status="${2:?Status required}" cache item
   cache="$(_ghp_cache)"; [ -f "$cache" ] || { _ghp_err "project not ensured — run ensure-project first"; return 1; }
   item="$(_ghp_board_item_for "$issue")"; [ -n "$item" ] || { _ghp_err "no board item for issue #$issue"; return 1; }
-  [ -n "$(_ghp_status_oid "$cache" "$status")" ] || { _ghp_err "no Status option '$status' on board"; return 1; }
+  [ -n "$(_ghp_status_oid_fresh "$status")" ] || { _ghp_err "no Status option '$status' on board (even after a cache refresh)"; return 1; }
   _ghp_set_status_by_item "$item" "$status" || { _ghp_err "failed to set Status for #$issue"; return 1; }
   _ghp_ok "#$issue Status=$status"
   # Keep the GitHub issue STATE in lockstep with the board Status: a TERMINAL status closes the issue
@@ -549,6 +563,8 @@ cmd_self_test() {
   _t "status_oid Backlog → o1"        "$(_ghp_status_oid "$d/t.json" Backlog)"  "o1"
   _t "status_oid Done → o2"           "$(_ghp_status_oid "$d/t.json" Done)"     "o2"
   _t "status_oid absent → empty"      "$(_ghp_status_oid "$d/t.json" Nope)"     ""
+  # cache HIT path returns from the cache with NO gh/refresh (the miss→refresh→retry path is proven live)
+  _t "status_oid_fresh hit → o1"      "$(_ghp_status_oid_fresh Backlog)"        "o1"
   rm -rf "$d"
   # kind → native Type + label (bugs are Type=Bug + label=bug; features Type=Feature; enhancements labelled)
   _t "kind bug → Type Bug"            "$(_ghp_kind_type bug)"          "Bug"
