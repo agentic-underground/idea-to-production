@@ -80,14 +80,27 @@ _rgf_trim_blanks() { sed -e '/./,$!d' | sed -e :a -e '/^\n*$/{$d;N;ba;}'; }
 # taking the LAST (trailer) match. Requiring digits skips a PROSE example like `<!-- pipeline-plan-NNNN.SSS -->`
 # that a Summary/Plan may quote when describing the format; trailer-most wins over any in-prose numeric example.
 _rgf_extract_marker() { printf '%s' "$1" | grep -oE '<!-- pipeline-(epic|plan)-[0-9]{4}(\.[0-9]{3})? -->' | tail -1; }
-# _rgf_extract_annotations <body> : echo the line-anchored Depends-on:/Touches: trailer lines, in order.
-_rgf_extract_annotations() { printf '%s\n' "$1" | grep -iE '^[[:space:]]*(Depends-on|Touches):' || true; }
-# _rgf_extract_summary <body> : echo the prose under `## Summary`, up to the next `---` or `## ` heading.
+# _rgf_extract_annotations <body> : echo the Depends-on:/Touches: lines from the TRAILER block only — the
+# lines that FOLLOW the real marker — NOT a whole-body grep. A narrative "Touches:" line in the ## Plan
+# prose must never be promoted into the trailer (that would corrupt it + poison the CS3 fan-out, and grow
+# unbounded on every re-compose). No marker ⇒ no trailer ⇒ no annotations.
+_rgf_extract_annotations() {
+  local body="$1" marker; marker="$(_rgf_extract_marker "$body")"; [ -n "$marker" ] || return 0
+  printf '%s\n' "$body" \
+    | awk -v m="$marker" '{l[NR]=$0; if(index($0,m))last=NR} END{for(i=last+1;i<=NR;i++)print l[i]}' \
+    | grep -iE '^[[:space:]]*(Depends-on|Touches):' || true
+}
+# _rgf_strip_trailing_rule : drop a trailing `---` separator line (+ trailing blanks) from stdin.
+_rgf_strip_trailing_rule() {
+  awk '{l[NR]=$0} END{e=NR; while(e>0 && l[e]~/^[[:space:]]*$/)e--; if(e>0 && l[e]~/^---[[:space:]]*$/)e--; for(i=1;i<=e;i++)print l[i]}'
+}
+# _rgf_extract_summary <body> : echo the prose under `## Summary`, bounded by the `## Plan` heading (NOT the
+# first `---`/`## ` — a Summary may itself contain a rule or a sub-heading), minus the trailing `---` separator.
 _rgf_extract_summary() {
   printf '%s\n' "$1" | awk '
     /^##[[:space:]]+Summary[[:space:]]*$/ {grab=1; next}
-    grab && (/^---[[:space:]]*$/ || /^##[[:space:]]/) {grab=0}
-    grab {print}' | _rgf_trim_blanks
+    grab && /^##[[:space:]]+Plan[[:space:]]*$/ {grab=0}
+    grab {print}' | _rgf_strip_trailing_rule | _rgf_trim_blanks
 }
 # _rgf_compose <summary> <plan> <marker> <annotations> : the canonical body (marker/annotations optional).
 _rgf_compose() {
@@ -194,6 +207,19 @@ cmd_self_test() {
   eq "$(_rgf_extract_marker "$body1")"      "$(_rgf_extract_marker "$body2")"      'idempotent: marker identical'
   eq "$(_rgf_extract_annotations "$body1")" "$(_rgf_extract_annotations "$body2")" 'idempotent: annotations identical'
   eq 'x' "$(printf '\n\nx\n\n' | _rgf_trim_blanks)" 'trim_blanks strips leading+trailing blanks'
+  # Finding 1 (HIGH): a narrative "Touches:" line in the PLAN prose must NOT be promoted into the trailer,
+  # and the trailer must be byte-identical across a SECOND re-compose (idempotent, no unbounded growth).
+  local pbody a1 pbody2
+  pbody="$(_rgf_compose 'Sum.' "$(printf 'Plan mentions Touches: the auth module and the board.\nmore.')" "$M" "$A")"
+  a1="$(_rgf_extract_annotations "$pbody")"
+  eq "$A" "$a1" 'annotations: narrative "Touches:" in plan prose NOT promoted (trailer-scoped)'
+  pbody2="$(_rgf_compose "$(_rgf_extract_summary "$pbody")" 'new plan.' "$(_rgf_extract_marker "$pbody")" "$a1")"
+  eq "$A" "$(_rgf_extract_annotations "$pbody2")" 'annotations: byte-identical after a SECOND re-compose'
+  # Finding 2 (MEDIUM): a Summary with an internal `---` and a `## ` sub-heading survives the keep-Summary path.
+  local S2 sbody
+  S2="$(printf 'Intro.\n\n---\n\n## Detail\ntail.')"
+  sbody="$(_rgf_compose "$S2" 'P.' "$M" "$A")"
+  eq "$S2" "$(_rgf_extract_summary "$sbody")" 'summary: internal --- and ## sub-heading preserved'
   # compose WITHOUT marker/annotations (a fresh EPIC/PLAN) stays well-formed.
   has 'compose: bare body still well-formed' "$(_rgf_compose 'S' 'P' '' '')" '^## Plan$'
   if [ "$fails" -eq 0 ]; then echo "✓ set-plan self-test passed"; return 0
