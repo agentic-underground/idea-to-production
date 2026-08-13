@@ -30,11 +30,16 @@ def _ghp() -> Path:
 
 
 def _run(args: list[str]) -> str:
-    """Run an argument-list command; return stripped stdout; raise BoardUnreachable on any failure."""
+    """Run an argument-list command; return stripped stdout; raise BoardUnreachable on any failure.
+
+    Bounded by a timeout so a hung `gh`/`bash` fails closed instead of hanging the CLI.
+    """
     try:
-        r = subprocess.run(args, capture_output=True, text=True)
+        r = subprocess.run(args, capture_output=True, text=True, timeout=60)
     except FileNotFoundError as e:
         raise BoardUnreachable(f"command not found: {args[0]}") from e
+    except subprocess.TimeoutExpired as e:
+        raise BoardUnreachable(f"`{' '.join(args[:3])}…` timed out") from e
     if r.returncode != 0:
         raise BoardUnreachable(f"`{' '.join(args[:3])}…` failed (rc={r.returncode}): {r.stderr.strip()}")
     return r.stdout.strip()
@@ -79,11 +84,13 @@ def _project_ref() -> tuple[str, str]:
     raise BoardUnreachable(f"no pipeline-registry entry for {root}")
 
 
-def board_statuses(epic_order: str) -> tuple[str | None, list[str]]:
-    """Return ``(epic_status, [child_status, ...])`` for an EPIC — one board read, no bespoke GraphQL.
+def board_statuses(epic_order: str) -> tuple[str, str | None, list[str]]:
+    """Return ``(epic_issue#, epic_status, [child_status, ...])`` for an EPIC — one board read.
 
-    `gh issue view <epic> --json subIssues` gives the child issue#s; `gh project item-list` gives every
-    item's Status; we map issue# → Status. Children with no board Status (unset) are omitted.
+    `gh issue view <epic> --json subIssues` gives the children; `gh project item-list` gives every item's
+    Status; we map issue# → Status. A CLOSED child is resolved (the reliable terminal signal, since its
+    board Status can be stale); an OPEN child contributes its live board Status (unset ⇒ omitted). The
+    resolved EPIC issue# is returned so callers need not re-resolve it.
     """
     if shutil.which("gh") is None:
         raise BoardUnreachable("gh CLI required")
@@ -98,15 +105,14 @@ def board_statuses(epic_order: str) -> tuple[str | None, list[str]]:
         num = (it.get("content") or {}).get("number")
         if num is not None:
             status_by_issue[str(num)] = it.get("status") or ""
-    # A CLOSED child is resolved (Done or superseded) — the reliable terminal signal, since its board
-    # Status can be stale. An OPEN child contributes its (live) board Status; unset ⇒ omitted.
     children: list[str] = []
     for n in nodes:
+        num = n.get("number")
+        if num is None:
+            continue
         if n.get("state") == "CLOSED":
             children.append("Done")
-        else:
-            s = status_by_issue.get(str(n["number"]))
-            if s:
-                children.append(s)
+        elif status_by_issue.get(str(num)):
+            children.append(status_by_issue[str(num)])
     epic_status = status_by_issue.get(epic_no) or None
-    return epic_status, children
+    return epic_no, epic_status, children

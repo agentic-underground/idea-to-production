@@ -34,8 +34,11 @@ The decidable core is `board/core/lifecycle.py`; the I/O shell is `board/gh.py`.
 
 ## Unwanted behaviour (fail-closed / guards)
 
-- **EARS-007** — IF the board is unreachable OR an order cannot be resolved to an issue, THEN the system
-  SHALL fail closed (exit non-zero, clear message, **no partial write**).
+- **EARS-007** — IF the board is unreachable OR an order cannot be resolved to an issue at the start of a
+  command, THEN the system SHALL fail closed (exit non-zero, clear message, **no write at all**). *(If a
+  transient failure occurs mid-sequence — after the PLAN's Status is written but before the parent rollup
+  — the PLAN move stands and the EPIC is reconcilable via the idempotent `board rollup <epic-order>`; this
+  is strictly better than the pre-tool status quo, where no rollup happened at all.)*
 - **EARS-008** — IF a transition verb is unknown, OR a value that is not a roadmap order (e.g. a bare
   GitHub issue number) is supplied where an order is expected, THEN the system SHALL reject it (exit
   non-zero) and make no board change.

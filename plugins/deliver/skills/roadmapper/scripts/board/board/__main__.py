@@ -18,12 +18,11 @@ from .core.errors import BoardError
 
 
 def _apply_rollup(epic_order: str) -> None:
-    epic_status, children = gh.board_statuses(epic_order)
+    epic_no, epic_status, children = gh.board_statuses(epic_order)
     target = lc.rollup_status(children, epic_status or "")
     if target is None:
         print(f"EPIC {epic_order}: no rollup change (current={epic_status!r}, children={children})")
         return
-    epic_no = gh.epic_issue(epic_order)
     gh.set_status(epic_no, target)
     print(f"EPIC {epic_order} (#{epic_no}) rolled → {target}")
 
