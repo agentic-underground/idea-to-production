@@ -18,6 +18,7 @@
 #   set-body     <issue#> <body-file>                 # replace issue body w/ file, preserving the marker
 #   set-plan     <issue#> <plan-file> [summary-file]  # compose `## Summary`+`---`+`## Plan` from files
 #   set-stub     <issue#> <summary-text> [plan-text]  # compose a well-formed stub body from INLINE text
+#   sync-plan    <order>  <plan-file> [summary-file]  # plan-mode→issue PIPE: resolve ORDER→issue, write Plan
 #   set-estimate <issue#> <number>                    # board "Estimate" (NUMBER) field — story points
 #   set-priority <issue#> <Urgent|High|Medium|Low>    # board "Priority" (single-select) field
 set -uo pipefail
@@ -136,6 +137,39 @@ cmd_set_plan() {   # issue# plan-file [summary-file]
   body="$(_rgf_compose "$summary" "$plan" "$marker" "$anns")"
   printf '%s' "$body" | gh issue edit "$issue" --repo "$slug" --body-file - >/dev/null \
     && echo "issue #$issue plan synced${marker:+ (marker preserved)}${anns:+ (annotations preserved)}"
+}
+
+# _rgf_resolve_order <order> : classify + normalize a ROADMAP ORDER — echo "plan <NNNN.SSS>" or "epic <NNNN>",
+# or empty + rc1 if malformed. The plan-mode pipe keys on the ORDER (never a GitHub issue#: the two-number-
+# space hazard) so a `Depends-on:` token and a sync target speak the same space. A dotted order is a PLAN;
+# a bare order is an EPIC. Normalization (zero-pad, reject 5-digit / trailing-dot) is the sourced validators'.
+_rgf_resolve_order() {
+  local o="${1:-}" n
+  if [[ "$o" == *.* ]]; then
+    n="$(_ghp_norm_plan_order "$o" 2>/dev/null)" && { printf 'plan %s' "$n"; return 0; }
+  else
+    n="$(_ghp_norm_order "$o" 2>/dev/null)" && { printf 'epic %s' "$n"; return 0; }
+  fi
+  return 1
+}
+
+# cmd_sync_plan <order> <plan-file> [summary-file] : the plan-mode→issue PIPE (PLAN 0072.003). Resolve a
+# roadmap ORDER → its board issue (via the pipeline marker), then write the approved plan into `## Plan`
+# through the composer (Summary/marker/annotations preserved). Same verb serves reviewer re-sync. GRACEFUL
+# no-op when the board is unreachable or the order is absent — a plan-sync must never hard-fail the operator's
+# post-approval step. A malformed order IS an error (return 2) — that's a usage mistake, not a degraded board.
+cmd_sync_plan() {
+  local order="${1:?order (NNNN or NNNN.SSS)}" planfile="${2:?plan-file}" sumfile="${3:-}" kind norm issue
+  [[ -f "$planfile" ]] || { echo "roadmapper-gh-fields: plan file not found: $planfile" >&2; return 1; }
+  local res; res="$(_rgf_resolve_order "$order")" \
+    || { echo "roadmapper-gh-fields: '$order' is not a roadmap order (NNNN epic or NNNN.SSS plan) — pass the ORDER, never a GitHub issue#." >&2; return 2; }
+  kind="${res%% *}"; norm="${res#* }"
+  if [[ "$kind" == plan ]]; then issue="$(cmd_plan_issue "$norm" 2>/dev/null)"; else issue="$(cmd_epic_issue "$norm" 2>/dev/null)"; fi
+  if [[ -z "$issue" ]]; then
+    echo "roadmapper-gh-fields: $kind $norm not resolvable on the board (unreachable or absent) — plan-sync skipped (no-op)." >&2
+    return 0
+  fi
+  cmd_set_plan "$issue" "$planfile" ${sumfile:+"$sumfile"}
 }
 
 # cmd_set_stub <issue#> <summary-text> [plan-text] : compose a WELL-FORMED body from inline text (no temp
@@ -262,6 +296,16 @@ cmd_self_test() {
   local realbody; realbody="$(_rgf_compose "$(_rgf_extract_summary "$stubbody")" 'Real plan.' "$(_rgf_extract_marker "$stubbody")" '')"
   has 'stub→real: marker survives'    "$realbody" '<!-- pipeline-plan-0072\.001 -->'
   has 'stub→real: plan text replaced' "$realbody" '^Real plan\.$'
+  # PLAN 0072.003 — the plan-mode→issue pipe resolves by roadmap ORDER (NNNN.SSS plan / NNNN epic), NEVER a
+  # GitHub issue# (the two-number-space hazard). _rgf_resolve_order classifies+normalizes the order so
+  # `sync-plan` can map it to an issue via the marker; a malformed order fails (never silently mis-resolves).
+  eq 'plan 0072.003' "$(_rgf_resolve_order 72.3)"     'resolve_order: NNNN.SSS → plan (zero-padded)'
+  eq 'plan 0072.003' "$(_rgf_resolve_order 0072.003)" 'resolve_order: already-padded plan kept'
+  eq 'epic 0073'     "$(_rgf_resolve_order 73)"       'resolve_order: bare NNNN → epic (zero-padded)'
+  eq 'epic 0072'     "$(_rgf_resolve_order 0072)"     'resolve_order: already-padded epic kept'
+  eq ''              "$(_rgf_resolve_order abc 2>/dev/null)"     'resolve_order: non-numeric → empty (reject)'
+  eq ''              "$(_rgf_resolve_order 12345 2>/dev/null)"   'resolve_order: 5-digit epic → empty (reject)'
+  eq ''              "$(_rgf_resolve_order 0072. 2>/dev/null)"   'resolve_order: trailing-dot plan → empty (reject)'
   if [ "$fails" -eq 0 ]; then echo "✓ composer self-test passed"; return 0
   else echo "✗ composer self-test: $fails failure(s)"; return 1; fi
 }
@@ -270,8 +314,9 @@ case "${1:-}" in
   set-body)     shift; cmd_set_body "$@" ;;
   set-plan)     shift; cmd_set_plan "$@" ;;
   set-stub)     shift; cmd_set_stub "$@" ;;
+  sync-plan)    shift; cmd_sync_plan "$@" ;;
   set-estimate) shift; cmd_set_estimate "$@" ;;
   set-priority) shift; cmd_set_priority "$@" ;;
   --self-test)  cmd_self_test ;;
-  *) echo "usage: roadmapper-gh-fields.sh {set-body <issue#> <file> | set-plan <issue#> <plan-file> [summary-file] | set-stub <issue#> <summary-text> [plan-text] | set-estimate <issue#> <n> | set-priority <issue#> <Urgent|High|Medium|Low> | --self-test}" >&2; exit 2 ;;
+  *) echo "usage: roadmapper-gh-fields.sh {set-body <issue#> <file> | set-plan <issue#> <plan-file> [summary-file] | set-stub <issue#> <summary-text> [plan-text] | sync-plan <order> <plan-file> [summary-file] | set-estimate <issue#> <n> | set-priority <issue#> <Urgent|High|Medium|Low> | --self-test}" >&2; exit 2 ;;
 esac
