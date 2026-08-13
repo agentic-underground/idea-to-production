@@ -470,9 +470,11 @@ cmd_set_status() {
   # status reopens it. The state read only runs on the non-terminal branch (no cost on close).
   local slug; slug="$(_ghp_repo_slug)"
   if _ghp_status_closes "$status"; then
-    gh issue close "$issue" --repo "$slug" >/dev/null 2>&1 && _ghp_ok "#$issue closed (Status=$status)"
+    gh issue close "$issue" --repo "$slug" >/dev/null 2>&1 && _ghp_ok "#$issue closed (Status=$status)" \
+      || _ghp_warn "#$issue Status=$status but issue NOT closed — a Done item must be Closed; retry set-status"
   elif [ "$(gh issue view "$issue" --repo "$slug" --json state -q .state 2>/dev/null)" = CLOSED ]; then
-    gh issue reopen "$issue" --repo "$slug" >/dev/null 2>&1 && _ghp_ok "#$issue reopened (Status=$status)"
+    gh issue reopen "$issue" --repo "$slug" >/dev/null 2>&1 && _ghp_ok "#$issue reopened (Status=$status)" \
+      || _ghp_warn "#$issue moved out of Done but NOT reopened"
   fi
   return 0
 }
@@ -552,6 +554,7 @@ cmd_self_test() {
   _t "kind bug → Type Bug"            "$(_ghp_kind_type bug)"          "Bug"
   _t "kind feature → Type Feature"    "$(_ghp_kind_type feature)"      "Feature"
   _t "kind enhancement → Type Feature" "$(_ghp_kind_type enhancement)" "Feature"
+  _t "kind task → Type Task"          "$(_ghp_kind_type task)"         "Task"
   _t "kind unknown → empty (reject)"  "$(_ghp_kind_type nope)"         ""
   _t "kind bug → label bug"           "$(_ghp_kind_label bug)"         "bug"
   _t "kind enhancement → label"       "$(_ghp_kind_label enhancement)" "enhancement"
