@@ -8,6 +8,10 @@ Verbs:
                                         `lifecycle` verb is what always rolls the parent.
   ensure-epic <order> <desc> [kind]     create-or-converge an EPIC issue (marker-idempotent, heals board
                                         membership + Backlog seed on re-run); echoes the issue number.
+  ensure-plan <epic#> <order> <desc> [kind]
+                                        create-or-converge a PLAN sub-issue under an EPIC (marker-idempotent;
+                                        heals a missing parent link + board + seed); echoes the issue number.
+  next-plan   <epic#>                   echo the next free PLAN order (NNNN.SSS) under an EPIC.
 
 Fails closed (non-zero, no partial write) on an unreachable board, an unresolvable/malformed order, or
 an unknown transition verb.
@@ -58,6 +62,17 @@ def _ensure_epic(order: str, desc: str, kind: str) -> int:
     return 0
 
 
+def _ensure_plan(epic_no: str, order: str, desc: str, kind: str) -> int:
+    issue = gh.ensure_plan(epic_no, order, desc, kind)   # create-or-converge sub-issue (EARS-019…022)
+    print(issue)
+    return 0
+
+
+def _next_plan(epic_no: str) -> int:
+    print(gh.next_plan(epic_no))                  # next free NNNN.SSS under the EPIC (EARS-021)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="board", description="GitHub Project board integration (lifecycle + rollup)")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -73,6 +88,13 @@ def main(argv: list[str] | None = None) -> int:
     ep.add_argument("order", help="EPIC order, e.g. 0072")
     ep.add_argument("desc", help="short description")
     ep.add_argument("kind", nargs="?", default="feature", help="bug | feature | enhancement | task")
+    pp = sub.add_parser("ensure-plan", help="create-or-converge a PLAN sub-issue under an EPIC")
+    pp.add_argument("epic", help="parent EPIC's GitHub issue number")
+    pp.add_argument("order", help="PLAN order, e.g. 0072.018")
+    pp.add_argument("desc", help="short description")
+    pp.add_argument("kind", nargs="?", default="feature", help="bug | feature | enhancement | task")
+    np = sub.add_parser("next-plan", help="echo the next free PLAN order (NNNN.SSS) under an EPIC")
+    np.add_argument("epic", help="parent EPIC's GitHub issue number")
     args = p.parse_args(argv)
     try:
         if args.cmd == "lifecycle":
@@ -81,6 +103,10 @@ def main(argv: list[str] | None = None) -> int:
             return _set_status(args.issue, args.status)
         if args.cmd == "ensure-epic":
             return _ensure_epic(args.order, args.desc, args.kind)
+        if args.cmd == "ensure-plan":
+            return _ensure_plan(args.epic, args.order, args.desc, args.kind)
+        if args.cmd == "next-plan":
+            return _next_plan(args.epic)
         return _rollup(args.epic_order)
     except BoardError as e:
         print(f"board: {e}", file=sys.stderr)
