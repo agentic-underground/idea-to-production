@@ -16,6 +16,8 @@
 #
 # Verbs:
 #   set-body     <issue#> <body-file>                 # replace issue body w/ file, preserving the marker
+#   set-plan     <issue#> <plan-file> [summary-file]  # compose `## Summary`+`---`+`## Plan` from files
+#   set-stub     <issue#> <summary-text> [plan-text]  # compose a well-formed stub body from INLINE text
 #   set-estimate <issue#> <number>                    # board "Estimate" (NUMBER) field — story points
 #   set-priority <issue#> <Urgent|High|Medium|Low>    # board "Priority" (single-select) field
 set -uo pipefail
@@ -102,6 +104,14 @@ _rgf_extract_summary() {
     grab && /^##[[:space:]]+Plan[[:space:]]*$/ {grab=0}
     grab {print}' | _rgf_strip_trailing_rule | _rgf_trim_blanks
 }
+# _rgf_plan_stub : the default `## Plan` body for a freshly-authored EPIC/PLAN whose real plan is not yet
+# written (the doc-less / issue-primary path). Keeps the body well-formed (Summary + --- + Plan) so no new
+# item ever lands as a thin one-liner; a later `set-plan` (from plan mode) re-composes over it, marker + any
+# Depends-on:/Touches: trailer preserved byte-exact.
+_rgf_plan_stub() {
+  printf '%s' "_Plan to be authored in plan mode. This stub keeps the issue body well-formed (\`## Summary\` + \`## Plan\`) until the real plan lands via \`roadmapper-gh-fields.sh set-plan\`._"
+}
+
 # _rgf_compose <summary> <plan> <marker> <annotations> : the canonical body (marker/annotations optional).
 _rgf_compose() {
   local out; out="## Summary"$'\n\n'"$1"$'\n\n'"---"$'\n\n'"## Plan"$'\n\n'"$2"
@@ -126,6 +136,23 @@ cmd_set_plan() {   # issue# plan-file [summary-file]
   body="$(_rgf_compose "$summary" "$plan" "$marker" "$anns")"
   printf '%s' "$body" | gh issue edit "$issue" --repo "$slug" --body-file - >/dev/null \
     && echo "issue #$issue plan synced${marker:+ (marker preserved)}${anns:+ (annotations preserved)}"
+}
+
+# cmd_set_stub <issue#> <summary-text> [plan-text] : compose a WELL-FORMED body from inline text (no temp
+# files) — `## Summary`(blurb) + `---` + `## Plan`(stub, or given text), preserving the existing marker +
+# Depends-on:/Touches: trailer. The doc-less/issue-primary create path (§3.3-B): call it right after
+# ensure-epic/ensure-plan-subissue so a fresh item is never a thin one-liner. Idempotent — a later set-plan
+# replaces the Plan; re-running set-stub re-composes over the current marker/annotations.
+cmd_set_stub() {   # issue# summary-text [plan-text]
+  local issue="${1:?issue#}" summary="${2:?summary text}" plan="${3:-}" slug cur marker anns body
+  slug="$(_ghp_repo_slug)"
+  cur="$(gh issue view "$issue" --repo "$slug" --json body -q .body 2>/dev/null)"
+  marker="$(_rgf_extract_marker "$cur")"; anns="$(_rgf_extract_annotations "$cur")"
+  [ -n "$plan" ] || plan="$(_rgf_plan_stub)"
+  summary="$(printf '%s' "$summary" | _rgf_trim_blanks)"
+  body="$(_rgf_compose "$summary" "$plan" "$marker" "$anns")"
+  printf '%s' "$body" | gh issue edit "$issue" --repo "$slug" --body-file - >/dev/null \
+    && echo "issue #$issue stub composed${marker:+ (marker preserved)}${anns:+ (annotations preserved)}"
 }
 
 # --- other verbs ----------------------------------------------------------------------------------
@@ -177,7 +204,7 @@ cmd_self_test() {
   local fails=0
   eq() { if [ "$2" = "$1" ]; then echo "  ✓ $3"; else echo "  ✗ $3 (want [$1] got [$2])"; fails=$((fails+1)); fi; }
   has() { if printf '%s' "$2" | grep -qE "$3"; then echo "  ✓ $1"; else echo "  ✗ $1"; fails=$((fails+1)); fi; }
-  echo "roadmapper-gh-fields.sh --self-test (set-plan composer)"
+  echo "roadmapper-gh-fields.sh --self-test (set-plan + set-stub composer)"
   local M='<!-- pipeline-plan-0072.001 -->' A body1
   A="$(printf 'Depends-on: 0072.002, 0072.003\nTouches: scripts/x.sh, a.md')"
   body1="$(_rgf_compose 'Summary A.' 'Plan A body.' "$M" "$A")"
@@ -222,15 +249,29 @@ cmd_self_test() {
   eq "$S2" "$(_rgf_extract_summary "$sbody")" 'summary: internal --- and ## sub-heading preserved'
   # compose WITHOUT marker/annotations (a fresh EPIC/PLAN) stays well-formed.
   has 'compose: bare body still well-formed' "$(_rgf_compose 'S' 'P' '' '')" '^## Plan$'
-  if [ "$fails" -eq 0 ]; then echo "✓ set-plan self-test passed"; return 0
-  else echo "✗ set-plan self-test: $fails failure(s)"; return 1; fi
+  # PLAN 0072.002 — the create-time STUB: a fresh body must be well-formed (Summary + --- + Plan(stub))
+  # from an inline blurb, so no new EPIC/PLAN ever lands as a thin one-liner (the doc-less/issue-primary
+  # path). The default Plan stub is non-empty; a later real plan re-composes over it, marker preserved.
+  has 'stub: default plan stub non-empty' "$(_rgf_plan_stub)" '.'
+  local stubbody; stubbody="$(_rgf_compose 'Fresh summary blurb.' "$(_rgf_plan_stub)" "$M" '')"
+  has 'stub: ## Summary heading'      "$stubbody" '^## Summary$'
+  has 'stub: --- rule'                "$stubbody" '^---$'
+  has 'stub: ## Plan heading'         "$stubbody" '^## Plan$'
+  has 'stub: marker preserved'        "$stubbody" '<!-- pipeline-plan-0072\.001 -->'
+  eq 'Fresh summary blurb.' "$(_rgf_extract_summary "$stubbody")" 'stub: summary blurb round-trips'
+  local realbody; realbody="$(_rgf_compose "$(_rgf_extract_summary "$stubbody")" 'Real plan.' "$(_rgf_extract_marker "$stubbody")" '')"
+  has 'stub→real: marker survives'    "$realbody" '<!-- pipeline-plan-0072\.001 -->'
+  has 'stub→real: plan text replaced' "$realbody" '^Real plan\.$'
+  if [ "$fails" -eq 0 ]; then echo "✓ composer self-test passed"; return 0
+  else echo "✗ composer self-test: $fails failure(s)"; return 1; fi
 }
 
 case "${1:-}" in
   set-body)     shift; cmd_set_body "$@" ;;
   set-plan)     shift; cmd_set_plan "$@" ;;
+  set-stub)     shift; cmd_set_stub "$@" ;;
   set-estimate) shift; cmd_set_estimate "$@" ;;
   set-priority) shift; cmd_set_priority "$@" ;;
   --self-test)  cmd_self_test ;;
-  *) echo "usage: roadmapper-gh-fields.sh {set-body <issue#> <file> | set-plan <issue#> <plan-file> [summary-file] | set-estimate <issue#> <n> | set-priority <issue#> <Urgent|High|Medium|Low> | --self-test}" >&2; exit 2 ;;
+  *) echo "usage: roadmapper-gh-fields.sh {set-body <issue#> <file> | set-plan <issue#> <plan-file> [summary-file] | set-stub <issue#> <summary-text> [plan-text] | set-estimate <issue#> <n> | set-priority <issue#> <Urgent|High|Medium|Low> | --self-test}" >&2; exit 2 ;;
 esac
