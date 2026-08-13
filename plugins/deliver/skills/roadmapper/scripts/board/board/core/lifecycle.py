@@ -42,6 +42,20 @@ def epic_of(plan_order: str) -> str:
     return plan_order.split(".", 1)[0]
 
 
+def child_rollup_status(issue_state: str, board_status: str | None) -> str | None:
+    """The status a child PLAN contributes to its parent EPIC's rollup (EARS-014).
+
+    A CLOSED issue is terminal — trust its board Status when that Status is ITSELF terminal, so a
+    ``Delivered`` child is not flattened to ``Done`` (the bug that kept an all-Delivered EPIC rolling to
+    ``Done``); when the board Status of a closed issue is stale/non-terminal/unset, fall back to ``Done``
+    (a closed issue is at least Done). An OPEN issue contributes its live board Status, or ``None`` (⇒
+    omitted from the rollup) when unset.
+    """
+    if issue_state == "CLOSED":
+        return board_status if is_terminal(board_status or "") else "Done"
+    return board_status or None
+
+
 def rollup_status(children: list[str], current_epic: str) -> str | None:
     """Compute an EPIC's target Status from its children's statuses, or ``None`` for "no change".
 

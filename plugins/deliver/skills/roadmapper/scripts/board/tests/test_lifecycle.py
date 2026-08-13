@@ -111,3 +111,30 @@ def test_rollup_terminal_epic_never_regresses():  # @EARS-009
 def test_rollup_idempotent_target_equals_current():  # @EARS-004
     # already In Progress and children keep it In Progress → no needless write
     assert lc.rollup_status(["In Progress", "Backlog"], "In Progress") is None
+
+
+# ── EARS-014: child_rollup_status — a CLOSED child's contribution distinguishes Delivered from Done ─
+def test_child_rollup_closed_trusts_terminal_board_status():  # @EARS-014
+    # the bug this fixes: a Delivered-closed child must contribute "Delivered", NOT be flattened to Done
+    assert lc.child_rollup_status("CLOSED", "Delivered") == "Delivered"
+    assert lc.child_rollup_status("CLOSED", "Done") == "Done"
+
+
+def test_child_rollup_closed_non_terminal_board_falls_back_to_done():  # @EARS-014
+    # a closed issue whose board Status is stale/non-terminal/unset is still at least Done
+    assert lc.child_rollup_status("CLOSED", "In Progress") == "Done"
+    assert lc.child_rollup_status("CLOSED", None) == "Done"
+    assert lc.child_rollup_status("CLOSED", "") == "Done"
+
+
+def test_child_rollup_open_contributes_live_board_status_or_omitted():  # @EARS-014
+    assert lc.child_rollup_status("OPEN", "In Progress") == "In Progress"
+    assert lc.child_rollup_status("OPEN", "Backlog") == "Backlog"
+    assert lc.child_rollup_status("OPEN", None) is None   # unset ⇒ omitted from the rollup
+    assert lc.child_rollup_status("OPEN", "") is None
+
+
+def test_rollup_all_delivered_children_via_child_resolution():  # @EARS-005 (end-to-end of the fix)
+    # feed rollup what child_rollup_status now yields for two Delivered-closed children → Delivered
+    kids = [lc.child_rollup_status("CLOSED", "Delivered"), lc.child_rollup_status("CLOSED", "Delivered")]
+    assert lc.rollup_status(kids, "In Progress") == "Delivered"
