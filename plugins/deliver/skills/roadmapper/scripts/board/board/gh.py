@@ -12,12 +12,13 @@ interpolation), so untrusted values can't break out — the posture the bash lay
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-from .core import lifecycle, write
+from .core import create, lifecycle, write
 from .core.errors import BoardError
 
 
@@ -36,13 +37,14 @@ def _ghp() -> Path:
     return _repo_root() / "scripts" / "roadmap" / "gh-pipeline.sh"
 
 
-def _run(args: list[str]) -> str:
+def _run(args: list[str], stdin: str | None = None) -> str:
     """Run an argument-list command; return stripped stdout; raise BoardUnreachable on any failure.
 
-    Bounded by a timeout so a hung `gh`/`bash` fails closed instead of hanging the CLI.
+    Bounded by a timeout so a hung `gh`/`bash` fails closed instead of hanging the CLI. `stdin` feeds the
+    process's standard input (e.g. an issue body via `--body-file -`).
     """
     try:
-        r = subprocess.run(args, capture_output=True, text=True, timeout=60)
+        r = subprocess.run(args, capture_output=True, text=True, timeout=60, input=stdin)
     except FileNotFoundError as e:
         raise BoardUnreachable(f"command not found: {args[0]}") from e
     except subprocess.TimeoutExpired as e:
@@ -119,6 +121,32 @@ def _item_list_json(owner: str, number: str) -> str:
     return _run(["gh", "project", "item-list", number, "--owner", owner, "--format", "json", "--limit", "500"])
 
 
+def _repo_slug() -> str:
+    """`owner/name` for the current repo."""
+    return _run(["gh", "repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner"])
+
+
+def _issues_with_body_json() -> str:
+    """All repo issues (a single flat JSON array of full objects) — the marker-search payload (EARS-015).
+
+    `gh api --paginate` (NO `--slurp`, which can't combine with a downstream parser) concatenates every
+    page into one array. FAIL-CLOSED via `_run`: a read error raises rather than yielding "" — so a failed
+    read is NEVER mistaken for "marker absent" (which would duplicate the EPIC — EARS-018).
+    """
+    return _run(["gh", "api", "--paginate", f"repos/{_repo_slug()}/issues?state=all&per_page=100"])
+
+
+def _write_status_option(owner: str, number: str, pid: str, item_id: str, status: str) -> None:
+    """Resolve the Status field/option FRESH and write it to a KNOWN item id (EARS-011).
+
+    Shared by `set_status` (which resolves the item from an issue# first) and the create-path Backlog seed
+    (which passes the `item-add`-returned id directly — no re-query, dodging the F0 propagation race).
+    """
+    field_id, option_id = write.select_status_option(_field_list_json(owner, number), status)
+    _run(["gh", "project", "item-edit", "--id", item_id, "--field-id", field_id,
+          "--project-id", pid, "--single-select-option-id", option_id])
+
+
 def set_status(issue: str, status: str) -> None:
     """Set an issue's board Status NATIVELY, then apply the issue open/closed lockstep (EARS-011/012/013).
 
@@ -129,20 +157,78 @@ def set_status(issue: str, status: str) -> None:
     if shutil.which("gh") is None:
         raise BoardUnreachable("gh CLI required")
     owner, number, pid = _project_ref()
-    field_id, option_id = write.select_status_option(_field_list_json(owner, number), status)
     item_id = write.select_item_id(_item_list_json(owner, number), issue)
-    slug = _run(["gh", "repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner"])
-    # THE WRITE (native porcelain, argument-list): everything above must have succeeded first.
-    _run(["gh", "project", "item-edit", "--id", item_id, "--field-id", field_id,
-          "--project-id", pid, "--single-select-option-id", option_id])
+    _write_status_option(owner, number, pid, item_id, status)
     # Issue open/closed lockstep — the pure core decides; the shell only dispatches (EARS-013).
     # A terminal target returns "close" WITHOUT needing the live state, so we read state only otherwise.
+    slug = _repo_slug()
     if write.issue_state_action(status, None) == "close":
         _run_soft(["gh", "issue", "close", issue, "--repo", slug], f"close #{issue}")
     else:
         state = _run(["gh", "issue", "view", issue, "--repo", slug, "--json", "state", "-q", ".state"])
         if write.issue_state_action(status, state) == "reopen":
             _run_soft(["gh", "issue", "reopen", issue, "--repo", slug], f"reopen #{issue}")
+
+
+def ensure_epic(order: str, desc: str, kind: str = "feature") -> str:
+    """Create-or-converge an EPIC issue natively, marker-idempotent + converge-correct (EARS-015…018).
+
+    The pure core decides; this shell only executes the ordered action list. Fail-closed: the marker
+    search (`_issues_with_body_json`) raises on a read error, so a fresh EPIC is never duplicated. Echoes
+    the issue number.
+
+    Known limitation (shared with bash `_ghp_issue_by_marker`): the `gh api issues` list is eventually
+    consistent (~3s), so a re-run within that window of a create could duplicate. Real crash→re-run timing
+    is well outside it (EARS-015).
+    """
+    if shutil.which("gh") is None:
+        raise BoardUnreachable("gh CLI required")
+    order = create.norm_epic_order(order)                      # MalformedOrder on a bad order (EARS-018)
+    owner, number, pid = _project_ref()
+    slug = _repo_slug()
+    marker = create.epic_marker(order)
+    found = create.issue_number_with_marker(_issues_with_body_json(), marker)
+    item_id, status = create.find_item(_item_list_json(owner, number), found) if found else (None, None)
+    actions = create.ensure_epic_actions(found, item_id is not None, status is not None)
+
+    issue = found
+    for action in actions:
+        if action == create.CREATE:
+            body = create.compose_body(desc, marker)
+            out = _run(["gh", "issue", "create", "--repo", slug,
+                        "--title", create.epic_title(order, desc), "--body-file", "-"], stdin=body)
+            issue = _parse_issue_number(out)
+        elif action == create.BOARD_ADD_SEED:
+            url = f"https://github.com/{slug}/issues/{issue}"
+            added = _run(["gh", "project", "item-add", number, "--owner", owner, "--url", url, "--format", "json"])
+            new_item = json.loads(added).get("id")
+            if new_item:
+                _write_status_option(owner, number, pid, new_item, "Backlog")
+        elif action == create.SEED:
+            if item_id:
+                _write_status_option(owner, number, pid, item_id, "Backlog")
+        elif action == create.SET_KIND:
+            _apply_kind(slug, issue, kind)
+    return issue or ""
+
+
+def _apply_kind(slug: str, issue: str, kind: str) -> None:
+    """Best-effort Type + label (EARS-016) — a non-org repo / missing label warns, never fails the verb."""
+    typ, label = create.kind_type(kind), create.kind_label(kind)
+    if typ:
+        _run_soft(["gh", "issue", "edit", issue, "--repo", slug, "--type", typ], f"#{issue} Type={typ}")
+    if label:
+        _run_soft(["gh", "issue", "edit", issue, "--repo", slug, "--add-label", label], f"#{issue} label={label}")
+    if not typ:
+        print(f"board: warning: unknown kind {kind!r} — Type/label not applied", file=sys.stderr)
+
+
+def _parse_issue_number(create_out: str) -> str:
+    """Extract the issue number from `gh issue create` output (the created issue URL)."""
+    m = re.search(r"/issues/(\d+)", create_out)
+    if not m:
+        raise BoardUnreachable(f"could not parse created issue number from: {create_out!r}")
+    return m.group(1)
 
 
 def board_statuses(epic_order: str) -> tuple[str, str | None, list[str]]:
