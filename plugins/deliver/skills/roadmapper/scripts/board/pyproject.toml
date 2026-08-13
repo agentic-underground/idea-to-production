@@ -1,0 +1,27 @@
+# `board` — GitHub Project board integration for idea-to-production (PLAN 0072.014, EPIC 0072).
+# Dev/gate-only tooling (pytest + coverage). Runtime is stdlib-only + the `gh` CLI — this project is
+# NEVER an installed-plugin runtime dependency. uv manages a dev venv; uv.lock is committed so the
+# pre-push gate runs `uv run --offline --frozen pytest` deterministically.
+[project]
+name = "board"
+version = "0.1.0"
+description = "GitHub Project board integration (lifecycle + EPIC rollup) for idea-to-production"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8.0", "pytest-cov>=5.0"]
+
+[tool.uv]
+# Not a distributable package — uv just manages the dev venv; the local `board/` package is imported
+# via pytest's pythonpath, so no build backend / install step is needed.
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+branch = true
+source = ["board/core"]

@@ -22,6 +22,15 @@ and is pinned by that script's `--self-test`.
 Backlog · To Do · In Progress · Review · Revise · Done · Delivered
 ```
 
+> **Lifecycle transitions + EPIC rollup — the `board` component (PLAN 0072.014).** A PLAN's transition
+> should move the PLAN **and** roll its parent EPIC (an EPIC must never sit in Backlog while its PLANs
+> advance). Use `board.sh lifecycle <order> <transition>` / `board.sh rollup <epic-order>`
+> (`plugins/deliver/skills/roadmapper/scripts/board/`, roadmapper SKILL §11.4c) rather than a raw
+> `set-status` for lifecycle moves — a raw `set-status` skips the rollup. Rollup rule: all children
+> resolved ⇒ Done/Delivered; any child active ⇒ In Progress; a PARKED or already-terminal EPIC is never
+> disturbed. This list is kept byte-identical to bash `_GHP_STATUS_OPTIONS` **and** the component's
+> `board.core.lifecycle.CANONICAL` (a cross-language test pins them).
+
 | Status | Meaning | Issue state |
 |---|---|---|
 | **Backlog** | captured, not yet scheduled (the seed state on a fresh board-add) | open |

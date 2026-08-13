@@ -24,6 +24,9 @@
 #                                           native sub-issue of <epic#>; echo its number. Crash-consistent:
 #                                           marker-found ⇒ ALSO verify the sub-issue link, re-link if gone.
 #   set-status <issue#> <Status>            set the board Status single-select for an issue.
+#                                           NOTE: for a PLAN/EPIC lifecycle transition prefer
+#                                           `board.sh lifecycle <order> <t>` (PLAN 0072.014) — it also
+#                                           rolls the parent EPIC up; a raw set-status skips that.
 #   epic-issue <order> | plan-issue <order> | next-plan <epic#>     read helpers.
 #   resolve-issue [PR#]                     REVERSE resolver: branch/PR → order/trailer → issue# (fail closed).
 #   preflight                               probe repo-scope vs project-scope SEPARATELY; on project-scope

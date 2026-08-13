@@ -984,6 +984,27 @@ roadmapper-gh-fields.sh sync-plan NNNN.SSS /tmp/approved-plan.md [summary-file]
 plan is not lost, re-run when reachable); a **malformed order** (e.g. a bare issue#) is a usage error
 (exit 2). This **writes** the plan; it does not promote — promotion to To Do stays the §11.4a gesture.
 
+#### 11.4c Transition a PLAN and roll its parent EPIC (the `board` component — PLAN 0072.014)
+
+A PLAN's lifecycle transition (build-start, review, revise, done) should move the PLAN **and** recompute
+its parent EPIC — so an EPIC moves as its PLANs do (it must never sit in Backlog while its PLANs advance).
+Use the `board` component (Python; runtime is stdlib + `gh`), which keys on the roadmap **order** (never a
+GitHub issue#) and writes through the proven `set-status` lockstep:
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/skills/roadmapper/scripts/board/board.sh lifecycle NNNN.SSS <transition>
+#   transition ∈ start | review | revise | done | deliver | ready
+bash ${CLAUDE_PLUGIN_ROOT}/skills/roadmapper/scripts/board/board.sh rollup NNNN     # recompute an EPIC on demand
+```
+
+`lifecycle` sets the PLAN's Status (+ the issue-state lockstep) then recomputes the parent EPIC from its
+children — **all children resolved ⇒ Done/Delivered; any child active ⇒ In Progress; a PARKED or already-
+terminal EPIC is never disturbed**. It **fails closed** (non-zero, no partial write) on an unreachable
+board or an issue#-where-an-order-is-expected. Prefer this over a raw `gh-pipeline.sh set-status` for any
+PLAN/EPIC lifecycle move — a raw `set-status` skips the rollup. *(Slice 2 ports `set-status` into `board`
+so the rollup becomes intrinsic to every write; until then, use `board lifecycle` for transitions and
+`board rollup` to reconcile an EPIC after a manual move.)*
+
 #### Legacy project (`ROADMAP.md`, no pipeline) — GO = DEV_SYSTEM
 
 The spec is frozen; the DEV_SYSTEM (§4) runs in-session.
