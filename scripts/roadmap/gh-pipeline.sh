@@ -55,7 +55,7 @@ if (return 0 2>/dev/null); then _GHP_SOURCED=1; else _GHP_SOURCED=0; set -uo pip
 # Canonical Status options this pipeline expects on the board (Backlog→…→Delivered). ensure-project
 # CACHES whatever options are present and WARNS on a missing one — it never DELETES/rewrites options
 # (deleting a ProjectV2 single-select option WIPES every item's value; see the board-option-delete memory).
-_GHP_STATUS_OPTIONS=(Backlog "To Do" "In Progress" Done Delivered)
+_GHP_STATUS_OPTIONS=(Backlog "To Do" "In Progress" Review Revise Done Delivered)
 
 # CFG_* populated by pcfg_resolve (mirrors the FLEET surface roadmapper-gh-fields.sh:37 expects).
 CFG_REG_ID=""; CFG_REPO=""; CFG_REMOTE=""; CFG_PROJECT_OWNER=""
@@ -580,6 +580,13 @@ cmd_self_test() {
   _tfail _ghp_status_closes Backlog
   _t "status_closes Done"             "$(_ghp_status_closes Done && echo yes)"      "yes"
   _t "status_closes Delivered"        "$(_ghp_status_closes Delivered && echo yes)" "yes"
+  # canonical Status option list (PLAN 0072.007): reconciled to the board's true lifecycle —
+  # Review (under-review) + Revise (changes-requested) present; Delivered kept as the terminal
+  # delivered state. This list drives first-time field creation AND the non-destructive drift warn;
+  # option ADDS/EDITS themselves go via the web UI only (see board-status-runbook.md).
+  _t "canonical Status options" \
+     "$(IFS='|'; echo "${_GHP_STATUS_OPTIONS[*]}")" \
+     "Backlog|To Do|In Progress|Review|Revise|Done|Delivered"
 
   if [ "$fails" -eq 0 ]; then _ghp_info "${_ghp_grn}✓ self-test passed${_ghp_rst}"; return 0
   else _ghp_info "${_ghp_red}✗ self-test: $fails failure(s)${_ghp_rst}"; return 1; fi
