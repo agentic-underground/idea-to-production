@@ -158,10 +158,10 @@ def set_status(issue: str, status: str) -> None:
         raise BoardUnreachable("gh CLI required")
     owner, number, pid = _project_ref()
     item_id = write.select_item_id(_item_list_json(owner, number), issue)
+    slug = _repo_slug()                          # resolved BEFORE the write (behaviour-identical to pre-refactor)
     _write_status_option(owner, number, pid, item_id, status)
     # Issue open/closed lockstep — the pure core decides; the shell only dispatches (EARS-013).
     # A terminal target returns "close" WITHOUT needing the live state, so we read state only otherwise.
-    slug = _repo_slug()
     if write.issue_state_action(status, None) == "close":
         _run_soft(["gh", "issue", "close", issue, "--repo", slug], f"close #{issue}")
     else:

@@ -27,8 +27,11 @@ _KIND_LABEL = {"bug": "bug", "enhancement": "enhancement"}
 
 
 def norm_epic_order(raw: str) -> str:
-    """Normalise an EPIC order to 4 digits (``"3"`` → ``"0003"``); reject non-1–4-digit (EARS-018)."""
-    s = (raw or "").strip()
+    """Normalise an EPIC order to 4 digits (``"3"`` → ``"0003"``); reject non-1–4-digit (EARS-018).
+
+    No whitespace tolerance — byte-exact with the bash ``_ghp_norm_order`` (which does not strip).
+    """
+    s = raw or ""
     if not _EPIC_ORDER.match(s):
         raise MalformedOrder(f"EPIC order must be 1–4 digits (got {raw!r})")
     return s.zfill(4)
