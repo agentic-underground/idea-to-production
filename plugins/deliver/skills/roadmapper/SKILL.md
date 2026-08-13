@@ -967,6 +967,23 @@ it's next in board order.*
 This is the **only** Status change roadmapper makes; every other column move is the engine's and must
 never be hand-edited (§11.4 MUST NOT).
 
+#### 11.4b Pipe an approved plan-mode plan onto the board (github_board mode)
+
+When a plan-mode session approves the plan for a board item — or a reviewer revises one — pipe that plan
+into the issue's `## Plan` with the **`/deliver:sync-plan`** command (PLAN 0072.003). It keys on the
+roadmap **order** (`NNNN.SSS` / `NNNN`), **never a GitHub issue number** (the two-number-space hazard —
+a `Depends-on:` token and a sync target must speak the same space), resolves order→issue via the
+pipeline marker, and writes the plan through the composer so the **`## Summary`, the marker, and the
+`Depends-on:`/`Touches:` trailer are preserved byte-exact**:
+
+```bash
+roadmapper-gh-fields.sh sync-plan NNNN.SSS /tmp/approved-plan.md [summary-file]
+```
+
+**Graceful no-op** when the board is unreachable or the order is absent (exit 0, "skipped" message — the
+plan is not lost, re-run when reachable); a **malformed order** (e.g. a bare issue#) is a usage error
+(exit 2). This **writes** the plan; it does not promote — promotion to To Do stays the §11.4a gesture.
+
 #### Legacy project (`ROADMAP.md`, no pipeline) — GO = DEV_SYSTEM
 
 The spec is frozen; the DEV_SYSTEM (§4) runs in-session.
