@@ -204,7 +204,7 @@ cmd_self_test() {
   local fails=0
   eq() { if [ "$2" = "$1" ]; then echo "  ✓ $3"; else echo "  ✗ $3 (want [$1] got [$2])"; fails=$((fails+1)); fi; }
   has() { if printf '%s' "$2" | grep -qE "$3"; then echo "  ✓ $1"; else echo "  ✗ $1"; fails=$((fails+1)); fi; }
-  echo "roadmapper-gh-fields.sh --self-test (set-plan composer)"
+  echo "roadmapper-gh-fields.sh --self-test (set-plan + set-stub composer)"
   local M='<!-- pipeline-plan-0072.001 -->' A body1
   A="$(printf 'Depends-on: 0072.002, 0072.003\nTouches: scripts/x.sh, a.md')"
   body1="$(_rgf_compose 'Summary A.' 'Plan A body.' "$M" "$A")"
@@ -262,8 +262,8 @@ cmd_self_test() {
   local realbody; realbody="$(_rgf_compose "$(_rgf_extract_summary "$stubbody")" 'Real plan.' "$(_rgf_extract_marker "$stubbody")" '')"
   has 'stub→real: marker survives'    "$realbody" '<!-- pipeline-plan-0072\.001 -->'
   has 'stub→real: plan text replaced' "$realbody" '^Real plan\.$'
-  if [ "$fails" -eq 0 ]; then echo "✓ set-plan self-test passed"; return 0
-  else echo "✗ set-plan self-test: $fails failure(s)"; return 1; fi
+  if [ "$fails" -eq 0 ]; then echo "✓ composer self-test passed"; return 0
+  else echo "✗ composer self-test: $fails failure(s)"; return 1; fi
 }
 
 case "${1:-}" in
