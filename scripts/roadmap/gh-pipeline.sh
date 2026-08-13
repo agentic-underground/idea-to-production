@@ -102,8 +102,10 @@ _ghp_plan_marker() { printf '<!-- pipeline-plan-%s -->' "$1"; }
 # do NOT → the resolver fails closed rather than guess.
 _ghp_branch_order() {
   local b="${1:-}"
-  printf '%s' "$b" | grep -qE '^pipeline/[0-9]{4}(\.[0-9]{3})?[-/]' || return 1
-  printf '%s' "$b" | sed -E 's#^pipeline/([0-9]{4}(\.[0-9]{3})?)[-/].*#\1#'
+  # bash =~ matches the WHOLE string (single-line-safe: a multi-line input can't spuriously yield a
+  # multi-line order the way a line-oriented sed would) and captures the order in BASH_REMATCH[1].
+  [[ "$b" =~ ^pipeline/([0-9]{4}(\.[0-9]{3})?)[-/] ]] || return 1
+  printf '%s' "${BASH_REMATCH[1]}"
 }
 
 # _ghp_body_issue <text> : echo the SINGLE GitHub issue# a linkage trailer names — `Board:`/`Refs`/`Closes`/
@@ -111,9 +113,13 @@ _ghp_branch_order() {
 # MULTIPLE DISTINCT matches (never guesses which issue an ambiguous body means); a bare `#N` with no linkage
 # keyword is deliberately ignored (an incidental issue mention must not resolve).
 _ghp_body_issue() {
-  local text="${1:-}" nums n
+  local text="${1:-}" nums
+  # The keyword must be a WHOLE word (line-start or preceded by a non-alnum) immediately before `#N` — so
+  # prose that merely CONTAINS a keyword as a substring ("preFIXES #9", "encloses #9", "unRefs #9") does NOT
+  # match. Without this boundary the sole-trailer (renamed-branch) path would mis-resolve instead of failing
+  # closed. The leading boundary char is captured too, so extract the number as the trailing `#N`.
   nums="$(printf '%s\n' "$text" \
-    | grep -ioE '(Board|Refs|Closes|Fixes|Resolves)[[:space:]]*:?[[:space:]]*#[0-9]+' \
+    | grep -ioE '(^|[^[:alnum:]])(Board|Refs|Closes|Fixes|Resolves)[[:space:]]*:?[[:space:]]*#[0-9]+' \
     | grep -oE '[0-9]+$' | sort -un)"
   [ -n "$nums" ] || return 1
   [ "$(printf '%s\n' "$nums" | grep -c .)" -eq 1 ] || return 1   # multiple distinct → fail closed
@@ -673,6 +679,10 @@ cmd_self_test() {
   _tfail _ghp_body_issue "$(printf 'Board: #10\nCloses #20')"   # multiple DISTINCT → fail closed
   # a bare '#341' with no linkage keyword must NOT resolve (avoids grabbing an incidental issue mention)
   _tfail _ghp_body_issue 'see #341 for context'
+  # keyword must be a WHOLE word — prose merely CONTAINING a keyword substring must NOT match (fail closed)
+  _tfail _ghp_body_issue 'this prefixes #342 onto the name'     # "preFIXES" ⊃ Fixes
+  _tfail _ghp_body_issue 'it encloses #999 in a box'           # "enCLOSES" ⊃ Closes
+  _t "body_issue Fixes #341 (real word) → 341" "$(_ghp_body_issue 'Fixes #341')" "341"
 
   if [ "$fails" -eq 0 ]; then _ghp_info "${_ghp_grn}✓ self-test passed${_ghp_rst}"; return 0
   else _ghp_info "${_ghp_red}✗ self-test: $fails failure(s)${_ghp_rst}"; return 1; fi
