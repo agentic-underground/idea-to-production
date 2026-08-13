@@ -17,7 +17,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .core import write
+from .core import lifecycle, write
 from .core.errors import BoardError
 
 
@@ -174,9 +174,10 @@ def board_statuses(epic_order: str) -> tuple[str, str | None, list[str]]:
         num = n.get("number")
         if num is None:
             continue
-        if n.get("state") == "CLOSED":
-            children.append("Done")
-        elif status_by_issue.get(str(num)):
-            children.append(status_by_issue[str(num)])
+        # the pure core decides a child's contribution — a CLOSED child trusts a terminal board Status
+        # (so Delivered is not flattened to Done), else falls back to Done; an OPEN child's status, or omit
+        cs = lifecycle.child_rollup_status(n.get("state") or "", status_by_issue.get(str(num)))
+        if cs:
+            children.append(cs)
     epic_status = status_by_issue.get(epic_no) or None
     return epic_no, epic_status, children
