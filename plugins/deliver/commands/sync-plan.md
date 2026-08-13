@@ -35,6 +35,8 @@ altered a plan and the issue's `## Plan` must be brought back in sync.
      a success.
    - `'<arg>' is not a roadmap order …` (exit 2) — a **usage error**: you passed something that isn't an
      `NNNN`/`NNNN.SSS` order (likely a bare GitHub issue#). Re-invoke with the roadmap order.
+   - `plan file not found: <path>` (exit 1) — the plan temp file from step 1 is missing/mistyped. Write it,
+     then re-run.
 
 This command **writes** to the board; it does not merge or promote. Promotion to `To Do` is the separate
 human-gated gesture (§11.4a). Degrades cleanly with no `gh`/board — the no-op path above.
