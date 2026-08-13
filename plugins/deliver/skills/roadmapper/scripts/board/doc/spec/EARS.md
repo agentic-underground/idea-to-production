@@ -31,6 +31,11 @@ The decidable core is `board/core/lifecycle.py` + `board/core/write.py`; the I/O
   single-select option id from a **fresh** `gh project field-list` read (no persisted cache) and write the
   value via `gh project item-edit` (native porcelain, argument-list, no hand-built GraphQL). *(Slice 2 —
   designs out the stale-cache class of 0072.013.)*
+- **EARS-014** — WHEN resolving a child PLAN's contribution to its parent's rollup, a **CLOSED** child
+  SHALL contribute its board Status when that Status is itself terminal (so a `Delivered` child is not
+  flattened to `Done`), else `Done` (a closed issue is at least Done); a **non-CLOSED** (OPEN) child SHALL
+  contribute its live board Status, or be omitted when unset. *(PLAN 0072.016 — the fix that lets an
+  all-`Delivered` EPIC roll to `Delivered` per EARS-005 rather than always `Done`.)*
 
 ## State-driven
 
@@ -39,11 +44,6 @@ The decidable core is `board/core/lifecycle.py` + `board/core/write.py`; the I/O
 - **EARS-006** — WHILE at least one PLAN child is active (a canonical status other than `Backlog`/`To Do`)
   and not all children are terminal, the computed status SHALL be `In Progress`; WHILE all children are
   `Backlog`/`To Do` (none started), the computed status SHALL be **unchanged**.
-- **EARS-014** — WHEN resolving a child PLAN's contribution to its parent's rollup, a **CLOSED** child
-  SHALL contribute its board Status when that Status is itself terminal (so a `Delivered` child is not
-  flattened to `Done`), else `Done` (a closed issue is at least Done); an **OPEN** child SHALL contribute
-  its live board Status, or be omitted when unset. *(PLAN 0072.016 — the fix that lets an all-`Delivered`
-  EPIC roll to `Delivered` per EARS-005 rather than always `Done`.)*
 
 ## Unwanted behaviour (fail-closed / guards)
 
