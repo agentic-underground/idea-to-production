@@ -326,15 +326,25 @@ with `PIPELINE_PROJECT=<registry-key>` in the environment (the repo's key in
    `feature`; pass `bug` for a bug-fix slice) — crash-consistent: it links the sub-issue on every run.
    **Naming contract:** name the local file **exactly** `PLAN_NNNN.SSS.md` (e.g. `PLAN_0001.001.md`) to
    match the issue title `PLAN NNNN.SSS: …`.
-4. **Enrich every Issue (the browsable backlog).** For each EPIC and PLAN Issue, replace the thin
-   auto-body with the **full content of its local doc**, led by a **clickable link** to the doc on the
-   default branch, e.g.
-   `📄 [docs/roadmap/PLAN_0001.001.md](https://github.com/<owner>/<repo>/blob/<default-branch>/docs/roadmap/PLAN_0001.001.md)`
-   Resolve `<default-branch>` with `gh repo view <owner>/<repo> --json defaultBranchRef -q
-   .defaultBranchRef.name` (do **not** assume `main` — the link must not 404).
-   Compose the body to a temp file and apply `roadmapper-gh-fields.sh set-body <issue#> <file>` — it
-   re-appends the `<!-- pipeline-… -->` idempotency marker, so **never strip that marker** from your
-   body. The Issue must *show* what will happen — a bare reference is not enough.
+4. **Enrich every Issue via the composer — a well-formed `## Summary` + `---` + `## Plan` body, never a
+   thin one-liner** (PLAN 0072.002). Pick the path by what you have:
+   - **Doc-less / issue-primary (the common path).** Right after creating the item, compose a well-formed
+     body from an inline summary blurb:
+     `roadmapper-gh-fields.sh set-stub <issue#> "<one-line Summary blurb>"` — it emits
+     `## Summary`(your blurb) + `---` + `## Plan`(a stub placeholder) and **preserves the marker +
+     `Depends-on:`/`Touches:` trailer**. The real plan lands later from plan mode via `set-plan`
+     (below), re-composing over the stub. Pass an explicit `[plan-text]` third arg if you already have a
+     Plan blurb. This guarantees **no new EPIC/PLAN ever lands as a thin auto-body**.
+   - **Rich local doc exists.** Enrich from files with the composer:
+     `roadmapper-gh-fields.sh set-plan <issue#> <plan-file> [summary-file]` (splices `## Summary`+`## Plan`
+     from the files, marker + trailer preserved) — or, when the Issue should carry the **full doc** led by
+     a **clickable link** to it on the default branch, e.g.
+     `📄 [docs/roadmap/PLAN_0001.001.md](https://github.com/<owner>/<repo>/blob/<default-branch>/docs/roadmap/PLAN_0001.001.md)`
+     (resolve `<default-branch>` with `gh repo view <owner>/<repo> --json defaultBranchRef -q
+     .defaultBranchRef.name` — do **not** assume `main`), compose that body to a temp file and apply
+     `roadmapper-gh-fields.sh set-body <issue#> <file>`.
+   All three verbs re-append / preserve the `<!-- pipeline-… -->` idempotency marker, so **never strip that
+   marker** from a body you hand them. The Issue must *show* what will happen — a bare reference is not enough.
 5. **Set the board fields.** `roadmapper-gh-fields.sh set-estimate <issue#> <points>` (per-PLAN story
    points from §3.5; the EPIC gets the rolled-up sum) and `… set-priority <issue#> <Priority>` (§3.3-G;
    default `Medium`). Get `<issue#>` from the echo of `ensure-epic`/`ensure-plan-subissue`, or via
