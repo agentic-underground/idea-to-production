@@ -6,6 +6,13 @@ for f in $(git ls-files '*.claude-plugin/*.json'); do python3 -c "import json,sy
 python3 scripts/ci/check_manifests.py $(git ls-files '*.claude-plugin/*.json') || exit 1
 python3 -m py_compile $(git ls-files '*.py')
 echo "manifests + python OK"
+# `board` GitHub-project integration — Python pure-core (EPIC 0072 / PLAN 0072.014): 100% branch, offline.
+# uv + pytest are DEV/GATE-only (never a plugin runtime dep; runtime is stdlib + gh). uv.lock is committed
+# so this is deterministic; it FAILS LOUD with a `uv sync` hint if the dev env is absent — never a silent skip.
+( cd plugins/deliver/skills/roadmapper/scripts/board \
+  && uv run --offline --frozen pytest -q --cov=board/core --cov-branch --cov-fail-under=100 >/dev/null ) \
+  || { echo "✗ board pure-core tests failed — if the dev env is missing run: (cd plugins/deliver/skills/roadmapper/scripts/board && uv sync)"; exit 1; }
+echo "board pure-core OK (100% branch)"
 # Context-routing pre-push gate (deterministic, token-free): reachability + no-dead-routes +
 # declared-collisions + lexicon sync. Warn-then-flip checks (phase tags, budget, roadmap tags) only
 # WARN until their RFC slices land, so this does not block on unlanded work. See docs/guide/routing-tests.md.
